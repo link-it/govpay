@@ -18,8 +18,10 @@ import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.beans.commons.Anagrafica;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
@@ -65,7 +67,7 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(NuovoPagamento pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, 
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(NuovoPagamento pagamentiPortaleRequest, Authentication user, String idSessione, 
 			String idSessionePortale, Map<String, Versamento> listaIdentificativi, Logger log) throws IOException, ValidationException, RequestValidationException, ServiceException, GovPayException {
 
 		Map<String, Versamento> listaPendenzeDaSessione = null;
@@ -127,7 +129,7 @@ public class PagamentiPortaleConverter {
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						if(listaIdentificativi != null && listaIdentificativi.size() > 0 && listaIdentificativi.containsKey((pendenza.getIdA2A()+pendenza.getIdPendenza()))) {
 							if(listaPendenzeDaSessione == null) {
-								listaPendenzeDaSessione = new HashMap<String,Versamento>(); 
+								listaPendenzeDaSessione = new HashMap<>(); 
 							}
 	
 							// aggiungo la pendenza da pagare
@@ -150,7 +152,6 @@ public class PagamentiPortaleConverter {
 		}
 
 		// Salvataggio del messaggio di richiesta sul db
-		//		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
 		pagamentiPortaleDTO.setJsonRichiesta(pagamentiPortaleRequest.toJSON(null));
 		
 		pagamentiPortaleDTO.setListaPendenzeDaSessione(listaPendenzeDaSessione);
@@ -173,9 +174,8 @@ public class PagamentiPortaleConverter {
 		versamento.setCodVersamentoEnte(idPendenza);
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
-		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore(), true));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
@@ -191,23 +191,11 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getDatiAllegati() != null)
 			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
-		//		versamento.setAnomalie(marshall(pendenza.getSegnalazioni())); //TODO
-
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
 		// tipo Pendenza
 		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//			if(sv.getBolloTelematico() != null) {
-//				versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//			} else if(sv.getCodTributo() != null) {
-//				versamento.setCodTipoVersamento(sv.getCodTributo());
-//			} else {
-//				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//			}
-//		}
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
 		versamento.setProprieta(PendenzeConverter.toProprietaPendenzaDTO(pendenza.getProprieta()));
@@ -230,9 +218,8 @@ public class PagamentiPortaleConverter {
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
-		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore(), true));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
@@ -249,9 +236,6 @@ public class PagamentiPortaleConverter {
 
 		if(pendenza.getDatiAllegati() != null)
 			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
-
-		//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-		//		versamento.setAnomalie(pendenza.getAnomalie()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
@@ -277,8 +261,6 @@ public class PagamentiPortaleConverter {
 		if(voci != null && voci.size() > 0) {
 			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
@@ -329,6 +311,10 @@ public class PagamentiPortaleConverter {
 	}
 
 	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
+		return toAnagraficaCommons(anagraficaRest, false);
+	}
+
+	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest, boolean createAnagraficaAnonimo) {
 		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
 		if(anagraficaRest != null) {
 			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
@@ -342,13 +328,30 @@ public class PagamentiPortaleConverter {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			if(anagraficaRest.getTipo() != null) {
+				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			}
+		}
+		
+		if(createAnagraficaAnonimo) {
+			if(anagraficaCommons == null) {
+				anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
+			}
+		
+			// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+			// in questo caso impostiamo i valori di default per gli identificativi
+			if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
+				anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
+			}
+			if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
+				anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
+			}
 		}
 
 		return anagraficaCommons;
 	}
 
-	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) throws ServiceException {
+	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) throws ValidationException {
 		Pagamento rsModel = new Pagamento();
 
 		NuovoPagamento pagamentiPortaleRequest = null;
@@ -366,7 +369,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
 				rsModel.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto());
-			} catch (IOException | ValidationException e) {
+			} catch (IOException e) {
 
 			}
 
@@ -382,13 +385,13 @@ public class PagamentiPortaleConverter {
 
 		return rsModel;
 	}
-	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto, Authentication user) throws ServiceException {
+	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto, Authentication user) throws ValidationException {
 		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		return toRsModelIndex(pagamentoPortale, user);
 
 	}
 
-	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) {
+	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) throws ValidationException {
 		PagamentoIndex rsModel = new PagamentoIndex();
 
 		NuovoPagamento pagamentiPortaleRequest = null;
@@ -407,8 +410,8 @@ public class PagamentiPortaleConverter {
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
 				rsModel.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto());
-			} catch (IOException | ValidationException e) {
-
+			} catch (IOException  e) {
+				// donothing
 			}
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());

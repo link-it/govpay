@@ -120,6 +120,14 @@ public class GovpayConfig {
 	private List<String> autenticazioneHeaderElencoHeadersRequest;
 	private Properties autenticazioneSSLHeaderProperties;
 	
+	// nomi header dove leggere le informazioni per l'autenticazione API-Key (Erogazione)
+	private String autenticazioneApiKeyNomeHeaderApiKey;
+	private String autenticazioneApiKeyNomeHeaderApiId;
+	
+	// nomi header dove impostare l'autenticazione API-Key (Fruizione)
+	private String autenticazioneApiKeyNomeHeaderApiKeyFruizione;
+	private String autenticazioneApiKeyNomeHeaderApiIdFruizione;
+	
 	private int numeroMassimoEntriesProspettoRiscossione;
 	
 	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
@@ -176,6 +184,18 @@ public class GovpayConfig {
 	private String operazioneVerifica;
 	
 	private Integer numeroGiorniValiditaPendenza;
+	
+	private boolean batchRecuperoRPTPendenti;
+	private boolean batchAcquisizioneRendicontazioni;
+	private boolean batchChiusuraRPTScadute;
+	private boolean batchElaborazioneRiconciliazioni;
+	private boolean batchGestionePromemoria;
+	private boolean batchSpedizioneNotifiche;
+	private boolean batchSpedizioneNotificheAppIO;
+	private boolean batchSpedizionePromemoria;
+	
+	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
+	
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -268,6 +288,17 @@ public class GovpayConfig {
 		this.operazioneVerifica = null;
 		
 		this.numeroGiorniValiditaPendenza = null;
+		
+		this.keywordsDaSostituireIdentificativiDebitoreAvviso = new ArrayList<>();
+		
+		this.batchRecuperoRPTPendenti = false;
+		this.batchAcquisizioneRendicontazioni = false;
+		this.batchChiusuraRPTScadute = false;
+		this.batchElaborazioneRiconciliazioni = false;
+		this.batchGestionePromemoria = false;
+		this.batchSpedizioneNotifiche = false;
+		this.batchSpedizioneNotificheAppIO = false;
+		this.batchSpedizionePromemoria = false;
 		
 		try {
 
@@ -796,6 +827,12 @@ public class GovpayConfig {
 			
 			this.nomeHeaderSubscriptionKeyPagoPA = getProperty("it.govpay.client.pagopa.autenticazione.subscriptionkey.header.name", this.props, false, log);
 			
+			this.autenticazioneApiKeyNomeHeaderApiId = getProperty("it.govpay.autenticazioneApiKey.apiId.header.name", this.props, false, log);
+			this.autenticazioneApiKeyNomeHeaderApiKey = getProperty("it.govpay.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
+			
+			this.autenticazioneApiKeyNomeHeaderApiIdFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiId.header.name", this.props, false, log);
+			this.autenticazioneApiKeyNomeHeaderApiKeyFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
+			
 			String dismettiIUVIso11694String = getProperty("it.govpay.dismettiIuvIso11694", this.props, false, log);
 			if(dismettiIUVIso11694String != null && Boolean.valueOf(dismettiIUVIso11694String))
 				this.dismettiIUVIso11694 = true;
@@ -822,6 +859,46 @@ public class GovpayConfig {
 				} catch(NumberFormatException t) {
 					log.info("Proprieta \"it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita\" trovata con valore non valido [{}], viene impostata con valore di default null",	this.operazioneVerifica);
 					this.numeroGiorniValiditaPendenza = null;
+				}
+			}
+			
+			String batchRecuperoRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.enabled", this.props, false, log);
+			if(batchRecuperoRPTPendentiString != null && Boolean.valueOf(batchRecuperoRPTPendentiString))
+				this.batchRecuperoRPTPendenti = true;
+			
+			String batchAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.enabled", this.props, false, log);
+			if(batchAcquisizioneRendicontazioniString != null && Boolean.valueOf(batchAcquisizioneRendicontazioniString))
+				this.batchAcquisizioneRendicontazioni = true;
+			
+			String batchChiusuraRPTScaduteString = getProperty("it.govpay.batch.chiusuraRptScadute.enabled", this.props, false, log);
+			if(batchChiusuraRPTScaduteString != null && Boolean.valueOf(batchChiusuraRPTScaduteString))
+				this.batchChiusuraRPTScadute = true;
+			
+			String batchElaborazioneRiconciliazioniString = getProperty("it.govpay.batch.elaborazioneRiconciliazioni.enabled", this.props, false, log);
+			if(batchElaborazioneRiconciliazioniString != null && Boolean.valueOf(batchElaborazioneRiconciliazioniString))
+				this.batchElaborazioneRiconciliazioni = true;
+			
+			String batchGestionePromemoriaString = getProperty("it.govpay.batch.gestionePromemoria.enabled", this.props, false, log);
+			if(batchGestionePromemoriaString != null && Boolean.valueOf(batchGestionePromemoriaString))
+				this.batchGestionePromemoria = true;
+			
+			String batchSpedizioneNotificheString = getProperty("it.govpay.batch.spedizioneNotifiche.enabled", this.props, false, log);
+			if(batchSpedizioneNotificheString != null && Boolean.valueOf(batchSpedizioneNotificheString))
+				this.batchSpedizioneNotifiche = true;
+			
+			String batchSpedizioneNotificheAppIOString = getProperty("it.govpay.batch.spedizioneNotificheAppIO.enabled", this.props, false, log);
+			if(batchSpedizioneNotificheAppIOString != null && Boolean.valueOf(batchSpedizioneNotificheAppIOString))
+				this.batchSpedizioneNotificheAppIO = true;
+			
+			String batchSpedizionePromemoriaString = getProperty("it.govpay.batch.spedizionePromemoria.enabled", this.props, false, log);
+			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
+				this.batchSpedizionePromemoria = true;
+			
+			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
+			if(StringUtils.isNotEmpty(keywordsS)) {
+				String[] split = keywordsS.split(",");
+				if(split != null && split.length > 0) {
+					this.keywordsDaSostituireIdentificativiDebitoreAvviso = Arrays.asList(split);
 				}
 			}
 			
@@ -1245,4 +1322,57 @@ public class GovpayConfig {
 	public Integer getNumeroGiorniValiditaPendenza() {
 		return numeroGiorniValiditaPendenza;
 	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiKey() {
+		return autenticazioneApiKeyNomeHeaderApiKey;
+	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiId() {
+		return autenticazioneApiKeyNomeHeaderApiId;
+	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiKeyFruizione() {
+		return autenticazioneApiKeyNomeHeaderApiKeyFruizione;
+	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiIdFruizione() {
+		return autenticazioneApiKeyNomeHeaderApiIdFruizione;
+	}
+
+	public boolean isBatchRecuperoRPTPendenti() {
+		return batchRecuperoRPTPendenti;
+	}
+
+	public boolean isBatchAcquisizioneRendicontazioni() {
+		return batchAcquisizioneRendicontazioni;
+	}
+
+	public boolean isBatchChiusuraRPTScadute() {
+		return batchChiusuraRPTScadute;
+	}
+
+	public boolean isBatchElaborazioneRiconciliazioni() {
+		return batchElaborazioneRiconciliazioni;
+	}
+
+	public boolean isBatchGestionePromemoria() {
+		return batchGestionePromemoria;
+	}
+
+	public boolean isBatchSpedizioneNotifiche() {
+		return batchSpedizioneNotifiche;
+	}
+
+	public boolean isBatchSpedizioneNotificheAppIO() {
+		return batchSpedizioneNotificheAppIO;
+	}
+
+	public boolean isBatchSpedizionePromemoria() {
+		return batchSpedizionePromemoria;
+	}
+
+	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
+		return keywordsDaSostituireIdentificativiDebitoreAvviso;
+	}
+	
 }

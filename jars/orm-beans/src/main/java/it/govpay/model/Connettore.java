@@ -39,9 +39,19 @@ public class Connettore extends Versionabile {
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
+	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";
+	public static final String P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME = "HTTP_HEADER_AUTH_HEADER_VALUE";
+	
+	public static final String P_API_KEY_AUTH_API_KEY_NAME = "API_KEY_AUTH_API_KEY_NAME";
+	public static final String P_API_KEY_AUTH_API_ID_NAME = "API_KEY_AUTH_API_ID_NAME";
+	
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME = "OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME = "OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME = "OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME = "OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME";
 	
 	public enum EnumAuthType {
-		SSL, HTTPBasic, NONE
+		SSL, HTTPBasic, HTTP_HEADER, API_KEY, OAUTH2_CLIENT_CREDENTIALS, NONE
 	}
 	
 	public enum EnumSslType {
@@ -69,6 +79,14 @@ public class Connettore extends Versionabile {
 	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
 	private String subscriptionKeyValue;
+	private String httpHeaderName;
+	private String httpHeaderValue;
+	private String apiKey;
+	private String apiId;
+	private String oauth2ClientCredentialsClientId;
+	private String oauth2ClientCredentialsClientSecret;
+	private String oauth2ClientCredentialsUrlTokenEndpoint;
+	private String oauth2ClientCredentialsScope;
 	
 	public Connettore() {
 	}
@@ -91,6 +109,14 @@ public class Connettore extends Versionabile {
 		this.tipoSsl = src.tipoSsl;
 		this.url = src.url;
 		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
+		this.httpHeaderName = src.httpHeaderName;
+		this.httpHeaderValue = src.httpHeaderValue;
+		this.apiKey = src.apiKey;
+		this.apiId = src.apiId;
+		this.oauth2ClientCredentialsClientId = src.oauth2ClientCredentialsClientId;
+		this.oauth2ClientCredentialsClientSecret = src.oauth2ClientCredentialsClientSecret;
+		this.oauth2ClientCredentialsUrlTokenEndpoint = src.oauth2ClientCredentialsUrlTokenEndpoint;
+		this.oauth2ClientCredentialsScope = src.oauth2ClientCredentialsScope;
 	}
 		
 	public String getIdConnettore() {
@@ -197,5 +223,53 @@ public class Connettore extends Versionabile {
 	}
 	public void setSubscriptionKeyValue(String subscriptionKeyValue) {
 		this.subscriptionKeyValue = subscriptionKeyValue;
+	}
+	public String getHttpHeaderName() {
+		return httpHeaderName;
+	}
+	public void setHttpHeaderName(String httpHeaderName) {
+		this.httpHeaderName = httpHeaderName;
+	}
+	public String getHttpHeaderValue() {
+		return httpHeaderValue;
+	}
+	public void setHttpHeaderValue(String httpHeaderValue) {
+		this.httpHeaderValue = httpHeaderValue;
+	}
+	public String getApiKey() {
+		return apiKey;
+	}
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+	public String getApiId() {
+		return apiId;
+	}
+	public void setApiId(String apiId) {
+		this.apiId = apiId;
+	}
+	public String getOauth2ClientCredentialsClientId() {
+		return oauth2ClientCredentialsClientId;
+	}
+	public void setOauth2ClientCredentialsClientId(String oauth2ClientCredentialsClientId) {
+		this.oauth2ClientCredentialsClientId = oauth2ClientCredentialsClientId;
+	}
+	public String getOauth2ClientCredentialsClientSecret() {
+		return oauth2ClientCredentialsClientSecret;
+	}
+	public void setOauth2ClientCredentialsClientSecret(String oauth2ClientCredentialsClientSecret) {
+		this.oauth2ClientCredentialsClientSecret = oauth2ClientCredentialsClientSecret;
+	}
+	public String getOauth2ClientCredentialsUrlTokenEndpoint() {
+		return oauth2ClientCredentialsUrlTokenEndpoint;
+	}
+	public void setOauth2ClientCredentialsUrlTokenEndpoint(String oauth2ClientCredentialsUrlTokenEndpoint) {
+		this.oauth2ClientCredentialsUrlTokenEndpoint = oauth2ClientCredentialsUrlTokenEndpoint;
+	}
+	public String getOauth2ClientCredentialsScope() {
+		return oauth2ClientCredentialsScope;
+	}
+	public void setOauth2ClientCredentialsScope(String oauth2ClientCredentialsScope) {
+		this.oauth2ClientCredentialsScope = oauth2ClientCredentialsScope;
 	}
 }

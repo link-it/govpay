@@ -20,7 +20,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Connettore.EnumAuthType;
-import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
@@ -126,34 +125,9 @@ public class ConnettoreNotificaPagamentiConverter {
 				break;
 			case WEBSERVICE:
 				connettore.setTipoConnettore(TipoConnettore.WEB_SERVICE);
-				if(connector.getWebServiceAuth() != null) {
-					connettore.setHttpUser(connector.getWebServiceAuth().getUsername());
-					connettore.setHttpPassw(connector.getWebServiceAuth().getPassword());
-					connettore.setSslKsLocation(connector.getWebServiceAuth().getKsLocation());
-					connettore.setSslTsLocation(connector.getWebServiceAuth().getTsLocation());
-					connettore.setSslKsPasswd(connector.getWebServiceAuth().getKsPassword());
-					connettore.setSslTsPasswd(connector.getWebServiceAuth().getTsPassword());
-
-					if(connector.getWebServiceAuth().getTipo() != null) {
-						connettore.setTipoAutenticazione(EnumAuthType.SSL);
-						if(connector.getWebServiceAuth().getTipo() != null) {
-							switch (connector.getWebServiceAuth().getTipo()) {
-							case CLIENT:
-								connettore.setTipoSsl(EnumSslType.CLIENT);
-								break;
-							case SERVER:
-							default:
-								connettore.setTipoSsl(EnumSslType.SERVER);
-								break;
-							}
-						}
-					} else {
-						connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
-					}
-				} else {
-					connettore.setTipoAutenticazione(EnumAuthType.NONE);
-				}
-
+				
+				ConnettoriConverter.setAutenticazione(connettore, connector.getWebServiceAuth());
+				
 				connettore.setUrl(connector.getWebServiceUrl());
 				break;
 			}
@@ -230,7 +204,15 @@ public class ConnettoreNotificaPagamentiConverter {
 		.ksLocation(connettore.getSslKsLocation())
 		.ksPassword(connettore.getSslKsPasswd())
 		.tsLocation(connettore.getSslTsLocation())
-		.tsPassword(connettore.getSslTsPasswd());
+		.tsPassword(connettore.getSslTsPasswd())
+		.tsType(connettore.getSslTsType())
+		.sslType(connettore.getSslType())
+		.ksType(connettore.getSslKsType())
+		.ksPKeyPasswd(connettore.getSslPKeyPasswd())
+		.headerName(connettore.getHttpHeaderName())
+		.headerValue(connettore.getHttpHeaderValue())
+		.apiId(connettore.getApiId())
+		.apiKey(connettore.getApiKey());
 
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {

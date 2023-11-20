@@ -22,15 +22,6 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="row">
-        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_Voce.TIPI_PENDENZA" formControlName="tipiPendenza_ctrl" [compareWith]="_pendenzaCmpFn"
-                      (selectionChange)="_tipoChange($event)" multiple [required]="maggioliAbilitato">
-            <mat-option [value]="_all" [disabled]="_option.hasOption">{{_all.descrizione}}</mat-option>
-            <mat-option *ngFor="let item of _tipiPendenza" [disabled]="_option.hasAllOption" [value]="item">{{item.idTipoPendenza}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
       <div class="row mb-4" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.EMAIL" formControlName="emailIndirizzi_ctrl" autocomplete="off"
@@ -62,6 +53,13 @@
                  [required]="maggioliAbilitato">
         </mat-form-field>
         <p class="col-12 matcard-title pt-4 mb-3 color-gray regular-18">Servizio di notifica dei pagamenti</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_Voce.TIPI_PENDENZA" formControlName="tipiPendenza_ctrl" [compareWith]="_pendenzaCmpFn"
+                      (selectionChange)="_tipoChange($event)" multiple [required]="maggioliAbilitato">
+            <mat-option [value]="_all" [disabled]="_option.hasOption">{{_all.descrizione}}</mat-option>
+            <mat-option *ngFor="let item of _tipiPendenza" [disabled]="_option.hasAllOption" [value]="item">{{item.idTipoPendenza}}</mat-option>
+          </mat-select>
+        </mat-form-field>
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input #urlCtrl matInput placeholder="URL" formControlName="url_ctrl" autocomplete="off" [required]="maggioliAbilitato">
         </mat-form-field>

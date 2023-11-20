@@ -54,7 +54,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
      *
      */
     @Override
-	public Response findFlussiRendicontazione(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idFlusso) {
+	public Response findFlussiRendicontazione(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idFlusso, Boolean escludiObsoleti) {
     	this.buildContext();
     	Authentication user = this.getUser();
     	String methodName = "findFlussiRendicontazione";
@@ -103,6 +103,9 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			// Autorizzazione sui domini
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			findRendicontazioniDTO.setCodDomini(dominiAutorizzati);
+			if(escludiObsoleti != null && escludiObsoleti.booleanValue()) {
+				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);	
+			}
 //			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);

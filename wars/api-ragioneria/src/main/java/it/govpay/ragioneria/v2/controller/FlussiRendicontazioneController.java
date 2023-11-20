@@ -113,7 +113,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idFlusso) {
+    public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idFlusso, Boolean escludiObsoleti) {
     	String methodName = "findFlussiRendicontazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
@@ -160,7 +160,9 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			findRendicontazioniDTO.setUnitaOperative(uo);
-//			findRendicontazioniDTO.setObsoleto(false);
+			if(escludiObsoleti != null && escludiObsoleti.booleanValue()) {
+				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);	
+			}
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
 			findRendicontazioniDTO.setCodFlusso(idFlusso);

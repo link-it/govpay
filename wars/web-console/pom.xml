@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.4</version>
+		<version>3.7.5</version>
 	</parent>
 	<artifactId>web-console</artifactId>
 	<packaging>war</packaging>
@@ -39,7 +39,7 @@
 							<filtering>false</filtering>
 							<directory>src/main/angular/console/dist/</directory>
 							<excludes>
-								<exclude>assets/Config.govpay</exclude>
+								<exclude>assets/Config.js</exclude>
 								<exclude>index.html</exclude>
 							</excludes>
 						</webResource>

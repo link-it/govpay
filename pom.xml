@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.7.4</version>
+	<version>3.7.5</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -894,6 +894,12 @@
 		        <artifactId>cxf-rt-rs-extension-providers</artifactId>
 		        <version>${cxf.version}</version>
 		    </dependency>
+		    
+		    <dependency>
+		        <groupId>org.apache.cxf</groupId>
+		        <artifactId>cxf-rt-rs-security-oauth2</artifactId>
+		        <version>${cxf.version}</version>
+		    </dependency>
 
 			<!-- Jackson -->
 			<dependency>
@@ -1016,6 +1022,25 @@
                 <artifactId>spring-security-ldap</artifactId>
                 <version>${spring.security.version}</version>
             </dependency>
+            
+            <!-- Spring Security OAuth2 -->
+		    <dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-oauth2-jose</artifactId>
+			    <version>${spring.security.version}</version>
+			</dependency>
+			
+			 <dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-oauth2-client</artifactId>
+			    <version>${spring.security.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-oauth2-resource-server</artifactId>
+			    <version>${spring.security.version}</version>
+			</dependency>
             
             <!-- Spring Security Ldap Plugin -->
         	<dependency>

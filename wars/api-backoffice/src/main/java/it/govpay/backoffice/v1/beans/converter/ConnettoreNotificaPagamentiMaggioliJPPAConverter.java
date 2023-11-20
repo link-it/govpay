@@ -18,7 +18,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Connettore.EnumAuthType;
-import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
@@ -118,37 +117,8 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 				connettore.setEmailSubject(connector.getEmailSubject());
 				connettore.setEmailAllegato(connector.getEmailAllegato());
 				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
-				if(connector.getAuth() != null) {
-					connettore.setHttpUser(connector.getAuth().getUsername());
-					connettore.setHttpPassw(connector.getAuth().getPassword());
-					connettore.setSslKsLocation(connector.getAuth().getKsLocation());
-					connettore.setSslTsLocation(connector.getAuth().getTsLocation());
-					connettore.setSslKsPasswd(connector.getAuth().getKsPassword());
-					connettore.setSslTsPasswd(connector.getAuth().getTsPassword());
-					connettore.setSslTsType(connector.getAuth().getTsType());
-					connettore.setSslType(connector.getAuth().getSslType());
-					connettore.setSslKsType(connector.getAuth().getKsType());
-					connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
-
-					if(connector.getAuth().getTipo() != null) {
-						connettore.setTipoAutenticazione(EnumAuthType.SSL);
-						if(connector.getAuth().getTipo() != null) {
-							switch (connector.getAuth().getTipo()) {
-							case CLIENT:
-								connettore.setTipoSsl(EnumSslType.CLIENT);
-								break;
-							case SERVER:
-							default:
-								connettore.setTipoSsl(EnumSslType.SERVER);
-								break;
-							}
-						}
-					} else {
-						connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
-					}
-				} else {
-					connettore.setTipoAutenticazione(EnumAuthType.NONE);
-				}
+				
+				ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
 
 				connettore.setUrl(connector.getUrl());
 				if(connector.getVersioneApi() != null)

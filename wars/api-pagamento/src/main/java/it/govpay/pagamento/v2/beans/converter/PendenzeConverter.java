@@ -23,6 +23,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -50,11 +51,11 @@ import it.govpay.pagamento.v2.beans.VocePendenza.TipoBolloEnum;
 
 public class PendenzeConverter {
 	
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, UnsupportedEncodingException, IOException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, UnsupportedEncodingException, IOException, ValidationException {
 		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts(),user, dto.getAllegati());
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user, List<Allegato> allegati) throws ServiceException, UnsupportedEncodingException, IOException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user, List<Allegato> allegati) throws ServiceException, UnsupportedEncodingException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 		
@@ -77,7 +78,6 @@ public class PendenzeConverter {
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setIuvPagamento(versamento.getIuvPagamento());
 		rsModel.setIuvAvviso(versamento.getIuvVersamento());
-//		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
 		if(versamento.getDatiAllegati() != null)
@@ -126,7 +126,7 @@ public class PendenzeConverter {
 		
 		List<PagamentoIndex> listaPagamentoIndex = new ArrayList<>();
 		
-		if(pagamenti != null && pagamenti.size() > 0) {
+		if(pagamenti != null && !pagamenti.isEmpty()) {
 			for (PagamentoPortale pagamento : pagamenti) {
 				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModelIndex(pagamento,user));
 			}
@@ -134,7 +134,7 @@ public class PendenzeConverter {
 		rsModel.setPagamenti(listaPagamentoIndex);
 		
 		List<RppIndex> rpps = new ArrayList<>();
-		if(rpts != null && rpts.size() > 0) {
+		if(rpts != null && !rpts.isEmpty()) {
 			for (Rpt rpt : rpts) {
 				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper), user));
 			} 
@@ -202,7 +202,6 @@ public class PendenzeConverter {
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setIuvPagamento(versamento.getIuvPagamento());
 		rsModel.setIuvAvviso(versamento.getIuvVersamento());
-//		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
 		if(versamento.getDatiAllegati() != null)
@@ -411,7 +410,6 @@ public class PendenzeConverter {
 		rsModel.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
-//		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
 		if(versamento.getDatiAllegati() != null)
@@ -459,19 +457,9 @@ public class PendenzeConverter {
 		
 		List<PagamentoIndex> listaPagamentoIndex = new ArrayList<>();
 		
-//		if(pagamenti != null && pagamenti.size() > 0) {
-//			for (PagamentoPortale pagamento : pagamenti) {
-//				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModelIndex(pagamento,user));
-//			}
-//		}
 		rsModel.setPagamenti(listaPagamentoIndex);
 		
 		List<RppIndex> rpps = new ArrayList<>();
-//		if(rpts != null && rpts.size() > 0) {
-//			for (Rpt rpt : rpts) {
-//				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(configWrapper), user));
-//			} 
-//		}
 		rsModel.setRpp(rpps); 
 		
 		if(versamento.getTipo() != null) {
@@ -496,7 +484,7 @@ public class PendenzeConverter {
 			dto = new it.govpay.core.beans.tracciati.ProprietaPendenza();
 			
 			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<it.govpay.core.beans.tracciati.VoceDescrizioneImporto>();
+				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<>();
 				for (VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
 					it.govpay.core.beans.tracciati.VoceDescrizioneImporto voce = new it.govpay.core.beans.tracciati.VoceDescrizioneImporto();
 					
@@ -542,7 +530,7 @@ public class PendenzeConverter {
 			rsModel = new ProprietaPendenza();
 			
 			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<VoceDescrizioneImporto>();
+				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<>();
 				for (it.govpay.core.beans.tracciati.VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
 					VoceDescrizioneImporto voce = new VoceDescrizioneImporto();
 					
@@ -588,7 +576,7 @@ public class PendenzeConverter {
 	public static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) { 
 		List<AllegatoPendenza> rsModel = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 			
 			for (Allegato allegato : allegati) {

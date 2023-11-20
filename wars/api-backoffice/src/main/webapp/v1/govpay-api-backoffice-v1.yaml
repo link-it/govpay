@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.34.0"
+  version: "1.38.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2427,7 +2427,7 @@ paths:
         - $ref: '#/components/parameters/idPendenza'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
-        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/idTipiPendenza'
         - $ref: '#/components/parameters/direzione'
         - $ref: '#/components/parameters/divisione'
         - $ref: '#/components/parameters/iuv'
@@ -3250,6 +3250,7 @@ paths:
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/escludiObsoleti'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -3420,6 +3421,7 @@ paths:
         - $ref: '#/components/parameters/divisioni'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/escludiObsoletiDefaultTrue'
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -4125,6 +4127,22 @@ components:
         type: array
         items:
           type: string
+    escludiObsoleti:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: false
+    escludiObsoletiDefaultTrue:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: true
     esitoEvento:
       name: esito
       in: query
@@ -4253,6 +4271,17 @@ components:
       schema:
         type: string
         example: IMU
+    idTipiPendenza:
+      in: query
+      name: idTipoPendenza
+      description: >-
+        Filtra per uno o piu' identificativi di tipologia di pendenza
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          example: IMU
     idUnita:
       in: query
       name: idUnita
@@ -7876,10 +7905,70 @@ components:
           $ref: '#/components/schemas/keystoreType'
         sslType:
           $ref: '#/components/schemas/sslConfigType'
+    tipoAutenticazioneHeader:
+      type: object
+      required:
+        - headerName
+        - headerValue
+      properties:
+        headerName:
+          type: string
+          example: X-GOVPAY-AUTH
+          maxLength: 255
+        headerValue:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+    tipoAutenticazioneApiKey:
+      type: object
+      required:
+        - apiId
+        - apiKey
+      properties:
+        apiId:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: valore da inserire all'interno dell'header previsto per l'API-ID
+        apiKey:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: valore da inserire all'interno dell'header previsto per l'API-KEY
+    tipoAutenticazioneOauth2ClientCredentials:
+      type: object
+      required:
+        - clientId
+        - clientSecret
+        - urlTokenEndpoint
+      properties:
+        clientId:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: Identificativo dell'applicazione da inviare all'authorization server
+        clientSecret:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: Password assegnata all'applicazione da inviare all'authorization server
+        urlTokenEndpoint:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: URL del server dove fare la chiamata di richiesta del token
+        scope:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: Livello di accesso richiesto per l'operazione da eseguire
     tipoAutenticazione:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
+        - $ref: '#/components/schemas/tipoAutenticazioneHeader'
+        - $ref: '#/components/schemas/tipoAutenticazioneApiKey'
+        - $ref: '#/components/schemas/tipoAutenticazioneOauth2ClientCredentials'
     connector:
       type: object
       required:
@@ -8901,8 +8990,6 @@ components:
         descrizione:
           type: string
           description: testo descrittivo
-          items:
-            $ref: '#/components/schemas/dominioIndex'
         stato:
           type: string
           description: stato dell'operazione (OK/KO/WARN)

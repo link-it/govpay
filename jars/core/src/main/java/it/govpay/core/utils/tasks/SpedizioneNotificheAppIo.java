@@ -12,7 +12,7 @@ public class SpedizioneNotificheAppIo extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		if(GovpayConfig.getInstance().isBatchOn()) {
+		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizioneNotificheAppIO()) {
 			it.govpay.core.business.Operazioni.spedizioneNotificheAppIO(ctx);
 		}
 	}

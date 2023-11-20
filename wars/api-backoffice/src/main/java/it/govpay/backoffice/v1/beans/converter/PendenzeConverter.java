@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -49,6 +50,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
@@ -61,7 +63,7 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 public class PendenzeConverter {
 
 
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, java.io.IOException, ValidationException, it.govpay.core.exceptions.IOException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, ValidationException, it.govpay.core.exceptions.IOException {
 		return toRsModel(dto.getVersamento(),
 				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(),
 				dto.getPagamenti(), dto.getRpts(), true, dto.getAllegati());
@@ -561,7 +563,6 @@ public class PendenzeConverter {
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 
@@ -639,7 +640,6 @@ public class PendenzeConverter {
 		versamento.setCodVersamentoEnte(idPendenza);
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 
@@ -766,9 +766,8 @@ public class PendenzeConverter {
 	}
 
 	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -779,7 +778,18 @@ public class PendenzeConverter {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			if(anagraficaRest.getTipo() != null) {
+				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			}
+		}
+		
+		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+		// in questo caso impostiamo i valori di default per gli identificativi
+		if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
+			anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
+		}
+		if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
+			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
 		}
 
 		return anagraficaCommons;

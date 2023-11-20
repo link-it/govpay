@@ -298,6 +298,25 @@ import it.govpay.core.utils.validator.IValidable;
 	public void validate() throws ValidationException {
 			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 			
+			if(this.versante) {
+				this.validateVersante(soggettoPagatoreValidator);
+				return;
+			}
+			
+			soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);
+			soggettoPagatoreValidator.validaIdentificativoNonObbligatorio("identificativo", this.getIdentificativo());
+			soggettoPagatoreValidator.validaAnagraficaNonObbligatoria("anagrafica", this.getAnagrafica());
+			soggettoPagatoreValidator.validaIndirizzo("indirizzo", this.getIndirizzo());
+			soggettoPagatoreValidator.validaCivico("civico", this.getCivico());
+			soggettoPagatoreValidator.validaCap("cap", this.getCap());
+			soggettoPagatoreValidator.validaLocalita("localita", this.getLocalita());
+			soggettoPagatoreValidator.validaProvincia("provincia", this.getProvincia());
+			soggettoPagatoreValidator.validaNazione("nazione", this.getNazione());
+			soggettoPagatoreValidator.validaEmail("email", this.getEmail());
+			soggettoPagatoreValidator.validaCellulare("cellulare", this.getCellulare());
+	 }
+	 
+	public void validateVersante(SoggettoPagatoreValidator soggettoPagatoreValidator) throws ValidationException {
 			soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);
 			soggettoPagatoreValidator.validaIdentificativo("identificativo", this.getIdentificativo());
 			soggettoPagatoreValidator.validaAnagrafica("anagrafica", this.getAnagrafica());
@@ -311,6 +330,11 @@ import it.govpay.core.utils.validator.IValidable;
 			soggettoPagatoreValidator.validaCellulare("cellulare", this.getCellulare());
 	 }
 
+	private boolean versante = false;
+	
+	public void setVersante(boolean versante) {
+		this.versante = versante;
+	}
  }
 
 

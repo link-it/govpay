@@ -79,13 +79,13 @@ case $key in
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
     echo "usage:"
-    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap). Default: basic,ssl"
-    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap). Default: basic,ssl"
-    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl,ldap). Default: basic,basic-gp,ssl,hdrcert"
-    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl,ldap). Default: basic,basic-gp,ssl,hdrcert"
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap,apikey,oauth2). Default: basic,ssl"
+    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap,apikey). Default: basic,ssl"
+    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl,ldap,apikey). Default: basic,basic-gp,ssl,hdrcert"
+    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl,ldap,apikey). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
-    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl,hdrcert,header,ldap). Default: ssl,hdrcert"
-    echo "   -jppa <args> : autenticazione da abilitare sulle api di jppapdp (basic,basic-gp,ssl,ldap). Default: ssl,hdrcert"
+    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl,hdrcert,header,ldap,apikey). Default: ssl,hdrcert"
+    echo "   -jppa <args> : autenticazione da abilitare sulle api di jppapdp (basic,basic-gp,ssl,ldap,apikey). Default: ssl,hdrcert"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
     exit 2;
     ;;
@@ -103,8 +103,10 @@ BACKOFFICE_BASIC_LDAP=false
 [[ $BACKOFFICE == *"hdrcert"* ]] && BACKOFFICE_SSL_HEADER=true || BACKOFFICE_SSL_HEADER=false
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
 [[ $BACKOFFICE == *"spid"* ]] && BACKOFFICE_SPID=true || BACKOFFICE_SPID=false
-[[ $PAGAMENTI == *"public"* ]] && BACKOFFICE_PUBLIC=true || BACKOFFICE_PUBLIC=false
+[[ $BACKOFFICE == *"public"* ]] && BACKOFFICE_PUBLIC=true || BACKOFFICE_PUBLIC=false
 [[ $BACKOFFICE == *"session"* ]] && BACKOFFICE_SESSION=true || BACKOFFICE_SESSION=false
+[[ $BACKOFFICE == *"apikey"* ]] && BACKOFFICE_API_KEY=true || BACKOFFICE_API_KEY=false
+[[ $BACKOFFICE == *"oauth2"* ]] && BACKOFFICE_OAUTH2_PKCE_KEY=true || BACKOFFICE_OAUTH2_PKCE_KEY=false
 
 PAGAMENTI_BASIC_WF=false
 PAGAMENTI_BASIC_GP=false
@@ -118,6 +120,7 @@ PAGAMENTI_BASIC_LDAP=false
 [[ $PAGAMENTI == *"spid"* ]] && PAGAMENTI_SPID=true || PAGAMENTI_SPID=false
 [[ $PAGAMENTI == *"public"* ]] && PAGAMENTI_PUBLIC=true || PAGAMENTI_PUBLIC=false
 [[ $PAGAMENTI == *"session"* ]] && PAGAMENTI_SESSION=true || PAGAMENTI_SESSION=false
+[[ $PAGAMENTI == *"apikey"* ]] && PAGAMENTI_API_KEY=true || PAGAMENTI_API_KEY=false
 
 PENDENZE_BASIC_WF=false
 PENDENZE_BASIC_GP=false
@@ -128,6 +131,7 @@ PENDENZE_BASIC_LDAP=false
 [[ $PENDENZE == *"ssl"* ]] && PENDENZE_SSL=true || PENDENZE_SSL=false
 [[ $PENDENZE == *"hdrcert"* ]] && PENDENZE_SSL_HEADER=true || PENDENZE_SSL_HEADER=false
 [[ $PENDENZE == *"header"* ]] && PENDENZE_HEADER=true || PENDENZE_HEADER=false
+[[ $PENDENZE == *"apikey"* ]] && PENDENZE_API_KEY=true || PENDENZE_API_KEY=false
 
 RAGIONERIA_BASIC_WF=false
 RAGIONERIA_BASIC_GP=false
@@ -138,16 +142,19 @@ RAGIONERIA_BASIC_LDAP=false
 [[ $RAGIONERIA == *"ssl"* ]] && RAGIONERIA_SSL=true || RAGIONERIA_SSL=false
 [[ $RAGIONERIA == *"hdrcert"* ]] && RAGIONERIA_SSL_HEADER=true || RAGIONERIA_SSL_HEADER=false
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
+[[ $RAGIONERIA == *"apikey"* ]] && RAGIONERIA_API_KEY=true || RAGIONERIA_API_KEY=false
 
 [[ $USER == *"spid"* ]] && UTENTE_SPID=true || UTENTE_SPID=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 [[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
 [[ $PAGOPA == *"ldap"* ]] && PAGOPA_LDAP=true || PAGOPA_LDAP=false
+[[ $PAGOPA == *"apikey"* ]] && PAGOPA_API_KEY=true || PAGOPA_API_KEY=false
 
 [[ $JPPAPDP == *"basic"* ]] && JPPAPDP_BASIC=true || JPPAPDP_BASIC=false
 [[ $JPPAPDP == *"hdrcert"* ]] && JPPAPDP_SSL_HEADER=true || JPPAPDP_SSL_HEADER=false
 [[ $JPPAPDP == *"ldap"* ]] && JPPAPDP_SSL_LDAP=true || JPPAPDP_SSL_LDAP=false
+[[ $JPPAPDP == *"apikey"* ]] && JPPAPDP_API_KEY=true || JPPAPDP_API_KEY=false
 
 DEFAULT_BASIC=false
 DEFAULT_SSL=false
@@ -246,6 +253,20 @@ then
   sed -i -e "s#PUBLIC_END#<!-- PUBLIC_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Backoffice abilitazione accesso in forma anonima completata.";
 fi
+if $BACKOFFICE_API_KEY
+then
+  echo "API-Backoffice abilitazione ApiKey auth...";
+  sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione ApiKey auth completata.";
+fi
+if $BACKOFFICE_OAUTH2_PKCE_KEY
+then
+  echo "API-Backoffice abilitazione OAuth2 auth...";
+  sed -i -e "s#OAUTH2_PKCE_START#OAUTH2_PKCE_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#OAUTH2_PKCE_END#<!-- OAUTH2_PKCE_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione OAuth2 auth completata.";
+fi
 if $DEFAULT_BASIC
 then
   echo "API-Backoffice abilitazione default HTTP BASIC ...";
@@ -317,6 +338,13 @@ then
   sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Pendenze abilitazione HTTP Header-auth  completata.";
+fi
+if $PENDENZE_API_KEY
+then
+  echo "API-Pendenze abilitazione ApiKey auth...";
+  sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pendenze abilitazione ApiKey auth completata.";
 fi
 if $DEFAULT_BASIC
 then
@@ -390,6 +418,15 @@ then
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Ragioneria abilitazione HTTP Header-auth  completata.";
 fi
+
+if $RAGIONERIA_API_KEY
+then
+  echo "API-Ragioneria abilitazione ApiKey auth...";
+  sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Ragioneria abilitazione ApiKey auth completata.";
+fi
+
 if $DEFAULT_BASIC
 then
   echo "API-Ragioneria abilitazione default HTTP BASIC ...";
@@ -482,6 +519,13 @@ then
   sed -i -e "s#PUBLIC_END#<!-- PUBLIC_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Pagamento abilitazione pagamenti in forma anonima completata.";
 fi
+if $PAGAMENTI_API_KEY
+then
+  echo "API-Pagamento abilitazione ApiKey auth...";
+  sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pagamento abilitazione ApiKey auth completata.";
+fi
 if $DEFAULT_BASIC
 then
   echo "API-Pagamento abilitazione default HTTP BASIC ...";
@@ -573,13 +617,13 @@ then
   API_PREFIX="api-pagopa-"
   unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 
-  # spengo modalita ssl
-  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-
   # accendo modalita hdrcert
   sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 
   # ripristino file
   zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
@@ -588,6 +632,30 @@ then
   rm -rf $APP_CONTEXT_BASE_DIR
 
   echo "API-PagoPA abilitazione hdrcert completata.";
+fi
+
+if $PAGOPA_API_KEY
+then
+  echo "API-PagoPA abilitazione api key...";
+
+  API_PREFIX="api-pagopa-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo modalita api key
+  sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-PagoPA abilitazione api key completata.";
 fi
 
 # API-Maggioli JPPA
@@ -662,6 +730,30 @@ then
   rm -rf $APP_CONTEXT_BASE_DIR
 
   echo "API-Maggioli JPPA abilitazione hdrcert completata.";
+fi
+
+if $JPPAPDP_API_KEY
+then
+  echo "API-Maggioli JPPA abilitazione api key...";
+
+  API_PREFIX="api-jppapdp-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo modalita api key
+  sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Maggioli JPPA abilitazione api key completata.";
 fi
 
 

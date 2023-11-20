@@ -68,6 +68,13 @@ Examples:
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } |
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} } | 
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} } |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { headerName: 'X-GOVPAY-AUTH', headerValue: 'govpay' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { headerName: 'X-GOVPAY-AUTH', headerValue: 'govpay' } } |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { apiId: 'X-GOVPAY-AUTH', apiKey: 'govpay' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { apiId: 'X-GOVPAY-AUTH', apiKey: 'govpay' } } |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token', scope: 'read' } } |
 | abilitato | false | 
 | abilitato | true |
 | apiPagamenti | false | 

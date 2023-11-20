@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.10.0"
+  version: "2.11.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -43,6 +43,7 @@ paths:
         - $ref: '#/components/parameters/maxRisultati'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/idFlusso'
+        - $ref: '#/components/parameters/escludiObsoleti'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -452,6 +453,14 @@ components:
       type: http
       scheme: basic
   parameters:
+    escludiObsoleti:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: false
     idDominio:
       name: idDominio
       in: query

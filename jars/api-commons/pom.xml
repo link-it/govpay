@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.4</version>
+		<version>3.7.5</version>
 	</parent>
 
 	<artifactId>api-commons</artifactId>
@@ -137,7 +137,7 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-features-logging</artifactId>
 		</dependency>
-
+		
 	</dependencies>
 
 	<build>

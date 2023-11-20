@@ -12,7 +12,7 @@ public class GestionePromemoria extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		if(GovpayConfig.getInstance().isBatchOn()) {
+		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchGestionePromemoria()) {
 			it.govpay.core.business.Operazioni.gestionePromemoria(ctx);
 		}
 	}

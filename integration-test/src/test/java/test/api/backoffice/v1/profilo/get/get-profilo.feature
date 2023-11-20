@@ -76,4 +76,54 @@ And match each response.tipiPendenza ==
 }
 """
 
+Scenario: Acquisizione del profilo autenticato apikey
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'apikey'})
+
+Given url backofficeBaseurl
+And path '/profilo'
+And header X-APP-ID = idA2A
+And header X-API-KEY = pwdA2A
+When method get
+Then status 200
+And match response ==
+"""
+{
+   "nome":"IDA2A01",
+   "domini": "#[1]",
+   "tipiPendenza":"#[1]",
+   "acl":"#[]",
+   "autenticazione":"API_KEY"
+}
+"""
+# And match response.domini[*].idDominio contains ['12345678901','12345678902']
+And match each response.domini ==
+"""
+{
+         "idDominio":"#string",
+         "ragioneSociale":"#string"
+}
+"""
+
+And match each response.tipiPendenza ==
+"""
+{
+         "idTipoPendenza":"#string",
+         "descrizione":"#string",
+         "pagaTerzi": "#ignore",
+         "abilitato": "#ignore"
+}
+"""
+
+Scenario: Acquisizione del profilo autenticato apikey non autorizzato
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'apikey'})
+
+Given url backofficeBaseurl
+And path '/profilo'
+And header X-APP-ID = idA2A
+And header X-API-KEY = pwdA2A2
+When method get
+Then status 401
+
 

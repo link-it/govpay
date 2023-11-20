@@ -10,6 +10,9 @@ Background:
 * def intermediarioBasicAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioBasicAuth.json')
 * def intermediarioClientAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioClientAuth.json')
 * def intermediarioServerAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioServerAuth.json')
+* def intermediarioHeaderAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioHeaderAuth.json')
+* def intermediarioApiKeyAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioApiKeyAuth.json')
+* def intermediarioOauth2ClientCredentialsAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioOauth2ClientCredentialsAuth.json')
 * def loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non neque vestibulum, porta eros quis, fringilla enim. Nam sit amet justo sagittis, pretium urna et, convallis nisl. Proin fringilla consequat ex quis pharetra. Nam laoreet dignissim leo. Ut pulvinar odio et egestas placerat. Quisque tincidunt egestas orci, feugiat lobortis nisi tempor id. Donec aliquet sed massa at congue. Sed dictum, elit id molestie ornare, nibh augue facilisis ex, in molestie metus enim finibus arcu. Donec non elit dictum, dignissim dui sed, facilisis enim. Suspendisse nec cursus nisi. Ut turpis justo, fermentum vitae odio et, hendrerit sodales tortor. Aliquam varius facilisis nulla vitae hendrerit. In cursus et lacus vel consectetur.'
 
 Scenario Outline: <field> non valida
@@ -116,4 +119,73 @@ Examples:
 | sslType | intermediarioServerAuth.servizioPagoPa.auth.sslType | 'XXX' |  'sslType' |
 | subscriptionKey | intermediarioServerAuth.servizioPagoPa.subscriptionKey | '' |  'subscriptionKey' |
 | subscriptionKey | intermediarioServerAuth.servizioPagoPa.subscriptionKey | loremIpsum |  'subscriptionKey' |
+
+
+Scenario Outline: <field> non valida
+
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioHeaderAuth
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| headerName | intermediarioHeaderAuth.servizioPagoPa.auth.headerName | null |  'headerName' |
+| headerValue | intermediarioHeaderAuth.servizioPagoPa.auth.headerValue | null |  'headerValue' |
+| subscriptionKey | intermediarioHeaderAuth.servizioPagoPa.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioHeaderAuth.servizioPagoPa.subscriptionKey | loremIpsum |  'subscriptionKey' |
+| denominazione | intermediarioHeaderAuth.denominazione | null |  'denominazione' |
+
+Scenario Outline: <field> non valida
+
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioApiKeyAuth
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| headerName | intermediarioApiKeyAuth.servizioPagoPa.auth.apiId | null |  'apiId' |
+| headerValue | intermediarioApiKeyAuth.servizioPagoPa.auth.apiKey | null |  'apiKey' |
+| subscriptionKey | intermediarioApiKeyAuth.servizioPagoPa.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioApiKeyAuth.servizioPagoPa.subscriptionKey | loremIpsum |  'subscriptionKey' |
+| denominazione | intermediarioApiKeyAuth.denominazione | null |  'denominazione' |
+
+Scenario Outline: <field> non valida
+
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioOauth2ClientCredentialsAuth
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| clientId | intermediarioOauth2ClientCredentialsAuth.servizioPagoPa.auth.clientId | null |  'clientId' |
+| clientSecret | intermediarioOauth2ClientCredentialsAuth.servizioPagoPa.auth.clientSecret | null |  'clientSecret' |
+| urlTokenEndpoint | intermediarioOauth2ClientCredentialsAuth.servizioPagoPa.auth.urlTokenEndpoint | null |  'urlTokenEndpoint' |
+| subscriptionKey | intermediarioOauth2ClientCredentialsAuth.servizioPagoPa.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioOauth2ClientCredentialsAuth.servizioPagoPa.subscriptionKey | loremIpsum |  'subscriptionKey' |
+| denominazione | intermediarioOauth2ClientCredentialsAuth.denominazione | null |  'denominazione' |
+
 
