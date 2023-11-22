@@ -188,6 +188,7 @@ export class Voce {
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
   public static MODALITA_CONNETTORE: string = 'Modalità consegna';
   public static MODELLO_PAGAMENTO: string = 'Modello pagamento';
+  public static MODELLO_UNICO: string = 'Modello unico';
   public static MODIFICA_DOMINIO: string = 'Modifica dominio';
   public static MODIFICA_ENTE_CREDITORE: string = 'Modifica Ente creditore';
   public static MY_BANK: string = 'My Bank';
