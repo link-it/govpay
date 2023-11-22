@@ -391,10 +391,28 @@ export class UtilService {
     '12': 'Agenzie Fiscali'
   };
 
-  // VERSIONI STATZIONI
+  // VERSIONI STAZIONI
   public static VERSIONI_STAZIONE: any = {
     V1: 'V1',
     V2: 'V2'
+  };
+  
+  // MODELLO UNICO DA VERSIONE STAZIONE
+  public static MODELLO_UNICO_DA_VERSIONE: any = {
+    'V2': 'Si',
+    'V1': 'No'
+  };
+  
+  // MODELLO UNICO BOOLEAN DA VERSIONE STAZIONE
+  public static MODELLO_UNICO_BOOLEAN_DA_VERSIONE: any = {
+    'V2': true,
+    'V1': false
+  };
+  
+  // VERSIONE STAZIONE DA MODELLO UNICO BOOLEAN
+  public static VERSIONE_DA_MODELLO_UNICO_BOOLEAN: any = {
+    true: 'V2',
+    false: 'V1'
   };
 
   public static COOKIE_RIFIUTATI: string = 'GovPay_Dashboard_Rifiutati';
