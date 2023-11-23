@@ -5218,13 +5218,13 @@ components:
     stazionePost:
       type: object
       required:
-        - password
         - abilitato
         - versione
       properties:
         password:
           type: string
-          description: Ragione sociale dell'intermediario PagoPA
+          description: >-
+                  Password per la stazione, non necessaria nel modello unico. Resta obbligatoria per la versione = V1.
           example: 123456
         abilitato:
           type: boolean
