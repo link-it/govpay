@@ -49,3 +49,28 @@ When method put
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+
+Scenario Outline: Stazione V2 <field> non valida
+
+* set stazione.versione = 'V2'
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario, 'stazioni', idStazione
+And headers basicAutenticationHeader
+And request stazione
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| password | stazione.password | loremIpsum |  'password' |
+| abilitato | stazione.abilitato | null |  'abilitato' |
+| abilitato | stazione.abilitato | 'zzz' |  'abilitato' |
+| versione | stazione.versione | null |  'versione' |
+| versione | stazione.versione | loremIpsum |  'versione' |
+| versione | stazione.versione | 'zzz' |  'versione' |
+| versione | stazione.versione | '' |  'versione' |
