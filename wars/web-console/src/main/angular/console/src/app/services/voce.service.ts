@@ -120,6 +120,7 @@ export class Voce {
   public static HEADER_NAME: string = 'Nome Header';
   public static HEADER_VALUE: string = 'Valore';
   public static HTTP_HEADER: string = 'HTTP Header';
+  public static PAYLOAD: string = 'Payload';
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
@@ -310,6 +311,7 @@ export class Voce {
   public static URL: string = 'URL';
   public static URL_BACKEND_IO: string = 'URL backend IO';
   public static USERNAME: string = 'Username';
+  public static UTENTE: string = 'Utente';
 
   public static VALIDAZIONE: string = 'Validazione';
   public static VALIDAZIONE_DATI: string = 'Validazione inserimento dati';
