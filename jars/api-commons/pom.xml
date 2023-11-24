@@ -137,7 +137,7 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-features-logging</artifactId>
 		</dependency>
-
+		
 	</dependencies>
 
 	<build>

@@ -2,11 +2,15 @@
 <b:beans xmlns="http://www.springframework.org/schema/security"
         xmlns:b="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
         xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/security
-        http://www.springframework.org/schema/security/spring-security.xsd">
+        http://www.springframework.org/schema/security/spring-security.xsd
+ 		http://www.springframework.org/schema/security/oauth2 
+ 		http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+          
 
         <global-method-security
                 secured-annotations="enabled">
@@ -421,6 +425,43 @@
         </http>
 
         PUBLIC_END -->
+        
+        
+        <!-- OAUTH2_PKCE_START
+        
+        <b:bean id="oauth2AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.oauth2.server.entrypoint.BearerTokenAuthenticationEntryPoint" />
+        
+        <b:bean id="logoutSuccessHandlerOAuth2" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        
+        <b:bean id="userDetailServiceUtenzeOAuth2" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_BACKOFFICE" />
+        	<b:property name="authType" value="OAUTH2" />
+        </b:bean>
+        
+        <b:bean id="govpayJwtAuthenticationConverter" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtAuthenticationConverter">
+        	<b:property name="userDetailService" ref="userDetailServiceUtenzeOAuth2"/>
+        	<b:property name="principalClaimName" value="NOME_CLAIM_PRINCIPAL" />
+        </b:bean>
+        
+        <http auto-config="false" pattern="/rs/oauth2/v1/info" security="none"/>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/oauth2/v1/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/oauth2/v1/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <logout logout-url="/rs/oauth2/v1/logout" success-handler-ref="logoutSuccessHandlerOAuth2" delete-cookies="JSESSIONID" invalidate-session="true" />
+	       		<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
+	       			<jwt jwk-set-uri="JWK_SET_URI" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       		</oauth2-resource-server>
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        OAUTH2_PKCE_END -->
+        
 
         <!-- DEFAULT_SSL_START
 
@@ -509,7 +550,7 @@
         </http>
 
         DEFAULT_BASIC_WILDFLY_PROVIDER_END -->
-
+        
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
 
@@ -526,7 +567,6 @@
                 <intercept-url pattern="/*.js.map" access="permitAll"/>
 
                 <intercept-url pattern="/**" access="permitAll" method="OPTIONS"/>
-
                 <intercept-url pattern="/**" access="denyAll" />
 
                 <headers>
