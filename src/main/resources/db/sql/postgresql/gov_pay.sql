@@ -789,7 +789,7 @@ CREATE TABLE rpt
 	cod_canale VARCHAR(35),
 	cod_psp VARCHAR(35),
 	cod_intermediario_psp VARCHAR(35),
-	tipo_versamento VARCHAR(4),
+	tipo_versamento VARCHAR(35),
 	tipo_identificativo_attestante VARCHAR(1),
 	identificativo_attestante VARCHAR(35),
 	denominazione_attestante VARCHAR(70),

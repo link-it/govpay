@@ -274,7 +274,7 @@ public class RrUtils extends NdpValidationUtils {
 		datiPagoPA.setCodStazione(stazione.getCodStazione());
 		datiPagoPA.setErogatore(it.govpay.model.Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
-		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento().getCodifica());
+		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento().getCodifica()+"");
 		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
 		datiPagoPA.setCodDominio(rpt.getCodDominio());

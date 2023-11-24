@@ -107,7 +107,7 @@ public class CtPaymentPABuilder {
 				iuv,
 				ccp,
 				numeroavviso,
-				TipoVersamento.ATTIVATO_PRESSO_PSP,
+				null,
 				ModelloPagamento.ATTIVATO_PRESSO_PSP,
 				StAutenticazioneSoggetto.N_A.value(),
 				null
@@ -142,7 +142,7 @@ public class CtPaymentPABuilder {
 		rpt.setDataMsgRichiesta(new Date());
 		rpt.setDescrizioneStato(null);
 		rpt.setId(null);
-		rpt.setTipoVersamento(tipoVersamento);
+		rpt.setTipoVersamento(tipoVersamento != null ? tipoVersamento.getCodifica() : null);
 		rpt.setIdVersamento(versamento.getId());
 		rpt.setVersamento(versamento);
 		rpt.setIuv(iuv);

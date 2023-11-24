@@ -313,6 +313,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			rpt.setCodPsp(idPSP);
 			rpt.setCodCanale(idChannel);
 			
+			// aggiorno rpt con il tipoversamento ricevuto in risposta
+			rpt.setTipoVersamento(ctReceipt.getPaymentMethod());
+			
 			// Aggiorno l'RPT con i dati dell'RT
 			rptBD.updateRpt(rpt.getId(), rpt);
 
@@ -647,6 +650,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			rpt.setDenominazioneAttestante(pspCompanyName);
 			rpt.setCodPsp(idPSP);
 			rpt.setCodCanale(idChannel);
+			
+			// aggiorno rpt con il tipoversamento ricevuto in risposta
+			rpt.setTipoVersamento(ctReceipt.getPaymentMethod());
 			
 			// Aggiorno l'RPT con i dati dell'RT
 			rptBD.updateRpt(rpt.getId(), rpt);

@@ -208,7 +208,7 @@ public class Rpt extends BasicModel{
 	private String codCanale;
 	private String codPsp;
 	private String codIntermediarioPsp;
-	private TipoVersamento tipoVersamento;
+	private String tipoVersamento;
 	private ModelloPagamento modelloPagamento;
 	private String codMsgRicevuta;
 	private Date dataMsgRicevuta;
@@ -445,10 +445,10 @@ public class Rpt extends BasicModel{
 	public void setCodIntermediarioPsp(String codIntermediarioPsp) {
 		this.codIntermediarioPsp = codIntermediarioPsp;
 	}
-	public TipoVersamento getTipoVersamento() {
+	public String getTipoVersamento() {
 		return this.tipoVersamento;
 	}
-	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public ModelloPagamento getModelloPagamento() {

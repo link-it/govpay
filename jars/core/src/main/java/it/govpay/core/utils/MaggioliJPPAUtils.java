@@ -38,7 +38,9 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.jppapdp.beans.utils.JaxbUtils;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.QuotaContabilita;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDatiVersamentoRT;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDettagliImporto;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDettaglioImporto;
@@ -596,7 +598,18 @@ public class MaggioliJPPAUtils {
 		datiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica()+"");
 		datiPagamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		datiPagamento.setImportoTotalePagato(rpt.getImportoTotalePagato());
-		switch(rpt.getTipoVersamento()) {
+		
+		TipoVersamento tvRpt = TipoVersamento.OTHER;
+		
+		if(rpt.getTipoVersamento() != null) {
+			try {
+				tvRpt = TipoVersamento.toEnum(rpt.getTipoVersamento());
+			} catch(CodificaInesistenteException e){
+				// lanciata nel caso di stringa non riconosciuta, lascio other
+			}
+		}
+		
+		switch(tvRpt) {
 		case ADDEBITO_DIRETTO:
 			datiPagamento.setTipoVersamento(StTipoVersamento.AD);
 			break;

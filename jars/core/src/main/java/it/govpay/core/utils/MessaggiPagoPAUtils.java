@@ -41,7 +41,9 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class MessaggiPagoPAUtils {
 
@@ -72,7 +74,18 @@ public class MessaggiPagoPAUtils {
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
 		datiVersamento.setImportoTotaleDaVersare(data.getPaymentAmount());
-		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
+		
+		TipoVersamento tvRpt = TipoVersamento.OTHER;
+		
+		if(rpt.getTipoVersamento() != null) {
+			try {
+				tvRpt = TipoVersamento.toEnum(rpt.getTipoVersamento());
+			} catch(CodificaInesistenteException e){
+				// lanciata nel caso di stringa non riconosciuta, lascio other
+			}
+		}
+		
+		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(tvRpt.getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
@@ -130,7 +143,18 @@ public class MessaggiPagoPAUtils {
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
 		datiVersamento.setImportoTotaleDaVersare(data.getPaymentAmount());
-		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
+		
+		TipoVersamento tvRpt = TipoVersamento.OTHER;
+		
+		if(rpt.getTipoVersamento() != null) {
+			try {
+				tvRpt = TipoVersamento.toEnum(rpt.getTipoVersamento());
+			} catch(CodificaInesistenteException e){
+				// lanciata nel caso di stringa non riconosciuta, lascio other
+			}
+		}
+		
+		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(tvRpt.getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());

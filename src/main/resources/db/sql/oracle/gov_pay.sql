@@ -1078,7 +1078,7 @@ CREATE TABLE rpt
 	cod_canale VARCHAR2(35 CHAR),
 	cod_psp VARCHAR2(35 CHAR),
 	cod_intermediario_psp VARCHAR2(35 CHAR),
-	tipo_versamento VARCHAR2(4 CHAR),
+	tipo_versamento VARCHAR2(35 CHAR),
 	tipo_identificativo_attestante VARCHAR2(1 CHAR),
 	identificativo_attestante VARCHAR2(35 CHAR),
 	denominazione_attestante VARCHAR2(70 CHAR),

@@ -346,7 +346,7 @@ public class RptDAO extends BaseDAO{
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.acquisizioneRtOk");
 						datiPagoPA.setCodCanale(rpt.getCodCanale());
-						datiPagoPA.setTipoVersamento(rpt.getTipoVersamento().getCodifica());
+						datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 						
 						appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 						appContext.getEventoCtx().setEsito(Esito.OK);

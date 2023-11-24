@@ -765,7 +765,7 @@ CREATE TABLE rpt
 	cod_canale VARCHAR(35) COMMENT 'Identificativo del canale con cui e\' stato eseguito il pagamento',
 	cod_psp VARCHAR(35) COMMENT 'Identificativo del psp con cui e\' stato eseguito il pagamento',
 	cod_intermediario_psp VARCHAR(35) COMMENT 'Identificativo dell\'intermediario psp con cui e\' stato eseguito il pagamento',
-	tipo_versamento VARCHAR(4) COMMENT 'Tipo di versamento scelto per il pagamento',
+	tipo_versamento VARCHAR(35) COMMENT 'Tipo di versamento scelto per il pagamento',
 	tipo_identificativo_attestante VARCHAR(1) COMMENT 'Identificativo del canale con cui e\' stato eseguito il pagamento',
 	identificativo_attestante VARCHAR(35) COMMENT 'Identificativo del\'attestante',
 	denominazione_attestante VARCHAR(70) COMMENT 'Ragione sociale dell\'attestante',

@@ -194,7 +194,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
-			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento().getCodifica());
+			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 			response.setEsito("OK");
 			appContext.getEventoCtx().setEsito(Esito.OK);
 			ctx.getApplicationLogger().log("er.ricezioneOk");
@@ -344,7 +344,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
-			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento().getCodifica());
+			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");
