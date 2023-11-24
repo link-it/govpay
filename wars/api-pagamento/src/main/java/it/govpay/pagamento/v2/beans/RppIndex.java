@@ -3,8 +3,6 @@ package it.govpay.pagamento.v2.beans;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;

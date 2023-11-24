@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.38.0"
+  version: "1.39.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -9621,6 +9621,7 @@ components:
       enum:
         - 'Pagamento ad iniziativa Ente'
         - 'Pagamento ad iniziativa PSP'
+        - 'Modello unico'
     NuovoAllegatoPendenza:
       type: object
       required: 

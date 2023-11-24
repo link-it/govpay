@@ -25,7 +25,6 @@ import java.util.List;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;

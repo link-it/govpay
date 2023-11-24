@@ -57,6 +57,7 @@ And match each response.rpp ==
    "bloccante":"#notnull",
    "rpt": "#notnull",
    "rt":"#ignore",
+   "modello":"#string",
    "pendenza":"#ignore"
 }
 """

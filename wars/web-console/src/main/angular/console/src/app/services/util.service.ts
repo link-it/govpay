@@ -214,7 +214,8 @@ export class UtilService {
     0: 'Immediato',
     1: 'Immediato multibeneficiario',
     2: 'Differito',
-    4: 'Attivato presso Psp'
+    4: 'Attivato presso Psp',
+    UNICO: 'Modello unico'
   };
 
   //TIPOLOGIE CATEGORIA EVENTO

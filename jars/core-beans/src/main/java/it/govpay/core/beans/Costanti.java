@@ -21,4 +21,7 @@ public class Costanti {
 	
 	/** GESTIONE AVVISI CON DEBITORE ANONIMO */
 	public static final String IDENTIFICATIVO_DEBITORE_ANONIMO = "ANONIMO";
+	
+	/** MODELLO DI PAGAMENTO UNICO */
+	public static final String MODELLO_PAGAMENTO_UNICO = "UNICO";
 }

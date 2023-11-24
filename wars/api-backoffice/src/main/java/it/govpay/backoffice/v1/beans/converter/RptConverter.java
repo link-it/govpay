@@ -32,6 +32,8 @@ public class RptConverter {
 			} else if(rpt.getPagamentoPortale().getTipo() == 3) {
 				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
 			}
+		} else {
+			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.MODELLO_UNICO);
 		}
 
 		return rsModel;
@@ -55,6 +57,8 @@ public class RptConverter {
 			} else if(pagamentoPortale.getTipo() == 3) {
 				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
 			}
+		} else {
+			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.MODELLO_UNICO);
 		}
 
 		return rsModel;
