@@ -160,7 +160,7 @@ public class RptBuilder {
 		rpt.setCodPsp(codPsp);
 		rpt.setCodIntermediarioPsp(codIntermediarioPsp);
 		rpt.setCodCanale(codCanale);
-		rpt.setTipoVersamento(tipoVersamento);
+		rpt.setTipoVersamento(tipoVersamento != null ? tipoVersamento.getCodifica() : null);
 		rpt.setIdVersamento(versamento.getId());
 		rpt.setVersamento(versamento);
 		rpt.setIuv(iuv);

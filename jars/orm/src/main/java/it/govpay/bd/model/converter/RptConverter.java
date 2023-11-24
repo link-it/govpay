@@ -92,8 +92,7 @@ public class RptConverter {
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
 		dto.setCodPsp(vo.getCodPsp());
-		if(vo.getTipoVersamento() != null)
-			dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
+		dto.setTipoVersamento(vo.getTipoVersamento());
 		if(vo.getTipoIdentificativoAttestante() != null)
 			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
@@ -156,8 +155,7 @@ public class RptConverter {
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setCodIntermediarioPsp(dto.getCodIntermediarioPsp());
 		vo.setCodPsp(dto.getCodPsp());
-		if(dto.getTipoVersamento() != null)
-			vo.setTipoVersamento(dto.getTipoVersamento().getCodifica());
+		vo.setTipoVersamento(dto.getTipoVersamento());
 		if(dto.getTipoIdentificativoAttestante() != null)
 			vo.setTipoIdentificativoAttestante(dto.getTipoIdentificativoAttestante().name());
 		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());

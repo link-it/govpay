@@ -373,6 +373,8 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 			rpt.setDenominazioneAttestante(pspCompanyName);
 			rpt.setCodPsp(idPSP);
 			rpt.setCodCanale(idChannel);
+			// aggiorno rpt con il tipoversamento ricevuto in risposta
+			rpt.setTipoVersamento(ctReceipt.getPaymentMethod());
 
 			if(update) {
 				// Aggiorno l'RPT con i dati dell'RT

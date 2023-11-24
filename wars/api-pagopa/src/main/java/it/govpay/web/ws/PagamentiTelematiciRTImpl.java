@@ -234,7 +234,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
-			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento().getCodifica());
+			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");
