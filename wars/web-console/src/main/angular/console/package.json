@@ -39,6 +39,7 @@
     "rxjs": "^5.5.2",
     "survey-angular": "^1.9.23",
     "surveyjs-widgets": "^1.9.23",
+    "vkbeautify": "^0.99.3",
     "web-animations-js": "^2.3.1",
     "zone.js": "^0.8.14"
   },

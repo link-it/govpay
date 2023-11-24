@@ -72,6 +72,10 @@ import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-
 import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
 import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-config.component';
 import { SurveyComponent } from './elements/survey/survey.component';
+import { PayloadViewComponent } from './elements/payload-view/payload-view.component';
+import { TableViewComponent } from './elements/table-view/table-view.component';
+
+import { XmlPipe } from './pipes/xml.pipe';
 
 import { httpInterceptorProviders } from './services/http-interceptors';
 
@@ -117,7 +121,10 @@ import { httpInterceptorProviders } from './services/http-interceptors';
     IamLoginCardComponent,
     SslConfigComponent,
     SurveyComponent,
-    OAuth2LoginCardComponent
+    OAuth2LoginCardComponent,
+    PayloadViewComponent,
+    TableViewComponent,
+    XmlPipe
   ],
   imports: [
     BrowserModule,

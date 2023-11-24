@@ -5,6 +5,7 @@ import { Dato } from '../../../../classes/view/dato';
 import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
 import { Voce } from '../../../../services/voce.service';
 import { IExport } from '../../../../classes/interfaces/IExport';
@@ -24,10 +25,22 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
   protected _voce = Voce;
   protected infoPACompletaUrl: string = '';
 
-  constructor(protected us: UtilService) { }
+  _json: any;
+  dettaglioRichiesta = [];
+  dettaglioRisposta = [];
+
+  _tableAttributes: any[] = [
+    { label: 'Nome', attribute: 'nome', col: 'col-4'},
+    { label: 'Valore', attribute: 'valore', col: 'col-8'}
+  ];
+
+  _arrXML = ['API_PAGOPA', 'API_MAGGIOLI'];
+
+  constructor(public gps: GovpayService, protected us: UtilService) { }
 
   ngOnInit() {
     this.dettaglioEvento();
+    this._loadDetails();
   }
 
   protected dettaglioEvento() {
@@ -60,9 +73,44 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediario })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_STAZIONE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idStazione })}));
     }
-    this.infoPACompletaUrl = UtilService.RootByTOA() + UtilService.URL_GIORNALE_EVENTI + '/' + this.json.id;
+    this.infoPACompletaUrl = ''; // UtilService.RootByTOA() + UtilService.URL_GIORNALE_EVENTI + '/' + this.json.id;
     this.informazioni = _dettaglio.slice(0);
     this.informazioniPA = _dettaglioPA.slice(0);
+  }
+
+  protected _loadDetails() {
+    let _url = UtilService.URL_GIORNALE_EVENTI+'/'+this.json.id;
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this._json = _response.body;
+
+        let _date = this._json.dataEvento?moment(this._json.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+        let _dettaglioRichiesta = [];
+        if (this._json.parametriRichiesta) {
+          if (this._json.parametriRichiesta.principal) {
+            _dettaglioRichiesta.push(new Dato({ label: Voce.PRINCIPAL, value: this._json.parametriRichiesta.principal }));
+          }
+          _dettaglioRichiesta.push(new Dato({ label: Voce.UTENTE, value: this._json.parametriRichiesta.utente }));
+          _date = this._json.parametriRichiesta.dataOraRichiesta?moment(this._json.parametriRichiesta.dataOraRichiesta).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+          _dettaglioRichiesta.push(new Dato({ label: Voce.DATA_RICHIESTA, value: _date }));
+          _dettaglioRichiesta.push(new Dato({ label: Voce.URL, value: `${this._json.parametriRichiesta.method} ${this._json.parametriRichiesta.url}` }));
+        }
+        this.dettaglioRichiesta = _dettaglioRichiesta.slice(0);
+
+        let _dettaglioRisposta = [];
+        if (this._json.parametriRisposta) {
+          _dettaglioRisposta.push(new Dato({ label: Voce.STATO, value: this._json.parametriRisposta.status }));
+          _date = this._json.parametriRisposta.dataOraRisposta?moment(this._json.parametriRisposta.dataOraRisposta).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+          _dettaglioRisposta.push(new Dato({ label: Voce.DATA_RISPOSTA, value: _date }));
+        }
+        this.dettaglioRisposta = _dettaglioRisposta.slice(0);
+
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
   }
 
   refresh(mb: ModalBehavior) {}
@@ -75,5 +123,10 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
 
   title(): string {
     return UtilService.defaultDisplay({ value: this.json?this.json.tipoEvento:null });
+  }
+
+  onCopied(event: boolean) {
+    const message = event ? 'Payload copiato!' : 'Errore: Payload non copiato!';
+    this.us.alert(message);
   }
 }
