@@ -29,7 +29,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;

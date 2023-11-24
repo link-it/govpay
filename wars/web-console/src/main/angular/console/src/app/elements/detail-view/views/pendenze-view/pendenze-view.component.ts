@@ -377,10 +377,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
               _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
             }
             if(item.datiPagoPA.tipoVersamento) {
-              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+			let _tipoVersamento = UtilService.TIPI_VERSAMENTO[item.datiPagoPA.tipoVersamento] ? UtilService.TIPI_VERSAMENTO[item.datiPagoPA.tipoVersamento] : item.datiPagoPA.tipoVersamento;
+              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: _tipoVersamento });
             }
             if(item.datiPagoPA.modelloPagamento) {
-              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: UtilService.MODELLI_PAGAMENTO[item.datiPagoPA.modelloPagamento] });
             }
             if(item.datiPagoPA.idDominio) {
               _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });

@@ -97,6 +97,7 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.Applicazione;
@@ -1053,7 +1054,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			datiPagoPA.setCodPsp(requestBody.getReceipt().getIdPSP());
 			datiPagoPA.setCodCanale(requestBody.getReceipt().getIdChannel());
-			//datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			datiPagoPA.setModelloPagamento(Costanti.MODELLO_PAGAMENTO_UNICO);
 			datiPagoPA.setTipoVersamento(requestBody.getReceipt().getPaymentMethod());
 
 			response.setOutcome(StOutcome.OK);
@@ -1168,7 +1169,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			datiPagoPA.setCodDominio(codDominio);
 			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAVERIFYPAYMENTNOTICE.toString());
-//			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			datiPagoPA.setModelloPagamento(Costanti.MODELLO_PAGAMENTO_UNICO);
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
 			
@@ -1459,7 +1460,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
 			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENT.toString());
-			// datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			datiPagoPA.setModelloPagamento(Costanti.MODELLO_PAGAMENTO_UNICO);
 			datiPagoPA.setCodDominio(codDominio);
 			
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
@@ -2036,7 +2037,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			datiPagoPA.setCodPsp(requestBody.getReceipt().getIdPSP());
 			datiPagoPA.setCodCanale(requestBody.getReceipt().getIdChannel());
-			//datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			datiPagoPA.setModelloPagamento(Costanti.MODELLO_PAGAMENTO_UNICO);
 			datiPagoPA.setTipoVersamento(requestBody.getReceipt().getPaymentMethod());
 
 			response.setOutcome(StOutcome.OK);
@@ -2135,7 +2136,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
 			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENTV2.toString());
-			// datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			datiPagoPA.setModelloPagamento(Costanti.MODELLO_PAGAMENTO_UNICO);
 			datiPagoPA.setCodDominio(codDominio);
 			
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
