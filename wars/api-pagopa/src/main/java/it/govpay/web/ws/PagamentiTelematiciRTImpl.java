@@ -343,8 +343,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 
+			datiPagoPA.setCodPsp(rpt.getCodPsp());
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
 			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+			datiPagoPA.setModelloPagamento(rpt.getModelloPagamento().getCodifica() + "");
 
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");
