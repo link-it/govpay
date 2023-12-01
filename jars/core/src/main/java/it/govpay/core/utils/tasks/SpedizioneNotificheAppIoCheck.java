@@ -15,4 +15,9 @@ public class SpedizioneNotificheAppIoCheck extends AbstractTask {
 			it.govpay.core.business.Operazioni.resetEseguiInvioNotificheAppIO();
 		}
 	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

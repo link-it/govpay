@@ -15,4 +15,9 @@ public class SpedizionePromemoriaCheck extends AbstractTask {
 			it.govpay.core.business.Operazioni.resetEseguiInvioPromemoria();
 		}
 	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

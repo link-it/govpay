@@ -13,4 +13,8 @@ public class ResetCacheAnagraficaCheck extends AbstractTask {
 		it.govpay.core.business.Operazioni.resetCacheAnagraficaCheck(ctx);
 	}
 
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

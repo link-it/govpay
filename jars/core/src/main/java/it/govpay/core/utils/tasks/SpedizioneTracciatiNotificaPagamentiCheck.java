@@ -12,12 +12,16 @@ public class SpedizioneTracciatiNotificaPagamentiCheck extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		if(GovpayConfig.getInstance().isBatchCaricamentoTracciatiNotificaPagamenti()) {
+		if(this.isAbilitato()) {
 			if(it.govpay.core.business.Operazioni.getEseguiInvioTracciatiNotificaPagamenti()) {
 				it.govpay.core.business.Operazioni.spedizioneTracciatiNotificaPagamenti(ctx);
 				it.govpay.core.business.Operazioni.resetEseguiInvioTracciatiNotificaPagamenti();
 			}
 		}
-		
+	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return GovpayConfig.getInstance().isBatchCaricamentoTracciatiNotificaPagamenti();
 	}
 }

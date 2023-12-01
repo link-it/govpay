@@ -15,4 +15,9 @@ public class ElaborazioneRiconciliazioniCheck extends AbstractTask {
 			it.govpay.core.business.Operazioni.resetEseguiElaborazioneRiconciliazioni();
 		}
 	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

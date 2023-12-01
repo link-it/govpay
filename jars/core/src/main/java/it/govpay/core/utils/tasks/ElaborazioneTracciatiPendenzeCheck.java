@@ -18,6 +18,10 @@ public class ElaborazioneTracciatiPendenzeCheck extends AbstractTask {
 				it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();
 			}
 		}
-		
+	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
 	}
 }
