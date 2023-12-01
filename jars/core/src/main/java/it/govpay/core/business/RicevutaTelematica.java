@@ -322,20 +322,25 @@ public class RicevutaTelematica {
 
 
 	private void setDataApplicativa(RicevutaTelematicaInput input, Date dataRt) {
-		Calendar cRt = Calendar.getInstance();
-		cRt.setTime(dataRt);
-		
-		input.setDataApplicativa( this.sdfSoloData.format(dataRt));
+		if(dataRt != null) {
+			input.setDataApplicativa( this.sdfSoloData.format(dataRt));
+		} else {
+			input.setDataApplicativa("--");
+		}
 	}
 
 
 	private void setDataOperazione(RicevutaTelematicaInput input, Date dataRpt) {
-		Calendar cRpt = Calendar.getInstance();
-		cRpt.setTime(dataRpt);
-		if((cRpt.get(Calendar.HOUR_OF_DAY) + cRpt.get(Calendar.MINUTE) + cRpt.get(Calendar.SECOND)) == 0) {
-			input.setDataOperazione( this.sdfSoloData.format(dataRpt));
+		if(dataRpt != null) {
+			Calendar cRpt = Calendar.getInstance();
+			cRpt.setTime(dataRpt);
+			if((cRpt.get(Calendar.HOUR_OF_DAY) + cRpt.get(Calendar.MINUTE) + cRpt.get(Calendar.SECOND)) == 0) {
+				input.setDataOperazione( this.sdfSoloData.format(dataRpt));
+			} else {
+				input.setDataOperazione( this.sdfDataOraMinuti.format(dataRpt));
+			}
 		} else {
-			input.setDataOperazione( this.sdfDataOraMinuti.format(dataRpt));
+			input.setDataOperazione("--");
 		}
 	}
 	
