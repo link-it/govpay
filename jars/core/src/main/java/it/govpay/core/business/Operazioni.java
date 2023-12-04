@@ -370,7 +370,7 @@ public class Operazioni{
 											numeroErrori ++;
 									}
 									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
+									log.debug(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
 									break; // esco
 								}
 							}
@@ -459,7 +459,7 @@ public class Operazioni{
 									numeroErrori ++;
 							}
 							int numOk = threads.size() - numeroErrori;
-							log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
+							log.debug(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
 							break; // esco
 						}
 					}
