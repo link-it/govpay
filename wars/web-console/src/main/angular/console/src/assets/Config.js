@@ -108,6 +108,7 @@
       CODE_CHALLENGE_METHOD: 'S256',
       SCOPE: 'profile',
       RESPONSE_TYPE: 'code',
+      TOKEN_KEY: 'access_token',
       BOX_TITLE: 'Autenticazione OAUTH2',
       BUTTON_LABEL: 'Accedi'
     },
