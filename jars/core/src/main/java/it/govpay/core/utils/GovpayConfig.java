@@ -539,6 +539,8 @@ public class GovpayConfig {
 			String batchOnString = getProperty("it.govpay.batchOn", this.props, false, log);
 			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
 				this.batchOn = false;
+			
+			log.info("Abilitazione generale Batch: {}", this.batchOn);
 
 			String clusterIdString = getProperty("it.govpay.clusterId", this.props, false, log);
 			if(clusterIdString != null) {

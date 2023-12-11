@@ -15,4 +15,9 @@ public class ChiusuraRptScaduteCheck extends AbstractTask {
 			it.govpay.core.business.Operazioni.resetEseguiElaborazioneChiusuraRptScadute();
 		}
 	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }
