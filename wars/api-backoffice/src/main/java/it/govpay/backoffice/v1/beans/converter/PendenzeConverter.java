@@ -835,6 +835,9 @@ public class PendenzeConverter {
 			}
 
 			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			dto.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			dto.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			dto.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return dto;
@@ -882,6 +885,9 @@ public class PendenzeConverter {
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return rsModel;
