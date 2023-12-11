@@ -303,8 +303,6 @@ public class CtPaymentPABuilder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			transferEl.setMetadata(impostaValoriContabilita(singoloVersamento));
-
 			transferList.getTransfer().add(transferEl );
 			i++;
 		}
