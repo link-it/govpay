@@ -104,6 +104,22 @@
       ROOT_SERVICE: '${it.govpay.backoffice.gui.iam.apibaseurl}',
       LOGOUT_SERVICE: '${it.govpay.backoffice.gui.iam.logout}'
     },
+    OAUTH2: {
+      ENABLED: ${it.govpay.backoffice.gui.oauth2.enabled},
+      LOGIN_URL: '${it.govpay.backoffice.gui.oauth2.login}',
+      ROOT_SERVICE: '${it.govpay.backoffice.gui.oauth2.apibaseurl}',
+      LOGOUT_SERVICE: '${it.govpay.backoffice.gui.oauth2.logout}',
+      REDIRECT_URI: '${it.govpay.backoffice.gui.oauth2.redirecturl}',
+      CLIENT_ID: '${it.govpay.backoffice.gui.oauth2.clientid}',
+      GRANT_TYPE: '${it.govpay.backoffice.gui.oauth2.granttype}',
+      TOKEN_URL: '${it.govpay.backoffice.gui.oauth2.tokenurl}',
+      CODE_CHALLENGE_METHOD: '${it.govpay.backoffice.gui.oauth2.codechallengemethod}',
+      SCOPE: '${it.govpay.backoffice.gui.oauth2.scope}',
+      RESPONSE_TYPE: '${it.govpay.backoffice.gui.oauth2.responsetype}',
+      TOKEN_KEY: '${it.govpay.backoffice.gui.oauth2.tokenkey}',
+      BOX_TITLE: '${it.govpay.backoffice.gui.oauth2.boxtitle}',
+      BUTTON_LABEL: '${it.govpay.backoffice.gui.oauth2.buttonlabel}'
+    },
     GESTIONE_PASSWORD: {
       ENABLED: ${it.govpay.backoffice.gui.gestionepassword.enabled}
     },
@@ -121,7 +137,7 @@
     }
   };
 
-  addScript('assets/config/app-config.govpay');
-  addScript('assets/config/mappingTipiEvento.govpay');
+  addScript('assets/config/app-config.js');
+  addScript('assets/config/mappingTipiEvento.js');
 
 })(window);

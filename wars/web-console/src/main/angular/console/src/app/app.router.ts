@@ -8,9 +8,11 @@ import { ProfiloComponent } from './elements/profilo/profilo.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostazioni-view.component';
+import { AuthViewComponent } from './elements/auth-view/auth-view.component';
 
 const _routes: Routes = [
   { path: '', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD), pathMatch: 'full' },
+  { path: UtilService.ROUTE(UtilService.URL_AUTH), component: AuthViewComponent, data: { type: null, title: UtilService.TXT_AUTH, search: false, back: false, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_DASHBOARD), component: DashboardViewComponent, data: { type: null, title: UtilService.TXT_DASHBOARD, search: false, back: false, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PENDENZE), component: ListViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.PENDENZE, title: UtilService.TXT_PENDENZE, search: true, back: false, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PENDENZE)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.PENDENZE, title: '', search: false, back: true, actions: true, info: null, reuse: false } },
@@ -49,4 +51,4 @@ const _routes: Routes = [
   { path: '**', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD) }
 ];
 
-export const RoutingClass: ModuleWithProviders = RouterModule.forRoot(_routes,{ enableTracing: false });
+export const RoutingClass: ModuleWithProviders = RouterModule.forRoot(_routes,{ enableTracing: false , useHash: true });

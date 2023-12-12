@@ -1,5 +1,7 @@
 package it.govpay.core.utils.tasks;
 
+import java.text.MessageFormat;
+
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.Operation;
 import org.openspcoop2.utils.logger.beans.context.core.Service;
@@ -29,16 +31,18 @@ public abstract class AbstractTask {
 	}
 
 	protected abstract void execTask(IContext ctx) throws Exception;
+	
+	protected abstract boolean isAbilitato();
 
 
 	public void exec() {
 		try {
-			this.log.trace("Execuzione task ["+this.name+"] ...");
+			this.log.trace("Execuzione task [{}] ...", this.name);
 			IContext ctx = this.initBatchContext();
 			execTask(ctx);
-			this.log.trace("Execuzione task ["+this.name+"] completata con successo");
+			this.log.trace("Execuzione task [{}] completata con successo", this.name);
 		} catch(Throwable e) {
-			this.log.error("Execuzione task ["+this.name+"] completata con errore: " + e.getMessage(), e);
+			this.log.error(MessageFormat.format("Execuzione task [{0}] completata con errore: {1}", this.name, e.getMessage()), e);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 			ContextThreadLocal.unset();

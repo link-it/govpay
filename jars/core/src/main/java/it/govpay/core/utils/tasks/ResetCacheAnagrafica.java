@@ -12,4 +12,9 @@ public class ResetCacheAnagrafica extends AbstractTask {
 	protected void execTask(IContext ctx) throws Exception {
 		it.govpay.core.business.Operazioni.resetCacheAnagrafica(ctx);
 	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

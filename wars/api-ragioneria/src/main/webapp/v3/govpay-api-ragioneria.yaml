@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "3.1.0"
+  version: "3.2.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -107,6 +107,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/iuv'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/idFlusso'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/escludiObsoleti'
       responses:
         '200':
           description: Lista dei flussi rendicontazione

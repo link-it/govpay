@@ -12,9 +12,14 @@ public class RecuperoRptPendenti extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
+		this.log.debug("Execuzione task [{}] {}abilitata", this.name, (this.isAbilitato() ? "":"non "));
 		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRPTPendenti()) {
 			it.govpay.core.business.Operazioni.recuperoRptPendenti(ctx);
 		}
 	}
 
+	@Override
+	protected boolean isAbilitato() {
+		return GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRPTPendenti();
+	}
 }

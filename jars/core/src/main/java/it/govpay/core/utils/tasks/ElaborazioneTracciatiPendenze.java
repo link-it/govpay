@@ -12,8 +12,14 @@ public class ElaborazioneTracciatiPendenze extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchCaricamentoTracciati()) {
+		this.log.debug("Execuzione task [{}] {}abilitata", this.name, (this.isAbilitato() ? "":"non "));
+		if(this.isAbilitato()) {
 			it.govpay.core.business.Operazioni.elaborazioneTracciatiPendenze(ctx);
 		}
+	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchCaricamentoTracciati();
 	}
 }

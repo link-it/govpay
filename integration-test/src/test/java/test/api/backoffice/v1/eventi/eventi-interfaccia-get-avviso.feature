@@ -490,7 +490,7 @@ Scenario: Evento verifica pendenza applicazione risposta con errori di sintassi
 * set pendenza.numeroAvviso = numeroAvviso
 * set pendenza.stato = 'NON_ESEGUITA'
 
-* set pendenza.soggettoPagatore = null
+* set pendenza.soggettoPagatore.indirizzo = ''
 
 Given url ente_api_url
 And path '/v1/avvisi', idDominio, iuv
@@ -558,4 +558,4 @@ And match response.risultati[0] ==
 	}
 }
 """
-And match response.risultati[0].dettaglioEsito contains 'soggettoPagatore'
+And match response.risultati[0].dettaglioEsito contains 'Il valore [] del campo indirizzo non rispetta la lunghezza minima di 1 caratteri.'

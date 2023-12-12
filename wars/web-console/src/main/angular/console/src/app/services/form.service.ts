@@ -77,6 +77,7 @@ export class FormService {
   public static FORM_PH_DATA_REG_FINE: string = '(Fine)';
   public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';
   public static FORM_PH_DATA_RISC_FINE: string = '(Fine)';
+  public static FORM_ESCLUDI_OBSOLETI: string = 'Escludi Duplicati';
 
   //Giornale eventi
   public static FORM_ESITO_GDE: string = 'Esito';

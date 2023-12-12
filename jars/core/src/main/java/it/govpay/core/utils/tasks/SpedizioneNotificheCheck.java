@@ -16,4 +16,8 @@ public class SpedizioneNotificheCheck extends AbstractTask {
 		}
 	}
 
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

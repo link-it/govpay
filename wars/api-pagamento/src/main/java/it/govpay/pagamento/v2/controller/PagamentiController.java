@@ -121,7 +121,7 @@ public class PagamentiController extends BaseController {
 			}
 			
 			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, listaIdentificativi, this.log);
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, user,idSession, idSessionePortale, listaIdentificativi, this.log);
 			
 			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
 			

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.14.0"
+  version: "2.15.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -2071,6 +2071,10 @@ components:
           description: >- 
             se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
           maxLength: 255
+        dataScandenzaAvviso:
+          type: string
+          format: date
+          description: se valorizzata, sostituisce la data di scadenza standard.
     QuotaContabilita:
       type: object
       required:

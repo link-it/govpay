@@ -36,7 +36,7 @@ Examples:
 | annoRiferimento | pendenzaPut.annoRiferimento | 'aaaa' | 'annoRiferimento' |
 | tassonomiaAvviso | pendenzaPut.tassonomiaAvviso | 'xxxx' | 'tassonomiaAvviso' |
 | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
 | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |

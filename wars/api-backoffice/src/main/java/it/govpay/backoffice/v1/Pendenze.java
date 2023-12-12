@@ -1,5 +1,7 @@
 package it.govpay.backoffice.v1;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -45,7 +47,7 @@ public class Pendenze extends BaseRsServiceV1{
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("idPendenza") String idPendenza, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("iuv") String iuv, @QueryParam("mostraSpontaneiNonPagati") @DefaultValue(value="false") Boolean mostraSpontaneiNonPagati, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
+    public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("idPendenza") String idPendenza, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idTipoPendenza") List<String> idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("iuv") String iuv, @QueryParam("mostraSpontaneiNonPagati") @DefaultValue(value="false") Boolean mostraSpontaneiNonPagati, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
         return this.controller.findPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, dataDa, dataA, idTipoPendenza, direzione, divisione, iuv, mostraSpontaneiNonPagati, metadatiPaginazione, maxRisultati);
     }

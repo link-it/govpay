@@ -15,4 +15,9 @@ public class GestionePromemoriaCheck extends AbstractTask {
 			it.govpay.core.business.Operazioni.resetEseguiGestionePromemoria();
 		}
 	}
+	
+	@Override
+	protected boolean isAbilitato() {
+		return true;
+	}
 }

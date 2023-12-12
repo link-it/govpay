@@ -162,7 +162,7 @@ components:
         - NON_ESEGUITO
         - ESEGUITO_PARZIALE
         - DECORRENZA
-        - DECORRENZA_PARZIALE
+        - DECORRENZA_PARZIALE       
     FlussiRendicontazione:
       type: object
       allOf:
@@ -668,6 +668,10 @@ components:
           description: >- 
             se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
           maxLength: 255
+        dataScandenzaAvviso:
+          type: string
+          format: date
+          description: se valorizzata, sostituisce la data di scadenza standard.
     QuotaContabilita:
       type: object
       required:

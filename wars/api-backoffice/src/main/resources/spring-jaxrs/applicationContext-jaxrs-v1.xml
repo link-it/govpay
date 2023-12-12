@@ -471,7 +471,7 @@
     <!-- SESSION_END -->
     
     
-    <!-- SESSION_START -->
+    <!-- PUBLIC_START -->
     <jaxrs:server id="apiBackofficePublicV1" address="/public/v1/">
         <jaxrs:serviceBeans>
        			<ref bean="check" />
@@ -490,7 +490,55 @@
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>
-    <!-- SESSION_END -->
+    <!-- PUBLIC_END -->
+    
+    <!-- OAUTH2_PKCE_START -->
+    <jaxrs:server id="apiBackofficeOauth2PkceV1" address="/oauth2/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+                <ref bean="allegati" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
+			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tracciatiNotificaPagamenti" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- OAUTH2_PKCE_END -->
     
     
     <!-- DEFAULT_START -->

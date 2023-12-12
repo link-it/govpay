@@ -48,12 +48,14 @@ import { LinkScrollDirective } from './link-scroll.directive';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 import { DialogBlueViewComponent } from './elements/detail-view/views/dialog-view/dialog-blue-view.component';
 import { LogoComponent } from './elements/logo/logo.component';
+import { AuthViewComponent } from './elements/auth-view/auth-view.component';
 import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
 import { LoginCardComponent } from './elements/login-card/login-card.component';
 import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 import { TwoColsViewComponent } from './elements/item-view/views/two-cols-view/two-cols-view.component';
 import { IamLoginCardComponent } from './elements/login-card/iam-login-card.component';
+import { OAuth2LoginCardComponent } from './elements/login-card/oauth2-login-card.component';
 import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-json-schema-form';
 import { GeneratorsEntryListComponents } from './classes/generators-entry-point-list';
 import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
@@ -70,12 +72,19 @@ import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-
 import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
 import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-config.component';
 import { SurveyComponent } from './elements/survey/survey.component';
+import { PayloadViewComponent } from './elements/payload-view/payload-view.component';
+import { TableViewComponent } from './elements/table-view/table-view.component';
+
+import { XmlPipe } from './pipes/xml.pipe';
+
+import { httpInterceptorProviders } from './services/http-interceptors';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderMenuComponent,
     ProfiloComponent,
+    AuthViewComponent,
     DashboardViewComponent,
     SideNavigatorComponent,
     ContentViewComponent,
@@ -111,7 +120,11 @@ import { SurveyComponent } from './elements/survey/survey.component';
     ScrollerContainerComponent,
     IamLoginCardComponent,
     SslConfigComponent,
-    SurveyComponent
+    SurveyComponent,
+    OAuth2LoginCardComponent,
+    PayloadViewComponent,
+    TableViewComponent,
+    XmlPipe
   ],
   imports: [
     BrowserModule,
@@ -147,7 +160,9 @@ import { SurveyComponent } from './elements/survey/survey.component';
     JsonSchemaFormModule.forRoot(MaterialDesignFrameworkModule)
   ],
   entryComponents: [ EntryListComponents, GeneratorsEntryListComponents, DialogViewComponent, ItemViewComponent ],
-  providers: [ { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
+  providers: [
+    httpInterceptorProviders,
+    { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
     MediaMatcher, LinkService, GovpayService, UtilService, AuthGuardService,
     { provide: DateAdapter, useClass: DateFormat }
   ],

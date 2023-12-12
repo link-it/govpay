@@ -18,4 +18,7 @@ public class Costanti {
 	
 	public static final String VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID = "verificaAvviso";
 	public static final String VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID = "verificaPendenza";
+	
+	/** GESTIONE AVVISI CON DEBITORE ANONIMO */
+	public static final String IDENTIFICATIVO_DEBITORE_ANONIMO = "ANONIMO";
 }
