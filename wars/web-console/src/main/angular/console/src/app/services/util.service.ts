@@ -396,19 +396,19 @@ export class UtilService {
     V1: 'V1',
     V2: 'V2'
   };
-  
+
   // MODELLO UNICO DA VERSIONE STAZIONE
   public static MODELLO_UNICO_DA_VERSIONE: any = {
     'V2': 'Si',
     'V1': 'No'
   };
-  
+
   // MODELLO UNICO BOOLEAN DA VERSIONE STAZIONE
   public static MODELLO_UNICO_BOOLEAN_DA_VERSIONE: any = {
     'V2': true,
     'V1': false
   };
-  
+
   // VERSIONE STAZIONE DA MODELLO UNICO BOOLEAN
   public static VERSIONE_DA_MODELLO_UNICO_BOOLEAN: any = {
     true: 'V2',
@@ -623,6 +623,7 @@ export class UtilService {
   public static EXPORT_INCASSO: string = 'esporta_incasso';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
+  public static EXPORT_FLUSSO_CSV: string = 'esporta_flusso_csv';
   public static EXPORT_TRACCIATO_RICHIESTA: string = 'esporta_tracciato_richiesta';
   public static EXPORT_TRACCIATO_ESITO: string = 'esporta_tracciato_esito';
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
@@ -1299,6 +1300,12 @@ export class UtilService {
         });
         break;
       case 'PagamentiRiconciliati.csv':
+        _keys = this._elaborateKeys(jsonData);
+        jsonData.forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+      case 'Rendicontazioni.csv':
         _keys = this._elaborateKeys(jsonData);
         jsonData.forEach((_json, index) => {
           _csv += this.jsonToCsvRows((index===0), _keys, _json);
