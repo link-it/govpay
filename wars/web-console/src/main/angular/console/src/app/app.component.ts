@@ -222,6 +222,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         break;
       case UtilService.URL_RENDICONTAZIONI+UtilService.URL_DETTAGLIO:
         a.push({ label: 'Scarica flusso XML', type: UtilService.EXPORT_FLUSSO_XML });
+        a.push({ label: 'Scarica flusso CSV', type: UtilService.EXPORT_FLUSSO_CSV });
         break;
       case UtilService.URL_INCASSI+UtilService.URL_DETTAGLIO:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_INCASSO });
@@ -507,6 +508,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         case UtilService.EXPORT_FLUSSO_XML:
         case UtilService.EXPORT_INCASSO:
           (_componentRef)?_componentRef.instance.exportData():null;
+          break;
+        case UtilService.EXPORT_FLUSSO_CSV:
+          (_componentRef)?_componentRef.instance.exportData('csv'):null;
           break;
         case UtilService.EXPORT_TRACCIATO_RICHIESTA:
         case UtilService.EXPORT_TRACCIATO_AVVISI:
