@@ -206,12 +206,12 @@ public class RppController extends BaseController {
 			}
 			listaRptDTO.setCodDomini(domini);
 
-			// Autorizzazione sulle uo
-			//			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			//			if(uo == null) {
-			//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-			//			}
-			//			listaRptDTO.setUnitaOperative(uo);
+			// Autorizzazione sui tipi pendenza
+			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+			if(idTipiVersamento == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			}
+			listaRptDTO.setIdTipiVersamento(idTipiVersamento);
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
@@ -263,6 +263,11 @@ public class RppController extends BaseController {
 			// controllo che il dominio sia autorizzato
 			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
+			}
+			
+			// controllo che il tipo pendenza sia autorizzato
+			if(!AuthorizationManager.isTipoVersamentoAuthorized(user, leggiRptDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, null, leggiRptDTOResponse.getTipoVersamento().getCodTipoVersamento());
 			}
 
 			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(leggiRptDTOResponse.getVersamento());
@@ -329,7 +334,11 @@ public class RppController extends BaseController {
 			}
 
 			patchRptDTO.setOp(PatchOpConverter.toModel(lstOp));
-
+			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(),idDominio, null);
+			}
 
 			PatchRptDTOResponse patchRptDTOResponse = rptDAO.patch(patchRptDTO);
 
@@ -383,6 +392,11 @@ public class RppController extends BaseController {
 			// controllo che il dominio sia autorizzato
 			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
+			}
+			
+			// controllo che il tipo pendenza sia autorizzato
+			if(!AuthorizationManager.isTipoVersamentoAuthorized(user, leggiRptDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, null, leggiRptDTOResponse.getTipoVersamento().getCodTipoVersamento());
 			}
 
 			return creaMessaggioRpt(retrocompatibilitaMessaggiPagoPAV1, methodName, transactionId, accept,
@@ -499,6 +513,11 @@ public class RppController extends BaseController {
 				if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
 					throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
 				}
+				
+				// controllo che il tipo pendenza sia autorizzato
+				if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+					throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
+				}
 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
@@ -513,6 +532,11 @@ public class RppController extends BaseController {
 					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
 						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
 					}
+					
+					// controllo che il tipo pendenza sia autorizzato
+					if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+						throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
+					}
 
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
@@ -523,6 +547,11 @@ public class RppController extends BaseController {
 					// controllo che il dominio sia autorizzato
 					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
 						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+					}
+					
+					// controllo che il tipo pendenza sia autorizzato
+					if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+						throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
 					}
 
 					switch (ricevutaDTOResponse.getRpt().getVersione()) {
@@ -562,6 +591,11 @@ public class RppController extends BaseController {
 					// controllo che il dominio sia autorizzato
 					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
 						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+					}
+					
+					// controllo che il tipo pendenza sia autorizzato
+					if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+						throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
 					}
 
 					switch (ricevutaDTOResponse.getRpt().getVersione()) {

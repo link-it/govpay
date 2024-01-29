@@ -30,6 +30,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.model.TipoVersamento;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -45,6 +46,7 @@ public class LeggiRptDTOResponse {
 	private List<SingoloVersamento> lstSingoliVersamenti;
 	private UnitaOperativa unitaOperativa;
 	private Dominio dominio;
+	private TipoVersamento tipoVersamento;
 
 	public Versamento getVersamento() {
 		return this.versamento;
@@ -92,6 +94,14 @@ public class LeggiRptDTOResponse {
 
 	public void setDominio(Dominio dominio) {
 		this.dominio = dominio;
+	}
+
+	public TipoVersamento getTipoVersamento() {
+		return tipoVersamento;
+	}
+
+	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
 	}
 
 }
