@@ -52,7 +52,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   private ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = null;
 
   @JsonProperty("inserimenti")
-  private List<PendenzaPost> inserimenti = null;
+  private List<NuovaPendenzaTracciato> inserimenti = null;
 
   @JsonProperty("annullamenti")
   private List<AnnullamentoPendenza> annullamenti = null;
@@ -122,16 +122,16 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
   /**
    **/
-  public TracciatoPendenzePost inserimenti(List<PendenzaPost> inserimenti) {
+  public TracciatoPendenzePost inserimenti(List<NuovaPendenzaTracciato> inserimenti) {
     this.inserimenti = inserimenti;
     return this;
   }
 
   @JsonProperty("inserimenti")
-  public List<PendenzaPost> getInserimenti() {
+  public List<NuovaPendenzaTracciato> getInserimenti() {
     return this.inserimenti;
   }
-  public void setInserimenti(List<PendenzaPost> inserimenti) {
+  public void setInserimenti(List<NuovaPendenzaTracciato> inserimenti) {
     this.inserimenti = inserimenti;
   }
 
@@ -216,8 +216,8 @@ public void validate() throws it.govpay.core.exceptions.ValidationException {
 
 		vf.getValidator("idTracciato", this.idTracciato).notNull();
 		vf.getValidator("inserimenti", this.inserimenti).notNull();
-		for (PendenzaPost inserimentoPendenza : inserimenti) {
-			inserimentoPendenza.validaPendenzaTracciato();
+		for (NuovaPendenzaTracciato inserimentoPendenza : inserimenti) {
+			inserimentoPendenza.validate();
 		}
 
 		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();

@@ -134,3 +134,31 @@ And headers basicAutenticationHeader
 And request tracciato
 When method post
 Then status 400
+
+
+Scenario: Tracciato con proprieta' non previste nel campo pendenza
+
+* def idPendenza = getCurrentTimeMillis()
+* def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-prop-pendenza-non-valide.json')
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati'
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 400
+
+
+Scenario: Tracciato con proprieta' non previste nel campo voce pendenza
+
+* def idPendenza = getCurrentTimeMillis()
+* def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-prop-vocependenza-non-valide.json')
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati'
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 400
+
+
