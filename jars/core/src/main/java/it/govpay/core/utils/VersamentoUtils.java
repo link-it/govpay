@@ -389,7 +389,7 @@ public class VersamentoUtils {
 				it.govpay.core.beans.commons.Versamento versamentoCommons = verificaClient.verificaPendenza(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
 				
 				try {
-					versamento = VersamentoUtils.toVersamentoModel(versamentoCommons, false);
+					versamento = VersamentoUtils.toVersamentoModel(versamentoCommons);
 					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_VERIFICA_OK_KEY, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 					verificaClient.getEventoCtx().setEsito(Esito.OK);
 				} catch (GovPayException e) {
@@ -622,11 +622,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.beans.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException {
-		return toVersamentoModel(versamento, true);
-	}
-
-	public static Versamento toVersamentoModel(it.govpay.core.beans.commons.Versamento versamento, boolean controlloNumeroAvvisoDominioApplicazione) throws ServiceException, GovPayException, ValidationException { 
+	public static Versamento toVersamentoModel(it.govpay.core.beans.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 
 	
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento model = new Versamento();
@@ -714,10 +710,9 @@ public class VersamentoUtils {
 		if(versamento.getNumeroAvviso() != null) {
 			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso());
 			
-			if(controlloNumeroAvvisoDominioApplicazione) {
-				it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
-						dominio.getStazione().getApplicationCode(), dominio.getSegregationCode(), dominio.getAuxDigit(), applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
-			}
+			// Il controllo di consistenza del numero avviso su dominio e stazione e' stato spostato tra i controlli da fare solo in caso di creazione della pendenza
+//			checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(versamento, applicazione, dominio);
+			
 			// check sulla validita' dello iuv
 			Iuv iuvBD  = new Iuv();
 			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
@@ -836,6 +831,20 @@ public class VersamentoUtils {
 		model.setAllegati(toAllegatiModel(versamento.getAllegati()));
 
 		return model;
+	}
+	
+	/**
+	 * Controllo che il numero avviso ricevuto come parametro dal sia conforme alla configurazione prevista per il dominio e l'applicazione
+	 * 
+	 * @param versamento
+	 * @param applicazione
+	 * @param dominio
+	 * @throws GovPayException
+	 */
+	public static void checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(Versamento versamento, Applicazione applicazione, Dominio dominio)
+			throws GovPayException {
+		it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
+					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode(), dominio.getAuxDigit(), applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 	}
 
 	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {
