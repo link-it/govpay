@@ -1932,6 +1932,10 @@
 							<linkit:sql-table-index-field name="avvAppIoPromScadNotificato"/>
 							<linkit:sql-table-index-field name="avvAppIoDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_iuv_dominio">
+							<linkit:sql-table-index-column name="iuv_versamento"/>
+							<linkit:sql-table-index-column name="id_dominio"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2675,6 +2679,12 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rnd_iuv">
 							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_fk_singoli_versamenti">
+							<linkit:sql-table-index-column name="id_singolo_versamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_fk_pagamenti">
+							<linkit:sql-table-index-column name="id_pagamento"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
