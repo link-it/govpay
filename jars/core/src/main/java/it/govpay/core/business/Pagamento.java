@@ -63,6 +63,7 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
@@ -79,6 +80,7 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
@@ -273,25 +275,42 @@ public class Pagamento   {
 
 			NodoChiediListaPendentiRPTRisposta risposta = null;
 			NodoClient chiediListaPendentiClient = null;
+			EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
 			try {
 				try {
 					appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDILISTAPENDENTIRPT);
-					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale);
+					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale, eventoCtx);
 					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
-					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
-				} catch (Exception e) {
+					eventoCtx.setEsito(Esito.OK);
+				} catch (GovPayException | ClientException | UtilsException e) {
 					log.warn("Errore durante la richiesta di lista pendenti", e);
-					if(chiediListaPendentiClient != null) {
+					if(eventoCtx != null) {
 						if(e instanceof GovPayException) {
-							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+							eventoCtx.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
 						} else if(e instanceof ClientException) {
-							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+							eventoCtx.setSottotipoEsito(((ClientException)e).getResponseCode() + "");
 						} else {
-							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+							eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 						}
-						chiediListaPendentiClient.getEventoCtx().setEsito(Esito.FAIL);
-						chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-						chiediListaPendentiClient.getEventoCtx().setException(e);
+						eventoCtx.setEsito(Esito.FAIL);
+						eventoCtx.setDescrizioneEsito(e.getMessage());
+						eventoCtx.setException(e);
+					}
+					// Esco da ciclo while e procedo con il prossimo dominio.
+					if(perDominio) {
+						ctx.getApplicationLogger().log("pendenti.listaPendentiDominioFail", dominio.getCodDominio(), e.getMessage());
+						continue;
+					} else {
+						ctx.getApplicationLogger().log("pendenti.listaPendentiFail", stazione.getCodStazione(), e.getMessage());
+						break;
+					}
+				} catch (ClientInitializeException e) {
+					log.error("Errore durante la creazione del client per la richiesta di lista pendenti", e);
+					if(eventoCtx != null) {
+						eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+						eventoCtx.setEsito(Esito.FAIL);
+						eventoCtx.setDescrizioneEsito(e.getMessage());
+						eventoCtx.setException(e);
 					}
 					// Esco da ciclo while e procedo con il prossimo dominio.
 					if(perDominio) {
@@ -311,10 +330,10 @@ public class Pagamento   {
 						String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
 						String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
 						String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
-						if(chiediListaPendentiClient != null) {
-							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(fc);
-							chiediListaPendentiClient.getEventoCtx().setEsito(Esito.KO);
-							chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(fd);
+						if(eventoCtx != null) {
+							eventoCtx.setSottotipoEsito(fc);
+							eventoCtx.setEsito(Esito.KO);
+							eventoCtx.setDescrizioneEsito(fd);
 						}
 						if(perDominio) {
 							ctx.getApplicationLogger().log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
@@ -377,9 +396,9 @@ public class Pagamento   {
 					return statiRptPendenti;
 				}
 			} finally {
-				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
+				if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediListaPendentiClient.getEventoCtx(),log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 				}
 			}
 		}
@@ -471,24 +490,26 @@ public class Pagamento   {
 
 		NodoClient nodoInviaRRClient = null;
 		rrBD = null;
+		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
 		try {
 
 			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), EventoContext.Azione.NODOINVIARICHIESTASTORNO);
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
-			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(configWrapper), operationId, giornale);
 			// salvataggio id Rpt/ versamento/ pagamento
-			nodoInviaRRClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
-			nodoInviaRRClient.getEventoCtx().setIuv(rpt.getIuv());
-			nodoInviaRRClient.getEventoCtx().setCcp(rpt.getCcp());
-			nodoInviaRRClient.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-			nodoInviaRRClient.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
+			eventoCtx.setCodDominio(rpt.getCodDominio());
+			eventoCtx.setIuv(rpt.getIuv());
+			eventoCtx.setCcp(rpt.getCcp());
+			eventoCtx.setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
+			eventoCtx.setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
 			if(rpt.getPagamentoPortale() != null)
-				nodoInviaRRClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+				eventoCtx.setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+			
+			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(configWrapper), operationId, giornale, eventoCtx);
 			
 			Risposta risposta = RrUtils.inviaRr(nodoInviaRRClient, rr, rpt, operationId);
-			nodoInviaRRClient.getEventoCtx().setEsito(Esito.OK);
+			eventoCtx.setEsito(Esito.OK);
 			
 			rrBD = new RrBD(configWrapper);
 			
@@ -509,10 +530,10 @@ public class Pagamento   {
 					descrizione = faultCode + ": " + fb.getFaultString();
 				}
 
-				if(nodoInviaRRClient != null) {
-					nodoInviaRRClient.getEventoCtx().setSottotipoEsito(faultCode);
-					nodoInviaRRClient.getEventoCtx().setEsito(Esito.KO);
-					nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(descrizione);
+				if(eventoCtx != null) {
+					eventoCtx.setSottotipoEsito(faultCode);
+					eventoCtx.setEsito(Esito.KO);
+					eventoCtx.setDescrizioneEsito(descrizione);
 				}
 
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
@@ -527,11 +548,26 @@ public class Pagamento   {
 				return response;
 			}
 		} catch (ClientException e) {
-			if(nodoInviaRRClient != null) {
-				nodoInviaRRClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-				nodoInviaRRClient.getEventoCtx().setEsito(Esito.FAIL);
-				nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-				nodoInviaRRClient.getEventoCtx().setException(e);
+			if(eventoCtx != null) {
+				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+				eventoCtx.setEsito(Esito.FAIL);
+				eventoCtx.setDescrizioneEsito(e.getMessage());
+				eventoCtx.setException(e);
+			}	
+			ctx.getApplicationLogger().log("rr.invioRrKo");
+			if(rrBD == null) {
+				rrBD = new RrBD(configWrapper);
+				rrBD.setupConnection(configWrapper.getTransactionID());
+			}
+			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
+			throw new GovPayException(EsitoOperazione.NDP_000, e);
+		} catch (ClientInitializeException e) {
+			log.error("Errore durante la creazione del client per la richiesta di storno", e);
+			if(eventoCtx != null) {
+				eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				eventoCtx.setEsito(Esito.FAIL);
+				eventoCtx.setDescrizioneEsito(e.getMessage());
+				eventoCtx.setException(e);
 			}	
 			ctx.getApplicationLogger().log("rr.invioRrKo");
 			if(rrBD == null) {
@@ -541,9 +577,9 @@ public class Pagamento   {
 			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		} finally {
-			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
+			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(EventoUtils.toEventoDTO(nodoInviaRRClient.getEventoCtx(),log));
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 			}
 		}
 	}

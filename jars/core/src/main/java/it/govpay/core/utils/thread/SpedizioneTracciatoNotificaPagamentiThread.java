@@ -80,6 +80,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.eventi.EventiUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
@@ -371,10 +372,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			EnteRendicontazioniClient client = null;
 			
 			ZipEntry entry;
-            while ((entry = stream.getNextEntry()) != null) {
+			while ((entry = stream.getNextEntry()) != null) {
             	String entryName = entry.getName();
             	log.debug(MessageFormat.format(ELABORAZIONE_ENTRY_0, entryName));
             	appContext.getServerByOperationId(operationId).addGenericProperty(new Property("fileContenuto", entryName));
+            	EventoContext eventoCtx = new EventoContext(Componente.API_GOVPAY);
             	
             	try (ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 	            	// sintesi pagamenti
@@ -393,9 +395,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						}
 						
 	            		IOUtils.copy(stream, baos);
-	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI, null);
-						client.getEventoCtx().setEsito(Esito.OK);
+						eventoCtx.setEsito(Esito.OK);
 						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
@@ -419,9 +421,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            		}
 	            		
 	            		IOUtils.copy(stream, baos);
-	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE, null);
-						client.getEventoCtx().setEsito(Esito.OK);
+						eventoCtx.setEsito(Esito.OK);
 						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
@@ -486,9 +488,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            		IOUtils.copy(stream, baos);
 	            		String pathFlussoRendicontazione = TracciatiNotificaPagamentiUtils.creaPathFlussoRendicontazione(entry.getName());
 	            		
-	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE, pathFlussoRendicontazione);
-						client.getEventoCtx().setEsito(Esito.OK);
+						eventoCtx.setEsito(Esito.OK);
 						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
@@ -508,17 +510,34 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
         				log.error(e1.getMessage(), e1);
         			}
         			
-        			if(client != null) {
-    					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-        				client.getEventoCtx().setEsito(Esito.FAIL);
-        				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
-        				client.getEventoCtx().setException(e);
+        			if(eventoCtx != null) {
+        				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+        				eventoCtx.setEsito(Esito.FAIL);
+        				eventoCtx.setDescrizioneEsito(e.getMessage());
+        				eventoCtx.setException(e);
         			}
-        		} finally {
-        			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+        		} catch (ClientInitializeException e) {
+        			errore = MessageFormat.format("Errore durante creazione del client per la spedizione del file {0} del Tracciato {1} [Nome: {2}], al destinatario [{3}]:{4}",	entryName, this.tipoTracciato, tracciato.getNomeFile(), this.connettore.getUrl(), e.getMessage());
+        			log.error(errore, e);
+        			erroriSpedizione.add(errore);
+        			
+        			try {
+        				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_KO_KEY);
+        			} catch (UtilsException e1) {
+        				log.error(e1.getMessage(), e1);
+        			}
+        			
+        			if(eventoCtx != null) {
+        				eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+        				eventoCtx.setEsito(Esito.FAIL);
+        				eventoCtx.setDescrizioneEsito(e.getMessage());
+        				eventoCtx.setException(e);
+        			}
+				} finally {
+        			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
         				EventiBD eventiBD = new EventiBD(configWrapper);
         				try {
-        					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+        					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
         				} catch (ServiceException e) {
         					log.error("Errore durante il salvataggio dell'evento: ", e);
         				}
@@ -528,15 +547,16 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             
             if(!mappaRPP.isEmpty()) {
             	for (String rppKey : mappaRPP.keySet()) {	
+            		EventoContext eventoCtx = new EventoContext(Componente.API_GOVPAY);
             		try {
 						Rpp rpp = mappaRPP.get(rppKey);
 						
 						log.debug(MessageFormat.format("Spedizione RPP: {0} in corso...", rppKey));
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
 						
-						client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+						client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(ConverterUtils.toJSON(rpp).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
-						client.getEventoCtx().setEsito(Esito.OK);
+						eventoCtx.setEsito(Esito.OK);
 						log.debug(MessageFormat.format("Spedizione RPP: {0} completata.", rppKey));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
@@ -554,11 +574,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             				log.error(e1.getMessage(), e1);
             			}
             			
-            			if(client != null) {
-//        					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-            				client.getEventoCtx().setEsito(Esito.FAIL);
-            				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
-            				client.getEventoCtx().setException(e);
+            			if(eventoCtx != null) {
+//        					eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+            				eventoCtx.setEsito(Esito.FAIL);
+            				eventoCtx.setDescrizioneEsito(e.getMessage());
+            				eventoCtx.setException(e);
             			}
             		} catch (ClientException e) {
             			errore = MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_SPEDIZIONE_RPP_0_DEL_TRACCIATO_1_NOME_2_AL_DESTINATARIO_3_4, rppKey, this.tipoTracciato, tracciato.getNomeFile(), this.connettore.getUrl(), e.getMessage());
@@ -572,16 +592,33 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             			}
             			
             			if(client != null) {
-        					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-            				client.getEventoCtx().setEsito(Esito.FAIL);
-            				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
-            				client.getEventoCtx().setException(e);
+            				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+            				eventoCtx.setEsito(Esito.FAIL);
+            				eventoCtx.setDescrizioneEsito(e.getMessage());
+            				eventoCtx.setException(e);
             			}
-            		} finally {
-            			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+            		} catch (ClientInitializeException e) {
+            			errore = MessageFormat.format("Errore durante creazione del client per la spedizione RPP {0} del Tracciato {1} [Nome: {2}], al destinatario [{3}]:{4}",	rppKey, this.tipoTracciato, tracciato.getNomeFile(), this.connettore.getUrl(), e.getMessage());
+            			log.error(errore, e);
+            			erroriSpedizione.add(errore);
+            			
+            			try {
+            				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_KO_KEY);
+            			} catch (UtilsException e1) {
+            				log.error(e1.getMessage(), e1);
+            			}
+            			
+            			if(eventoCtx != null) {
+            				eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+            				eventoCtx.setEsito(Esito.FAIL);
+            				eventoCtx.setDescrizioneEsito(e.getMessage());
+            				eventoCtx.setException(e);
+            			}
+    				} finally {
+            			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
             				EventiBD eventiBD = new EventiBD(configWrapper);
             				try {
-            					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+            					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
             				} catch (ServiceException e) {
             					log.error("Errore durante il salvataggio dell'evento: ", e);
             				}

@@ -63,6 +63,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.Versamento.StatoPagamento;
@@ -556,6 +557,8 @@ public class Versamento  {
 			} catch (VersamentoNonValidoException e) { 
 				throw new GovPayException(EsitoOperazione.INTERNAL, MessageFormat.format("verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] e'' fallita con errore: {6}", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione, e.getMessage()));
 			} catch (IOException e) { 
+				throw new GovPayException(EsitoOperazione.INTERNAL, MessageFormat.format("verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] e'' fallita con errore: {6}", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione, e.getMessage()));
+			} catch (ClientInitializeException e) {
 				throw new GovPayException(EsitoOperazione.INTERNAL, MessageFormat.format("verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] e'' fallita con errore: {6}", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione, e.getMessage()));
 			}
 		}

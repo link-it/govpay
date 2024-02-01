@@ -52,11 +52,11 @@ import gov.telematici.pagamenti.ws.rpt.Risposta;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;
@@ -70,17 +70,14 @@ public class NodoClient extends BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(NodoClient.class);
 	private String faultCode;
 	
-	public NodoClient(Intermediario intermediario, String operationID, Giornale giornale) throws ClientException, ServiceException {
-		super(intermediario, TipoOperazioneNodo.NODO);
+	public NodoClient(Intermediario intermediario, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException, ServiceException {
+		super(intermediario, TipoOperazioneNodo.NODO, eventoCtx);
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 		this.operationID = operationID;
-		this.componente = Componente.API_PAGOPA;
 		this.setGiornale(giornale);
-		
-		this.getEventoCtx().setComponente(this.componente); 
 	}
 	
 	@Override

@@ -176,7 +176,12 @@ public class EventoContext implements Serializable {
 	private String transactionId;
 
 	public EventoContext() {
+		this(null);
+	}
+	
+	public EventoContext(Componente componente) {
 		this.dataRichiesta = new Date();
+		this.componente = componente;
 	}
 
 	public Componente getComponente() {
