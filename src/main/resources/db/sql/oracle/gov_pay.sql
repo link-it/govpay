@@ -853,6 +853,7 @@ CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti
@@ -1519,6 +1520,8 @@ CREATE TABLE rendicontazioni
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
+CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
 CREATE TRIGGER trg_rendicontazioni
 BEFORE
 insert on rendicontazioni
