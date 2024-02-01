@@ -42,6 +42,8 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -51,6 +53,7 @@ import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.MaggioliJPPAClient;
 import it.govpay.core.utils.client.MaggioliJPPAClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.configurazione.Giornale;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRichiestaStandard;
@@ -95,15 +98,14 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	@Override
 	public void run() {
 		ContextThreadLocal.set(this.ctx);
-		//		BasicBD bd = null;
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		MaggioliJPPAClient client = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
-		//		RptBD rptBD = null;
 		ConnettoreNotificaPagamenti connettoreMaggioliJPPA = dominio.getConnettoreMaggioliJPPA();
 		String rptKey = this.rpt.getCodDominio() + "@" + this.rpt.getIuv() + "@" + this.rpt.getCcp();
+		EventoContext eventoCtx = new EventoContext(Componente.API_MAGGIOLI_JPPA);
 		try {
 			String operationId = appContext.setupInvioNotificaPagamentiMaggioliJPPAClient(Azione.maggioliInviaEsitoPagamento.toString(), connettoreMaggioliJPPA.getUrl());
 			log.info("Id Server: [" + operationId + "]");
@@ -115,15 +117,16 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 
 			ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamento");
 
-			client = new it.govpay.core.utils.client.MaggioliJPPAClient(this.dominio,connettoreMaggioliJPPA, operationId, this.giornale);
 			// salvataggio id Rpt/ versamento/ pagamento
-			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
-			client.getEventoCtx().setIuv(this.rpt.getIuv());
-			client.getEventoCtx().setCcp(this.rpt.getCcp());
-			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
-			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
+			eventoCtx.setCodDominio(this.rpt.getCodDominio());
+			eventoCtx.setIuv(this.rpt.getIuv());
+			eventoCtx.setCcp(this.rpt.getCcp());
+			eventoCtx.setIdA2A(this.applicazione.getCodApplicazione());
+			eventoCtx.setIdPendenza(this.versamento.getCodVersamentoEnte());
 			if(this.pagamentoPortale != null)
-				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
+				eventoCtx.setIdPagamento(this.pagamentoPortale.getIdSessione());
+			
+			client = new it.govpay.core.utils.client.MaggioliJPPAClient(this.dominio,connettoreMaggioliJPPA, operationId, this.giornale, eventoCtx);
 
 			CtRichiestaStandard richiestaStandard = new CtRichiestaStandard();
 			
@@ -148,8 +151,8 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 				
 				this.esito = StEsito.ERROR.toString();
 				this.descrizioneEsito = "RPT in stato "+ this.rpt.getEsitoPagamento()+" non valido per la spedizione";
-				client.getEventoCtx().setEsito(Esito.KO);
-				client.getEventoCtx().setDescrizioneEsito(this.descrizioneEsito);
+				eventoCtx.setEsito(Esito.KO);
+				eventoCtx.setDescrizioneEsito(this.descrizioneEsito);
 				ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamentoStatoRptNonValido", this.rpt.getEsitoPagamento());
 				return;
 			}
@@ -166,14 +169,30 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 
 			log.info("Notifica Pagamento Maggioli inviata correttamente");
 			ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamentoOk");
-			client.getEventoCtx().setEsito(Esito.OK);
+			eventoCtx.setEsito(Esito.OK);
 
+		}  catch (ClientInitializeException e) {
+			log.error("Errore nella creazione del client per la spedizione della Notifica Pagamento", e);
+			if(eventoCtx != null) {
+				eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				eventoCtx.setEsito(Esito.FAIL);
+				eventoCtx.setDescrizioneEsito(e.getMessage());
+			}	
+			try {
+				ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamentoFail", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+			}
+
+			this.esito = StEsito.ERROR.toString();
+			this.descrizioneEsito = e.getMessage();
+			this.exception = e;
 		}  catch (ClientException e) {
 			log.error("Errore nella spedizione della Notifica Pagamento", e);
-			if(client != null) {
-				client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-				client.getEventoCtx().setEsito(Esito.FAIL);
-				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			if(eventoCtx != null) {
+				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+				eventoCtx.setEsito(Esito.FAIL);
+				eventoCtx.setDescrizioneEsito(e.getMessage());
 			}	
 			try {
 				ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamentoFail", e.getMessage());
@@ -186,15 +205,15 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			this.exception = e;
 		} catch (GovPayException | UtilsException | DatatypeConfigurationException e) {
 			log.error("Errore nella spedizione della Notifica Pagamento", e);
-			if(client != null) {
+			if(eventoCtx != null) {
 				if(e instanceof GovPayException) {
-					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+					eventoCtx.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
 				} else {
-					client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 				}
-				client.getEventoCtx().setEsito(Esito.FAIL);
-				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
-				client.getEventoCtx().setException(e);
+				eventoCtx.setEsito(Esito.FAIL);
+				eventoCtx.setDescrizioneEsito(e.getMessage());
+				eventoCtx.setException(e);
 			}	
 			try {
 				ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamentoFail", e.getMessage());
@@ -205,10 +224,10 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			this.descrizioneEsito = e.getMessage();
 			this.exception = e;
 		} finally {
-			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 
 				} catch (ServiceException e) {
 					log.error("Errore: " + e.getMessage(), e);

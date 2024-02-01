@@ -993,7 +993,7 @@ public class PendenzeDAO extends BaseDAO{
 
 	@SuppressWarnings("deprecation")
 	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, 
-	NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException, ApplicazioneNonTrovataException, UnprocessableEntityException{ 
+	ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException, ApplicazioneNonTrovataException, UnprocessableEntityException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		VersamentiBD versamentiBD = null;

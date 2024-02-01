@@ -104,7 +104,7 @@ public class RptDAO extends BaseDAO{
 			response.setDominio(versamento.getDominio(configWrapper));
 			response.setUnitaOperativa(versamento.getUo(configWrapper));
 			versamento.getTipoVersamentoDominio(configWrapper);
-			versamento.getTipoVersamento(configWrapper);
+			response.setTipoVersamento(versamento.getTipoVersamento(configWrapper));
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
@@ -140,7 +140,7 @@ public class RptDAO extends BaseDAO{
 			Versamento versamento = rpt.getVersamento();
 			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(configWrapper);
-			versamento.getTipoVersamento(configWrapper);
+			response.setTipoVersamento(versamento.getTipoVersamento(configWrapper));
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(configWrapper);
@@ -240,6 +240,7 @@ public class RptDAO extends BaseDAO{
 		filter.setIuv(listaRptDTO.getIuv());
 		filter.setCodDominio(listaRptDTO.getIdDominio());
 		filter.setIdDomini(listaRptDTO.getCodDomini());
+		filter.setIdTipiVersamento(listaRptDTO.getIdTipiVersamento());
 
 		filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
 		filter.setIdPendenza(listaRptDTO.getIdPendenza());
@@ -310,8 +311,13 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 			
 			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), patchRptDTO.getIdDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(),patchRptDTO.getIdDominio(), null);
+			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), rpt.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(),rpt.getCodDominio(), null);
+			}
+			
+			// controllo che il tipo pendenza sia autorizzato
+			if(!AuthorizationManager.isTipoVersamentoAuthorized(patchRptDTO.getUser(), rpt.getVersamento().getTipoVersamento(configWrapper).getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(), null, rpt.getVersamento().getTipoVersamento(configWrapper).getCodTipoVersamento());
 			}
 			
 			for(PatchOp op: patchRptDTO.getOp()) {
@@ -422,7 +428,7 @@ public class RptDAO extends BaseDAO{
 			response.setDominio(rpt.getVersamento().getDominio(configWrapper));
 			response.setUnitaOperativa(rpt.getVersamento().getUo(configWrapper));
 			rpt.getVersamento().getTipoVersamentoDominio(configWrapper);
-			rpt.getVersamento().getTipoVersamento(configWrapper);
+			response.setTipoVersamento(rpt.getVersamento().getTipoVersamento(configWrapper));
 			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento().getSingoliVersamenti();
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {

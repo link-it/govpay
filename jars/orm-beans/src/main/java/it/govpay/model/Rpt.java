@@ -150,7 +150,8 @@ public class Rpt extends BasicModel{
 		RT_ESITO_SCONOSCIUTO_PA,
 		RT_ERRORE_INVIO_A_PA,
 		INTERNO_NODO,
-		RPT_SCADUTA;
+		RPT_SCADUTA,
+		RT_GENERATA_NODO;
 		
 		public static StatoRpt toEnum(String s) {
 			try {

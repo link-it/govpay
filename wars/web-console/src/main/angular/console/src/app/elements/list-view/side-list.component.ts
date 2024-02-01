@@ -216,7 +216,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       (_response) => {
         this._lastMetaResponse = _response.body;
         this._isLoadingMeta = false;
-        // this.__waitForMeta(true);
+        this.__waitForMeta(true);
       },
       (error) => {
         this._isLoadingMeta = false;
@@ -236,10 +236,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.rsc.data.actions = 0;
       }
       if (enableActions) {
-        if (this.rsc.data.actions === 0) {
-          this.rsc.data.actions = true;
-          UtilService.headBehavior.next(this.rsc);
-        }
+        this.rsc.data.actions = (this._lastMetaResponse.numRisultati > 0);
+        UtilService.headBehavior.next(this.rsc);
       }
     });
   }

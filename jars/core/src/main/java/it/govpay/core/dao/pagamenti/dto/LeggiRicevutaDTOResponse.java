@@ -25,6 +25,7 @@ package it.govpay.core.dao.pagamenti.dto;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.model.TipoVersamento;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -40,6 +41,7 @@ public class LeggiRicevutaDTOResponse {
 	private Dominio dominio;
 	private Versamento versamento;
 	private byte[] pdf;
+	private TipoVersamento tipoVersamento;
 
 	public Dominio getDominio() {
 		return this.dominio;
@@ -71,5 +73,13 @@ public class LeggiRicevutaDTOResponse {
 
 	public void setPdf(byte[] pdf) {
 		this.pdf = pdf;
+	}
+
+	public TipoVersamento getTipoVersamento() {
+		return tipoVersamento;
+	}
+
+	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
 	}
 }
