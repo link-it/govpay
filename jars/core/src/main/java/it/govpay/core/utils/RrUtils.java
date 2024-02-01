@@ -62,6 +62,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -262,11 +263,11 @@ public class RrUtils extends NdpValidationUtils {
 //				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 //			else
 //				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			popolaEventoCooperazione(client, rpt, risposta, intermediario, stazione);
+			popolaEventoCooperazione(client.getEventoCtx(), rpt, risposta, intermediario, stazione);
 		}
 	}
 	
-	private static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Risposta risposta, Intermediario intermediario, Stazione stazione) throws ServiceException {
+	private static void popolaEventoCooperazione(EventoContext eventoCtx, Rpt rpt, Risposta risposta, Intermediario intermediario, Stazione stazione) {
 		
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodCanale(rpt.getCodCanale());
@@ -279,7 +280,7 @@ public class RrUtils extends NdpValidationUtils {
 		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
 		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
 		datiPagoPA.setCodDominio(rpt.getCodDominio());
-		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
+		eventoCtx.setDatiPagoPA(datiPagoPA);
 	}
 
 	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er) throws NdpException, ServiceException, UtilsException {

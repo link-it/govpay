@@ -38,7 +38,7 @@ import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.appio.client.AppIoAPIClient;
 import it.govpay.core.utils.appio.impl.ApiException;
@@ -48,7 +48,7 @@ import it.govpay.core.utils.appio.model.LimitedProfile;
 import it.govpay.core.utils.appio.model.MessageCreated;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
-import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
@@ -60,16 +60,14 @@ public class AppIoClient extends BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(AppIoClient.class);
 	private AppIoAPIClient apiClient = null;
 
-	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale) throws ClientException { 
-		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, getConnettore(appIo)); 
+	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException { 
+		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, getConnettore(appIo), eventoCtx); 
 
 		this.apiClient = new AppIoAPIClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
 
 		this.operationID = operationID;
-		this.componente = Componente.API_BACKEND_IO;
 		this.setGiornale(giornale);
-		this.getEventoCtx().setComponente(this.componente);
 	}
 
 	public LimitedProfile getProfile(String fiscalCode, String appIOAPIKey, String swaggerOperationId) throws ApiException {

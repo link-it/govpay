@@ -102,13 +102,13 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Categoria;
-import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 import it.govpay.core.utils.client.oauth2.Oauth2ClientCredentialsManager;
@@ -154,7 +154,6 @@ public abstract class BasicClientCORE {
 	protected ServerInfoContextManuallyAdd serverInfoContext = null;
 	protected String operationID;
 	protected String serverID;
-	protected Componente componente;
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
 	private String tipoEventoCustom;
@@ -183,8 +182,8 @@ public abstract class BasicClientCORE {
 	protected static Map<String, SSLSocketFactory> sslContextFactorys = new HashMap<>();
 	protected SSLSocketFactory sslContextFactory;
 
-	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura());
+	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione, EventoContext eventoCtx) throws ClientInitializeException {
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(), eventoCtx);
 		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
@@ -195,8 +194,8 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(TipoDestinatario.INTERMEDIARIO);
 	}
 
-	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione());
+	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione(), eventoCtx);
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
@@ -207,8 +206,8 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(TipoDestinatario.APPLICAZIONE);
 	}
 
-	protected BasicClientCORE(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore) throws ClientException {
-		this(tipoDestinatario +"_" + operazioneSwagger, connettore);
+	protected BasicClientCORE(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore, eventoCtx);
 		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
 		destinatario = "APP_IO";
@@ -219,8 +218,8 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
-	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore) throws ClientException {
-		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore);
+	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx);
 		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
 		mittente = "GovPay";
 		destinatario = "ServizioMyPivot";
@@ -231,7 +230,7 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
 	}
 
-	private BasicClientCORE(String bundleKey, Connettore connettore) throws ClientException {
+	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
 		this.readTimeout = GovpayConfig.getInstance().getReadTimeout();
 		this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeout();
 		this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeout();
@@ -244,7 +243,7 @@ public abstract class BasicClientCORE {
 		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 
 		// inizializzazione base del context evento
-		this.eventoCtx = new EventoContext();
+		this.eventoCtx = eventoCtx;
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 		this.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		this.getEventoCtx().setDataRichiesta(new Date());
@@ -259,13 +258,13 @@ public abstract class BasicClientCORE {
 		this.serverID = bundleKey;
 		this.connettore = connettore;
 		if(this.connettore == null) {
-			throw new ClientException("Connettore non configurato");
+			throw new ClientInitializeException("Connettore non configurato");
 		}
 
 		try {
 			this.url =  new URL(this.connettore.getUrl());
 		} catch (Exception e) {
-			throw new ClientException("La URL del connettore " + this.errMsg + " non e' valida: " + e);
+			throw new ClientInitializeException("La URL del connettore " + this.errMsg + " non e' valida: " + e);
 		}
 		this.sslContextFactory = sslContextFactorys.get(bundleKey);
 
@@ -284,7 +283,7 @@ public abstract class BasicClientCORE {
 								this.connettore.getSslKsLocation() == null ||
 								this.connettore.getSslKsPasswd() == null ||
 								this.connettore.getSslPKeyPasswd() == null)
-							throw new ClientException("Configurazione SSL Client del connettore " + this.errMsg + " incompleta.");	
+							throw new ClientInitializeException("Configurazione SSL Client del connettore " + this.errMsg + " incompleta.");	
 
 						KeyStore keystore = KeyStore.getInstance(this.connettore.getSslKsType()); // JKS,PKCS12,jceks,bks,uber,gkr
 						try (FileInputStream finKeyStore = new FileInputStream(this.connettore.getSslKsLocation());){
@@ -299,7 +298,7 @@ public abstract class BasicClientCORE {
 							this.connettore.getSslTsLocation() == null ||
 							this.connettore.getSslTsPasswd() == null || 
 							this.connettore.getSslType() == null)
-						throw new ClientException("Configurazione SSL Server del connettore " + this.errMsg + " incompleta.");	
+						throw new ClientInitializeException("Configurazione SSL Server del connettore " + this.errMsg + " incompleta.");	
 
 					// Autenticazione SERVER
 					KeyStore truststore = KeyStore.getInstance(this.connettore.getSslTsType()); // JKS,PKCS12,jceks,bks,uber,gkr
@@ -315,8 +314,10 @@ public abstract class BasicClientCORE {
 					sslContext.init(km, tm, null);
 					this.sslContextFactory =  sslContext.getSocketFactory();
 					sslContextFactorys.put(bundleKey, this.sslContextFactory);
+				} catch (ClientInitializeException e) {
+					throw e;
 				} catch (Exception e) {
-					throw new ClientException(e);
+					throw new ClientInitializeException(e);
 				} 
 			}
 		}
@@ -701,6 +702,10 @@ public abstract class BasicClientCORE {
 			// Preparazione messaggio da spedire
 			// Spedizione byte
 			integrationCtx.setMsg(body);
+			
+			// salvo il messaggio originale prima dell'applicazione degli out handlers
+			dumpRequest.setPayload(integrationCtx.getMsg());
+			
 			this.invokeOutHandlers();
 
 			dumpRequest.setPayload(integrationCtx.getMsg());
@@ -964,22 +969,22 @@ public abstract class BasicClientCORE {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.componente, this.getGiornale());
+			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.getEventoCtx().getComponente(), this.getGiornale());
 
-			log.debug("Log Evento Client: [{}], Operazione [{}], Method [{}], Url [{}], StatusCode [{}]", this.componente, this.getEventoCtx().getTipoEvento(), httpMethod, this.url.toExternalForm(), responseCode);
+			log.debug("Log Evento Client: [{}], Operazione [{}], Method [{}], Url [{}], StatusCode [{}]", this.getEventoCtx().getComponente(), this.getEventoCtx().getTipoEvento(), httpMethod, this.url.toExternalForm(), responseCode);
 
 			if(configurazioneInterfaccia != null) {
 				try {
-					log.debug("Configurazione Giornale Eventi API: [{}]: {}" ,this.componente , ConverterUtils.toJSON(configurazioneInterfaccia));
+					log.debug("Configurazione Giornale Eventi API: [{}]: {}" ,this.getEventoCtx().getComponente() , ConverterUtils.toJSON(configurazioneInterfaccia));
 				} catch (it.govpay.core.exceptions.IOException e) {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}
 
-				if(EventiUtils.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+				if(EventiUtils.isRequestLettura(httpMethod, this.getEventoCtx().getComponente(), this.getEventoCtx().getTipoEvento())) {
 					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
 					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
 					log.debug("Tipo Operazione 'Lettura', Log [{}], Dump [{}].", logEvento, dumpEvento);
-				} else if(EventiUtils.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+				} else if(EventiUtils.isRequestScrittura(httpMethod, this.getEventoCtx().getComponente(), this.getEventoCtx().getTipoEvento())) {
 					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
 					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
 					log.debug("Tipo Operazione 'Scrittura', Log [{}], Dump [{}].", logEvento, dumpEvento);
@@ -1028,7 +1033,7 @@ public abstract class BasicClientCORE {
 					this.getEventoCtx().setDettaglioRisposta(dettaglioRisposta);
 				}
 			} else {
-				log.warn("La configurazione per l'API [{}] non e' corretta, salvataggio evento non eseguito.", this.componente); 
+				log.warn("La configurazione per l'API [{}] non e' corretta, salvataggio evento non eseguito.", this.getEventoCtx().getComponente()); 
 			}
 		}
 	}

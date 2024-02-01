@@ -43,6 +43,8 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -51,6 +53,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -110,9 +113,9 @@ public class InviaNotificaThread implements Runnable {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-//		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
 		INotificaClient client = null;
+		EventoContext eventoCtx = new EventoContext(Componente.API_ENTE);
 		try {
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
 			Versione versione = this.connettoreNotifica != null ? this.connettoreNotifica.getVersione() : Versione.GP_REST_01;
@@ -154,22 +157,21 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			client = new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale);
-			
 //			DatiPagoPA datiPagoPA = new DatiPagoPA();
 //			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
 //			datiPagoPA.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
 //			datiPagoPA.setCodDominio(this.rpt.getCodDominio());
 //			client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			// salvataggio id Rpt/ versamento/ pagamento
-			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
-			client.getEventoCtx().setIuv(this.rpt.getIuv());
-			client.getEventoCtx().setCcp(this.rpt.getCcp());
-			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
-			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
+			eventoCtx.setCodDominio(this.rpt.getCodDominio());
+			eventoCtx.setIuv(this.rpt.getIuv());
+			eventoCtx.setCcp(this.rpt.getCcp());
+			eventoCtx.setIdA2A(this.applicazione.getCodApplicazione());
+			eventoCtx.setIdPendenza(this.versamento.getCodVersamentoEnte());
 			if(this.pagamentoPortale != null)
-				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
+				eventoCtx.setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
+			client = new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale, eventoCtx);
 			
 			client.invoke(this.notifica);
 			
@@ -199,27 +201,29 @@ public class InviaNotificaThread implements Runnable {
 				break;
 			}
 			 
-			client.getEventoCtx().setEsito(Esito.OK);
+			eventoCtx.setEsito(Esito.OK);
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
 			errore = true;
 			if(e instanceof GovPayException || e instanceof ClientException)
 				log.warn("Errore nella consegna della notifica: " + e.getMessage());
+			else if(e instanceof ClientInitializeException)
+				log.error("Errore nella creazione del client per la consegna della notifica: " + e.getMessage(), e);
 			else
 				log.error("Errore nella consegna della notifica", e);
 			
-			if(client != null) {
+			if(eventoCtx != null) {
 				if(e instanceof GovPayException) {
-					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+					eventoCtx.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
 				} else if(e instanceof ClientException) {
-					client.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+					eventoCtx.setSottotipoEsito(((ClientException)e).getResponseCode() + "");
 				} else {
-					client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 				}
 				
-				client.getEventoCtx().setEsito(Esito.FAIL);
-				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
-				client.getEventoCtx().setException(e);
+				eventoCtx.setEsito(Esito.FAIL);
+				eventoCtx.setDescrizioneEsito(e.getMessage());
+				eventoCtx.setException(e);
 			}			
 			try {
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
@@ -278,10 +282,10 @@ public class InviaNotificaThread implements Runnable {
 				// Andato male l'aggiornamento. Non importa, verra' rispedito.
 			}
 		} finally {
-			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
 				try {
-					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 				} catch (ServiceException e) {
 					log.error("Errore durante il salvataggio dell'evento: ", e);
 				}
