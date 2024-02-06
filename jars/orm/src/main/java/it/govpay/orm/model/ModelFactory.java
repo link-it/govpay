@@ -125,5 +125,7 @@ public class ModelFactory {
 	
 	public static AllegatoModel ALLEGATO = new AllegatoModel();
 	
+	public static VistaVersamentoAcaModel VISTA_VERSAMENTO_ACA = new VistaVersamentoAcaModel();
+	
 
 }

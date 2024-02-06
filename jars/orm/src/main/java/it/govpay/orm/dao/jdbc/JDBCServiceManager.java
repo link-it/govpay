@@ -123,6 +123,7 @@ import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoAcaServiceSearch;
 import it.govpay.orm.dao.IVistaVersamentoNonRendicontatoServiceSearch;
 import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
 
@@ -1778,6 +1779,27 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public IAllegatoService getAllegatoService() throws ServiceException,NotImplementedException{
 		return new JDBCAllegatoService(this);
 	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaVersamentoAca type:VistaVersamentoAca
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamentoAca}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamentoAca}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaVersamentoAcaServiceSearch getVistaVersamentoAcaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaVersamentoAcaServiceSearch(this);
+	}
+	
 	
 	
 	

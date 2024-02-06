@@ -187,6 +187,9 @@ public class Versamento extends BasicModel {
 	
 	private String proprieta;
 	
+	private Date dataUltimaModificaAca;
+	private Date dataUltimaComunicazioneAca;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -779,5 +782,17 @@ public class Versamento extends BasicModel {
 	}
 	public void setProprieta(String proprieta) {
 		this.proprieta = proprieta;
+	}
+	public Date getDataUltimaModificaAca() {
+		return dataUltimaModificaAca;
+	}
+	public void setDataUltimaModificaAca(Date dataUltimaModificaAca) {
+		this.dataUltimaModificaAca = dataUltimaModificaAca;
+	}
+	public Date getDataUltimaComunicazioneAca() {
+		return dataUltimaComunicazioneAca;
+	}
+	public void setDataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
+		this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
 	}
 }

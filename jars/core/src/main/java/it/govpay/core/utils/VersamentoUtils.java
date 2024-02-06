@@ -137,12 +137,12 @@ public class VersamentoUtils {
 		return new VersamentoUtils();
 	}
 
-	public final static QName _VersamentoKeyCodApplicazione_QNAME = new QName("", "codApplicazione");
-	public final static QName _VersamentoKeyCodVersamentoEnte_QNAME = new QName("", "codVersamentoEnte");
-	public final static QName _VersamentoKeyCodDominio_QNAME = new QName("", "codDominio");
-	public final static QName _VersamentoKeyCodUnivocoDebitore_QNAME = new QName("", "codUnivocoDebitore");
-	public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
-	public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
+	public static final QName _VersamentoKeyCodApplicazione_QNAME = new QName("", "codApplicazione");
+	public static final QName _VersamentoKeyCodVersamentoEnte_QNAME = new QName("", "codVersamentoEnte");
+	public static final QName _VersamentoKeyCodDominio_QNAME = new QName("", "codDominio");
+	public static final QName _VersamentoKeyCodUnivocoDebitore_QNAME = new QName("", "codUnivocoDebitore");
+	public static final QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
+	public static final QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
 
 	public static void validazioneSemantica(Versamento versamento) throws GovPayException, ServiceException {
 		if(versamento == null) return;
@@ -209,8 +209,6 @@ public class VersamentoUtils {
 			mapSingoliVersamentiNuovi.put(singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento);
 		}
 		
-//		Collections.sort(singoliVersamentiNuovi);
-
 		for(int i=0; i<singoliversamentiLetti.size(); i++) {
 			SingoloVersamento letto = singoliversamentiLetti.get(i);
 			log.trace("Verifica voce pendenza con id [{}], indice dati [{}] ...", letto.getCodSingoloVersamentoEnte(), letto.getIndiceDati());
@@ -275,7 +273,7 @@ public class VersamentoUtils {
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-			log.debug(MessageFormat.format("Versamento non richiede pagamento [StatoVersamento:{0}]. Aggiornamento non necessario.", versamento.getStatoVersamento()));
+			log.debug("Versamento non richiede pagamento [StatoVersamento:{}]. Aggiornamento non necessario.", versamento.getStatoVersamento());
 			return versamento;
 		}
 		
@@ -283,11 +281,11 @@ public class VersamentoUtils {
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
-			log.debug(MessageFormat.format("Versamento scaduto il {0}", versamento.getDataScadenza()));
+			log.debug("Versamento scaduto il {}", versamento.getDataScadenza());
 			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
-				log.debug(MessageFormat.format("Versamento non valido dal {0}", versamento.getDataValidita()));
+				log.debug("Versamento non valido dal {}", versamento.getDataValidita());
 				IContext ctx = ContextThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
@@ -298,7 +296,7 @@ public class VersamentoUtils {
 				try {
 					iuv = IuvUtils.toIuv(versamento.getNumeroAvviso());
 				} catch (ValidationException e1) {
-					log.warn("Numero Avviso [{0}] non valido.", versamento.getNumeroAvviso());
+					log.warn("Numero Avviso [{}] non valido.", versamento.getNumeroAvviso());
 				}
 
 				if(iuv == null) { 
@@ -316,7 +314,7 @@ public class VersamentoUtils {
 				if(versamento.getApplicazione(configWrapper).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
 					try {
-						log.debug(MessageFormat.format("Aggiorno dal servizio applicativo dell''Ente: {0}", versamento.getApplicazione(configWrapper)));
+						log.debug("Aggiorno dal servizio applicativo dell'Ente: {}", versamento.getApplicazione(configWrapper));
 						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, log);
 						log.debug("Aggiornamento completato");
 					} catch (ClientException e) {
@@ -461,7 +459,7 @@ public class VersamentoUtils {
 			} 
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			boolean generaIuv = VersamentoUtils.generaIUV(versamento, configWrapper);
+			boolean generaIuv = VersamentoUtils.generaIUV(versamento);
 			versamento.setTipo(tipo);
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null);
 		} catch (ClientInitializeException e) {
@@ -735,7 +733,7 @@ public class VersamentoUtils {
 			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso());
 			
 			// Il controllo di consistenza del numero avviso su dominio e stazione e' stato spostato tra i controlli da fare solo in caso di creazione della pendenza
-//			checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(versamento, applicazione, dominio);
+//			checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(versamento, applicazione, dominio)
 			
 			// check sulla validita' dello iuv
 			Iuv iuvBD  = new Iuv();
@@ -853,7 +851,7 @@ public class VersamentoUtils {
 		model.setProprietaPendenza(versamento.getProprieta()); 
 		
 		model.setAllegati(toAllegatiModel(versamento.getAllegati()));
-
+		
 		return model;
 	}
 	
@@ -874,7 +872,7 @@ public class VersamentoUtils {
 	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {
 		List<Allegato> allegatiModel = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			allegatiModel = new ArrayList<>();
 			
 			for (AllegatoPendenza allegato : allegati) {
@@ -968,14 +966,6 @@ public class VersamentoUtils {
 		}
 
 		if(singoloVersamento.getTributo() != null) {
-
-			//			if(!applicazione.isTrusted())
-			//				throw new GovPayException(EsitoOperazione.VER_019);
-			//			
-			//			if(!AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), null, diritti))
-			//				throw new GovPayException(EsitoOperazione.VER_021);
-			// TODO test sull'autodeterminazione
-
 			model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
 			model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			
@@ -1037,7 +1027,6 @@ public class VersamentoUtils {
 			JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 
 			try {
-				// TODO eliminare dopo demo
 				if(validazioneDefinizione.startsWith("\""))
 					validazioneDefinizione = validazioneDefinizione.substring(1);
 
@@ -1066,7 +1055,7 @@ public class VersamentoUtils {
 
 			switch (esito) {
 			case KO:
-				log.debug(MessageFormat.format("Validazione tramite JSON Schema completata con esito KO: {0}", validate.getErrors()));
+				log.debug("Validazione tramite JSON Schema completata con esito KO: {}", validate.getErrors());
 				throw new ValidationException(String.join(",", validate.getErrors()));
 			case OK:
 				log.debug("Validazione tramite JSON Schema completata con esito OK.");
@@ -1079,10 +1068,9 @@ public class VersamentoUtils {
 			String inputModello4, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers,
 			String trasformazioneDefinizione) throws GovPayException, UnprocessableEntityException {
-		log.debug(MessageFormat.format("Trasformazione tramite template {0}...", tipoTemplateTrasformazione));
+		log.debug("Trasformazione tramite template {}...", tipoTemplateTrasformazione);
 		String name = "TrasformazionePendenzaModello4";
 		try {
-			// TODO eliminare dopo demo
 			if(trasformazioneDefinizione.startsWith("\""))
 				trasformazioneDefinizione = trasformazioneDefinizione.substring(1);
 
@@ -1098,7 +1086,7 @@ public class VersamentoUtils {
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			inputModello4 = baos.toString();
-			log.debug(MessageFormat.format("Trasformazione tramite template {0} completata con successo.", tipoTemplateTrasformazione));
+			log.debug("Trasformazione tramite template {} completata con successo.", tipoTemplateTrasformazione);
 		} catch (TrasformazioneException e) {
 			log.error(MessageFormat.format("Trasformazione tramite template {0} completata con errore: {1}", tipoTemplateTrasformazione, e.getMessage()), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
@@ -1110,7 +1098,7 @@ public class VersamentoUtils {
 			 String inputModello4) throws ServiceException, GovPayException, EcException, ValidationException, IOException {
 		
 		if(codApplicazioneInoltro != null) {
-			return _inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, codApplicazioneInoltro);
+			return inoltroInputVersamentoModello4Inner(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, codApplicazioneInoltro);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
 			
@@ -1129,11 +1117,11 @@ public class VersamentoUtils {
 		}
 	}
 
-	private static Versamento _inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String inputModello4, String codApplicazione)
+	private static Versamento inoltroInputVersamentoModello4Inner(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String inputModello4, String codApplicazione)
 			throws ServiceException, GovPayException, EcException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento chiediVersamento = null;
-		log.debug(MessageFormat.format("Inoltro verso l''applicazione {0}...", codApplicazione));
+		log.debug("Inoltro verso l'applicazione {}...", codApplicazione);
 		
 		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
@@ -1172,7 +1160,7 @@ public class VersamentoUtils {
 			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_E_FALLITO_CON_ERRORE_3, codDominio, codTipoVersamento, codApplicazione, e.getMessage()));
 		} 
 		
-		log.debug(MessageFormat.format("Inoltro verso l''applicazione {0} completato con successo.", codApplicazione));
+		log.debug("Inoltro verso l'applicazione {} completato con successo.", codApplicazione);
 		return chiediVersamento;
 	}
 	
@@ -1183,7 +1171,7 @@ public class VersamentoUtils {
 			
 			Integer.parseInt(stringValue.trim());
 			return true;
-		} catch (Throwable t) {
+		} catch (NumberFormatException t) {
 			return false;
 		}
 	}
@@ -1201,7 +1189,7 @@ public class VersamentoUtils {
 	
 	public Integer getGiorniSogliaPagamento(String stringValue) {
 		try {
-			String val = stringValue;
+			String val = null;
 			String tmp = stringValue.toUpperCase().trim();
 			if(tmp.startsWith(TipoSogliaVersamento.ENTRO.toString())) {
 				val = tmp.substring(tmp.indexOf(TipoSogliaVersamento.ENTRO.toString())+ TipoSogliaVersamento.ENTRO.toString().length());
@@ -1212,7 +1200,7 @@ public class VersamentoUtils {
 			}
 			
 			return Integer.parseInt(val);
-		} catch (Throwable t) {
+		} catch (IndexOutOfBoundsException | NumberFormatException t) {
 			return null;
 		}
 	}
@@ -1236,14 +1224,12 @@ public class VersamentoUtils {
 		return false;
 	}
 	
-	public static boolean generaIUV(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+	public static boolean generaIUV(Versamento versamento) {
 		
 		boolean hasBollo = false;
 		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti()) {
-			if(!hasBollo) {
-				if(singoloVersamento.getTipoBollo() != null && singoloVersamento.getHashDocumento() != null && singoloVersamento.getProvinciaResidenza() != null) {
-					hasBollo = true;
-				}
+			if(!hasBollo && singoloVersamento.getTipoBollo() != null && singoloVersamento.getHashDocumento() != null && singoloVersamento.getProvinciaResidenza() != null) {
+				hasBollo = true;
 			}
 		}
 		
@@ -1299,7 +1285,6 @@ public class VersamentoUtils {
 				if(!dominioSV.getCodDominio().equals(dominio.getCodDominio()))
 					return dominioSV;
 				
-//				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
 			} catch (NotFoundException e) {
 				// se passo qui ho fallito la validazione della pendenza !
 				throw new ServiceException(MessageFormat.format("Dominio [{0}] non censito in base dati.", singoloVersamento.getIdDominio()));
@@ -1318,5 +1303,49 @@ public class VersamentoUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * In caso di update l'avviso viene inviato se valgono tutte le seguenti opzioni:
+	 * - la pendenza e' stata annullata o ripristinata
+	 * - viene aggiornato l'importo o la data scadenza
+	 * @param versamento
+	 * @param configWrapper
+	 * @return
+	 * @throws ServiceException
+	 */
+	public static boolean comunicaAggiornamentoPendenzaAllArchivioCentralizzato(Versamento versamento, Versamento versamentoLetto, BDConfigWrapper configWrapper) throws ServiceException {
+		
+			boolean importoModificato = !versamento.getImportoTotale().equals(versamentoLetto.getImportoTotale());
+			
+			boolean pendenzaAnnullataORipristinata = 
+					(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) 
+							&& versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
+					|| (versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO) 
+							&& versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
+					; 
+				
+			boolean dataValiditaModificata = false;
+			
+			if(
+					(versamentoLetto.getDataValidita() == null && versamento.getDataValidita() != null) 
+					|| (versamentoLetto.getDataValidita() != null && versamento.getDataValidita() == null)
+					|| (versamentoLetto.getDataValidita() != null && versamento.getDataValidita() != null && !versamento.getDataValidita().equals(versamentoLetto.getDataValidita()))
+					){
+						dataValiditaModificata = true;
+					}
+			
+			boolean dataScadenzaModificata = false;
+			
+			if(versamento.getDataValidita() == null &&
+					(versamentoLetto.getDataScadenza() == null && versamento.getDataScadenza() != null) 
+					|| (versamentoLetto.getDataScadenza() != null && versamento.getDataScadenza() == null)
+					|| (versamentoLetto.getDataScadenza() != null && versamento.getDataScadenza() != null && !versamento.getDataScadenza().equals(versamentoLetto.getDataScadenza()))
+					){
+						dataScadenzaModificata = true;
+			}
+			
+			return importoModificato || pendenzaAnnullataORipristinata || dataValiditaModificata || dataScadenzaModificata;
+		
 	}
 }

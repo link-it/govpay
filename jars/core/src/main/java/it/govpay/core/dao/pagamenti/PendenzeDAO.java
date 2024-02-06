@@ -121,6 +121,7 @@ public class PendenzeDAO extends BaseDAO{
 	public static final String[] OPERAZIONI_CONSENTITE_PENDENZE = { PATH_DESCRIZIONE_STATO, PATH_STATO, PATH_ACK, PATH_NOTA }; 
 
 	public PendenzeDAO() {
+		// donothing
 	}
 
 	public ListaPendenzeDTOResponse countPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
@@ -953,7 +954,7 @@ public class PendenzeDAO extends BaseDAO{
 				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, configWrapper);
 
 
-			boolean generaIuv = VersamentoUtils.generaIUV(versamento, configWrapper);
+			boolean generaIuv = VersamentoUtils.generaIUV(versamento);
 			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
 			createOrUpdatePendenzaResponse.setCreated(versamento.isCreated());
 			createOrUpdatePendenzaResponse.setVersamento(versamento);
@@ -1116,7 +1117,7 @@ public class PendenzeDAO extends BaseDAO{
 			chiediVersamento.setTipo(putVersamentoDTO.getTipo());
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			boolean generaIuv = VersamentoUtils.generaIUV(chiediVersamento, configWrapper);
+			boolean generaIuv = VersamentoUtils.generaIUV(chiediVersamento);
 			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null, putVersamentoDTO.isInserimentoDB());
 
 			// restituisco il versamento creato

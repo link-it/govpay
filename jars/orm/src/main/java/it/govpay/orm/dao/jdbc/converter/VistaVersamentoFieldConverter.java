@@ -599,6 +599,20 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "proprieta";
 			}
 		}
+		if(field.equals(VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ultima_modifica_aca";
+			}else{
+				return "data_ultima_modifica_aca";
+			}
+		}
+		if(field.equals(VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ultima_comunicazione_aca";
+			}else{
+				return "data_ultima_comunicazione_aca";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -838,6 +852,12 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().PROPRIETA)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 

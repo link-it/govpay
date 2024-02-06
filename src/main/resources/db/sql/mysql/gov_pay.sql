@@ -584,6 +584,8 @@ CREATE TABLE versamenti
 	avv_app_io_data_prom_scadenza DATETIME,
 	avv_app_io_prom_scad_notificat BOOLEAN,
 	proprieta LONGTEXT,
+	data_ultima_modifica_aca DATETIME COMMENT 'Data ultima modifica dati da inviare ad ACA',
+	data_ultima_comunicazione_aca DATETIME COMMENT 'Data ultima comunicazione con ACA conclusa con successo',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -2017,6 +2019,8 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -2118,5 +2122,29 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN rpt ON pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
+
+-- Vista Versamenti da inviare all'ACA	
+CREATE VIEW v_versamenti_aca AS 
+SELECT versamenti.id,
+    versamenti.cod_versamento_ente,
+    versamenti.importo_totale,
+    versamenti.stato_versamento,
+    versamenti.data_validita,
+    versamenti.data_scadenza,
+    versamenti.causale_versamento,
+    versamenti.debitore_identificativo,
+    versamenti.debitore_tipo,
+    versamenti.debitore_anagrafica,
+    versamenti.iuv_versamento,
+    versamenti.numero_avviso,
+    applicazioni.cod_applicazione AS cod_applicazione,
+    domini.cod_dominio AS cod_dominio,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca
+    FROM versamenti 
+	JOIN domini ON versamenti.id_dominio = domini.id 
+	JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+    WHERE versamenti.data_ultima_comunicazione_aca < versamenti.data_ultima_modifica_aca;
+
 
 
