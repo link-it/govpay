@@ -111,6 +111,7 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.CtPaymentPABuilder;
 import it.govpay.core.utils.CtPaymentPAV2Builder;
 import it.govpay.core.utils.CtReceiptUtils;
+import it.govpay.core.utils.CtReceiptV2Utils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -2004,7 +2005,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			Rpt rpt = CtReceiptUtils.acquisisciRT(codDominio, iuv, requestBody, false);
+			Rpt rpt = CtReceiptV2Utils.acquisisciRT(codDominio, iuv, requestBody, false);
 
 			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());

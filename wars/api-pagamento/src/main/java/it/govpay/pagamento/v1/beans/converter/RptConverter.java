@@ -120,6 +120,7 @@ public class RptConverter {
 					rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
 					break;
 				case SANP_240:
+				case RPTV1_RTV2:
 					PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
 					
 					CtPaymentPA data = paGetPaymentRes_RPT.getData();
@@ -143,6 +144,7 @@ public class RptConverter {
 					}
 					break;
 				case SANP_321_V2:
+				case RPTV2_RTV1:
 					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
 					
 					CtPaymentPAV2 dataV2 = paGetPaymentV2Response.getData();
@@ -230,6 +232,7 @@ public class RptConverter {
 					rsModel.setRt(ConverterUtils.getRtJson(ctRt));
 					break;
 				case SANP_240:
+				case RPTV2_RTV1:
 					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 					
 					CtReceipt data = paSendRTReq_RT.getReceipt();
@@ -253,6 +256,7 @@ public class RptConverter {
 					}
 					break;
 				case SANP_321_V2:
+				case RPTV1_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();
@@ -353,6 +357,7 @@ public class RptConverter {
 					rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
 					break;
 				case SANP_240:
+				case RPTV1_RTV2:
 					PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
 					
 					CtPaymentPA data = paGetPaymentRes_RPT.getData();
@@ -376,6 +381,7 @@ public class RptConverter {
 					}
 					break;
 				case SANP_321_V2:
+				case RPTV2_RTV1:
 					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
 					
 					CtPaymentPAV2 dataV2 = paGetPaymentV2Response.getData();
@@ -464,6 +470,7 @@ public class RptConverter {
 					rsModel.setRt(ConverterUtils.getRtJson(ctRt));
 					break;
 				case SANP_240:
+				case RPTV2_RTV1:
 					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 					
 					CtReceipt data = paSendRTReq_RT.getReceipt();
@@ -487,6 +494,7 @@ public class RptConverter {
 					}
 					break;
 				case SANP_321_V2:
+				case RPTV1_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();

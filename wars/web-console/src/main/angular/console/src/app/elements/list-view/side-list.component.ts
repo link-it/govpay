@@ -1051,7 +1051,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           riscossione[_configRic.exportLabel['importo']] = risc.importo || 0;
           riscossione[_configRic.exportLabel['data']] = risc.data || '';
           riscossione[_configRic.exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
-          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.tipoPendenza.idTipoPendenza || '';
           riscossione[_configRic.exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
           riscossione[_configRic.exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
           riscossione[_configRic.exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';

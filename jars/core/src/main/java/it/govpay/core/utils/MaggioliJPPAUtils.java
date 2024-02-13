@@ -250,11 +250,13 @@ public class MaggioliJPPAUtils {
 		}
 		break;
 		case SANP_240:
+		case RPTV2_RTV1:
 		{
 			popolaRicevutaDaRPT24(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}
 		break;
 		case SANP_321_V2:
+		case RPTV1_RTV2:
 		{
 			popolaRicevutaDaRPT32(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}
