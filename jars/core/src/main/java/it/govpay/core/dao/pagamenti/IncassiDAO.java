@@ -59,13 +59,12 @@ import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Incasso.StatoIncasso;
 
 public class IncassiDAO extends BaseDAO{
 
-	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws ServiceException {
 		IncassiBD incassiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -124,7 +123,7 @@ public class IncassiDAO extends BaseDAO{
 			ListaIncassiDTOResponse listaIncassiDTOResponse = new ListaIncassiDTOResponse(count, findAll);
 
 			if(listaIncassoDTO.isIncludiPagamenti()) {
-				if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
+				if(listaIncassiDTOResponse.getResults() != null && !listaIncassiDTOResponse.getResults().isEmpty()) {
 					PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
 					pagamentiBD.setAtomica(false);
 					
@@ -165,7 +164,7 @@ public class IncassiDAO extends BaseDAO{
 		}
 	} 
 
-	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, NotAuthorizedException, ServiceException, NotAuthenticatedException{
+	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 
@@ -265,12 +264,8 @@ public class IncassiDAO extends BaseDAO{
 					
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
-							try {
-								this.populatePagamento(pagamento, incassiBD, configWrapper);
-								pagamento.setIncasso(incasso);
-							} catch (NotFoundException e) { 
-	
-							}
+							this.populatePagamento(pagamento, incassiBD, configWrapper);
+							pagamento.setIncasso(incasso);
 						}
 					}
 					
@@ -366,12 +361,8 @@ public class IncassiDAO extends BaseDAO{
 			
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
-					try {
-						this.populatePagamento(pagamento, incassiBD, configWrapper);
-						pagamento.setIncasso(richiestaIncassoDTOResponse.getIncasso());
-					} catch (NotFoundException e) { 
-
-					}
+					this.populatePagamento(pagamento, incassiBD, configWrapper);
+					pagamento.setIncasso(richiestaIncassoDTOResponse.getIncasso());
 				}
 			}
 			
@@ -380,7 +371,7 @@ public class IncassiDAO extends BaseDAO{
 			FrFilter frFilter = frBD.newFilter();
 			frFilter.setIdIncasso(richiestaIncassoDTOResponse.getIncasso().getId());
 			List<Fr> frs = frBD.findAll(frFilter);
-			if(frs.size() > 0) {
+			if(!frs.isEmpty()) {
 				Fr fr = frs.get(0);
 				fr.getRendicontazioni(frBD);
 				richiestaIncassoDTOResponse.setFr(fr);
@@ -398,7 +389,7 @@ public class IncassiDAO extends BaseDAO{
 	}
 
 	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
-			throws ServiceException, NotFoundException {
+			throws ServiceException {
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd); 
 		Versamento versamento = singoloVersamento.getVersamentoBD(bd); 
 		versamento.getApplicazione(configWrapper);

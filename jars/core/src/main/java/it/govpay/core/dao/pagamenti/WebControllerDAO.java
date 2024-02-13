@@ -36,9 +36,7 @@ import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
-import it.govpay.core.dao.pagamenti.exception.ParametriNonTrovatiException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.UrlUtils;
 
 public class WebControllerDAO extends BaseDAO{
@@ -46,10 +44,10 @@ public class WebControllerDAO extends BaseDAO{
 	public static final String OK = "OK";
 
 	public WebControllerDAO() {
-
+		super();
 	}
 
-	public RichiestaWebControllerDTOResponse gestisciRichiestaWebController(RichiestaWebControllerDTO aggiornaPagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, PagamentoPortaleNonTrovatoException{
+	public RichiestaWebControllerDTOResponse gestisciRichiestaWebController(RichiestaWebControllerDTO aggiornaPagamentiPortaleDTO) throws ServiceException, PagamentoPortaleNonTrovatoException{
 		RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = new RichiestaWebControllerDTOResponse();
 
 		IContext ctx = ContextThreadLocal.get();
@@ -93,7 +91,7 @@ public class WebControllerDAO extends BaseDAO{
 	}
 
 
-	public RedirectDaPspDTOResponse gestisciRedirectPsp(RedirectDaPspDTO redirectDaPspDTO) throws GovPayException, NotAuthorizedException, ServiceException, PagamentoPortaleNonTrovatoException, ParametriNonTrovatiException{
+	public RedirectDaPspDTOResponse gestisciRedirectPsp(RedirectDaPspDTO redirectDaPspDTO) throws GovPayException, ServiceException, PagamentoPortaleNonTrovatoException {
 		RedirectDaPspDTOResponse redirectDaPspDTOResponse = new RedirectDaPspDTOResponse();
 		IContext ctx = ContextThreadLocal.get();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -108,9 +106,6 @@ public class WebControllerDAO extends BaseDAO{
 			}catch(NotFoundException e) {
 				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione Psp ["+redirectDaPspDTO.getIdSession()+"]");
 			}
-
-//			if(redirectDaPspDTO.getEsito() == null || redirectDaPspDTO.getIdSession() == null)
-//				throw new ParametriNonTrovatiException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"), "Parametri 'idSession' ed 'esito' obbligatori");
 
 			switch (pagamentoPortale.getCodiceStato()) {
 			case PAGAMENTO_IN_CORSO_AL_PSP:

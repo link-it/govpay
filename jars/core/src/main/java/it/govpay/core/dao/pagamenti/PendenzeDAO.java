@@ -36,7 +36,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.springframework.security.core.Authentication;
@@ -90,7 +89,6 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
@@ -121,9 +119,10 @@ public class PendenzeDAO extends BaseDAO{
 	public static final String[] OPERAZIONI_CONSENTITE_PENDENZE = { PATH_DESCRIZIONE_STATO, PATH_STATO, PATH_ACK, PATH_NOTA }; 
 
 	public PendenzeDAO() {
+		super();
 	}
 
-	public ListaPendenzeDTOResponse countPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public ListaPendenzeDTOResponse countPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException, ValidationException {
 		VersamentiBD versamentiBD = null;
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -172,7 +171,7 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
-					return new ListaPendenzeDTOResponse(0L, new ArrayList<LeggiPendenzaDTOResponse>());
+					return new ListaPendenzeDTOResponse(0L, new ArrayList<>());
 				}
 			}
 			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
@@ -208,7 +207,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException, ValidationException {
 		it.govpay.bd.viste.VersamentiBD versamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
@@ -221,7 +220,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, it.govpay.bd.viste.VersamentiBD versamentiBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, it.govpay.bd.viste.VersamentiBD versamentiBD) throws ServiceException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		it.govpay.bd.viste.filters.VersamentoFilter filter = versamentiBD.newFilter();
@@ -266,7 +265,7 @@ public class PendenzeDAO extends BaseDAO{
 				}
 				filter.setStatoVersamento(statoVersamento);
 			} catch(Exception e) {
-				return new ListaPendenzeDTOResponse(0L, new ArrayList<LeggiPendenzaDTOResponse>());
+				return new ListaPendenzeDTOResponse(0L, new ArrayList<>());
 			}
 		}
 		filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
@@ -322,7 +321,7 @@ public class PendenzeDAO extends BaseDAO{
 		return new ListaPendenzeDTOResponse(count, resList);
 	}
 
-	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO) throws ServiceException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		VersamentiIncassiBD versamentiBD = null;
@@ -370,7 +369,7 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
-					return new ListaPendenzeDTOResponse(0L, new ArrayList<LeggiPendenzaDTOResponse>());
+					return new ListaPendenzeDTOResponse(0L, new ArrayList<>());
 				}
 			}
 			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
@@ -415,17 +414,7 @@ public class PendenzeDAO extends BaseDAO{
 					elem.setUnitaOperativa(versamento.getUo(configWrapper));
 					versamento.getTipoVersamentoDominio(configWrapper);
 					versamento.getTipoVersamento(configWrapper);
-					List<SingoloVersamento> singoliVersamenti = null;
-
-					//				singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-					//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					//					singoloVersamento.getCodContabilita(bd);
-					//					singoloVersamento.getIbanAccredito(bd);
-					//					singoloVersamento.getTipoContabilita(bd);
-					//					singoloVersamento.getTributo(bd);
-					//
-					//				}
-					elem.setLstSingoliVersamenti(singoliVersamenti);
+					elem.setLstSingoliVersamenti(null);
 
 					resList.add(elem);
 				}
@@ -438,7 +427,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException{
+	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException, PendenzaNonTrovataException {
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -527,7 +516,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException, UtilsException{
+	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, GovPayException, UtilsException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		Versamento versamento;
@@ -564,7 +553,7 @@ public class PendenzeDAO extends BaseDAO{
 					} catch (NotFoundException e) {
 						versamentiBD.insertVersamento(versamentoFromSession);
 						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
-						log.info("Versamento (" + versamentoFromSession.getCodVersamentoEnte() + ") dell'applicazione (" + versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
+						log.info("Versamento ({}) dell'applicazione ({}) inserito", versamentoFromSession.getCodVersamentoEnte(), versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
 
 						// avvio il batch di gestione dei promemoria
 						Operazioni.setEseguiGestionePromemoria();
@@ -602,7 +591,7 @@ public class PendenzeDAO extends BaseDAO{
 					try {
 						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
 					} catch (EcException | GovPayException e1) {
-						log.info("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+						log.info("La pendenza ricercata tramite avviso [Dominio: {}, NumeroAvviso: {}] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: {}", codDominio, iuv, e1.getMessage());
 						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
 					}
 				} else {
@@ -732,7 +721,7 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 
-	public LeggiPendenzaDTOResponse patch(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public LeggiPendenzaDTOResponse patch(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchPendenzaDTO.getIdOperatore());
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		VersamentiBD versamentiBD = null;
@@ -781,15 +770,6 @@ public class PendenzeDAO extends BaseDAO{
 				} else {
 					throw new ServiceException("Path '"+op.getPath()+"' non valido");
 				}
-
-				// Casi di operazioni patch che implicano una nota:
-				// ANNULLAMENTO
-				//				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.ANNULLATO)) {
-				//				}
-				// RIPRISTINO
-				//				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.NON_ESEGUITO)) {
-				//				}
-
 			}
 
 			versamentoLetto.setDataUltimoAggiornamento(new Date());
@@ -808,8 +788,6 @@ public class PendenzeDAO extends BaseDAO{
 			throw new GovPayException(e);
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
-		} catch (IOException e) {
-			throw new GovPayException(e);
 		} finally {
 			if(versamentiBD != null)
 				versamentiBD.closeConnection();
@@ -829,30 +807,12 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setDescrizioneStato(descrizioneStato);
 	}
 
-	//	private Evento patchStato(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione, BasicBD bd) throws ValidationException, IOException {
-	private void patchStato(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione) throws ValidationException, IOException {
+	private void patchStato(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione) throws ValidationException {
 		if(!op.getOp().equals(OpEnum.REPLACE)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
 
 		StatoVersamento nuovoStato = this.getNuovoStatoVersamento(op);
-
-		//		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		//		Evento eventoUtente = new Evento();
-
-		//		eventoUtente.setCategoriaEvento(CategoriaEvento.UTENTE);
-		//		eventoUtente.setRuoloEvento(RuoloEvento.CLIENT);
-		//		eventoUtente.setTipoEvento("patchPendenza"); 
-		//		eventoUtente.setEsitoEvento(EsitoEvento.OK);
-		//		eventoUtente.setSottotipoEsito(200);
-		//		eventoUtente.setData(new Date());
-		//		eventoUtente.setDettaglioEsito(motivazione);
-		//		DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-		//		dettaglioRichiesta.setPrincipal(userDetails.getUtenza().getPrincipal());
-		//		dettaglioRichiesta.setUtente(userDetails.getIdentificativo());
-		//		dettaglioRichiesta.setDataOraRichiesta(new Date());
-		//		dettaglioRichiesta.setPayload(UtenzaPatchUtils.getDettaglioAsString(op));
-		//		eventoUtente.setDettaglioRichiesta(dettaglioRichiesta);
 
 		switch (nuovoStato) {
 		case ANNULLATO:
@@ -862,7 +822,6 @@ public class PendenzeDAO extends BaseDAO{
 				versamentoLetto.setAvvisoNotificato(null);
 				versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null); 
 				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
-				//				eventoUtente.setDettaglioEsito("Pendenza annullata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO o ANNULLATO");
 			}
@@ -882,8 +841,6 @@ public class PendenzeDAO extends BaseDAO{
 				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
 				if(versamentoLetto.getAvvMailDataPromemoriaScadenza() != null)
 					versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(false);
-
-				//				eventoUtente.setDettaglioEsito("Pendenza ripristinata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad NON_ESEGUITO da uno stato diverso da ANNULLATO");
 			}
@@ -891,10 +848,6 @@ public class PendenzeDAO extends BaseDAO{
 		default:
 			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStato.name()));
 		}
-
-
-
-		//		return eventoUtente;
 	}
 
 	private void patchAck(it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException {
@@ -905,18 +858,6 @@ public class PendenzeDAO extends BaseDAO{
 		Boolean ackVersamento = (Boolean) op.getValue();
 		versamentoLetto.setAck(ackVersamento != null ? ackVersamento.booleanValue() : false);
 	}
-
-	//	private void patchNxota(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException, IOException {  
-	//		
-	////	private Evento patchNota(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException, IOException {  
-	//		if(!op.getOp().equals(OpEnum.ADD)) {
-	//			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
-	//		}
-	//		
-	//		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
-	//		versamentoLetto.setDescrizioneStato((String)map.get(UtenzaPatchUtils.OGGETTO_NOTA_KEY));
-	////	 	return UtenzaPatchUtils.getNotaFromPatch(authentication, op, bd); 
-	//	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {
 		if(op==null) 
@@ -1061,7 +1002,7 @@ public class PendenzeDAO extends BaseDAO{
 			}
 			Versamento chiediVersamento = null;
 
-			log.debug("Json di input dopo validazione e trasformazione: ["+json+"]");
+			log.debug("Json di input dopo validazione e trasformazione: [{}]", json);
 
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
@@ -1148,9 +1089,7 @@ public class PendenzeDAO extends BaseDAO{
 				}
 			}
 
-		} catch (ServiceException e) {
-			throw new GovPayException(e);
-		} catch (it.govpay.core.exceptions.IOException e) {
+		} catch (ServiceException | it.govpay.core.exceptions.IOException e) {
 			throw new GovPayException(e);
 		}  finally {
 			if(versamentiBD != null)
@@ -1159,7 +1098,7 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 
-	public LeggiPendenzaDTOResponse leggiAvvisoPagamento(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiPendenzaDTOResponse leggiAvvisoPagamento(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		Versamento versamento;
@@ -1186,9 +1125,7 @@ public class PendenzeDAO extends BaseDAO{
 			printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
-		} catch (NotFoundException e) {
-			throw new PendenzaNonTrovataException(e.getMessage(), e);
-		} catch (ValidationException e) {
+		} catch (NotFoundException | ValidationException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}  finally {
 			if(versamentiBD != null)

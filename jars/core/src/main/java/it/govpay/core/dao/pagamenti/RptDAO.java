@@ -50,12 +50,10 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
-import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
@@ -72,9 +70,10 @@ public class RptDAO extends BaseDAO{
 	private static final String PATH_RT = "/rt";
 
 	public RptDAO() {
+		super();
 	}
 
-	public LeggiRptDTOResponse leggiRpt(LeggiRptDTO leggiRptDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiRptDTOResponse leggiRpt(LeggiRptDTO leggiRptDTO) throws ServiceException,RicevutaNonTrovataException{
 		LeggiRptDTOResponse response = new LeggiRptDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		RptBD rptBD = null;
@@ -122,7 +121,7 @@ public class RptDAO extends BaseDAO{
 		return response;
 	}
 
-	public LeggiRicevutaDTOResponse leggiRt(LeggiRicevutaDTO leggiRicevutaDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiRicevutaDTOResponse leggiRt(LeggiRicevutaDTO leggiRicevutaDTO) throws ServiceException,RicevutaNonTrovataException {
 		LeggiRicevutaDTOResponse response = new LeggiRicevutaDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		RptBD rptBD = null;
@@ -169,7 +168,7 @@ public class RptDAO extends BaseDAO{
 		return response;
 	}
 	
-	public ListaRptDTOResponse countRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaRptDTOResponse countRpt(ListaRptDTO listaRptDTO) throws ServiceException{
 		RptBD rptBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
@@ -215,7 +214,7 @@ public class RptDAO extends BaseDAO{
 		}
 	}
 
-	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO) throws ServiceException {
 		it.govpay.bd.viste.RptBD rptBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -228,7 +227,7 @@ public class RptDAO extends BaseDAO{
 		}
 	}
 
-	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, it.govpay.bd.viste.RptBD rptBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, it.govpay.bd.viste.RptBD rptBD) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		it.govpay.bd.viste.filters.RptFilter filter = rptBD.newFilter();
 
@@ -292,7 +291,7 @@ public class RptDAO extends BaseDAO{
 		return new ListaRptDTOResponse(count, resList);
 	}
 
-	public PatchRptDTOResponse patch(PatchRptDTO patchRptDTO) throws ServiceException, RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UnprocessableEntityException {
+	public PatchRptDTOResponse patch(PatchRptDTO patchRptDTO) throws ServiceException, RicevutaNonTrovataException, NotAuthorizedException, ValidationException, UnprocessableEntityException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchRptDTO.getIdOperatore());
 		PatchRptDTOResponse response = new PatchRptDTOResponse();
 
@@ -328,7 +327,7 @@ public class RptDAO extends BaseDAO{
 					}
 
 					Boolean sbloccoRPT = (Boolean) op.getValue();
-					String azione = sbloccoRPT ? "reso bloccante" : "sbloccato";
+					String azione = sbloccoRPT.booleanValue() ? "reso bloccante" : "sbloccato";
 					String descrizioneStato = "Tentativo di pagamento [idDominio:"+idDominio+", IUV:"+iuv+", CCP:"+ccp+"] "+azione+" via API.";
 					rptBD.sbloccaRpt(rpt, sbloccoRPT, descrizioneStato);
 				} else if(PATH_RT.equals(op.getPath())) {
@@ -365,7 +364,7 @@ public class RptDAO extends BaseDAO{
 
 						byte [] rtByte = Base64.getDecoder().decode(((String) op.getValue()).getBytes());
 						
-						log.debug("Nuova RT: " + new String(rtByte));
+						log.debug("Nuova RT: {}", new String(rtByte));
 						
 						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true);
 						
@@ -379,7 +378,6 @@ public class RptDAO extends BaseDAO{
 						
 						(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneOk");
 					}catch (NdpException e) {
-//						if(bd != null) bd.rollback();
 						String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
 						try {
 							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", e.getFaultCode(), e.getFaultString(), faultDescription);
@@ -396,7 +394,6 @@ public class RptDAO extends BaseDAO{
 						
 						throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 					} catch (ServiceException | UtilsException | GovPayException e) {
-//						if(bd != null) bd.rollback();
 						NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, idDominio, e.getMessage(), e);
 						String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
 						try {
