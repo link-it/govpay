@@ -753,6 +753,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "vrs_proprieta";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_metadata";
+			}else{
+				return "vrs_metadata";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().PAG_COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".pag_cod_dominio";
@@ -1205,6 +1212,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_PROPRIETA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_METADATA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().PAG_COD_DOMINIO)){

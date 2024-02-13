@@ -190,6 +190,8 @@ public class Versamento extends BasicModel {
 	private Date dataUltimaModificaAca;
 	private Date dataUltimaComunicazioneAca;
 	
+	private String metadata;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -794,5 +796,11 @@ public class Versamento extends BasicModel {
 	}
 	public void setDataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
 		this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+	}
+	public String getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
 	}
 }

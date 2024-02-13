@@ -217,6 +217,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "vrs_tipo", VistaRendicontazione.model().VRS_TIPO.getFieldType()));
 				setParameter(object, "setVrsProprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_proprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType()));
+				setParameter(object, "setVrsMetadata", VistaRendicontazione.model().VRS_METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "vrs_metadata", VistaRendicontazione.model().VRS_METADATA.getFieldType()));
 				setParameter(object, "setPagCodDominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pag_cod_dominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType()));
 				setParameter(object, "setPagIuv", VistaRendicontazione.model().PAG_IUV.getFieldType(),
@@ -443,6 +445,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"vrsTipo"));
 				setParameter(object, "setVrsProprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType(),
 					this.getObjectFromMap(map,"vrsProprieta"));
+				setParameter(object, "setVrsMetadata", VistaRendicontazione.model().VRS_METADATA.getFieldType(),
+					this.getObjectFromMap(map,"vrsMetadata"));
 				setParameter(object, "setPagCodDominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"pagCodDominio"));
 				setParameter(object, "setPagIuv", VistaRendicontazione.model().PAG_IUV.getFieldType(),

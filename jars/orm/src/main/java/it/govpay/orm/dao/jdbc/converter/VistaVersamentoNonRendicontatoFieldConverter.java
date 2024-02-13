@@ -550,6 +550,13 @@ public class VistaVersamentoNonRendicontatoFieldConverter extends AbstractSQLFie
 				return "vrs_proprieta";
 			}
 		}
+		if(field.equals(VistaVersamentoNonRendicontato.model().VRS_METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_metadata";
+			}else{
+				return "vrs_metadata";
+			}
+		}
 		if(field.equals(VistaVersamentoNonRendicontato.model().PAG_COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".pag_cod_dominio";
@@ -929,6 +936,9 @@ public class VistaVersamentoNonRendicontatoFieldConverter extends AbstractSQLFie
 			return this.toTable(VistaVersamentoNonRendicontato.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamentoNonRendicontato.model().VRS_PROPRIETA)){
+			return this.toTable(VistaVersamentoNonRendicontato.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamentoNonRendicontato.model().VRS_METADATA)){
 			return this.toTable(VistaVersamentoNonRendicontato.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamentoNonRendicontato.model().PAG_COD_DOMINIO)){

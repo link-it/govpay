@@ -246,6 +246,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_COD_RATA);
 			fields.add(VistaRendicontazione.model().VRS_TIPO);
 			fields.add(VistaRendicontazione.model().VRS_PROPRIETA);
+			fields.add(VistaRendicontazione.model().VRS_METADATA);
 			
 			fields.add(VistaRendicontazione.model().PAG_ALLEGATO);
 			fields.add(VistaRendicontazione.model().PAG_CAUSALE_REVOCA);

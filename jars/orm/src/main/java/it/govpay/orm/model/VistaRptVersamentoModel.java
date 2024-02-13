@@ -133,6 +133,7 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaRptVersamento",VistaRptVersamento.class));
 		this.VRS_TIPO = new Field("vrsTipo",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_PROPRIETA = new Field("vrsProprieta",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_METADATA = new Field("vrsMetadata",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 	
 	}
 	
@@ -232,6 +233,7 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaRptVersamento",VistaRptVersamento.class));
 		this.VRS_TIPO = new ComplexField(father,"vrsTipo",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_PROPRIETA = new ComplexField(father,"vrsProprieta",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_METADATA = new ComplexField(father,"vrsMetadata",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 	
 	}
 	
@@ -420,6 +422,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 	public IField VRS_TIPO = null;
 	 
 	public IField VRS_PROPRIETA = null;
+	 
+	public IField VRS_METADATA = null;
 	 
 
 	@Override

@@ -234,6 +234,7 @@ public class RendicontazioneConverter {
 				versamento.setTipo(TipologiaTipoVersamento.toEnum(vo.getVrsTipo()));
 			
 			versamento.setProprieta(vo.getVrsProprieta());
+			versamento.setMetadata(vo.getVrsMetadata());
 	
 			dto.setVersamento(versamento );
 		}

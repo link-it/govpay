@@ -21,8 +21,6 @@ package it.govpay.bd.model.converter;
 
 import java.math.BigDecimal;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Incasso;
 import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.orm.IdApplicazione;

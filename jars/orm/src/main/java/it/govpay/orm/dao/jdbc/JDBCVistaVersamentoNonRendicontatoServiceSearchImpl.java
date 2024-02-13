@@ -221,6 +221,7 @@ public class JDBCVistaVersamentoNonRendicontatoServiceSearchImpl implements IJDB
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_COD_RATA);
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_TIPO);
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_PROPRIETA);
+			fields.add(VistaVersamentoNonRendicontato.model().VRS_METADATA);
 			
 			fields.add(VistaVersamentoNonRendicontato.model().PAG_ALLEGATO);
 			fields.add(VistaVersamentoNonRendicontato.model().PAG_CAUSALE_REVOCA);

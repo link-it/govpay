@@ -613,6 +613,13 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_ultima_comunicazione_aca";
 			}
 		}
+		if(field.equals(VistaVersamento.model().METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".metadata";
+			}else{
+				return "metadata";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -858,6 +865,9 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().METADATA)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 

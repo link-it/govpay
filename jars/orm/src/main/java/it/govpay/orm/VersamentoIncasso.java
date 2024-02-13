@@ -96,6 +96,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="docDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="proprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="metadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -170,7 +171,8 @@ import java.io.Serializable;
   	"codDocumento",
   	"tipo",
   	"docDescrizione",
-  	"proprieta"
+  	"proprieta",
+  	"metadata"
   }
 )
 
@@ -694,6 +696,14 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.proprieta = proprieta;
   }
 
+  public java.lang.String getMetadata() {
+    return this.metadata;
+  }
+
+  public void setMetadata(java.lang.String metadata) {
+    this.metadata = metadata;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -954,5 +964,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="proprieta",required=false,nillable=false)
   protected java.lang.String proprieta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="metadata",required=false,nillable=false)
+  protected java.lang.String metadata;
 
 }

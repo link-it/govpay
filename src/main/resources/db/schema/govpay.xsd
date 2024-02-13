@@ -2160,6 +2160,16 @@
 			
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
+			
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3538,6 +3548,16 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="vrsMetadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 			<xsd:element name="pagCodDominio" type="String35"/>
 			<xsd:element name="pagIuv" type="String35"/>
@@ -3819,6 +3839,16 @@
 			<xsd:element name="vrsTipo" type="String35" />
 
 			<xsd:element name="vrsProprieta" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="vrsMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -4134,22 +4164,6 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="TipoTracciatoType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="VERSAMENTI" />
-			<xsd:enumeration value="INCASSI" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="TipoOperazioneType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="ADD" />
-			<xsd:enumeration value="DEL" />
-			<xsd:enumeration value="INC" />
-			<xsd:enumeration value="N_V" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
 	<xsd:simpleType name="StatoOperazioneType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="NON_VALIDO" />
@@ -4338,6 +4352,16 @@
 			<xsd:element name="docDescrizione" type="String255" minOccurs="0"/>
 
 			<xsd:element name="proprieta" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -4961,6 +4985,16 @@
 
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
+			
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -5120,6 +5154,16 @@
 			</xsd:element>
 			<xsd:element name="vrsTipo" type="String35" />
 			<xsd:element name="vrsProprieta" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="vrsMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">

@@ -125,6 +125,7 @@ import java.io.Serializable;
  * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsProprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsMetadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagCodDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="pagIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="pagIndiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
@@ -250,6 +251,7 @@ import java.io.Serializable;
   	"vrsIdDocumento",
   	"vrsTipo",
   	"vrsProprieta",
+  	"vrsMetadata",
   	"pagCodDominio",
   	"pagIuv",
   	"pagIndiceDati",
@@ -1026,6 +1028,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
     this.vrsProprieta = vrsProprieta;
   }
 
+  public java.lang.String getVrsMetadata() {
+    return this.vrsMetadata;
+  }
+
+  public void setVrsMetadata(java.lang.String vrsMetadata) {
+    this.vrsMetadata = vrsMetadata;
+  }
+
   public java.lang.String getPagCodDominio() {
     return this.pagCodDominio;
   }
@@ -1572,6 +1582,10 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsProprieta",required=false,nillable=false)
   protected java.lang.String vrsProprieta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="vrsMetadata",required=false,nillable=false)
+  protected java.lang.String vrsMetadata;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagCodDominio",required=true,nillable=false)

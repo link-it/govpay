@@ -131,6 +131,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaRendicontazione",VistaRendicontazione.class));
 		this.VRS_TIPO = new Field("vrsTipo",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_PROPRIETA = new Field("vrsProprieta",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.VRS_METADATA = new Field("vrsMetadata",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_COD_DOMINIO = new Field("pagCodDominio",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_IUV = new Field("pagIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_INDICE_DATI = new Field("pagIndiceDati",int.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -249,6 +250,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaRendicontazione",VistaRendicontazione.class));
 		this.VRS_TIPO = new ComplexField(father,"vrsTipo",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_PROPRIETA = new ComplexField(father,"vrsProprieta",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.VRS_METADATA = new ComplexField(father,"vrsMetadata",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_COD_DOMINIO = new ComplexField(father,"pagCodDominio",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_IUV = new ComplexField(father,"pagIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_INDICE_DATI = new ComplexField(father,"pagIndiceDati",int.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -454,6 +456,8 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 	public IField VRS_TIPO = null;
 	 
 	public IField VRS_PROPRIETA = null;
+	 
+	public IField VRS_METADATA = null;
 	 
 	public IField PAG_COD_DOMINIO = null;
 	 
