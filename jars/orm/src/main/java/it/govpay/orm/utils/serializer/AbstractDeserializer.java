@@ -118,7 +118,6 @@ import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.VistaRptVersamento;
 import it.govpay.orm.VistaVersamento;
-import it.govpay.orm.VistaVersamentoAca;
 import it.govpay.orm.VistaVersamentoNonRendicontato;
 
 /**     
@@ -1820,69 +1819,6 @@ public abstract class AbstractDeserializer {
 	 */
 	public Incasso readIncassoFromString(String in) throws DeserializerException {
 		return (Incasso) this.xmlToObj(in.getBytes(), Incasso.class);
-	}	
-	
-	
-	
-	/*
-	 =================================================================================
-	 Object: VistaVersamentoAca
-	 =================================================================================
-	*/
-	
-	/**
-	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * 
-	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @return Object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public VistaVersamentoAca readVistaVersamentoAca(String fileName) throws DeserializerException {
-		return (VistaVersamentoAca) this.xmlToObj(fileName, VistaVersamentoAca.class);
-	}
-	
-	/**
-	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * 
-	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @return Object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public VistaVersamentoAca readVistaVersamentoAca(File file) throws DeserializerException {
-		return (VistaVersamentoAca) this.xmlToObj(file, VistaVersamentoAca.class);
-	}
-	
-	/**
-	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * 
-	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @return Object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public VistaVersamentoAca readVistaVersamentoAca(InputStream in) throws DeserializerException {
-		return (VistaVersamentoAca) this.xmlToObj(in, VistaVersamentoAca.class);
-	}	
-	
-	/**
-	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * 
-	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @return Object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public VistaVersamentoAca readVistaVersamentoAca(byte[] in) throws DeserializerException {
-		return (VistaVersamentoAca) this.xmlToObj(in, VistaVersamentoAca.class);
-	}	
-	
-	/**
-	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * 
-	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @return Object type {@link it.govpay.orm.VistaVersamentoAca}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public VistaVersamentoAca readVistaVersamentoAcaFromString(String in) throws DeserializerException {
-		return (VistaVersamentoAca) this.xmlToObj(in.getBytes(), VistaVersamentoAca.class);
 	}	
 	
 	
