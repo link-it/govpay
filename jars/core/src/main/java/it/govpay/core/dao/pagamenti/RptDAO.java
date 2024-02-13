@@ -138,9 +138,8 @@ public class RptDAO extends BaseDAO{
 				rpt.getPagamentoPortale().getApplicazione(configWrapper);
 			}
 			Versamento versamento = rpt.getVersamento();
-			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(configWrapper);
-			response.setTipoVersamento(versamento.getTipoVersamento(configWrapper));
+			
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(configWrapper);
@@ -159,6 +158,8 @@ public class RptDAO extends BaseDAO{
 
 			response.setRpt(rpt);
 			response.setDominio(rpt.getDominio(configWrapper));
+			response.setVersamento(versamento);
+			response.setTipoVersamento(versamento.getTipoVersamento(configWrapper));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {

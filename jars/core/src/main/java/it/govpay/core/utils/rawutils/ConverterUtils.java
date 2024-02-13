@@ -70,6 +70,7 @@ public class ConverterUtils {
 				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 				return toJSON(ctRpt);
 			case SANP_240:
+			case RPTV1_RTV2:
 				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
 				
 				if(convertiMessaggioPagoPAV2InPagoPAV1) {
@@ -78,6 +79,7 @@ public class ConverterUtils {
 				}
 				return toJSON(paGetPaymentRes_RPT.getData());
 			case SANP_321_V2:
+			case RPTV2_RTV1:
 				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
 				
 				if(convertiMessaggioPagoPAV2InPagoPAV1) {
@@ -124,6 +126,7 @@ public class ConverterUtils {
 				CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 				return toJSON(ctRt);
 			case SANP_240:
+			case RPTV2_RTV1:
 				PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 				
 				if(convertiMessaggioPagoPAV2InPagoPAV1) {
@@ -133,6 +136,7 @@ public class ConverterUtils {
 				
 				return toJSON(paSendRTReq_RT.getReceipt());
 			case SANP_321_V2:
+			case RPTV1_RTV2:
 				PaSendRTV2Request paSendRTRtv2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 				
 				if(convertiMessaggioPagoPAV2InPagoPAV1) {
