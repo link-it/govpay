@@ -165,6 +165,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_notificat", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType()));
 				setParameter(object, "setProprieta", Versamento.model().PROPRIETA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "proprieta", Versamento.model().PROPRIETA.getFieldType()));
+				setParameter(object, "setDataUltimaModificaAca", Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ultima_modifica_aca", Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()));
+				setParameter(object, "setDataUltimaComunicazioneAca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ultima_comunicazione_aca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()));
 				return object;
 			}
 			
@@ -299,6 +303,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"avvAppIoPromScadNotificato"));
 				setParameter(object, "setProprieta", Versamento.model().PROPRIETA.getFieldType(),
 					this.getObjectFromMap(map,"proprieta"));
+				setParameter(object, "setDataUltimaModificaAca", Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType(),
+					this.getObjectFromMap(map,"dataUltimaModificaAca"));
+				setParameter(object, "setDataUltimaComunicazioneAca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
+					this.getObjectFromMap(map,"dataUltimaComunicazioneAca"));
 				return object;
 			}
 			

@@ -740,6 +740,8 @@
     <value name="avvAppIoPromScadNotificato" field="avvAppIoPromScadNotificato" usage="optional"/>
     <structure name="idOperazione" field="idOperazione" usage="required" map-as="_IdOperazione_Type"/>
     <value name="proprieta" field="proprieta" usage="optional"/>
+    <value name="dataUltimaModificaAca" field="dataUltimaModificaAca" usage="optional"/>
+    <value name="dataUltimaComunicazioneAca" field="dataUltimaComunicazioneAca" usage="optional"/>
   </mapping>
   <mapping name="Documento" class="it.govpay.orm.Documento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1551,6 +1553,8 @@
     <value name="codDocumento" field="codDocumento" usage="optional"/>
     <value name="docDescrizione" field="docDescrizione" usage="optional"/>
     <value name="proprieta" field="proprieta" usage="optional"/>
+    <value name="dataUltimaModificaAca" field="dataUltimaModificaAca" usage="optional"/>
+    <value name="dataUltimaComunicazioneAca" field="dataUltimaComunicazioneAca" usage="optional"/>
   </mapping>
   <mapping name="VistaVersamentoNonRendicontato" class="it.govpay.orm.VistaVersamentoNonRendicontato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1649,5 +1653,23 @@
     <value name="descrizione" field="descrizione" usage="optional"/>
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
     <value name="rawContenuto" field="rawContenuto" usage="optional"/>
+  </mapping>
+  <mapping name="VistaVersamentoAca" class="it.govpay.orm.VistaVersamentoAca">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="codApplicazione" field="codApplicazione" usage="required"/>
+    <value name="importoTotale" field="importoTotale" usage="required"/>
+    <value name="statoVersamento" field="statoVersamento" usage="required"/>
+    <value name="dataValidita" field="dataValidita" usage="optional"/>
+    <value name="dataScadenza" field="dataScadenza" usage="optional"/>
+    <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
+    <value name="debitoreTipo" field="debitoreTipo" usage="optional"/>
+    <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="required"/>
+    <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="required"/>
+    <value name="iuvVersamento" field="iuvVersamento" usage="optional"/>
+    <value name="numeroAvviso" field="numeroAvviso" usage="optional"/>
+    <value name="dataUltimaModificaAca" field="dataUltimaModificaAca" usage="optional"/>
+    <value name="dataUltimaComunicazioneAca" field="dataUltimaComunicazioneAca" usage="optional"/>
   </mapping>
 </binding>

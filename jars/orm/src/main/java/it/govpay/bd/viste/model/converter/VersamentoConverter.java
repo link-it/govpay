@@ -185,6 +185,9 @@ public class VersamentoConverter {
 
 		dto.setProprieta(vo.getProprieta());
 
+		dto.setDataUltimaModificaAca(vo.getDataUltimaModificaAca());
+		dto.setDataUltimaComunicazioneAca(vo.getDataUltimaComunicazioneAca());
+		
 		return dto;
 	}
 

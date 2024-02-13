@@ -630,6 +630,7 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, statoVersamento.toString()));
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DESCRIZIONE_STATO, descrizioneStato));
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
 			
 			if(updateAnomalo)
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().ANOMALO, anomalo));
@@ -654,6 +655,8 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(updateAvvisoNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, avvisoNotificato));
+			
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -679,6 +682,8 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(updatePromemoriaScadenzaNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+			
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -705,6 +710,8 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(updatePromemoriaScadenzaNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+			
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -738,6 +745,8 @@ public class VersamentiBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaAppIONotificato));
 			if(updatePromemoriaScadenzaNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+			
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -751,6 +760,30 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 
+	public void updateUltimaModificaAca(long idVersamento) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ULTIMA_MODIFICA_ACA, new Date()));
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	public VersamentoFilter newFilter() throws ServiceException {
 		return new VersamentoFilter(this.getVersamentoService());

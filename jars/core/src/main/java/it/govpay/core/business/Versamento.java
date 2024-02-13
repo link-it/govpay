@@ -77,6 +77,7 @@ public class Versamento  {
 	private static Logger log = LoggerWrapperFactory.getLogger(Versamento.class);
 
 	public Versamento() {
+		//donothing
 	}
 	
 	@Deprecated
@@ -128,11 +129,15 @@ public class Versamento  {
 					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
 
-				//				if(versamento.checkEsecuzioneUpdate(versamentoLetto)) {	}
-
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamento", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, log);
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamentoOk", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+				
+				// controllo se sono stati aggiornati dei campi significativi per l'ACA
+				boolean aggiornaDataUltimaModificaACA = VersamentoUtils.comunicaAggiornamentoPendenzaAllArchivioCentralizzato(versamento, versamentoLetto, configWrapper);
+				if(aggiornaDataUltimaModificaACA) {
+					versamento.setDataUltimaModificaAca(new Date());
+				}
 
 				if(bd == null) {
 					// creo connessione
@@ -203,7 +208,6 @@ public class Versamento  {
 				// Versamento nuovo. Inserisco versamento ed eventuale promemoria avviso
 				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
-				//				Promemoria promemoria = null;
 
 				boolean inserisciNotificaAvviso = false;
 				boolean inserisciNotificaPromemoriaScadenzaMail = false;
@@ -282,6 +286,13 @@ public class Versamento  {
 					versamento.setImportoIncassato(BigDecimal.ZERO);
 					versamento.setImportoPagato(BigDecimal.ZERO);
 				}
+				
+				// gestione ACA imposto una data inviato ACA piu' vecchia della data ultima modifica ACA
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				versamento.setDataUltimaComunicazioneAca(calendar.getTime());
+				calendar.add(Calendar.MINUTE, -1);
+				versamento.setDataUltimaModificaAca(calendar.getTime());
 
 				if(salvataggioSuDB) {
 					versamentiBD.insertVersamento(versamento);
@@ -298,8 +309,7 @@ public class Versamento  {
 
 			return versamento;
 		} catch (Exception e) {
-			if(doCommit) {
-				if(versamentiBD != null)
+			if(doCommit && versamentiBD != null) {
 					versamentiBD.rollback();
 			}
 			if(e instanceof GovPayException)

@@ -560,6 +560,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaVersamentoAca }
+     */
+    public VistaVersamentoAca createVistaVersamentoAca() {
+        return new VistaVersamentoAca();
+    }
+
+    /**
      * Create an instance of {@link Operazione }
      */
     public Operazione createOperazione() {
