@@ -472,28 +472,6 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
 
-CREATE VIEW v_versamenti_aca AS 
-SELECT versamenti.id,
-    versamenti.cod_versamento_ente,
-    versamenti.importo_totale,
-    versamenti.stato_versamento,
-    versamenti.data_validita,
-    versamenti.data_scadenza,
-    versamenti.causale_versamento,
-    versamenti.debitore_identificativo,
-    versamenti.debitore_tipo,
-    versamenti.debitore_anagrafica,
-    versamenti.iuv_versamento,
-    versamenti.numero_avviso,
-    applicazioni.cod_applicazione AS cod_applicazione,
-    domini.cod_dominio AS cod_dominio,
-    versamenti.data_ultima_modifica_aca,
-    versamenti.data_ultima_comunicazione_aca
-    FROM versamenti 
-	JOIN domini ON versamenti.id_dominio = domini.id 
-	JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-    WHERE versamenti.data_ultima_comunicazione_aca < versamenti.data_ultima_modifica_aca;
-
 
 -- 13/02/2024 Supporto Metadata RT
 DROP VIEW versamenti_incassi;
