@@ -87,6 +87,7 @@ public class RicevuteConverter {
 			ricevutaRpt.setXml(rpt.getXmlRpt());
 			switch (rpt.getVersione()) {
 			case SANP_240:
+			case RPTV1_RTV2:
 				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -103,6 +104,7 @@ public class RicevuteConverter {
 				rsModel.setImporto(ctRpt.getDatiVersamento().getImportoTotaleDaVersare());
 				break;
 			case SANP_321_V2:
+			case RPTV2_RTV1:
 				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -123,6 +125,7 @@ public class RicevuteConverter {
 			try {
 				switch (rpt.getVersione()) {
 				case SANP_240:
+				case RPTV2_RTV1:
 					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
@@ -137,6 +140,7 @@ public class RicevuteConverter {
 					rsModel.setVersante(PendenzeConverter.toSoggettoRsModel(ctRt.getSoggettoVersante()));
 					break;
 				case SANP_321_V2:
+				case RPTV1_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));

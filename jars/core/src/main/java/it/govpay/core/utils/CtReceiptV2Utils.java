@@ -41,13 +41,14 @@ import org.xml.sax.SAXException;
 
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPAV2;
-import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -78,13 +79,13 @@ import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
-public class CtReceiptUtils  extends NdpValidationUtils {
+public class CtReceiptV2Utils  extends NdpValidationUtils {
 
-	private static Logger log = LoggerWrapperFactory.getLogger(CtReceiptUtils.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(CtReceiptV2Utils.class);
 
-	public static EsitoValidazione validaSemantica(PaGetPaymentRes ctRpt, PaSendRTReq ctRt) {
+	public static EsitoValidazione validaSemantica(PaGetPaymentRes ctRpt, PaSendRTV2Request ctRt) {
 		CtPaymentPA ctPaymentPA = ctRpt.getData();
-		CtReceipt ctReceipt = ctRt.getReceipt();
+		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
@@ -101,7 +102,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			}
 			break;
 		case KO:
-			if(ctReceipt.getTransferList().getTransfer().size() != 0 && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
+			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
 				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
 				return esito;
 			}
@@ -113,8 +114,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		for (int i = 0; i < ctPaymentPA.getTransferList().getTransfer().size(); i++) {
 
 			CtTransferPA singoloVersamento = ctPaymentPA.getTransferList().getTransfer().get(i);
-			CtTransferPA singoloPagamento = null; 
-			if(ctReceipt.getTransferList().getTransfer().size() != 0) {
+			CtTransferPAReceiptV2 singoloPagamento = null; 
+			if(!ctReceipt.getTransferList().getTransfer().isEmpty()) {
 				singoloPagamento = ctReceipt.getTransferList().getTransfer().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, (i+1), esito);
 				importoTotaleCalcolato = importoTotaleCalcolato.add(singoloPagamento.getTransferAmount());
@@ -133,7 +134,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		return esito;
 	}
 
-	private static void validaSemanticaSingoloVersamento(CtTransferPA singoloVersamento, CtTransferPA singoloPagamento, int pos, EsitoValidazione esito) {
+	private static void validaSemanticaSingoloVersamento(CtTransferPA singoloVersamento, CtTransferPAReceiptV2 singoloPagamento, int pos, EsitoValidazione esito) {
 
 		if(singoloPagamento.getIdTransfer() != singoloVersamento.getIdTransfer()) {
 			esito.addErrore(MessageFormat.format("IdTransfer non corrispondente per il pagamento in posizione [{0}]", pos), false);
@@ -159,15 +160,15 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		valida(rpt.getStateProvinceRegion(),rt.getStateProvinceRegion(), esito, "StateProvinceDebtor non corrisponde", false);
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTReq ctRt, boolean recupero) throws ServiceException, NdpException, UtilsException, GovPayException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTV2Request ctRt, boolean recupero) throws ServiceException, NdpException, UtilsException, GovPayException {
 		return acquisisciRT(codDominio, iuv, ctRt, recupero, false);
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTReq ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTV2Request ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 
 		if(ctRt == null || ctRt.getReceipt() == null) throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Ricevuta vuota", codDominio);
 		
-		CtReceipt ctReceipt = ctRt.getReceipt();
+		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 		String receiptId = ctReceipt.getReceiptId();
 		
 		log.info(MessageFormat.format("Acquisizione RT Dominio[{0}], IUV[{1}], ReceiptID [{2}] in corso", codDominio, iuv, receiptId));
@@ -200,7 +201,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			versamentiBD.setAtomica(false);
 
 			Rpt rpt = null;
-			VersioneRPT versioneRPTAttesa = it.govpay.model.Rpt.VersioneRPT.SANP_240;
+			VersioneRPT versioneRPTAttesa = it.govpay.model.Rpt.VersioneRPT.SANP_321_V2;
 			try { 
 				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 			} catch (NotFoundException e) {
@@ -241,7 +242,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt già acquisita in data {0}", rpt.getDataMsgRicevuta()), rpt.getCodDominio());
 				}
 			}
-			
+
 			PaGetPaymentRes ctRpt = null; 
 			PaGetPaymentV2Response ctRptV2 = null;
 
@@ -250,24 +251,22 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			// controllo versione RPT, PagoPA puo' inviare una paSendRT anche se l'attivazione e' stata con una paGetPaymentV2
 			if(!rpt.getVersione().equals(versioneRPTAttesa)) {
 				// indico che questa transazione e' ibrida
-				rpt.setVersione(VersioneRPT.RPTV2_RTV1);
+				rpt.setVersione(VersioneRPT.RPTV1_RTV2);
 				
 				try {
-					ctRptV2 = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
-					esito = CtReceiptUtils.validaSemantica(ctRptV2, ctRt);
+					ctRpt = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+					esito = CtReceiptV2Utils.validaSemantica(ctRpt, ctRt);
 				} catch (JAXBException | SAXException e) {
 					throw e;
 				}
 			} else {
-				
 				try {
-					ctRpt = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
-					esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
+					ctRptV2 = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+					esito = CtReceiptV2Utils.validaSemantica(ctRptV2, ctRt);
 				} catch (JAXBException | SAXException e) {
 					throw e;
 				}
 			}
-			
 
 			if(acquisizioneDaCruscotto) {
 				// controllo esito validazione semantica
@@ -350,7 +349,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			Versamento versamento = rpt.getVersamento(rptBD);
 
-			List<CtTransferPA> datiSingoliPagamenti = ctReceipt.getTransferList().getTransfer();
+			List<CtTransferPAReceiptV2> datiSingoliPagamenti = ctReceipt.getTransferList().getTransfer();
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(rptBD);
 
 			PagamentiBD pagamentiBD = new PagamentiBD(rptBD);
@@ -363,10 +362,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			BigDecimal totalePagato = BigDecimal.ZERO;
 			
 
-			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
+			List<Pagamento> pagamenti = new ArrayList<>();
 
 			for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
-				CtTransferPA ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
+				CtTransferPAReceiptV2 ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 				BigDecimal transferAmount = ctDatiSingoloPagamentoRT.getTransferAmount();
 				String codDominioSingoloPagamento = ctDatiSingoloPagamentoRT.getFiscalCodePA();
 				int idTransfer = ctDatiSingoloPagamentoRT.getIdTransfer();
@@ -395,7 +394,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 					if(pagamento.getIdRpt() != null) {
 						//!! Pagamento gia' notificato da un'altra RPT !!
-						throw new ServiceException(MessageFormat.format("ERRORE: RT con pagamento gia'' presente in sistema [{0}/{1}/{2}]", dominioSingoloVersamento.getCodDominio(), iuv, receiptId));
+						throw new ServiceException(MessageFormat.format("ERRORE: RT con pagamento gia'' presente in sistema [{0}/{1}/{2}]",	dominioSingoloVersamento.getCodDominio(), iuv, receiptId));
 					}
 			 		
 					pagamento.setDataPagamento(dataPagamento); // <!--data esecuzione pagamento da parte dell'utente-->
@@ -492,7 +491,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		} catch (NotificaException | IOException e) {
 			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 			
-			if(rptBD != null)
+			if(rptBD != null) 
 				rptBD.rollback();
 			
 			throw new ServiceException(e);
@@ -509,9 +508,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}
 	}
 	
-	public static EsitoValidazione validaSemantica(PaGetPaymentV2Response ctRpt, PaSendRTReq ctRt) {
+	public static EsitoValidazione validaSemantica(PaGetPaymentV2Response ctRpt, PaSendRTV2Request ctRt) {
 		CtPaymentPAV2 ctPaymentPA = ctRpt.getData();
-		CtReceipt ctReceipt = ctRt.getReceipt();
+		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
@@ -539,7 +538,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		for (int i = 0; i < ctPaymentPA.getTransferList().getTransfer().size(); i++) {
 
 			CtTransferPAV2 singoloVersamento = ctPaymentPA.getTransferList().getTransfer().get(i);
-			CtTransferPA singoloPagamento = null; 
+			CtTransferPAReceiptV2 singoloPagamento = null; 
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty()) {
 				singoloPagamento = ctReceipt.getTransferList().getTransfer().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, (i+1), esito);
@@ -559,7 +558,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		return esito;
 	}
 
-	private static void validaSemanticaSingoloVersamento(CtTransferPAV2 singoloVersamento, CtTransferPA singoloPagamento, int pos, EsitoValidazione esito) {
+	private static void validaSemanticaSingoloVersamento(CtTransferPAV2 singoloVersamento, CtTransferPAReceiptV2 singoloPagamento, int pos, EsitoValidazione esito) {
 
 		if(singoloPagamento.getIdTransfer() != singoloVersamento.getIdTransfer()) {
 			esito.addErrore(MessageFormat.format("IdTransfer non corrispondente per il pagamento in posizione [{0}]", pos), false);
