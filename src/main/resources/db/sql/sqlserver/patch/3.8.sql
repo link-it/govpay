@@ -479,7 +479,7 @@ DROP VIEW v_rpt_versamenti;
 DROP VIEW v_versamenti;
 DROP VIEW v_vrs_non_rnd;
 
-ALTER TABLE versamenti ADD COLUMN metadata TEXT;
+ALTER TABLE versamenti ADD metadata VARCHAR(max);
 
 CREATE VIEW versamenti_incassi AS 
 SELECT versamenti.id,
@@ -538,6 +538,7 @@ SELECT versamenti.id,
     versamenti.cod_rata,
     versamenti.tipo,
     versamenti.proprieta,
+    versamenti.metadata,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione,
     (CASE WHEN (versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > GETDATE()) THEN 0 ELSE 1 END) AS smart_order_rank,
@@ -636,6 +637,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
     versamenti.proprieta as vrs_proprieta,
+    versamenti.metadata as vrs_metadata,
     pagamenti.cod_dominio AS pag_cod_dominio,             
 	pagamenti.iuv AS pag_iuv,                     
 	pagamenti.indice_dati AS pag_indice_dati,             
@@ -759,7 +761,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
-    versamenti.proprieta as vrs_proprieta
+    versamenti.proprieta as vrs_proprieta,
+    versamenti.metadata as vrs_metadata
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 CREATE VIEW v_versamenti AS 
@@ -828,6 +831,7 @@ SELECT versamenti.id,
     versamenti.proprieta,
     versamenti.data_ultima_modifica_aca,
     versamenti.data_ultima_comunicazione_aca,
+    versamenti.metadata,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -897,6 +901,7 @@ CREATE VIEW v_vrs_non_rnd AS
     versamenti.id_documento AS vrs_id_documento,
     versamenti.tipo AS vrs_tipo,
     versamenti.proprieta AS vrs_proprieta,
+    versamenti.metadata as vrs_metadata,
     pagamenti.id AS id,
     pagamenti.cod_dominio AS pag_cod_dominio,
     pagamenti.iuv AS pag_iuv,

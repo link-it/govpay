@@ -586,6 +586,7 @@ CREATE TABLE versamenti
 	proprieta LONGTEXT,
 	data_ultima_modifica_aca DATETIME COMMENT 'Data ultima modifica dati da inviare ad ACA',
 	data_ultima_comunicazione_aca DATETIME COMMENT 'Data ultima comunicazione con ACA conclusa con successo',
+	metadata LONGTEXT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -617,6 +618,7 @@ CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
+CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 
 
 
@@ -1356,6 +1358,7 @@ CREATE VIEW versamenti_incassi AS SELECT
     documenti.cod_documento,
     versamenti.tipo,
     versamenti.proprieta,
+    versamenti.metadata,
     documenti.descrizione AS doc_descrizione,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
@@ -1781,6 +1784,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
     versamenti.proprieta as vrs_proprieta,
+    versamenti.metadata as vrs_metadata,
     pagamenti.cod_dominio AS pag_cod_dominio,             
 	pagamenti.iuv AS pag_iuv,                     
 	pagamenti.indice_dati AS pag_indice_dati,             
@@ -1905,7 +1909,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
-    versamenti.proprieta as vrs_proprieta
+    versamenti.proprieta as vrs_proprieta,
+    versamenti.metadata as vrs_metadata
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 -- Vista Pagamenti/Riscossioni
@@ -2019,6 +2024,7 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
+    versamenti.metadata,
     versamenti.data_ultima_modifica_aca,
     versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
@@ -2092,6 +2098,7 @@ CREATE VIEW v_vrs_non_rnd AS
     versamenti.id_documento AS vrs_id_documento,
     versamenti.tipo AS vrs_tipo,
     versamenti.proprieta AS vrs_proprieta,
+    versamenti.metadata as vrs_metadata,
     pagamenti.id AS id,
     pagamenti.cod_dominio AS pag_cod_dominio,
     pagamenti.iuv AS pag_iuv,
