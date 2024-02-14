@@ -170,6 +170,7 @@ public class JDBCVistaVersamentoNonRendicontatoServiceSearchImpl implements IJDB
 			fields.add(VistaVersamentoNonRendicontato.model().SNG_INDICE_DATI);
 			fields.add(VistaVersamentoNonRendicontato.model().SNG_DESCRIZIONE_CAUSALE_RPT);
 			fields.add(VistaVersamentoNonRendicontato.model().SNG_CONTABILITA);
+			fields.add(VistaVersamentoNonRendicontato.model().SNG_METADATA);
 			
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_ID);
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_COD_VERSAMENTO_ENTE);
@@ -221,7 +222,6 @@ public class JDBCVistaVersamentoNonRendicontatoServiceSearchImpl implements IJDB
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_COD_RATA);
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_TIPO);
 			fields.add(VistaVersamentoNonRendicontato.model().VRS_PROPRIETA);
-			fields.add(VistaVersamentoNonRendicontato.model().VRS_METADATA);
 			
 			fields.add(VistaVersamentoNonRendicontato.model().PAG_ALLEGATO);
 			fields.add(VistaVersamentoNonRendicontato.model().PAG_CAUSALE_REVOCA);

@@ -904,6 +904,7 @@ public class VersamentoUtils {
 		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		model.setContabilita(singoloVersamento.getContabilita());
+		model.setMetadataPagoPA(singoloVersamento.getMetadata());
 		
 		Dominio dominioSingoloVersamento = null;
 		if(singoloVersamento.getCodDominio() != null) {

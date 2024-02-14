@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.39.0"
+  version: "1.40.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6932,6 +6932,8 @@ components:
           maxLength: 140
         contabilita:
           $ref: '#/components/schemas/contabilita'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
@@ -9605,6 +9607,32 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
+    MapEntry:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: chiave del metadata
+          minLength: 1
+          maxLength: 140
+        value:
+          type: string
+          description: valore del metadata
+          minLength: 1
+          maxLength: 140
+    Metadata:
+      type: object
+      description: Metadata Custom da inserire nella ricevuta di pagamento
+      properties:
+        mapEntry:
+          type: array
+          items: 
+            minItems: 1
+            maxItems: 5
+            $ref: '#/components/schemas/MapEntry'
     ModelloPagamento:
       type: string
       description: Modello di pagamento

@@ -50,6 +50,7 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.SNG_INDICE_DATI = new Field("sngIndiceDati",java.lang.Integer.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new Field("sngDescrizioneCausaleRPT",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_CONTABILITA = new Field("sngContabilita",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.SNG_METADATA = new Field("sngMetadata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_ID = new Field("vrsId",long.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new Field("vrsCodVersamentoEnte",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_NOME = new Field("vrsNome",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -105,7 +106,6 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class));
 		this.VRS_TIPO = new Field("vrsTipo",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_PROPRIETA = new Field("vrsProprieta",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.VRS_METADATA = new Field("vrsMetadata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_COD_DOMINIO = new Field("pagCodDominio",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_IUV = new Field("pagIuv",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_INDICE_DATI = new Field("pagIndiceDati",int.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -144,6 +144,7 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.SNG_INDICE_DATI = new ComplexField(father,"sngIndiceDati",java.lang.Integer.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"sngDescrizioneCausaleRPT",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_CONTABILITA = new ComplexField(father,"sngContabilita",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.SNG_METADATA = new ComplexField(father,"sngMetadata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new ComplexField(father,"vrsCodVersamentoEnte",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_NOME = new ComplexField(father,"vrsNome",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -199,7 +200,6 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class));
 		this.VRS_TIPO = new ComplexField(father,"vrsTipo",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_PROPRIETA = new ComplexField(father,"vrsProprieta",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.VRS_METADATA = new ComplexField(father,"vrsMetadata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_COD_DOMINIO = new ComplexField(father,"pagCodDominio",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_IUV = new ComplexField(father,"pagIuv",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_INDICE_DATI = new ComplexField(father,"pagIndiceDati",int.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -244,6 +244,8 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 	public IField SNG_DESCRIZIONE_CAUSALE_RPT = null;
 	 
 	public IField SNG_CONTABILITA = null;
+	 
+	public IField SNG_METADATA = null;
 	 
 	public IField VRS_ID = null;
 	 
@@ -354,8 +356,6 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 	public IField VRS_TIPO = null;
 	 
 	public IField VRS_PROPRIETA = null;
-	 
-	public IField VRS_METADATA = null;
 	 
 	public IField PAG_COD_DOMINIO = null;
 	 

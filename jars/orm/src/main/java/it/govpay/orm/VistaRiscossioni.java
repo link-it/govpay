@@ -66,6 +66,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="metadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -110,7 +111,8 @@ import java.io.Serializable;
   	"iuvPagamento",
   	"dataCreazione",
   	"dataScadenza",
-  	"contabilita"
+  	"contabilita",
+  	"metadata"
   }
 )
 
@@ -382,6 +384,14 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
     this.contabilita = contabilita;
   }
 
+  public java.lang.String getMetadata() {
+    return this.metadata;
+  }
+
+  public void setMetadata(java.lang.String metadata) {
+    this.metadata = metadata;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -527,5 +537,9 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="contabilita",required=false,nillable=false)
   protected java.lang.String contabilita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="metadata",required=false,nillable=false)
+  protected java.lang.String metadata;
 
 }

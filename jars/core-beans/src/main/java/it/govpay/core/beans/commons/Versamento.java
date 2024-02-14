@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import it.govpay.core.beans.tracciati.Metadata;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -342,7 +343,6 @@ public class Versamento {
 		this.allegati = allegati;
 	}
 
-
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -491,6 +491,14 @@ public class Versamento {
 			this.codDominio = codDominio;
 		}
 
+		public Metadata getMetadata() {
+			return metadata;
+		}
+
+		public void setMetadata(Metadata metadata) {
+			this.metadata = metadata;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
@@ -500,6 +508,7 @@ public class Versamento {
         private Versamento.SingoloVersamento.Tributo tributo;
         private String contabilita;
         private String codDominio;
+        private Metadata metadata;
 
         public static class BolloTelematico {
 

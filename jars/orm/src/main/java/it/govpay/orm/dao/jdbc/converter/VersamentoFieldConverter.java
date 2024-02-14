@@ -599,13 +599,6 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_ultima_comunicazione_aca";
 			}
 		}
-		if(field.equals(Versamento.model().METADATA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".metadata";
-			}else{
-				return "metadata";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -845,9 +838,6 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
-			return this.toTable(Versamento.model(), returnAlias);
-		}
-		if(field.equals(Versamento.model().METADATA)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

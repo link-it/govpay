@@ -169,8 +169,6 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_ultima_modifica_aca", Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()));
 				setParameter(object, "setDataUltimaComunicazioneAca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ultima_comunicazione_aca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()));
-				setParameter(object, "setMetadata", Versamento.model().METADATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "metadata", Versamento.model().METADATA.getFieldType()));
 				return object;
 			}
 			
@@ -309,8 +307,6 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataUltimaModificaAca"));
 				setParameter(object, "setDataUltimaComunicazioneAca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
 					this.getObjectFromMap(map,"dataUltimaComunicazioneAca"));
-				setParameter(object, "setMetadata", Versamento.model().METADATA.getFieldType(),
-					this.getObjectFromMap(map,"metadata"));
 				return object;
 			}
 			

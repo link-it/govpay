@@ -81,6 +81,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_causale_rpt", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setContabilita", SingoloVersamento.model().CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "contabilita", SingoloVersamento.model().CONTABILITA.getFieldType()));
+				setParameter(object, "setMetadata", SingoloVersamento.model().METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "metadata", SingoloVersamento.model().METADATA.getFieldType()));
 				return object;
 			}
 			
@@ -129,6 +131,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneCausaleRPT"));
 				setParameter(object, "setContabilita", SingoloVersamento.model().CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"contabilita"));
+				setParameter(object, "setMetadata", SingoloVersamento.model().METADATA.getFieldType(),
+					this.getObjectFromMap(map,"metadata"));
 				return object;
 			}
 			

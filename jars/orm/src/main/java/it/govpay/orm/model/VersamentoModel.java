@@ -108,7 +108,6 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
-		this.METADATA = new Field("metadata",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -183,7 +182,6 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
-		this.METADATA = new ComplexField(father,"metadata",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -322,8 +320,6 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DATA_ULTIMA_MODIFICA_ACA = null;
 	 
 	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
-	 
-	public IField METADATA = null;
 	 
 
 	@Override

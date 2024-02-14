@@ -35,6 +35,7 @@ import it.govpay.core.exceptions.IOException;
 "stato",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "dominio",
 "hashDocumento",
 "tipoBollo",
@@ -68,7 +69,10 @@ public class VocePendenzaRiscossione extends JSONSerializable {
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-
+  
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
+  
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
 
@@ -207,6 +211,21 @@ public class VocePendenzaRiscossione extends JSONSerializable {
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public VocePendenzaRiscossione metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
   }
 
   /**
@@ -354,6 +373,7 @@ public class VocePendenzaRiscossione extends JSONSerializable {
         Objects.equals(stato, vocePendenzaRiscossione.stato) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenzaRiscossione.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, vocePendenzaRiscossione.contabilita) &&
+        Objects.equals(metadata, vocePendenzaRiscossione.metadata) &&
         Objects.equals(dominio, vocePendenzaRiscossione.dominio) &&
         Objects.equals(pendenza, vocePendenzaRiscossione.pendenza) &&
         Objects.equals(hashDocumento, vocePendenzaRiscossione.hashDocumento) &&
@@ -368,7 +388,7 @@ public class VocePendenzaRiscossione extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, tipoContabilita, codEntrata);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, metadata, dominio, pendenza, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, tipoContabilita, codEntrata);
   }
 
   public static VocePendenzaRiscossione parse(String json) throws IOException {
@@ -392,6 +412,7 @@ public class VocePendenzaRiscossione extends JSONSerializable {
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");

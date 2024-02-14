@@ -72,6 +72,7 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.METADATA = new Field("metadata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -110,6 +111,7 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.METADATA = new ComplexField(father,"metadata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -176,6 +178,8 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 	public IField DATA_SCADENZA = null;
 	 
 	public IField CONTABILITA = null;
+	 
+	public IField METADATA = null;
 	 
 
 	@Override

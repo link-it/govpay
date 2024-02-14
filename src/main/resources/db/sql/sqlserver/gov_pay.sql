@@ -582,7 +582,6 @@ CREATE TABLE versamenti
 	proprieta VARCHAR(max),
 	data_ultima_modifica_aca DATETIME2,
 	data_ultima_comunicazione_aca DATETIME2,
-	metadata VARCHAR(max),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -636,6 +635,7 @@ CREATE TABLE singoli_versamenti
 	indice_dati INT NOT NULL,
 	descrizione_causale_rpt VARCHAR(140),
 	contabilita VARCHAR(max),
+	metadata VARCHAR(max),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,
@@ -1371,7 +1371,6 @@ SELECT versamenti.id,
     versamenti.cod_rata,
     versamenti.tipo,
     versamenti.proprieta,
-    versamenti.metadata,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione,
     (CASE WHEN (versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > GETDATE()) THEN 0 ELSE 1 END) AS smart_order_rank,
@@ -1412,7 +1411,8 @@ CREATE VIEW v_riscossioni AS (
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
     versamenti.data_creazione AS data_creazione,
-    singoli_versamenti.contabilita AS contabilita
+    singoli_versamenti.contabilita AS contabilita,
+    singoli_versamenti.metadata AS metadata 
    FROM fr
    JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
    LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1655,6 +1655,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -1711,7 +1712,6 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
     versamenti.proprieta as vrs_proprieta,
-    versamenti.metadata as vrs_metadata,
     pagamenti.cod_dominio AS pag_cod_dominio,             
 	pagamenti.iuv AS pag_iuv,                     
 	pagamenti.indice_dati AS pag_indice_dati,             
@@ -1837,8 +1837,7 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
-    versamenti.proprieta as vrs_proprieta,
-    versamenti.metadata as vrs_metadata
+    versamenti.proprieta as vrs_proprieta
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 -- Vista Pagamenti/Riscossioni
@@ -1952,7 +1951,6 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
-    versamenti.metadata,
     versamenti.data_ultima_modifica_aca,
     versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
@@ -1970,6 +1968,7 @@ CREATE VIEW v_vrs_non_rnd AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -2026,7 +2025,6 @@ CREATE VIEW v_vrs_non_rnd AS
     versamenti.id_documento AS vrs_id_documento,
     versamenti.tipo AS vrs_tipo,
     versamenti.proprieta AS vrs_proprieta,
-    versamenti.metadata as vrs_metadata,
     pagamenti.id AS id,
     pagamenti.cod_dominio AS pag_cod_dominio,
     pagamenti.iuv AS pag_iuv,

@@ -151,7 +151,6 @@ public class VersamentoIncassoConverter {
 				dto.setTipo(TipologiaTipoVersamento.toEnum(vo.getTipo()));
 			
 			dto.setProprieta(vo.getProprieta());
-			dto.setMetadata(vo.getMetadata());
 			
 			return dto;
 	}

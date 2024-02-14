@@ -2160,16 +2160,6 @@
 			
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
-			
-			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2459,6 +2449,16 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
 								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -3424,6 +3424,15 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="sngMetadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 			<xsd:element name="vrsId" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="vrsCodVersamentoEnte" type="String35"/>
@@ -3540,16 +3549,6 @@
 			</xsd:element>
 			<xsd:element name="vrsTipo" type="String35" />
 			<xsd:element name="vrsProprieta" type="xsd:string" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="vrsMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -3839,16 +3838,6 @@
 			<xsd:element name="vrsTipo" type="String35" />
 
 			<xsd:element name="vrsProprieta" type="xsd:string" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="vrsMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -4360,16 +4349,6 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
-			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -4440,6 +4419,15 @@
 			<xsd:element name="dataCreazione" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="contabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -4985,16 +4973,6 @@
 
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
-			
-			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -5030,6 +5008,15 @@
 			<xsd:element name="sngIndiceDati" type="xsd:positiveInteger" minOccurs="1"/>
 			<xsd:element name="sngDescrizioneCausaleRPT" type="String140" minOccurs="0"/>
 			<xsd:element name="sngContabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="sngMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -5154,16 +5141,6 @@
 			</xsd:element>
 			<xsd:element name="vrsTipo" type="String35" />
 			<xsd:element name="vrsProprieta" type="xsd:string" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="vrsMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">

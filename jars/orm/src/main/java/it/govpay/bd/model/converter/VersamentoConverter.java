@@ -185,8 +185,6 @@ public class VersamentoConverter {
 		
 		dto.setDataUltimaModificaAca(vo.getDataUltimaModificaAca());
 		dto.setDataUltimaComunicazioneAca(vo.getDataUltimaComunicazioneAca());
-
-		dto.setMetadata(vo.getMetadata());
 		
 		return dto;
 	}
@@ -323,8 +321,6 @@ public class VersamentoConverter {
 		
 		vo.setDataUltimaModificaAca(dto.getDataUltimaModificaAca());
 		vo.setDataUltimaComunicazioneAca(dto.getDataUltimaComunicazioneAca());
-		
-		vo.setMetadata(dto.getMetadata());
 
 		return vo;
 	}

@@ -76,6 +76,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String descrizioneCausaleRPT;
 	private String contabilita;
 	private Long idDominio;
+	private String metadata;
 	
 	
 	@Override
@@ -236,6 +237,13 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
 	}
-	
+
+	public String getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
+	}
 }
 

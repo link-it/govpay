@@ -110,7 +110,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
-		this.METADATA = new Field("metadata",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -187,7 +186,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
-		this.METADATA = new ComplexField(father,"metadata",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -330,8 +328,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public IField DATA_ULTIMA_MODIFICA_ACA = null;
 	 
 	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
-	 
-	public IField METADATA = null;
 	 
 
 	@Override

@@ -70,6 +70,7 @@ import java.io.Serializable;
  * 			&lt;element name="sngIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="sngDescrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sngContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sngMetadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsNome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -125,7 +126,6 @@ import java.io.Serializable;
  * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsProprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="vrsMetadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagCodDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="pagIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="pagIndiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
@@ -196,6 +196,7 @@ import java.io.Serializable;
   	"sngIndiceDati",
   	"sngDescrizioneCausaleRPT",
   	"sngContabilita",
+  	"sngMetadata",
   	"vrsId",
   	"vrsCodVersamentoEnte",
   	"vrsNome",
@@ -251,7 +252,6 @@ import java.io.Serializable;
   	"vrsIdDocumento",
   	"vrsTipo",
   	"vrsProprieta",
-  	"vrsMetadata",
   	"pagCodDominio",
   	"pagIuv",
   	"pagIndiceDati",
@@ -574,6 +574,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setSngContabilita(java.lang.String sngContabilita) {
     this.sngContabilita = sngContabilita;
+  }
+
+  public java.lang.String getSngMetadata() {
+    return this.sngMetadata;
+  }
+
+  public void setSngMetadata(java.lang.String sngMetadata) {
+    this.sngMetadata = sngMetadata;
   }
 
   public long getVrsId() {
@@ -1028,14 +1036,6 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
     this.vrsProprieta = vrsProprieta;
   }
 
-  public java.lang.String getVrsMetadata() {
-    return this.vrsMetadata;
-  }
-
-  public void setVrsMetadata(java.lang.String vrsMetadata) {
-    this.vrsMetadata = vrsMetadata;
-  }
-
   public java.lang.String getPagCodDominio() {
     return this.pagCodDominio;
   }
@@ -1364,6 +1364,10 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @XmlElement(name="sngContabilita",required=false,nillable=false)
   protected java.lang.String sngContabilita;
 
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sngMetadata",required=false,nillable=false)
+  protected java.lang.String sngMetadata;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="vrsId",required=false,nillable=false)
   protected long vrsId;
@@ -1582,10 +1586,6 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsProprieta",required=false,nillable=false)
   protected java.lang.String vrsProprieta;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="vrsMetadata",required=false,nillable=false)
-  protected java.lang.String vrsMetadata;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagCodDominio",required=true,nillable=false)
