@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.15.0"
+  version: "2.16.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -1148,7 +1148,33 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2' 
+          example: '/risorsa?pagina=2'
+    MapEntry:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: chiave del metadata
+          minLength: 1
+          maxLength: 140
+        value:
+          type: string
+          description: valore del metadata
+          minLength: 1
+          maxLength: 140
+    Metadata:
+      type: object
+      description: Metadata Custom da inserire nella ricevuta di pagamento
+      properties:
+        mapEntry:
+          type: array
+          items: 
+            minItems: 1
+            maxItems: 5
+            $ref: '#/components/schemas/MapEntry'
     NuovaPendenza:  
       type: object
       required:
@@ -1302,6 +1328,8 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            metadata:
+                $ref: '#/components/schemas/Metadata'
             idDominio:
               type: string
               description: Identificativo del dominio creditore
@@ -2227,6 +2255,8 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            metadata:
+                $ref: '#/components/schemas/Metadata'
             indice:
               type: number
               description: indice di voce all'interno della pendenza
