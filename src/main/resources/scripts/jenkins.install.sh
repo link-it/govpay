@@ -1,4 +1,4 @@
-export JAVA_HOME=/usr/lib/jvm/java-11
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 

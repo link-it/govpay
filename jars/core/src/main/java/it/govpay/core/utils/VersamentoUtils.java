@@ -461,7 +461,7 @@ public class VersamentoUtils {
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 			boolean generaIuv = VersamentoUtils.generaIUV(versamento);
 			versamento.setTipo(tipo);
-			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null);
+			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null, true, false);
 		} catch (ClientInitializeException e) {
 			ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_VERIFICA_FAIL_KEY, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
 			eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());

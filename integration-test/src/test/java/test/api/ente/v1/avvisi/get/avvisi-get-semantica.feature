@@ -53,10 +53,33 @@ Then status 200
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| numeroAvviso | pendenza.numeroAvviso | buildNumeroAvviso(dominio, applicazione) | 'NumeroAvviso' |
-# | numeroAvviso | pendenza.numeroAvviso | null | 'NumeroAvviso' |
 | idDominio | pendenza.idDominio | idDominio_2 | 'IdDominio' |
 | importo | pendenza.importo | 0.01 | 'importo' |
+
+Scenario: Numero Avviso non valido
+
+* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def ccp = getCurrentTimeMillis()
+* def importo = 10.00
+* set pendenza.idA2A = idA2A
+* set pendenza.idPendenza = idPendenza
+* set pendenza.numeroAvviso = '001340809425510244'
+* set pendenza.stato = 'NON_ESEGUITA'
+
+Given url ente_api_url
+And path '/v1/avvisi', idDominio, iuv
+And request pendenza
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains 'NumeroAvviso'
 
 Scenario: Caricamento pendenza con contabilita errore validazione importi
 
