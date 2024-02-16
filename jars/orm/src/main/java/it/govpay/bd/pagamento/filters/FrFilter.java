@@ -272,16 +272,19 @@ public class FrFilter extends AbstractFilter {
 				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
 				
 				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
-					if(idUnita.getIdDominio() != null) {
+					if(idUnita.getCodDominio() != null) {
 						IExpression newExpressionSingolaUO = this.newExpression();
 						
-						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
+						newExpressionSingolaUO.equals(FR.model().COD_DOMINIO, idUnita.getCodDominio());
+
+						// eliminati filtri per UO, l'utenza e' abilitata sugli enti creditori 
+//						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+//						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
 						
-						if(idUnita.getIdUnita() != null ) {
-							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
-						}
+//						if(idUnita.getIdUnita() != null ) {
+//							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+//							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+//						}
 						
 						listExpressionSingolaUO.add(newExpressionSingolaUO);
 					}
@@ -412,42 +415,43 @@ public class FrFilter extends AbstractFilter {
 			}
 			
 			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
-				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-				if(!addTabellaVersamenti) {
-					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
-					
-					// FR -> R
-					sqlQueryObject.addFromTable(tableNameRendicontazioni);
-					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
-					// R -> SV
-					sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
-					sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
-					// SV -> V
-					sqlQueryObject.addFromTable(tableNameVersamenti);
-					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
-
-					addTabellaVersamenti = true;
-					addTabellaRendicontazioni = true;
-				}
+//				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+//				if(!addTabellaVersamenti) {
+//					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
+//					
+//					// FR -> R
+//					sqlQueryObject.addFromTable(tableNameRendicontazioni);
+//					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+//					// R -> SV
+//					sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
+//					sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+//					// SV -> V
+//					sqlQueryObject.addFromTable(tableNameVersamenti);
+//					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
+//
+//					addTabellaVersamenti = true;
+//					addTabellaRendicontazioni = true;
+//				}
 				
 				List<String> uoConditions = new ArrayList<>();
 				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
-					if(idUnita.getIdDominio() != null) {
+					if(idUnita.getCodDominio() != null) {
 						
 						StringBuilder sb = new StringBuilder();
-						sb.append(tableNameVersamenti + ".id_dominio = ? ");
+						sb.append(converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
 						
+						// Autorizzazione solo sui domini
 //						IExpression newExpressionSingolaUO = this.newExpression();
 //						
 //						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
 //						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
 						
-						if(idUnita.getIdUnita() != null ) {
-							sb.append(" and ");
-							sb.append(tableNameVersamenti + ".id_uo = ? ");
-//							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-//							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
-						}
+//						if(idUnita.getIdUnita() != null ) {
+//							sb.append(" and ");
+//							sb.append(tableNameVersamenti + ".id_uo = ? ");
+////							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+////							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+//						}
 						
 						uoConditions.add(sb.toString());
 					}
@@ -532,11 +536,12 @@ public class FrFilter extends AbstractFilter {
 		
 		if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
 			for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
-				if(idUnita.getIdDominio() != null) {
-					lst.add(idUnita.getIdDominio());
-					if(idUnita.getIdUnita() != null ) {
-						lst.add(idUnita.getIdUnita());
-					}
+				if(idUnita.getCodDominio() != null) {
+					lst.add(idUnita.getCodDominio());
+					// autorizzazione solo sui domini
+//					if(idUnita.getIdUnita() != null ) {
+//						lst.add(idUnita.getIdUnita());
+//					}
 				}
 			}
 		}
