@@ -12,7 +12,7 @@ dependsOn:
     - name: Java
       optional: false
       version: ''
-      versionMax: ''
+      versionMax: '11'
       versionMin: '8'
 description:
   it:
@@ -207,10 +207,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2023-11-20'
+releaseDate: '2024-02-18'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: 3.7.5
+softwareVersion: 3.7.6
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche
