@@ -63,7 +63,7 @@ export class AuthViewComponent implements OnInit {
       .subscribe(
         (response: any) => {
           this._clearStorage();
-          window.localStorage.setItem(UtilService.STORAGE_VAR.TOKEN, response.access_token);
+          window.localStorage.setItem(UtilService.STORAGE_VAR.TOKEN, response[this.OAUTH2Config.TOKEN_KEY]);
           this._isLoading = false;
           this.router.navigate(['/dashboard']);
         },

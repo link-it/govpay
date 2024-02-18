@@ -116,6 +116,7 @@
       CODE_CHALLENGE_METHOD: '${it.govpay.backoffice.gui.oauth2.codechallengemethod}',
       SCOPE: '${it.govpay.backoffice.gui.oauth2.scope}',
       RESPONSE_TYPE: '${it.govpay.backoffice.gui.oauth2.responsetype}',
+      TOKEN_KEY: '${it.govpay.backoffice.gui.oauth2.tokenkey}',
       BOX_TITLE: '${it.govpay.backoffice.gui.oauth2.boxtitle}',
       BUTTON_LABEL: '${it.govpay.backoffice.gui.oauth2.buttonlabel}'
     },

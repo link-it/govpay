@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.business;
 
 import java.math.BigDecimal;
@@ -79,8 +98,10 @@ public class RicevutaTelematica {
 		case SANP_230:
 			return this._fromRpt(rpt);
 		case SANP_240:
+		case RPTV2_RTV1:
 			return this._fromRptVersione240(rpt);
 		case SANP_321_V2:
+		case RPTV1_RTV2:
 			return this._fromRptVersione321_V2(rpt);
 		}
 		
@@ -322,20 +343,25 @@ public class RicevutaTelematica {
 
 
 	private void setDataApplicativa(RicevutaTelematicaInput input, Date dataRt) {
-		Calendar cRt = Calendar.getInstance();
-		cRt.setTime(dataRt);
-		
-		input.setDataApplicativa( this.sdfSoloData.format(dataRt));
+		if(dataRt != null) {
+			input.setDataApplicativa( this.sdfSoloData.format(dataRt));
+		} else {
+			input.setDataApplicativa("--");
+		}
 	}
 
 
 	private void setDataOperazione(RicevutaTelematicaInput input, Date dataRpt) {
-		Calendar cRpt = Calendar.getInstance();
-		cRpt.setTime(dataRpt);
-		if((cRpt.get(Calendar.HOUR_OF_DAY) + cRpt.get(Calendar.MINUTE) + cRpt.get(Calendar.SECOND)) == 0) {
-			input.setDataOperazione( this.sdfSoloData.format(dataRpt));
+		if(dataRpt != null) {
+			Calendar cRpt = Calendar.getInstance();
+			cRpt.setTime(dataRpt);
+			if((cRpt.get(Calendar.HOUR_OF_DAY) + cRpt.get(Calendar.MINUTE) + cRpt.get(Calendar.SECOND)) == 0) {
+				input.setDataOperazione( this.sdfSoloData.format(dataRpt));
+			} else {
+				input.setDataOperazione( this.sdfDataOraMinuti.format(dataRpt));
+			}
 		} else {
-			input.setDataOperazione( this.sdfDataOraMinuti.format(dataRpt));
+			input.setDataOperazione("--");
 		}
 	}
 	

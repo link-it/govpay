@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans.converter;
 
 import java.io.UnsupportedEncodingException;
@@ -84,6 +103,7 @@ public class RicevuteConverter {
 			ricevutaRpt.setXml(rpt.getXmlRpt());
 			switch (rpt.getVersione()) {
 			case SANP_240:
+			case RPTV1_RTV2:
 				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ragioneria.v3.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -100,6 +120,7 @@ public class RicevuteConverter {
 				rsModel.setImporto(ctRpt.getDatiVersamento().getImportoTotaleDaVersare());
 				break;
 			case SANP_321_V2:
+			case RPTV2_RTV1:
 				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ragioneria.v3.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -120,6 +141,7 @@ public class RicevuteConverter {
 			try {
 				switch (rpt.getVersione()) {
 				case SANP_240:
+				case RPTV2_RTV1:
 					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
@@ -132,6 +154,7 @@ public class RicevuteConverter {
 					rsModel.setImporto(ctRt.getDatiPagamento().getImportoTotalePagato());
 					break;
 				case SANP_321_V2:
+				case RPTV1_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));

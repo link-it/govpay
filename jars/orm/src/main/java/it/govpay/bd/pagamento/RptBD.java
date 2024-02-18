@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -180,10 +180,14 @@ public class RptBD extends BasicBD {
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.and();
 			exp.equals(RPT.model().IUV, iuv);
-			exp.and();
-			exp.equals(RPT.model().MODELLO_PAGAMENTO, modelloPagamento.getCodifica()+"");
-			exp.and();
-			exp.equals(RPT.model().VERSIONE, versione.toString());
+			if(modelloPagamento != null) {
+				exp.and();
+				exp.equals(RPT.model().MODELLO_PAGAMENTO, modelloPagamento.getCodifica()+"");
+			}
+			if(versione != null) {
+				exp.and();
+				exp.equals(RPT.model().VERSIONE, versione.toString());
+			}
 			
 			RPTFieldConverter converter = new RPTFieldConverter(this.getJdbcProperties().getDatabase());
 			CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(RPT.model()));
@@ -199,8 +203,7 @@ public class RptBD extends BasicBD {
 				}
 			} 
 
-			throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"], ModelloPagamento: ["+modelloPagamento.name()
-				+"], Versione: ["+versione.name()+"] corrisponde ai parametri indicati.");
+			throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"], ModelloPagamento: ["+modelloPagamento+"], Versione: ["+versione+"] corrisponde ai parametri indicati.");
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

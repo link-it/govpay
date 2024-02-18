@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.io.UnsupportedEncodingException;
@@ -40,6 +59,8 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
@@ -83,6 +104,7 @@ import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.CheckoutClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
@@ -418,7 +440,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 						Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 						Giornale giornale = configurazione.getGiornale();
-						CheckoutClient checkoutClient = new CheckoutClient(CheckoutClient.SWAGGER_OPERATION_POST_CARTS_OPERATION_ID, checkoutBaseUrl, operationId, giornale);
+						CheckoutClient checkoutClient = new CheckoutClient(CheckoutClient.SWAGGER_OPERATION_POST_CARTS_OPERATION_ID, checkoutBaseUrl, operationId, giornale, new EventoContext(Componente.API_PAGOPA));
 						String location = checkoutClient.inviaCartRequest(cartRequest);
 
 						log.debug("Stazione ["+stazione.getCodStazione()+"] versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA completata, ricevuta URL redirect ["+location+"]");
@@ -428,6 +450,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						throw new GovPayException(e);
 					} catch (ClientException e) {
 						log.error("Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						throw new GovPayException(e);
+					} catch (ClientInitializeException e) {
+						log.error("Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					}
 

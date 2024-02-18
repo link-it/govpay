@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
@@ -85,7 +104,7 @@ public class RptDAO extends BaseDAO{
 			response.setDominio(versamento.getDominio(configWrapper));
 			response.setUnitaOperativa(versamento.getUo(configWrapper));
 			versamento.getTipoVersamentoDominio(configWrapper);
-			versamento.getTipoVersamento(configWrapper);
+			response.setTipoVersamento(versamento.getTipoVersamento(configWrapper));
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
@@ -119,9 +138,8 @@ public class RptDAO extends BaseDAO{
 				rpt.getPagamentoPortale().getApplicazione(configWrapper);
 			}
 			Versamento versamento = rpt.getVersamento();
-			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(configWrapper);
-			versamento.getTipoVersamento(configWrapper);
+			
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(configWrapper);
@@ -140,6 +158,8 @@ public class RptDAO extends BaseDAO{
 
 			response.setRpt(rpt);
 			response.setDominio(rpt.getDominio(configWrapper));
+			response.setVersamento(versamento);
+			response.setTipoVersamento(versamento.getTipoVersamento(configWrapper));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
@@ -221,6 +241,7 @@ public class RptDAO extends BaseDAO{
 		filter.setIuv(listaRptDTO.getIuv());
 		filter.setCodDominio(listaRptDTO.getIdDominio());
 		filter.setIdDomini(listaRptDTO.getCodDomini());
+		filter.setIdTipiVersamento(listaRptDTO.getIdTipiVersamento());
 
 		filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
 		filter.setIdPendenza(listaRptDTO.getIdPendenza());
@@ -291,8 +312,13 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 			
 			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), patchRptDTO.getIdDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(),patchRptDTO.getIdDominio(), null);
+			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), rpt.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(),rpt.getCodDominio(), null);
+			}
+			
+			// controllo che il tipo pendenza sia autorizzato
+			if(!AuthorizationManager.isTipoVersamentoAuthorized(patchRptDTO.getUser(), rpt.getVersamento().getTipoVersamento(configWrapper).getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(), null, rpt.getVersamento().getTipoVersamento(configWrapper).getCodTipoVersamento());
 			}
 			
 			for(PatchOp op: patchRptDTO.getOp()) {
@@ -403,7 +429,7 @@ public class RptDAO extends BaseDAO{
 			response.setDominio(rpt.getVersamento().getDominio(configWrapper));
 			response.setUnitaOperativa(rpt.getVersamento().getUo(configWrapper));
 			rpt.getVersamento().getTipoVersamentoDominio(configWrapper);
-			rpt.getVersamento().getTipoVersamento(configWrapper);
+			response.setTipoVersamento(rpt.getVersamento().getTipoVersamento(configWrapper));
 			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento().getSingoliVersamenti();
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {

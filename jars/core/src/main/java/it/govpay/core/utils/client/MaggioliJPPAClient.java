@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.client;
 
 import javax.xml.bind.JAXBElement;
@@ -10,12 +29,13 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Dominio;
-import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.configurazione.Giornale;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRichiestaStandard;
@@ -34,18 +54,15 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(MaggioliJPPAClient.class);
 	private static ObjectFactory objectFactory;
 
-	public MaggioliJPPAClient(Dominio dominio, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale) throws ClientException {
-		super(dominio, TipoConnettore.MAGGIOLI_JPPA, connettore);
+	public MaggioliJPPAClient(Dominio dominio, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
+		super(dominio, TipoConnettore.MAGGIOLI_JPPA, connettore, eventoCtx);
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
 		
 		this.isAzioneInUrl = connettore.isAzioneInUrl();
 		this.operationID = operationID;
-		this.componente = Componente.API_MAGGIOLI_JPPA;
 		this.setGiornale(giornale);
-		
-		this.getEventoCtx().setComponente(this.componente);
 	}
 	
 	@Override

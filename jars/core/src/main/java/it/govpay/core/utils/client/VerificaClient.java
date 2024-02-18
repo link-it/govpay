@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -39,7 +39,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.core.beans.Costanti;
-import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.ec.v1.converter.VerificaConverter;
 import it.govpay.core.ec.v1.validator.PendenzaVerificataValidator;
@@ -56,6 +56,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
@@ -91,13 +92,11 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 	private String codApplicazione;
 	private String operazioneVerifica = null;
 
-	public VerificaClient(Applicazione applicazione) throws ClientException, ServiceException, IOException {
-		super(applicazione, TipoConnettore.VERIFICA);
+	public VerificaClient(Applicazione applicazione, EventoContext eventoCtx) throws ClientInitializeException, ServiceException, IOException {
+		super(applicazione, TipoConnettore.VERIFICA, eventoCtx);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
-		this.componente = Componente.API_ENTE;
 		this.setGiornale(new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale());
-		this.getEventoCtx().setComponente(this.componente); 
 		this.operazioneVerifica = GovpayConfig.getInstance().getOperazioneVerifica();
 	}
 

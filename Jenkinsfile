@@ -13,7 +13,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-11 /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {

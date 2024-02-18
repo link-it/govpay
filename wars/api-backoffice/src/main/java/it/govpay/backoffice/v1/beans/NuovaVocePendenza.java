@@ -1,8 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,8 +50,6 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "ibanAccredito",
 "ibanAppoggio",
 "tipoContabilita",
-"riscossioni",
-"rendicontazioni",
 })
 public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
@@ -87,13 +103,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
-
-  @JsonProperty("riscossioni")
-  private List<Riscossione> riscossioni = null;
-
-  @JsonProperty("rendicontazioni")
-  private List<Rendicontazione> rendicontazioni = null;
-
+  
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -340,36 +350,6 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     this.tipoContabilita = tipoContabilita;
   }
 
- /**
-   **/
-  public NuovaVocePendenza riscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
-    return this;
-  }
-
-  @JsonProperty("riscossioni")
-  public List<Riscossione> getRiscossioni() {
-    return riscossioni;
-  }
-  public void setRiscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
-  }
-
-  /**
-   **/
-  public NuovaVocePendenza rendicontazioni(List<Rendicontazione> rendicontazioni) {
-    this.rendicontazioni = rendicontazioni;
-    return this;
-  }
-
-  @JsonProperty("rendicontazioni")
-  public List<Rendicontazione> getRendicontazioni() {
-    return rendicontazioni;
-  }
-  public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
-    this.rendicontazioni = rendicontazioni;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -394,14 +374,12 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
         Objects.equals(this.codiceContabilita, nuovaVocePendenza.codiceContabilita) &&
         Objects.equals(this.ibanAccredito, nuovaVocePendenza.ibanAccredito) &&
         Objects.equals(this.ibanAppoggio, nuovaVocePendenza.ibanAppoggio) &&
-        Objects.equals(this.tipoContabilita, nuovaVocePendenza.tipoContabilita) &&
-        Objects.equals(riscossioni, nuovaVocePendenza.riscossioni) &&
-        Objects.equals(rendicontazioni, nuovaVocePendenza.rendicontazioni);
+        Objects.equals(this.tipoContabilita, nuovaVocePendenza.tipoContabilita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, idDominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita, riscossioni, rendicontazioni);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, idDominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
   }
 
   public static NuovaVocePendenza parse(String json) throws IOException {
@@ -434,8 +412,6 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
     sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
-    sb.append("    rendicontazioni: ").append(toIndentedString(rendicontazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }
