@@ -81,11 +81,16 @@ public class Versamento  {
 	
 	@Deprecated
 	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura, BasicBD bd) throws GovPayException {
-		return caricaVersamento(versamento, generaIuv, aggiornaSeEsiste, avvisatura, dataAvvisatura, bd, true); 
+		return caricaVersamento(versamento, generaIuv, aggiornaSeEsiste, avvisatura, dataAvvisatura, bd, true, true); 
+	}
+	
+	@Deprecated
+	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura, BasicBD bd, boolean salvataggioSuDB) throws GovPayException {
+		return caricaVersamento(versamento, generaIuv, aggiornaSeEsiste, avvisatura, dataAvvisatura, bd, salvataggioSuDB, true); 
 	}
 
 	@Deprecated
-	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura, BasicBD bd, boolean salvataggioSuDB) throws GovPayException {
+	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura, BasicBD bd, boolean salvataggioSuDB, boolean controlloNumeroAvvisoDominioApplicazione) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
 		IContext ctx = ContextThreadLocal.get();
@@ -163,7 +168,9 @@ public class Versamento  {
 			} catch (NotFoundException e) {
 				if(versamento.getNumeroAvviso()!=null) {
 					// validazione del numero avviso in funzione della configurazione di dominio e applicazione
-					VersamentoUtils.checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(versamento, applicazione, dominio);
+					if(controlloNumeroAvvisoDominioApplicazione) {
+						VersamentoUtils.checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(versamento, applicazione, dominio);
+					}
 					
 					
 					try {

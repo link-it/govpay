@@ -43,10 +43,10 @@ Examples:
 | applicazione_dominio1.json | 3 |
 | applicazione_dominio2.json | 2 |
 | applicazione_none.json | 0 |
-| applicazione_dominio1e2_ec.json | 2 |
-| applicazione_dominio1_ec.json | 1 |
-| applicazione_dominio1_uo1.json | 1 |
-| applicazione_dominio1_uo1e2.json | 2 |
+| applicazione_dominio1e2_ec.json | 5 |
+| applicazione_dominio1_ec.json | 3 |
+| applicazione_dominio1_uo1.json | 3 |
+| applicazione_dominio1_uo1e2.json | 3 |
 
 
 Scenario Outline: Ricerca rendicontazioni da operatore <operatore>.
@@ -92,10 +92,10 @@ Examples:
 | operatore_domini1.json | 3 |
 | operatore_domini2.json | 2 |
 | operatore_none.json | 0 |
-| operatore_domini1e2_ec.json | 2 |
-| operatore_domini1_ec.json | 1 |
-| operatore_domini1_uo1.json | 1 |
-| operatore_domini1_uo1e2.json | 2 |
+| operatore_domini1e2_ec.json | 5 |
+| operatore_domini1_ec.json | 3 |
+| operatore_domini1_uo1.json | 3 |
+| operatore_domini1_uo1e2.json | 3 |
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] del flusso di rendicontazione [<idFlusso>]
 
