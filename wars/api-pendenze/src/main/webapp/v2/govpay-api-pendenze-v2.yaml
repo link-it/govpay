@@ -1169,7 +1169,7 @@ components:
       type: object
       description: Metadata Custom da inserire nella ricevuta di pagamento
       properties:
-        mapEntry:
+        mapEntries:
           type: array
           items: 
             minItems: 1

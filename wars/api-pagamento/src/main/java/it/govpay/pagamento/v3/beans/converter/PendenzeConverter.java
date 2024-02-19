@@ -48,6 +48,8 @@ import it.govpay.pagamento.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v3.beans.AllegatoPendenza;
 import it.govpay.pagamento.v3.beans.Documento;
 import it.govpay.pagamento.v3.beans.LinguaSecondaria;
+import it.govpay.pagamento.v3.beans.MapEntry;
+import it.govpay.pagamento.v3.beans.Metadata;
 import it.govpay.pagamento.v3.beans.PendenzaArchivio;
 import it.govpay.pagamento.v3.beans.PendenzaPagata;
 import it.govpay.pagamento.v3.beans.ProprietaPendenza;
@@ -258,7 +260,7 @@ public class PendenzeConverter {
 		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
@@ -452,5 +454,28 @@ public class PendenzeConverter {
 		}
 
 		return soggetto;
+	}
+	
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+				
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+				
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+				
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
+		return rsModel;
 	}
 }

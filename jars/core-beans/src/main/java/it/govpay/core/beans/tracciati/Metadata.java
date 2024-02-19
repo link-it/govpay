@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.beans.tracciati;
 
 
@@ -12,26 +31,26 @@ import it.govpay.core.exceptions.IOException;
 /**
  * Metadata Custom da inserire nella ricevuta di pagamento
  **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"mapEntry",
+"mapEntries",
 })
 public class Metadata extends JSONSerializable {
   
-  @JsonProperty("mapEntry")
-  private List<MapEntry> mapEntry = null;
+  @JsonProperty("mapEntries")
+  private List<MapEntry> mapEntries = null;
   
   /**
    **/
-  public Metadata mapEntry(List<MapEntry> mapEntry) {
-    this.mapEntry = mapEntry;
+  public Metadata mapEntries(List<MapEntry> mapEntries) {
+    this.mapEntries = mapEntries;
     return this;
   }
 
-  @JsonProperty("mapEntry")
-  public List<MapEntry> getMapEntry() {
-    return mapEntry;
+  @JsonProperty("mapEntries")
+  public List<MapEntry> getMapEntries() {
+    return mapEntries;
   }
-  public void setMapEntry(List<MapEntry> mapEntry) {
-    this.mapEntry = mapEntry;
+  public void setMapEntries(List<MapEntry> mapEntries) {
+    this.mapEntries = mapEntries;
   }
 
   @Override
@@ -43,12 +62,12 @@ public class Metadata extends JSONSerializable {
       return false;
     }
     Metadata metadata = (Metadata) o;
-    return Objects.equals(mapEntry, metadata.mapEntry);
+    return Objects.equals(mapEntries, metadata.mapEntries);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(mapEntry);
+    return Objects.hash(mapEntries);
   }
 
   public static Metadata parse(String json) throws IOException {
@@ -65,7 +84,7 @@ public class Metadata extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Metadata {\n");
     
-    sb.append("    mapEntry: ").append(toIndentedString(mapEntry)).append("\n");
+    sb.append("    mapEntries: ").append(toIndentedString(mapEntries)).append("\n");
     sb.append("}");
     return sb.toString();
   }

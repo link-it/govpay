@@ -17,26 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.backoffice.v1.beans;
+package it.govpay.ec.v1.beans;
 
 
 import java.util.List;
-import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
-import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
-
-/**
- * Metadata Custom da inserire nella ricevuta di pagamento
- **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"mapEntries",
-})
-public class Metadata extends JSONSerializable implements IValidable {
+public class Metadata {
   
   @JsonProperty("mapEntries")
   private List<MapEntry> mapEntries = null;
@@ -54,32 +42,6 @@ public class Metadata extends JSONSerializable implements IValidable {
   }
   public void setMapEntries(List<MapEntry> mapEntries) {
     this.mapEntries = mapEntries;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Metadata metadata = (Metadata) o;
-    return Objects.equals(mapEntries, metadata.mapEntries);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(mapEntries);
-  }
-
-  public static Metadata parse(String json) throws IOException {
-    return (Metadata) parse(json, Metadata.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "metadata";
   }
 
   @Override
@@ -101,13 +63,6 @@ public class Metadata extends JSONSerializable implements IValidable {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
-  }
-  
-  @Override
-	public void validate() throws ValidationException {
-		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
-		vf.getValidator("mapEntries", this.mapEntries).notNull().minItems(1).maxItems(15).validateObjects();
   }
 }
 

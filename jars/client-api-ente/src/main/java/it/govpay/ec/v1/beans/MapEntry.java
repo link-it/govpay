@@ -17,25 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.beans.tracciati;
+package it.govpay.ec.v1.beans;
 
-
-import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.exceptions.IOException;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"key",
-"value",
-})
-public class MapEntry extends JSONSerializable {
+public class MapEntry{
   
-  @JsonProperty("key")
+//  @JsonProperty("key")
   private String key = null;
   
-  @JsonProperty("value")
+//  @JsonProperty("value")
   private String value = null;
   
   /**
@@ -68,33 +60,6 @@ public class MapEntry extends JSONSerializable {
   }
   public void setValue(String value) {
     this.value = value;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    MapEntry mapEntry = (MapEntry) o;
-    return Objects.equals(key, mapEntry.key) &&
-        Objects.equals(value, mapEntry.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(key, value);
-  }
-
-  public static MapEntry parse(String json) throws IOException {
-    return (MapEntry) parse(json, MapEntry.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "mapEntry";
   }
 
   @Override

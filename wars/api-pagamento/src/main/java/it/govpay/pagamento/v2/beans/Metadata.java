@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.backoffice.v1.beans;
+package it.govpay.pagamento.v2.beans;
 
 
 import java.util.List;

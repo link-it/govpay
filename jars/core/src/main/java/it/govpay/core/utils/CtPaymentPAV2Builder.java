@@ -305,10 +305,10 @@ public class CtPaymentPAV2Builder {
 
 	private void impostaMetadata(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
 		// se la pendenza ha dei metadati definiti vengono impostati nell'apposito campo
-		if(singoloVersamento.getMetadataPagoPA() != null && singoloVersamento.getMetadataPagoPA().getMapEntry() != null && !singoloVersamento.getMetadataPagoPA().getMapEntry().isEmpty()) {
+		if(singoloVersamento.getMetadataPagoPA() != null && singoloVersamento.getMetadataPagoPA().getMapEntries() != null && !singoloVersamento.getMetadataPagoPA().getMapEntries().isEmpty()) {
 			CtMetadata metadata = new CtMetadata();
 			
-			for (MapEntry mapEntry : singoloVersamento.getMetadataPagoPA().getMapEntry()) {
+			for (MapEntry mapEntry : singoloVersamento.getMetadataPagoPA().getMapEntries()) {
 				CtMapEntry ctMapEntry = new CtMapEntry();
 				ctMapEntry.setKey(mapEntry.getKey());
 				ctMapEntry.setValue(mapEntry.getValue());

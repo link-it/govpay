@@ -82,7 +82,8 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class PendenzeConverter {
-
+	
+	private PendenzeConverter(){}
 
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, ValidationException, it.govpay.core.exceptions.IOException {
 		return toRsModel(dto.getVersamento(),
@@ -970,10 +971,10 @@ public class PendenzeConverter {
 		if(metadata != null) {
 			dto = new it.govpay.core.beans.tracciati.Metadata();
 			
-			if(metadata.getMapEntry() != null && !metadata.getMapEntry().isEmpty()) {
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
 				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
 				
-				for (MapEntry mapEntry : metadata.getMapEntry()) {
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
 					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
 					mapEntryDto.setKey(mapEntry.getKey());
 					mapEntryDto.setValue(mapEntry.getValue());
@@ -981,7 +982,7 @@ public class PendenzeConverter {
 					mapEntriesDto.add(mapEntryDto);
 				}
 				
-				dto.setMapEntry(mapEntriesDto);
+				dto.setMapEntries(mapEntriesDto);
 			}
 		}
 
@@ -993,10 +994,10 @@ public class PendenzeConverter {
 		if(metadata != null) {
 			rsModel = new Metadata();
 
-			if(metadata.getMapEntry() != null && !metadata.getMapEntry().isEmpty()) {
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
 				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
 				
-				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntry()) {
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
 					MapEntry mapEntryRsModel = new MapEntry();
 					mapEntryRsModel.setKey(mapEntry.getKey());
 					mapEntryRsModel.setValue(mapEntry.getValue());
@@ -1004,7 +1005,7 @@ public class PendenzeConverter {
 					mapEntriesRsModel.add(mapEntryRsModel);
 				}
 				
-				rsModel.setMapEntry(mapEntriesRsModel);
+				rsModel.setMapEntries(mapEntriesRsModel);
 			}
 		}
 

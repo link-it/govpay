@@ -17,70 +17,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.backoffice.v1.beans;
-
+package it.govpay.ragioneria.v3.beans;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
-import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Metadata Custom da inserire nella ricevuta di pagamento
- **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"mapEntries",
-})
-public class Metadata extends JSONSerializable implements IValidable {
+  * Metadata Custom da inserire nella ricevuta di pagamento
+ **/
+@Schema(description="Metadata Custom da inserire nella ricevuta di pagamento")
+public class Metadata   {
   
-  @JsonProperty("mapEntries")
+  @Schema(description = "")
   private List<MapEntry> mapEntries = null;
-  
-  /**
-   **/
+ /**
+   * Get mapEntries
+   * @return mapEntries
+  **/
+  @JsonProperty("mapEntries")
+  public List<MapEntry> getMapEntries() {
+    return mapEntries;
+  }
+
+  public void setMapEntries(List<MapEntry> mapEntries) {
+    this.mapEntries = mapEntries;
+  }
+
   public Metadata mapEntries(List<MapEntry> mapEntries) {
     this.mapEntries = mapEntries;
     return this;
   }
 
-  @JsonProperty("mapEntries")
-  public List<MapEntry> getMapEntries() {
-    return mapEntries;
-  }
-  public void setMapEntries(List<MapEntry> mapEntries) {
-    this.mapEntries = mapEntries;
+  public Metadata addMapEntriesItem(MapEntry mapEntriesItem) {
+    this.mapEntries.add(mapEntriesItem);
+    return this;
   }
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Metadata metadata = (Metadata) o;
-    return Objects.equals(mapEntries, metadata.mapEntries);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(mapEntries);
-  }
-
-  public static Metadata parse(String json) throws IOException {
-    return (Metadata) parse(json, Metadata.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "metadata";
-  }
 
   @Override
   public String toString() {
@@ -96,20 +71,10 @@ public class Metadata extends JSONSerializable implements IValidable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  @Override
-	public void validate() throws ValidationException {
-		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
-		vf.getValidator("mapEntries", this.mapEntries).notNull().minItems(1).maxItems(15).validateObjects();
-  }
 }
-
-
-

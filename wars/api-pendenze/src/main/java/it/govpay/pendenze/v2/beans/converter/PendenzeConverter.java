@@ -50,6 +50,8 @@ import it.govpay.pendenze.v2.beans.AllegatoPendenza;
 import it.govpay.pendenze.v2.beans.Avviso;
 import it.govpay.pendenze.v2.beans.Documento;
 import it.govpay.pendenze.v2.beans.LinguaSecondaria;
+import it.govpay.pendenze.v2.beans.MapEntry;
+import it.govpay.pendenze.v2.beans.Metadata;
 import it.govpay.pendenze.v2.beans.NuovaPendenza;
 import it.govpay.pendenze.v2.beans.NuovaVocePendenza;
 import it.govpay.pendenze.v2.beans.NuovoAllegatoPendenza;
@@ -72,6 +74,8 @@ import it.govpay.pendenze.v2.beans.VocePendenza;
 import it.govpay.pendenze.v2.beans.VocePendenza.TipoBolloEnum;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts, List<Allegato> allegati) throws ServiceException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -380,6 +384,7 @@ public class PendenzeConverter {
 		}
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModel(singoloVersamento.getDominio(configWrapper)));
 		}
@@ -497,6 +502,7 @@ public class PendenzeConverter {
 				}
 				
 				sv.setContabilita(ContabilitaConverter.toStringDTO(vocePendenza.getContabilita()));
+				sv.setMetadata(toMetadataDTO(vocePendenza.getMetadata()));
 				
 				if(vocePendenza.getContabilita() != null) {
 					if(vocePendenza.getContabilita().getQuote() != null) {
@@ -727,5 +733,51 @@ public class PendenzeConverter {
 		}
 		
 		return allegatiDTO;
+	}
+	
+	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
+		it.govpay.core.beans.tracciati.Metadata dto = null;
+		if(metadata != null) {
+			dto = new it.govpay.core.beans.tracciati.Metadata();
+			
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
+				
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
+					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
+					mapEntryDto.setKey(mapEntry.getKey());
+					mapEntryDto.setValue(mapEntry.getValue());
+				
+					mapEntriesDto.add(mapEntryDto);
+				}
+				
+				dto.setMapEntries(mapEntriesDto);
+			}
+		}
+
+		return dto;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+				
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+				
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+				
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
+		return rsModel;
 	}
 }

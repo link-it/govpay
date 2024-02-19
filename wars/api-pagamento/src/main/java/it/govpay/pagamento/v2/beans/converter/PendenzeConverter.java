@@ -50,6 +50,8 @@ import it.govpay.pagamento.v2.Allegati;
 import it.govpay.pagamento.v2.beans.AllegatoPendenza;
 import it.govpay.pagamento.v2.beans.Avviso;
 import it.govpay.pagamento.v2.beans.LinguaSecondaria;
+import it.govpay.pagamento.v2.beans.MapEntry;
+import it.govpay.pagamento.v2.beans.Metadata;
 import it.govpay.pagamento.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
@@ -634,5 +636,51 @@ public class PendenzeConverter {
 		}
 		
 		return allegatiDTO;
+	}
+	
+	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
+		it.govpay.core.beans.tracciati.Metadata dto = null;
+		if(metadata != null) {
+			dto = new it.govpay.core.beans.tracciati.Metadata();
+			
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
+				
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
+					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
+					mapEntryDto.setKey(mapEntry.getKey());
+					mapEntryDto.setValue(mapEntry.getValue());
+				
+					mapEntriesDto.add(mapEntryDto);
+				}
+				
+				dto.setMapEntries(mapEntriesDto);
+			}
+		}
+
+		return dto;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+				
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+				
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+				
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
+		return rsModel;
 	}
 }

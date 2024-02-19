@@ -17,85 +17,66 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.beans.tracciati;
+package it.govpay.ec.v2.beans;
 
 
-import java.util.Objects;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.exceptions.IOException;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"key",
-"value",
-})
-public class MapEntry extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class MapEntry   {
   
-  @JsonProperty("key")
+  @Schema(required = true, description = "chiave del metadata")
+ /**
+   * chiave del metadata  
+  **/
   private String key = null;
   
-  @JsonProperty("value")
+  @Schema(required = true, description = "valore del metadata")
+ /**
+   * valore del metadata  
+  **/
   private String value = null;
-  
-  /**
+ /**
    * chiave del metadata
-   **/
+   * @return key
+  **/
+  @JsonProperty("key")
+  @Size(min=1,max=140)
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
   public MapEntry key(String key) {
     this.key = key;
     return this;
   }
 
-  @JsonProperty("key")
-  public String getKey() {
-    return key;
-  }
-  public void setKey(String key) {
-    this.key = key;
+ /**
+   * valore del metadata
+   * @return value
+  **/
+  @JsonProperty("value")
+  @Size(min=1,max=140)
+  public String getValue() {
+    return value;
   }
 
-  /**
-   * valore del metadata
-   **/
+  public void setValue(String value) {
+    this.value = value;
+  }
+
   public MapEntry value(String value) {
     this.value = value;
     return this;
   }
 
-  @JsonProperty("value")
-  public String getValue() {
-    return value;
-  }
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    MapEntry mapEntry = (MapEntry) o;
-    return Objects.equals(key, mapEntry.key) &&
-        Objects.equals(value, mapEntry.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(key, value);
-  }
-
-  public static MapEntry parse(String json) throws IOException {
-    return (MapEntry) parse(json, MapEntry.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "mapEntry";
-  }
 
   @Override
   public String toString() {
@@ -112,13 +93,10 @@ public class MapEntry extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

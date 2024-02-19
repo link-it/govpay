@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "datiAllegati",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "indice",
 "stato",
 "dominio",
@@ -61,7 +62,10 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-
+  
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
+  
   @JsonProperty("indice")
   private BigDecimal indice = null;
 
@@ -164,6 +168,21 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public VocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
   }
 
   /**
@@ -414,6 +433,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
         Objects.equals(datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, vocePendenza.contabilita) &&
+        Objects.equals(metadata, vocePendenza.metadata) &&
         Objects.equals(indice, vocePendenza.indice) &&
         Objects.equals(stato, vocePendenza.stato) &&
         Objects.equals(dominio, vocePendenza.dominio) &&
@@ -429,7 +449,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, indice, stato, dominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, metadata, indice, stato, dominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
   }
 
   public static VocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -452,6 +472,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
