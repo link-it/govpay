@@ -960,9 +960,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		appContext.getRequest().addGenericProperty(new Property("ccp", receipt.getReceiptId()));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
@@ -1933,9 +1935,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		appContext.getRequest().addGenericProperty(new Property("ccp", receipt.getReceiptId()));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
