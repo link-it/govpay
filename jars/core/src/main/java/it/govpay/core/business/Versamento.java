@@ -354,6 +354,11 @@ public class Versamento  {
 
 		// idDocumento
 		versamento.setIdDocumento(versamentoLetto.getIdDocumento());
+		
+		// Informazioni ACA
+		versamento.setDataUltimaComunicazioneAca(versamentoLetto.getDataUltimaComunicazioneAca());
+		versamento.setDataUltimaModificaAca(versamentoLetto.getDataUltimaModificaAca());
+		
 	}
 
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException, UtilsException {
