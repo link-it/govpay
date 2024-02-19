@@ -6792,6 +6792,16 @@ components:
             UUID:
               type: string
               description: Parametro di randomizzazione delle URL di pagamento statiche
+            dataUltimaModificaAca:
+              type: string
+              format: date-time
+              description: Data di ultimo aggiornamento dei dati da inviare ad ACA
+              example: '2018-12-31'
+            dataUltimaComunicazioneAca:
+              type: string
+              format: date-time
+              description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6874,6 +6884,16 @@ components:
             UUID:
               type: string
               description: Parametro di randomizzazione delle URL di pagamento statiche
+            dataUltimaModificaAca:
+              type: string
+              format: date-time
+              description: Data di ultimo aggiornamento dei dati da inviare ad ACA
+              example: '2018-12-31'
+            dataUltimaComunicazioneAca:
+              type: string
+              format: date-time
+              description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:

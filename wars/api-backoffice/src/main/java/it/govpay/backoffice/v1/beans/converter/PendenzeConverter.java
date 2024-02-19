@@ -209,6 +209,9 @@ public class PendenzeConverter {
 
 		rsModel.setAllegati(toAllegatiRsModel(allegati));
 		
+		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
+		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
+
 		return rsModel;
 	}
 
@@ -324,6 +327,9 @@ public class PendenzeConverter {
 
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 		
+		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
+		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
+
 		return rsModel;
 	}
 

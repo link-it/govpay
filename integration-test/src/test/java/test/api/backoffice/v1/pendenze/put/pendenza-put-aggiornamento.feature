@@ -93,7 +93,11 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == pendenzaGetResponse
+And match response.importo == pendenzaPut.importo
+And match response.voci[0].importo == pendenzaPut.voci[0].importo
+And match response.causale == pendenzaPut.causale 
+And match response.dataValidita == pendenzaPut.dataValidita
+And match response.dataScadenza == pendenzaPut.dataScadenza
 
 Scenario: Aggiornamento pendenza non pagata con modifica dell'iban di accredito
 
@@ -166,6 +170,7 @@ And headers idA2ABasicAutenticationHeader
 And request [ { "op": "REPLACE", "path": "/stato", "value": "ANNULLATA" }, { "op": "REPLACE", "path": "/descrizioneStato", "value": "Test annullamento" }]
 When method patch
 Then status 200
+And match response.stato == 'ANNULLATA'
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -180,7 +185,7 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == pendenzaGetResponse
+And match response.stato == 'NON_ESEGUITA'
 
 @test-update-dominio
 Scenario: Aggiornamento pendenza non pagata ma e' stato modificato il dominio
