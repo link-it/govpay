@@ -71,8 +71,10 @@ import it.govpay.core.utils.RtUtils.EsitoValidazione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.Rpt.VersioneRPT;
@@ -205,6 +207,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			try { 
 				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 			} catch (NotFoundException e) {
+				// Funzionalita' standin
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
 			
@@ -511,7 +514,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}
 	}
 	
-	public static Rpt ricostruisciRPT(String codDominio, String iuv, PaSendRTReq ctRt, BDConfigWrapper configWrapper, BasicBD basicBd) throws ServiceException, NotFoundException {
+	public static Rpt ricostruisciRPT(String codDominio, String iuv, PaSendRTReq ctRt, TipoVersamento tipoVersamento,
+			ModelloPagamento modelloPagamento, BDConfigWrapper configWrapper, BasicBD basicBd) throws ServiceException, NotFoundException {
 		Dominio dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 		
 		Rpt rpt = new Rpt();
@@ -519,18 +523,28 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		rpt.setIuv(iuv);
 		rpt.setCodStazione(dominio.getStazione().getCodStazione());
 		rpt.setCodMsgRichiesta(ctRt.getReceipt().getReceiptId());
-		rpt.setDataMsgRichiesta(new Date());
+		rpt.setDataMsgRichiesta(ctRt.getReceipt().getPaymentDateTime() != null ? ctRt.getReceipt().getPaymentDateTime() : new Date());
 		rpt.setCcp(ctRt.getReceipt().getReceiptId());
 		rpt.setStato(StatoRpt.RPT_ACCETTATA_NODO);
 		rpt.setDataAggiornamento(new Date());
 		rpt.setVersione(VersioneRPT.SANP_240);
+		rpt.setIdTransazioneRpt(ContextThreadLocal.get().getTransactionId());
+		rpt.setBloccante(true);
+		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
+		rpt.setDescrizioneStato(null);
+		rpt.setId(null);
+		rpt.setTipoVersamento(tipoVersamento);
+		rpt.setModelloPagamento(modelloPagamento);
+		rpt.setCallbackURL(null);
+		rpt.setCodSessione(null);
+		rpt.setPspRedirectURL(null);
+		rpt.setCodCarrello(null);
 		
 		VersamentiBD versamentiBD = new VersamentiBD(basicBd);
 		versamentiBD.setAtomica(false);
 		Versamento versamentoByDominioIuv = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 		rpt.setIdVersamento(versamentoByDominioIuv.getId());
-		
-		
+		rpt.setVersamento(versamentoByDominioIuv);
 		
 		return rpt;
 	}
