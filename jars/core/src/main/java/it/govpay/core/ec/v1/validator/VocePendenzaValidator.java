@@ -118,13 +118,13 @@ public class VocePendenzaValidator implements IValidable{
 	private void validaMetadata(ValidatorFactory vf) throws ValidationException {
 		if(this.vocePendenza.getMetadata() != null) {
 			if(this.vocePendenza.getMetadata().getMapEntries() == null || this.vocePendenza.getMetadata().getMapEntries().isEmpty())
-				throw new ValidationException("Il campo mapEntry non deve essere vuoto.");
+				throw new ValidationException("Il campo mapEntries non deve essere vuoto.");
 
 			if(this.vocePendenza.getMetadata().getMapEntries().isEmpty())
-				throw new ValidationException("Il campo mapEntry deve avere almeno 1 elemento.");
+				throw new ValidationException("Il campo mapEntries deve avere almeno 1 elemento.");
 
 			if(this.vocePendenza.getMetadata().getMapEntries().size() > 15)
-				throw new ValidationException("Il campo mapEntry deve avere massimo 15 elemento.");
+				throw new ValidationException("Il campo mapEntries deve avere massimo 15 elemento.");
 			
 			for (int i = 0; i < this.vocePendenza.getMetadata().getMapEntries().size(); i++) {
 				MapEntry entry = this.vocePendenza.getMetadata().getMapEntries().get(i);
