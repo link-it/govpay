@@ -744,3 +744,8 @@ CREATE VIEW v_vrs_non_rnd AS
   WHERE rendicontazioni.id IS NULL;
 
 
+-- 20/02/2024 Funzionalita' StandIN: campo Xml RPT opzionale
+ALTER TABLE rpt ALTER COLUMN xml_rpt DROP NOT NULL;
+
+
+

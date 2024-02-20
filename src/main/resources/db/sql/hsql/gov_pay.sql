@@ -896,7 +896,7 @@ CREATE TABLE rpt
 	cod_sessione_portale VARCHAR(255),
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
 	psp_redirect_url VARCHAR(512),
-	xml_rpt VARBINARY(16777215) NOT NULL,
+	xml_rpt VARBINARY(16777215),
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url LONGVARCHAR,

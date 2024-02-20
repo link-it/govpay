@@ -815,7 +815,7 @@
     <value name="codSessione" field="codSessione" usage="optional"/>
     <value name="codSessionePortale" field="codSessionePortale" usage="optional"/>
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
-    <value name="xmlRPT" field="xmlRPT" usage="required"/>
+    <value name="xmlRPT" field="xmlRPT" usage="optional"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="callbackURL" field="callbackURL" usage="optional"/>
     <value name="modelloPagamento" field="modelloPagamento" usage="optional"/>
@@ -1154,7 +1154,7 @@
     <value name="codSessione" field="codSessione" usage="optional"/>
     <value name="codSessionePortale" field="codSessionePortale" usage="optional"/>
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
-    <value name="xmlRPT" field="xmlRPT" usage="required"/>
+    <value name="xmlRPT" field="xmlRPT" usage="optional"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="callbackURL" field="callbackURL" usage="optional"/>
     <value name="modelloPagamento" field="modelloPagamento" usage="optional"/>
