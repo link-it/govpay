@@ -1,0 +1,13 @@
+<div *ngIf="attributes.length === 0">{{ 'Nessun dato da visualizzare' }}</div>
+<table class="table table-bordered table-sm" *ngIf="attributes.length > 0">
+  <thead>
+    <tr>
+      <th class="{{ item.col }}" scope="col" *ngFor="let item of attributes">{{ item.label }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let elem of data">
+      <td class="text-break text-wrap" *ngFor="let item of attributes">{{ elem[item.attribute] }}</td>
+    </tr>
+  </tbody>
+</table>

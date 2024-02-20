@@ -1,9 +1,29 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -45,6 +65,8 @@ import it.govpay.core.exceptions.IOException;
 "verificato",
 "tipo",
 "UUID",
+"dataUltimaModificaAca",
+"dataUltimaComunicazioneAca",
 "rpp",
 "pagamenti",
 })
@@ -154,7 +176,15 @@ public class PendenzaIndex extends JSONSerializable {
 
   @JsonProperty("UUID")
   private String UUID = null;
-
+  
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataUltimaModificaAca")
+  private Date dataUltimaModificaAca = null;
+  
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataUltimaComunicazioneAca")
+  private Date dataUltimaComunicazioneAca = null;
+  
   @JsonProperty("rpp")
   private String rpp = null;
 
@@ -724,6 +754,38 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * Data di ultimo aggiornamento dei dati da inviare ad ACA
+   **/
+  public PendenzaIndex dataUltimaModificaAca(Date dataUltimaModificaAca) {
+    this.dataUltimaModificaAca = dataUltimaModificaAca;
+    return this;
+  }
+
+  @JsonProperty("dataUltimaModificaAca")
+  public Date getDataUltimaModificaAca() {
+    return dataUltimaModificaAca;
+  }
+  public void setDataUltimaModificaAca(Date dataUltimaModificaAca) {
+    this.dataUltimaModificaAca = dataUltimaModificaAca;
+  }
+
+  /**
+   * Data ultima comunicazione verso il servizio ACA
+   **/
+  public PendenzaIndex dataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
+    this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+    return this;
+  }
+
+  @JsonProperty("dataUltimaComunicazioneAca")
+  public Date getDataUltimaComunicazioneAca() {
+    return dataUltimaComunicazioneAca;
+  }
+  public void setDataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
+    this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -799,13 +861,15 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(verificato, pendenzaIndex.verificato) &&
         Objects.equals(tipo, pendenzaIndex.tipo) &&
         Objects.equals(UUID, pendenzaIndex.UUID) &&
+        Objects.equals(dataUltimaModificaAca, pendenzaIndex.dataUltimaModificaAca) &&
+        Objects.equals(dataUltimaComunicazioneAca, pendenzaIndex.dataUltimaComunicazioneAca) &&
         Objects.equals(rpp, pendenzaIndex.rpp) &&
         Objects.equals(pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, dataUltimaModificaAca, dataUltimaComunicazioneAca, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws IOException {
@@ -857,6 +921,8 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
+    sb.append("    dataUltimaModificaAca: ").append(toIndentedString(dataUltimaModificaAca)).append("\n");
+    sb.append("    dataUltimaComunicazioneAca: ").append(toIndentedString(dataUltimaComunicazioneAca)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");

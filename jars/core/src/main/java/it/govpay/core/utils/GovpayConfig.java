@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -21,7 +21,6 @@ package it.govpay.core.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -52,11 +51,7 @@ import it.govpay.model.Versamento;
 
 public class GovpayConfig {
 
-	private static final String MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1 = "Errore di inizializzazione: {0}. Assunto valore di default: {1}";
-
-	public enum VersioneAvviso {
-		v001, v002;
-	}
+	private static final String MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1 = "Errore di inizializzazione: {}. Assunto valore di default: {}";
 
 	public static final String PROPERTIES_FILE_NAME = "govpay.properties";
 	public static final String PROPERTIES_FILE = "/" + PROPERTIES_FILE_NAME;
@@ -71,7 +66,7 @@ public class GovpayConfig {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance(InputStream is) throws Exception {
+	public static GovpayConfig newInstance(InputStream is) throws IOException {
 		instance = new GovpayConfig(is);
 		return instance;
 	}
@@ -80,7 +75,6 @@ public class GovpayConfig {
 
 	private URI log4j2Config;
 	private String resourceDir;
-	private VersioneAvviso versioneAvviso;
 	private int dimensionePoolThreadNotifica;
 	private int dimensionePoolThreadNotificaAppIo;
 	private int dimensionePoolThreadRPT;
@@ -104,7 +98,7 @@ public class GovpayConfig {
 	private Integer timeoutPendentiModello1Mins;
 	private Integer intervalloControlloRptPendenti;
 	
-	private Integer timeoutPendentiModello3_SANP_24_Mins;
+	private Integer timeoutPendentiModello3SANP24Mins;
 	
 	private Integer timeoutInvioRPTModello3Millis;
 	
@@ -197,9 +191,8 @@ public class GovpayConfig {
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 	
 	
-	public GovpayConfig(InputStream is) throws Exception {
+	public GovpayConfig(InputStream is) throws IOException {
 		// Default values:
-		this.versioneAvviso = VersioneAvviso.v002;
 		this.dimensionePoolThreadNotifica = 10;
 		this.dimensionePoolThreadNotificaAppIo = 10;
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
@@ -211,7 +204,7 @@ public class GovpayConfig {
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
-		this.mLogClass = Log4jLoggerWithApplicationContext.class.getName(); //Log4JLoggerWithProxyContext.class.getName();
+		this.mLogClass = Log4jLoggerWithApplicationContext.class.getName();
 		this.mLogLevel = Severity.INFO;
 		this.mLogOnDB = false;
 		this.mLogOnLog4j = true;
@@ -225,7 +218,7 @@ public class GovpayConfig {
 		this.timeoutPendentiModello3Mins = null;
 		this.timeoutPendentiModello1 = false;
 		this.timeoutPendentiModello1Mins = null;
-		this.timeoutPendentiModello3_SANP_24_Mins = 30;
+		this.timeoutPendentiModello3SANP24Mins = 30;
 		this.timeoutInvioRPTModello3Millis = 100;
 		
 		this.appName = null;
@@ -274,8 +267,6 @@ public class GovpayConfig {
 		
 		this.numeroMassimoGiorniRPTPendenti = 30;
 		
-		this.templateProspettoRiscossioni = null;
-		
 		this.checkoutBaseURL = null;
 		this.checkoutEnabled = false;
 		
@@ -300,38 +291,33 @@ public class GovpayConfig {
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
 		
+
+		// Recupero il property all'interno dell'EAR
+		this.props = new Properties[2];
+		Properties props1 = new Properties();
+		props1.load(is);
+		this.props[1] = props1;
+
+		// Recupero la configurazione della working dir
+		// Se e' configurata, la uso come prioritaria
 		try {
+			this.resourceDir = getProperty("it.govpay.resource.path", props1, false, true, null);
+			if(this.resourceDir != null) {
+				File resourceDirFile = new File(escape(this.resourceDir));
+				if(!resourceDirFile.isDirectory())
+					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 
-			// Recupero il property all'interno dell'EAR
-			this.props = new Properties[2];
-			Properties props1 = new Properties();
-			props1.load(is);
-			this.props[1] = props1;
+				File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
 
-			// Recupero la configurazione della working dir
-			// Se e' configurata, la uso come prioritaria
-
-			try {
-				this.resourceDir = getProperty("it.govpay.resource.path", props1, false, true, null);
-				if(this.resourceDir != null) {
-					File resourceDirFile = new File(escape(this.resourceDir));
-					if(!resourceDirFile.isDirectory())
-						throw new Exception(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
-
-					File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
-
-					if(log4j2ConfigFile.exists()) {
-						this.log4j2Config = log4j2ConfigFile.toURI();
-						LoggerWrapperFactory.getLogger("boot").info(MessageFormat.format("Individuata configurazione log4j: {0}", this.log4j2Config));
-					} else {
-						LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j interna.");
-					}
+				if(log4j2ConfigFile.exists()) {
+					this.log4j2Config = log4j2ConfigFile.toURI();
+					LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j: {}", this.log4j2Config);
+				} else {
+					LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j interna.");
 				}
-			} catch (Exception e) {
-				LoggerWrapperFactory.getLogger("boot").warn(MessageFormat.format("Errore di inizializzazione: {0}. Property ignorata.", e.getMessage()));
 			}
-		} catch (Exception e) {
-			throw e;
+		} catch (ConfigException | PropertyNotFoundException e) {
+			LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: {}. Property ignorata.", e.getMessage());
 		}
 	}
 
@@ -347,27 +333,11 @@ public class GovpayConfig {
 				
 				try(InputStream is = new FileInputStream(gpConfigFile)) {
 					props0.load(is);
-				} catch (FileNotFoundException e) {
-					throw new ConfigException(e);
 				} catch (IOException e) {
 					throw new ConfigException(e);
 				} 
-				log.info(MessageFormat.format("Individuata configurazione prioritaria: {0}", gpConfigFile.getAbsolutePath()));
+				log.info("Individuata configurazione prioritaria: {}", gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
-			}
-
-			try {
-				String versioneAvvisoProperty = getProperty("it.govpay.avviso.versione", this.props, false, log);
-				if(versioneAvvisoProperty != null && !versioneAvvisoProperty.trim().isEmpty()) {
-					try {
-						this.versioneAvviso = VersioneAvviso.valueOf(versioneAvvisoProperty.trim());
-					} catch (Exception e) {
-						throw new Exception(MessageFormat.format("Valore della property \"it.govpay.avviso.versione\" non consetito [{0}]. Valori ammessi: {1}", versioneAvvisoProperty, Arrays.toString(VersioneAvviso.values())));
-					}
-				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), VersioneAvviso.v002));
-				this.versioneAvviso = VersioneAvviso.v002;
 			}
 
 			try {
@@ -375,12 +345,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadNotifica = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.notifica\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.notifica\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadNotifica = 10;
 			}
 			
@@ -389,12 +359,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadNotificaAppIo = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.notificaAppIO\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.notificaAppIO\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadNotificaAppIo = 10;
 			}
 			
@@ -403,12 +373,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadRPT = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.rpt\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.rpt\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadRPT = 10;
 			}
 			
@@ -417,12 +387,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 			}
 			
@@ -431,12 +401,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadCaricamentoTracciati = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.caricamentoTracciati\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.caricamentoTracciati\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadCaricamentoTracciati = 10;
 			}
 			
@@ -445,12 +415,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 			}
 			
@@ -459,12 +429,12 @@ public class GovpayConfig {
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA\" non e' un numero intero");
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA\" non e' un numero intero");
 					}
 				}
-			} catch (Exception e) {
-				log.warn(MessageFormat.format(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10));
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
 			}
 
@@ -482,7 +452,7 @@ public class GovpayConfig {
 			try {
 				this.mLogLevel = Severity.valueOf(mLogOnLevelString);
 			} catch (Exception e) {
-				log.warn(MessageFormat.format("Valore [{0}] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".", mLogOnLevelString));
+				log.warn("Valore [{}] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".", mLogOnLevelString);
 			}
 
 			String mLogOnDBString = getProperty("it.govpay.mlog.db", this.props, false, log);
@@ -539,6 +509,8 @@ public class GovpayConfig {
 			String batchOnString = getProperty("it.govpay.batchOn", this.props, false, log);
 			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
 				this.batchOn = false;
+			
+			log.info("Abilitazione generale Batch: {}", this.batchOn);
 
 			String clusterIdString = getProperty("it.govpay.clusterId", this.props, false, log);
 			if(clusterIdString != null) {
@@ -548,7 +520,7 @@ public class GovpayConfig {
 			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", this.props, false, log);
 			try{
 				this.timeoutBatch = Long.parseLong(timeoutBatchString) * 1000;
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.timeoutBatch\" impostata con valore di default (5 minuti)");
 				this.timeoutBatch = (long) 5 * 60 * 1000;
 			}
@@ -577,18 +549,18 @@ public class GovpayConfig {
 				}
 			}
 			
-			String timeoutPendentiModello3_SANP_24_String = getProperty("it.govpay.modello3.sanp24.timeoutPagamento", props, false, log);
-			if(timeoutPendentiModello3_SANP_24_String != null) {
+			String timeoutPendentiModello3SANP24String = getProperty("it.govpay.modello3.sanp24.timeoutPagamento", props, false, log);
+			if(timeoutPendentiModello3SANP24String != null) {
 				try{
-					this.timeoutPendentiModello3_SANP_24_Mins = Integer.parseInt(timeoutPendentiModello3_SANP_24_String);
+					this.timeoutPendentiModello3SANP24Mins = Integer.parseInt(timeoutPendentiModello3SANP24String);
 					
-					if(this.timeoutPendentiModello3_SANP_24_Mins.intValue() > 30) {
-						this.timeoutPendentiModello3_SANP_24_Mins = 30;
+					if(this.timeoutPendentiModello3SANP24Mins.intValue() > 30) {
+						this.timeoutPendentiModello3SANP24Mins = 30;
 						log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero non superiore a 30. Utilizzato valore di default: 30");
 					}
 					
-					if(this.timeoutPendentiModello3_SANP_24_Mins.intValue() < 1) {
-						this.timeoutPendentiModello3_SANP_24_Mins = 1;
+					if(this.timeoutPendentiModello3SANP24Mins.intValue() < 1) {
+						this.timeoutPendentiModello3SANP24Mins = 1;
 						log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero non inferiore a 1. Utilizzato valore di default: 30");
 					}
 				} catch(NumberFormatException nfe) {
@@ -610,7 +582,6 @@ public class GovpayConfig {
 					this.autenticazioneHeaderNomeHeaderPrincipal = Arrays.asList(split);
 				}
 			}
-			//this.autenticazioneHeaderNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", this.props, false, log);
 			
 			String headersListS = getProperty("it.govpay.autenticazioneHeader.nomiHeadersInfo", props, false, log);
 			if(StringUtils.isNotEmpty(headersListS)) {
@@ -636,7 +607,7 @@ public class GovpayConfig {
 			String intervalloControlloRptPendentiString = getProperty("it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt", props, false, log);
 			try {
 				this.intervalloControlloRptPendenti = Integer.parseInt(intervalloControlloRptPendentiString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt\" impostata con valore di default (100000)");
 				this.intervalloControlloRptPendenti = 100000;
 			}
@@ -644,7 +615,7 @@ public class GovpayConfig {
 			String intervalloDisponibilitaPagamentoUtenzaAnonimaString = getProperty("it.govpay.autenticazione.utenzaAnonima.intervalloDisponibilitaPagamento", props, false, log);
 			try {
 				this.intervalloDisponibilitaPagamentoUtenzaAnonima = Integer.parseInt(intervalloDisponibilitaPagamentoUtenzaAnonimaString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.autenticazione.utenzaAnonima.intervalloDisponibilitaPagamento\" impostata con valore di default (60) minuti");
 				this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
 			}
@@ -680,13 +651,13 @@ public class GovpayConfig {
 				} catch (ClassNotFoundException e) {
 					throw new ConfigException(MessageFormat.format("La classe [{0}] specificata per la gestione di IUV non e'' presente nel classpath", defaultCustomIuvGeneratorClass));
 				}
-				Object instance;
+				Object customIuvInstance;
 				try {
-					instance = c.getDeclaredConstructor().newInstance();
-					if(!(instance instanceof CustomIuv)) {
+					customIuvInstance = c.getDeclaredConstructor().newInstance();
+					if(!(customIuvInstance instanceof CustomIuv)) {
 						throw new ConfigException(MessageFormat.format("La classe [{0}] specificata per la gestione di IUV deve estendere la classe {1}", defaultCustomIuvGeneratorClass, CustomIuv.class.getName()));
 					}
-					this.defaultCustomIuvGenerator = (CustomIuv) instance;
+					this.defaultCustomIuvGenerator = (CustomIuv) customIuvInstance;
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					log.error(MessageFormat.format("Errore durante la crazione dell''oggetto di classe [{0}] specificata per la gestione di IUV: {1}", defaultCustomIuvGeneratorClass, e.getMessage()));
 					throw new ConfigException(e);
@@ -701,7 +672,7 @@ public class GovpayConfig {
 			String numeroVersamentiPerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread", this.props, false, log);
 			try{
 				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread\" impostata con valore di default 100");
 				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
 			}
@@ -709,7 +680,7 @@ public class GovpayConfig {
 			String numeroStampePerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread", this.props, false, log);
 			try{
 				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread\" impostata con valore di default 100");
 				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
 			}
@@ -724,8 +695,8 @@ public class GovpayConfig {
 			String dimensioneMassimaListaRisultatiString = getProperty("it.govpay.api.find.maxRisultatiPerPagina", this.props, false, log);
 			try{
 				this.dimensioneMassimaListaRisultati = Integer.parseInt(dimensioneMassimaListaRisultatiString);
-			} catch(Throwable t) {
-				log.info(MessageFormat.format("Proprieta \"it.govpay.api.find.maxRisultatiPerPagina\" impostata con valore di default {0}",	BasicFindRequestDTO.DEFAULT_MAX_LIMIT));
+			} catch(NullPointerException | NumberFormatException t) {
+				log.info("Proprieta \"it.govpay.api.find.maxRisultatiPerPagina\" impostata con valore di default {}",	BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
@@ -736,8 +707,8 @@ public class GovpayConfig {
 			String batchCaricamentoTracciatiNotificaPagamentiDimensionePaginaString = getProperty("it.govpay.batch.caricamentoTracciatiNotificaPagamenti.dimensionePagina", this.props, false, log);
 			try{
 				this.batchCaricamentoTracciatiNotificaPagamentiDimensionePagina = Integer.parseInt(batchCaricamentoTracciatiNotificaPagamentiDimensionePaginaString);
-			} catch(Throwable t) {
-				log.info(MessageFormat.format("Proprieta \"it.govpay.batch.caricamentoTracciatiNotificaPagamenti.dimensionePagina\" impostata con valore di default {0}", BasicFindRequestDTO.DEFAULT_MAX_LIMIT));
+			} catch(NullPointerException | NumberFormatException t) {
+				log.info("Proprieta \"it.govpay.batch.caricamentoTracciatiNotificaPagamenti.dimensionePagina\" impostata con valore di default {}", BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
 				this.batchCaricamentoTracciatiNotificaPagamentiDimensionePagina = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
@@ -748,7 +719,7 @@ public class GovpayConfig {
 			String connectTimeoutString = getProperty("it.govpay.client.connectionTimeout", this.props, false, log);
 			try{
 				this.connectionTimeout = Integer.parseInt(connectTimeoutString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.client.connectionTimeout\" impostata con valore di default 10000");
 				this.connectionTimeout = 10000;
 			}
@@ -756,7 +727,7 @@ public class GovpayConfig {
 			String readTimeoutString = getProperty("it.govpay.client.readTimeout", this.props, false, log);
 			try{
 				this.readTimeout = Integer.parseInt(readTimeoutString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.client.readTimeout\" impostata con valore di default 180000");
 				this.readTimeout = 180000;
 			}
@@ -764,7 +735,7 @@ public class GovpayConfig {
 			String connectionRequestTimeoutString = getProperty("it.govpay.client.connectionRequestTimeout", this.props, false, log);
 			try{
 				this.connectionRequestTimeout = Integer.parseInt(connectionRequestTimeoutString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.client.connectionTimeout\" impostata con valore di default 180000");
 				this.connectionRequestTimeout = 10000;
 			}
@@ -772,7 +743,7 @@ public class GovpayConfig {
 			String numeroMassimoConnessioniPerPoolString = getProperty("it.govpay.client.numeroMassimoConnessioniPerPool", this.props, false, log);
 			try{
 				this.numeroMassimoConnessioniPerPool = Integer.parseInt(numeroMassimoConnessioniPerPoolString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerPool\" impostata con valore di default 200");
 				this.numeroMassimoConnessioniPerPool = 200;
 			}
@@ -780,7 +751,7 @@ public class GovpayConfig {
 			String numeroMassimoConnessioniPerRouteDefaultString = getProperty("it.govpay.client.numeroMassimoConnessioniPerRouteDefault", this.props, false, log);
 			try{
 				this.numeroMassimoConnessioniPerPool = Integer.parseInt(numeroMassimoConnessioniPerRouteDefaultString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerRouteDefault\" impostata con valore di default 20");
 				this.numeroMassimoConnessioniPerRouteDefault = 20;
 			}
@@ -794,11 +765,11 @@ public class GovpayConfig {
 				this.timeoutInvioRPTModello3Millis = Integer.parseInt(timeoutInvioRPTModello3MillisString);
 				
 				if(this.timeoutInvioRPTModello3Millis < 0 || this.timeoutInvioRPTModello3Millis > 1000) {
-					log.info(MessageFormat.format("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" trovata con valore non valido [{0}], viene impostata con valore di default 100 ms",	this.timeoutInvioRPTModello3Millis));
+					log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" trovata con valore non valido [{}], viene impostata con valore di default 100 ms", this.timeoutInvioRPTModello3Millis);
 					this.timeoutInvioRPTModello3Millis = 100;
 				}
 				
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" impostata con valore di default 100 ms");
 				this.timeoutInvioRPTModello3Millis = 100;
 			}
@@ -807,7 +778,7 @@ public class GovpayConfig {
 			String numeroMassimoGiorniRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero", this.props, false, log);
 			try{
 				this.numeroMassimoGiorniRPTPendenti = Integer.parseInt(numeroMassimoGiorniRPTPendentiString);
-			} catch(Throwable t) {
+			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero\" impostata con valore di default 30");
 				this.numeroMassimoGiorniRPTPendenti = 30;
 			}
@@ -842,7 +813,7 @@ public class GovpayConfig {
 			if(this.operazioneVerifica != null) {
 				if(! (Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica) ||
 						Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica))) {
-					log.info(MessageFormat.format("Proprieta \"it.govpay.api.ente.verificaPendenza.operazione\" trovata con valore non valido [{0}], viene impostata con valore di default null",	this.operazioneVerifica));
+					log.info("Proprieta \"it.govpay.api.ente.verificaPendenza.operazione\" trovata con valore non valido [{}], viene impostata con valore di default null",this.operazioneVerifica);
 					this.operazioneVerifica = null;
 				}
 			}
@@ -856,7 +827,7 @@ public class GovpayConfig {
 						log.info("Proprieta \"it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita\" trovata con valore non valido [{}], viene impostata con valore di default null",	this.operazioneVerifica);
 						this.numeroGiorniValiditaPendenza = null;
 					}
-				} catch(NumberFormatException t) {
+				} catch(NullPointerException | NumberFormatException t) {
 					log.info("Proprieta \"it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita\" trovata con valore non valido [{}], viene impostata con valore di default null",	this.operazioneVerifica);
 					this.numeroGiorniValiditaPendenza = null;
 				}
@@ -917,27 +888,27 @@ public class GovpayConfig {
 			if(this.resourceDir != null) {
 				File resourceDirFile = new File(escape(this.resourceDir));
 				if(!resourceDirFile.isDirectory())
-					throw new Exception(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
+					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 
 				File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
 
 				if(log4j2ConfigFile.exists()) {
 					this.log4j2Config = log4j2ConfigFile.toURI();
-					LoggerWrapperFactory.getLogger(GovpayConfig.class).info(MessageFormat.format("Individuata configurazione log4j: {0}", this.log4j2Config));
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j: {}", this.log4j2Config);
 				} else {
 					this.log4j2Config = null;
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j interna.");
 				}
 			}
-		} catch (Exception e) {
-			LoggerWrapperFactory.getLogger(GovpayConfig.class).warn(MessageFormat.format("Errore di inizializzazione: {0}. Property ignorata.", e.getMessage()));
+		} catch (ConfigException e) {
+			LoggerWrapperFactory.getLogger(GovpayConfig.class).warn("Errore di inizializzazione: {}. Property ignorata.", e.getMessage());
 		}
 	}
 	
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		Map<String, String> valori = new HashMap<>();
 		
-		List<String> nomiProperties = new ArrayList<String>();
+		List<String> nomiProperties = new ArrayList<>();
 		// 1. collezionare tutti i nomi di properties da leggere (possono essere definiti in piu' file)
 		for(int i=0; i<props.length; i++) {
 			if(props[i] != null) {
@@ -985,10 +956,10 @@ public class GovpayConfig {
 					throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 				else return null;
 			} else {
-				if(log != null) log.info(MessageFormat.format("Letta proprieta di configurazione {0}{1}: {2}", logString, name, value));
+				if(log != null) log.info("Letta proprieta di configurazione {}{}: {}", logString, name, value);
 			}
 		} else {
-			if(log != null) log.info(MessageFormat.format("Letta proprieta di sistema {0}: {1}", name, value));
+			if(log != null) log.info("Letta proprieta di sistema {}: {}", name, value);
 		}
 
 		return value.trim();
@@ -1003,7 +974,7 @@ public class GovpayConfig {
 			}
 		}
 
-		if(log!= null) log.info(MessageFormat.format("Proprieta {0} non trovata", name));
+		if(log!= null) log.info("Proprieta {} non trovata", name);
 
 		if(required) 
 			throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
@@ -1013,10 +984,6 @@ public class GovpayConfig {
 	
 	public static String escape(String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");
-	}
-
-	public VersioneAvviso getVersioneAvviso() {
-		return this.versioneAvviso;
 	}
 
 	public URI getLog4j2Config() {
@@ -1139,8 +1106,8 @@ public class GovpayConfig {
 		return timeoutPendentiModello1Mins;
 	}
 	
-	public Integer getTimeoutPendentiModello3_SANP_24_Mins() {
-		return timeoutPendentiModello3_SANP_24_Mins;
+	public Integer getTimeoutPendentiModello3SANP24Mins() {
+		return timeoutPendentiModello3SANP24Mins;
 	}
 
 	public String getAppName() {

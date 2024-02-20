@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -106,6 +106,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new Field("avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new Field("idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -178,6 +180,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new ComplexField(father,"avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new ComplexField(father,"idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -312,6 +316,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public it.govpay.orm.model.IdOperazioneModel ID_OPERAZIONE = null;
 	 
 	public IField PROPRIETA = null;
+	 
+	public IField DATA_ULTIMA_MODIFICA_ACA = null;
+	 
+	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
 	 
 
 	@Override

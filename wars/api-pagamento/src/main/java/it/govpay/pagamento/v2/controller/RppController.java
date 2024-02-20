@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.controller;
 
 import java.net.URLDecoder;
@@ -267,10 +286,12 @@ public class RppController extends BaseController {
 						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
 					case SANP_240:
+					case RPTV2_RTV1:
 						PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
 					case SANP_321_V2:
+					case RPTV1_RTV2:
 						PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTV2Request.getReceipt()),transactionId).build();
@@ -332,9 +353,11 @@ public class RppController extends BaseController {
 					CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
 				case SANP_240:
+				case RPTV1_RTV2:
 					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentRes.getData()),transactionId).build();
 				case SANP_321_V2:
+				case RPTV2_RTV1:
 					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentV2Response.getData()),transactionId).build();
 				}

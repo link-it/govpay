@@ -1,6 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pendenze.v2.beans;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +44,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "linguaSecondariaCausale",
 "informativaImportoAvviso",
 "linguaSecondariaInformativaImportoAvviso",
+"dataScandenzaAvviso",
 })
 public class ProprietaPendenza extends JSONSerializable implements IValidable{
 
@@ -50,6 +71,9 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
   
   @JsonProperty("linguaSecondariaInformativaImportoAvviso")
   private String linguaSecondariaInformativaImportoAvviso = null;
+  
+  @JsonProperty("dataScandenzaAvviso")
+  private Date dataScandenzaAvviso = null;
   
   /**
    **/
@@ -174,6 +198,22 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
     this.linguaSecondariaInformativaImportoAvviso = linguaSecondariaInformativaImportoAvviso;
   }
 
+  /**
+   * se valorizzata, sostituisce la data di scadenza standard.
+   **/
+  public ProprietaPendenza dataScandenzaAvviso(Date dataScandenzaAvviso) {
+    this.dataScandenzaAvviso = dataScandenzaAvviso;
+    return this;
+  }
+
+  @JsonProperty("dataScandenzaAvviso")
+  public Date getDataScandenzaAvviso() {
+    return dataScandenzaAvviso;
+  }
+  public void setDataScandenzaAvviso(Date dataScandenzaAvviso) {
+    this.dataScandenzaAvviso = dataScandenzaAvviso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -189,12 +229,13 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
         Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2) &&
         Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale) &&
         Objects.equals(informativaImportoAvviso, proprietaPendenza.informativaImportoAvviso) &&
-        Objects.equals(linguaSecondariaInformativaImportoAvviso, proprietaPendenza.linguaSecondariaInformativaImportoAvviso);
+        Objects.equals(linguaSecondariaInformativaImportoAvviso, proprietaPendenza.linguaSecondariaInformativaImportoAvviso) &&
+        Objects.equals(dataScandenzaAvviso, proprietaPendenza.dataScandenzaAvviso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso);
+    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso, dataScandenzaAvviso);
   }
 
   public static ProprietaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -218,6 +259,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
     sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
     sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
     sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
+    sb.append("    dataScandenzaAvviso: ").append(toIndentedString(dataScandenzaAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

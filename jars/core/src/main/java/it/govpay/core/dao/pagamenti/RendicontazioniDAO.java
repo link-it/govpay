@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
@@ -27,17 +46,16 @@ import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 
 public class RendicontazioniDAO extends BaseDAO{
 
 	public RendicontazioniDAO() {
+		super();
 	}
 
-	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
+	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException {
 		FrBD rendicontazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
@@ -89,7 +107,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
+	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, UnprocessableEntityException {
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
 		
 		
@@ -156,7 +174,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		return response;
 	}
 
-	public LeggiFrDTOResponse checkAutorizzazioneFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiFrDTOResponse checkAutorizzazioneFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException {
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
 		RendicontazioniBD rendicontazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -169,7 +187,6 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
 
 			filter.setRicercaFR(true);
-//			filter.setSearchModeEquals(true);
 			filter.setCodFlusso(leggiRendicontazioniDTO.getIdFlusso());
 			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
 
@@ -182,45 +199,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		return response;
 	}
 
-//	private Fr populateFlussoRendicontazione(Fr flussoRendicontazione, BasicBD bd) throws ServiceException, NotFoundException {
-//		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
-//		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-//		
-//		if(rendicontazioni != null) {
-//			for(Rendicontazione rend: rendicontazioni) {
-//				Pagamento pagamento = rend.getPagamento(bd);
-//				if(pagamento != null) {
-//					this.populatePagamento(pagamento, bd, configWrapper);
-//				}
-//			}
-//		}
-//		
-//		flussoRendicontazione.getDominio(configWrapper);
-//		
-//		return flussoRendicontazione;
-//	}
-
-//	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
-//			throws ServiceException, NotFoundException {
-//		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-//		Versamento versamento = singoloVersamento.getVersamento(bd);
-//		versamento.getApplicazione(configWrapper); 
-//		versamento.getUo(configWrapper);
-//		versamento.getDominio(configWrapper);
-//		versamento.getTipoVersamento(configWrapper);
-//		versamento.getTipoVersamentoDominio(configWrapper);
-//		singoloVersamento.getTributo(configWrapper);
-//		singoloVersamento.getCodContabilita(configWrapper);
-//		singoloVersamento.getIbanAccredito(configWrapper);
-//		singoloVersamento.getIbanAppoggio(configWrapper);
-//		singoloVersamento.getTipoContabilita(configWrapper);
-//		pagamento.getRpt(bd);
-//		pagamento.getDominio(configWrapper);
-//		pagamento.getRendicontazioni(bd);
-//		pagamento.getIncasso(bd);
-//	}
-
-	public ListaRendicontazioniDTOResponse listaFr(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, RequestParamException{
+	public ListaRendicontazioniDTOResponse listaFr(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotFoundException, RequestParamException {
 		FrBD rendicontazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
@@ -285,7 +264,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		}
 	}
 
-	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, RequestParamException{
+	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotFoundException, RequestParamException {
 		// la ricerca dei flussi deve utilizzare la tabella se non viene impostato il filtro per iuv.
 		if(listaRendicontazioniDTO.isRicercaFR() && listaRendicontazioniDTO.getIuv() == null) {
 			return this.listaFr(listaRendicontazioniDTO);

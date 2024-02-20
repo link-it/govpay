@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -303,8 +303,6 @@ public class CtPaymentPABuilder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			transferEl.setMetadata(impostaValoriContabilita(singoloVersamento));
-
 			transferList.getTransfer().add(transferEl );
 			i++;
 		}
@@ -538,128 +536,6 @@ public class CtPaymentPABuilder {
 
 		return ctMetadata;
 	}
-
-//	@SuppressWarnings("unchecked")
-//	private static CtMetadata impostaValoriContabilita_SANP34(SingoloVersamento singoloVersamento) throws IOException {
-//		CtMetadata ctMetadata = null;
-//		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
-//		String contabilitaString = singoloVersamento.getContabilita();
-//
-//		if(contabilitaString != null && contabilitaString.length() > 0) {
-//			it.govpay.model.Contabilita dto = ConverterUtils.parse(singoloVersamento.getContabilita(), it.govpay.model.Contabilita.class);
-//
-//			List<QuotaContabilita> quote = dto.getQuote();
-//
-//			if(quote != null && quote.size() > 0) {
-//				ctMetadata = new CtMetadata();
-//
-//				List<CtMapEntry> listEntriesProvvisoria = new ArrayList<>();
-//				int nQuota = 1;
-//				for (QuotaContabilita quotaContabilita : quote) {
-//
-//					String tipologia = null;
-//					// RC_TIP_N: valorizzato con tipologia
-//					if(quotaContabilita.getTipologia() != null) {
-//						tipologia = quotaContabilita.getTipologia();
-//						CtMapEntry ctMapEntry = new CtMapEntry();
-//
-//						ctMapEntry.setKey(MessageFormat.format(CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_KEY, nQuota));
-//						ctMapEntry.setValue(tipologia);
-//
-//						listEntriesProvvisoria.add(ctMapEntry );
-//					} 
-//
-//					// lettura parametri custom
-//					Object proprietaCustomObj = quotaContabilita.getProprietaCustom();
-//					Map<String, String> proprietaCustomMap = new HashMap<>();
-//					if(proprietaCustomObj != null) {
-//						if(proprietaCustomObj instanceof String) {
-//							String proprietaCustom = (String) proprietaCustomObj;
-//
-//							if(proprietaCustom != null && proprietaCustom.length() > 0) {
-//								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
-//
-//								for (String key : parse.keySet()) {
-//									proprietaCustomMap.put(key, parse.get(key).toString());
-//								}
-//							}
-//						}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
-//							java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
-//
-//							for (Object key : parse.keySet()) {
-//								proprietaCustomMap.put(key.toString(), parse.get(key).toString());
-//							}
-//						}
-//					}
-//
-//					if(tipologia != null) {
-//						switch(tipologia) {
-//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_DL118:
-//							/*
-//							 RC_TIP_N: valorizzato con tipologia
-//							 RC_CAP_N: valorizzato con capitolo
-//							RC_ART_N: valorizzato con articolo
-//							RC_ACC_N: valorizzato con accertamento
-//							RC_AC_N: valorizzato con annoEsercizio CAMPO OBBLIGATORIO
-//							RC_IMP_N: valorizzato con importo CAMPO OBBLIGATORIO
-//							RC_CU_N: valorizzato da proprieta' custom codiceUfficio
-//							RC_PF5_N: valorizzato da proprieta' custom pf5livello
-//							Capitolo e Accertamento sono fra loro alternativi, uno dei due deve essere inserito. Accertamento e pf_5_livello sono fra loro alternativi. 
-//							 * */
-//							// RC_AC_N: valorizzato con annoEsercizio CAMPO OBBLIGATORIO
-//							{
-//								CtMapEntry ctMapEntry = new CtMapEntry();
-//	
-//								ctMapEntry.setKey(MessageFormat.format(CONTABILITA_QUOTA_ANNO_COMPETENZA_PARAM_KEY, nQuota));
-//								ctMapEntry.setValue(quotaContabilita.getAnnoEsercizio() + "");
-//	
-//								ctMetadata.getMapEntry().add(ctMapEntry );
-//							}
-//
-//							
-//							
-//							break;
-//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_TIPICO:
-//							/*
-//							 RC_TIP_N: valorizzato con tipologia
-//								RC_AC_N: valorizzato con annoEsercizio Campo obbligatorio
-//								RC_IMP_N: valorizzato con importo Campo obbligatorio
-//								RC_CU_N: valorizzato da proprieta' custom codiceUfficio
-//								RC_TI_N: valorizzato da proprieta' custom tipoIncasso Campo obbligatorio
-//								RC_EF_N: valorizzato da proprieta' custom emissioneFattura
-//								RC_ND_N: valorizzato da proprieta' custom numeroDocumento
-//								Emissione fattura e nr_documento sono fra loro alternativi. 
-//							 */
-//
-//							break;
-//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_CIVILISTICO:
-//							/*
-//							 RC_TIP_N: valorizzato con tipologia
-//							RC_AC_N: valorizzato con annoEsercizio Campo obbligatorio
-//							RC_IMP_N: valorizzato con importo Campo obbligatorio
-//							RC_CU_N: valorizzato da proprieta' custom codiceUfficio
-//							RC_CON_N: valorizzato da proprieta' custom conto
-//							RC_COM_N: valorizzato da proprieta' custom commessa
-//							RC_ND_N: valorizzato da proprieta' custom numeroDocumento
-//							Conto, Commessa e Nr Documento sono fra loro alternativi, uno dei tre deve essere inserito.
-//							 */
-//							break;
-//						default: 
-//							break;
-//						}
-//					}
-//				}
-//
-//				// massimo 10 entries
-//				if(listEntriesProvvisoria.size() <= 10) {
-//					ctMetadata.getMapEntry().addAll(listEntriesProvvisoria);
-//				} else {
-//					ctMetadata.getMapEntry().addAll(listEntriesProvvisoria.subList(0, 9));
-//				}
-//			}
-//		}
-//		return ctMetadata;
-//	}
 
 	public static Date calcolaDueDate(Versamento versamento) {
 		if(versamento.getDataValidita() != null) {

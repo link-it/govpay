@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -189,6 +189,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
  			fields.add(VistaRiscossioni.model().NUMERO_AVVISO);
  			fields.add(VistaRiscossioni.model().DATA_SCADENZA);
  			fields.add(VistaRiscossioni.model().CONTABILITA);
+ 			fields.add(VistaRiscossioni.model().METADATA);
  			fields.add(VistaRiscossioni.model().DATA_CREAZIONE);
  			
  			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())));

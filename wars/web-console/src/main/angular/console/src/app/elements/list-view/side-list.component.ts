@@ -216,7 +216,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       (_response) => {
         this._lastMetaResponse = _response.body;
         this._isLoadingMeta = false;
-        // this.__waitForMeta(true);
+        this.__waitForMeta(true);
       },
       (error) => {
         this._isLoadingMeta = false;
@@ -236,10 +236,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.rsc.data.actions = 0;
       }
       if (enableActions) {
-        if (this.rsc.data.actions === 0) {
-          this.rsc.data.actions = true;
-          UtilService.headBehavior.next(this.rsc);
-        }
+        this.rsc.data.actions = (this._lastMetaResponse.numRisultati > 0);
+        UtilService.headBehavior.next(this.rsc);
       }
     });
   }
@@ -1053,7 +1051,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           riscossione[_configRic.exportLabel['importo']] = risc.importo || 0;
           riscossione[_configRic.exportLabel['data']] = risc.data || '';
           riscossione[_configRic.exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
-          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.tipoPendenza.idTipoPendenza || '';
           riscossione[_configRic.exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
           riscossione[_configRic.exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
           riscossione[_configRic.exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';

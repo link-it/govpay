@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ public class OperazioneFactory {
 
 			Versamento versamento = new Versamento();
 			
-			boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel, configWrapper);
+			boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel);
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
 			Dominio dominio = versamentoModel.getDominio(configWrapper);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
@@ -195,7 +195,7 @@ public class OperazioneFactory {
 
 			Versamento versamento = new Versamento();
 
-			boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel, configWrapper);
+			boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel);
 			Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 			Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
@@ -462,7 +462,7 @@ public class OperazioneFactory {
 				//inserisco il tipo
 				versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-				boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel, configWrapper);
+				boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel);
 				Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 				Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
 					

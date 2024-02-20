@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -119,6 +119,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_contabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType()));
+				setParameter(object, "setSngMetadata", VistaRendicontazione.model().SNG_METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sng_metadata", VistaRendicontazione.model().SNG_METADATA.getFieldType()));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaRendicontazione.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -345,6 +347,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"sngDescrizioneCausaleRPT"));
 				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"sngContabilita"));
+				setParameter(object, "setSngMetadata", VistaRendicontazione.model().SNG_METADATA.getFieldType(),
+					this.getObjectFromMap(map,"sngMetadata"));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
 					this.getObjectFromMap(map,"vrsId"));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),

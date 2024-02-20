@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -53,12 +53,14 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
@@ -150,7 +152,7 @@ public class RptUtils {
 		return risposta;
 	}
 
-	public static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Intermediario intermediario, Stazione stazione) throws ServiceException {
+	public static void popolaEventoCooperazione(Rpt rpt, Intermediario intermediario, Stazione stazione, EventoContext eventoContext) {
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodCanale(rpt.getCodCanale());
 		datiPagoPA.setCodPsp(rpt.getCodPsp());
@@ -162,7 +164,7 @@ public class RptUtils {
 		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
 		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
 		datiPagoPA.setCodDominio(rpt.getCodDominio());
-		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
+		eventoContext.setDatiPagoPA(datiPagoPA);
 	}
 
 	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException, IOException {
@@ -274,6 +276,7 @@ public class RptUtils {
 
 				NodoChiediStatoRPTRisposta risposta = null;
 				NodoClient chiediStatoRptClient = null;
+				EventoContext chiediStatoRPTEventoCtx = new EventoContext(Componente.API_PAGOPA);
 				try {
 					try {
 						Stazione stazione = rpt.getStazione(configWrapper);
@@ -285,51 +288,60 @@ public class RptUtils {
 						richiesta.setPassword(stazione.getPassword());
 						richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 						richiesta.setCodiceContestoPagamento(rpt.getCcp());
-						chiediStatoRptClient = new NodoClient(intermediario, null, giornale);
 
 						// salvataggio id Rpt/ versamento/ pagamento
-						chiediStatoRptClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
-						chiediStatoRptClient.getEventoCtx().setIuv(rpt.getIuv());
-						chiediStatoRptClient.getEventoCtx().setCcp(rpt.getCcp());
-						chiediStatoRptClient.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
-						chiediStatoRptClient.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
+						chiediStatoRPTEventoCtx.setCodDominio(rpt.getCodDominio());
+						chiediStatoRPTEventoCtx.setIuv(rpt.getIuv());
+						chiediStatoRPTEventoCtx.setCcp(rpt.getCcp());
+						chiediStatoRPTEventoCtx.setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
+						chiediStatoRPTEventoCtx.setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
 						if(rpt.getIdPagamentoPortale() != null)
-							chiediStatoRptClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+							chiediStatoRPTEventoCtx.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+						
+						chiediStatoRptClient = new NodoClient(intermediario, null, giornale, chiediStatoRPTEventoCtx);
 						chiediStatoRptClient.setOperationId(operationId); 
 						risposta = chiediStatoRptClient.nodoChiediStatoRpt(richiesta, stazione.getIntermediario(configWrapper).getDenominazione());
-						chiediStatoRptClient.getEventoCtx().setEsito(Esito.OK);
+						chiediStatoRPTEventoCtx.setEsito(Esito.OK);
 					} catch (GovPayException e) {
-						if(chiediStatoRptClient != null) {
-							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(e.getCodEsito().toString());
-							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
-							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-							chiediStatoRptClient.getEventoCtx().setException(e);
+						if(chiediStatoRPTEventoCtx != null) {
+							chiediStatoRPTEventoCtx.setSottotipoEsito(e.getCodEsito().toString());
+							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
+							chiediStatoRPTEventoCtx.setDescrizioneEsito(e.getMessage());
+							chiediStatoRPTEventoCtx.setException(e);
 						}
 						throw e;
 					} catch (ClientException e) {
-						if(chiediStatoRptClient != null) {
-							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
-							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-							chiediStatoRptClient.getEventoCtx().setException(e);
+						if(chiediStatoRPTEventoCtx != null) {
+							chiediStatoRPTEventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
+							chiediStatoRPTEventoCtx.setDescrizioneEsito(e.getMessage());
+							chiediStatoRPTEventoCtx.setException(e);
 						}
 						throw e;
 					} catch (ServiceException | UtilsException e) {
-						if(chiediStatoRptClient != null) {
-							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
-							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-							chiediStatoRptClient.getEventoCtx().setException(e);
+						if(chiediStatoRPTEventoCtx != null) {
+							chiediStatoRPTEventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
+							chiediStatoRPTEventoCtx.setDescrizioneEsito(e.getMessage());
+							chiediStatoRPTEventoCtx.setException(e);
 						}
 						throw e;
+					} catch (ClientInitializeException e) {
+						if(chiediStatoRPTEventoCtx != null) {
+							chiediStatoRPTEventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
+							chiediStatoRPTEventoCtx.setDescrizioneEsito(e.getMessage());
+							chiediStatoRPTEventoCtx.setException(e);
+						}
+						throw new GovPayException(e);
 					} finally {
 					}
 
 					if(risposta.getFault() != null) {
-						if(chiediStatoRptClient != null) {
-							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());
-							chiediStatoRptClient.getEventoCtx().setEsito(Esito.KO);
-							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(risposta.getFault().getDescription());
+						if(chiediStatoRPTEventoCtx != null) {
+							chiediStatoRPTEventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
+							chiediStatoRPTEventoCtx.setEsito(Esito.KO);
+							chiediStatoRPTEventoCtx.setDescrizioneEsito(risposta.getFault().getDescription());
 						}
 						if(risposta.getFault().getFaultCode().equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA.name())) {
 							log.info("Rpt inesistene sul Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: aggiorno lo stato in " + StatoRpt.RPT_ERRORE_INVIO_A_NODO + ".");
@@ -401,12 +413,14 @@ public class RptUtils {
 						case RT_ACCETTATA_PA:
 						case RT_ERRORE_INVIO_A_PA:
 						case RPT_ANNULLATA:
+						case RT_GENERATA_NODO:
 
 							log.info("Richiesta dell'RT al Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "].");
 
 							NodoChiediCopiaRTRisposta nodoChiediCopiaRTRisposta = null;
 							NodoClient chiediCopiaRTClient = null;
 							String operationId = null;
+							EventoContext chiediCopiaRTeventoCtx = new EventoContext(Componente.API_PAGOPA);
 							try { 
 								try {
 									Stazione stazione = rpt.getStazione(configWrapper);
@@ -418,50 +432,60 @@ public class RptUtils {
 									nodoChiediCopiaRT.setPassword(stazione.getPassword());
 									nodoChiediCopiaRT.setIdentificativoUnivocoVersamento(rpt.getIuv());
 									nodoChiediCopiaRT.setCodiceContestoPagamento(rpt.getCcp());
-									chiediCopiaRTClient = new NodoClient(intermediario, null, giornale);
-									chiediCopiaRTClient.setOperationId(operationId);
+									
 									// salvataggio id Rpt/ versamento/ pagamento
-									chiediCopiaRTClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
-									chiediCopiaRTClient.getEventoCtx().setIuv(rpt.getIuv());
-									chiediCopiaRTClient.getEventoCtx().setCcp(rpt.getCcp());
-									chiediCopiaRTClient.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
-									chiediCopiaRTClient.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
+									chiediCopiaRTeventoCtx.setCodDominio(rpt.getCodDominio());
+									chiediCopiaRTeventoCtx.setIuv(rpt.getIuv());
+									chiediCopiaRTeventoCtx.setCcp(rpt.getCcp());
+									chiediCopiaRTeventoCtx.setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
+									chiediCopiaRTeventoCtx.setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
 									if(rpt.getIdPagamentoPortale() != null)
-										chiediCopiaRTClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+										chiediCopiaRTeventoCtx.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+									
+									chiediCopiaRTClient = new NodoClient(intermediario, null, giornale, chiediCopiaRTeventoCtx);
+									chiediCopiaRTClient.setOperationId(operationId);
 									nodoChiediCopiaRTRisposta = chiediCopiaRTClient.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(configWrapper).getDenominazione());
-									chiediCopiaRTClient.getEventoCtx().setEsito(Esito.OK);
+									chiediCopiaRTeventoCtx.setEsito(Esito.OK);
 								}  catch (GovPayException e) {
-									if(chiediCopiaRTClient != null) {
-										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(e.getCodEsito().toString());
-										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
-										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-										chiediCopiaRTClient.getEventoCtx().setException(e);
+									if(chiediCopiaRTeventoCtx != null) {
+										chiediCopiaRTeventoCtx.setSottotipoEsito(e.getCodEsito().toString());
+										chiediCopiaRTeventoCtx.setEsito(Esito.FAIL);
+										chiediCopiaRTeventoCtx.setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTeventoCtx.setException(e);
 									}
 									throw e;
 								} catch (ClientException e) {
-									if(chiediCopiaRTClient != null) {
-										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
-										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-										chiediCopiaRTClient.getEventoCtx().setException(e);
+									if(chiediCopiaRTeventoCtx != null) {
+										chiediCopiaRTeventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+										chiediCopiaRTeventoCtx.setEsito(Esito.FAIL);
+										chiediCopiaRTeventoCtx.setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTeventoCtx.setException(e);
 									}
 									throw e;
 								} catch (ServiceException | UtilsException e) {
-									if(chiediCopiaRTClient != null) {
-										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
-										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-										chiediCopiaRTClient.getEventoCtx().setException(e);
+									if(chiediCopiaRTeventoCtx != null) {
+										chiediCopiaRTeventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+										chiediCopiaRTeventoCtx.setEsito(Esito.FAIL);
+										chiediCopiaRTeventoCtx.setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTeventoCtx.setException(e);
 									}
 									throw e;
+								} catch (ClientInitializeException e) {
+									if(chiediCopiaRTeventoCtx != null) {
+										chiediCopiaRTeventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+										chiediCopiaRTeventoCtx.setEsito(Esito.FAIL);
+										chiediCopiaRTeventoCtx.setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTeventoCtx.setException(e);
+									}
+									throw new GovPayException(e);
 								} finally {
 								}
 								
 								if(nodoChiediCopiaRTRisposta.getFault() != null) {
-									if(chiediCopiaRTClient != null) {
-										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(nodoChiediCopiaRTRisposta.getFault().getFaultCode());
-										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.KO);
-										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(nodoChiediCopiaRTRisposta.getFault().getDescription());
+									if(chiediCopiaRTeventoCtx != null) {
+										chiediCopiaRTeventoCtx.setSottotipoEsito(nodoChiediCopiaRTRisposta.getFault().getFaultCode());
+										chiediCopiaRTeventoCtx.setEsito(Esito.KO);
+										chiediCopiaRTeventoCtx.setDescrizioneEsito(nodoChiediCopiaRTRisposta.getFault().getDescription());
 									}
 									log.info("Fault nell'acquisizione dell'RT: [" + nodoChiediCopiaRTRisposta.getFault().getFaultCode() + "] " + nodoChiediCopiaRTRisposta.getFault().getFaultString());
 									return false;
@@ -474,11 +498,11 @@ public class RptUtils {
 									dh.writeTo(output);
 									rtByte = output.toByteArray();
 								} catch (Exception e) {
-									if(chiediCopiaRTClient != null) {
-										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.name());
-										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
-										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-										chiediCopiaRTClient.getEventoCtx().setException(e);
+									if(chiediCopiaRTeventoCtx != null) {
+										chiediCopiaRTeventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.name());
+										chiediCopiaRTeventoCtx.setEsito(Esito.FAIL);
+										chiediCopiaRTeventoCtx.setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTeventoCtx.setException(e);
 									}
 									log.error("Errore durante la lettura dell'RT: " + e);
 									throw new GovPayException(EsitoOperazione.INTERNAL, e);
@@ -495,13 +519,13 @@ public class RptUtils {
 								}
 								ctx.getApplicationLogger().log("pagamento.recuperoRt");
 								rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rtByte, true);
-								chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
+								chiediCopiaRTeventoCtx.setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 								appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 								ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 							}finally {
-								if(chiediCopiaRTClient != null && chiediCopiaRTClient.getEventoCtx().isRegistraEvento()) {
+								if(chiediCopiaRTeventoCtx != null && chiediCopiaRTeventoCtx.isRegistraEvento()) {
 									EventiBD eventiBD = new EventiBD(configWrapper);
-									eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediCopiaRTClient.getEventoCtx(),log));
+									eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediCopiaRTeventoCtx,log));
 								}
 							}
 
@@ -606,9 +630,9 @@ public class RptUtils {
 						}
 					}
 				}finally {
-					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
+					if(chiediStatoRPTEventoCtx != null && chiediStatoRPTEventoCtx.isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRPTEventoCtx,log));
 					}
 				}
 			}

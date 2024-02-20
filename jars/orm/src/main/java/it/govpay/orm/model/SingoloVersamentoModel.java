@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -59,6 +59,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.DESCRIZIONE_CAUSALE_RPT = new Field("descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"SingoloVersamento",SingoloVersamento.class));
+		this.METADATA = new Field("metadata",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -84,6 +85,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"SingoloVersamento",SingoloVersamento.class));
+		this.METADATA = new ComplexField(father,"metadata",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -124,6 +126,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	public IField CONTABILITA = null;
 	 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
+	 
+	public IField METADATA = null;
 	 
 
 	@Override

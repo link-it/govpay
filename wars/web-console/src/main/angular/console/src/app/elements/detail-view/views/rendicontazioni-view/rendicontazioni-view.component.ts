@@ -109,7 +109,18 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
     return _std;
   }
 
-  exportData() {
+  exportData(type: string = 'xml') {
+    switch (type) {
+      case 'xml':
+        this._exportDataXML();
+        break;
+        case 'csv':
+        this._exportDataCSV();
+        break;
+    }
+  }
+
+  _exportDataXML() {
     this.gps.updateSpinner(true);
     let urls: string[] = [];
     let contents: string[] = [];
@@ -165,6 +176,68 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
       this.gps.updateSpinner(false);
       this.us.alert('Si è verificato un errore non previsto durante la creazione del file.');
     }
+  }
+
+  _exportDataCSV() {
+    let _exportLabel = {
+      idFlusso: 'Id Flusso',
+      idPsp: 'Id Psp',
+      idDominio: 'Dominio',
+      iuv: 'IUV',
+      iur: 'IUR',
+      importo: 'Importo',
+      data: 'Data',
+      esito: 'Esito',
+      idPendenza: 'Id pendenza',
+      idTipoPendenza: 'Id tipo pendenza',
+      idVocePendenza: 'Id voce pendenza',
+      causale: 'Causale',
+      idSoggettoPagatore: 'Id debitore',
+      soggettoPagatore: 'Debitore anagrafica'
+    };
+
+    const _json: any = JSON.parse(JSON.stringify(this.json));
+    const _rendicontazioni: any[] = [];
+    this.json.rendicontazioni.forEach(rend => {
+      const rendicontazione: any = {};
+      rendicontazione[_exportLabel['idFlusso']] = _json.idFlusso ? _json.idFlusso : '';
+      rendicontazione[_exportLabel['idPsp']] = _json.idPsp ? _json.idPsp : '';
+      rendicontazione[_exportLabel['idDominio']] = _json.idDominio ? _json.idDominio : '';
+      rendicontazione[_exportLabel['iuv']] = rend.iuv || '';
+      rendicontazione[_exportLabel['iur']] = rend.iur || '';
+      rendicontazione[_exportLabel['importo']] = rend.importo || 0;
+      rendicontazione[_exportLabel['data']] = rend.data || '';
+      rendicontazione[_exportLabel['idPendenza']] = '';
+      rendicontazione[_exportLabel['idTipoPendenza']] = '';
+      rendicontazione[_exportLabel['idVocePendenza']] = '';
+      rendicontazione[_exportLabel['causale']] = '';
+      rendicontazione[_exportLabel['idSoggettoPagatore']] = '';
+      rendicontazione[_exportLabel['soggettoPagatore']] = '';
+      if (rend.riscossione && rend.riscossione.vocePendenza && rend.riscossione.vocePendenza.pendenza) {
+        rendicontazione[_exportLabel['idPendenza']] = rend.riscossione.vocePendenza.pendenza.idPendenza || '';
+        if (rend.riscossione.vocePendenza.pendenza.tipoPendenza) {
+          rendicontazione[_exportLabel['idTipoPendenza']] = rend.riscossione.vocePendenza.pendenza.tipoPendenza.idTipoPendenza || '';
+        }
+        rendicontazione[_exportLabel['idVocePendenza']] = rend.riscossione.vocePendenza.pendenza.idVocePendenza || '';
+        rendicontazione[_exportLabel['causale']] = rend.riscossione.vocePendenza.pendenza.causale || '';
+        if (rend.riscossione.vocePendenza.pendenza.soggettoPagatore) {
+          rendicontazione[_exportLabel['idSoggettoPagatore']] = rend.riscossione.vocePendenza.pendenza.soggettoPagatore.identificativo || '';
+          rendicontazione[_exportLabel['soggettoPagatore']] = rend.riscossione.vocePendenza.pendenza.soggettoPagatore.anagrafica || '';
+        }
+      }
+      _rendicontazioni.push(rendicontazione);
+    });
+
+    this.gps.updateSpinner(true);
+    const fileName = 'Flusso_' + _json.idFlusso.toString() + '_'+moment().format('DDMMYYYY_HHmmss') + '.csv';
+    const csvData: string = this.us.jsonToCsv('Rendicontazioni.csv', _rendicontazioni);
+    try {
+      const blob = new Blob([csvData], {type: "text/plain;charset=utf-8"});
+      FileSaver(blob, fileName);
+    } catch (e) {
+      this.us.alert('Si è verificato un errore non previsto durante la creazione del file.');
+    }
+    this.gps.updateSpinner(false);
   }
 
   refresh(mb: ModalBehavior) {}

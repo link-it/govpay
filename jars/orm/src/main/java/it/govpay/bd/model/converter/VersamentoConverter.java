@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -182,7 +182,10 @@ public class VersamentoConverter {
 		dto.setAvvAppIOPromemoriaScadenzaNotificato(vo.getAvvAppIoPromScadNotificato());
 
 		dto.setProprieta(vo.getProprieta());
-
+		
+		dto.setDataUltimaModificaAca(vo.getDataUltimaModificaAca());
+		dto.setDataUltimaComunicazioneAca(vo.getDataUltimaComunicazioneAca());
+		
 		return dto;
 	}
 
@@ -315,6 +318,9 @@ public class VersamentoConverter {
 		vo.setAvvAppIoPromScadNotificato(dto.getAvvAppIOPromemoriaScadenzaNotificato());
 
 		vo.setProprieta(dto.getProprieta());
+		
+		vo.setDataUltimaModificaAca(dto.getDataUltimaModificaAca());
+		vo.setDataUltimaComunicazioneAca(dto.getDataUltimaComunicazioneAca());
 
 		return vo;
 	}

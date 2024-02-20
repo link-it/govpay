@@ -302,7 +302,8 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOTipo_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.tipo || '');
         this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOOggetto_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.oggetto || '');
         this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOMessaggio_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.messaggio || '');
-        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOPreavviso_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.preavviso || '');
+        let _preavviso = this.json.avvisaturaAppIO.promemoriaScadenza.preavviso !== undefined ? this.json.avvisaturaAppIO.promemoriaScadenza.preavviso : '';
+        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOPreavviso_ctrl'].setValue(_preavviso);
       }
     }
 
@@ -332,7 +333,8 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.avvisaturaMailForm.controls['promemoriaScadenzaMailTipo_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.tipo || '');
         this.avvisaturaMailForm.controls['promemoriaScadenzaMailOggetto_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.oggetto || '');
         this.avvisaturaMailForm.controls['promemoriaScadenzaMailMessaggio_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.messaggio || '');
-        this.avvisaturaMailForm.controls['promemoriaScadenzaMailPreavviso_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.preavviso || '');
+        let _preavviso = this.json.avvisaturaMail.promemoriaScadenza.preavviso !== undefined ? this.json.avvisaturaMail.promemoriaScadenza.preavviso : '';
+        this.avvisaturaMailForm.controls['promemoriaScadenzaMailPreavviso_ctrl'].setValue(_preavviso);
       }
     }
 

@@ -77,6 +77,8 @@ export class Voce {
   public static DATA_RICHIESTA: string = 'Data richiesta';
   public static DATA_RICHIESTA_PAGAMENTO: string = 'Data richiesta';
   public static DATA_RISPOSTA: string = 'Data risposta';
+  public static DATA_ULTIMA_COMUNICAZIONE_ACA: string = 'Ultimo invio all\'ACA';
+  public static DATA_ULTIMA_MODIFICA_ACA: string = 'Ultimo aggiornamento dati ACA';
   public static DATA_ULTIMO_AGGIORNAMENTO: string = 'Ultimo aggiornamento';
   public static DATA_VALUTA_INCASSO: string = 'Data valuta incasso';
   public static DATA_VALIDITA: string = 'Data validità';
@@ -120,6 +122,7 @@ export class Voce {
   public static HEADER_NAME: string = 'Nome Header';
   public static HEADER_VALUE: string = 'Valore';
   public static HTTP_HEADER: string = 'HTTP Header';
+  public static PAYLOAD: string = 'Payload';
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
@@ -188,6 +191,7 @@ export class Voce {
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
   public static MODALITA_CONNETTORE: string = 'Modalità consegna';
   public static MODELLO_PAGAMENTO: string = 'Modello pagamento';
+  public static MODELLO_UNICO: string = 'Modello unico';
   public static MODIFICA_DOMINIO: string = 'Modifica dominio';
   public static MODIFICA_ENTE_CREDITORE: string = 'Modifica Ente creditore';
   public static MY_BANK: string = 'My Bank';
@@ -310,6 +314,7 @@ export class Voce {
   public static URL: string = 'URL';
   public static URL_BACKEND_IO: string = 'URL backend IO';
   public static USERNAME: string = 'Username';
+  public static UTENTE: string = 'Utente';
 
   public static VALIDAZIONE: string = 'Validazione';
   public static VALIDAZIONE_DATI: string = 'Validazione inserimento dati';

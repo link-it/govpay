@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.filters;
 
 import java.util.ArrayList;
@@ -33,6 +52,7 @@ public class RptFilter extends AbstractFilter {
 	private String ccp;
 	private String codDominio;
 	private List<String> idDomini;
+	private List<Long> idTipiVersamento = null;
 	private Boolean conservato;
 	private List<String> stato;
 	private List<Long> idRpt= null;
@@ -75,12 +95,12 @@ public class RptFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
+			VistaRptVersamentoFieldConverter converter = new VistaRptVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
 				this.idVersamento.removeAll(Collections.singleton(null));				
 				addAnd = true;
-				VistaRptVersamentoFieldConverter rptFieldConverter = new VistaRptVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField idRptCustomField = new CustomField("vrs_id",  Long.class, "vrs_id",  rptFieldConverter.toTable(VistaRptVersamento.model()));
+				CustomField idRptCustomField = new CustomField("vrs_id",  Long.class, "vrs_id",  converter.toTable(VistaRptVersamento.model()));
 				newExpression.in(idRptCustomField, this.idVersamento);
 			}
 
@@ -115,10 +135,18 @@ public class RptFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+				this.idTipiVersamento.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("vrs_id_tipo_versamento", Long.class, "vrs_id_tipo_versamento", converter.toTable(it.govpay.orm.VistaRptVersamento.model()));
+				newExpression.in(cf, this.idTipiVersamento);
+				addAnd = true;
+			}
+			
 			if(this.idRpt != null && !this.idRpt.isEmpty()){
 				if(addAnd)
 					newExpression.and();
-				VistaRptVersamentoFieldConverter converter = new VistaRptVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(VistaRptVersamento.model()));
 				newExpression.in(cf, this.idRpt);
 				addAnd = true;
@@ -152,8 +180,7 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				
-				VistaRptVersamentoFieldConverter rptFieldConverter = new VistaRptVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField idRptCustomField = new CustomField("id_pagamento_portale",  Long.class, "id_pagamento_portale",  rptFieldConverter.toTable(VistaRptVersamento.model()));
+				CustomField idRptCustomField = new CustomField("id_pagamento_portale",  Long.class, "id_pagamento_portale",  converter.toTable(VistaRptVersamento.model()));
 				newExpression.equals(idRptCustomField, this.idPagamentoPortale);
 				addAnd = true;
 			}
@@ -410,6 +437,13 @@ public class RptFilter extends AbstractFilter {
 				sqlQueryObject.addWhereINCondition(converter.toColumn(model.COD_DOMINIO, true), true, codDomini );
 			}
 			
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+				this.idTipiVersamento.removeAll(Collections.singleton(null));
+				
+				String [] idsTipiVersamento = this.idTipiVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idTipiVersamento.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.IUV, true) + ".vrs_id_tipo_versamento", false, idsTipiVersamento );
+			}
+			
 			if(this.idRpt != null && !this.idRpt.isEmpty()){
 				this.idRpt.removeAll(Collections.singleton(null));
 				
@@ -629,6 +663,10 @@ public class RptFilter extends AbstractFilter {
 		}
 
 		if(this.idDomini != null  && !this.idDomini.isEmpty()){
+			// donothing
+		}
+		
+		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 			// donothing
 		}
 		
@@ -968,5 +1006,13 @@ public class RptFilter extends AbstractFilter {
 
 	public void setDataPagamentoDa(Date dataPagamentoDa) {
 		this.dataPagamentoDa = dataPagamentoDa;
+	}
+
+	public List<Long> getIdTipiVersamento() {
+		return idTipiVersamento;
+	}
+
+	public void setIdTipiVersamento(List<Long> idTipiVersamento) {
+		this.idTipiVersamento = idTipiVersamento;
 	}
 }

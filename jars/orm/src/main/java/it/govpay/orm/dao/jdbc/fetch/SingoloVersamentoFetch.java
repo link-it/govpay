@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -81,6 +81,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_causale_rpt", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setContabilita", SingoloVersamento.model().CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "contabilita", SingoloVersamento.model().CONTABILITA.getFieldType()));
+				setParameter(object, "setMetadata", SingoloVersamento.model().METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "metadata", SingoloVersamento.model().METADATA.getFieldType()));
 				return object;
 			}
 			
@@ -129,6 +131,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneCausaleRPT"));
 				setParameter(object, "setContabilita", SingoloVersamento.model().CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"contabilita"));
+				setParameter(object, "setMetadata", SingoloVersamento.model().METADATA.getFieldType(),
+					this.getObjectFromMap(map,"metadata"));
 				return object;
 			}
 			

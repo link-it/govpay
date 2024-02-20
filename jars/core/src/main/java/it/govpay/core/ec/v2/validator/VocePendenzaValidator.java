@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.ec.v2.validator;
 
 import java.math.BigDecimal;
@@ -10,6 +29,7 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.ec.v2.beans.MapEntry;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
 import it.govpay.ec.v2.beans.QuotaContabilita;
 
@@ -34,6 +54,7 @@ public class VocePendenzaValidator implements IValidable{
 			ValidatoreUtils.validaDescrizione(vf, "descrizione", this.vocePendenza.getDescrizione());
 			ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT());
 			this.validaContabilita(vf);
+			this.validaMetadata(vf);
 			if(this.vocePendenza.getIdDominio() != null)
 				vi.validaIdDominio("idDominio", this.vocePendenza.getIdDominio());
 
@@ -134,4 +155,23 @@ public class VocePendenzaValidator implements IValidable{
 		}
 	}
 	
+	private void validaMetadata(ValidatorFactory vf) throws ValidationException {
+		if(this.vocePendenza.getMetadata() != null) {
+			if(this.vocePendenza.getMetadata().getMapEntries() == null || this.vocePendenza.getMetadata().getMapEntries().isEmpty())
+				throw new ValidationException("Il campo mapEntries non deve essere vuoto.");
+
+			if(this.vocePendenza.getMetadata().getMapEntries().isEmpty())
+				throw new ValidationException("Il campo mapEntries deve avere almeno 1 elemento.");
+
+			if(this.vocePendenza.getMetadata().getMapEntries().size() > 15)
+				throw new ValidationException("Il campo mapEntries deve avere massimo 15 elemento.");
+			
+			for (int i = 0; i < this.vocePendenza.getMetadata().getMapEntries().size(); i++) {
+				MapEntry entry = this.vocePendenza.getMetadata().getMapEntries().get(i);
+				
+				vf.getValidator("metadata.mapEntries["+i+"].key", entry.getKey()).notNull().minLength(1).maxLength(140);
+				vf.getValidator("metadata.mapEntries["+i+"].value", entry.getValue()).notNull().minLength(1).maxLength(140);
+			}
+		}
+	}
 }

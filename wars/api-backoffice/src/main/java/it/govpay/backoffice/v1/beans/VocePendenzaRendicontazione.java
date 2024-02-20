@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 
@@ -16,6 +35,7 @@ import it.govpay.core.exceptions.IOException;
 "stato",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "dominio",
 "hashDocumento",
 "tipoBollo",
@@ -49,7 +69,10 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-
+  
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
+  
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
 
@@ -188,6 +211,21 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public VocePendenzaRendicontazione metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
   }
 
   /**
@@ -335,6 +373,7 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
         Objects.equals(stato, vocePendenzaRendicontazione.stato) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenzaRendicontazione.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, vocePendenzaRendicontazione.contabilita) &&
+        Objects.equals(metadata, vocePendenzaRendicontazione.metadata) &&
         Objects.equals(dominio, vocePendenzaRendicontazione.dominio) &&
         Objects.equals(pendenza, vocePendenzaRendicontazione.pendenza) &&
 	    Objects.equals(hashDocumento, vocePendenzaRendicontazione.hashDocumento) &&
@@ -349,7 +388,7 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, tipoContabilita, codEntrata);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, metadata, dominio, pendenza, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, tipoContabilita, codEntrata);
   }
 
   public static VocePendenzaRendicontazione parse(String json) throws IOException {
@@ -373,6 +412,7 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");

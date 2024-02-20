@@ -1,9 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.ec.v2.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
@@ -17,9 +34,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.ec.v2.beans.Documento;
-import it.govpay.ec.v2.beans.LinguaSecondaria;
 import it.govpay.ec.v2.beans.PendenzaPagata;
-import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.RiscossioneVocePagata;
 import it.govpay.ec.v2.beans.Soggetto;
 import it.govpay.ec.v2.beans.TipoRiferimentoVocePendenza.TipoBolloEnum;
@@ -27,7 +42,6 @@ import it.govpay.ec.v2.beans.TipoRiscossione;
 import it.govpay.ec.v2.beans.TipoSoggetto;
 import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.VincoloPagamento;
-import it.govpay.ec.v2.beans.VoceDescrizioneImporto;
 import it.govpay.ec.v2.beans.VocePendenzaPagata;
 
 public class PendenzePagateConverter {
@@ -145,7 +159,7 @@ public class PendenzePagateConverter {
 		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-		
+		rsModel.setMetadata(PendenzeConverter.toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 		
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {

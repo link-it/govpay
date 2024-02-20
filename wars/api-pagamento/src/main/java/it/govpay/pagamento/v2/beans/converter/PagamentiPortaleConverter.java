@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans.converter;
 
 import java.math.BigDecimal;
@@ -10,7 +29,6 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -21,13 +39,13 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.beans.commons.Anagrafica;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -270,6 +288,7 @@ public class PagamentiPortaleConverter {
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setCodDominio(vocePendenza.getIdDominio());
+				sv.setMetadata(PendenzeConverter.toMetadataDTO(vocePendenza.getMetadata()));
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {

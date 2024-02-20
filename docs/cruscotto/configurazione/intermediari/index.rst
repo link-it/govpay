@@ -39,10 +39,11 @@ Le informazioni contenute nel form sono le seguenti:
 
    "Denominazione", "Nome associato all'Intermediario o al Partner Tecnologico", "Obbligatorio"
    "Id Intermediario", "Identificativo dell'intermediario o Partner Tecnologico, fornito da AgID, corrisponde alla Partita IVA del soggetto", "Obbligatorio"
-   "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
+   "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", "Obbligatorio"
    "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
-   "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", ""
-   "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si può scegliere, al momento, tra *Nessuna e HTTP-Basic*. Nel caso si scelga quest'ultima modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione (userid/password)", ""
+   "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", "Obbligatorio"
+   "Ocp-Apim-Subscription-Key", "Chiave da inviare a PagoPA per accedere ad alcune risorse, identifica il soggetto chiamante e consente l'accesso alle sole risorse autorizzate", ""
+   "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si può scegliere, al momento, tra *Nessuna e HTTP-Basic, SSL, Header, API-Key e OAuth2 Client Credentials*. Per ogni modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione previsti", ""
 
 Selezionando un intermediario dalla pagina che li elenca si accede alla pagina di dettaglio.
 
@@ -86,12 +87,13 @@ Per definire una stazione connessa all'intermediario occorre immettere le seguen
 
 .. csv-table:: Dettagli di una nuova stazione
    :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+   :widths: 30,40,30
 
    "IdStazione", "Identificativo della stazione, fornito da AgID", "Obbligatorio"
-   "Password", "Chiave segreta, fornita da AgID", "Obbligatorio"
-   "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato)
+   "Password", "Chiave segreta, fornita da AgID", "Obbligatorio se disabilitato il Modello unico"
+   "Abilitato", "Indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato)
    o se si vogliono impedire nuove richieste (disabilitato)", ""
+   "Modello unico", "Indica se la stazione supporta il Modello unico di pagamento", ""
 
 .. note:: Si noti come le stazioni siano connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
 

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.io.ByteArrayOutputStream;
@@ -31,8 +50,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.AllegatoNonTrovatoException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.TipoVersamento;
 import it.govpay.orm.dao.jdbc.converter.AllegatoFieldConverter;
 import it.govpay.orm.model.AllegatoModel;
@@ -40,7 +57,7 @@ import it.govpay.orm.model.AllegatoModel;
 public class AllegatiDAO  extends BaseDAO {
 
 
-	public LeggiAllegatoDTOResponse leggiAllegato(LeggiAllegatoDTO leggiAllegatoDTO) throws ServiceException,AllegatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiAllegatoDTOResponse leggiAllegato(LeggiAllegatoDTO leggiAllegatoDTO) throws ServiceException,AllegatoNonTrovatoException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		AllegatiBD allegatoBD = null;
 
@@ -87,7 +104,7 @@ public class AllegatiDAO  extends BaseDAO {
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -140,11 +157,7 @@ public class AllegatiDAO  extends BaseDAO {
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 		}
@@ -222,9 +235,7 @@ public class AllegatiDAO  extends BaseDAO {
 			}
 			return baos;
 
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 		}

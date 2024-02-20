@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.autorizzazione.utils;
 
 import java.util.ArrayList;
@@ -26,6 +45,9 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovPayLdapJwt;
+import it.govpay.core.autorizzazione.beans.GovpayLdapOauth2Details;
+import it.govpay.core.autorizzazione.beans.GovpayLdapOidcOauth2Details;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.model.Acl.Diritti;
@@ -45,6 +67,15 @@ public class AutorizzazioneUtils {
 		if(object instanceof GovpayLdapUserDetails)
 			return (GovpayLdapUserDetails) object;
 		
+		if(object instanceof GovpayLdapOauth2Details)
+			return ((GovpayLdapOauth2Details) object).toGovpayLdapUserDetails();
+		
+		if(object instanceof GovpayLdapOidcOauth2Details)
+			return ((GovpayLdapOidcOauth2Details) object).toGovpayLdapUserDetails();
+		
+		if(object instanceof GovPayLdapJwt)
+			return ((GovPayLdapJwt) object).toGovpayLdapUserDetails();
+		
 		return null;
 	}
 
@@ -58,6 +89,15 @@ public class AutorizzazioneUtils {
 
 		if(principalObj instanceof UserDetails)
 			return ((UserDetails) principalObj).getUsername();
+		
+		if(principalObj instanceof GovpayLdapOauth2Details)
+			return ((GovpayLdapOauth2Details) principalObj).getIdentificativo();
+		
+		if(principalObj instanceof GovpayLdapOidcOauth2Details)
+			return ((GovpayLdapOidcOauth2Details) principalObj).getIdentificativo();
+		
+		if(principalObj instanceof GovPayLdapJwt)
+			return ((GovPayLdapJwt) principalObj).getIdentificativo();
 
 		return null;
 	}
@@ -69,6 +109,27 @@ public class AutorizzazioneUtils {
 		Object principalObj = authentication.getPrincipal();
 		if(principalObj instanceof GovpayLdapUserDetails) {
 			Operatore operatore = ((GovpayLdapUserDetails) principalObj).getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		if(principalObj instanceof GovpayLdapOauth2Details) {
+			Operatore operatore = ((GovpayLdapOauth2Details) principalObj).getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		if(principalObj instanceof GovpayLdapOidcOauth2Details) {
+			Operatore operatore = ((GovpayLdapOidcOauth2Details) principalObj).getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		if(principalObj instanceof GovPayLdapJwt) {
+			Operatore operatore = ((GovPayLdapJwt) principalObj).getOperatore();
 			if(operatore != null) {
 				return operatore.getId();
 			}

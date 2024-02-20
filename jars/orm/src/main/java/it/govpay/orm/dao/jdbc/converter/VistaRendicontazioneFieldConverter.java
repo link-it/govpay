@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -338,6 +338,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return this.toAliasTable(field)+".sng_contabilita";
 			}else{
 				return "sng_contabilita";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".sng_metadata";
+			}else{
+				return "sng_metadata";
 			}
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){
@@ -1028,6 +1035,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().SNG_CONTABILITA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){

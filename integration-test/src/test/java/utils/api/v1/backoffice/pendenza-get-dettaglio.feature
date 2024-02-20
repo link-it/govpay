@@ -36,6 +36,8 @@ And match response ==
    "anomalo":"#notnull",
    "verificato":"#notnull",
    "UUID":"#notnull",
+   "dataUltimaModificaAca":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
+   "dataUltimaComunicazioneAca":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
    "voci":"#notnull",
    "rpp":"#ignore",
    "pagamenti":"#ignore",

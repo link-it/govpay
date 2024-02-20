@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.38.0"
+  version: "1.40.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5218,13 +5218,13 @@ components:
     stazionePost:
       type: object
       required:
-        - password
         - abilitato
         - versione
       properties:
         password:
           type: string
-          description: Ragione sociale dell'intermediario PagoPA
+          description: >-
+                  Password per la stazione, non necessaria nel modello unico. Resta obbligatoria per la versione = V1.
           example: 123456
         abilitato:
           type: boolean
@@ -6602,7 +6602,6 @@ components:
     pendenzaBase:
       type: object
       required:
-        - soggettoPagatore
         - importo
         - causale
       properties:
@@ -6793,6 +6792,16 @@ components:
             UUID:
               type: string
               description: Parametro di randomizzazione delle URL di pagamento statiche
+            dataUltimaModificaAca:
+              type: string
+              format: date-time
+              description: Data di ultimo aggiornamento dei dati da inviare ad ACA
+              example: '2018-12-31'
+            dataUltimaComunicazioneAca:
+              type: string
+              format: date-time
+              description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6875,6 +6884,16 @@ components:
             UUID:
               type: string
               description: Parametro di randomizzazione delle URL di pagamento statiche
+            dataUltimaModificaAca:
+              type: string
+              format: date-time
+              description: Data di ultimo aggiornamento dei dati da inviare ad ACA
+              example: '2018-12-31'
+            dataUltimaComunicazioneAca:
+              type: string
+              format: date-time
+              description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6933,6 +6952,8 @@ components:
           maxLength: 140
         contabilita:
           $ref: '#/components/schemas/contabilita'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
@@ -7119,14 +7140,6 @@ components:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
-            riscossioni:
-              type: array
-              items:
-                $ref: '#/components/schemas/riscossione'
-            rendicontazioni:
-              type: array
-              items:
-                $ref: '#/components/schemas/rendicontazione'
         - oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
               type: object
@@ -9175,7 +9188,7 @@ components:
           example: 1
         richiesta:
           oneOf:
-            - $ref: '#/components/schemas/pendenzaPost'
+            - $ref: '#/components/schemas/NuovaPendenzaTracciato'
             - $ref: '#/components/schemas/annullamentoPendenza'
         risposta:
           $ref: '#/components/schemas/esitoOperazionePendenza'
@@ -9202,7 +9215,7 @@ components:
         inserimenti:
           type: array
           items:
-            $ref: '#/components/schemas/pendenzaPost'
+            $ref: '#/components/schemas/NuovaPendenzaTracciato'
         annullamenti:
           type: array
           items:
@@ -9614,6 +9627,32 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
+    MapEntry:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: chiave del metadata
+          minLength: 1
+          maxLength: 140
+        value:
+          type: string
+          description: valore del metadata
+          minLength: 1
+          maxLength: 140
+    Metadata:
+      type: object
+      description: Metadata Custom da inserire nella ricevuta di pagamento
+      properties:
+        mapEntries:
+          type: array
+          items: 
+            minItems: 1
+            maxItems: 5
+            $ref: '#/components/schemas/MapEntry'
     ModelloPagamento:
       type: string
       description: Modello di pagamento
@@ -9621,6 +9660,108 @@ components:
       enum:
         - 'Pagamento ad iniziativa Ente'
         - 'Pagamento ad iniziativa PSP'
+    NuovaPendenzaTracciato:
+        required:
+        - idDominio
+        - importo
+        - causale
+        - voci
+        - idA2A
+        - idPendenza
+        properties:
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+            idUnitaOperativa:
+              type: string
+              description: Identificativo dell'unita' operativa
+              example: UO33132
+            idTipoPendenza:
+              type: string
+              description: Identificativo della tipologia pendenza
+              example: IMU
+              pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+            nome:
+                type: string
+                description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+                example: 'Immatricolazione AA 2017/2018'
+            causale:
+                type: string
+                description: Descrizione da inserire nell'avviso di pagamento
+                example: 'Sanzione CdS n. abc00000'
+            soggettoPagatore:
+                $ref: '#/components/schemas/soggetto'
+            importo:
+                type: number
+                description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+                example: 10.01
+            numeroAvviso:
+                type: string
+                description: Numero avviso, assegnato se pagabile da psp
+                example: 001000000000012345
+            dataCaricamento:
+                type: string
+                format: date
+                description: Data di emissione della pendenza
+                example: '2010-12-31'
+            dataValidita:
+                type: string
+                format: date
+                description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+                example: '2019-12-31'
+            dataScadenza:
+                type: string
+                format: date
+                description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+                example: '2020-12-31'
+            annoRiferimento:
+                type: number
+                description: Anno di riferimento della pendenza
+                example: 2020
+            cartellaPagamento:
+                type: string
+                description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+                example: ABC00000001
+            datiAllegati:
+                type: object
+                description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            tassonomia:
+                type: string
+                description: Macro categoria della pendenza secondo la classificazione del creditore
+                example: Sanzioni
+            tassonomiaAvviso:
+                $ref: '#/components/schemas/tassonomiaAvviso'
+            direzione:
+                type: string
+                description: Identificativo della direzione interna all'ente creditore
+                example: Direzione ABC
+            divisione:
+                type: string
+                description: Identificativo della divisione interna all'ente creditore
+                example: Divisione001
+            documento:
+                $ref: '#/components/schemas/documento'
+            proprieta:
+                $ref: '#/components/schemas/ProprietaPendenza'
+            voci:
+              type: array
+              minItems: 1
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/NuovaVocePendenza'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/NuovoAllegatoPendenza'
+            idA2A:
+              type: string
+              description: Identificativo del gestionale responsabile della pendenza
+              example: A2A_12345
+            idPendenza:
+              type: string
+              description: Identificativo della pendenza nel gestionale responsabile
+              example: abcdef12345
     NuovoAllegatoPendenza:
       type: object
       required: 
@@ -9671,6 +9812,20 @@ components:
           type: string
           description: >-
               causale della pendenza nella lingua secondaria da inserire nell'avviso
+        informativaImportoAvviso:
+          type: string
+          description: >- 
+            se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+          maxLength: 255
+        linguaSecondariaInformativaImportoAvviso:
+          type: string
+          description: >- 
+            se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+          maxLength: 255
+        dataScandenzaAvviso:
+          type: string
+          format: date
+          description: se valorizzata, sostituisce la data di scadenza standard.
     RisultatiPerPagina:
       type: integer
       default: 25

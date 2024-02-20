@@ -740,6 +740,8 @@
     <value name="avvAppIoPromScadNotificato" field="avvAppIoPromScadNotificato" usage="optional"/>
     <structure name="idOperazione" field="idOperazione" usage="required" map-as="_IdOperazione_Type"/>
     <value name="proprieta" field="proprieta" usage="optional"/>
+    <value name="dataUltimaModificaAca" field="dataUltimaModificaAca" usage="optional"/>
+    <value name="dataUltimaComunicazioneAca" field="dataUltimaComunicazioneAca" usage="optional"/>
   </mapping>
   <mapping name="Documento" class="it.govpay.orm.Documento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -796,6 +798,7 @@
     <value name="descrizioneCausaleRPT" field="descrizioneCausaleRPT" usage="optional"/>
     <value name="contabilita" field="contabilita" usage="optional"/>
     <structure name="idDominio" field="idDominio" usage="optional" map-as="_IdDominio_Type"/>
+    <value name="metadata" field="metadata" usage="optional"/>
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1059,6 +1062,7 @@
     <value name="sngIndiceDati" field="sngIndiceDati" usage="required"/>
     <value name="sngDescrizioneCausaleRPT" field="sngDescrizioneCausaleRPT" usage="optional"/>
     <value name="sngContabilita" field="sngContabilita" usage="optional"/>
+    <value name="sngMetadata" field="sngMetadata" usage="optional"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <value name="vrsNome" field="vrsNome" usage="optional"/>
@@ -1407,6 +1411,7 @@
     <value name="dataCreazione" field="dataCreazione" usage="optional"/>
     <value name="dataScadenza" field="dataScadenza" usage="optional"/>
     <value name="contabilita" field="contabilita" usage="optional"/>
+    <value name="metadata" field="metadata" usage="optional"/>
   </mapping>
   <mapping name="VistaPagamentoPortale" class="it.govpay.orm.VistaPagamentoPortale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1551,6 +1556,8 @@
     <value name="codDocumento" field="codDocumento" usage="optional"/>
     <value name="docDescrizione" field="docDescrizione" usage="optional"/>
     <value name="proprieta" field="proprieta" usage="optional"/>
+    <value name="dataUltimaModificaAca" field="dataUltimaModificaAca" usage="optional"/>
+    <value name="dataUltimaComunicazioneAca" field="dataUltimaComunicazioneAca" usage="optional"/>
   </mapping>
   <mapping name="VistaVersamentoNonRendicontato" class="it.govpay.orm.VistaVersamentoNonRendicontato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1563,6 +1570,7 @@
     <value name="sngIndiceDati" field="sngIndiceDati" usage="required"/>
     <value name="sngDescrizioneCausaleRPT" field="sngDescrizioneCausaleRPT" usage="optional"/>
     <value name="sngContabilita" field="sngContabilita" usage="optional"/>
+    <value name="sngMetadata" field="sngMetadata" usage="optional"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <value name="vrsNome" field="vrsNome" usage="optional"/>

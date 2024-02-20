@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.ec.v2.converter;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +42,8 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.ec.v2.beans.AllegatoPendenza;
 import it.govpay.ec.v2.beans.Documento;
 import it.govpay.ec.v2.beans.LinguaSecondaria;
+import it.govpay.ec.v2.beans.MapEntry;
+import it.govpay.ec.v2.beans.Metadata;
 import it.govpay.ec.v2.beans.Pendenza;
 import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.Soggetto;
@@ -138,7 +159,7 @@ public class PendenzeConverter {
 		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-		
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 		
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
@@ -252,6 +273,7 @@ public class PendenzeConverter {
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
 			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 		
 		return rsModel;
@@ -285,6 +307,52 @@ public class PendenzeConverter {
 			}
 		}
 		
+		return rsModel;
+	}
+	
+	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
+		it.govpay.core.beans.tracciati.Metadata dto = null;
+		if(metadata != null) {
+			dto = new it.govpay.core.beans.tracciati.Metadata();
+			
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
+				
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
+					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
+					mapEntryDto.setKey(mapEntry.getKey());
+					mapEntryDto.setValue(mapEntry.getValue());
+				
+					mapEntriesDto.add(mapEntryDto);
+				}
+				
+				dto.setMapEntries(mapEntriesDto);
+			}
+		}
+
+		return dto;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+				
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+				
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+				
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
 		return rsModel;
 	}
 }

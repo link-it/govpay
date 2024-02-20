@@ -584,6 +584,8 @@ CREATE TABLE versamenti
 	avv_app_io_data_prom_scadenza DATETIME,
 	avv_app_io_prom_scad_notificat BOOLEAN,
 	proprieta LONGTEXT,
+	data_ultima_modifica_aca DATETIME COMMENT 'Data ultima modifica dati da inviare ad ACA',
+	data_ultima_comunicazione_aca DATETIME COMMENT 'Data ultima comunicazione con ACA conclusa con successo',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -614,6 +616,8 @@ CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
+CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 
 
 
@@ -632,6 +636,7 @@ CREATE TABLE singoli_versamenti
 	indice_dati INT NOT NULL COMMENT 'Numero progressivo della voce di pendenza',
 	descrizione_causale_rpt VARCHAR(140) COMMENT 'Descrizione da inserire nella RPT',
 	contabilita LONGTEXT COMMENT 'Informazioni di contabilita\' associate alla voce pendenza',
+	metadata LONGTEXT COMMENT 'Metadata da inserire all\'interno della RPT.',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
@@ -1081,6 +1086,8 @@ CREATE TABLE rendicontazioni
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
+CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
 
 
 
@@ -1390,7 +1397,8 @@ CREATE VIEW v_riscossioni AS (
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
     versamenti.data_creazione AS data_creazione,
-    singoli_versamenti.contabilita AS contabilita
+    singoli_versamenti.contabilita AS contabilita,
+    singoli_versamenti.metadata AS metadata 
    FROM fr
    JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
    LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1720,6 +1728,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -2014,6 +2023,8 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -2029,6 +2040,7 @@ CREATE VIEW v_vrs_non_rnd AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -2115,5 +2127,6 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN rpt ON pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
+
 
 

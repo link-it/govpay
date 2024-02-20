@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package it.govpay.core.beans.commons;
 
@@ -8,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import it.govpay.core.beans.tracciati.Metadata;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -323,7 +343,6 @@ public class Versamento {
 		this.allegati = allegati;
 	}
 
-
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -472,6 +491,14 @@ public class Versamento {
 			this.codDominio = codDominio;
 		}
 
+		public Metadata getMetadata() {
+			return metadata;
+		}
+
+		public void setMetadata(Metadata metadata) {
+			this.metadata = metadata;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
@@ -481,6 +508,7 @@ public class Versamento {
         private Versamento.SingoloVersamento.Tributo tributo;
         private String contabilita;
         private String codDominio;
+        private Metadata metadata;
 
         public static class BolloTelematico {
 

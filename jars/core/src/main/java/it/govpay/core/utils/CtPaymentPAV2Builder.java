@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -34,6 +34,8 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Request;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StTransferType;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtMapEntry;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtMetadata;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtRichiestaMarcaDaBollo;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
@@ -43,6 +45,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.tracciati.MapEntry;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
@@ -282,7 +285,7 @@ public class CtPaymentPAV2Builder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			transferEl.setMetadata(CtPaymentPABuilder.impostaValoriContabilita(singoloVersamento));
+			impostaMetadata(singoloVersamento, transferEl);
 
 			transferList.getTransfer().add(transferEl );
 			i++;
@@ -298,5 +301,23 @@ public class CtPaymentPAV2Builder {
 		}
 		rpt.setXmlRpt(rptXml);
 		return rpt;
+	}
+
+	private void impostaMetadata(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
+		// se la pendenza ha dei metadati definiti vengono impostati nell'apposito campo
+		if(singoloVersamento.getMetadataPagoPA() != null && singoloVersamento.getMetadataPagoPA().getMapEntries() != null && !singoloVersamento.getMetadataPagoPA().getMapEntries().isEmpty()) {
+			CtMetadata metadata = new CtMetadata();
+			
+			for (MapEntry mapEntry : singoloVersamento.getMetadataPagoPA().getMapEntries()) {
+				CtMapEntry ctMapEntry = new CtMapEntry();
+				ctMapEntry.setKey(mapEntry.getKey());
+				ctMapEntry.setValue(mapEntry.getValue());
+				metadata.getMapEntry().add(ctMapEntry );
+			}
+			
+			transferEl.setMetadata(metadata);				
+		} else {
+			transferEl.setMetadata(CtPaymentPABuilder.impostaValoriContabilita(singoloVersamento));	
+		}
 	}
 }

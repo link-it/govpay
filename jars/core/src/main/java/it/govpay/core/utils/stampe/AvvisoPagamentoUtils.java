@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.stampe;
 
 import java.io.UnsupportedEncodingException;
@@ -7,7 +26,6 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -489,20 +507,26 @@ public class AvvisoPagamentoUtils {
 	}
 
 	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza,	RataAvviso rata) {
-		if(versamento.getDataValidita() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-		} else if(versamento.getDataScadenza() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		if(proprietaPendenza != null && proprietaPendenza.getDataScandenzaAvviso() != null) {
+			rata.setData(sdfDataScadenza.format(proprietaPendenza.getDataScandenzaAvviso()));
 		} else {
-			Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
-
-			if(numeroGiorniValiditaPendenza != null) {
-				Calendar instance = Calendar.getInstance();
-				instance.setTime(versamento.getDataCreazione()); 
-				instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
-				rata.setData(sdfDataScadenza.format(instance.getTime()));
+			if(versamento.getDataValidita() != null) {
+				rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
+			} else if(versamento.getDataScadenza() != null) {
+				rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
 			} else {
-				rata.setData(null);
+				Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+	
+				if(numeroGiorniValiditaPendenza != null) {
+					Calendar instance = Calendar.getInstance();
+					instance.setTime(versamento.getDataCreazione()); 
+					instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+					rata.setData(sdfDataScadenza.format(instance.getTime()));
+				} else {
+					rata.setData(null);
+				}
 			}
 		}
 	}

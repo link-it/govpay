@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -111,6 +111,7 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.CtPaymentPABuilder;
 import it.govpay.core.utils.CtPaymentPAV2Builder;
 import it.govpay.core.utils.CtReceiptUtils;
+import it.govpay.core.utils.CtReceiptV2Utils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -959,9 +960,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		appContext.getRequest().addGenericProperty(new Property("ccp", receipt.getReceiptId()));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
@@ -1932,9 +1935,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		appContext.getRequest().addGenericProperty(new Property("ccp", receipt.getReceiptId()));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
@@ -2004,7 +2009,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			Rpt rpt = CtReceiptUtils.acquisisciRT(codDominio, iuv, requestBody, false);
+			Rpt rpt = CtReceiptV2Utils.acquisisciRT(codDominio, iuv, requestBody, false);
 
 			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());

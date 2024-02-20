@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -171,6 +171,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().CONTABILITA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().METADATA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_tributo","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
@@ -193,6 +194,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getIndiceDati(),SingoloVersamento.model().INDICE_DATI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getDescrizioneCausaleRPT(),SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getContabilita(),SingoloVersamento.model().CONTABILITA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getMetadata(),SingoloVersamento.model().METADATA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tributo,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
@@ -363,6 +365,8 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getDescrizioneCausaleRPT(), SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().CONTABILITA,false), "?");
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getContabilita(), SingoloVersamento.model().CONTABILITA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().METADATA,false), "?");
+		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getMetadata(), SingoloVersamento.model().METADATA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}

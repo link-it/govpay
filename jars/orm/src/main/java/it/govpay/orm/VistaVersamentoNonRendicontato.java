@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -44,6 +44,7 @@ import java.io.Serializable;
  * 			&lt;element name="sngIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="sngDescrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sngContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sngMetadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsNome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -144,6 +145,7 @@ import java.io.Serializable;
   	"sngIndiceDati",
   	"sngDescrizioneCausaleRPT",
   	"sngContabilita",
+  	"sngMetadata",
   	"vrsId",
   	"vrsCodVersamentoEnte",
   	"vrsNome",
@@ -314,6 +316,14 @@ public class VistaVersamentoNonRendicontato extends org.openspcoop2.utils.beans.
 
   public void setSngContabilita(java.lang.String sngContabilita) {
     this.sngContabilita = sngContabilita;
+  }
+
+  public java.lang.String getSngMetadata() {
+    return this.sngMetadata;
+  }
+
+  public void setSngMetadata(java.lang.String sngMetadata) {
+    this.sngMetadata = sngMetadata;
   }
 
   public long getVrsId() {
@@ -997,6 +1007,10 @@ public class VistaVersamentoNonRendicontato extends org.openspcoop2.utils.beans.
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="sngContabilita",required=false,nillable=false)
   protected java.lang.String sngContabilita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sngMetadata",required=false,nillable=false)
+  protected java.lang.String sngMetadata;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="vrsId",required=false,nillable=false)

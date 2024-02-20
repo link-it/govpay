@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -545,6 +545,8 @@ public class Incassi {
 									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
 									// Aggiornamento stato promemoria
 									versamentiBD.updateVersamentoInformazioniAvvisatura(versamento.getId(), true, null, true, null, true, null);
+									// Aggiornamento data ultima modifica ACA, per la chiusura di una pendenza pagata fuori PagoPA.
+									versamentiBD.updateUltimaModificaAca(versamento.getId());
 									
 									break;
 								case ESEGUITO:

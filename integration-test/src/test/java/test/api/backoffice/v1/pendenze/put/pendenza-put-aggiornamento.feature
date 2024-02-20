@@ -93,7 +93,11 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == pendenzaGetResponse
+And match response.importo == pendenzaPut.importo
+And match response.voci[0].importo == pendenzaPut.voci[0].importo
+And match response.causale == pendenzaPut.causale 
+And match response.dataValidita == pendenzaPut.dataValidita
+And match response.dataScadenza == pendenzaPut.dataScadenza
 
 Scenario: Aggiornamento pendenza non pagata con modifica dell'iban di accredito
 
@@ -166,6 +170,7 @@ And headers idA2ABasicAutenticationHeader
 And request [ { "op": "REPLACE", "path": "/stato", "value": "ANNULLATA" }, { "op": "REPLACE", "path": "/descrizioneStato", "value": "Test annullamento" }]
 When method patch
 Then status 200
+And match response.stato == 'ANNULLATA'
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -180,4 +185,64 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == pendenzaGetResponse
+And match response.stato == 'NON_ESEGUITA'
+
+@test-update-dominio
+Scenario: Aggiornamento pendenza non pagata ma e' stato modificato il dominio
+
+* def pendenzaGet = read('msg/pendenza-get.json')
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* set pendenzaPut.numeroAvviso = numeroAvviso
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def pendenzaPutResponse = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response == pendenzaGet
+
+* def pendenzaGetResponse = response
+
+# Modifica l'auxdigits del dominio
+* def dominio = read('classpath:configurazione/v1/msg/dominio.json')
+* set dominio.auxDigit = '3'
+
+Given url backofficeBaseurl
+And path 'domini', idDominio 
+And headers gpAdminBasicAutenticationHeader
+And request dominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+# Aggiornamento pendenza
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 200
+And match response == pendenzaPutResponse
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.numeroAvviso == pendenzaGetResponse.numeroAvviso
+
+

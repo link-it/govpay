@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ec.v1.beans;
 
 import java.math.BigDecimal;
@@ -48,6 +67,8 @@ public class VocePendenza extends DatiEntrata {
   private String descrizioneCausaleRPT = null;
   
   private Contabilita contabilita = null;
+  
+  private Metadata metadata = null;
   
   private String idDominio = null;
   
@@ -183,7 +204,22 @@ public class VocePendenza extends DatiEntrata {
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
-  
+
+  /**
+   **/
+  public VocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
   /**
    * Identificativo del dominio creditore
    **/
@@ -213,6 +249,7 @@ public class VocePendenza extends DatiEntrata {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("}");
     return sb.toString();

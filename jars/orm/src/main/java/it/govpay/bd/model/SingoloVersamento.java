@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,10 +20,16 @@
 package it.govpay.bd.model;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
@@ -31,6 +37,9 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.beans.tracciati.Metadata;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IbanAccredito;
 
 public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
@@ -45,7 +54,8 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	private transient List<Pagamento> pagamenti;
 	private transient List<Rendicontazione> rendicontazioni;
 	private transient Dominio dominio;
-
+	private transient Metadata metadataPagoPA;
+	
 	
 	public Tributo getTributo(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tributo == null && this.getIdTributo() != null) {
@@ -195,6 +205,58 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 		this.dominio = dominio;
 		if(this.dominio != null) {
 			this.setIdDominio(this.dominio.getId());
+		}
+	}
+	
+	@Override
+	public String getMetadata() {
+		try {
+			return this._getJson(this.getMetadataPagoPA());
+		} catch (IOException e) {
+			return super.getMetadata();
+		}
+	}
+
+	public Metadata getMetadataPagoPA() {
+		if(this.metadataPagoPA == null) {
+			try {
+				this.metadataPagoPA = this._getFromJson(super.getMetadata(), Metadata.class);
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		return metadataPagoPA;
+	}
+
+	public void setMetadataPagoPA(Metadata metadataPagoPA) {
+		this.metadataPagoPA = metadataPagoPA;
+	}
+	
+	private <T> T _getFromJson(String jsonString, Class<T> tClass) throws IOException {
+		if(jsonString != null) {
+			try {
+				SerializationConfig serializationConfig = new SerializationConfig();
+				serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+				serializationConfig.setIgnoreNullValues(true);
+				IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+				return tClass.cast(deserializer.getObject(jsonString, tClass));
+			} catch(org.openspcoop2.utils.serialization.IOException e) {
+				throw new IOException(e.getMessage(), e);
+			}
+		}
+
+		return null;
+	}
+
+	private String _getJson(Object objToSerialize) throws IOException {
+		try {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			return serializer.getObject(objToSerialize); 
+		} catch(org.openspcoop2.utils.serialization.IOException e) {
+			throw new IOException(e.getMessage(), e);
 		}
 	}
 }

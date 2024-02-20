@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,8 +75,6 @@ import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.TracciatoNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
@@ -87,9 +85,10 @@ import it.govpay.orm.model.TracciatoModel;
 public class TracciatiDAO extends BaseDAO{
 
 	public TracciatiDAO() {
+		super();
 	}
 
-	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		TracciatiBD tracciatoBD = null;
 
@@ -109,7 +108,7 @@ public class TracciatiDAO extends BaseDAO{
 		}
 	}
 
-	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException {
 		TracciatiBD tracciatoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -162,7 +161,7 @@ public class TracciatiDAO extends BaseDAO{
 		}
 	}
 
-	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
+	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws GovPayException {
 		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
 		TracciatiBD tracciatoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -172,10 +171,6 @@ public class TracciatiDAO extends BaseDAO{
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-
-			//			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
-			//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
-			//			}
 
 			tracciatoBD = new TracciatiBD(configWrapper);
 
@@ -217,7 +212,7 @@ public class TracciatiDAO extends BaseDAO{
 
 	}
 
-	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException {
 		OperazioniBD operazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -255,7 +250,7 @@ public class TracciatiDAO extends BaseDAO{
 		}
 	}
 
-	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException {
 
 		try {
 			IJDBCAdapter jdbcAdapter = JDBCAdapterFactory.createJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -272,7 +267,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -315,20 +310,15 @@ public class TracciatiDAO extends BaseDAO{
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (JDBCAdapterException e) {
+		} catch (SQLQueryObjectException | ExpressionException | JDBCAdapterException e) {
 			throw new ServiceException(e);
 		} finally {
+			//donothing
 		}
 	}
 	
 	
-	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException {
 
 		try {
 			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -346,7 +336,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -399,13 +389,10 @@ public class TracciatiDAO extends BaseDAO{
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
+			//donothing
 		}
 	}
 }

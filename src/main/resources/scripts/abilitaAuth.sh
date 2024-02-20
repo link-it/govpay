@@ -79,7 +79,7 @@ case $key in
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
     echo "usage:"
-    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap,apikey). Default: basic,ssl"
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap,apikey,oauth2). Default: basic,ssl"
     echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap,apikey). Default: basic,ssl"
     echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl,ldap,apikey). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl,ldap,apikey). Default: basic,basic-gp,ssl,hdrcert"
@@ -103,9 +103,10 @@ BACKOFFICE_BASIC_LDAP=false
 [[ $BACKOFFICE == *"hdrcert"* ]] && BACKOFFICE_SSL_HEADER=true || BACKOFFICE_SSL_HEADER=false
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
 [[ $BACKOFFICE == *"spid"* ]] && BACKOFFICE_SPID=true || BACKOFFICE_SPID=false
-[[ $PAGAMENTI == *"public"* ]] && BACKOFFICE_PUBLIC=true || BACKOFFICE_PUBLIC=false
+[[ $BACKOFFICE == *"public"* ]] && BACKOFFICE_PUBLIC=true || BACKOFFICE_PUBLIC=false
 [[ $BACKOFFICE == *"session"* ]] && BACKOFFICE_SESSION=true || BACKOFFICE_SESSION=false
 [[ $BACKOFFICE == *"apikey"* ]] && BACKOFFICE_API_KEY=true || BACKOFFICE_API_KEY=false
+[[ $BACKOFFICE == *"oauth2"* ]] && BACKOFFICE_OAUTH2_PKCE_KEY=true || BACKOFFICE_OAUTH2_PKCE_KEY=false
 
 PAGAMENTI_BASIC_WF=false
 PAGAMENTI_BASIC_GP=false
@@ -258,6 +259,13 @@ then
   sed -i -e "s#API_KEY_START#API_KEY_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#API_KEY_END#<!-- API_KEY_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Backoffice abilitazione ApiKey auth completata.";
+fi
+if $BACKOFFICE_OAUTH2_PKCE_KEY
+then
+  echo "API-Backoffice abilitazione OAuth2 auth...";
+  sed -i -e "s#OAUTH2_PKCE_START#OAUTH2_PKCE_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#OAUTH2_PKCE_END#<!-- OAUTH2_PKCE_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione OAuth2 auth completata.";
 fi
 if $DEFAULT_BASIC
 then

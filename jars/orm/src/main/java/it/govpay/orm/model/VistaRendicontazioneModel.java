@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -76,6 +76,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.SNG_INDICE_DATI = new Field("sngIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new Field("sngDescrizioneCausaleRPT",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_CONTABILITA = new Field("sngContabilita",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.SNG_METADATA = new Field("sngMetadata",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_ID = new Field("vrsId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new Field("vrsCodVersamentoEnte",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_NOME = new Field("vrsNome",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -194,6 +195,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.SNG_INDICE_DATI = new ComplexField(father,"sngIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"sngDescrizioneCausaleRPT",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_CONTABILITA = new ComplexField(father,"sngContabilita",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.SNG_METADATA = new ComplexField(father,"sngMetadata",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new ComplexField(father,"vrsCodVersamentoEnte",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_NOME = new ComplexField(father,"vrsNome",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -344,6 +346,8 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 	public IField SNG_DESCRIZIONE_CAUSALE_RPT = null;
 	 
 	public IField SNG_CONTABILITA = null;
+	 
+	public IField SNG_METADATA = null;
 	 
 	public IField VRS_ID = null;
 	 

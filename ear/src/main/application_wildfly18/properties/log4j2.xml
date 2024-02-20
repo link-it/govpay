@@ -130,6 +130,10 @@
 		<Logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
+		
+		<Logger name="org.openspcoop2.utils.transport" level="${org.openspcoop2.utils.transport.log.level}" additivity="false">
+			<AppenderRef ref="govpay" />
+		</Logger>
 
 		<Logger name="boot" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay_boot" />

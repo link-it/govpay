@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pendenze.v2.beans;
 
 import java.math.BigDecimal;
@@ -17,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "datiAllegati",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "idDominio",
 "codEntrata",
 "ibanAccredito",
@@ -46,7 +66,10 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-
+  
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
+  
   @JsonProperty("idDominio")
   private String idDominio = null;
 
@@ -143,6 +166,21 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public NuovaVocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
   }
 
   /**
@@ -363,6 +401,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
         Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
+        Objects.equals(metadata, nuovaVocePendenza.metadata) &&
         Objects.equals(idDominio, nuovaVocePendenza.idDominio) &&
         Objects.equals(codEntrata, nuovaVocePendenza.codEntrata) &&
         Objects.equals(ibanAccredito, nuovaVocePendenza.ibanAccredito) &&
@@ -376,7 +415,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, metadata, idDominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
   }
 
   public static NuovaVocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -399,6 +438,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
@@ -433,6 +473,8 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		vf.getValidator("contabilita", this.contabilita).validateFields();
+		vf.getValidator("metadata", this.metadata).validateFields();
+		
 		if(this.idDominio != null) {
 			vi.validaIdDominio("idDominio", this.idDominio);
 		}

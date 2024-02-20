@@ -1,4 +1,25 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.tasks;
+
+import java.text.MessageFormat;
 
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.Operation;
@@ -29,16 +50,18 @@ public abstract class AbstractTask {
 	}
 
 	protected abstract void execTask(IContext ctx) throws Exception;
+	
+	protected abstract boolean isAbilitato();
 
 
 	public void exec() {
 		try {
-			this.log.trace("Execuzione task ["+this.name+"] ...");
+			this.log.trace("Execuzione task [{}] ...", this.name);
 			IContext ctx = this.initBatchContext();
 			execTask(ctx);
-			this.log.trace("Execuzione task ["+this.name+"] completata con successo");
+			this.log.trace("Execuzione task [{}] completata con successo", this.name);
 		} catch(Throwable e) {
-			this.log.error("Execuzione task ["+this.name+"] completata con errore: " + e.getMessage(), e);
+			this.log.error(MessageFormat.format("Execuzione task [{0}] completata con errore: {1}", this.name, e.getMessage()), e);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 			ContextThreadLocal.unset();

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -100,6 +100,8 @@ import java.io.Serializable;
  * 			&lt;element name="avvAppIoPromScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idOperazione" type="{http://www.govpay.it/orm}id-operazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="proprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataUltimaModificaAca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataUltimaComunicazioneAca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -178,7 +180,9 @@ import java.io.Serializable;
   	"avvAppIoDataPromScadenza",
   	"avvAppIoPromScadNotificato",
   	"idOperazione",
-  	"proprieta"
+  	"proprieta",
+  	"dataUltimaModificaAca",
+  	"dataUltimaComunicazioneAca"
   }
 )
 
@@ -734,6 +738,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.proprieta = proprieta;
   }
 
+  public java.util.Date getDataUltimaModificaAca() {
+    return this.dataUltimaModificaAca;
+  }
+
+  public void setDataUltimaModificaAca(java.util.Date dataUltimaModificaAca) {
+    this.dataUltimaModificaAca = dataUltimaModificaAca;
+  }
+
+  public java.util.Date getDataUltimaComunicazioneAca() {
+    return this.dataUltimaComunicazioneAca;
+  }
+
+  public void setDataUltimaComunicazioneAca(java.util.Date dataUltimaComunicazioneAca) {
+    this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1011,5 +1031,15 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="proprieta",required=false,nillable=false)
   protected java.lang.String proprieta;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataUltimaModificaAca",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataUltimaModificaAca;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataUltimaComunicazioneAca",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataUltimaComunicazioneAca;
 
 }

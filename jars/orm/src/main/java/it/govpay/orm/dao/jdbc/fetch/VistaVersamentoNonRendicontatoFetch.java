@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -71,6 +71,8 @@ public class VistaVersamentoNonRendicontatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaVersamentoNonRendicontato.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setSngContabilita", VistaVersamentoNonRendicontato.model().SNG_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_contabilita", VistaVersamentoNonRendicontato.model().SNG_CONTABILITA.getFieldType()));
+				setParameter(object, "setSngMetadata", VistaVersamentoNonRendicontato.model().SNG_METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sng_metadata", VistaVersamentoNonRendicontato.model().SNG_METADATA.getFieldType()));
 				setParameter(object, "setVrsId", VistaVersamentoNonRendicontato.model().VRS_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaVersamentoNonRendicontato.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaVersamentoNonRendicontato.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -249,6 +251,8 @@ public class VistaVersamentoNonRendicontatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"sngDescrizioneCausaleRPT"));
 				setParameter(object, "setSngContabilita", VistaVersamentoNonRendicontato.model().SNG_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"sngContabilita"));
+				setParameter(object, "setSngMetadata", VistaVersamentoNonRendicontato.model().SNG_METADATA.getFieldType(),
+					this.getObjectFromMap(map,"sngMetadata"));
 				setParameter(object, "setVrsId", VistaVersamentoNonRendicontato.model().VRS_ID.getFieldType(),
 					this.getObjectFromMap(map,"vrsId"));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaVersamentoNonRendicontato.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
