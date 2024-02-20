@@ -207,9 +207,8 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           }
           // Metadata
           if (item.metadata && item.metadata.mapEntry) {
-            this._elenco.push({ label: Voce.METADATA, value: item.metadata.mapEntry, type: 'quote' });
+            _std.elenco.push({ label: Voce.METADATA, value: item.metadata.mapEntry, type: 'quote' });
           }	
-          
           
           _std.importo = this.us.currencyFormat(item.transferAmount);
           _std.stato = item.stato;
