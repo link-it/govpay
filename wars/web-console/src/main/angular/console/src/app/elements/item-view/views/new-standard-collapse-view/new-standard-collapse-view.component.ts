@@ -71,7 +71,11 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
 			
 			if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
 	            this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: vocePendenza.contabilita.quote, type: 'quote' });
-	          }	
+	          }
+	           // Metadata
+	          if (vocePendenza.metadata && vocePendenza.metadata.mapEntry) {
+	            this._elenco.push({ label: Voce.METADATA, value: vocePendenza.metadata.mapEntry, type: 'quote' });
+	          }		
 		  }
           
           if (pendenza.datiAllegati) {
@@ -95,6 +99,10 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
               if (item.contabilita && item.contabilita.quote) {
                 this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: item.contabilita.quote, type: 'quote' });
               }
+               // Metadata
+	          if (item.metadata && item.metadata.mapEntry) {
+	            this._elenco.push({ label: Voce.METADATA, value: item.metadata.mapEntry, type: 'quote' });
+	          }	
             }
           }
         }
@@ -121,6 +129,10 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
           if (this.info.item.contabilita && this.info.item.contabilita.quote) {
             this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: this.info.item.contabilita.quote, type: 'quote' });
           }
+           // Metadata
+	          if (this.info.item.metadata && this.info.item.metadata.mapEntry) {
+	            this._elenco.push({ label: Voce.METADATA, value: this.info.item.metadata.mapEntry, type: 'quote' });
+	          }	
         }
       }.bind(this),
       (error) => {
@@ -148,6 +160,10 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
 			if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
 	            this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: vocePendenza.contabilita.quote, type: 'quote' });
 	        }	
+	        // Metadata
+	          if (vocePendenza.metadata && vocePendenza.metadata.mapEntry) {
+	            this._elenco.push({ label: Voce.METADATA, value: vocePendenza.metadata.mapEntry, type: 'quote' });
+	          }	
         }
       }.bind(this),
       (error) => {
