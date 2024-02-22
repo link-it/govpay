@@ -758,7 +758,7 @@ CREATE TABLE rpt
 	cod_sessione VARCHAR(255) COMMENT 'Codice della sessione di pagamento assegnata da GovPay',
 	cod_sessione_portale VARCHAR(255) COMMENT 'Codice della sessione di pagamento assegnato dal Portale',
 	psp_redirect_url VARCHAR(512) COMMENT 'Url di redirezione per procedere al pagamento',
-	xml_rpt MEDIUMBLOB NOT NULL COMMENT 'XML della RPT codificato in base64',
+	xml_rpt MEDIUMBLOB COMMENT 'XML della RPT codificato in base64',
 	data_aggiornamento_stato DATETIME(3) NOT NULL DEFAULT now() COMMENT 'Data dell\'ultimo aggiornamento di stato della RPT',
 	callback_url LONGTEXT COMMENT 'Url di ritorno al portale di pagamento',
 	modello_pagamento VARCHAR(16) NOT NULL COMMENT 'Indicazione sul modello di pagamento della RPT',

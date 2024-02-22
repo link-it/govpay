@@ -32,7 +32,7 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/CodiceContabilita",
+                  "transferCategory":"9/SEGRETERIA",
                   "metadata":"##null"
                }
             ]
@@ -45,7 +45,7 @@
          "fiscalCode":"#(idDominio)",
          "outcome":"OK",
          "creditorReferenceId":"#(iuv)",
-         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "paymentAmount":"#(importoRicevuta + '')",
          "description":"#notnull",
          "companyName":"#(dominio.ragioneSociale)",
          "officeName":null,
@@ -67,11 +67,11 @@
             "transfer":[
                {
                   "idTransfer":1,
-                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
+                  "transferAmount":"#(importoRicevuta + '')",
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
-                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/CodiceContabilita",
+                  "remittanceInformation":"#string",
+                  "transferCategory":"9/SEGRETERIA",
                   "metadata":"##null"
                }
             ]
@@ -101,7 +101,7 @@
 	      "rpp":"#notnull",
 	      "stato":"RISCOSSA",
 	      "tipo":"ENTRATA",
-	      "importo": "#(pendenzaPut.importo)",
+	      "importo": "#(importoRicevuta)",
 	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
 	      "commissioni": 1.00,
 	      "allegato":null

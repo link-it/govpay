@@ -2586,7 +2586,7 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="xmlRPT" type="xsd:base64Binary"/>
+			<xsd:element name="xmlRPT" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="callbackURL" type="String512" minOccurs="0">
 				<xsd:annotation>
@@ -3675,7 +3675,7 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="xmlRPT" type="xsd:base64Binary"/>
+			<xsd:element name="xmlRPT" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="callbackURL" type="String512" minOccurs="0">
 				<xsd:annotation>
