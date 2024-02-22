@@ -6,7 +6,7 @@
          "paymentAmount":"#(pendenzaPut.importo + '')",
          "dueDate":"#ignore",
          "retentionDate":null,
-         "lastPayment": true,
+         "lastPayment": null,
          "description":"#notnull",
          "companyName":"#(dominio.ragioneSociale)",
          "officeName":null,
@@ -16,13 +16,13 @@
                "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
             },
             "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
-            "streetName":"#(pendenzaPut.soggettoPagatore.indirizzo)",
-            "civicNumber":"#(pendenzaPut.soggettoPagatore.civico)",
-            "postalCode":"#(pendenzaPut.soggettoPagatore.cap)",
-            "city":"#(pendenzaPut.soggettoPagatore.localita)",
-            "stateProvinceRegion":"#(pendenzaPut.soggettoPagatore.provincia)",
-            "country":"#(pendenzaPut.soggettoPagatore.nazione)",
-            "e-mail":"#(pendenzaPut.soggettoPagatore.email)"
+            "streetName":null,
+            "civicNumber":null,
+            "postalCode":null,
+            "city":null,
+            "stateProvinceRegion":null,
+            "country":null,
+            "e-mail":null
          },
          "transferList":{
             "transfer":[
@@ -31,8 +31,8 @@
                   "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
-                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/SEGRETERIA",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Simulazione Acquisizione RT attivata fuori GovPay.')",
+                  "transferCategory":"9/CodiceContabilita",
                   "metadata":"##null"
                }
             ]
@@ -45,7 +45,7 @@
          "fiscalCode":"#(idDominio)",
          "outcome":"OK",
          "creditorReferenceId":"#(iuv)",
-         "paymentAmount":"#(importoRicevuta + '')",
+         "paymentAmount":"#(pendenzaPut.importo + '')",
          "description":"#notnull",
          "companyName":"#(dominio.ragioneSociale)",
          "officeName":null,
@@ -55,23 +55,23 @@
                "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
             },
             "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
-            "streetName":"#(pendenzaPut.soggettoPagatore.indirizzo)",
-            "civicNumber":"#(pendenzaPut.soggettoPagatore.civico)",
-            "postalCode":"#(pendenzaPut.soggettoPagatore.cap)",
-            "city":"#(pendenzaPut.soggettoPagatore.localita)",
-            "stateProvinceRegion":"#(pendenzaPut.soggettoPagatore.provincia)",
-            "country":"#(pendenzaPut.soggettoPagatore.nazione)",
-            "e-mail":"#(pendenzaPut.soggettoPagatore.email)"
+            "streetName":null,
+            "civicNumber":null,
+            "postalCode":null,
+            "city":null,
+            "stateProvinceRegion":null,
+            "country":null,
+            "e-mail":null
          },
          "transferList":{
             "transfer":[
                {
                   "idTransfer":1,
-                  "transferAmount":"#(importoRicevuta + '')",
+                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
-                  "remittanceInformation":"#string",
-                  "transferCategory":"9/SEGRETERIA",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Simulazione Acquisizione RT attivata fuori GovPay.')",
+                  "transferCategory":"9/CodiceContabilita",
                   "metadata":"##null"
                }
             ]
@@ -101,7 +101,7 @@
 	      "rpp":"#notnull",
 	      "stato":"RISCOSSA",
 	      "tipo":"ENTRATA",
-	      "importo": "#(importoRicevuta)",
+	      "importo": "#(pendenzaPut.importo)",
 	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
 	      "commissioni": 1.00,
 	      "allegato":null
