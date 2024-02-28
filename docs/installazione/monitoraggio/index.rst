@@ -136,7 +136,7 @@ con la seguente semantica:
 |                                   | stato assunto dal check           |
 +-----------------------------------+-----------------------------------+
 | durataStato                       | Tempo in millisecondi in cui il   |
-|                                   | check e' nello stato attuale      |
+|                                   | check è nello stato attuale      |
 +-----------------------------------+-----------------------------------+
 | sogliaWarn                        | Soglia di Warning in forma        |
 |                                   | descrittiva                       |
@@ -156,4 +156,3 @@ con la seguente semantica:
 +-----------------------------------+-----------------------------------+
 | tipo                              | Tipologia di check:               |
 +-----------------------------------+-----------------------------------+
-
