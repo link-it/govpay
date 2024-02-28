@@ -10,7 +10,7 @@ Il protocollo prevede due fasi:
 - Nella prima fase GovPay invia una notifica verso Maggioli attraverso l'operazione *InvioEsitoPagamento* per ogni transazioni di pagamento completata con successo e contestualmente raccoglie il risultato di ogni spedizione all'interno di un tracciato in formato csv.
 - In una fase successiva Maggioli scarica le ricevute di pagamento corrispondenti alle notifiche ricevute attraverso l'operazione *RecuperaRT* esposta da GovPay.
 
-Il servizio *RecuperaRT* è disponibile alla URL: https://host-gp/govpay/backend/api/jppapdp/JppaPdpExternalFacetService
+Il servizio *RecuperaRT* è disponibile alla URL: https://host-gp/govpay/backend/api/jppapdp/JppaPdpExternalFacetService. In maniera simile alle altre API messe a disposizione da GovPay, il servizio è fruibile previa autenticazione.
 
 La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quotidianamente alle 3 di mattina, solo al termine delle spedizioni viene inviato tramite email il tracciato csv contenente gli esiti degli invii delle notifiche di pagamento.
 
