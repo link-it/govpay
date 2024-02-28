@@ -1,9 +1,5 @@
 .. _govpay_configurazione_connettori_jppa:
 
-.. |br| raw:: html
-
-     <br>
-
 Connettore per l'esportazione dei pagamenti verso Maggioli (JPPA)
 -----------------------------------------------------------------
 
