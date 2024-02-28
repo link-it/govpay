@@ -30,8 +30,8 @@ La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quoti
    "Oggetto", "Oggetto della email"
    "Invia come allegato", "Indica se il tracciato deve essere inserito in allegato o riferito con un link."
    "Base URL link download", "Indica la base URL del link di download.
-   Deve essere una URL valida per la risorsa */tracciatiNotificaPagamenti* delle API di Backoffice.
-   Ecco un esempio di Base URL: https://host-gp/govpay/backend/api/backoffice/rs/basic/v1/tracciatiNotificaPagamenti"
+   |Deve essere una URL valida per la risorsa */tracciatiNotificaPagamenti* delle API di Backoffice.
+   |Ecco un esempio di Base URL: https://host-gp/govpay/backend/api/backoffice/rs/basic/v1/tracciatiNotificaPagamenti"
 
 .. csv-table:: *Parametri di configurazione servizio acquisizione ricevute*
    :header: "Campo", "Descrizione"
