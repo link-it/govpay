@@ -21,12 +21,12 @@
           <link-key-value-view *ngFor="let item of infoVisualizzazione.campi" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
         </div>
       </mat-card>
-      <mat-card class="shadow no-border-radius mb-3" *ngIf="importi.length!=0">
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="importi.length != 0">
         <p class="d-block matcard-title pb-3 color-gray regular-24">Dettaglio importi</p>
         <link-item-view *ngFor="let item of importi" [component-data]="item" [use-item-view-directive]="true"
                         [show-over-icons]="false" [over-icons]="_importiOverIcons" class="link-item-view-fill">
         </link-item-view>
-        <div class="row sub-totale medium-16" *ngIf="importi.length != 0">
+        <div class="row sub-totale medium-16">
           <div class="col-6 px-0 m-0">
             <p class="text-truncate mb-1">Totale</p>
           </div>

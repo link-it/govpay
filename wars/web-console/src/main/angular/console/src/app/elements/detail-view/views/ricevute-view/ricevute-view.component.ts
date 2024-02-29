@@ -197,8 +197,8 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           if(item.fiscalCodePA) {
             _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: item.fiscalCodePA, type: 'string' });
           } else {
-			_std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.companyName} (${_json.rt.fiscalCode})`, type: 'string' });
-		  }
+          _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.companyName} (${_json.rt.fiscalCode})`, type: 'string' });
+          }
           if(item.IBAN) {
             _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.IBAN, type: 'string' });
           }
@@ -207,9 +207,10 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           }
           // Metadata
           if (item.metadata && item.metadata.mapEntry) {
-            _std.elenco.push({ label: Voce.METADATA, value: item.metadata.mapEntry, type: 'quote' });
-          }	
-          
+            const _mapEntries = item.metadata.mapEntry.map(x => { return { label: x.key, value: x.value } });
+            _std.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+          }
+
           _std.importo = this.us.currencyFormat(item.transferAmount);
           _std.stato = item.stato;
           // this._paymentsSum += UtilService.defaultDisplay({ value: item.transferAmount, text: 0 });
@@ -239,7 +240,7 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
   protected elencoEventi() {
     let _url = UtilService.URL_GIORNALE_EVENTI;
     // eventi relativi alla transazione con la ricevuta
-     const versione620: boolean = !!(this.json.rpt && this.json.rpt.versioneOggetto && this.json.rpt.versioneOggetto === '6.2.0');
+    const versione620: boolean = !!(this.json.rpt && this.json.rpt.versioneOggetto && this.json.rpt.versioneOggetto === '6.2.0');
     let idDominio = '';
     let iuv = '';
     let idRicevuta = '';
