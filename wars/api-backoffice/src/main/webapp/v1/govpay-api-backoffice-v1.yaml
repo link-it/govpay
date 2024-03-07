@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.40.0"
+  version: "1.41.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -4730,6 +4730,8 @@ components:
           type: number
           description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
           example: 10000
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
     mailBatch:
       type: object
       required:
