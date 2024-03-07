@@ -181,7 +181,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       }
       _std.sottotitolo = Dato.arraysToDato(lbls, vals, ', ');
       if(!item.tipoBollo) {
-		let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
+        let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
         _std.elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, item.codiceContabilita ], '/') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
         _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
@@ -192,12 +192,17 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       let p = new Parameters();
       _std.item = item;
       if(item.dominio){
-		_std.item.dominio = item.dominio;
-		_std.item.idDominio = item.dominio.idDominio;
-	  } else {
-		_std.item.dominio = this.json.dominio;
-		_std.item.idDominio = this.json.dominio.idDominio;
-	  }
+        _std.item.dominio = item.dominio;
+        _std.item.idDominio = item.dominio.idDominio;
+      } else {
+        _std.item.dominio = this.json.dominio;
+        _std.item.idDominio = this.json.dominio.idDominio;
+      }
+      // Metadata
+      if (item.metadata && item.metadata.mapEntries) {
+        const _mapEntries = item.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
+        _std.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+      }
       p.jsonP = item;
       p.model = _std;
       p.type = UtilService.NEW_STANDARD_COLLAPSE;
