@@ -12,6 +12,6 @@ base, precedentemente installato i cui riferimenti sono:
 Relativamente alla versione di RDBMS, l’attuale versione di
 GovPay consente di selezionare tra i seguenti:
 
--  PostgreSQL 8.x o superiore
--  MySQL 5.7 o superiore
+-  PostgreSQL 9.2 o superiore
+-  MySQL 8.0.29 o superiore
 -  Oracle 10g o superiore
