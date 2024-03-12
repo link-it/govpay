@@ -22,8 +22,12 @@ package it.govpay.model.configurazione;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import it.govpay.model.Connettore;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppIOBatch extends Connettore implements Serializable{
 
 	private static final long serialVersionUID = 1L;
