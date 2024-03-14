@@ -3,7 +3,7 @@
 Esecuzione
 ----------
 
-Lo scenario fin qui descritto è stato arricchito di una collection Postman che consente di eseguire autonomamente i passi dello scenario utilizzando come riferimento l':ref:`govpay_scenari_demo` di GovPay.
+Lo scenario fin qui descritto è stato arricchito di una :download:`collection Postman <./dovuto.postman_collection.json>` che consente di eseguire autonomamente i passi dello scenario utilizzando come riferimento l':ref:`govpay_scenari_demo` di GovPay.
 
  .. figure:: ../_images/postman_dovuto1_menu.png
    :align: center
