@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "f4a60d78-9e0c-49a7-8046-5faf69cca934",
+		"name": "Scenari GovPay",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "5507102"
+	},
+	"item": [
+		{
+			"name": "Dovuto1",
+			"item": [
+				{
+					"name": "PUT Pendenza",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{passwordGestionale}}",
+								"username": "{{usernameGestionale}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idTipoPendenza\": \"SANZIONE\",\n  \"idDominio\": \"01234567890\",\n  \"causale\": \"Sanzione CdS n. abc00000\",\n  \"soggettoPagatore\": {\n    \"tipo\": \"F\",\n    \"identificativo\": \"PSSMRA30A01H501I\",\n    \"anagrafica\": \"Mario Possi\"\n  },\n  \"importo\": 100.01,\n  \"tassonomiaAvviso\": \"Multe e sanzioni amministrative\",\n  \"dataValidita\": \"2019-12-31\",\n  \"dataScadenza\": \"2030-12-31\",\n  \"voci\": [\n    {\n      \"idVocePendenza\": \"1\",\n      \"importo\": 100.01,\n      \"descrizione\": \"Sanzione per divieto di sosta\",\n      \"ibanAccredito\": \"IT02L1234500000999990000001\",\n      \"tipoContabilita\": \"ALTRO\",\n      \"codiceContabilita\": \"ABC\"\n    }\n  ]\n}"
+						},
+						"url": "{{pendenze-baseurl}}/rs/basic/v2/pendenze/{{idGestionale}}/{{idPendenza}}"
+					},
+					"response": []
+				},
+				{
+					"name": "GET Posizione Debitoria",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{passwordGestionale}}",
+								"username": "{{usernameGestionale}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{pagamenti-baseurl}}/rs/basic/v2/pendenze?idDebitore=PSSMRA30A01H501I&stato=NON_ESEGUITA",
+							"host": [
+								"{{pagamenti-baseurl}}"
+							],
+							"path": [
+								"rs",
+								"basic",
+								"v2",
+								"pendenze"
+							],
+							"query": [
+								{
+									"key": "idDebitore",
+									"value": "PSSMRA30A01H501I"
+								},
+								{
+									"key": "stato",
+									"value": "NON_ESEGUITA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Pagamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"idSession\", jsonData.idSession);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{passwordGestionale}}",
+								"username": "{{usernameGestionale}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pendenze\": [\n    {\n      \"idA2A\": \"{{idGestionale}}\",\n      \"idPendenza\": \"{{idPendenza}}\"\n    }\n  ]\n}"
+						},
+						"url": "{{pagamenti-baseurl}}/rs/basic/v2/pagamenti"
+					},
+					"response": []
+				},
+				{
+					"name": "GET Pagamento",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{passwordGestionale}}",
+								"username": "{{usernameGestionale}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{pagamenti-baseurl}}/rs/basic/v2/pagamenti/byIdSession/{{idSession}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": {
+			"password": "123456",
+			"username": "ExampleClient1"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host-demo",
+			"value": "https://lab.link.it"
+		},
+		{
+			"key": "console-baseurl",
+			"value": "{{host-demo}}/govpay/backend/gui/backoffice"
+		},
+		{
+			"key": "pagamenti-baseurl",
+			"value": "{{host-demo}}/govpay/frontend/api/pagamento"
+		},
+		{
+			"key": "pendenze-baseurl",
+			"value": "{{host-demo}}/govpay/backend/api/pendenze"
+		},
+		{
+			"key": "ragioneria-baseurl",
+			"value": "{{host-demo}}/govpay/backend/api/ragioneria"
+		},
+		{
+			"key": "idSession",
+			"value": "1c9dc117bb57448ab8172ad086518f0a"
+		},
+		{
+			"key": "idGestionale",
+			"value": "A2A-DEMO",
+			"type": "string"
+		},
+		{
+			"key": "idPendenza",
+			"value": "995",
+			"type": "string"
+		},
+		{
+			"key": "usernameGestionale",
+			"value": "idA2A-demo",
+			"type": "string"
+		},
+		{
+			"key": "passwordGestionale",
+			"value": "1Password$",
+			"type": "string"
+		}
+	]
+}
