@@ -22,12 +22,17 @@ package it.govpay.model.configurazione;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class AppIOBatch implements Serializable{
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import it.govpay.model.Connettore;
+
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AppIOBatch extends Connettore implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	private boolean abilitato;
-	private String url = null;
 	private BigDecimal timeToLive;
 	
 	public boolean isAbilitato() {
@@ -35,12 +40,6 @@ public class AppIOBatch implements Serializable{
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
 	}
 	public BigDecimal getTimeToLive() {
 		return timeToLive;

@@ -8,8 +8,8 @@ prevede una prima linea di intestazione con i nomi delle campi
 ed una linea per ciascuna pendenza da caricare, utilizzando come
 separatore la virgola e come carattere di escape il doppio apice.
 
-Il tracciato è il risultato della de-strutturazione della richiesta
-di caricamento pendenze prevista dalle API Pendenze in formato JSON,
+Il tracciato è il risultato della de-strutturazione della richiesta 
+di caricamento pendenze prevista dalle API Pendenze in formato JSON, 
 alla quale specifica si rimanda per un maggior formalismo nella definzione
 dei vincoli sintattici e semantici.
 
@@ -57,25 +57,25 @@ dei vincoli sintattici e semantici.
    "--","provinciaBolloVoce*","Sigla automobilistica della provincia di residenza del soggetto pagatore della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `tipoBolloVoce*`, altrimenti ignorato. Due caratteri maiuscoli."
    "82","dataAvvisatura","Data di spedizione dell'avvisatura, se prevista dalla configurazione.","Opzionale, se non impostata si intende immediata. Se valorizzato con `MAI` l'avvisatura viene inibilita"
    "83","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno.","Opzionale, da usare in caso di rateizzazioni."
-   "84","descrizioneDocumento","Titolo del documento. Verrà utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
+   "84","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
    "85","numeroRata","Numero di rata in caso di pagamento rateale. In caso di pagamenti con soglia temporale, usare la sintassi `ENTROxxx` o `OLTRExxx` dove `xxx` è il numero di giorni previsto.","Opzionale, non valorizzare per il pagamento in soluzione unica."
    "86","linguaSecondaria","Indica la seconda lingua da affiancare all'italiano nella stampa dell'avviso di pagamento, le lingue supportate sono Sloveno (`sl`), Inglese (`en`), Tedesco (`de`) e Francese (`fr`). Il valore speciale `false` forza la stampa nella sola lingua italiana. Opzionalmente è possibile indicare anche la traduzione della causale separandola con il carattere | (pipe).","Opzionale, Enumerazione: [ de, en, fr, sl, false ], non valorizzare per gli avvisi di pagamento stampati solo in italiano."
-
+   
 I campi che determinano una voce di pagamento della pendenza si ripetono
 sostituendo l'asterisco con la posizione della voce, ovvero:
 idVoce1, importoVoce1, ...., idVoce2, importoVoce2, ... etc...
 
 Si suggerisce di valorizzare il parametro `dataAvvisatura` in modo tale
-da avere l'opportunità di intervenire prima dell'avvisatura al cittadino
+da avere l'opportunità di intervenire prima dell'avvisatura al cittadino 
 in caso di caricamenti indesiderati
 
 Si precisa che, per vincoli pagoPA, sono consentite un massimo di 5 voci
 di pagamento per una pendenza e che sono pagabili ad iniziativa PSP solo
-pendenze con una sola voce di pagamento.
+pendenze con una sola voce di pagamento.   
 
 Annullamento di una pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Il tracciato CSV descritto in precedenza può essere utilizzato anche per effettuare l'annullamento di una pendenza.
-Per farlo è sufficiente valorizzare i campi idA2A e idPendenza con i valori della pendenza da annullare e l'importo a 0.
-Tutti gli altri campi sono ignorati dal parser.
+Il tracciato CSV descritto in precedenza può essere utilizzato anche per effettuare l'annullamento di una pendenza. 
+Per farlo è sufficiente valorizzare i campi idA2A e idPendenza con i valori della pendenza da annullare e l'importo a 0. 
+Tutti gli altri campi sono ignorati dal parser. 

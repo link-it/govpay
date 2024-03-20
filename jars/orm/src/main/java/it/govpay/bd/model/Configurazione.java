@@ -20,6 +20,7 @@
 package it.govpay.bd.model;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.openspcoop2.utils.serialization.IDeserializer;
@@ -127,9 +128,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	}
 
 	private String _getJson(Object objToSerialize) throws IOException {
+		return _getJson(objToSerialize, Arrays.asList("jsonIdFilter"));
+	}
+
+	private String _getJson(Object objToSerialize, List<String> excludes) throws IOException {
 		try {
 			SerializationConfig serializationConfig = new SerializationConfig();
-			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setExcludes(excludes);
 			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			return serializer.getObject(objToSerialize); 
@@ -180,7 +185,8 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	}
 
 	public String getBatchSpedizioneAppIoJson() throws IOException {
-		return this._getJson(this.getBatchSpedizioneAppIo());
+		// escludiamo il campo versione dalla serializzazione
+		return this._getJson(this.getBatchSpedizioneAppIo(), Arrays.asList("jsonIdFilter", "tipo", "versione"));
 	}
 
 	public AvvisaturaViaMail getAvvisaturaViaMail()  throws IOException {

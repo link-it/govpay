@@ -69,22 +69,22 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPa.subscriptionKey }));
       }
       if(this.json.servizioPagoPa.auth) {
-		if(this.json.servizioPagoPa.auth.clientId) {
-		  _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
+        if(this.json.servizioPagoPa.auth.clientId) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID, value: this.json.servizioPagoPa.auth.clientId }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET, value: this.json.servizioPagoPa.auth.clientSecret }));
           if(this.json.servizioPagoPa.auth.scope) {
-          	_dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioPagoPa.auth.scope }));
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioPagoPa.auth.scope }));
           }
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT, value: this.json.servizioPagoPa.auth.urlTokenEndpoint }));
         }
-		if(this.json.servizioPagoPa.auth.apiId) {
-		  _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
+        if(this.json.servizioPagoPa.auth.apiId) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.API_ID, value: this.json.servizioPagoPa.auth.apiId }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.API_KEY, value: this.json.servizioPagoPa.auth.apiKey }));
         }
-		if(this.json.servizioPagoPa.auth.headerName) {
-		  _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
+        if(this.json.servizioPagoPa.auth.headerName) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.HEADER_NAME, value: this.json.servizioPagoPa.auth.headerName }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.HEADER_VALUE, value: this.json.servizioPagoPa.auth.headerValue }));
         }

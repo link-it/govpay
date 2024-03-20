@@ -50,13 +50,15 @@ import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.PatchOp;
+import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.configurazione.KeyStore;
 
 public class ConfigurazioniConverter {
+	
+	private ConfigurazioniConverter() {}
 
 	public static final String PATH_GIORNALE_EVENTI = ConfigurazioneDAO.PATH_GIORNALE_EVENTI;
 	public static final String PATH_TRACCIATO_CSV = ConfigurazioneDAO.PATH_TRACCIATO_CSV;
@@ -66,7 +68,7 @@ public class ConfigurazioniConverter {
 	public static final String PATH_AVVISATURA_MAIL = ConfigurazioneDAO.PATH_AVVISATURA_MAIL;
 	public static final String PATH_AVVISATURA_APP_IO = ConfigurazioneDAO.PATH_AVVISATURA_APP_IO;
 
-	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws IOException, NotAuthorizedException, ValidationException {
+	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws IOException, ValidationException {
 		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);
 
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
@@ -143,22 +145,7 @@ public class ConfigurazioniConverter {
 	}
 
 	private static it.govpay.model.configurazione.TracciatoCsv getTracciatoCsvDTOPatch(TracciatoCsv tracciatoCsv) throws IOException, ValidationException {
-		it.govpay.model.configurazione.TracciatoCsv dto = new it.govpay.model.configurazione.TracciatoCsv();
-
-		dto.setTipo(tracciatoCsv.getTipo());
-
-		if(tracciatoCsv.getTipo() != null) {
-			// valore tipo contabilita non valido
-			if(TipoTemplateTrasformazione.fromValue(tracciatoCsv.getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-			}
-		}
-
-		dto.setIntestazione(tracciatoCsv.getIntestazione());
-		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta())));
-		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta()));
-
-		return dto;
+		return getTracciatoCsvDTO(tracciatoCsv);
 	}
 
 	private static TracciatoCsv toTracciatoRsModel(it.govpay.model.configurazione.TracciatoCsv tracciatoCsv) {
@@ -300,8 +287,9 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaScadenza() != null) {
 			it.govpay.model.configurazione.PromemoriaScadenza promemoriaScadenza = new it.govpay.model.configurazione.PromemoriaScadenza();
 
-			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null)
-			promemoriaScadenza.setPreavviso(avvisaturaMail.getPromemoriaScadenza().getPreavviso().intValue());
+			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null) {
+				promemoriaScadenza.setPreavviso(avvisaturaMail.getPromemoriaScadenza().getPreavviso().intValue());
+			}
 			promemoriaScadenza.setTipo(avvisaturaMail.getPromemoriaScadenza().getTipo());
 			if(avvisaturaMail.getPromemoriaScadenza().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -362,8 +350,9 @@ public class ConfigurazioniConverter {
 		if(avvisaturaAppIo.getPromemoriaScadenza() != null) {
 			it.govpay.model.configurazione.PromemoriaScadenza promemoriaScadenza = new it.govpay.model.configurazione.PromemoriaScadenza();
 
-			if(avvisaturaAppIo.getPromemoriaScadenza().getPreavviso() != null)
-			promemoriaScadenza.setPreavviso(avvisaturaAppIo.getPromemoriaScadenza().getPreavviso().intValue());
+			if(avvisaturaAppIo.getPromemoriaScadenza().getPreavviso() != null) {
+				promemoriaScadenza.setPreavviso(avvisaturaAppIo.getPromemoriaScadenza().getPreavviso().intValue());
+			}
 			promemoriaScadenza.setTipo(avvisaturaAppIo.getPromemoriaScadenza().getTipo());
 			if(avvisaturaAppIo.getPromemoriaScadenza().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -411,8 +400,9 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaScadenza() != null) {
 			TemplatePromemoriaScadenza promemoriaScadenza = new TemplatePromemoriaScadenza();
 
-			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null)
-			promemoriaScadenza.setPreavviso(new BigDecimal(avvisaturaMail.getPromemoriaScadenza().getPreavviso()));
+			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null) {
+				promemoriaScadenza.setPreavviso(new BigDecimal(avvisaturaMail.getPromemoriaScadenza().getPreavviso()));
+			}
 			promemoriaScadenza.setTipo(avvisaturaMail.getPromemoriaScadenza().getTipo());
 			promemoriaScadenza.setMessaggio(new RawObject(avvisaturaMail.getPromemoriaScadenza().getMessaggio()));
 			promemoriaScadenza.setOggetto(new RawObject(avvisaturaMail.getPromemoriaScadenza().getOggetto()));
@@ -450,8 +440,9 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaScadenza() != null) {
 			TemplatePromemoriaScadenza promemoriaScadenza = new TemplatePromemoriaScadenza();
 
-			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null)
-			promemoriaScadenza.setPreavviso(new BigDecimal(avvisaturaMail.getPromemoriaScadenza().getPreavviso()));
+			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null) {
+				promemoriaScadenza.setPreavviso(new BigDecimal(avvisaturaMail.getPromemoriaScadenza().getPreavviso()));
+			}
 			promemoriaScadenza.setTipo(avvisaturaMail.getPromemoriaScadenza().getTipo());
 			promemoriaScadenza.setMessaggio(new RawObject(avvisaturaMail.getPromemoriaScadenza().getMessaggio()));
 			promemoriaScadenza.setOggetto(new RawObject(avvisaturaMail.getPromemoriaScadenza().getOggetto()));
@@ -575,9 +566,12 @@ public class ConfigurazioniConverter {
 	private static it.govpay.model.configurazione.AppIOBatch getConfigurazioneAppIOBatchDTO(AppIOBatch appIoBatch) {
 		it.govpay.model.configurazione.AppIOBatch dto = new it.govpay.model.configurazione.AppIOBatch();
 
+		ConnettoriConverter.setAutenticazione(dto, appIoBatch.getAuth());
+		
 		dto.setAbilitato(appIoBatch.getAbilitato());
 		dto.setUrl(appIoBatch.getUrl());
 		dto.setTimeToLive(appIoBatch.getTimeToLive());
+		
 
 		return dto;
 	}
@@ -588,6 +582,9 @@ public class ConfigurazioniConverter {
 		rsModel.setAbilitato(batchSpedizioneAppIo.isAbilitato());
 		rsModel.setUrl(batchSpedizioneAppIo.getUrl());
 		rsModel.setTimeToLive(batchSpedizioneAppIo.getTimeToLive());
+		
+		if(batchSpedizioneAppIo.getTipoAutenticazione()!=null && !batchSpedizioneAppIo.getTipoAutenticazione().equals(EnumAuthType.NONE))
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(batchSpedizioneAppIo));
 
 		return rsModel;
 	}
