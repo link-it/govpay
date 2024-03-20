@@ -13,3 +13,11 @@ Area iniziale
    :name: AreaInizialeImpostazioni
 
    Area iniziale Impostazioni
+
+Il sistema consente di configurare le seguenti componenti:
+
+*  Giornale degli Eventi
+*  Comunicazioni Mail
+*  Comunicazioni AppIO
+*  Parser Tracciati CSV
+*  Protezioni API Pubbliche
