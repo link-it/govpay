@@ -8,7 +8,7 @@ tramite tracciato.
 
 Dal pulsante azione si apre la form di caricamento seguente:
 
-.. figure:: ../_images/AV05CaricamentoMassivPendenze.png
+.. figure:: ../../_images/AV05CaricamentoMassivPendenze.png
    :align: center
    :name: AreaGeneraleCaricamentoMassivoPendenze
 
@@ -35,7 +35,7 @@ tracciato, data di caricamento e stato dell’elaborazione).
 utilizzando la voce "Scarica Resoconto" presente, a destra, nel menu sulla testata della pagina.
 
 
-.. figure:: ../_images/AV05CaricamentoMassivPendenze.png
+.. figure:: ../../_images/AV05CaricamentoMassivPendenze.png
    :align: center
    :name: AreaGeneraleCaricamentoMassivoPendenze
 
