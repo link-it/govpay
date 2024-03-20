@@ -44,4 +44,16 @@ La pagina dei dati di dettaglio della ricevuta comprende:
 
    Dettaglio della Ricevuta
 
+Eventi
+------
+Il sistema presenta tutti gli eventi intercorsi relativi alla ricevuta stessa, come mostrato in figura:
+
+.. figure:: ../../_images/P11EventiRicevuta.png
+   :align: center
+   :name: EventiRicevuta
+
+   Eventi associati a una ricevuta
+
+Gli eventi non sono modificabili né ulteriormente espandibile (non è presente un dettaglio ulteriore).
+
 
