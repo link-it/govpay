@@ -52,6 +52,15 @@ Con la voce di menu in alto a destra (*Scarica Ricevuta*), è possibile scaricar
 
    Scarica Ricevuta
 
+Una ricevuta di pagamento in formato pdf avrebbe il seguente aspetto (si noti la presenza del logo del dominio in alto a destra)
+
+
+.. figure:: ../../_images/P08RicevutaDiPagamento.png
+   :align: center
+   :name: RicevutaDiPagamentoPdf
+
+   Ricevuta di Pagamento in formato pdf (esempio)
+
 Eventi
 ------
 Il sistema presenta tutti gli eventi intercorsi relativi alla ricevuta stessa, come mostrato in figura:
