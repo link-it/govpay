@@ -12,7 +12,7 @@ La sezione *Ricevute* è dedicata alla consultazione delle ricevute di pagamento
    Area Generale Ricevute
 
 
-È possibile scaricare un file CSV con i dati delle riscossioni, visualizzate con il criterio di ricerca impostato, utilizzando la voce
+È possibile scaricare un file CSV con i dati delle riscossioni, utilizzando la voce
 "Scarica Prospetto Riscossioni" presente nel menu a destra sulla testata della pagina.
 
 .. figure:: ../../_images/AV02AreaGeneraleRicevuteScaricaProspettoRiscossioni.png
