@@ -21,3 +21,18 @@ Il sistema consente di configurare le seguenti componenti:
 *  Comunicazioni AppIO
 *  Parser Tracciati CSV
 *  Protezioni API Pubbliche
+
+Giornale degli Eventi
+---------------------
+
+Comunicazioni Mail
+------------------
+
+Comunicazioni AppIO
+-------------------
+
+Parser Tracciati CSV
+--------------------
+
+Protezioni API Pubbliche
+------------------------
