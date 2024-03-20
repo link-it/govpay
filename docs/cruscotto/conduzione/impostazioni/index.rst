@@ -138,5 +138,29 @@ Per la notifica di una ricevuta si possono indicare i template per oggetto e mes
 Parser Tracciati CSV
 --------------------
 
+In questa sezione si configura i template per la trasformazione dei tracciati di caricamento pendenze in formato CSV.
+
+Si possono indicare:
+- Template Caricamento: definisce la trasformazione dal singola riga del tracciato CSV in una pendenza in formato JSON delle API native.
+- Template Esito: definisce la trasformazione del risultato del caricamento in una riga in formato CSV da inserire nel tracciato di esito.
+- Linea Intestazione: definisce l'header da inserire nel tracciato di esito
+
+.. figure:: ../../_images/IMP12ParserCSV.png
+   :align: center
+   :name: ImpostazioniParser01
+
+   Impostazioni Parser CSV
+
 Protezioni API Pubbliche
 ------------------------
+
+In questa sezione si configura la protezione tramite Captcha delle risorse public messe a disposizione da GovPay ai portali di pagamento.
+
+.. figure:: ../../_images/IMP13APIPubbliche.png
+   :align: center
+   :name: ImpostazioniAPIPubbliche
+
+   Impostazioni API Pubbliche
+
+
+
