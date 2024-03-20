@@ -13,9 +13,12 @@ Le attività supportate per la fase di conduzione comprendono le operazioni di m
 
         cruscotto/index
         pendenze/index
-        pagamenti/index
+        ricevute/index
+        rendicontazioni/index
         riconciliazioni/index
+        caricamentimassivi/index
         giornale/index
-        avanzate/index
         manutenzione/index
         impostazioni/index
+        pagamenti/index
+        riscossioni/index
