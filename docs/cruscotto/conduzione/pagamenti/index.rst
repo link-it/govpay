@@ -107,7 +107,7 @@ Per aggiungere una nota, premere il pulsante *+*, il sistema presenta quindi la 
    Immissione nota
 
 
-Con la voce di menu in alto a destra (*Scarica Resoconto*), è possibile scaricare i documenti salienti associati al pagammento:
+Con la voce di menu in alto a destra (*Scarica Resoconto*), è possibile scaricare i documenti salienti associati al pagamento:
 
 
 .. figure:: ../../_images/P06ScaricaResocontoSingoloPagamento.png
