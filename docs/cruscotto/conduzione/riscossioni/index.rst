@@ -12,15 +12,14 @@ Visualizzazione della sezione
 Attraverso le impostazioni della console si decide se visualizzare questa sezione, la sezione è nascosta di default.
 Per abilitarla si deve intervenire sulla seguente proprietà:
 
+.. code-block:: javascript
+   :linenos:
 
-.. code-block:: json
-    global.GovPayConfig = {
-        ...
-        GESTIONE_RISCOSSIONI: {
-             ENABLED: true // abilita la sezione riscossioni
-           }
-        ...
-    }
+   global.GovPayConfig = {
+       GESTIONE_RISCOSSIONI: {
+           ENABLED: true // abilita la sezione riscossioni
+       }
+   };
 
 
 Dettaglio sezione
