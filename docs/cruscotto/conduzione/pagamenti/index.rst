@@ -12,16 +12,19 @@ Attraverso le impostazioni della console si decide se visualizzare questa sezion
 Data la migrazione verso il modello unico di pagamento che rende superata la visualizzazione delle informazioni relative ai pagamenti effettuati da portale, la sezione è nascosta di default.
 Per abilitarla si deve intervenire sulla seguente proprietà:
 
-.. code-block:: JSON
+.. code-block:: json
    :linenos:
 
-   global.GovPayConfig = {
-        ...
-        GESTIONE_PAGAMENTI: {
-             ENABLED: true // abilita la sezione pagamenti
+   {
+       "global": {
+           "GovPayConfig": {
+               "GESTIONE_PAGAMENTI": {
+                   "ENABLED": true // abilita la sezione pagamenti
+               }
            }
-        ...
+       }
    }
+
     
 
 Gli stati del Pagamento
