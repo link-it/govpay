@@ -13,7 +13,8 @@ Data la migrazione verso il modello unico di pagamento che rende superata la vis
 Per abilitarla si deve intervenire sulla seguente proprietà:
 
 
-.. code-block:: json
+.. code-block:: JSON
+   :linenos:
     global.GovPayConfig = {
         ...
         GESTIONE_PAGAMENTI: {
