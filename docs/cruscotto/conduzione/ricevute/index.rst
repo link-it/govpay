@@ -44,6 +44,14 @@ La pagina dei dati di dettaglio della ricevuta comprende:
 
    Dettaglio della Ricevuta
 
+Con la voce di menu in alto a destra (*Scarica Ricevuta*), è possibile scaricare la ricevuta nel formato pdf:
+
+.. figure:: ../../_images/P12ScaricaRicevuta.png
+   :align: center
+   :name: ScaricaRicevutaPagamento
+
+   Scarica Ricevuta
+
 Eventi
 ------
 Il sistema presenta tutti gli eventi intercorsi relativi alla ricevuta stessa, come mostrato in figura:
