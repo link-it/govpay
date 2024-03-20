@@ -25,6 +25,13 @@ Il sistema consente di configurare le seguenti componenti:
 Giornale degli Eventi
 ---------------------
 
+.. figure:: ../../_images/IMP02GDE.png
+   :align: center
+   :name: ImpostazioniGDE
+
+   Impostazioni Giornale degli Eventi
+
+
 Comunicazioni Mail
 ------------------
 
