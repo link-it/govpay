@@ -38,3 +38,10 @@ La pagina dei dati di dettaglio della ricevuta comprende:
 *  Sezione che elenca il dettaglio degli importi pagati nella ricevuta. Per ciascuna voce in elenco sono visualizzati i dati identificativi comprensivi delle informazioni su contabilità e metadata personalizzati (quando presenti).
 *  Sezione realtiva ai dati del PSP presso il quale è stato effettuato il pagamento
 
+.. figure:: ../../_images/P10DettaglioRicevuta.png
+   :align: center
+   :name: DettaglioRicevuta
+
+   Dettaglio della Ricevuta
+
+
