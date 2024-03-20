@@ -58,9 +58,11 @@ Più in basso nella schermata si trova la sezione per la configurazione dell'aut
 
    Impostazioni Comunicazioni Mail Connessione SSL
 
-Nei tab successivi si configurano le singole comunicazioni
+Nei tab successivi si configurano le singole comunicazioni, definendo i template freemarker da utilizzare per la personalizzazione dei messaggi da inviare.
 
 - Notifica Avviso
+
+Per la notifica di un avviso si possono indicare i template per oggetto e messaggio della mail e se inserire il pdf dell'avviso di pagamento.
 
 .. figure:: ../../_images/IMP05ComunicazioniMail03.png
    :align: center
@@ -70,6 +72,8 @@ Nei tab successivi si configurano le singole comunicazioni
 
 - Promemoria Scadenza
 
+Per il promemoria scadenza si possono indicare i template per oggetto e messaggio della mail e i giorni di preavviso rispetto alla data di scadenza della pendenza.
+
 .. figure:: ../../_images/IMP06ComunicazioniMail04.png
    :align: center
    :name: PromemoriaScadenza
@@ -78,14 +82,58 @@ Nei tab successivi si configurano le singole comunicazioni
 
 - Notifica Ricevuta
 
+Per la notifica di una ricevuta si possono indicare i template per oggetto e messaggio della mail, se inserire il pdf della ricevuta di pagamento e se notificare solo transazioni andate a buon fine.
+
 .. figure:: ../../_images/IMP07ComunicazioniMail05.png
    :align: center
    :name: NotificaRicevuta
 
    Notifica Ricevuta
 
+
 Comunicazioni AppIO
 -------------------
+
+In questa sezione si configurano le comunicazioni attraverso AppIO, nel primo tab si configurano i parametri per la connessione verso il BackendIO.
+
+.. figure:: ../../_images/IMP08ComunicazioniAppIO01.png
+   :align: center
+   :name: ImpostazioniAppIO01
+
+   Impostazioni Comunicazioni AppIO
+
+Nei tab successivi si configurano le singole comunicazioni, definendo i template freemarker da utilizzare per la personalizzazione dei messaggi da inviare.
+
+- Notifica Avviso
+
+Per la notifica di un avviso si possono indicare i template per oggetto e messaggio della mail.
+
+.. figure:: ../../_images/IMP09ComunicazioniAppIO02.png
+   :align: center
+   :name: NotificaAvviso
+
+   Notifica Avviso
+
+- Promemoria Scadenza
+
+Per il promemoria scadenza si possono indicare i template per oggetto e messaggio della mail e i giorni di preavviso rispetto alla data di scadenza della pendenza.
+
+.. figure:: ../../_images/IMP10ComunicazioniAppIO03.png
+   :align: center
+   :name: PromemoriaScadenza
+
+   Promemoria Scadenza
+
+- Notifica Ricevuta
+
+Per la notifica di una ricevuta si possono indicare i template per oggetto e messaggio della mail e se notificare solo transazioni andate a buon fine.
+
+.. figure:: ../../_images/IMP11ComunicazioniAppIO04.png
+   :align: center
+   :name: NotificaRicevuta
+
+   Notifica Ricevuta
+
 
 Parser Tracciati CSV
 --------------------
