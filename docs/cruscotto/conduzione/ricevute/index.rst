@@ -5,7 +5,7 @@ Ricevute
 
 La sezione *Ricevute* è dedicata alla consultazione delle ricevute di pagamento che sono state acquisite in Govpay.
 
-.. figure:: ../_images/AV01AreaGeneraleRicevute.png
+.. figure:: ../../_images/AV01AreaGeneraleRicevute.png
    :align: center
    :name: AreaGeneraleRicevute
 
@@ -15,7 +15,7 @@ La sezione *Ricevute* è dedicata alla consultazione delle ricevute di pagamento
 È possibile scaricare un file CSV con i dati delle riscossioni, visualizzate con il criterio di ricerca impostato, utilizzando la voce
 "Scarica Prospetto Riscossioni" presente nel menu a destra sulla testata della pagina.
 
-.. figure:: ../_images/AV02AreaGeneraleRicevuteScaricaProspettoRiscossioni.png
+.. figure:: ../../_images/AV02AreaGeneraleRicevuteScaricaProspettoRiscossioni.png
    :align: center
    :name: ScaricaProspettoRiscossioni
 
