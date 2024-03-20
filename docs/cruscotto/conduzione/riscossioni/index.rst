@@ -23,6 +23,9 @@ Per abilitarla si deve intervenire sulla seguente proprietà:
     }
 
 
+Dettaglio sezione
+-----------------
+
 Anche in questo caso risulta possibile filtrare gli elementi presenti nella pagina tramite il form presente sul lato sinistro. Di rilevante importanza è la possibilità di filtrare in base allo stato della riscossione:
 
 -  *Riscossa* - è lo stato iniziale relativo agli importi riversati ma non ancora riconciliati.
