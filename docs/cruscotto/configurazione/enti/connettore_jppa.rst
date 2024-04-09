@@ -12,9 +12,9 @@ Il protocollo prevede due fasi:
 
 Tramite il servizio *RecuperaRT*, vengono acquisiti i tracciati originali delle Ricevute secondo la specifica del servizio JPPA. Tali tracciati sono arricchiti con le informazioni contabili o di accertamento relativi all'importo riscosso per ogni singola voce pendenza, riportando le informazioni delle quote indicate nell'elemento *contabilita* come segue:
 
-.. csv-table:: *Parametri di configurazione servizio acquisizione ricevute*
+.. csv-table:: *Mapping dati contabili*
    :header: "Campo", "Valore"
-   :widths: 50,50
+   :widths: 40,60
 
    "Capitolo bilancio", "vocePendenza.contabilita.quote[].capitolo"
    "Anno", "vocePendenza.contabilita.quote[].annoEsercizio"
