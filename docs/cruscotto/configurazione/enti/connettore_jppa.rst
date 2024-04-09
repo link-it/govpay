@@ -7,12 +7,23 @@ Il connettore consente di interfacciarsi verso la piattaforma PagoPA Maggioli ed
 
 Il protocollo prevede due fasi:
 
-- Nella prima fase GovPay invia una notifica verso Maggioli attraverso l'operazione *InvioEsitoPagamento* per ogni transazioni di pagamento completata con successo e contestualmente raccoglie il risultato di ogni spedizione all'interno di un tracciato in formato csv.
-- In una fase successiva Maggioli scarica le ricevute di pagamento corrispondenti alle notifiche ricevute attraverso l'operazione *RecuperaRT* esposta da GovPay.
+- GovPay invia una notifica al servizio JPPA per ogni ricevuta positiva acquisita da pagoPA.
+- Successivamente il servizio JPPA acquisisce le ricevute di pagamento dal servizio *RecuperaRT* esposto da GovPay.
 
-Il servizio *RecuperaRT* è disponibile alla URL: https://host-gp/govpay/backend/api/jppapdp/JppaPdpExternalFacetService. In maniera simile alle altre API messe a disposizione da GovPay, il servizio è fruibile previa autenticazione.
+Tramite il servizio *RecuperaRT*, vengono acquisiti i tracciati originali delle Ricevute secondo la specifica del servizio JPPA. Tali tracciati sono arricchiti con le informazioni contabili o di accertamento relativi all'importo riscosso per ogni singola voce pendenza, riportando le informazioni delle quote indicate nell'elemento *contabilita* come segue:
 
-La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quotidianamente alle 3 di mattina, solo al termine delle spedizioni viene inviato tramite email il tracciato csv contenente gli esiti degli invii delle notifiche di pagamento.
+.. csv-table:: *Parametri di configurazione servizio acquisizione ricevute*
+   :header: "Campo", "Valore"
+   :widths: 50,50
+
+   "Capitolo bilancio", "vocePendenza.contabilita.quote[].capitolo"
+   "Anno", "vocePendenza.contabilita.quote[].annoEsercizio"
+   "Importo", "vocePendenza.contabilita.quote[].importo"
+   "Descrizione", "vocePendenza.contabilita.quote[].descrizione"   
+
+Il servizio *RecuperaRT* è disponibile alla URL: https://host-gp/govpay/backend/api/jppapdp/JppaPdpExternalFacetService. In maniera simile alle altre API messe a disposizione da GovPay, il servizio è fruibile previa autenticazione secondo la modalità individuata dalla configurazione Spring Security, per default con SSL Client Auth.
+
+La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quotidianamente alle 3 di mattina ed al termine delle spedizioni viene inviato tramite email un report dell'attività in formato CSV.
 
 .. figure:: ../../_images/48ConnettoreMaggioliJPPA.png
    :align: center
