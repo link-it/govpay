@@ -134,7 +134,12 @@
     },
     GESTIONE_RISCOSSIONI: {
       ENABLED: ${it.govpay.backoffice.gui.sezioneRiscossioni.enabled}  // abilita la sezione riscossioni
-    }
+    },
+	MANUTENZIONE: {
+	  RECUPERO_PAGAMENTI: {
+	    ENABLED: ${it.govpay.backoffice.gui.sezioneManutenzione.recuperaPagamenti.enabled} // abilita la funzione di recupero pagamenti
+	  }
+	}
   };
 
   addScript('assets/config/app-config.js');
