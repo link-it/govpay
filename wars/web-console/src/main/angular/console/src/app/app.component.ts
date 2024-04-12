@@ -402,7 +402,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
           UtilService.USER_ACL.hasConfig = true;
           // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false, sort: # });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false, sort: 0 });
-          this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
+          if(UtilService.GESTIONE_MANUTENZIONE.RECUPERO_PAGAMENTI.ENABLED){
+          	this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
+          }
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RESET_CACHE, name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: 2 });
           UtilService.USER_ACL.hasSetting = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           if (UtilService.USER_ACL.hasSetting) {

@@ -51,6 +51,7 @@ export class UtilService {
   // Config.js
   public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
   public static GESTIONE_RISCOSSIONI: any = GovPayConfig.GESTIONE_RISCOSSIONI;
+  public static GESTIONE_MANUTENZIONE: any = GovPayConfig.MANUTENZIONE;
 
   // Config.js
   public static PREFERENCES: any = GovPayConfig.PREFERENCES;
