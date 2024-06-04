@@ -164,13 +164,21 @@
         <!-- jasperreports -->
         <jasperreports.version>6.20.5</jasperreports.version>
         
-	<jaxb.api.version>2.3.1</jaxb.api.version>
-	<jaxb.core.version>2.3.0.1</jaxb.core.version>
-	<jaxb.impl.version>2.3.7</jaxb.impl.version>
-	<jaxb.xjc.version>2.3.7</jaxb.xjc.version>
-	<jaxws-jsr181-api.version>1.0-MR1</jaxws-jsr181-api.version>
-	<javax.activation>1.1.1</javax.activation>
+		<jaxb.api.version>2.3.1</jaxb.api.version>
+		<jaxb.core.version>2.3.0.1</jaxb.core.version>
+		<jaxb.impl.version>2.3.7</jaxb.impl.version>
+		<jaxb.xjc.version>2.3.7</jaxb.xjc.version>
+		<jaxws-jsr181-api.version>1.0-MR1</jaxws-jsr181-api.version>
+		<javax.activation>1.1.1</javax.activation>
+		
+		<!-- javax.mail -->
+		<javax.mail.version>1.4.4</javax.mail.version>
         
+        <!-- javax validation-->
+        <javax.validation-api.version>1.0.0.GA</javax.validation-api.version>
+        
+        <!-- jboss ejb -->
+        <jboss-ejb-api.version>1.0.1.Final</jboss-ejb-api.version>
         
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
         <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
@@ -646,13 +654,13 @@
 				<version>${concurrent.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-web-6.0</artifactId>
-				<version>2.0.0.Final</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>org.jboss.spec</groupId>-->
+<!--				<artifactId>jboss-javaee-web-6.0</artifactId>-->
+<!--				<version>2.0.0.Final</version>-->
+<!--				<type>pom</type>-->
+<!--				<scope>import</scope>-->
+<!--			</dependency>-->
 			
 			<dependency>
 			    <groupId>com.github.fge</groupId>
@@ -978,6 +986,12 @@
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-multipart</artifactId>
 				<version>${jersey.version}</version>
+				<exclusions>
+					<exclusion>
+			        	<groupId>org.junit.jupiter</groupId>
+	            		<artifactId>junit-jupiter</artifactId>
+			        </exclusion>
+				</exclusions>
 	        </dependency>
 	        <dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
@@ -1200,11 +1214,51 @@
 					<artifactId>activation</artifactId>
 					<version>${javax.activation}</version>
 				</dependency>		
+				
+				<dependency>
+				    <groupId>javax.mail</groupId>
+				    <artifactId>mail</artifactId>
+				    <version>${javax.mail.version}</version>
+				</dependency>
+				
+				<dependency>
+				    <groupId>javax.validation</groupId>
+					<artifactId>validation-api</artifactId>
+				    <version>${javax.validation-api.version}</version>
+				</dependency>
+				
+				<dependency>
+					<groupId>org.jboss.spec.javax.ejb</groupId>
+					<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+					<version>${jboss-ejb-api.version}</version>
+				</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
 		<plugins>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-dependency-plugin</artifactId>
+			    <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${rel-to-parent}/dependencies/jar</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeTransitive>false</excludeTransitive>
+                            <excludeGroupIds>it.govpay</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                </executions>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
