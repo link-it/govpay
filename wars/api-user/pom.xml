@@ -94,16 +94,6 @@
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
-			<artifactId>openspcoop2_utils-io</artifactId>
-		</dependency>
-
-		<!-- Dipendenza openspcoop2_utils-io -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

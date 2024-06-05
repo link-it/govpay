@@ -181,6 +181,9 @@
         <!-- javax validation-->
         <javax.validation-api.version>1.0.0.GA</javax.validation-api.version>
         
+        <!-- javassist -->
+        <javassist.version>3.28.0-GA</javassist.version>
+        
         <!-- jboss ejb -->
         <jboss-ejb-api.version>1.0.1.Final</jboss-ejb-api.version>
         
@@ -767,7 +770,13 @@
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.v3.version}</version>
 			</dependency>
-
+			
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+        		<artifactId>swagger-jaxrs2</artifactId>
+				<version>${swagger.v3.version}</version>
+			</dependency>
+			
 			<dependency>
 			    <groupId>io.swagger.parser.v3</groupId>
 			    <artifactId>swagger-parser</artifactId>
@@ -917,6 +926,10 @@
 					<exclusion>
 						<groupId>org.apache.cxf</groupId>
 	            		<artifactId>cxf-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>io.swagger.core.v3</groupId>
+	            		<artifactId>swagger-jaxrs2</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -1107,6 +1120,28 @@
             	<groupId>org.springframework.security</groupId>
             	<artifactId>spring-security-core</artifactId>
             	<version>${spring.security.version}</version>
+            	<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <dependency>
@@ -1328,6 +1363,12 @@
 					<groupId>org.jboss.spec.javax.ejb</groupId>
 					<artifactId>jboss-ejb-api_3.1_spec</artifactId>
 					<version>${jboss-ejb-api.version}</version>
+				</dependency>
+				
+				<dependency>
+				    <groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				    <version>${javassist.version}</version>
 				</dependency>
 		</dependencies>
 	</dependencyManagement>
