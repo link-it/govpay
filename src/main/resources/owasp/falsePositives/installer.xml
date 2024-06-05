@@ -347,6 +347,7 @@
 	<suppress>
 	   <notes><![CDATA[
 	   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+	   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
 	   ]]></notes>
 	   <packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$</packageUrl>
 	   <vulnerabilityName>CVE-2020-11612</vulnerabilityName>
@@ -354,8 +355,17 @@
 	<suppress>
 	   <notes><![CDATA[
 	   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+	   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
 	   ]]></notes>
 	   <packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$</packageUrl>
 	   <cve>CVE-2023-34462</cve>
+	</suppress>
+	<suppress>
+	   <notes><![CDATA[
+	   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+	   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+	   ]]></notes>
+	   <packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$</packageUrl>
+	   <cve>CVE-2023-44487</cve>
 	</suppress>
 </suppressions>
