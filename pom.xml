@@ -184,9 +184,6 @@
         <!-- javassist -->
         <javassist.version>3.28.0-GA</javassist.version>
         
-        <!-- jboss ejb -->
-        <jboss-ejb-api.version>1.0.1.Final</jboss-ejb-api.version>
-        
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
         <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
         
@@ -1357,12 +1354,6 @@
 				    <groupId>javax.validation</groupId>
 					<artifactId>validation-api</artifactId>
 				    <version>${javax.validation-api.version}</version>
-				</dependency>
-				
-				<dependency>
-					<groupId>org.jboss.spec.javax.ejb</groupId>
-					<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-					<version>${jboss-ejb-api.version}</version>
 				</dependency>
 				
 				<dependency>
