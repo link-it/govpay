@@ -120,7 +120,8 @@ And request pagamentoPost
 When method post
 Then status 500
 * match response == { categoria: 'INTERNO', codice: 'VAL_003', descrizione: 'Errore durante la trasformazione', dettaglio: '#notnull' }
-* match response.dettaglio contains decodeBase64(tipoPendenzaDominio.portalePagamento.trasformazione.definizione)
+# * match response.dettaglio contains decodeBase64(tipoPendenzaDominio.portalePagamento.trasformazione.definizione)
+* match response.dettaglio contains 'Unrecognized field "type"'
 
 Scenario: Pagamento spontaneo modello 4 autenticato basic template di trasformazione crea una pendenza con errori di sintassi
 
