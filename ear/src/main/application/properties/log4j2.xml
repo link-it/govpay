@@ -126,6 +126,10 @@
 		<Logger name="it.govpay" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
+		
+		<Logger name="org.apache.commons.jcs" level="INFO" additivity="false">
+			<AppenderRef ref="STDOUT" />
+		</Logger>
 
 		<Logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
