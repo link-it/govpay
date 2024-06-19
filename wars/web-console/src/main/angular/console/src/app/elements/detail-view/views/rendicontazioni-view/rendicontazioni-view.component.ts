@@ -218,7 +218,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
         if (rend.riscossione.vocePendenza.pendenza.tipoPendenza) {
           rendicontazione[_exportLabel['idTipoPendenza']] = rend.riscossione.vocePendenza.pendenza.tipoPendenza.idTipoPendenza || '';
         }
-        rendicontazione[_exportLabel['idVocePendenza']] = rend.riscossione.vocePendenza.pendenza.idVocePendenza || '';
+        rendicontazione[_exportLabel['idVocePendenza']] = rend.riscossione.vocePendenza.idVocePendenza || '';
         rendicontazione[_exportLabel['causale']] = rend.riscossione.vocePendenza.pendenza.causale || '';
         if (rend.riscossione.vocePendenza.pendenza.soggettoPagatore) {
           rendicontazione[_exportLabel['idSoggettoPagatore']] = rend.riscossione.vocePendenza.pendenza.soggettoPagatore.identificativo || '';

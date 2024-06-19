@@ -16,10 +16,19 @@ Falsi positivi
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
 
+CVE-2023-5072
+==============
+
+file name: json-20240303.jar
+
+La vulnerabilità indicata viene descritta come segue: `Denial of Service in JSON-Java versions up to and including 20230618.  A bug in the parser means that an input string of modest size can lead to indefinite amounts of memory being used.`
+
+La versione della libreria ultilizzata risolve il bug indicato, ma il tool di validazione continua a segnalare la vulnerabilità. Risulta quindi un falso positivo.
+
 CVE-2022-45688
 ==============
 
-file name: json-20230618.jar
+file name: json-20240303.jar
 
 La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
 
@@ -35,16 +44,34 @@ La vulnerabilità 'CVE-2022-40152' è relativa alla dipendenza transitiva 'woods
 CVE-2020-5408
 =============
 
-file name: spring-security-crypto-5.8.3.jar
+file name: spring-security-crypto-5.8.12.jar
 
 La vulnerabilità indicata viene descritta come segue: `Spring Security versions 5.3.x prior to 5.3.2, 5.2.x prior to 5.2.4, 5.1.x prior to 5.1.10, 5.0.x prior to 5.0.16 and 4.2.x prior to 4.2.16 use a fixed null initialization vector with CBC Mode in the implementation of the queryable text encryptor. A malicious user with access to the data that has been encrypted using such an encryptor may be able to derive the unencrypted values using a dictionary attack.`
 
 La versione utilizzata è superiore alla '5.3.2' quindi risulta un falso positivo ed in GovPay il metodo oggetto della vulnerabilità (Encryptors#queryableText(CharSequence, CharSequence)) non viene utilizzato.
 
+CVE-2017-10355
+================
+
+file name: xercesImpl-2.12.2.jar
+
+La vulnerabilità rilevata è oggetto di discussione e aperture di segnalazioni, poichè non presente nel database nvd.nist.gov e quindi non può essere una CVE.
+Sembra invece rilevata da Sonatype OSSIndex come riportato dal frammento delle discussioni sotto riportate "the intelligence that this CVE (still) applies to version 2.12.2 comes from the security analysts of Sonatype OSSINDEX, not from the NVD datastreams":
+
+- https://github.com/jeremylong/DependencyCheck/issues/4614
+- https://github.com/OSSIndex/vulns/issues/316
+
+In particolare 'https://ossindex.sonatype.org/vulnerability/sonatype-2017-0348' non ha poi una evidenza nel blog esistente (il link https://blogs.securiteam.com/index.php/archives/3271 non esiste).
+Il contenuto del blog, quando era esistente, viene riportato nell'issue '4614' di jeremylong, dove si può ipotizzare che la problematica rilevata sia sul metodo XMLEntityManager.setupCurrentEntity() che non dispone di un meccanismo di timeout. 
+
+Il metodo indicato non è utilizzato su GovPay.
+Nella discussione inoltre si fa riferimento alla vulnerabilità descritta in 'https://security.snyk.io/vuln/SNYK-JAVA-XERCES-31497' che consentiva di attuare attacchi DOS.
+Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
+
 CVE-2016-1000027
 ================
 
-file name: spring-web-5.3.28.jar
+file name: spring-web-5.3.36.jar
 
 La vulnerabilità indicata viene descritta come segue: `Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.`
 
@@ -59,7 +86,19 @@ La vulnerabilità indicata viene descritta come segue: `A vulnerability has been
 
 La libreria indicata non viene utilizzata in GovPay, pertanto si puo' concludere che si tratti di un falso positivo.
 
-Librerire installer
+Libreria Swagger-parser-safe-url-resolver-2.1.22
+================================================
+
+La libreria risulta positiva alle seguenti segnalazioni, che si riferiscono però ad un altro libreria: 'https://github.com/ionicabizau/parse-url'. Pertanto si ritengono le vulnerabilità un falso positivo.
+
+- CVE-2022-0722
+- CVE-2022-2216
+- CVE-2022-2217
+- CVE-2022-2218
+- CVE-2022-2900
+- CVE-2022-3224
+
+Librerie installer
 ===================
 
 Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di GovPay, utilizzato offline per la configurazione dell'ear, e che non fanno parte degli artefatti dispiegati. Possono pertanto essere ignorate.
@@ -92,6 +131,7 @@ Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di Gov
 - CVE-2022-41881
 - CVE-2022-41915
 - CVE-2023-34462
+- CVE-2023-44487
 
 
 Test di copertura funzionale

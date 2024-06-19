@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.7-SNAPSHOT</version>
+		<version>3.7.7</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -281,6 +281,11 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-client</artifactId>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-core</artifactId>
+        </dependency>
 
 		<!-- Json Path -->
 		<dependency>

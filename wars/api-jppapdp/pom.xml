@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.7-SNAPSHOT</version>
+		<version>3.7.7</version>
 	</parent>
 
 	<artifactId>api-jppapdp</artifactId>
@@ -23,12 +23,6 @@
 			<groupId>it.govpay</groupId>
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

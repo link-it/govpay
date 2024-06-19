@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.7-SNAPSHOT</version>
+		<version>3.7.7</version>
 	</parent>
 
 	<artifactId>appio-beans</artifactId>
@@ -64,6 +64,11 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+       		<artifactId>swagger-jaxrs2</artifactId>
 		</dependency>
 	</dependencies>
 
