@@ -326,14 +326,14 @@ public class VersamentoUtils {
 							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 						}
 						
-						log.debug(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
+						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
 					} catch (VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
 							log.error(MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
 							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 						}						
-						log.debug(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
+						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
 					} catch (VersamentoNonValidoException e) {
 						// Versamento non valido per errori di validazione, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
@@ -341,7 +341,7 @@ public class VersamentoUtils {
 							throw e;
 						}
 						
-						log.debug(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
+						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
 					} catch (GovPayException | UtilsException | ServiceException | IOException  e) {
 						// Versamento non aggiornato per errori interni, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
@@ -349,7 +349,7 @@ public class VersamentoUtils {
 							throw e;
 						}
 						
-						log.debug(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
+						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
 					} catch (ClientInitializeException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
