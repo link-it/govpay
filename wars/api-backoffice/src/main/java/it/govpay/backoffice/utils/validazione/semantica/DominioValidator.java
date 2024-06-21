@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.bd.model.Dominio;

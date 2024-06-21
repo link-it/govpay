@@ -30,8 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import it.govpay.core.exceptions.ValidationException;
 
 /**
@@ -56,14 +56,15 @@ public class SimpleDateFormatUtils {
 	private static final String PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI = "yyyyMMdd";
 	private static final String PATTERN_DATA_YYYY_MM_DD_HH_MM_SENZA_SPAZI = "yyyyMMdd_HHmm";
 	private static final String PATTERN_DATA_GG_MM_AAAA = "dd/MM/yyyy";
+	private static final String ISO_DATE_TIME_ZONE_FORMAT = "yyyy-MM-ddZZ";
 	
 	public static List<String> datePatterns = null;
 	static {
 		datePatterns = new ArrayList<>();
-		datePatterns.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
-		datePatterns.add(DateFormatUtils.ISO_DATETIME_FORMAT.getPattern());
-		datePatterns.add(DateFormatUtils.ISO_DATE_TIME_ZONE_FORMAT.getPattern());
-		datePatterns.add(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern());
+		datePatterns.add(ISO_DATE_TIME_ZONE_FORMAT);
+		datePatterns.add(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern());
 	}
 	
 	public static List<String> datePatternsRest = null;
@@ -82,7 +83,7 @@ public class SimpleDateFormatUtils {
 	public static List<String> onlyDatePatternsRest = null;
 	static {
 		onlyDatePatternsRest = new ArrayList<>();
-		onlyDatePatternsRest.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
+		onlyDatePatternsRest.add(DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.getPattern());
 		onlyDatePatternsRest.add(PATTERN_DATA_JSON_YYYY_MM_DD);
 	}
 	

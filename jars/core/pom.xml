@@ -233,6 +233,11 @@
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-json</artifactId>
 		</dependency>
+		
+		 <dependency>
+         	<groupId>commons-lang</groupId>
+         	<artifactId>commons-lang</artifactId>
+		 </dependency>
 
 		<!-- SPRING -->
 		<dependency>

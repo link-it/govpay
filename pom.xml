@@ -83,6 +83,7 @@
 		<commons.csv.version>1.11.0</commons.csv.version>
 		<commons.codec.version>1.17.0</commons.codec.version>
 		<commons.io.version>2.16.1</commons.io.version>
+		<commons.text.version>1.12.0</commons.text.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.lang3.version>3.14.0</commons.lang3.version>
 		<commons.pool2.version>2.12.0</commons.pool2.version>
@@ -432,6 +433,12 @@
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-1.2-api</artifactId>
 				<version>${logger.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-text</artifactId>
+				<version>${commons.text.version}</version>
 			</dependency>
 
 			<dependency>

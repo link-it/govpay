@@ -83,7 +83,7 @@ public class GovPayException extends Exception {
 		this.params = new String[1];
 		this.params[0] = descrizione;
 		this.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+		this.setCausa(org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
 		this.param = null;
 	}
 	
@@ -97,7 +97,7 @@ public class GovPayException extends Exception {
 		super(e);
 		this.params = params;
 		this.setCodEsitoOperazione(codEsito);
-		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+		this.setCausa(org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
 		this.param = null;
 	}
 	
