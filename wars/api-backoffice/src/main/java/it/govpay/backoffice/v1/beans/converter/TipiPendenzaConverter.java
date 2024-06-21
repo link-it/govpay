@@ -19,7 +19,7 @@
  */
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.springframework.security.core.Authentication;
 

@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita;
 import it.govpay.core.exceptions.ValidationException;

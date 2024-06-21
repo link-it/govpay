@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.ValidationException;

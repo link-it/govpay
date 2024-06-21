@@ -21,7 +21,7 @@ package it.govpay.model;
 
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
 

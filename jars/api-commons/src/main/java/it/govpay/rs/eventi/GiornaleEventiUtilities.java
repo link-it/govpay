@@ -22,7 +22,7 @@ package it.govpay.rs.eventi;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.ext.logging.event.LogEvent;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.CachedOutputStream;

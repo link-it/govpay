@@ -48,7 +48,7 @@ import javax.xml.soap.SOAPMessage;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;

@@ -21,8 +21,6 @@ package it.govpay.core.ec.v2.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
@@ -36,9 +34,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.ec.v2.beans.Documento;
-import it.govpay.ec.v2.beans.LinguaSecondaria;
 import it.govpay.ec.v2.beans.PendenzaPagata;
-import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.RiscossioneVocePagata;
 import it.govpay.ec.v2.beans.Soggetto;
 import it.govpay.ec.v2.beans.TipoRiferimentoVocePendenza.TipoBolloEnum;
@@ -46,7 +42,6 @@ import it.govpay.ec.v2.beans.TipoRiscossione;
 import it.govpay.ec.v2.beans.TipoSoggetto;
 import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.VincoloPagamento;
-import it.govpay.ec.v2.beans.VoceDescrizioneImporto;
 import it.govpay.ec.v2.beans.VocePendenzaPagata;
 
 public class PendenzePagateConverter {
