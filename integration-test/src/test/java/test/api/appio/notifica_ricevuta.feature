@@ -762,7 +762,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
 
-* call sleep(3000)
+* call sleep(20000)
 
 Given url backofficeBaseurl
 And path '/eventi'
