@@ -22,7 +22,7 @@
  */
 package it.govpay.core.utils;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

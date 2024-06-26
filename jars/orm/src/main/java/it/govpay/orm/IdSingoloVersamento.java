@@ -19,12 +19,12 @@
  */
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -152,26 +152,26 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="indiceDati",required=true,nillable=false)
   protected java.lang.Integer indiceDati;
 
   @XmlElement(name="idTributo",required=false,nillable=false)
   protected IdTributo idTributo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="note",required=false,nillable=false)
   protected java.lang.String note;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="statoSingoloVersamento",required=false,nillable=false)
   protected java.lang.String statoSingoloVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoSingoloVersamento",required=false,nillable=false)
   protected double importoSingoloVersamento;
 

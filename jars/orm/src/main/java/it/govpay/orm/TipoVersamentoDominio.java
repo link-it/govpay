@@ -19,12 +19,12 @@
  */
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -657,219 +657,219 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @XmlElement(name="idDominio",required=true,nillable=false)
   protected IdDominio idDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codificaIuv",required=false,nillable=false)
   protected java.lang.String codificaIuv;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagaTerzi",required=false,nillable=false)
   protected Boolean pagaTerzi;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="abilitato",required=false,nillable=false)
   protected Boolean abilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boFormTipo",required=false,nillable=false)
   protected java.lang.String boFormTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boFormDefinizione",required=false,nillable=false)
   protected java.lang.String boFormDefinizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boValidazioneDef",required=false,nillable=false)
   protected java.lang.String boValidazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boTrasformazioneTipo",required=false,nillable=false)
   protected java.lang.String boTrasformazioneTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boTrasformazioneDef",required=false,nillable=false)
   protected java.lang.String boTrasformazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boCodApplicazione",required=false,nillable=false)
   protected java.lang.String boCodApplicazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boAbilitato",required=false,nillable=false)
   protected Boolean boAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormTipo",required=false,nillable=false)
   protected java.lang.String pagFormTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormDefinizione",required=false,nillable=false)
   protected java.lang.String pagFormDefinizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormImpaginazione",required=false,nillable=false)
   protected java.lang.String pagFormImpaginazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagValidazioneDef",required=false,nillable=false)
   protected java.lang.String pagValidazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagTrasformazioneTipo",required=false,nillable=false)
   protected java.lang.String pagTrasformazioneTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagTrasformazioneDef",required=false,nillable=false)
   protected java.lang.String pagTrasformazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagCodApplicazione",required=false,nillable=false)
   protected java.lang.String pagCodApplicazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagAbilitato",required=false,nillable=false)
   protected Boolean pagAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvAbilitato",required=false,nillable=false)
   protected Boolean avvMailPromAvvAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvPdf",required=false,nillable=false)
   protected Boolean avvMailPromAvvPdf;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvTipo",required=false,nillable=false)
   protected java.lang.String avvMailPromAvvTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvOggetto",required=false,nillable=false)
   protected java.lang.String avvMailPromAvvOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvMessaggio",required=false,nillable=false)
   protected java.lang.String avvMailPromAvvMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicAbilitato",required=false,nillable=false)
   protected Boolean avvMailPromRicAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicPdf",required=false,nillable=false)
   protected Boolean avvMailPromRicPdf;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicTipo",required=false,nillable=false)
   protected java.lang.String avvMailPromRicTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicOggetto",required=false,nillable=false)
   protected java.lang.String avvMailPromRicOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicMessaggio",required=false,nillable=false)
   protected java.lang.String avvMailPromRicMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicEseguiti",required=false,nillable=false)
   protected Boolean avvMailPromRicEseguiti;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadAbilitato",required=false,nillable=false)
   protected Boolean avvMailPromScadAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="avvMailPromScadPreavviso",required=false,nillable=false)
   protected java.lang.Integer avvMailPromScadPreavviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadTipo",required=false,nillable=false)
   protected java.lang.String avvMailPromScadTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadOggetto",required=false,nillable=false)
   protected java.lang.String avvMailPromScadOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadMessaggio",required=false,nillable=false)
   protected java.lang.String avvMailPromScadMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="visualizzazioneDefinizione",required=false,nillable=false)
   protected java.lang.String visualizzazioneDefinizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTipo",required=false,nillable=false)
   protected java.lang.String tracCsvTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvHeaderRisposta",required=false,nillable=false)
   protected java.lang.String tracCsvHeaderRisposta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTemplateRichiesta",required=false,nillable=false)
   protected java.lang.String tracCsvTemplateRichiesta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTemplateRisposta",required=false,nillable=false)
   protected java.lang.String tracCsvTemplateRisposta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="appIoApiKey",required=false,nillable=false)
   protected java.lang.String appIoApiKey;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvAbilitato",required=false,nillable=false)
   protected Boolean avvAppIoPromAvvAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvTipo",required=false,nillable=false)
   protected java.lang.String avvAppIoPromAvvTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvOggetto",required=false,nillable=false)
   protected java.lang.String avvAppIoPromAvvOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvMessaggio",required=false,nillable=false)
   protected java.lang.String avvAppIoPromAvvMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicAbilitato",required=false,nillable=false)
   protected Boolean avvAppIoPromRicAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicTipo",required=false,nillable=false)
   protected java.lang.String avvAppIoPromRicTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicOggetto",required=false,nillable=false)
   protected java.lang.String avvAppIoPromRicOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicMessaggio",required=false,nillable=false)
   protected java.lang.String avvAppIoPromRicMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicEseguiti",required=false,nillable=false)
   protected Boolean avvAppIoPromRicEseguiti;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadAbilitato",required=false,nillable=false)
   protected Boolean avvAppIoPromScadAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="avvAppIoPromScadPreavviso",required=false,nillable=false)
   protected java.lang.Integer avvAppIoPromScadPreavviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadTipo",required=false,nillable=false)
   protected java.lang.String avvAppIoPromScadTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadOggetto",required=false,nillable=false)
   protected java.lang.String avvAppIoPromScadOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadMessaggio",required=false,nillable=false)
   protected java.lang.String avvAppIoPromScadMessaggio;
 

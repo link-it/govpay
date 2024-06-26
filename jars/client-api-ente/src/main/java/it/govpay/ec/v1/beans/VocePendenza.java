@@ -21,8 +21,8 @@ package it.govpay.ec.v1.beans;
 
 import java.math.BigDecimal;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

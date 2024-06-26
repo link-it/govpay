@@ -33,21 +33,21 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
  * @author $Author$
  * @version $Rev$, $Date$
  */
-@javax.xml.bind.annotation.XmlType(name = "StatoTracciatoType")
-@javax.xml.bind.annotation.XmlEnum(String.class)
+@jakarta.xml.bind.annotation.XmlType(name = "StatoTracciatoType")
+@jakarta.xml.bind.annotation.XmlEnum(String.class)
 public enum StatoTracciatoType implements IEnumeration , Serializable , Cloneable {
 
-	@javax.xml.bind.annotation.XmlEnumValue("ANNULLATO")
+	@jakarta.xml.bind.annotation.XmlEnumValue("ANNULLATO")
 	ANNULLATO ("ANNULLATO"),
-	@javax.xml.bind.annotation.XmlEnumValue("NUOVO")
+	@jakarta.xml.bind.annotation.XmlEnumValue("NUOVO")
 	NUOVO ("NUOVO"),
-	@javax.xml.bind.annotation.XmlEnumValue("IN_CARICAMENTO")
+	@jakarta.xml.bind.annotation.XmlEnumValue("IN_CARICAMENTO")
 	IN_CARICAMENTO ("IN_CARICAMENTO"),
-	@javax.xml.bind.annotation.XmlEnumValue("CARICAMENTO_OK")
+	@jakarta.xml.bind.annotation.XmlEnumValue("CARICAMENTO_OK")
 	CARICAMENTO_OK ("CARICAMENTO_OK"),
-	@javax.xml.bind.annotation.XmlEnumValue("CARICAMENTO_KO")
+	@jakarta.xml.bind.annotation.XmlEnumValue("CARICAMENTO_KO")
 	CARICAMENTO_KO ("CARICAMENTO_KO"),
-	@javax.xml.bind.annotation.XmlEnumValue("STAMPATO")
+	@jakarta.xml.bind.annotation.XmlEnumValue("STAMPATO")
 	STAMPATO ("STAMPATO");
 	
 	

@@ -21,7 +21,7 @@ package it.govpay.rs.v1.authentication.preauth.filter;
 
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;

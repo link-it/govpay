@@ -41,7 +41,7 @@ package it.govpay.core.utils.adapter;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 public final class DataTypeAdapterCXF {
 

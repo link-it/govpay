@@ -32,8 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.xml.bind.JAXBException;
+import jakarta.activation.DataHandler;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;

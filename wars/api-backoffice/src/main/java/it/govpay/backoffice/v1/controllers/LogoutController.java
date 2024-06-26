@@ -22,10 +22,10 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.text.MessageFormat;
 
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;

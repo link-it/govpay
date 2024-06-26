@@ -22,9 +22,9 @@ package it.govpay.wc.controller;
 import java.net.URI;
 import java.text.MessageFormat;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.StringUtils;
 import it.govpay.core.exceptions.ValidationException;

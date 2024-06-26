@@ -21,7 +21,7 @@ package it.govpay.pagamento.v3.beans;
 
 import java.util.List;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
