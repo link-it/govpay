@@ -757,12 +757,12 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(20000)
+* call sleep(30000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
 
-* call sleep(20000)
+* call sleep(30000)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -823,6 +823,7 @@ And match response.risultati[0] ==
 """
 And match response.risultati[0].parametriRichiesta.url == appio_api_url + '/profiles/' + codiceFiscaleDebitore
 
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path '/eventi'
