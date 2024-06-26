@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
 

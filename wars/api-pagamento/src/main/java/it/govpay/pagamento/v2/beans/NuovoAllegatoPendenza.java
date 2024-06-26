@@ -22,7 +22,7 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.core.exceptions.ValidationException;
 

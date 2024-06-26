@@ -19,7 +19,7 @@
  */
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.backoffice.v1.beans.GdeEvento;
 import it.govpay.backoffice.v1.beans.GdeEvento.DumpEnum;

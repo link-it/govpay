@@ -21,7 +21,7 @@ package it.govpay.backoffice.utils.validazione.semantica;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.bd.model.Applicazione;

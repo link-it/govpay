@@ -57,7 +57,7 @@ public class ReCaptchaValidator {
 				throw new Exception("Configurazione del servizio Google Recaptcha non presente.");
 			
 			// validazione URL
-			if(org.apache.commons.lang.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getServerURL()))
+			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getServerURL()))
 				throw new Exception("URL servizio di verifica Google Recaptcha non presente.");
 			
 			try {
@@ -67,11 +67,11 @@ public class ReCaptchaValidator {
 			}
 						
 			// validazione SiteKey
-			if(org.apache.commons.lang.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSiteKey()))
+			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSiteKey()))
 				throw new Exception("Site Key servizio di verifica Google Recaptcha non presente.");
 			
 			// validazione secretKey
-			if(org.apache.commons.lang.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSecretKey()))
+			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSecretKey()))
 				throw new Exception("Secret Key servizio di verifica Google Recaptcha non presente.");
 			
 			// validazione Connection Timeout
@@ -83,7 +83,7 @@ public class ReCaptchaValidator {
 				throw new Exception("ReadTimeout servizio di verifica Google Recaptcha deve essere > 0.");
 			
 			// validazione Parameter Name
-			if(org.apache.commons.lang.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getResponseParameter()))
+			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getResponseParameter()))
 				throw new Exception("Il nome del parametro da cui estrarre la Response da inviare al servizio di verifica Google Recaptcha non presente.");
 			
 			// validazione Soglia
@@ -163,7 +163,7 @@ public class ReCaptchaValidator {
 		String reCaptchaResponse = request.getParameter(this.captchaSettings.getGoogleCatpcha().getResponseParameter());
 		
 		// se non ricevo l'header come parametro provo a cercarlo come header
-		if(org.apache.commons.lang.StringUtils.isBlank(reCaptchaResponse)) {
+		if(org.apache.commons.lang3.StringUtils.isBlank(reCaptchaResponse)) {
 			reCaptchaResponse = request.getHeader(this.captchaSettings.getGoogleCatpcha().getResponseParameter());
 		}
 		
