@@ -294,11 +294,9 @@ public class Versamento  {
 					versamento.setImportoPagato(BigDecimal.ZERO);
 				}
 				
-				// gestione ACA imposto una data inviato ACA piu' vecchia della data ultima modifica ACA
+				// gestione ACA imposto una data inviato ACA null cosi il batch capisce che si tratta di una nuova pendenza da creare e non di un'aggiornamento
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(new Date());
-				versamento.setDataUltimaComunicazioneAca(calendar.getTime());
-				calendar.add(Calendar.MINUTE, -1);
 				versamento.setDataUltimaModificaAca(calendar.getTime());
 
 				if(salvataggioSuDB) {
