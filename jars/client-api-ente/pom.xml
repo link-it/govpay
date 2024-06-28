@@ -52,8 +52,8 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-xml-provider</artifactId>
+			<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+			<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
 		</dependency>
 		
 		<dependency>
