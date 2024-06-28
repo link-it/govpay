@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,67 +47,67 @@ public class VistaPagamentoPortaleFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaPagamentoPortale.model())){
 				VistaPagamentoPortale object = new VistaPagamentoPortale();
 				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodCanale", VistaPagamentoPortale.model().COD_CANALE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_canale", VistaPagamentoPortale.model().COD_CANALE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_canale", VistaPagamentoPortale.model().COD_CANALE.getFieldType()));
 				setParameter(object, "setNome", VistaPagamentoPortale.model().NOME.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "nome", VistaPagamentoPortale.model().NOME.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "nome", VistaPagamentoPortale.model().NOME.getFieldType()));
 				setParameter(object, "setImporto", VistaPagamentoPortale.model().IMPORTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo", VistaPagamentoPortale.model().IMPORTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo", VistaPagamentoPortale.model().IMPORTO.getFieldType()));
 				setParameter(object, "setVersanteIdentificativo", VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "versante_identificativo", VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "versante_identificativo", VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setIdSessione", VistaPagamentoPortale.model().ID_SESSIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "id_sessione", VistaPagamentoPortale.model().ID_SESSIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "id_sessione", VistaPagamentoPortale.model().ID_SESSIONE.getFieldType()));
 				setParameter(object, "setIdSessionePortale", VistaPagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "id_sessione_portale", VistaPagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "id_sessione_portale", VistaPagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType()));
 				setParameter(object, "setIdSessionePsp", VistaPagamentoPortale.model().ID_SESSIONE_PSP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "id_sessione_psp", VistaPagamentoPortale.model().ID_SESSIONE_PSP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "id_sessione_psp", VistaPagamentoPortale.model().ID_SESSIONE_PSP.getFieldType()));
 				setParameter(object, "setStato", VistaPagamentoPortale.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", VistaPagamentoPortale.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", VistaPagamentoPortale.model().STATO.getFieldType()));
 				setParameter(object, "setCodiceStato", VistaPagamentoPortale.model().CODICE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "codice_stato", VistaPagamentoPortale.model().CODICE_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "codice_stato", VistaPagamentoPortale.model().CODICE_STATO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", VistaPagamentoPortale.model().DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", VistaPagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", VistaPagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setPspRedirectURL", VistaPagamentoPortale.model().PSP_REDIRECT_URL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", VistaPagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "psp_redirect_url", VistaPagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()));
 				setParameter(object, "setPspEsito", VistaPagamentoPortale.model().PSP_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "psp_esito", VistaPagamentoPortale.model().PSP_ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "psp_esito", VistaPagamentoPortale.model().PSP_ESITO.getFieldType()));
 				setParameter(object, "setDataRichiesta", VistaPagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_richiesta", VistaPagamentoPortale.model().DATA_RICHIESTA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_richiesta", VistaPagamentoPortale.model().DATA_RICHIESTA.getFieldType()));
 				setParameter(object, "setUrlRitorno", VistaPagamentoPortale.model().URL_RITORNO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "url_ritorno", VistaPagamentoPortale.model().URL_RITORNO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "url_ritorno", VistaPagamentoPortale.model().URL_RITORNO.getFieldType()));
 				setParameter(object, "setCodPsp", VistaPagamentoPortale.model().COD_PSP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_psp", VistaPagamentoPortale.model().COD_PSP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_psp", VistaPagamentoPortale.model().COD_PSP.getFieldType()));
 				setParameter(object, "setTipoVersamento", VistaPagamentoPortale.model().TIPO_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_versamento", VistaPagamentoPortale.model().TIPO_VERSAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo_versamento", VistaPagamentoPortale.model().TIPO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setMultiBeneficiario", VistaPagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "multi_beneficiario", VistaPagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "multi_beneficiario", VistaPagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType()));
 				setParameter(object, "setAck", VistaPagamentoPortale.model().ACK.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ack", VistaPagamentoPortale.model().ACK.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ack", VistaPagamentoPortale.model().ACK.getFieldType()));
 				setParameter(object, "setTipo", VistaPagamentoPortale.model().TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", VistaPagamentoPortale.model().TIPO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo", VistaPagamentoPortale.model().TIPO.getFieldType()));
 				setParameter(object, "setPrincipal", VistaPagamentoPortale.model().PRINCIPAL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "principal", VistaPagamentoPortale.model().PRINCIPAL.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "principal", VistaPagamentoPortale.model().PRINCIPAL.getFieldType()));
 				setParameter(object, "setTipoUtenza", VistaPagamentoPortale.model().TIPO_UTENZA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_utenza", VistaPagamentoPortale.model().TIPO_UTENZA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo_utenza", VistaPagamentoPortale.model().TIPO_UTENZA.getFieldType()));
 				setParameter(object, "setDebitoreIdentificativo", VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "debitore_identificativo", VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "debitore_identificativo", VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setSrcVersanteIdentificativo", VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "src_versante_identificativo", VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "src_versante_identificativo", VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setSrcDebitoreIdentificativo", VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "src_debitore_identificativo", VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setSeverita", VistaPagamentoPortale.model().SEVERITA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "severita", VistaPagamentoPortale.model().SEVERITA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "severita", VistaPagamentoPortale.model().SEVERITA.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_versamento_ente", VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setSrcIuv", VistaPagamentoPortale.model().SRC_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "src_iuv", VistaPagamentoPortale.model().SRC_IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "src_iuv", VistaPagamentoPortale.model().SRC_IUV.getFieldType()));
 				return object;
 			}
 			

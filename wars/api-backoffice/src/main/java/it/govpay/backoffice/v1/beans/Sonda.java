@@ -216,7 +216,7 @@ public class Sonda extends it.govpay.core.beans.JSONSerializable {
 	}
 
 	private String toString(Long millis) {
-		return millis != null ? org.openspcoop2.utils.Utilities.convertSystemTimeIntoString_millisecondi(millis, false) : "";
+		return millis != null ? org.openspcoop2.utils.Utilities.convertSystemTimeIntoStringMillisecondi(millis, false) : "";
 	}
 
 	public String getId() {

@@ -94,6 +94,7 @@
 							<inputSpec>${project.basedir}/src/main/resources/appio/io_functions_services.yaml</inputSpec>
 							<language>java</language>
 							<configOptions>
+								<jakarta>true</jakarta>
 								<dateLibrary>joda</dateLibrary>
 								<library>jersey2</library>
 								<sourceFolder>target/generated-sources/java/</sourceFolder>

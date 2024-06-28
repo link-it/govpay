@@ -37,5 +37,5 @@ import it.govpay.orm.IdVersamento;
  */
 
 public interface IVersamentoService extends IServiceWithId<Versamento, IdVersamento> {
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException;
+//	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException;
 }

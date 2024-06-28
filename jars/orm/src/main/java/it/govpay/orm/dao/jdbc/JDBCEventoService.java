@@ -1198,5 +1198,10 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 		}
 	
 	}
+
+	@Override
+	public int nativeUpdate(String arg0, Object... arg1) throws ServiceException, NotImplementedException {
+		throw new NotImplementedException("nativeUpdate");
+	}
 	
 }

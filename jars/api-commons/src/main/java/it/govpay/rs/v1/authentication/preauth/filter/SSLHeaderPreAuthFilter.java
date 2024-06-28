@@ -85,7 +85,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 			boolean forceEnrichPEMBeginEnd = replaceCharacters(config, headerValue, sbNewCertificate);
 			headerValue = sbNewCertificate.toString();
 			
-			if(config.isEnrich_BEGIN_END() || forceEnrichPEMBeginEnd) {
+			if(config.isEnrichPEMBeginEnd() || forceEnrichPEMBeginEnd) {
 				headerValue = addPEMDeclaration(headerValue, forceEnrichPEMBeginEnd);
 			}
 			

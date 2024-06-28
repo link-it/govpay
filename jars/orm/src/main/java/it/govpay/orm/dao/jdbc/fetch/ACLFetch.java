@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,19 +47,19 @@ public class ACLFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(ACL.model())){
 				ACL object = new ACL();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ruolo", ACL.model().RUOLO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ruolo", ACL.model().RUOLO.getFieldType()));
 				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "servizio", ACL.model().SERVIZIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "servizio", ACL.model().SERVIZIO.getFieldType()));
 				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "diritti", ACL.model().DIRITTI.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "diritti", ACL.model().DIRITTI.getFieldType()));
 				return object;
 			}
 			

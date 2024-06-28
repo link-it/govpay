@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,23 +47,23 @@ public class StazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Stazione.model())){
 				Stazione object = new Stazione();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_stazione", Stazione.model().COD_STAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_stazione", Stazione.model().COD_STAZIONE.getFieldType()));
 				this.setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "password", Stazione.model().PASSWORD.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "password", Stazione.model().PASSWORD.getFieldType()));
 				this.setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
 				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
 				setParameter(object, "setVersione", Stazione.model().VERSIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "versione", Stazione.model().VERSIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "versione", Stazione.model().VERSIONE.getFieldType()));
 				return object;
 			}
 			

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.http.NameValuePair;
 
+
 public class RichiestaWebControllerDTO {
 
 	private String idSessione = null;

@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,19 +47,19 @@ public class ConnettoreFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Connettore.model())){
 				Connettore object = new Connettore();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setCodConnettore", Connettore.model().COD_CONNETTORE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_connettore", Connettore.model().COD_CONNETTORE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_connettore", Connettore.model().COD_CONNETTORE.getFieldType()));
 				this.setParameter(object, "setCodProprieta", Connettore.model().COD_PROPRIETA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_proprieta", Connettore.model().COD_PROPRIETA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_proprieta", Connettore.model().COD_PROPRIETA.getFieldType()));
 				this.setParameter(object, "setValore", Connettore.model().VALORE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "valore", Connettore.model().VALORE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "valore", Connettore.model().VALORE.getFieldType()));
 				return object;
 			}
 			

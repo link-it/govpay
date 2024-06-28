@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,27 +47,27 @@ public class NotificaFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Notifica.model())){
 				Notifica object = new Notifica();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setTipoEsito", Notifica.model().TIPO_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_esito", Notifica.model().TIPO_ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo_esito", Notifica.model().TIPO_ESITO.getFieldType()));
 				this.setParameter(object, "setDataCreazione", Notifica.model().DATA_CREAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_creazione", Notifica.model().DATA_CREAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", Notifica.model().DATA_CREAZIONE.getFieldType()));
 				this.setParameter(object, "setStato", Notifica.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", Notifica.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", Notifica.model().STATO.getFieldType()));
 				this.setParameter(object, "setDescrizioneStato", Notifica.model().DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Notifica.model().DESCRIZIONE_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", Notifica.model().DESCRIZIONE_STATO.getFieldType()));
 				this.setParameter(object, "setDataAggiornamentoStato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
 				this.setParameter(object, "setDataProssimaSpedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_prossima_spedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_prossima_spedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
 				this.setParameter(object, "setTentativiSpedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tentativi_spedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tentativi_spedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType()));
 				return object;
 			}
 			

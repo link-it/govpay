@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,43 +47,43 @@ public class RRFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(RR.model())){
 				RR object = new RR();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setCodDominio", RR.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", RR.model().COD_DOMINIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", RR.model().COD_DOMINIO.getFieldType()));
 				this.setParameter(object, "setIuv", RR.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", RR.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", RR.model().IUV.getFieldType()));
 				this.setParameter(object, "setCcp", RR.model().CCP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ccp", RR.model().CCP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ccp", RR.model().CCP.getFieldType()));
 				this.setParameter(object, "setCodMsgRevoca", RR.model().COD_MSG_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_msg_revoca", RR.model().COD_MSG_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_msg_revoca", RR.model().COD_MSG_REVOCA.getFieldType()));
 				this.setParameter(object, "setDataMsgRevoca", RR.model().DATA_MSG_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_msg_revoca", RR.model().DATA_MSG_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_msg_revoca", RR.model().DATA_MSG_REVOCA.getFieldType()));
 				this.setParameter(object, "setDataMsgEsito", RR.model().DATA_MSG_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_msg_esito", RR.model().DATA_MSG_ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_msg_esito", RR.model().DATA_MSG_ESITO.getFieldType()));
 				this.setParameter(object, "setStato", RR.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", RR.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", RR.model().STATO.getFieldType()));
 				this.setParameter(object, "setDescrizioneStato", RR.model().DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", RR.model().DESCRIZIONE_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", RR.model().DESCRIZIONE_STATO.getFieldType()));
 				this.setParameter(object, "setImportoTotaleRichiesto", RR.model().IMPORTO_TOTALE_RICHIESTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_totale_richiesto", RR.model().IMPORTO_TOTALE_RICHIESTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_totale_richiesto", RR.model().IMPORTO_TOTALE_RICHIESTO.getFieldType()));
 				this.setParameter(object, "setCodMsgEsito", RR.model().COD_MSG_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_msg_esito", RR.model().COD_MSG_ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_msg_esito", RR.model().COD_MSG_ESITO.getFieldType()));
 				this.setParameter(object, "setImportoTotaleRevocato", RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_totale_revocato", RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_totale_revocato", RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()));
 				this.setParameter(object, "setXmlRR", RR.model().XML_RR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_rr", RR.model().XML_RR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "xml_rr", RR.model().XML_RR.getFieldType()));
 				this.setParameter(object, "setXmlER", RR.model().XML_ER.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_er", RR.model().XML_ER.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "xml_er", RR.model().XML_ER.getFieldType()));
 				this.setParameter(object, "setCodTransazioneRR", RR.model().COD_TRANSAZIONE_RR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rr", RR.model().COD_TRANSAZIONE_RR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_transazione_rr", RR.model().COD_TRANSAZIONE_RR.getFieldType()));
 				this.setParameter(object, "setCodTransazioneER", RR.model().COD_TRANSAZIONE_ER.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_transazione_er", RR.model().COD_TRANSAZIONE_ER.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_transazione_er", RR.model().COD_TRANSAZIONE_ER.getFieldType()));
 				return object;
 			}
 			

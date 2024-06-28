@@ -33,7 +33,8 @@ public class JsonXmlDeserializer extends AbstractDeserializer {
 
 	@Override
 	protected Object _xmlToObj(InputStream is, Class<?> c) throws Exception {
-		org.openspcoop2.utils.serialization.XMLDeserializer deserializer = new org.openspcoop2.utils.serialization.XMLDeserializer();
+		// TODO da verificare visto che prima c'era il XMLDeserializer non è più presente nella versione 3.4
+		org.openspcoop2.utils.serialization.JsonJacksonDeserializer deserializer = new org.openspcoop2.utils.serialization.JsonJacksonDeserializer();
 		return deserializer.readObject(is, c);
 	}
 		

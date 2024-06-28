@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,67 +47,67 @@ public class VistaPagamentoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaPagamento.model())){
 				VistaPagamento object = new VistaPagamento();
 				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodDominio", VistaPagamento.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", VistaPagamento.model().COD_DOMINIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", VistaPagamento.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIuv", VistaPagamento.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", VistaPagamento.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", VistaPagamento.model().IUV.getFieldType()));
 				setParameter(object, "setIndiceDati", VistaPagamento.model().INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_dati", VistaPagamento.model().INDICE_DATI.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "indice_dati", VistaPagamento.model().INDICE_DATI.getFieldType()));
 				setParameter(object, "setImportoPagato", VistaPagamento.model().IMPORTO_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_pagato", VistaPagamento.model().IMPORTO_PAGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_pagato", VistaPagamento.model().IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setDataAcquisizione", VistaPagamento.model().DATA_ACQUISIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_acquisizione", VistaPagamento.model().DATA_ACQUISIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_acquisizione", VistaPagamento.model().DATA_ACQUISIZIONE.getFieldType()));
 				setParameter(object, "setIur", VistaPagamento.model().IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iur", VistaPagamento.model().IUR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iur", VistaPagamento.model().IUR.getFieldType()));
 				setParameter(object, "setDataPagamento", VistaPagamento.model().DATA_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_pagamento", VistaPagamento.model().DATA_PAGAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_pagamento", VistaPagamento.model().DATA_PAGAMENTO.getFieldType()));
 				setParameter(object, "setCommissioniPsp", VistaPagamento.model().COMMISSIONI_PSP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "commissioni_psp", VistaPagamento.model().COMMISSIONI_PSP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "commissioni_psp", VistaPagamento.model().COMMISSIONI_PSP.getFieldType()));
 				setParameter(object, "setTipoAllegato", VistaPagamento.model().TIPO_ALLEGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_allegato", VistaPagamento.model().TIPO_ALLEGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo_allegato", VistaPagamento.model().TIPO_ALLEGATO.getFieldType()));
 				setParameter(object, "setAllegato", VistaPagamento.model().ALLEGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "allegato", VistaPagamento.model().ALLEGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "allegato", VistaPagamento.model().ALLEGATO.getFieldType()));
 				setParameter(object, "setDataAcquisizioneRevoca", VistaPagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_acquisizione_revoca", VistaPagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_acquisizione_revoca", VistaPagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
 				setParameter(object, "setCausaleRevoca", VistaPagamento.model().CAUSALE_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "causale_revoca", VistaPagamento.model().CAUSALE_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "causale_revoca", VistaPagamento.model().CAUSALE_REVOCA.getFieldType()));
 				setParameter(object, "setDatiRevoca", VistaPagamento.model().DATI_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_revoca", VistaPagamento.model().DATI_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "dati_revoca", VistaPagamento.model().DATI_REVOCA.getFieldType()));
 				setParameter(object, "setImportoRevocato", VistaPagamento.model().IMPORTO_REVOCATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_revocato", VistaPagamento.model().IMPORTO_REVOCATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_revocato", VistaPagamento.model().IMPORTO_REVOCATO.getFieldType()));
 				setParameter(object, "setEsitoRevoca", VistaPagamento.model().ESITO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito_revoca", VistaPagamento.model().ESITO_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "esito_revoca", VistaPagamento.model().ESITO_REVOCA.getFieldType()));
 				setParameter(object, "setDatiEsitoRevoca", VistaPagamento.model().DATI_ESITO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_esito_revoca", VistaPagamento.model().DATI_ESITO_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "dati_esito_revoca", VistaPagamento.model().DATI_ESITO_REVOCA.getFieldType()));
 				setParameter(object, "setStato", VistaPagamento.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", VistaPagamento.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", VistaPagamento.model().STATO.getFieldType()));
 				setParameter(object, "setTipo", VistaPagamento.model().TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", VistaPagamento.model().TIPO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo", VistaPagamento.model().TIPO.getFieldType()));
 				setParameter(object, "setVrsId", VistaPagamento.model().VRS_ID.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaPagamento.model().VRS_ID.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "vrs_id", VistaPagamento.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaPagamento.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "vrs_cod_versamento_ente", VistaPagamento.model().VRS_COD_VERSAMENTO_ENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_versamento_ente", VistaPagamento.model().VRS_COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setVrsTassonomia", VistaPagamento.model().VRS_TASSONOMIA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "vrs_tassonomia", VistaPagamento.model().VRS_TASSONOMIA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "vrs_tassonomia", VistaPagamento.model().VRS_TASSONOMIA.getFieldType()));
 				setParameter(object, "setVrsDivisione", VistaPagamento.model().VRS_DIVISIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "vrs_divisione", VistaPagamento.model().VRS_DIVISIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "vrs_divisione", VistaPagamento.model().VRS_DIVISIONE.getFieldType()));
 				setParameter(object, "setVrsDirezione", VistaPagamento.model().VRS_DIREZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "vrs_direzione", VistaPagamento.model().VRS_DIREZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "vrs_direzione", VistaPagamento.model().VRS_DIREZIONE.getFieldType()));
 				setParameter(object, "setSngCodSingVersEnte", VistaPagamento.model().SNG_COD_SING_VERS_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "sng_cod_sing_vers_ente", VistaPagamento.model().SNG_COD_SING_VERS_ENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "sng_cod_sing_vers_ente", VistaPagamento.model().SNG_COD_SING_VERS_ENTE.getFieldType()));
 				setParameter(object, "setRptIuv", VistaPagamento.model().RPT_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rpt_iuv", VistaPagamento.model().RPT_IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "rpt_iuv", VistaPagamento.model().RPT_IUV.getFieldType()));
 				setParameter(object, "setRptCcp", VistaPagamento.model().RPT_CCP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rpt_ccp", VistaPagamento.model().RPT_CCP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "rpt_ccp", VistaPagamento.model().RPT_CCP.getFieldType()));
 				setParameter(object, "setRncTrn", VistaPagamento.model().RNC_TRN.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rnc_trn", VistaPagamento.model().RNC_TRN.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "rnc_trn", VistaPagamento.model().RNC_TRN.getFieldType()));
 				return object;
 			}
 			

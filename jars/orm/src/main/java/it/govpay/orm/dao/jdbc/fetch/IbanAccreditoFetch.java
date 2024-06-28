@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,27 +47,27 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(IbanAccredito.model())){
 				IbanAccredito object = new IbanAccredito();
 				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodIban", IbanAccredito.model().COD_IBAN.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_iban", IbanAccredito.model().COD_IBAN.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_iban", IbanAccredito.model().COD_IBAN.getFieldType()));
 				setParameter(object, "setBicAccredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "bic_accredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "bic_accredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType()));
 				setParameter(object, "setPostale", IbanAccredito.model().POSTALE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "postale", IbanAccredito.model().POSTALE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "postale", IbanAccredito.model().POSTALE.getFieldType()));
 				setParameter(object, "setAbilitato", IbanAccredito.model().ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "abilitato", IbanAccredito.model().ABILITATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "abilitato", IbanAccredito.model().ABILITATO.getFieldType()));
 				setParameter(object, "setDescrizione", IbanAccredito.model().DESCRIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione", IbanAccredito.model().DESCRIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione", IbanAccredito.model().DESCRIZIONE.getFieldType()));
 				setParameter(object, "setIntestatario", IbanAccredito.model().INTESTATARIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "intestatario", IbanAccredito.model().INTESTATARIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "intestatario", IbanAccredito.model().INTESTATARIO.getFieldType()));
 				setParameter(object, "setAutStampaPoste", IbanAccredito.model().AUT_STAMPA_POSTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "aut_stampa_poste", IbanAccredito.model().AUT_STAMPA_POSTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "aut_stampa_poste", IbanAccredito.model().AUT_STAMPA_POSTE.getFieldType()));
 				return object;
 			}
 			

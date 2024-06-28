@@ -1266,5 +1266,10 @@ public class JDBCTracciatoNotificaPagamentiService extends JDBCTracciatoNotifica
 		}
 	
 	}
+
+	@Override
+	public int nativeUpdate(String arg0, Object... arg1) throws ServiceException, NotImplementedException {
+		throw new NotImplementedException("nativeUpdate");
+	}
 	
 }

@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,21 +47,21 @@ public class BatchFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Batch.model())){
 				Batch object = new Batch();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setCodBatch", Batch.model().COD_BATCH.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_batch", Batch.model().COD_BATCH.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_batch", Batch.model().COD_BATCH.getFieldType()));
 				this.setParameter(object, "setNodo", Batch.model().NODO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "nodo", Batch.model().NODO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					GenericJDBCParameterUtilities.readParameter(rs, "nodo", Batch.model().NODO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				this.setParameter(object, "setInizio", Batch.model().INIZIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "inizio", Batch.model().INIZIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "inizio", Batch.model().INIZIO.getFieldType()));
 				this.setParameter(object, "setAggiornamento", Batch.model().AGGIORNAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "aggiornamento", Batch.model().AGGIORNAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "aggiornamento", Batch.model().AGGIORNAMENTO.getFieldType()));
 				return object;
 			}
 			

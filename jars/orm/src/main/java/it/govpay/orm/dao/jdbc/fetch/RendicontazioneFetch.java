@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,29 +47,29 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Rendicontazione.model())){
 				Rendicontazione object = new Rendicontazione();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", Rendicontazione.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", Rendicontazione.model().IUV.getFieldType()));
 				this.setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
 				this.setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					GenericJDBCParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				this.setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
 				this.setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					GenericJDBCParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				this.setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data", Rendicontazione.model().DATA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data", Rendicontazione.model().DATA.getFieldType()));
 				this.setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", Rendicontazione.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", Rendicontazione.model().STATO.getFieldType()));
 				this.setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anomalie", Rendicontazione.model().ANOMALIE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "anomalie", Rendicontazione.model().ANOMALIE.getFieldType()));
 				return object;
 			}
 			

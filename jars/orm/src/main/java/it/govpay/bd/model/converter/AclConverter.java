@@ -51,12 +51,12 @@ public class AclConverter {
 			IdUtenza idUtenza = new IdUtenza();
 			idUtenza.setId(dto.getIdUtenza());
 			try {
-				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.subject));
+				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.SUBJECT));
 			} catch (Exception e) {
 				idUtenza.setPrincipal(dto.getUtenzaPrincipal());
 			}
 			try {
-				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.subject));
+				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.SUBJECT));
 			} catch (Exception e) {
 				idUtenza.setPrincipalOriginale(dto.getUtenzaPrincipalOriginale());
 			}

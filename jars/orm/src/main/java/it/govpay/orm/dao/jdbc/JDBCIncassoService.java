@@ -33,7 +33,6 @@ import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 import it.govpay.orm.Incasso;
 import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.utils.ProjectInfo;
@@ -1264,6 +1263,12 @@ public class JDBCIncassoService extends JDBCIncassoServiceSearch  implements IDB
 			}
 		}
 	
+	}
+
+
+	@Override
+	public int nativeUpdate(String arg0, Object... arg1) throws ServiceException, NotImplementedException {
+		throw new NotImplementedException("nativeUpdate");
 	}
 	
 }

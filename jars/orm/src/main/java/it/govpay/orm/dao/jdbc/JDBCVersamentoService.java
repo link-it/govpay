@@ -1265,7 +1265,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 	
 	
 	@Override
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException{
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotImplementedException{
 	
 		Connection connection = null;
 		try{
@@ -1281,7 +1281,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 		}catch(ServiceException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
+			this.log.debug(e.getMessage(),e); throw new ServiceException("nativeUpdate not found", e);
 		}catch(NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){

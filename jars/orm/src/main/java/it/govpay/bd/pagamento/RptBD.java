@@ -836,8 +836,6 @@ public class RptBD extends BasicBD {
 			return count;
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			return 0;
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();

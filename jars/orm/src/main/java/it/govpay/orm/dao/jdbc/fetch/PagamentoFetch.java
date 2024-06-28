@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,49 +47,49 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Pagamento.model())){
 				Pagamento object = new Pagamento();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Pagamento.model().COD_DOMINIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", Pagamento.model().COD_DOMINIO.getFieldType()));
 				this.setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", Pagamento.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", Pagamento.model().IUV.getFieldType()));
 				this.setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_dati", Pagamento.model().INDICE_DATI.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "indice_dati", Pagamento.model().INDICE_DATI.getFieldType()));
 				this.setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Pagamento.model().IMPORTO_PAGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_pagato", Pagamento.model().IMPORTO_PAGATO.getFieldType()));
 				this.setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_acquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_acquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType()));
 				this.setParameter(object, "setIur", Pagamento.model().IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iur", Pagamento.model().IUR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iur", Pagamento.model().IUR.getFieldType()));
 				this.setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_pagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_pagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType()));
 				this.setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "commissioni_psp", Pagamento.model().COMMISSIONI_PSP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "commissioni_psp", Pagamento.model().COMMISSIONI_PSP.getFieldType()));
 				this.setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_allegato", Pagamento.model().TIPO_ALLEGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo_allegato", Pagamento.model().TIPO_ALLEGATO.getFieldType()));
 				this.setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "allegato", Pagamento.model().ALLEGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "allegato", Pagamento.model().ALLEGATO.getFieldType()));
 				this.setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_acquisizione_revoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_acquisizione_revoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
 				this.setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "causale_revoca", Pagamento.model().CAUSALE_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "causale_revoca", Pagamento.model().CAUSALE_REVOCA.getFieldType()));
 				this.setParameter(object, "setDatiRevoca", Pagamento.model().DATI_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_revoca", Pagamento.model().DATI_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "dati_revoca", Pagamento.model().DATI_REVOCA.getFieldType()));
 				this.setParameter(object, "setImportoRevocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_revocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_revocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType()));
 				this.setParameter(object, "setEsitoRevoca", Pagamento.model().ESITO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito_revoca", Pagamento.model().ESITO_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "esito_revoca", Pagamento.model().ESITO_REVOCA.getFieldType()));
 				this.setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_esito_revoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "dati_esito_revoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
 				this.setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", Pagamento.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", Pagamento.model().STATO.getFieldType()));
 				this.setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", Pagamento.model().TIPO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo", Pagamento.model().TIPO.getFieldType()));
 				return object;
 			}
 			

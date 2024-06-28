@@ -721,7 +721,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		
 		String errore = null;
-		Sender senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_MAIL, log);
+		Sender senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_NET, log);
 		
 		String host = mailserver.getHost();
 		int port = mailserver.getPort();

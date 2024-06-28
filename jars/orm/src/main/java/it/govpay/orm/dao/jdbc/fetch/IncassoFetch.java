@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,43 +47,43 @@ public class IncassoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Incasso.model())){
 				Incasso object = new Incasso();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setTrn", Incasso.model().TRN.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "trn", Incasso.model().TRN.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "trn", Incasso.model().TRN.getFieldType()));
 				this.setParameter(object, "setCodDominio", Incasso.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Incasso.model().COD_DOMINIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", Incasso.model().COD_DOMINIO.getFieldType()));
 				this.setParameter(object, "setCausale", Incasso.model().CAUSALE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "causale", Incasso.model().CAUSALE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "causale", Incasso.model().CAUSALE.getFieldType()));
 				this.setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo", Incasso.model().IMPORTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo", Incasso.model().IMPORTO.getFieldType()));
 				this.setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_valuta", Incasso.model().DATA_VALUTA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_valuta", Incasso.model().DATA_VALUTA.getFieldType()));
 				this.setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_contabile", Incasso.model().DATA_CONTABILE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_contabile", Incasso.model().DATA_CONTABILE.getFieldType()));
 				this.setParameter(object, "setDataOraIncasso", Incasso.model().DATA_ORA_INCASSO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_ora_incasso", Incasso.model().DATA_ORA_INCASSO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_ora_incasso", Incasso.model().DATA_ORA_INCASSO.getFieldType()));
 				this.setParameter(object, "setNomeDispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "nome_dispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "nome_dispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType()));
 				this.setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iban_accredito", Incasso.model().IBAN_ACCREDITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iban_accredito", Incasso.model().IBAN_ACCREDITO.getFieldType()));
 				setParameter(object, "setSct", Incasso.model().SCT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "sct", Incasso.model().SCT.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "sct", Incasso.model().SCT.getFieldType()));
 				setParameter(object, "setIdentificativo", Incasso.model().IDENTIFICATIVO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "identificativo", Incasso.model().IDENTIFICATIVO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "identificativo", Incasso.model().IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setIuv", Incasso.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", Incasso.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", Incasso.model().IUV.getFieldType()));
 				setParameter(object, "setCodFlussoRendicontazione", Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_flusso_rendicontazione", Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_flusso_rendicontazione", Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType()));
 				setParameter(object, "setStato", Incasso.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", Incasso.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", Incasso.model().STATO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", Incasso.model().DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Incasso.model().DESCRIZIONE_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", Incasso.model().DESCRIZIONE_STATO.getFieldType()));
 				return object;
 			}
 			

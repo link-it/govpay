@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -58,6 +57,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.CryptoUtils;
 import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 
@@ -214,9 +214,8 @@ public class ApplicazioniDAO extends BaseDAO {
 			// se la stringa ricevuta e' vuota non la aggiorno, altrimenti la cambio
 			if(StringUtils.isNotEmpty(putApplicazioneDTO.getApplicazione().getUtenza().getPassword())) {
 				// cifratura dalla nuova password 
-				Password password = new Password();
 				String pwdTmp = putApplicazioneDTO.getApplicazione().getUtenza().getPassword();
-				String cryptPwd = password.cryptPw(pwdTmp);
+				String cryptPwd = CryptoUtils.cryptPw(pwdTmp);
 				
 				log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]");
 				putApplicazioneDTO.getApplicazione().getUtenza().setPassword(cryptPwd);

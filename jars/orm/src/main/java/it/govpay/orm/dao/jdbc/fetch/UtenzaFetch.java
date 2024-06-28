@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,27 +47,27 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Utenza.model())){
 				Utenza object = new Utenza();
 				this.setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "principal", Utenza.model().PRINCIPAL.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "principal", Utenza.model().PRINCIPAL.getFieldType()));
 				this.setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "principal_originale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "principal_originale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()));
 				this.setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
 				setParameter(object, "setAutorizzazioneDominiStar", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "autorizzazione_domini_star", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "autorizzazione_domini_star", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()));
 				setParameter(object, "setAutorizzazioneTipiVersStar", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "autorizzazione_tipi_vers_star", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "autorizzazione_tipi_vers_star", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()));
 				setParameter(object, "setRuoli", Utenza.model().RUOLI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ruoli", Utenza.model().RUOLI.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ruoli", Utenza.model().RUOLI.getFieldType()));
 				setParameter(object, "setPassword", Utenza.model().PASSWORD.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "password", Utenza.model().PASSWORD.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "password", Utenza.model().PASSWORD.getFieldType()));
 				return object;
 			}
 			

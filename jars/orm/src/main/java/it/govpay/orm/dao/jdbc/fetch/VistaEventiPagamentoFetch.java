@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,57 +47,57 @@ public class VistaEventiPagamentoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Evento.model())){
 				Evento object = new Evento();
 				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setComponente", Evento.model().COMPONENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "componente", Evento.model().COMPONENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "componente", Evento.model().COMPONENTE.getFieldType()));
 				setParameter(object, "setRuolo", Evento.model().RUOLO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ruolo", Evento.model().RUOLO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ruolo", Evento.model().RUOLO.getFieldType()));
 				setParameter(object, "setCategoriaEvento", Evento.model().CATEGORIA_EVENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "categoria_evento", Evento.model().CATEGORIA_EVENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "categoria_evento", Evento.model().CATEGORIA_EVENTO.getFieldType()));
 				setParameter(object, "setTipoEvento", Evento.model().TIPO_EVENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_evento", Evento.model().TIPO_EVENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo_evento", Evento.model().TIPO_EVENTO.getFieldType()));
 				setParameter(object, "setSottotipoEvento", Evento.model().SOTTOTIPO_EVENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "sottotipo_evento", Evento.model().SOTTOTIPO_EVENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "sottotipo_evento", Evento.model().SOTTOTIPO_EVENTO.getFieldType()));
 				setParameter(object, "setData", Evento.model().DATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data", Evento.model().DATA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data", Evento.model().DATA.getFieldType()));
 				setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "intervallo", Evento.model().INTERVALLO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "intervallo", Evento.model().INTERVALLO.getFieldType()));
 				setParameter(object, "setEsito", Evento.model().ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito", Evento.model().ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "esito", Evento.model().ESITO.getFieldType()));
 				setParameter(object, "setSottotipoEsito", Evento.model().SOTTOTIPO_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "sottotipo_esito", Evento.model().SOTTOTIPO_ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "sottotipo_esito", Evento.model().SOTTOTIPO_ESITO.getFieldType()));
 				setParameter(object, "setDettaglioEsito", Evento.model().DETTAGLIO_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dettaglio_esito", Evento.model().DETTAGLIO_ESITO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "dettaglio_esito", Evento.model().DETTAGLIO_ESITO.getFieldType()));
 				setParameter(object, "setParametriRichiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "parametri_richiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "parametri_richiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType()));
 				setParameter(object, "setParametriRisposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "parametri_risposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "parametri_risposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
 				setParameter(object, "setDatiPagoPA", Evento.model().DATI_PAGO_PA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_pago_pa", Evento.model().DATI_PAGO_PA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "dati_pago_pa", Evento.model().DATI_PAGO_PA.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", Evento.model().COD_VERSAMENTO_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Evento.model().COD_VERSAMENTO_ENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_versamento_ente", Evento.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", Evento.model().COD_APPLICAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_applicazione", Evento.model().COD_APPLICAZIONE.getFieldType()));
 				setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", Evento.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", Evento.model().IUV.getFieldType()));
 				setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ccp", Evento.model().CCP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ccp", Evento.model().CCP.getFieldType()));
 				setParameter(object, "setCodDominio", Evento.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Evento.model().COD_DOMINIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", Evento.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIdSessione", Evento.model().ID_SESSIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "id_sessione", Evento.model().ID_SESSIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "id_sessione", Evento.model().ID_SESSIONE.getFieldType()));
 				setParameter(object, "setSeverita", Evento.model().SEVERITA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "severita", Evento.model().SEVERITA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "severita", Evento.model().SEVERITA.getFieldType()));
 				setParameter(object, "setClusterId", Evento.model().CLUSTER_ID.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cluster_id", Evento.model().CLUSTER_ID.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cluster_id", Evento.model().CLUSTER_ID.getFieldType()));
 				setParameter(object, "setTransactionId", Evento.model().TRANSACTION_ID.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "transaction_id", Evento.model().TRANSACTION_ID.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "transaction_id", Evento.model().TRANSACTION_ID.getFieldType()));
 				return object;
 			}
 			

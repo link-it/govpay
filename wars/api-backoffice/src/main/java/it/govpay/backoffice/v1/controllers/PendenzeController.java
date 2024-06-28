@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.mail.BodyPart;
+import jakarta.mail.BodyPart;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

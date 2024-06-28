@@ -1265,5 +1265,10 @@ public class JDBCIUVService extends JDBCIUVServiceSearch  implements IDBIUVServi
 		}
 	
 	}
+
+	@Override
+	public int nativeUpdate(String arg0, Object... arg1) throws ServiceException, NotImplementedException {
+		throw new NotImplementedException("nativeUpdate");
+	}
 	
 }

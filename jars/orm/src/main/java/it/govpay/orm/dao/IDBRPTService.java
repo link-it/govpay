@@ -38,6 +38,6 @@ import it.govpay.orm.RPT;
 
 public interface IDBRPTService extends IRPTService,IDBServiceWithId<RPT, IdRpt> {
 
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException;
+//	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException;
 	
 }

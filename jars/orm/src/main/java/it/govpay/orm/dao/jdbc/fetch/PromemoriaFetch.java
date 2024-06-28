@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,39 +47,39 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Promemoria.model())){
 				Promemoria object = new Promemoria();
 				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setTipo", Promemoria.model().TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", Promemoria.model().TIPO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo", Promemoria.model().TIPO.getFieldType()));
 				setParameter(object, "setDataCreazione", Promemoria.model().DATA_CREAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_creazione", Promemoria.model().DATA_CREAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", Promemoria.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setStato", Promemoria.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", Promemoria.model().STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "stato", Promemoria.model().STATO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", Promemoria.model().DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Promemoria.model().DESCRIZIONE_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", Promemoria.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setDestinatarioTo", Promemoria.model().DESTINATARIO_TO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "destinatario_to", Promemoria.model().DESTINATARIO_TO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "destinatario_to", Promemoria.model().DESTINATARIO_TO.getFieldType()));
 				setParameter(object, "setDestinatarioCc", Promemoria.model().DESTINATARIO_CC.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "destinatario_cc", Promemoria.model().DESTINATARIO_CC.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "destinatario_cc", Promemoria.model().DESTINATARIO_CC.getFieldType()));
 				setParameter(object, "setMessaggioContentType", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "messaggio_content_type", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "messaggio_content_type", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType()));
 				setParameter(object, "setOggetto", Promemoria.model().OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "oggetto", Promemoria.model().OGGETTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "oggetto", Promemoria.model().OGGETTO.getFieldType()));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "messaggio", Promemoria.model().MESSAGGIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "messaggio", Promemoria.model().MESSAGGIO.getFieldType()));
 				setParameter(object, "setAllegaPdf", Promemoria.model().ALLEGA_PDF.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "allega_pdf", Promemoria.model().ALLEGA_PDF.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "allega_pdf", Promemoria.model().ALLEGA_PDF.getFieldType()));
 				setParameter(object, "setDataAggiornamentoStato", Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
 				setParameter(object, "setDataProssimaSpedizione", Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_prossima_spedizione", Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_prossima_spedizione", Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
 				setParameter(object, "setTentativiSpedizione", Promemoria.model().TENTATIVI_SPEDIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tentativi_spedizione", Promemoria.model().TENTATIVI_SPEDIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tentativi_spedizione", Promemoria.model().TENTATIVI_SPEDIZIONE.getFieldType()));
 				return object;
 			}
 			

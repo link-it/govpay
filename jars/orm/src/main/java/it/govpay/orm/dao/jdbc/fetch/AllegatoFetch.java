@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,23 +47,23 @@ public class AllegatoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Allegato.model())){
 				Allegato object = new Allegato();
 				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setNome", Allegato.model().NOME.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "nome", Allegato.model().NOME.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "nome", Allegato.model().NOME.getFieldType()));
 				setParameter(object, "setTipo", Allegato.model().TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", Allegato.model().TIPO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "tipo", Allegato.model().TIPO.getFieldType()));
 				setParameter(object, "setDescrizione", Allegato.model().DESCRIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione", Allegato.model().DESCRIZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descrizione", Allegato.model().DESCRIZIONE.getFieldType()));
 				setParameter(object, "setDataCreazione", Allegato.model().DATA_CREAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_creazione", Allegato.model().DATA_CREAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", Allegato.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setRawContenuto", Allegato.model().RAW_CONTENUTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "raw_contenuto", Allegato.model().RAW_CONTENUTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "raw_contenuto", Allegato.model().RAW_CONTENUTO.getFieldType()));
 				return object;
 			}
 			

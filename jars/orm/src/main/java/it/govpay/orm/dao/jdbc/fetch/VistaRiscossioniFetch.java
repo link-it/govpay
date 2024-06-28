@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
@@ -47,71 +47,71 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaRiscossioni.model())){
 				VistaRiscossioni object = new VistaRiscossioni();
 				setParameter(object, "setCodDominio", VistaRiscossioni.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", VistaRiscossioni.model().COD_DOMINIO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", VistaRiscossioni.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIuv", VistaRiscossioni.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", VistaRiscossioni.model().IUV.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv", VistaRiscossioni.model().IUV.getFieldType()));
 				setParameter(object, "setIur", VistaRiscossioni.model().IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iur", VistaRiscossioni.model().IUR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iur", VistaRiscossioni.model().IUR.getFieldType()));
 				setParameter(object, "setCodFlusso", VistaRiscossioni.model().COD_FLUSSO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_flusso", VistaRiscossioni.model().COD_FLUSSO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_flusso", VistaRiscossioni.model().COD_FLUSSO.getFieldType()));
 				setParameter(object, "setFrIur", VistaRiscossioni.model().FR_IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "fr_iur", VistaRiscossioni.model().FR_IUR.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "fr_iur", VistaRiscossioni.model().FR_IUR.getFieldType()));
 				setParameter(object, "setDataRegolamento", VistaRiscossioni.model().DATA_REGOLAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_regolamento", VistaRiscossioni.model().DATA_REGOLAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_regolamento", VistaRiscossioni.model().DATA_REGOLAMENTO.getFieldType()));
 				setParameter(object, "setNumeroPagamenti", VistaRiscossioni.model().NUMERO_PAGAMENTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "numero_pagamenti", VistaRiscossioni.model().NUMERO_PAGAMENTI.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "numero_pagamenti", VistaRiscossioni.model().NUMERO_PAGAMENTI.getFieldType()));
 				setParameter(object, "setImportoTotalePagamenti", VistaRiscossioni.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_totale_pagamenti", VistaRiscossioni.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_totale_pagamenti", VistaRiscossioni.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
 				setParameter(object, "setImportoPagato", VistaRiscossioni.model().IMPORTO_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_pagato", VistaRiscossioni.model().IMPORTO_PAGATO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_pagato", VistaRiscossioni.model().IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setCodSingoloVersamentoEnte", VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_singolo_versamento_ente", VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_singolo_versamento_ente", VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setIndiceDati", VistaRiscossioni.model().INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_dati", VistaRiscossioni.model().INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					GenericJDBCParameterUtilities.readParameter(rs, "indice_dati", VistaRiscossioni.model().INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setCodVersamentoEnte", VistaRiscossioni.model().COD_VERSAMENTO_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", VistaRiscossioni.model().COD_VERSAMENTO_ENTE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_versamento_ente", VistaRiscossioni.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setCodApplicazione", VistaRiscossioni.model().COD_APPLICAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", VistaRiscossioni.model().COD_APPLICAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_applicazione", VistaRiscossioni.model().COD_APPLICAZIONE.getFieldType()));
 				setParameter(object, "setDataPagamento", VistaRiscossioni.model().DATA_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_pagamento", VistaRiscossioni.model().DATA_PAGAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_pagamento", VistaRiscossioni.model().DATA_PAGAMENTO.getFieldType()));
 				setParameter(object, "setCodTipoVersamento", VistaRiscossioni.model().COD_TIPO_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_tipo_versamento", VistaRiscossioni.model().COD_TIPO_VERSAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_tipo_versamento", VistaRiscossioni.model().COD_TIPO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setCodEntrata", VistaRiscossioni.model().COD_ENTRATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_entrata", VistaRiscossioni.model().COD_ENTRATA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_entrata", VistaRiscossioni.model().COD_ENTRATA.getFieldType()));
 				setParameter(object, "setIdentificativoDebitore", VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "identificativo_debitore", VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "identificativo_debitore", VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE.getFieldType()));
 				setParameter(object, "setDebitoreAnagrafica", VistaRiscossioni.model().DEBITORE_ANAGRAFICA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "debitore_anagrafica", VistaRiscossioni.model().DEBITORE_ANAGRAFICA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "debitore_anagrafica", VistaRiscossioni.model().DEBITORE_ANAGRAFICA.getFieldType()));
 				setParameter(object, "setAnno", VistaRiscossioni.model().ANNO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno", VistaRiscossioni.model().ANNO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "anno", VistaRiscossioni.model().ANNO.getFieldType()));
 				setParameter(object, "setDescrTipoVersamento", VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descr_tipo_versamento", VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "descr_tipo_versamento", VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setCodPsp", VistaRiscossioni.model().COD_PSP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_psp", VistaRiscossioni.model().COD_PSP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_psp", VistaRiscossioni.model().COD_PSP.getFieldType()));
 				setParameter(object, "setRagioneSocialePsp", VistaRiscossioni.model().RAGIONE_SOCIALE_PSP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_psp", VistaRiscossioni.model().RAGIONE_SOCIALE_PSP.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "ragione_sociale_psp", VistaRiscossioni.model().RAGIONE_SOCIALE_PSP.getFieldType()));
 				setParameter(object, "setCodRata", VistaRiscossioni.model().COD_RATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_rata", VistaRiscossioni.model().COD_RATA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "cod_rata", VistaRiscossioni.model().COD_RATA.getFieldType()));
 				setParameter(object, "setCausaleVersamento", VistaRiscossioni.model().CAUSALE_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "causale_versamento", VistaRiscossioni.model().CAUSALE_VERSAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "causale_versamento", VistaRiscossioni.model().CAUSALE_VERSAMENTO.getFieldType()));
 				setParameter(object, "setImportoVersamento", VistaRiscossioni.model().IMPORTO_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_versamento", VistaRiscossioni.model().IMPORTO_VERSAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "importo_versamento", VistaRiscossioni.model().IMPORTO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setNumeroAvviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "numero_avviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "numero_avviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType()));
 				setParameter(object, "setIuvPagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "iuv_pagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType()));
 				setParameter(object, "setDataCreazione", VistaRiscossioni.model().DATA_CREAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_creazione", VistaRiscossioni.model().DATA_CREAZIONE.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", VistaRiscossioni.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setDataScadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_scadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "data_scadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "contabilita", VistaRiscossioni.model().CONTABILITA.getFieldType()));
+					GenericJDBCParameterUtilities.readParameter(rs, "contabilita", VistaRiscossioni.model().CONTABILITA.getFieldType()));
 				return object;
 			}
 			

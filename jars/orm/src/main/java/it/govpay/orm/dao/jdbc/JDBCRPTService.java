@@ -1264,7 +1264,7 @@ public class JDBCRPTService extends JDBCRPTServiceSearch  implements IDBRPTServi
 	}
 	
 	@Override
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException{
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotImplementedException{
 	
 		Connection connection = null;
 		try{
@@ -1280,7 +1280,8 @@ public class JDBCRPTService extends JDBCRPTServiceSearch  implements IDBRPTServi
 		}catch(ServiceException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
+			this.log.debug(e.getMessage(),e);
+			return 0;
 		}catch(NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
