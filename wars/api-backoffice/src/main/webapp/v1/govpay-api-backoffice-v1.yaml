@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.39.0"
+  version: "1.40.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2205,6 +2205,7 @@ paths:
     get:
       summary: Lista dei pagamenti
       operationId: findPagamenti
+      deprecated: true
       tags:
         - Pagamenti
       parameters:
@@ -2268,6 +2269,7 @@ paths:
     get:
       summary: Dettaglio di un pagamento
       operationId: getPagamento
+      deprecated: true
       tags:
         - Pagamenti
       parameters:
@@ -2295,6 +2297,7 @@ paths:
     patch:
       summary: Aggiorna selettivamente campi di un pagamento
       operationId: updatePagamento
+      deprecated: true
       tags:
         - Pagamenti
       parameters:

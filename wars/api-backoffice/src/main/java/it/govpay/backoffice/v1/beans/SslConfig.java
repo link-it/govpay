@@ -21,7 +21,7 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

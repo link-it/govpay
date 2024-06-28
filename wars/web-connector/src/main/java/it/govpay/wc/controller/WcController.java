@@ -26,7 +26,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import it.govpay.core.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;

@@ -124,6 +124,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Verifico la notifica di terminazione
 
+* call sleep(10000)
+
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
@@ -216,6 +218,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response == read('classpath:test/api/backoffice/v1/pendenze/get/msg/notifica-attivazione-multibeneficiario.json')
 
 # Verifico la notifica di terminazione
+
+* call sleep(10000)
 
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')

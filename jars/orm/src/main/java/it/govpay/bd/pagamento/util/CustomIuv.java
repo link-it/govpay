@@ -21,7 +21,7 @@ package it.govpay.bd.pagamento.util;
 
 import java.util.Map;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Dominio;
@@ -42,7 +42,7 @@ public class CustomIuv {
 	public String buildPrefix(Applicazione applicazione, String prefix, Map<String, String> values) {
 		if(prefix == null) return "";
 		
-		StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");
+		StringSubstitutor sub = new StringSubstitutor(values, "%(", ")");
 		String result = sub.replace(prefix);
 
 		return result;
