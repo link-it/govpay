@@ -643,6 +643,12 @@
 				<artifactId>openspcoop2_utils-crypt</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-random</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>

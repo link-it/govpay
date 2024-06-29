@@ -233,6 +233,11 @@
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-random</artifactId>
+		</dependency>
 		
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
