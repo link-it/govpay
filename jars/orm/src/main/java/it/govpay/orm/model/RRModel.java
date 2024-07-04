@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.RR;
@@ -52,7 +54,7 @@ public class RRModel extends AbstractModel<RR> {
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"RR",RR.class);
 		this.IMPORTO_TOTALE_RICHIESTO = new Field("importoTotaleRichiesto",double.class,"RR",RR.class);
 		this.COD_MSG_ESITO = new Field("codMsgEsito",java.lang.String.class,"RR",RR.class);
-		this.IMPORTO_TOTALE_REVOCATO = new Field("importoTotaleRevocato",java.lang.Double.class,"RR",RR.class);
+		this.IMPORTO_TOTALE_REVOCATO = new Field("importoTotaleRevocato",java.math.BigDecimal.class,"RR",RR.class);
 		this.XML_RR = new Field("xmlRR",byte[].class,"RR",RR.class);
 		this.XML_ER = new Field("xmlER",byte[].class,"RR",RR.class);
 		this.COD_TRANSAZIONE_RR = new Field("codTransazioneRR",java.lang.String.class,"RR",RR.class);
@@ -75,7 +77,7 @@ public class RRModel extends AbstractModel<RR> {
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"RR",RR.class);
 		this.IMPORTO_TOTALE_RICHIESTO = new ComplexField(father,"importoTotaleRichiesto",double.class,"RR",RR.class);
 		this.COD_MSG_ESITO = new ComplexField(father,"codMsgEsito",java.lang.String.class,"RR",RR.class);
-		this.IMPORTO_TOTALE_REVOCATO = new ComplexField(father,"importoTotaleRevocato",java.lang.Double.class,"RR",RR.class);
+		this.IMPORTO_TOTALE_REVOCATO = new ComplexField(father,"importoTotaleRevocato",java.math.BigDecimal.class,"RR",RR.class);
 		this.XML_RR = new ComplexField(father,"xmlRR",byte[].class,"RR",RR.class);
 		this.XML_ER = new ComplexField(father,"xmlER",byte[].class,"RR",RR.class);
 		this.COD_TRANSAZIONE_RR = new ComplexField(father,"codTransazioneRR",java.lang.String.class,"RR",RR.class);

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaRendicontazione;
@@ -51,7 +53,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_DATA_REGOLAMENTO = new Field("frDataRegolamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_DATA_ACQUISIZIONE = new Field("frDataAcquisizione",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_NUMERO_PAGAMENTI = new Field("frNumeroPagamenti",long.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.FR_IMPORTO_TOTALE_PAGAMENTI = new Field("frImportoTotalePagamenti",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_IMPORTO_TOTALE_PAGAMENTI = new Field("frImportoTotalePagamenti",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_COD_BIC_RIVERSAMENTO = new Field("frCodBicRiversamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID = new Field("frId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("frIdIncasso",it.govpay.orm.IdIncasso.class,"VistaRendicontazione",VistaRendicontazione.class));
@@ -60,9 +62,9 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_OBSOLETO = new Field("frObsoleto",Boolean.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUV = new Field("rndIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUR = new Field("rndIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.RND_INDICE_DATI = new Field("rndIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.RND_IMPORTO_PAGATO = new Field("rndImportoPagato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.RND_ESITO = new Field("rndEsito",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.RND_INDICE_DATI = new Field("rndIndiceDati",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.RND_IMPORTO_PAGATO = new Field("rndImportoPagato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.RND_ESITO = new Field("rndEsito",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_DATA = new Field("rndData",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_STATO = new Field("rndStato",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_ANOMALIE = new Field("rndAnomalie",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -73,7 +75,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.SNG_IMPORTO_SINGOLO_VERSAMENTO = new Field("sngImportoSingoloVersamento",double.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DESCRIZIONE = new Field("sngDescrizione",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DATI_ALLEGATI = new Field("sngDatiAllegati",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.SNG_INDICE_DATI = new Field("sngIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.SNG_INDICE_DATI = new Field("sngIndiceDati",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new Field("sngDescrizioneCausaleRPT",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_CONTABILITA = new Field("sngContabilita",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_ID = new Field("vrsId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -123,8 +125,8 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.VRS_DIREZIONE = new Field("vrsDirezione",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_ID_SESSIONE = new Field("vrsIdSessione",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_DATA_PAGAMENTO = new Field("vrsDataPagamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.VRS_IMPORTO_PAGATO = new Field("vrsImportoPagato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.VRS_IMPORTO_PAGATO = new Field("vrsImportoPagato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_STATO_PAGAMENTO = new Field("vrsStatoPagamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_IUV_PAGAMENTO = new Field("vrsIuvPagamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_COD_RATA = new Field("vrsCodRata",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -138,13 +140,13 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.PAG_DATA_ACQUISIZIONE = new Field("pagDataAcquisizione",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_IUR = new Field("pagIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATA_PAGAMENTO = new Field("pagDataPagamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.PAG_COMMISSIONI_PSP = new Field("pagCommissioniPsp",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.PAG_COMMISSIONI_PSP = new Field("pagCommissioniPsp",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_TIPO_ALLEGATO = new Field("pagTipoAllegato",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_ALLEGATO = new Field("pagAllegato",byte[].class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATA_ACQUISIZIONE_REVOCA = new Field("pagDataAcquisizioneRevoca",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_CAUSALE_REVOCA = new Field("pagCausaleRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATI_REVOCA = new Field("pagDatiRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.PAG_IMPORTO_REVOCATO = new Field("pagImportoRevocato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.PAG_IMPORTO_REVOCATO = new Field("pagImportoRevocato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_ESITO_REVOCA = new Field("pagEsitoRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATI_ESITO_REVOCA = new Field("pagDatiEsitoRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_STATO = new Field("pagStato",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -169,7 +171,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_DATA_REGOLAMENTO = new ComplexField(father,"frDataRegolamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_DATA_ACQUISIZIONE = new ComplexField(father,"frDataAcquisizione",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_NUMERO_PAGAMENTI = new ComplexField(father,"frNumeroPagamenti",long.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.FR_IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"frImportoTotalePagamenti",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"frImportoTotalePagamenti",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_COD_BIC_RIVERSAMENTO = new ComplexField(father,"frCodBicRiversamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID = new ComplexField(father,"frId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"frIdIncasso",it.govpay.orm.IdIncasso.class,"VistaRendicontazione",VistaRendicontazione.class));
@@ -178,9 +180,9 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_OBSOLETO = new ComplexField(father,"frObsoleto",Boolean.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUV = new ComplexField(father,"rndIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUR = new ComplexField(father,"rndIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.RND_INDICE_DATI = new ComplexField(father,"rndIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.RND_IMPORTO_PAGATO = new ComplexField(father,"rndImportoPagato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.RND_ESITO = new ComplexField(father,"rndEsito",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.RND_INDICE_DATI = new ComplexField(father,"rndIndiceDati",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.RND_IMPORTO_PAGATO = new ComplexField(father,"rndImportoPagato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.RND_ESITO = new ComplexField(father,"rndEsito",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_DATA = new ComplexField(father,"rndData",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_STATO = new ComplexField(father,"rndStato",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_ANOMALIE = new ComplexField(father,"rndAnomalie",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -191,7 +193,7 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.SNG_IMPORTO_SINGOLO_VERSAMENTO = new ComplexField(father,"sngImportoSingoloVersamento",double.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DESCRIZIONE = new ComplexField(father,"sngDescrizione",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DATI_ALLEGATI = new ComplexField(father,"sngDatiAllegati",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.SNG_INDICE_DATI = new ComplexField(father,"sngIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.SNG_INDICE_DATI = new ComplexField(father,"sngIndiceDati",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"sngDescrizioneCausaleRPT",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.SNG_CONTABILITA = new ComplexField(father,"sngContabilita",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -241,8 +243,8 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.VRS_DIREZIONE = new ComplexField(father,"vrsDirezione",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_ID_SESSIONE = new ComplexField(father,"vrsIdSessione",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_DATA_PAGAMENTO = new ComplexField(father,"vrsDataPagamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.VRS_IMPORTO_PAGATO = new ComplexField(father,"vrsImportoPagato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.VRS_IMPORTO_PAGATO = new ComplexField(father,"vrsImportoPagato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_STATO_PAGAMENTO = new ComplexField(father,"vrsStatoPagamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_IUV_PAGAMENTO = new ComplexField(father,"vrsIuvPagamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.VRS_COD_RATA = new ComplexField(father,"vrsCodRata",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -256,13 +258,13 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.PAG_DATA_ACQUISIZIONE = new ComplexField(father,"pagDataAcquisizione",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_IUR = new ComplexField(father,"pagIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATA_PAGAMENTO = new ComplexField(father,"pagDataPagamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.PAG_COMMISSIONI_PSP = new ComplexField(father,"pagCommissioniPsp",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.PAG_COMMISSIONI_PSP = new ComplexField(father,"pagCommissioniPsp",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_TIPO_ALLEGATO = new ComplexField(father,"pagTipoAllegato",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_ALLEGATO = new ComplexField(father,"pagAllegato",byte[].class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"pagDataAcquisizioneRevoca",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_CAUSALE_REVOCA = new ComplexField(father,"pagCausaleRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATI_REVOCA = new ComplexField(father,"pagDatiRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
-		this.PAG_IMPORTO_REVOCATO = new ComplexField(father,"pagImportoRevocato",java.lang.Double.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.PAG_IMPORTO_REVOCATO = new ComplexField(father,"pagImportoRevocato",java.math.BigDecimal.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_ESITO_REVOCA = new ComplexField(father,"pagEsitoRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_DATI_ESITO_REVOCA = new ComplexField(father,"pagDatiEsitoRevoca",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.PAG_STATO = new ComplexField(father,"pagStato",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);

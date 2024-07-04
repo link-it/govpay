@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
 import org.openspcoop2.utils.beans.WriteToSerializerType;

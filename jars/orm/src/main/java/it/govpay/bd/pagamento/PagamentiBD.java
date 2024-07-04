@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -103,7 +104,7 @@ public class PagamentiBD extends BasicBD {
 	/**
 	 * Recupera il pagamento identificato dalla chiave logica
 	 */
-	public Pagamento getPagamento(String codDominio, String iuv, String iur, Integer indiceDati)
+	public Pagamento getPagamento(String codDominio, String iuv, String iur, BigInteger indiceDati)
 			throws ServiceException, NotFoundException, MultipleResultException {
 		try {
 			if(this.isAtomica()) {
@@ -117,7 +118,7 @@ public class PagamentiBD extends BasicBD {
 			if(iur != null) 
 				exp.equals(it.govpay.orm.Pagamento.model().IUR, iur);
 			if(indiceDati != null) 
-				exp.equals(it.govpay.orm.Pagamento.model().INDICE_DATI, indiceDati);
+				exp.equals(it.govpay.orm.Pagamento.model().INDICE_DATI, indiceDati.intValue());
 			
 			List<it.govpay.orm.Pagamento> pagamentoVO = this.getPagamentoService().findAll(exp);
 

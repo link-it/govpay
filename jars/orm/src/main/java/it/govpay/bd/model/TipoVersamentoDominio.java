@@ -20,6 +20,7 @@
 package it.govpay.bd.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -258,7 +259,7 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getAvvisaturaMailPromemoriaScadenzaTipoDefault();
 	}
-	public BigDecimal getAvvisaturaMailPromemoriaScadenzaPreavviso() {
+	public BigInteger getAvvisaturaMailPromemoriaScadenzaPreavviso() {
 		if(this.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom() != null)
 			return this.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom();
 		else 
@@ -385,7 +386,7 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault();
 	}
-	public BigDecimal getAvvisaturaAppIoPromemoriaScadenzaPreavviso() {
+	public BigInteger getAvvisaturaAppIoPromemoriaScadenzaPreavviso() {
 		if(this.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom() != null)
 			return this.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom();
 		else 

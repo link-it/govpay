@@ -21,6 +21,7 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -512,7 +513,7 @@ public class RtUtils extends NdpValidationUtils {
 				boolean insert = true;
 				
 				try {
-					pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur, indice+1);
+					pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur,  BigInteger.valueOf(indice+1));
 
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione

@@ -29,6 +29,8 @@ import it.govpay.orm.IdRpt;
 import it.govpay.orm.RR;
 
 public class RrConverter {
+	
+	private RrConverter() {}
 
 	public static Rr toDTO(RR vo) {
 		Rr dto = new Rr();
@@ -43,8 +45,7 @@ public class RrConverter {
 		dto.setIdRpt(vo.getIdRpt().getId());
 		dto.setIdTransazioneRr(vo.getCodTransazioneRR());
 		dto.setIdTransazioneEr(vo.getCodTransazioneER());
-		if(vo.getImportoTotaleRevocato() != null)
-			dto.setImportoTotaleRevocato(BigDecimal.valueOf(vo.getImportoTotaleRevocato()));
+		dto.setImportoTotaleRevocato(vo.getImportoTotaleRevocato());
 		dto.setImportoTotaleRichiesto(BigDecimal.valueOf(vo.getImportoTotaleRichiesto()));
 		dto.setIuv(vo.getIuv());
 		dto.setStato(StatoRr.valueOf(vo.getStato()));
@@ -70,8 +71,7 @@ public class RrConverter {
 		vo.setIdRpt(idRpt);
 		if(dto.getImportoTotaleRichiesto() != null)
 			vo.setImportoTotaleRichiesto(dto.getImportoTotaleRichiesto().doubleValue());
-		if(dto.getImportoTotaleRevocato() != null)
-			vo.setImportoTotaleRevocato(dto.getImportoTotaleRevocato().doubleValue());
+		vo.setImportoTotaleRevocato(dto.getImportoTotaleRevocato());
 		vo.setIuv(dto.getIuv());
 		vo.setStato(dto.getStato().toString());
 		vo.setXmlER(dto.getXmlEr());

@@ -30,6 +30,8 @@ import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdRr;
 
 public class NotificaConverter {
+	
+	private NotificaConverter() {}
 
 	public static it.govpay.orm.Notifica toVO(Notifica dto) {
 		it.govpay.orm.Notifica vo = new it.govpay.orm.Notifica();

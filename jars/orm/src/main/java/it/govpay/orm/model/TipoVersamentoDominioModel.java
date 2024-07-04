@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.TipoVersamentoDominio;
@@ -73,7 +75,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.AVV_MAIL_PROM_RIC_MESSAGGIO = new Field("avvMailPromRicMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_RIC_ESEGUITI = new Field("avvMailPromRicEseguiti",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_ABILITATO = new Field("avvMailPromScadAbilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.AVV_MAIL_PROM_SCAD_PREAVVISO = new Field("avvMailPromScadPreavviso",java.lang.Integer.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.AVV_MAIL_PROM_SCAD_PREAVVISO = new Field("avvMailPromScadPreavviso",java.math.BigInteger.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_TIPO = new Field("avvMailPromScadTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_OGGETTO = new Field("avvMailPromScadOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_MESSAGGIO = new Field("avvMailPromScadMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -93,7 +95,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.AVV_APP_IO_PROM_RIC_MESSAGGIO = new Field("avvAppIoPromRicMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_RIC_ESEGUITI = new Field("avvAppIoPromRicEseguiti",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_ABILITATO = new Field("avvAppIoPromScadAbilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.AVV_APP_IO_PROM_SCAD_PREAVVISO = new Field("avvAppIoPromScadPreavviso",java.lang.Integer.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.AVV_APP_IO_PROM_SCAD_PREAVVISO = new Field("avvAppIoPromScadPreavviso",java.math.BigInteger.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_TIPO = new Field("avvAppIoPromScadTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_OGGETTO = new Field("avvAppIoPromScadOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_MESSAGGIO = new Field("avvAppIoPromScadMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -136,7 +138,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.AVV_MAIL_PROM_RIC_MESSAGGIO = new ComplexField(father,"avvMailPromRicMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_RIC_ESEGUITI = new ComplexField(father,"avvMailPromRicEseguiti",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_ABILITATO = new ComplexField(father,"avvMailPromScadAbilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.AVV_MAIL_PROM_SCAD_PREAVVISO = new ComplexField(father,"avvMailPromScadPreavviso",java.lang.Integer.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.AVV_MAIL_PROM_SCAD_PREAVVISO = new ComplexField(father,"avvMailPromScadPreavviso",java.math.BigInteger.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_TIPO = new ComplexField(father,"avvMailPromScadTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_OGGETTO = new ComplexField(father,"avvMailPromScadOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_MAIL_PROM_SCAD_MESSAGGIO = new ComplexField(father,"avvMailPromScadMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -156,7 +158,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.AVV_APP_IO_PROM_RIC_MESSAGGIO = new ComplexField(father,"avvAppIoPromRicMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_RIC_ESEGUITI = new ComplexField(father,"avvAppIoPromRicEseguiti",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_ABILITATO = new ComplexField(father,"avvAppIoPromScadAbilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.AVV_APP_IO_PROM_SCAD_PREAVVISO = new ComplexField(father,"avvAppIoPromScadPreavviso",java.lang.Integer.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.AVV_APP_IO_PROM_SCAD_PREAVVISO = new ComplexField(father,"avvAppIoPromScadPreavviso",java.math.BigInteger.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_TIPO = new ComplexField(father,"avvAppIoPromScadTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_OGGETTO = new ComplexField(father,"avvAppIoPromScadOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.AVV_APP_IO_PROM_SCAD_MESSAGGIO = new ComplexField(father,"avvAppIoPromScadMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);

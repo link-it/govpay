@@ -29,6 +29,8 @@ import org.openspcoop2.utils.certificate.PrincipalType;
 import it.govpay.model.Intermediario;
 
 public class IntermediarioConverter {
+	
+	private IntermediarioConverter() {}
 
 	public static List<Intermediario> toDTOList(List<it.govpay.orm.Intermediario> intermediarioLst) {
 		List<Intermediario> lstDTO = new ArrayList<>();

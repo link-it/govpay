@@ -17,23 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
-import org.openspcoop2.utils.beans.WriteToSerializerType;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 /**     
- * Serializer of beans with json
+ * Deserializer of beans with json
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JsonSerializer extends AbstractSerializer {
+public class JsonJacksonDeserializer extends AbstractDeserializerWithFactory {
 
 	@Override
-	protected WriteToSerializerType getType(){
-		return WriteToSerializerType.JSON_JACKSON;
+	protected SERIALIZATION_TYPE getSERIALIZATION_TYPE() {
+		return SERIALIZATION_TYPE.JSON_JACKSON;
 	}
 		
 }

@@ -523,7 +523,7 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		OperazioneFieldConverter converter = this.getOperazioneFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// Operazione.model()

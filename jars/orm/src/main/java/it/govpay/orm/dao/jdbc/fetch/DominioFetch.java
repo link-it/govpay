@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,47 +49,47 @@ public class DominioFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Dominio.model())){
 				Dominio object = new Dominio();
-				this.setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", Dominio.model().COD_DOMINIO.getFieldType()));
-				this.setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "gln", Dominio.model().GLN.getFieldType()));
-				this.setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "abilitato", Dominio.model().ABILITATO.getFieldType()));
-				this.setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "ragione_sociale", Dominio.model().RAGIONE_SOCIALE.getFieldType()));
-				this.setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "aux_digit", Dominio.model().AUX_DIGIT.getFieldType()));
-				this.setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
-				this.setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
+				setParameter(object, "setId", Long.class,
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Dominio.model().COD_DOMINIO.getFieldType()));
+				setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "gln", Dominio.model().GLN.getFieldType()));
+				setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "abilitato", Dominio.model().ABILITATO.getFieldType()));
+				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ragione_sociale", Dominio.model().RAGIONE_SOCIALE.getFieldType()));
+				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "aux_digit", Dominio.model().AUX_DIGIT.getFieldType()));
+				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
+				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
 				setParameter(object, "setLogo", Dominio.model().LOGO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "logo", Dominio.model().LOGO.getFieldType()));
-				this.setParameter(object, "setCbill", Dominio.model().CBILL.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cbill", Dominio.model().CBILL.getFieldType()));
-				this.setParameter(object, "setAutStampaPoste", Dominio.model().AUT_STAMPA_POSTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "aut_stampa_poste", Dominio.model().AUT_STAMPA_POSTE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "logo", Dominio.model().LOGO.getFieldType()));
+				setParameter(object, "setCbill", Dominio.model().CBILL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cbill", Dominio.model().CBILL.getFieldType()));
+				setParameter(object, "setAutStampaPoste", Dominio.model().AUT_STAMPA_POSTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "aut_stampa_poste", Dominio.model().AUT_STAMPA_POSTE.getFieldType()));
 				setParameter(object, "setCodConnettoreMyPivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_connettore_my_pivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_my_pivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()));
 				setParameter(object, "setCodConnettoreSecim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_connettore_secim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_secim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
 				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_connettore_gov_pay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_gov_pay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
 				setParameter(object, "setCodConnettoreHyperSicAPK", Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_connettore_hyper_sic_apk", Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_hyper_sic_apk", Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()));
 				setParameter(object, "setCodConnettoreMaggioliJPPA", Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_connettore_maggioli_jppa", Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_maggioli_jppa", Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()));
 				setParameter(object, "setIntermediato", Dominio.model().INTERMEDIATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "intermediato", Dominio.model().INTERMEDIATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "intermediato", Dominio.model().INTERMEDIATO.getFieldType()));
 				setParameter(object, "setTassonomiaPagoPA", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tassonomia_pago_pa", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "tassonomia_pago_pa", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()));
 				return object;
 			}
 			
@@ -108,27 +110,27 @@ public class DominioFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Dominio.model())){
 				Dominio object = new Dominio();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
+				setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				this.setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
+				setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
 					this.getObjectFromMap(map,"gln"));
-				this.setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				this.setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
+				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					this.getObjectFromMap(map,"ragioneSociale"));
-				this.setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
 					this.getObjectFromMap(map,"auxDigit"));
-				this.setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
 					this.getObjectFromMap(map,"iuvPrefix"));
-				this.setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"segregationCode"));
 				setParameter(object, "setLogo", Dominio.model().LOGO.getFieldType(),
 					this.getObjectFromMap(map,"logo"));
-				this.setParameter(object, "setCbill", Dominio.model().CBILL.getFieldType(),
+				setParameter(object, "setCbill", Dominio.model().CBILL.getFieldType(),
 					this.getObjectFromMap(map,"cbill"));
-				this.setParameter(object, "setAutStampaPoste", Dominio.model().AUT_STAMPA_POSTE.getFieldType(),
+				setParameter(object, "setAutStampaPoste", Dominio.model().AUT_STAMPA_POSTE.getFieldType(),
 					this.getObjectFromMap(map,"autStampaPoste"));
 				setParameter(object, "setCodConnettoreMyPivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreMyPivot"));

@@ -501,7 +501,7 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 
 		PagamentoPortaleVersamentoFieldConverter converter = this.getPagamentoPortaleVersamentoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// PagamentoPortaleVersamento.model()

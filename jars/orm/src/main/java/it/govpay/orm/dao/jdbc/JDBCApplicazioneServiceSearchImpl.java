@@ -460,6 +460,10 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			return;
 		}
 		obj.setId(imgSaved.getId());
+		if(obj.getIdUtenza()!=null && 
+				imgSaved.getIdUtenza()!=null){
+			obj.getIdUtenza().setId(imgSaved.getIdUtenza().getId());
+		}
 
 	}
 	
@@ -538,7 +542,7 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		ApplicazioneFieldConverter converter = this.getApplicazioneFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map

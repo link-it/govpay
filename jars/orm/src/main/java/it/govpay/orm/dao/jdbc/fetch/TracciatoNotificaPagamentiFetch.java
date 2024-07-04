@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,37 +49,37 @@ public class TracciatoNotificaPagamentiFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(TracciatoNotificaPagamenti.model())){
 				TracciatoNotificaPagamenti object = new TracciatoNotificaPagamenti();
 				setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setNomeFile", TracciatoNotificaPagamenti.model().NOME_FILE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "nome_file", TracciatoNotificaPagamenti.model().NOME_FILE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "nome_file", TracciatoNotificaPagamenti.model().NOME_FILE.getFieldType()));
 				setParameter(object, "setTipo", TracciatoNotificaPagamenti.model().TIPO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo", TracciatoNotificaPagamenti.model().TIPO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "tipo", TracciatoNotificaPagamenti.model().TIPO.getFieldType()));
 				setParameter(object, "setVersione", TracciatoNotificaPagamenti.model().VERSIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "versione", TracciatoNotificaPagamenti.model().VERSIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "versione", TracciatoNotificaPagamenti.model().VERSIONE.getFieldType()));
 				setParameter(object, "setStato", TracciatoNotificaPagamenti.model().STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato", TracciatoNotificaPagamenti.model().STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "stato", TracciatoNotificaPagamenti.model().STATO.getFieldType()));
 				setParameter(object, "setDataCreazione", TracciatoNotificaPagamenti.model().DATA_CREAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", TracciatoNotificaPagamenti.model().DATA_CREAZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_creazione", TracciatoNotificaPagamenti.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setDataRtDa", TracciatoNotificaPagamenti.model().DATA_RT_DA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_rt_da", TracciatoNotificaPagamenti.model().DATA_RT_DA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_rt_da", TracciatoNotificaPagamenti.model().DATA_RT_DA.getFieldType()));
 				setParameter(object, "setDataRtA", TracciatoNotificaPagamenti.model().DATA_RT_A.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_rt_a", TracciatoNotificaPagamenti.model().DATA_RT_A.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_rt_a", TracciatoNotificaPagamenti.model().DATA_RT_A.getFieldType()));
 				setParameter(object, "setDataCaricamento", TracciatoNotificaPagamenti.model().DATA_CARICAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_caricamento", TracciatoNotificaPagamenti.model().DATA_CARICAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_caricamento", TracciatoNotificaPagamenti.model().DATA_CARICAMENTO.getFieldType()));
 				setParameter(object, "setDataCompletamento", TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_completamento", TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_completamento", TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO.getFieldType()));
 				setParameter(object, "setRawContenuto", TracciatoNotificaPagamenti.model().RAW_CONTENUTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "raw_contenuto", TracciatoNotificaPagamenti.model().RAW_CONTENUTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "raw_contenuto", TracciatoNotificaPagamenti.model().RAW_CONTENUTO.getFieldType()));
 				setParameter(object, "setBeanDati", TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "bean_dati", TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "bean_dati", TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType()));
 				setParameter(object, "setIdentificativo", TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "identificativo", TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "identificativo", TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType()));
 				return object;
 			}
 			

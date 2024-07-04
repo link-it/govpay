@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -29,7 +31,6 @@ import java.util.Map;
 
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
-import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.VistaRendicontazione;
 
@@ -48,217 +49,217 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaRendicontazione.model())){
 				VistaRendicontazione object = new VistaRendicontazione();
 				setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setFrCodPsp", VistaRendicontazione.model().FR_COD_PSP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_cod_psp", VistaRendicontazione.model().FR_COD_PSP.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_cod_psp", VistaRendicontazione.model().FR_COD_PSP.getFieldType()));
 				setParameter(object, "setFrCodDominio", VistaRendicontazione.model().FR_COD_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_cod_dominio", VistaRendicontazione.model().FR_COD_DOMINIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_cod_dominio", VistaRendicontazione.model().FR_COD_DOMINIO.getFieldType()));
 				setParameter(object, "setFrCodFlusso", VistaRendicontazione.model().FR_COD_FLUSSO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_cod_flusso", VistaRendicontazione.model().FR_COD_FLUSSO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_cod_flusso", VistaRendicontazione.model().FR_COD_FLUSSO.getFieldType()));
 				setParameter(object, "setFrStato", VistaRendicontazione.model().FR_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_stato", VistaRendicontazione.model().FR_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_stato", VistaRendicontazione.model().FR_STATO.getFieldType()));
 				setParameter(object, "setFrDescrizioneStato", VistaRendicontazione.model().FR_DESCRIZIONE_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_descrizione_stato", VistaRendicontazione.model().FR_DESCRIZIONE_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_descrizione_stato", VistaRendicontazione.model().FR_DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setFrIur", VistaRendicontazione.model().FR_IUR.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_iur", VistaRendicontazione.model().FR_IUR.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_iur", VistaRendicontazione.model().FR_IUR.getFieldType()));
 				setParameter(object, "setFrDataOraFlusso", VistaRendicontazione.model().FR_DATA_ORA_FLUSSO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_data_ora_flusso", VistaRendicontazione.model().FR_DATA_ORA_FLUSSO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_data_ora_flusso", VistaRendicontazione.model().FR_DATA_ORA_FLUSSO.getFieldType()));
 				setParameter(object, "setFrDataRegolamento", VistaRendicontazione.model().FR_DATA_REGOLAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_data_regolamento", VistaRendicontazione.model().FR_DATA_REGOLAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_data_regolamento", VistaRendicontazione.model().FR_DATA_REGOLAMENTO.getFieldType()));
 				setParameter(object, "setFrDataAcquisizione", VistaRendicontazione.model().FR_DATA_ACQUISIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_data_acquisizione", VistaRendicontazione.model().FR_DATA_ACQUISIZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_data_acquisizione", VistaRendicontazione.model().FR_DATA_ACQUISIZIONE.getFieldType()));
 				setParameter(object, "setFrNumeroPagamenti", VistaRendicontazione.model().FR_NUMERO_PAGAMENTI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_numero_pagamenti", VistaRendicontazione.model().FR_NUMERO_PAGAMENTI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_numero_pagamenti", VistaRendicontazione.model().FR_NUMERO_PAGAMENTI.getFieldType()));
 				setParameter(object, "setFrImportoTotalePagamenti", VistaRendicontazione.model().FR_IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_importo_totale_pagamenti", VistaRendicontazione.model().FR_IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_importo_totale_pagamenti", VistaRendicontazione.model().FR_IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
 				setParameter(object, "setFrCodBicRiversamento", VistaRendicontazione.model().FR_COD_BIC_RIVERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_cod_bic_riversamento", VistaRendicontazione.model().FR_COD_BIC_RIVERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_cod_bic_riversamento", VistaRendicontazione.model().FR_COD_BIC_RIVERSAMENTO.getFieldType()));
 				setParameter(object, "setFrId", VistaRendicontazione.model().FR_ID.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_id", VistaRendicontazione.model().FR_ID.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_id", VistaRendicontazione.model().FR_ID.getFieldType()));
 				setParameter(object, "setFrRagioneSocialePsp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_ragione_sociale_psp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_psp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType()));
 				setParameter(object, "setFrRagioneSocialeDominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_ragione_sociale_dominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_dominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "fr_obsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "fr_obsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType()));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_iuv", VistaRendicontazione.model().RND_IUV.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnd_iuv", VistaRendicontazione.model().RND_IUV.getFieldType()));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_iur", VistaRendicontazione.model().RND_IUR.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnd_iur", VistaRendicontazione.model().RND_IUR.getFieldType()));
 				setParameter(object, "setRndIndiceDati", VistaRendicontazione.model().RND_INDICE_DATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_indice_dati", VistaRendicontazione.model().RND_INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "rnd_indice_dati", VistaRendicontazione.model().RND_INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setRndImportoPagato", VistaRendicontazione.model().RND_IMPORTO_PAGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_importo_pagato", VistaRendicontazione.model().RND_IMPORTO_PAGATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnd_importo_pagato", VistaRendicontazione.model().RND_IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setRndEsito", VistaRendicontazione.model().RND_ESITO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_esito", VistaRendicontazione.model().RND_ESITO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "rnd_esito", VistaRendicontazione.model().RND_ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setRndData", VistaRendicontazione.model().RND_DATA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_data", VistaRendicontazione.model().RND_DATA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnd_data", VistaRendicontazione.model().RND_DATA.getFieldType()));
 				setParameter(object, "setRndStato", VistaRendicontazione.model().RND_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_stato", VistaRendicontazione.model().RND_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnd_stato", VistaRendicontazione.model().RND_STATO.getFieldType()));
 				setParameter(object, "setRndAnomalie", VistaRendicontazione.model().RND_ANOMALIE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnd_anomalie", VistaRendicontazione.model().RND_ANOMALIE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnd_anomalie", VistaRendicontazione.model().RND_ANOMALIE.getFieldType()));
 				setParameter(object, "setSngCodSingVersEnte", VistaRendicontazione.model().SNG_COD_SING_VERS_ENTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_cod_sing_vers_ente", VistaRendicontazione.model().SNG_COD_SING_VERS_ENTE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_cod_sing_vers_ente", VistaRendicontazione.model().SNG_COD_SING_VERS_ENTE.getFieldType()));
 				setParameter(object, "setSngStatoSingoloVersamento", VistaRendicontazione.model().SNG_STATO_SINGOLO_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_stato_singolo_versamento", VistaRendicontazione.model().SNG_STATO_SINGOLO_VERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_stato_singolo_versamento", VistaRendicontazione.model().SNG_STATO_SINGOLO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setSngImportoSingoloVersamento", VistaRendicontazione.model().SNG_IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_importo_singolo_versamento", VistaRendicontazione.model().SNG_IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_importo_singolo_versamento", VistaRendicontazione.model().SNG_IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setSngDescrizione", VistaRendicontazione.model().SNG_DESCRIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_descrizione", VistaRendicontazione.model().SNG_DESCRIZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_descrizione", VistaRendicontazione.model().SNG_DESCRIZIONE.getFieldType()));
 				setParameter(object, "setSngDatiAllegati", VistaRendicontazione.model().SNG_DATI_ALLEGATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_dati_allegati", VistaRendicontazione.model().SNG_DATI_ALLEGATI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_dati_allegati", VistaRendicontazione.model().SNG_DATI_ALLEGATI.getFieldType()));
 				setParameter(object, "setSngIndiceDati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_indice_dati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "sng_indice_dati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setSngDescrizioneCausaleRPT", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "sng_contabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "sng_contabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType()));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_id", VistaRendicontazione.model().VRS_ID.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaRendicontazione.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_versamento_ente", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_versamento_ente", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setVrsNome", VistaRendicontazione.model().VRS_NOME.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_nome", VistaRendicontazione.model().VRS_NOME.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_nome", VistaRendicontazione.model().VRS_NOME.getFieldType()));
 				setParameter(object, "setVrsImportoTotale", VistaRendicontazione.model().VRS_IMPORTO_TOTALE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_importo_totale", VistaRendicontazione.model().VRS_IMPORTO_TOTALE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_importo_totale", VistaRendicontazione.model().VRS_IMPORTO_TOTALE.getFieldType()));
 				setParameter(object, "setVrsStatoVersamento", VistaRendicontazione.model().VRS_STATO_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_stato_versamento", VistaRendicontazione.model().VRS_STATO_VERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_stato_versamento", VistaRendicontazione.model().VRS_STATO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setVrsDescrizioneStato", VistaRendicontazione.model().VRS_DESCRIZIONE_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_descrizione_stato", VistaRendicontazione.model().VRS_DESCRIZIONE_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_descrizione_stato", VistaRendicontazione.model().VRS_DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setVrsAggiornabile", VistaRendicontazione.model().VRS_AGGIORNABILE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_aggiornabile", VistaRendicontazione.model().VRS_AGGIORNABILE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_aggiornabile", VistaRendicontazione.model().VRS_AGGIORNABILE.getFieldType()));
 				setParameter(object, "setVrsDataCreazione", VistaRendicontazione.model().VRS_DATA_CREAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_data_creazione", VistaRendicontazione.model().VRS_DATA_CREAZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_data_creazione", VistaRendicontazione.model().VRS_DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setVrsDataValidita", VistaRendicontazione.model().VRS_DATA_VALIDITA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_data_validita", VistaRendicontazione.model().VRS_DATA_VALIDITA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_data_validita", VistaRendicontazione.model().VRS_DATA_VALIDITA.getFieldType()));
 				setParameter(object, "setVrsDataScadenza", VistaRendicontazione.model().VRS_DATA_SCADENZA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_data_scadenza", VistaRendicontazione.model().VRS_DATA_SCADENZA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_data_scadenza", VistaRendicontazione.model().VRS_DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setVrsDataOraUltimoAgg", VistaRendicontazione.model().VRS_DATA_ORA_ULTIMO_AGG.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_data_ora_ultimo_agg", VistaRendicontazione.model().VRS_DATA_ORA_ULTIMO_AGG.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_data_ora_ultimo_agg", VistaRendicontazione.model().VRS_DATA_ORA_ULTIMO_AGG.getFieldType()));
 				setParameter(object, "setVrsCausaleVersamento", VistaRendicontazione.model().VRS_CAUSALE_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_causale_versamento", VistaRendicontazione.model().VRS_CAUSALE_VERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_causale_versamento", VistaRendicontazione.model().VRS_CAUSALE_VERSAMENTO.getFieldType()));
 				setParameter(object, "setVrsDebitoreTipo", VistaRendicontazione.model().VRS_DEBITORE_TIPO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_tipo", VistaRendicontazione.model().VRS_DEBITORE_TIPO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_tipo", VistaRendicontazione.model().VRS_DEBITORE_TIPO.getFieldType()));
 				setParameter(object, "setVrsDebitoreIdentificativo", VistaRendicontazione.model().VRS_DEBITORE_IDENTIFICATIVO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_identificativo", VistaRendicontazione.model().VRS_DEBITORE_IDENTIFICATIVO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_identificativo", VistaRendicontazione.model().VRS_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setVrsDebitoreAnagrafica", VistaRendicontazione.model().VRS_DEBITORE_ANAGRAFICA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_anagrafica", VistaRendicontazione.model().VRS_DEBITORE_ANAGRAFICA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_anagrafica", VistaRendicontazione.model().VRS_DEBITORE_ANAGRAFICA.getFieldType()));
 				setParameter(object, "setVrsDebitoreIndirizzo", VistaRendicontazione.model().VRS_DEBITORE_INDIRIZZO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_indirizzo", VistaRendicontazione.model().VRS_DEBITORE_INDIRIZZO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_indirizzo", VistaRendicontazione.model().VRS_DEBITORE_INDIRIZZO.getFieldType()));
 				setParameter(object, "setVrsDebitoreCivico", VistaRendicontazione.model().VRS_DEBITORE_CIVICO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_civico", VistaRendicontazione.model().VRS_DEBITORE_CIVICO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_civico", VistaRendicontazione.model().VRS_DEBITORE_CIVICO.getFieldType()));
 				setParameter(object, "setVrsDebitoreCap", VistaRendicontazione.model().VRS_DEBITORE_CAP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_cap", VistaRendicontazione.model().VRS_DEBITORE_CAP.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_cap", VistaRendicontazione.model().VRS_DEBITORE_CAP.getFieldType()));
 				setParameter(object, "setVrsDebitoreLocalita", VistaRendicontazione.model().VRS_DEBITORE_LOCALITA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_localita", VistaRendicontazione.model().VRS_DEBITORE_LOCALITA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_localita", VistaRendicontazione.model().VRS_DEBITORE_LOCALITA.getFieldType()));
 				setParameter(object, "setVrsDebitoreProvincia", VistaRendicontazione.model().VRS_DEBITORE_PROVINCIA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_provincia", VistaRendicontazione.model().VRS_DEBITORE_PROVINCIA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_provincia", VistaRendicontazione.model().VRS_DEBITORE_PROVINCIA.getFieldType()));
 				setParameter(object, "setVrsDebitoreNazione", VistaRendicontazione.model().VRS_DEBITORE_NAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_nazione", VistaRendicontazione.model().VRS_DEBITORE_NAZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_nazione", VistaRendicontazione.model().VRS_DEBITORE_NAZIONE.getFieldType()));
 				setParameter(object, "setVrsDebitoreEmail", VistaRendicontazione.model().VRS_DEBITORE_EMAIL.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_email", VistaRendicontazione.model().VRS_DEBITORE_EMAIL.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_email", VistaRendicontazione.model().VRS_DEBITORE_EMAIL.getFieldType()));
 				setParameter(object, "setVrsDebitoreTelefono", VistaRendicontazione.model().VRS_DEBITORE_TELEFONO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_telefono", VistaRendicontazione.model().VRS_DEBITORE_TELEFONO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_telefono", VistaRendicontazione.model().VRS_DEBITORE_TELEFONO.getFieldType()));
 				setParameter(object, "setVrsDebitoreCellulare", VistaRendicontazione.model().VRS_DEBITORE_CELLULARE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_cellulare", VistaRendicontazione.model().VRS_DEBITORE_CELLULARE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_cellulare", VistaRendicontazione.model().VRS_DEBITORE_CELLULARE.getFieldType()));
 				setParameter(object, "setVrsDebitoreFax", VistaRendicontazione.model().VRS_DEBITORE_FAX.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_debitore_fax", VistaRendicontazione.model().VRS_DEBITORE_FAX.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_debitore_fax", VistaRendicontazione.model().VRS_DEBITORE_FAX.getFieldType()));
 				setParameter(object, "setVrsTassonomiaAvviso", VistaRendicontazione.model().VRS_TASSONOMIA_AVVISO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_tassonomia_avviso", VistaRendicontazione.model().VRS_TASSONOMIA_AVVISO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_tassonomia_avviso", VistaRendicontazione.model().VRS_TASSONOMIA_AVVISO.getFieldType()));
 				setParameter(object, "setVrsTassonomia", VistaRendicontazione.model().VRS_TASSONOMIA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_tassonomia", VistaRendicontazione.model().VRS_TASSONOMIA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_tassonomia", VistaRendicontazione.model().VRS_TASSONOMIA.getFieldType()));
 				setParameter(object, "setVrsCodLotto", VistaRendicontazione.model().VRS_COD_LOTTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_lotto", VistaRendicontazione.model().VRS_COD_LOTTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_lotto", VistaRendicontazione.model().VRS_COD_LOTTO.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoLotto", VistaRendicontazione.model().VRS_COD_VERSAMENTO_LOTTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_versamento_lotto", VistaRendicontazione.model().VRS_COD_VERSAMENTO_LOTTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_versamento_lotto", VistaRendicontazione.model().VRS_COD_VERSAMENTO_LOTTO.getFieldType()));
 				setParameter(object, "setVrsCodAnnoTributario", VistaRendicontazione.model().VRS_COD_ANNO_TRIBUTARIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_anno_tributario", VistaRendicontazione.model().VRS_COD_ANNO_TRIBUTARIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_anno_tributario", VistaRendicontazione.model().VRS_COD_ANNO_TRIBUTARIO.getFieldType()));
 				setParameter(object, "setVrsCodBundlekey", VistaRendicontazione.model().VRS_COD_BUNDLEKEY.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_bundlekey", VistaRendicontazione.model().VRS_COD_BUNDLEKEY.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_bundlekey", VistaRendicontazione.model().VRS_COD_BUNDLEKEY.getFieldType()));
 				setParameter(object, "setVrsDatiAllegati", VistaRendicontazione.model().VRS_DATI_ALLEGATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_dati_allegati", VistaRendicontazione.model().VRS_DATI_ALLEGATI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_dati_allegati", VistaRendicontazione.model().VRS_DATI_ALLEGATI.getFieldType()));
 				setParameter(object, "setVrsIncasso", VistaRendicontazione.model().VRS_INCASSO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_incasso", VistaRendicontazione.model().VRS_INCASSO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_incasso", VistaRendicontazione.model().VRS_INCASSO.getFieldType()));
 				setParameter(object, "setVrsAnomalie", VistaRendicontazione.model().VRS_ANOMALIE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_anomalie", VistaRendicontazione.model().VRS_ANOMALIE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_anomalie", VistaRendicontazione.model().VRS_ANOMALIE.getFieldType()));
 				setParameter(object, "setVrsIuvVersamento", VistaRendicontazione.model().VRS_IUV_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_iuv_versamento", VistaRendicontazione.model().VRS_IUV_VERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_iuv_versamento", VistaRendicontazione.model().VRS_IUV_VERSAMENTO.getFieldType()));
 				setParameter(object, "setVrsNumeroAvviso", VistaRendicontazione.model().VRS_NUMERO_AVVISO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_numero_avviso", VistaRendicontazione.model().VRS_NUMERO_AVVISO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_numero_avviso", VistaRendicontazione.model().VRS_NUMERO_AVVISO.getFieldType()));
 				setParameter(object, "setVrsAck", VistaRendicontazione.model().VRS_ACK.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_ack", VistaRendicontazione.model().VRS_ACK.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_ack", VistaRendicontazione.model().VRS_ACK.getFieldType()));
 				setParameter(object, "setVrsAnomalo", VistaRendicontazione.model().VRS_ANOMALO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_anomalo", VistaRendicontazione.model().VRS_ANOMALO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_anomalo", VistaRendicontazione.model().VRS_ANOMALO.getFieldType()));
 				setParameter(object, "setVrsDivisione", VistaRendicontazione.model().VRS_DIVISIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_divisione", VistaRendicontazione.model().VRS_DIVISIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_divisione", VistaRendicontazione.model().VRS_DIVISIONE.getFieldType()));
 				setParameter(object, "setVrsDirezione", VistaRendicontazione.model().VRS_DIREZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_direzione", VistaRendicontazione.model().VRS_DIREZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_direzione", VistaRendicontazione.model().VRS_DIREZIONE.getFieldType()));
 				setParameter(object, "setVrsIdSessione", VistaRendicontazione.model().VRS_ID_SESSIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_id_sessione", VistaRendicontazione.model().VRS_ID_SESSIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_id_sessione", VistaRendicontazione.model().VRS_ID_SESSIONE.getFieldType()));
 				setParameter(object, "setVrsDataPagamento", VistaRendicontazione.model().VRS_DATA_PAGAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_data_pagamento", VistaRendicontazione.model().VRS_DATA_PAGAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_data_pagamento", VistaRendicontazione.model().VRS_DATA_PAGAMENTO.getFieldType()));
 				setParameter(object, "setVrsImportoPagato", VistaRendicontazione.model().VRS_IMPORTO_PAGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_importo_pagato", VistaRendicontazione.model().VRS_IMPORTO_PAGATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_importo_pagato", VistaRendicontazione.model().VRS_IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setVrsImportoIncassato", VistaRendicontazione.model().VRS_IMPORTO_INCASSATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_importo_incassato", VistaRendicontazione.model().VRS_IMPORTO_INCASSATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_importo_incassato", VistaRendicontazione.model().VRS_IMPORTO_INCASSATO.getFieldType()));
 				setParameter(object, "setVrsStatoPagamento", VistaRendicontazione.model().VRS_STATO_PAGAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_stato_pagamento", VistaRendicontazione.model().VRS_STATO_PAGAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_stato_pagamento", VistaRendicontazione.model().VRS_STATO_PAGAMENTO.getFieldType()));
 				setParameter(object, "setVrsIuvPagamento", VistaRendicontazione.model().VRS_IUV_PAGAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_iuv_pagamento", VistaRendicontazione.model().VRS_IUV_PAGAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_iuv_pagamento", VistaRendicontazione.model().VRS_IUV_PAGAMENTO.getFieldType()));
 				setParameter(object, "setVrsCodRata", VistaRendicontazione.model().VRS_COD_RATA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_cod_rata", VistaRendicontazione.model().VRS_COD_RATA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_rata", VistaRendicontazione.model().VRS_COD_RATA.getFieldType()));
 				setParameter(object, "setVrsTipo", VistaRendicontazione.model().VRS_TIPO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_tipo", VistaRendicontazione.model().VRS_TIPO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_tipo", VistaRendicontazione.model().VRS_TIPO.getFieldType()));
 				setParameter(object, "setVrsProprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "vrs_proprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "vrs_proprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType()));
 				setParameter(object, "setPagCodDominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_cod_dominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_cod_dominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType()));
 				setParameter(object, "setPagIuv", VistaRendicontazione.model().PAG_IUV.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_iuv", VistaRendicontazione.model().PAG_IUV.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_iuv", VistaRendicontazione.model().PAG_IUV.getFieldType()));
 				setParameter(object, "setPagIndiceDati", VistaRendicontazione.model().PAG_INDICE_DATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_indice_dati", VistaRendicontazione.model().PAG_INDICE_DATI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_indice_dati", VistaRendicontazione.model().PAG_INDICE_DATI.getFieldType()));
 				setParameter(object, "setPagImportoPagato", VistaRendicontazione.model().PAG_IMPORTO_PAGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_importo_pagato", VistaRendicontazione.model().PAG_IMPORTO_PAGATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_importo_pagato", VistaRendicontazione.model().PAG_IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setPagDataAcquisizione", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_data_acquisizione", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_data_acquisizione", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE.getFieldType()));
 				setParameter(object, "setPagIur", VistaRendicontazione.model().PAG_IUR.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_iur", VistaRendicontazione.model().PAG_IUR.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_iur", VistaRendicontazione.model().PAG_IUR.getFieldType()));
 				setParameter(object, "setPagDataPagamento", VistaRendicontazione.model().PAG_DATA_PAGAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_data_pagamento", VistaRendicontazione.model().PAG_DATA_PAGAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_data_pagamento", VistaRendicontazione.model().PAG_DATA_PAGAMENTO.getFieldType()));
 				setParameter(object, "setPagCommissioniPsp", VistaRendicontazione.model().PAG_COMMISSIONI_PSP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_commissioni_psp", VistaRendicontazione.model().PAG_COMMISSIONI_PSP.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_commissioni_psp", VistaRendicontazione.model().PAG_COMMISSIONI_PSP.getFieldType()));
 				setParameter(object, "setPagTipoAllegato", VistaRendicontazione.model().PAG_TIPO_ALLEGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_tipo_allegato", VistaRendicontazione.model().PAG_TIPO_ALLEGATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_tipo_allegato", VistaRendicontazione.model().PAG_TIPO_ALLEGATO.getFieldType()));
 				setParameter(object, "setPagAllegato", VistaRendicontazione.model().PAG_ALLEGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_allegato", VistaRendicontazione.model().PAG_ALLEGATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_allegato", VistaRendicontazione.model().PAG_ALLEGATO.getFieldType()));
 				setParameter(object, "setPagDataAcquisizioneRevoca", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_data_acquisizione_revoca", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_data_acquisizione_revoca", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA.getFieldType()));
 				setParameter(object, "setPagCausaleRevoca", VistaRendicontazione.model().PAG_CAUSALE_REVOCA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_causale_revoca", VistaRendicontazione.model().PAG_CAUSALE_REVOCA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_causale_revoca", VistaRendicontazione.model().PAG_CAUSALE_REVOCA.getFieldType()));
 				setParameter(object, "setPagDatiRevoca", VistaRendicontazione.model().PAG_DATI_REVOCA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_dati_revoca", VistaRendicontazione.model().PAG_DATI_REVOCA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_dati_revoca", VistaRendicontazione.model().PAG_DATI_REVOCA.getFieldType()));
 				setParameter(object, "setPagImportoRevocato", VistaRendicontazione.model().PAG_IMPORTO_REVOCATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_importo_revocato", VistaRendicontazione.model().PAG_IMPORTO_REVOCATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_importo_revocato", VistaRendicontazione.model().PAG_IMPORTO_REVOCATO.getFieldType()));
 				setParameter(object, "setPagEsitoRevoca", VistaRendicontazione.model().PAG_ESITO_REVOCA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_esito_revoca", VistaRendicontazione.model().PAG_ESITO_REVOCA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_esito_revoca", VistaRendicontazione.model().PAG_ESITO_REVOCA.getFieldType()));
 				setParameter(object, "setPagDatiEsitoRevoca", VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_dati_esito_revoca", VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_dati_esito_revoca", VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA.getFieldType()));
 				setParameter(object, "setPagStato", VistaRendicontazione.model().PAG_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_stato", VistaRendicontazione.model().PAG_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_stato", VistaRendicontazione.model().PAG_STATO.getFieldType()));
 				setParameter(object, "setPagTipo", VistaRendicontazione.model().PAG_TIPO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "pag_tipo", VistaRendicontazione.model().PAG_TIPO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "pag_tipo", VistaRendicontazione.model().PAG_TIPO.getFieldType()));
 				setParameter(object, "setRptIuv", VistaRendicontazione.model().RPT_IUV.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rpt_iuv", VistaRendicontazione.model().RPT_IUV.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rpt_iuv", VistaRendicontazione.model().RPT_IUV.getFieldType()));
 				setParameter(object, "setRptCcp", VistaRendicontazione.model().RPT_CCP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rpt_ccp", VistaRendicontazione.model().RPT_CCP.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rpt_ccp", VistaRendicontazione.model().RPT_CCP.getFieldType()));
 				setParameter(object, "setRncTrn", VistaRendicontazione.model().RNC_TRN.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "rnc_trn", VistaRendicontazione.model().RNC_TRN.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "rnc_trn", VistaRendicontazione.model().RNC_TRN.getFieldType()));
 				return object;
 			}
 			

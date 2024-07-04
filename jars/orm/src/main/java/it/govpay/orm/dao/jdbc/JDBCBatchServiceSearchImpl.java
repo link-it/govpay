@@ -522,7 +522,7 @@ public class JDBCBatchServiceSearchImpl implements IJDBCServiceSearchWithId<Batc
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		BatchFieldConverter converter = this.getBatchFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// Batch.model()

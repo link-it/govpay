@@ -311,6 +311,9 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
@@ -374,10 +377,12 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-
+	
 	@Override
-	public int nativeUpdate(JDBCServiceManagerProperties arg0, Logger arg1, Connection arg2, ISQLQueryObject arg3,
-			String arg4, Object... arg5) throws ServiceException, NotImplementedException, Exception {
-		throw new NotImplementedException("nativeUpdate");
+	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
+	
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
+																							sql,param);
+	
 	}
 }

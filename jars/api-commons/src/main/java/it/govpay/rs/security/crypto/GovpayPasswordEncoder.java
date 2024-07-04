@@ -20,6 +20,7 @@
 package it.govpay.rs.security.crypto;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
 import it.govpay.core.utils.CryptoUtils;
@@ -36,15 +37,17 @@ public class GovpayPasswordEncoder implements org.springframework.security.crypt
 	@Override
 	public String encode(CharSequence rawPassword) {
 		if(rawPassword != null) {
-			return CryptoUtils.cryptPw(rawPassword.toString());
+			try {
+				return CryptoUtils.cryptPw(rawPassword.toString());
+			} catch (UtilsException e) {
+				log.error("Errore durante la cifratura della password: " + e.getMessage() ,e);
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
-		// this.log.debug("Password da controllare ["+rawPassword+"] -> ["+encodedPassword+"]");
-		
 		if (encodedPassword == null || encodedPassword.length() == 0) {
 			this.log.warn("Empty encoded password");
 			return false;

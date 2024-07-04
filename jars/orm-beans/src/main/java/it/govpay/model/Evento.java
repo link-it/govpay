@@ -20,6 +20,7 @@
 package it.govpay.model;
 
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Date;
 
@@ -100,7 +101,7 @@ public class Evento extends BasicModel {
 	private Long idFr;
 	private Long idIncasso;
 	
-	private Integer severita;
+	private BigInteger severita;
 	
 	private String clusterId;
 	private String transactionId;
@@ -387,11 +388,11 @@ public class Evento extends BasicModel {
 		this.idIncasso = idIncasso;
 	}
 
-	public Integer getSeverita() {
+	public BigInteger getSeverita() {
 		return severita;
 	}
 
-	public void setSeverita(Integer severita) {
+	public void setSeverita(BigInteger severita) {
 		this.severita = severita;
 	}
 

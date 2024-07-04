@@ -19,6 +19,7 @@
  */
 package it.govpay.orm.dao.jdbc;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +150,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				idSingoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
 
 				idSingoloVersamento.setCodSingoloVersamentoEnte((String) map.get("cod_singolo_versamento_ente"));
-				idSingoloVersamento.setIndiceDati((Integer) map.get("indice_dati"));
+				idSingoloVersamento.setIndiceDati((BigInteger) map.get("indice_dati"));
         	list.add(idSingoloVersamento);
         }
 		} catch(NotFoundException e) {}
@@ -736,7 +737,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		SingoloVersamentoFieldConverter converter = this.getSingoloVersamentoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
@@ -950,7 +951,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			id_singoloVersamento.setIdVersamento(idVersamento);
 			
 			id_singoloVersamento.setCodSingoloVersamentoEnte((String) listaFieldId_singoloVersamento.get(2));
-			id_singoloVersamento.setIndiceDati((Integer) listaFieldId_singoloVersamento.get(3));
+			id_singoloVersamento.setIndiceDati((BigInteger) listaFieldId_singoloVersamento.get(3));
 		}
 		
 		return id_singoloVersamento;

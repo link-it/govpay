@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,27 +49,27 @@ public class NotificaFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Notifica.model())){
 				Notifica object = new Notifica();
-				this.setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setTipoEsito", Notifica.model().TIPO_ESITO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo_esito", Notifica.model().TIPO_ESITO.getFieldType()));
-				this.setParameter(object, "setDataCreazione", Notifica.model().DATA_CREAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", Notifica.model().DATA_CREAZIONE.getFieldType()));
-				this.setParameter(object, "setStato", Notifica.model().STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato", Notifica.model().STATO.getFieldType()));
-				this.setParameter(object, "setDescrizioneStato", Notifica.model().DESCRIZIONE_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", Notifica.model().DESCRIZIONE_STATO.getFieldType()));
-				this.setParameter(object, "setDataAggiornamentoStato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
-				this.setParameter(object, "setDataProssimaSpedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_prossima_spedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
-				this.setParameter(object, "setTentativiSpedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tentativi_spedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType()));
+				setParameter(object, "setId", Long.class,
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setTipoEsito", Notifica.model().TIPO_ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_esito", Notifica.model().TIPO_ESITO.getFieldType()));
+				setParameter(object, "setDataCreazione", Notifica.model().DATA_CREAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_creazione", Notifica.model().DATA_CREAZIONE.getFieldType()));
+				setParameter(object, "setStato", Notifica.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Notifica.model().STATO.getFieldType()));
+				setParameter(object, "setDescrizioneStato", Notifica.model().DESCRIZIONE_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Notifica.model().DESCRIZIONE_STATO.getFieldType()));
+				setParameter(object, "setDataAggiornamentoStato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
+				setParameter(object, "setDataProssimaSpedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_prossima_spedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
+				setParameter(object, "setTentativiSpedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tentativi_spedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -88,21 +90,21 @@ public class NotificaFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Notifica.model())){
 				Notifica object = new Notifica();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setTipoEsito", Notifica.model().TIPO_ESITO.getFieldType(),
+				setParameter(object, "setTipoEsito", Notifica.model().TIPO_ESITO.getFieldType(),
 					this.getObjectFromMap(map,"tipoEsito"));
-				this.setParameter(object, "setDataCreazione", Notifica.model().DATA_CREAZIONE.getFieldType(),
+				setParameter(object, "setDataCreazione", Notifica.model().DATA_CREAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataCreazione"));
-				this.setParameter(object, "setStato", Notifica.model().STATO.getFieldType(),
+				setParameter(object, "setStato", Notifica.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				this.setParameter(object, "setDescrizioneStato", Notifica.model().DESCRIZIONE_STATO.getFieldType(),
+				setParameter(object, "setDescrizioneStato", Notifica.model().DESCRIZIONE_STATO.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneStato"));
-				this.setParameter(object, "setDataAggiornamentoStato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
+				setParameter(object, "setDataAggiornamentoStato", Notifica.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
 					this.getObjectFromMap(map,"dataAggiornamentoStato"));
-				this.setParameter(object, "setDataProssimaSpedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
+				setParameter(object, "setDataProssimaSpedizione", Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataProssimaSpedizione"));
-				this.setParameter(object, "setTentativiSpedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType(),
+				setParameter(object, "setTentativiSpedizione", Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"tentativiSpedizione"));
 				return object;
 			}

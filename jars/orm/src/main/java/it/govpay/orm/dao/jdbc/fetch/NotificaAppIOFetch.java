@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,41 +49,41 @@ public class NotificaAppIOFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(NotificaAppIO.model())){
 				NotificaAppIO object = new NotificaAppIO();
 				setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setDebitoreIdentificativo", NotificaAppIO.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "debitore_identificativo", NotificaAppIO.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "debitore_identificativo", NotificaAppIO.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", NotificaAppIO.model().COD_VERSAMENTO_ENTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_versamento_ente", NotificaAppIO.model().COD_VERSAMENTO_ENTE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", NotificaAppIO.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setCodApplicazione", NotificaAppIO.model().COD_APPLICAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_applicazione", NotificaAppIO.model().COD_APPLICAZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", NotificaAppIO.model().COD_APPLICAZIONE.getFieldType()));
 				setParameter(object, "setCodDominio", NotificaAppIO.model().COD_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", NotificaAppIO.model().COD_DOMINIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", NotificaAppIO.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIuv", NotificaAppIO.model().IUV.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "iuv", NotificaAppIO.model().IUV.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "iuv", NotificaAppIO.model().IUV.getFieldType()));
 				setParameter(object, "setTipoEsito", NotificaAppIO.model().TIPO_ESITO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo_esito", NotificaAppIO.model().TIPO_ESITO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "tipo_esito", NotificaAppIO.model().TIPO_ESITO.getFieldType()));
 				setParameter(object, "setDataCreazione", NotificaAppIO.model().DATA_CREAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_creazione", NotificaAppIO.model().DATA_CREAZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_creazione", NotificaAppIO.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setStato", NotificaAppIO.model().STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato", NotificaAppIO.model().STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "stato", NotificaAppIO.model().STATO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", NotificaAppIO.model().DESCRIZIONE_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", NotificaAppIO.model().DESCRIZIONE_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", NotificaAppIO.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setDataAggiornamentoStato", NotificaAppIO.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_aggiornamento_stato", NotificaAppIO.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", NotificaAppIO.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
 				setParameter(object, "setDataProssimaSpedizione", NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_prossima_spedizione", NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_prossima_spedizione", NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()));
 				setParameter(object, "setTentativiSpedizione", NotificaAppIO.model().TENTATIVI_SPEDIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tentativi_spedizione", NotificaAppIO.model().TENTATIVI_SPEDIZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "tentativi_spedizione", NotificaAppIO.model().TENTATIVI_SPEDIZIONE.getFieldType()));
 				setParameter(object, "setIdMessaggio", NotificaAppIO.model().ID_MESSAGGIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "id_messaggio", NotificaAppIO.model().ID_MESSAGGIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "id_messaggio", NotificaAppIO.model().ID_MESSAGGIO.getFieldType()));
 				setParameter(object, "setStatoMessaggio", NotificaAppIO.model().STATO_MESSAGGIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato_messaggio", NotificaAppIO.model().STATO_MESSAGGIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "stato_messaggio", NotificaAppIO.model().STATO_MESSAGGIO.getFieldType()));
 				return object;
 			}
 			

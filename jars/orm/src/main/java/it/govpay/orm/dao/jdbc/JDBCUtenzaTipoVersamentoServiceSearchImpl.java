@@ -473,7 +473,7 @@ public class JDBCUtenzaTipoVersamentoServiceSearchImpl implements IJDBCServiceSe
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		UtenzaTipoVersamentoFieldConverter converter = this.getUtenzaTipoVersamentoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// UtenzaTipoVersamento.model()

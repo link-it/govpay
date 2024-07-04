@@ -20,6 +20,7 @@
 package it.govpay.bd.viste;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -335,7 +336,7 @@ public class RendicontazioniBD extends BasicBD {
 				vo.setFrDataRegolamento(BasicBD.getValueOrNull(row.get(pos++), Date.class));
 				if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
 					vo.setFrDescrizioneStato(BasicBD.getValueOrNull(row.get(pos++), String.class));
-				vo.setFrImportoTotalePagamenti(BasicBD.getValueOrNull(row.get(pos++), Double.class));
+				vo.setFrImportoTotalePagamenti(BasicBD.getValueOrNull(row.get(pos++), BigDecimal.class));
 				vo.setFrIur(BasicBD.getValueOrNull(row.get(pos++), String.class));
 				vo.setFrNumeroPagamenti(BasicBD.getValueOrNull(row.get(pos++), Long.class));
 				vo.setFrObsoleto(BasicBD.getValueOrNull(row.get(pos++), Boolean.class));

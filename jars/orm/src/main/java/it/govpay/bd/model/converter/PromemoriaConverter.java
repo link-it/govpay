@@ -30,6 +30,8 @@ import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdVersamento;
 
 public class PromemoriaConverter {
+	
+	private PromemoriaConverter() {}
 
 	public static it.govpay.orm.Promemoria toVO(Promemoria dto) {
 		it.govpay.orm.Promemoria vo = new it.govpay.orm.Promemoria();

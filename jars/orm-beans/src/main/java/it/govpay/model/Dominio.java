@@ -20,6 +20,8 @@
 
 package it.govpay.model;
 
+import java.math.BigInteger;
+
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +35,7 @@ public class Dominio extends BasicModel {
 	private String gln;
 	private boolean abilitato;
 	private int auxDigit;
-	private Integer segregationCode;
+	private BigInteger segregationCode;
 
 	private String iuvPrefix;
 	private byte[] logo;
@@ -122,11 +124,11 @@ public class Dominio extends BasicModel {
 		this.iuvPrefix = iuvPrefix;
 	}
 
-	public Integer getSegregationCode() {
+	public BigInteger getSegregationCode() {
 		return this.segregationCode;
 	}
 
-	public void setSegregationCode(Integer segregationCode) {
+	public void setSegregationCode(BigInteger segregationCode) {
 		this.segregationCode = segregationCode;
 	}
 

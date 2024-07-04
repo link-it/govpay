@@ -17,114 +17,115 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-
-import jakarta.xml.bind.JAXBElement;
 
 import org.openspcoop2.generic_project.exception.SerializerException;
 import org.openspcoop2.utils.beans.WriteToSerializerType;
 import org.openspcoop2.utils.xml.JaxbUtils;
 
-import it.govpay.orm.ACL;
-import it.govpay.orm.Allegato;
-import it.govpay.orm.Applicazione;
-import it.govpay.orm.Audit;
-import it.govpay.orm.Batch;
-import it.govpay.orm.Configurazione;
-import it.govpay.orm.Connettore;
-import it.govpay.orm.Documento;
-import it.govpay.orm.Dominio;
-import it.govpay.orm.Evento;
-import it.govpay.orm.FR;
-import it.govpay.orm.IUV;
-import it.govpay.orm.IbanAccredito;
-import it.govpay.orm.IdAcl;
-import it.govpay.orm.IdAllegato;
-import it.govpay.orm.IdAnagrafica;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdBatch;
-import it.govpay.orm.IdCarrello;
-import it.govpay.orm.IdConfigurazione;
-import it.govpay.orm.IdConnettore;
-import it.govpay.orm.IdContoAccredito;
-import it.govpay.orm.IdDocumento;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdEr;
-import it.govpay.orm.IdEvento;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.IdIbanAccredito;
-import it.govpay.orm.IdIncasso;
-import it.govpay.orm.IdIntermediario;
-import it.govpay.orm.IdIuv;
-import it.govpay.orm.IdMessaggio;
-import it.govpay.orm.IdNotifica;
-import it.govpay.orm.IdOperatore;
-import it.govpay.orm.IdOperazione;
-import it.govpay.orm.IdPagamento;
-import it.govpay.orm.IdPagamentoPortale;
-import it.govpay.orm.IdPromemoria;
-import it.govpay.orm.IdRendicontazione;
-import it.govpay.orm.IdRpt;
-import it.govpay.orm.IdRr;
-import it.govpay.orm.IdSingolaRendicontazione;
-import it.govpay.orm.IdSingolaRevoca;
-import it.govpay.orm.IdSingoloVersamento;
-import it.govpay.orm.IdStampa;
-import it.govpay.orm.IdStazione;
-import it.govpay.orm.IdTabellaControparti;
-import it.govpay.orm.IdTipoTributo;
-import it.govpay.orm.IdTipoVersamento;
-import it.govpay.orm.IdTipoVersamentoDominio;
-import it.govpay.orm.IdTracciato;
-import it.govpay.orm.IdTracciatoNotificaPagamenti;
-import it.govpay.orm.IdTributo;
-import it.govpay.orm.IdUo;
-import it.govpay.orm.IdUtenza;
-import it.govpay.orm.IdVersamento;
-import it.govpay.orm.IdVistaRiscossione;
-import it.govpay.orm.Incasso;
-import it.govpay.orm.Intermediario;
-import it.govpay.orm.IuvSearch;
-import it.govpay.orm.Notifica;
-import it.govpay.orm.NotificaAppIO;
-import it.govpay.orm.Operatore;
-import it.govpay.orm.Operazione;
-import it.govpay.orm.Pagamento;
-import it.govpay.orm.PagamentoPortale;
-import it.govpay.orm.PagamentoPortaleVersamento;
-import it.govpay.orm.Promemoria;
-import it.govpay.orm.RPT;
-import it.govpay.orm.RR;
-import it.govpay.orm.Rendicontazione;
-import it.govpay.orm.SingoloVersamento;
-import it.govpay.orm.Stampa;
-import it.govpay.orm.Stazione;
-import it.govpay.orm.TipoTributo;
 import it.govpay.orm.TipoVersamento;
-import it.govpay.orm.TipoVersamentoDominio;
-import it.govpay.orm.Tracciato;
-import it.govpay.orm.TracciatoNotificaPagamenti;
-import it.govpay.orm.Tributo;
-import it.govpay.orm.Uo;
-import it.govpay.orm.Utenza;
-import it.govpay.orm.UtenzaDominio;
-import it.govpay.orm.UtenzaTipoVersamento;
-import it.govpay.orm.Versamento;
-import it.govpay.orm.VersamentoIncasso;
-import it.govpay.orm.VistaPagamento;
-import it.govpay.orm.VistaPagamentoPortale;
-import it.govpay.orm.VistaRendicontazione;
-import it.govpay.orm.VistaRiscossioni;
+import it.govpay.orm.IuvSearch;
+import it.govpay.orm.Audit;
+import it.govpay.orm.IdOperatore;
+import it.govpay.orm.IdIncasso;
+import it.govpay.orm.IdTracciato;
+import it.govpay.orm.IdOperazione;
+import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.VistaRptVersamento;
-import it.govpay.orm.VistaVersamento;
+import it.govpay.orm.IdTipoVersamentoDominio;
+import it.govpay.orm.IdTipoVersamento;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdUo;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDocumento;
+import it.govpay.orm.IdVersamento;
+import it.govpay.orm.Promemoria;
+import it.govpay.orm.IdRpt;
+import it.govpay.orm.IdIntermediario;
+import it.govpay.orm.Stazione;
+import it.govpay.orm.IdPromemoria;
+import it.govpay.orm.Operazione;
+import it.govpay.orm.IdStampa;
+import it.govpay.orm.PagamentoPortaleVersamento;
+import it.govpay.orm.Allegato;
+import it.govpay.orm.Incasso;
+import it.govpay.orm.IdAcl;
+import it.govpay.orm.IdUtenza;
+import it.govpay.orm.Intermediario;
+import it.govpay.orm.FR;
+import it.govpay.orm.IdSingoloVersamento;
+import it.govpay.orm.IdRendicontazione;
+import it.govpay.orm.IdNotifica;
+import it.govpay.orm.VersamentoIncasso;
+import it.govpay.orm.Utenza;
+import it.govpay.orm.RR;
+import it.govpay.orm.TracciatoNotificaPagamenti;
+import it.govpay.orm.Operatore;
+import it.govpay.orm.Tracciato;
+import it.govpay.orm.IdStazione;
+import it.govpay.orm.Dominio;
+import it.govpay.orm.VistaRendicontazione;
+import it.govpay.orm.IdPagamento;
+import it.govpay.orm.IdTributo;
+import it.govpay.orm.IdIbanAccredito;
+import it.govpay.orm.NotificaAppIO;
+import it.govpay.orm.Evento;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.IdTipoTributo;
+import it.govpay.orm.IdBatch;
+import it.govpay.orm.VistaPagamentoPortale;
+import it.govpay.orm.IdTabellaControparti;
+import it.govpay.orm.TipoTributo;
+import it.govpay.orm.IdContoAccredito;
+import it.govpay.orm.Tributo;
+import it.govpay.orm.IUV;
+import it.govpay.orm.Documento;
+import it.govpay.orm.Stampa;
+import it.govpay.orm.IdConnettore;
 import it.govpay.orm.VistaVersamentoNonRendicontato;
+import it.govpay.orm.VistaRiscossioni;
+import it.govpay.orm.IdAllegato;
+import it.govpay.orm.IdEvento;
+import it.govpay.orm.VistaPagamento;
+import it.govpay.orm.IdRr;
+import it.govpay.orm.Connettore;
+import it.govpay.orm.IdConfigurazione;
+import it.govpay.orm.Uo;
+import it.govpay.orm.ACL;
+import it.govpay.orm.TipoVersamentoDominio;
+import it.govpay.orm.UtenzaDominio;
+import it.govpay.orm.Configurazione;
+import it.govpay.orm.Notifica;
+import it.govpay.orm.Pagamento;
+import it.govpay.orm.IdSingolaRendicontazione;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
+import it.govpay.orm.VistaVersamento;
+import it.govpay.orm.IbanAccredito;
+import it.govpay.orm.UtenzaTipoVersamento;
+import it.govpay.orm.IdCarrello;
+import it.govpay.orm.Batch;
+import it.govpay.orm.IdMessaggio;
+import it.govpay.orm.IdSingolaRevoca;
+import it.govpay.orm.Versamento;
+import it.govpay.orm.PagamentoPortale;
+import it.govpay.orm.SingoloVersamento;
+import it.govpay.orm.IdIuv;
+import it.govpay.orm.IdVistaRiscossione;
+import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.IdEr;
+import it.govpay.orm.Applicazione;
+import it.govpay.orm.IdAnagrafica;
+import it.govpay.orm.RPT;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.File;
+import java.lang.reflect.Method;
+
+import jakarta.xml.bind.JAXBElement;
 
 /**     
  * XML Serializer of beans
@@ -159,7 +160,9 @@ public abstract class AbstractSerializer {
 		finally{
 			try{
 				out.flush();
-			}catch(Exception e){}
+			}catch(Exception e){
+				// ignore
+			}
 		}
 	}
 	protected void objToXml(String fileName,Class<?> c,Object object,boolean prettyPrint) throws SerializerException{
@@ -178,9 +181,19 @@ public abstract class AbstractSerializer {
 			throw new SerializerException(e.getMessage(), e);
 		}
 		finally{
-			if(fout!=null) {
-				try{ fout.flush(); } catch(IOException e){}
-				try{ fout.close(); } catch(IOException e){}
+			try{
+				if(fout!=null){
+					fout.flush();
+				}
+			}catch(Exception e){
+				// ignore
+			}
+			try{
+				if(fout!=null){
+					fout.close();
+				}
+			}catch(Exception e){
+				// ignore
 			}
 		}
 	}
@@ -193,9 +206,19 @@ public abstract class AbstractSerializer {
 			throw new SerializerException(e.getMessage(), e);
 		}
 		finally{
-			if(bout!=null) {
-				try{ bout.flush(); } catch(IOException e){}
-				try{ bout.close(); } catch(IOException e){}
+			try{
+				if(bout!=null){
+					bout.flush();
+				}
+			}catch(Exception e){
+				// ignore
+			}
+			try{
+				if(bout!=null){
+					bout.close();
+				}
+			}catch(Exception e){
+				// ignore
 			}
 		}
 		return bout;

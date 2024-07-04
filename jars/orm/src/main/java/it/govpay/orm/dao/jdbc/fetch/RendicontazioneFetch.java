@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,29 +49,29 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Rendicontazione.model())){
 				Rendicontazione object = new Rendicontazione();
-				this.setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "iuv", Rendicontazione.model().IUV.getFieldType()));
-				this.setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
-				this.setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				this.setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
-				this.setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				this.setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data", Rendicontazione.model().DATA.getFieldType()));
-				this.setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato", Rendicontazione.model().STATO.getFieldType()));
-				this.setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "anomalie", Rendicontazione.model().ANOMALIE.getFieldType()));
+				setParameter(object, "setId", Long.class,
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Rendicontazione.model().IUV.getFieldType()));
+				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
+				setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
+				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data", Rendicontazione.model().DATA.getFieldType()));
+				setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Rendicontazione.model().STATO.getFieldType()));
+				setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "anomalie", Rendicontazione.model().ANOMALIE.getFieldType()));
 				return object;
 			}
 			
@@ -90,23 +92,23 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Rendicontazione.model())){
 				Rendicontazione object = new Rendicontazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
+				setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
-				this.setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
+				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
 					this.getObjectFromMap(map,"iur"));
-				this.setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
+				setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
 					this.getObjectFromMap(map,"indiceDati"));
-				this.setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
+				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"importoPagato"));
-				this.setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
+				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
 					this.getObjectFromMap(map,"esito"));
-				this.setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
+				setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
 					this.getObjectFromMap(map,"data"));
-				this.setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
+				setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				this.setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
+				setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
 					this.getObjectFromMap(map,"anomalie"));
 				return object;
 			}

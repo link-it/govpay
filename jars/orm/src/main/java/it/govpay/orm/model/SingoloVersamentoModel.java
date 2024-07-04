@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.SingoloVersamento;
@@ -55,7 +57,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
-		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
+		this.INDICE_DATI = new Field("indiceDati",java.math.BigInteger.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE_CAUSALE_RPT = new Field("descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"SingoloVersamento",SingoloVersamento.class));
@@ -80,7 +82,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
-		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
+		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.math.BigInteger.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"SingoloVersamento",SingoloVersamento.class));

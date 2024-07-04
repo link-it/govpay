@@ -686,7 +686,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		RendicontazioneFieldConverter converter = this.getRendicontazioneFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// Rendicontazione.model()

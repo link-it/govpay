@@ -34,6 +34,8 @@ import it.govpay.orm.IdSingoloVersamento;
 
 
 public class PagamentoConverter {
+	
+	private PagamentoConverter() {}
 
 	public static List<Pagamento> toDTO(List<it.govpay.orm.Pagamento> singoliPagamenti) {
 		List<Pagamento> dto = new ArrayList<>();
@@ -55,7 +57,7 @@ public class PagamentoConverter {
 		dto.setDataAcquisizione(vo.getDataAcquisizione());
 		dto.setDataPagamento(vo.getDataPagamento());
 		if(vo.getCommissioniPsp() != null)
-			dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
+			dto.setCommissioniPsp(vo.getCommissioniPsp());
 		if(vo.getTipoAllegato() != null)
 			dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
 		dto.setAllegato(vo.getAllegato());
@@ -72,7 +74,7 @@ public class PagamentoConverter {
 		dto.setEsitoRevoca(vo.getEsitoRevoca());
 		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
 		if(vo.getImportoRevocato() != null)
-			dto.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
+			dto.setImportoRevocato(vo.getImportoRevocato());
 		if(vo.getStato() != null)
 			dto.setStato(Stato.valueOf(vo.getStato()));
 
@@ -96,7 +98,7 @@ public class PagamentoConverter {
 		vo.setDataAcquisizione(dto.getDataAcquisizione());
 		vo.setDataPagamento(dto.getDataPagamento());
 		if(dto.getCommissioniPsp() != null)
-			vo.setCommissioniPsp(dto.getCommissioniPsp().doubleValue());
+			vo.setCommissioniPsp(dto.getCommissioniPsp());
 		if(dto.getTipoAllegato() != null)
 			vo.setTipoAllegato(dto.getTipoAllegato().toString());
 		vo.setAllegato(dto.getAllegato());
@@ -129,7 +131,7 @@ public class PagamentoConverter {
 		vo.setDatiEsitoRevoca(dto.getDatiEsitoRevoca());
 
 		if(dto.getImportoRevocato() != null)
-			vo.setImportoRevocato(dto.getImportoRevocato().doubleValue());
+			vo.setImportoRevocato(dto.getImportoRevocato());
 
 		if(dto.getStato() != null)
 			vo.setStato(dto.getStato().toString());

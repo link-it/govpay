@@ -768,7 +768,7 @@ public class JDBCVistaPagamentoServiceSearchImpl implements IJDBCServiceSearchWi
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		VistaPagamentoFieldConverter converter = this.getVistaPagamentoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
 		// VistaPagamento.model()

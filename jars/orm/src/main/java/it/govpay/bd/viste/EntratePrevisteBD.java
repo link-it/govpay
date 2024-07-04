@@ -39,7 +39,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.viste.filters.EntrataPrevistaFilter;
 import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.bd.viste.model.converter.EntrataPrevistaConverter;
-import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.model.VistaRiscossioniModel;
 
 public class EntratePrevisteBD extends BasicBD {

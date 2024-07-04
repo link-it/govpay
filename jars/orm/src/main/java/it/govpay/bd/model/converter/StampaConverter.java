@@ -25,6 +25,8 @@ import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdVersamento;
 
 public class StampaConverter {
+	
+	private StampaConverter() {}
 
 	public static Stampa toDTO(it.govpay.orm.Stampa vo) {
 		Stampa dto = new Stampa();

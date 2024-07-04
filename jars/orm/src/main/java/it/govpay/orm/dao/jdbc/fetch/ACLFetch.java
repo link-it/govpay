@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,19 +49,19 @@ public class ACLFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(ACL.model())){
 				ACL object = new ACL();
-				this.setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "ruolo", ACL.model().RUOLO.getFieldType()));
-				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "servizio", ACL.model().SERVIZIO.getFieldType()));
-				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "diritti", ACL.model().DIRITTI.getFieldType()));
+				setParameter(object, "setId", Long.class,
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ruolo", ACL.model().RUOLO.getFieldType()));
+				setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "servizio", ACL.model().SERVIZIO.getFieldType()));
+				setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "diritti", ACL.model().DIRITTI.getFieldType()));
 				return object;
 			}
 			
@@ -80,13 +82,13 @@ public class ACLFetch extends AbstractJDBCFetch {
 
 			if(model.equals(ACL.model())){
 				ACL object = new ACL();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
+				setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
 					this.getObjectFromMap(map,"ruolo"));
-				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
+				setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
 					this.getObjectFromMap(map,"servizio"));
-				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
+				setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
 					this.getObjectFromMap(map,"diritti"));
 				return object;
 			}

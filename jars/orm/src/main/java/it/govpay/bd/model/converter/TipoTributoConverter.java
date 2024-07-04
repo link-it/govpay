@@ -27,6 +27,8 @@ import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class TipoTributoConverter {
+	
+	private TipoTributoConverter() {}
 
 	public static List<TipoTributo> toDTOList(List<it.govpay.orm.TipoTributo> lstVO) throws CodificaInesistenteException {
 		List<TipoTributo> lst = new ArrayList<>();

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
 import java.io.InputStream;
@@ -31,9 +33,10 @@ import java.io.InputStream;
  */
 public class JaxbDeserializer extends AbstractDeserializer {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Object _xmlToObj(InputStream is, Class<?> c) throws Exception {
-		return org.openspcoop2.utils.xml.JaxbUtils.xmlToObj(is, c);
+	protected <T> T _xmlToObj(InputStream is, Class<T> c) throws Exception {
+		return (T) org.openspcoop2.utils.xml.JaxbUtils.xmlToObj(is, c);
 	}
 		
 }

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaPagamento;
@@ -48,13 +50,13 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.IUR = new Field("iur",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
-		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO_ALLEGATO = new Field("tipoAllegato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ALLEGATO = new Field("allegato",byte[].class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_ACQUISIZIONE_REVOCA = new Field("dataAcquisizioneRevoca",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.CAUSALE_REVOCA = new Field("causaleRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_REVOCA = new Field("datiRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
-		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.ESITO_REVOCA = new Field("esitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_ESITO_REVOCA = new Field("datiEsitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.STATO = new Field("stato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -92,13 +94,13 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
-		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO_ALLEGATO = new ComplexField(father,"tipoAllegato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ALLEGATO = new ComplexField(father,"allegato",byte[].class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"dataAcquisizioneRevoca",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.CAUSALE_REVOCA = new ComplexField(father,"causaleRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_REVOCA = new ComplexField(father,"datiRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
-		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.ESITO_REVOCA = new ComplexField(father,"esitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_ESITO_REVOCA = new ComplexField(father,"datiEsitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);

@@ -20,6 +20,7 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,16 +114,15 @@ public class Rpt extends BasicModel{
 
 		public static EsitoPagamento toEnum(String codifica) throws CodificaInesistenteException {
 			try {
-				int codifica2 = Integer.parseInt(codifica);
-				return toEnum(codifica2);
+				return toEnum(new BigInteger(codifica));
 			} catch (NumberFormatException e) {
 				throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
 			}
 		}
 
-		public static EsitoPagamento toEnum(int codifica) throws CodificaInesistenteException {
+		public static EsitoPagamento toEnum(BigInteger codifica) throws CodificaInesistenteException {
 			for(EsitoPagamento p : EsitoPagamento.values()){
-				if(p.getCodifica() == codifica)
+				if(p.getCodifica() == codifica.intValue())
 					return p;
 			}
 			throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));

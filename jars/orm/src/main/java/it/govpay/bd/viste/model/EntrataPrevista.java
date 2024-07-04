@@ -21,6 +21,7 @@ package it.govpay.bd.viste.model;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -42,7 +43,7 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private BigDecimal importoTotalePagamenti;
 	private BigDecimal importoPagato;
 	private String codSingoloVersamentoEnte;
-	private Integer indiceDati;
+	private BigInteger indiceDati;
 	private String codVersamentoEnte;
 	private String codApplicazione;
 	private Date dataPagamento;
@@ -127,10 +128,10 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
 		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
 	}
-	public Integer getIndiceDati() {
+	public BigInteger getIndiceDati() {
 		return indiceDati;
 	}
-	public void setIndiceDati(Integer indiceDati) {
+	public void setIndiceDati(BigInteger indiceDati) {
 		this.indiceDati = indiceDati;
 	}
 	public String getCodVersamentoEnte() {

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,41 +49,41 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Tracciato.model())){
 				Tracciato object = new Tracciato();
 				setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", Tracciato.model().COD_DOMINIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Tracciato.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setCodTipoVersamento", Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_tipo_versamento", Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_tipo_versamento", Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setFormato", Tracciato.model().FORMATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "formato", Tracciato.model().FORMATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "formato", Tracciato.model().FORMATO.getFieldType()));
 				setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo", Tracciato.model().TIPO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "tipo", Tracciato.model().TIPO.getFieldType()));
 				setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", Tracciato.model().DESCRIZIONE_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", Tracciato.model().DESCRIZIONE_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Tracciato.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setDataCaricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_caricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_caricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType()));
 				setParameter(object, "setDataCompletamento", Tracciato.model().DATA_COMPLETAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_completamento", Tracciato.model().DATA_COMPLETAMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "data_completamento", Tracciato.model().DATA_COMPLETAMENTO.getFieldType()));
 				setParameter(object, "setBeanDati", Tracciato.model().BEAN_DATI.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "bean_dati", Tracciato.model().BEAN_DATI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "bean_dati", Tracciato.model().BEAN_DATI.getFieldType()));
 				setParameter(object, "setFileNameRichiesta", Tracciato.model().FILE_NAME_RICHIESTA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "file_name_richiesta", Tracciato.model().FILE_NAME_RICHIESTA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "file_name_richiesta", Tracciato.model().FILE_NAME_RICHIESTA.getFieldType()));
 				setParameter(object, "setRawRichiesta", Tracciato.model().RAW_RICHIESTA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "raw_richiesta", Tracciato.model().RAW_RICHIESTA.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "raw_richiesta", Tracciato.model().RAW_RICHIESTA.getFieldType()));
 				setParameter(object, "setFileNameEsito", Tracciato.model().FILE_NAME_ESITO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "file_name_esito", Tracciato.model().FILE_NAME_ESITO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "file_name_esito", Tracciato.model().FILE_NAME_ESITO.getFieldType()));
 				setParameter(object, "setRawEsito", Tracciato.model().RAW_ESITO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "raw_esito", Tracciato.model().RAW_ESITO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "raw_esito", Tracciato.model().RAW_ESITO.getFieldType()));
 				setParameter(object, "setZipStampe", Tracciato.model().ZIP_STAMPE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "zip_stampe", Tracciato.model().ZIP_STAMPE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "zip_stampe", Tracciato.model().ZIP_STAMPE.getFieldType()));
 				return object;
 			}
 			

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -358,10 +360,10 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 		
 		Long longId = null;
 		if(utenzaDominio.getId()==null){
-			throw new Exception("Parameter "+utenzaDominio.getClass().getName()+".id is null");
+			throw new ServiceException("Parameter "+utenzaDominio.getClass().getName()+".id is null");
 		}
 		if(utenzaDominio.getId()<=0){
-			throw new Exception("Parameter "+utenzaDominio.getClass().getName()+".id is less equals 0");
+			throw new ServiceException("Parameter "+utenzaDominio.getClass().getName()+".id is less equals 0");
 		}
 		longId = utenzaDominio.getId();
 		
@@ -371,6 +373,9 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
@@ -422,10 +427,12 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-
+	
 	@Override
-	public int nativeUpdate(JDBCServiceManagerProperties arg0, Logger arg1, Connection arg2, ISQLQueryObject arg3,
-			String arg4, Object... arg5) throws ServiceException, NotImplementedException, Exception {
-		throw new NotImplementedException("nativeUpdate");
+	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
+	
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
+																							sql,param);
+	
 	}
 }

@@ -25,12 +25,14 @@ import java.util.List;
 import it.govpay.model.ConnettoreSftp;
 
 public class ConnettoreSftpConverter {
+	
+	private ConnettoreSftpConverter() {}
 
 	public static ConnettoreSftp toDTO(List<it.govpay.orm.Connettore> connettoreLst) {
 		ConnettoreSftp dto = new ConnettoreSftp();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
-				dto = setProprietaConnettoreDTO(dto, connettore);
+				setProprietaConnettoreDTO(dto, connettore);
 			}
 		}
 		return dto;

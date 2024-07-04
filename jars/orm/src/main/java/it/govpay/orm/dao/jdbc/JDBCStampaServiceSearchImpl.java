@@ -624,7 +624,7 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		StampaFieldConverter converter = this.getStampaFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map

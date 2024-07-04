@@ -490,6 +490,10 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			return;
 		}
 		obj.setId(imgSaved.getId());
+		if(obj.getIdUtenza()!=null && 
+				imgSaved.getIdUtenza()!=null){
+			obj.getIdUtenza().setId(imgSaved.getIdUtenza().getId());
+		}
 
 	}
 	
@@ -533,7 +537,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getACLFieldConverter().toTable(ACL.model()));
-		sqlQueryObject.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,true));
+		sqlQueryObject.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -566,7 +570,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		ACLFieldConverter converter = this.getACLFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map

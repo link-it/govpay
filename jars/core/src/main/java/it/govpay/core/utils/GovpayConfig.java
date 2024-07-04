@@ -196,6 +196,8 @@ public class GovpayConfig {
 	
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 	
+	private boolean controlloPasswordBackwardCompatibilityMD5;
+	
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -299,6 +301,8 @@ public class GovpayConfig {
 		this.batchSpedizioneNotifiche = false;
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
+		
+		this.controlloPasswordBackwardCompatibilityMD5 = false;
 		
 		try {
 
@@ -904,6 +908,10 @@ public class GovpayConfig {
 				}
 			}
 			
+			String controlloPasswordBackwardCompatibilityMD5String = getProperty("it.govpay.autenticazione.controlloPassword.backwardCompatibilityMD5.enabled", this.props, false, log);
+			if(controlloPasswordBackwardCompatibilityMD5String != null && Boolean.valueOf(controlloPasswordBackwardCompatibilityMD5String))
+				this.controlloPasswordBackwardCompatibilityMD5 = true;
+			
 		} catch (PropertyNotFoundException e) {
 			log.error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
@@ -1377,4 +1385,7 @@ public class GovpayConfig {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
 	
+	public boolean isControlloPasswordBackwardCompatibilityMD5() {
+		return controlloPasswordBackwardCompatibilityMD5;
+	}
 }

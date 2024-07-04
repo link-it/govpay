@@ -17,25 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
-import java.io.InputStream;
+import org.openspcoop2.utils.beans.WriteToSerializerType;
 
 /**     
- * XML Deserializer of beans with json
+ * Serializer of beans with json
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JsonXmlDeserializer extends AbstractDeserializer {
+public class JsonJacksonSerializer extends AbstractSerializer {
 
 	@Override
-	protected Object _xmlToObj(InputStream is, Class<?> c) throws Exception {
-		// TODO da verificare visto che prima c'era il XMLDeserializer non è più presente nella versione 3.4
-		org.openspcoop2.utils.serialization.JsonJacksonDeserializer deserializer = new org.openspcoop2.utils.serialization.JsonJacksonDeserializer();
-		return deserializer.readObject(is, c);
+	protected WriteToSerializerType getType(){
+		return WriteToSerializerType.JSON_JACKSON;
 	}
 		
 }

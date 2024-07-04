@@ -34,6 +34,8 @@ import it.govpay.orm.TipoTributo;
 
 public class TributoConverter {
 	
+	private TributoConverter() {}
+	
 	public static List<Tributo> toDTOList(List<it.govpay.orm.Tributo> lstVO, BDConfigWrapper configWrapper) throws ServiceException, CodificaInesistenteException {
 		List<Tributo> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {

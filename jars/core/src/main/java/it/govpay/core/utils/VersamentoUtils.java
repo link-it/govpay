@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -258,11 +259,11 @@ public class VersamentoUtils {
 		}
 		
 		if(!mapSingoliVersamentiNuovi.isEmpty()) { // se sono state aggiunte delle voci allora assegno l'indice dati fino ad arrivare a 5 voci.
-			int indiceDati = singoliversamentiLetti.get(singoliversamentiLetti.size() - 1).getIndiceDati();
+			BigInteger indiceDati = singoliversamentiLetti.get(singoliversamentiLetti.size() - 1).getIndiceDati();
 			
 			log.trace("Assegno l'indice dati alle [{}] nuove voci pendenza.", mapSingoliVersamentiNuovi.size());
 			for (Entry<String, SingoloVersamento> entry : mapSingoliVersamentiNuovi.entrySet()) {
-				indiceDati ++;
+				indiceDati = indiceDati.add(BigInteger.ONE);
 				log.trace("Assegno alla nuova voce pendenza con id [{}] l'indice dati [{}].", entry.getValue().getCodSingoloVersamentoEnte(), indiceDati);
 				entry.getValue().setIndiceDati(indiceDati);
 			}
@@ -619,7 +620,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode, Integer auxDigit, String codApplicazione, String codVersamentoEnte) throws GovPayException {
+	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, BigInteger segregationCode, Integer auxDigit, String codApplicazione, String codVersamentoEnte) throws GovPayException {
 		if(numeroAvviso == null) return;
 		
 		getIuvFromNumeroAvviso(numeroAvviso);
@@ -897,7 +898,7 @@ public class VersamentoUtils {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
-		model.setIndiceDati(index);
+		model.setIndiceDati(BigInteger.valueOf(index));
 		model.setId(null);
 		model.setIdVersamento(0);
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());

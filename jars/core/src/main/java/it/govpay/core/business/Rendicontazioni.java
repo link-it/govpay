@@ -448,7 +448,7 @@ public class Rendicontazioni {
 
 							String iur = dsp.getIdentificativoUnivocoRiscossione();
 							String iuv = dsp.getIdentificativoUnivocoVersamento();
-							Integer indiceDati = dsp.getIndiceDatiSingoloPagamento();
+							BigInteger indiceDati = dsp.getIndiceDatiSingoloPagamento() != null ? BigInteger.valueOf(dsp.getIndiceDatiSingoloPagamento()) : null;
 							BigDecimal importoRendicontato = dsp.getSingoloImportoPagato();
 
 							log.info(MessageFormat.format("Rendicontato (Esito {0}) per un importo di ({1}) [CodDominio: {2}] [Iuv: {3}][Iur: {4}]",

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,21 +49,21 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(TipoTributo.model())){
 				TipoTributo object = new TipoTributo();
-				this.setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodTributo", TipoTributo.model().COD_TRIBUTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_tributo", TipoTributo.model().COD_TRIBUTO.getFieldType()));
-				this.setParameter(object, "setDescrizione", TipoTributo.model().DESCRIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione", TipoTributo.model().DESCRIZIONE.getFieldType()));
-				this.setParameter(object, "setTipoContabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo_contabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType()));
-				this.setParameter(object, "setCodContabilita", TipoTributo.model().COD_CONTABILITA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_contabilita", TipoTributo.model().COD_CONTABILITA.getFieldType()));
+				setParameter(object, "setId", Long.class,
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setCodTributo", TipoTributo.model().COD_TRIBUTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_tributo", TipoTributo.model().COD_TRIBUTO.getFieldType()));
+				setParameter(object, "setDescrizione", TipoTributo.model().DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione", TipoTributo.model().DESCRIZIONE.getFieldType()));
+				setParameter(object, "setTipoContabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType()));
+				setParameter(object, "setCodContabilita", TipoTributo.model().COD_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_contabilita", TipoTributo.model().COD_CONTABILITA.getFieldType()));
 				return object;
 			}
 			
@@ -82,15 +84,15 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(TipoTributo.model())){
 				TipoTributo object = new TipoTributo();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodTributo", TipoTributo.model().COD_TRIBUTO.getFieldType(),
+				setParameter(object, "setCodTributo", TipoTributo.model().COD_TRIBUTO.getFieldType(),
 					this.getObjectFromMap(map,"codTributo"));
-				this.setParameter(object, "setDescrizione", TipoTributo.model().DESCRIZIONE.getFieldType(),
+				setParameter(object, "setDescrizione", TipoTributo.model().DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"descrizione"));
-				this.setParameter(object, "setTipoContabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType(),
+				setParameter(object, "setTipoContabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"tipoContabilita"));
-				this.setParameter(object, "setCodContabilita", TipoTributo.model().COD_CONTABILITA.getFieldType(),
+				setParameter(object, "setCodContabilita", TipoTributo.model().COD_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"codContabilita"));
 				return object;
 			}

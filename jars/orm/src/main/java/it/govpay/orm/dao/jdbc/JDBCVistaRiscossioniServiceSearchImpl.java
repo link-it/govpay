@@ -19,6 +19,7 @@
  */
 package it.govpay.orm.dao.jdbc;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -584,7 +585,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		VistaRiscossioniFieldConverter converter = this.getVistaRiscossioniFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
 		// VistaRiscossioni.model()
@@ -648,7 +649,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 			IdVistaRiscossione idToRet = new IdVistaRiscossione();
 			idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
 			idToRet.setIuv((String) id_vistaRiscossioni.get(1));
-			idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+			idToRet.setIndiceDati((BigInteger) id_vistaRiscossioni.get(2));
 			
 			ids.add(idToRet);
 		}
@@ -689,7 +690,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 			IdVistaRiscossione idToRet = new IdVistaRiscossione();
 			idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
 			idToRet.setIuv((String) id_vistaRiscossioni.get(1));
-			idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+			idToRet.setIndiceDati((BigInteger) id_vistaRiscossioni.get(2));
 			return idToRet;
 		}
 		else{
@@ -784,7 +785,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 			IdVistaRiscossione idToRet = new IdVistaRiscossione();
 			idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
 			idToRet.setIuv((String) id_vistaRiscossioni.get(1));
-			idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+			idToRet.setIndiceDati((BigInteger) id_vistaRiscossioni.get(2));
 			return idToRet;
 		}
 		return null;

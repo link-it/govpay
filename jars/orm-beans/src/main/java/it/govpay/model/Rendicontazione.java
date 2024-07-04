@@ -20,6 +20,7 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,12 +47,12 @@ public class Rendicontazione extends BasicModel {
 		}
 
 		public static EsitoRendicontazione toEnum(String codifica) throws CodificaInesistenteException {
-			return toEnum(Integer.parseInt(codifica));
+			return toEnum(new BigInteger(codifica));
 		}
 
-		public static EsitoRendicontazione toEnum(int codifica) throws CodificaInesistenteException {
+		public static EsitoRendicontazione toEnum(BigInteger codifica) throws CodificaInesistenteException {
 			for(EsitoRendicontazione p : EsitoRendicontazione.values()){
-				if(p.getCodifica() == codifica)
+				if(p.getCodifica() == codifica.intValue())
 					return p;
 			}
 			throw new CodificaInesistenteException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
@@ -64,7 +65,7 @@ public class Rendicontazione extends BasicModel {
 	private Long id;
 	private String iuv;
 	private String iur;
-	private Integer indiceDati;
+	private BigInteger indiceDati;
 	
 	private BigDecimal importo;
 	private Date data;
@@ -200,10 +201,10 @@ public class Rendicontazione extends BasicModel {
 		}
 		return list;
 	}
-	public Integer getIndiceDati() {
+	public BigInteger getIndiceDati() {
 		return this.indiceDati;
 	}
-	public void setIndiceDati(Integer indiceDati) {
+	public void setIndiceDati(BigInteger indiceDati) {
 		this.indiceDati = indiceDati;
 	}
 	public Long getIdSingoloVersamento() {

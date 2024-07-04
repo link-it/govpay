@@ -20,6 +20,7 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -386,7 +387,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 				Pagamento pagamento = null;
 				boolean insert = true;
 				try {
-					pagamento = pagamentiBD.getPagamento(dominioSingoloVersamento.getCodDominio(), iuv, receiptId, idTransfer);
+					pagamento = pagamentiBD.getPagamento(dominioSingoloVersamento.getCodDominio(), iuv, receiptId, BigInteger.valueOf(idTransfer));
 
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione

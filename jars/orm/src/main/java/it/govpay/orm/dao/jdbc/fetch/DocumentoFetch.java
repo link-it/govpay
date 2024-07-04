@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,17 +49,17 @@ public class DocumentoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Documento.model())){
 				Documento object = new Documento();
 				setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodDocumento", Documento.model().COD_DOCUMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_documento", Documento.model().COD_DOCUMENTO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "cod_documento", Documento.model().COD_DOCUMENTO.getFieldType()));
 				setParameter(object, "setDescrizione", Documento.model().DESCRIZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione", Documento.model().DESCRIZIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "descrizione", Documento.model().DESCRIZIONE.getFieldType()));
 				return object;
 			}
 			

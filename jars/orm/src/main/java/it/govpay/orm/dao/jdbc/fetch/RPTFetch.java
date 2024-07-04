@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
@@ -47,83 +49,83 @@ public class RPTFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			GenericJDBCParameterUtilities GenericJDBCParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(RPT.model())){
 				RPT object = new RPT();
-				this.setParameter(object, "setId", Long.class,
-					GenericJDBCParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodCarrello", RPT.model().COD_CARRELLO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_carrello", RPT.model().COD_CARRELLO.getFieldType()));
-				this.setParameter(object, "setIuv", RPT.model().IUV.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "iuv", RPT.model().IUV.getFieldType()));
-				this.setParameter(object, "setCcp", RPT.model().CCP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "ccp", RPT.model().CCP.getFieldType()));
-				this.setParameter(object, "setCodDominio", RPT.model().COD_DOMINIO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_dominio", RPT.model().COD_DOMINIO.getFieldType()));
-				this.setParameter(object, "setCodMsgRichiesta", RPT.model().COD_MSG_RICHIESTA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_msg_richiesta", RPT.model().COD_MSG_RICHIESTA.getFieldType()));
-				this.setParameter(object, "setDataMsgRichiesta", RPT.model().DATA_MSG_RICHIESTA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_msg_richiesta", RPT.model().DATA_MSG_RICHIESTA.getFieldType()));
-				this.setParameter(object, "setStato", RPT.model().STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato", RPT.model().STATO.getFieldType()));
-				this.setParameter(object, "setDescrizioneStato", RPT.model().DESCRIZIONE_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato", RPT.model().DESCRIZIONE_STATO.getFieldType()));
-				this.setParameter(object, "setCodSessione", RPT.model().COD_SESSIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_sessione", RPT.model().COD_SESSIONE.getFieldType()));
-				this.setParameter(object, "setCodSessionePortale", RPT.model().COD_SESSIONE_PORTALE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_sessione_portale", RPT.model().COD_SESSIONE_PORTALE.getFieldType()));
-				this.setParameter(object, "setPspRedirectURL", RPT.model().PSP_REDIRECT_URL.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "psp_redirect_url", RPT.model().PSP_REDIRECT_URL.getFieldType()));
-				this.setParameter(object, "setXmlRPT", RPT.model().XML_RPT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "xml_rpt", RPT.model().XML_RPT.getFieldType()));
-				this.setParameter(object, "setDataAggiornamentoStato", RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_aggiornamento_stato", RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
-				this.setParameter(object, "setCallbackURL", RPT.model().CALLBACK_URL.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "callback_url", RPT.model().CALLBACK_URL.getFieldType()));
-				this.setParameter(object, "setModelloPagamento", RPT.model().MODELLO_PAGAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "modello_pagamento", RPT.model().MODELLO_PAGAMENTO.getFieldType()));
-				this.setParameter(object, "setCodMsgRicevuta", RPT.model().COD_MSG_RICEVUTA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_msg_ricevuta", RPT.model().COD_MSG_RICEVUTA.getFieldType()));
-				this.setParameter(object, "setDataMsgRicevuta", RPT.model().DATA_MSG_RICEVUTA.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_msg_ricevuta", RPT.model().DATA_MSG_RICEVUTA.getFieldType()));
-				this.setParameter(object, "setCodEsitoPagamento", RPT.model().COD_ESITO_PAGAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_esito_pagamento", RPT.model().COD_ESITO_PAGAMENTO.getFieldType()));
-				this.setParameter(object, "setImportoTotalePagato", RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "importo_totale_pagato", RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()));
-				this.setParameter(object, "setXmlRT", RPT.model().XML_RT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "xml_rt", RPT.model().XML_RT.getFieldType()));
-				this.setParameter(object, "setCodCanale", RPT.model().COD_CANALE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_canale", RPT.model().COD_CANALE.getFieldType()));
-				this.setParameter(object, "setCodPsp", RPT.model().COD_PSP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_psp", RPT.model().COD_PSP.getFieldType()));
-				this.setParameter(object, "setCodIntermediarioPsp", RPT.model().COD_INTERMEDIARIO_PSP.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_intermediario_psp", RPT.model().COD_INTERMEDIARIO_PSP.getFieldType()));
-				this.setParameter(object, "setTipoVersamento", RPT.model().TIPO_VERSAMENTO.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo_versamento", RPT.model().TIPO_VERSAMENTO.getFieldType()));
-				this.setParameter(object, "setTipoIdentificativoAttestante", RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "tipo_identificativo_attestante", RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType()));
-				this.setParameter(object, "setIdentificativoAttestante", RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "identificativo_attestante", RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType()));
-				this.setParameter(object, "setDenominazioneAttestante", RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "denominazione_attestante", RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType()));
-				this.setParameter(object, "setCodStazione", RPT.model().COD_STAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_stazione", RPT.model().COD_STAZIONE.getFieldType()));
-				this.setParameter(object, "setCodTransazioneRPT", RPT.model().COD_TRANSAZIONE_RPT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_transazione_rpt", RPT.model().COD_TRANSAZIONE_RPT.getFieldType()));
-				this.setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "cod_transazione_rt", RPT.model().COD_TRANSAZIONE_RT.getFieldType()));
-				this.setParameter(object, "setStatoConservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "stato_conservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType()));
-				this.setParameter(object, "setDescrizioneStatoCons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "descrizione_stato_cons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()));
-				this.setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "data_conservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType()));
-				this.setParameter(object, "setBloccante", RPT.model().BLOCCANTE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "bloccante", RPT.model().BLOCCANTE.getFieldType()));
+				setParameter(object, "setId", Long.class,
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setCodCarrello", RPT.model().COD_CARRELLO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_carrello", RPT.model().COD_CARRELLO.getFieldType()));
+				setParameter(object, "setIuv", RPT.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", RPT.model().IUV.getFieldType()));
+				setParameter(object, "setCcp", RPT.model().CCP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ccp", RPT.model().CCP.getFieldType()));
+				setParameter(object, "setCodDominio", RPT.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", RPT.model().COD_DOMINIO.getFieldType()));
+				setParameter(object, "setCodMsgRichiesta", RPT.model().COD_MSG_RICHIESTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_msg_richiesta", RPT.model().COD_MSG_RICHIESTA.getFieldType()));
+				setParameter(object, "setDataMsgRichiesta", RPT.model().DATA_MSG_RICHIESTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_msg_richiesta", RPT.model().DATA_MSG_RICHIESTA.getFieldType()));
+				setParameter(object, "setStato", RPT.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", RPT.model().STATO.getFieldType()));
+				setParameter(object, "setDescrizioneStato", RPT.model().DESCRIZIONE_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", RPT.model().DESCRIZIONE_STATO.getFieldType()));
+				setParameter(object, "setCodSessione", RPT.model().COD_SESSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_sessione", RPT.model().COD_SESSIONE.getFieldType()));
+				setParameter(object, "setCodSessionePortale", RPT.model().COD_SESSIONE_PORTALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_sessione_portale", RPT.model().COD_SESSIONE_PORTALE.getFieldType()));
+				setParameter(object, "setPspRedirectURL", RPT.model().PSP_REDIRECT_URL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", RPT.model().PSP_REDIRECT_URL.getFieldType()));
+				setParameter(object, "setXmlRPT", RPT.model().XML_RPT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "xml_rpt", RPT.model().XML_RPT.getFieldType()));
+				setParameter(object, "setDataAggiornamentoStato", RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
+				setParameter(object, "setCallbackURL", RPT.model().CALLBACK_URL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "callback_url", RPT.model().CALLBACK_URL.getFieldType()));
+				setParameter(object, "setModelloPagamento", RPT.model().MODELLO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "modello_pagamento", RPT.model().MODELLO_PAGAMENTO.getFieldType()));
+				setParameter(object, "setCodMsgRicevuta", RPT.model().COD_MSG_RICEVUTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_msg_ricevuta", RPT.model().COD_MSG_RICEVUTA.getFieldType()));
+				setParameter(object, "setDataMsgRicevuta", RPT.model().DATA_MSG_RICEVUTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_msg_ricevuta", RPT.model().DATA_MSG_RICEVUTA.getFieldType()));
+				setParameter(object, "setCodEsitoPagamento", RPT.model().COD_ESITO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_esito_pagamento", RPT.model().COD_ESITO_PAGAMENTO.getFieldType()));
+				setParameter(object, "setImportoTotalePagato", RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_totale_pagato", RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()));
+				setParameter(object, "setXmlRT", RPT.model().XML_RT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "xml_rt", RPT.model().XML_RT.getFieldType()));
+				setParameter(object, "setCodCanale", RPT.model().COD_CANALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_canale", RPT.model().COD_CANALE.getFieldType()));
+				setParameter(object, "setCodPsp", RPT.model().COD_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_psp", RPT.model().COD_PSP.getFieldType()));
+				setParameter(object, "setCodIntermediarioPsp", RPT.model().COD_INTERMEDIARIO_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_intermediario_psp", RPT.model().COD_INTERMEDIARIO_PSP.getFieldType()));
+				setParameter(object, "setTipoVersamento", RPT.model().TIPO_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_versamento", RPT.model().TIPO_VERSAMENTO.getFieldType()));
+				setParameter(object, "setTipoIdentificativoAttestante", RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_identificativo_attestante", RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType()));
+				setParameter(object, "setIdentificativoAttestante", RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "identificativo_attestante", RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType()));
+				setParameter(object, "setDenominazioneAttestante", RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "denominazione_attestante", RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType()));
+				setParameter(object, "setCodStazione", RPT.model().COD_STAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_stazione", RPT.model().COD_STAZIONE.getFieldType()));
+				setParameter(object, "setCodTransazioneRPT", RPT.model().COD_TRANSAZIONE_RPT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rpt", RPT.model().COD_TRANSAZIONE_RPT.getFieldType()));
+				setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rt", RPT.model().COD_TRANSAZIONE_RT.getFieldType()));
+				setParameter(object, "setStatoConservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato_conservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType()));
+				setParameter(object, "setDescrizioneStatoCons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato_cons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()));
+				setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_conservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType()));
+				setParameter(object, "setBloccante", RPT.model().BLOCCANTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bloccante", RPT.model().BLOCCANTE.getFieldType()));
 				setParameter(object, "setVersione", RPT.model().VERSIONE.getFieldType(),
-					GenericJDBCParameterUtilities.readParameter(rs, "versione", RPT.model().VERSIONE.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "versione", RPT.model().VERSIONE.getFieldType()));
 				return object;
 			}
 			
@@ -144,75 +146,75 @@ public class RPTFetch extends AbstractJDBCFetch {
 
 			if(model.equals(RPT.model())){
 				RPT object = new RPT();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodCarrello", RPT.model().COD_CARRELLO.getFieldType(),
+				setParameter(object, "setCodCarrello", RPT.model().COD_CARRELLO.getFieldType(),
 					this.getObjectFromMap(map,"codCarrello"));
-				this.setParameter(object, "setIuv", RPT.model().IUV.getFieldType(),
+				setParameter(object, "setIuv", RPT.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
-				this.setParameter(object, "setCcp", RPT.model().CCP.getFieldType(),
+				setParameter(object, "setCcp", RPT.model().CCP.getFieldType(),
 					this.getObjectFromMap(map,"ccp"));
-				this.setParameter(object, "setCodDominio", RPT.model().COD_DOMINIO.getFieldType(),
+				setParameter(object, "setCodDominio", RPT.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				this.setParameter(object, "setCodMsgRichiesta", RPT.model().COD_MSG_RICHIESTA.getFieldType(),
+				setParameter(object, "setCodMsgRichiesta", RPT.model().COD_MSG_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"codMsgRichiesta"));
-				this.setParameter(object, "setDataMsgRichiesta", RPT.model().DATA_MSG_RICHIESTA.getFieldType(),
+				setParameter(object, "setDataMsgRichiesta", RPT.model().DATA_MSG_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"dataMsgRichiesta"));
-				this.setParameter(object, "setStato", RPT.model().STATO.getFieldType(),
+				setParameter(object, "setStato", RPT.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				this.setParameter(object, "setDescrizioneStato", RPT.model().DESCRIZIONE_STATO.getFieldType(),
+				setParameter(object, "setDescrizioneStato", RPT.model().DESCRIZIONE_STATO.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneStato"));
-				this.setParameter(object, "setCodSessione", RPT.model().COD_SESSIONE.getFieldType(),
+				setParameter(object, "setCodSessione", RPT.model().COD_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"codSessione"));
-				this.setParameter(object, "setCodSessionePortale", RPT.model().COD_SESSIONE_PORTALE.getFieldType(),
+				setParameter(object, "setCodSessionePortale", RPT.model().COD_SESSIONE_PORTALE.getFieldType(),
 					this.getObjectFromMap(map,"codSessionePortale"));
-				this.setParameter(object, "setPspRedirectURL", RPT.model().PSP_REDIRECT_URL.getFieldType(),
+				setParameter(object, "setPspRedirectURL", RPT.model().PSP_REDIRECT_URL.getFieldType(),
 					this.getObjectFromMap(map,"pspRedirectURL"));
-				this.setParameter(object, "setXmlRPT", RPT.model().XML_RPT.getFieldType(),
+				setParameter(object, "setXmlRPT", RPT.model().XML_RPT.getFieldType(),
 					this.getObjectFromMap(map,"xmlRPT"));
-				this.setParameter(object, "setDataAggiornamentoStato", RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
+				setParameter(object, "setDataAggiornamentoStato", RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
 					this.getObjectFromMap(map,"dataAggiornamentoStato"));
-				this.setParameter(object, "setCallbackURL", RPT.model().CALLBACK_URL.getFieldType(),
+				setParameter(object, "setCallbackURL", RPT.model().CALLBACK_URL.getFieldType(),
 					this.getObjectFromMap(map,"callbackURL"));
-				this.setParameter(object, "setModelloPagamento", RPT.model().MODELLO_PAGAMENTO.getFieldType(),
+				setParameter(object, "setModelloPagamento", RPT.model().MODELLO_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"modelloPagamento"));
-				this.setParameter(object, "setCodMsgRicevuta", RPT.model().COD_MSG_RICEVUTA.getFieldType(),
+				setParameter(object, "setCodMsgRicevuta", RPT.model().COD_MSG_RICEVUTA.getFieldType(),
 					this.getObjectFromMap(map,"codMsgRicevuta"));
-				this.setParameter(object, "setDataMsgRicevuta", RPT.model().DATA_MSG_RICEVUTA.getFieldType(),
+				setParameter(object, "setDataMsgRicevuta", RPT.model().DATA_MSG_RICEVUTA.getFieldType(),
 					this.getObjectFromMap(map,"dataMsgRicevuta"));
-				this.setParameter(object, "setCodEsitoPagamento", RPT.model().COD_ESITO_PAGAMENTO.getFieldType(),
+				setParameter(object, "setCodEsitoPagamento", RPT.model().COD_ESITO_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"codEsitoPagamento"));
-				this.setParameter(object, "setImportoTotalePagato", RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType(),
+				setParameter(object, "setImportoTotalePagato", RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"importoTotalePagato"));
-				this.setParameter(object, "setXmlRT", RPT.model().XML_RT.getFieldType(),
+				setParameter(object, "setXmlRT", RPT.model().XML_RT.getFieldType(),
 					this.getObjectFromMap(map,"xmlRT"));
-				this.setParameter(object, "setCodCanale", RPT.model().COD_CANALE.getFieldType(),
+				setParameter(object, "setCodCanale", RPT.model().COD_CANALE.getFieldType(),
 					this.getObjectFromMap(map,"codCanale"));
-				this.setParameter(object, "setCodPsp", RPT.model().COD_PSP.getFieldType(),
+				setParameter(object, "setCodPsp", RPT.model().COD_PSP.getFieldType(),
 					this.getObjectFromMap(map,"codPsp"));
-				this.setParameter(object, "setCodIntermediarioPsp", RPT.model().COD_INTERMEDIARIO_PSP.getFieldType(),
+				setParameter(object, "setCodIntermediarioPsp", RPT.model().COD_INTERMEDIARIO_PSP.getFieldType(),
 					this.getObjectFromMap(map,"codIntermediarioPsp"));
-				this.setParameter(object, "setTipoVersamento", RPT.model().TIPO_VERSAMENTO.getFieldType(),
+				setParameter(object, "setTipoVersamento", RPT.model().TIPO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento"));
-				this.setParameter(object, "setTipoIdentificativoAttestante", RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType(),
+				setParameter(object, "setTipoIdentificativoAttestante", RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType(),
 					this.getObjectFromMap(map,"tipoIdentificativoAttestante"));
-				this.setParameter(object, "setIdentificativoAttestante", RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType(),
+				setParameter(object, "setIdentificativoAttestante", RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType(),
 					this.getObjectFromMap(map,"identificativoAttestante"));
-				this.setParameter(object, "setDenominazioneAttestante", RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType(),
+				setParameter(object, "setDenominazioneAttestante", RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType(),
 					this.getObjectFromMap(map,"denominazioneAttestante"));
-				this.setParameter(object, "setCodStazione", RPT.model().COD_STAZIONE.getFieldType(),
+				setParameter(object, "setCodStazione", RPT.model().COD_STAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codStazione"));
-				this.setParameter(object, "setCodTransazioneRPT", RPT.model().COD_TRANSAZIONE_RPT.getFieldType(),
+				setParameter(object, "setCodTransazioneRPT", RPT.model().COD_TRANSAZIONE_RPT.getFieldType(),
 					this.getObjectFromMap(map,"codTransazioneRPT"));
-				this.setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
+				setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
 					this.getObjectFromMap(map,"codTransazioneRT"));
-				this.setParameter(object, "setStatoConservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType(),
+				setParameter(object, "setStatoConservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"statoConservazione"));
-				this.setParameter(object, "setDescrizioneStatoCons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType(),
+				setParameter(object, "setDescrizioneStatoCons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneStatoCons"));
-				this.setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
+				setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataConservazione"));
-				this.setParameter(object, "setBloccante", RPT.model().BLOCCANTE.getFieldType(),
+				setParameter(object, "setBloccante", RPT.model().BLOCCANTE.getFieldType(),
 					this.getObjectFromMap(map,"bloccante"));
 				setParameter(object, "setVersione", RPT.model().VERSIONE.getFieldType(),
 					this.getObjectFromMap(map,"versione"));
