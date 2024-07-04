@@ -84,7 +84,7 @@
 		<commons.pool2.version>2.12.0</commons.pool2.version>
 		<commons.net.version>3.9.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
-		
+
 		<!-- xmlsec -->
 		<xmlsec.version>4.0.2</xmlsec.version>
 		
@@ -422,7 +422,7 @@
 
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
+				<artifactId>log4j-slf4j2-impl</artifactId>
 				<version>${logger.version}</version>
 			</dependency>
 
@@ -641,6 +641,12 @@
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-crypt</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-random</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
