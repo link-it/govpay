@@ -126,6 +126,7 @@
 		
 		<!-- XML SOAP API -->
 		<jakarta-soap-api-version>3.0.2</jakarta-soap-api-version>
+		<jakarta-saaj-impl-version>3.0.4</jakarta-saaj-impl-version>
 		
 		<!-- webjars- swagger ui api -->
 		<webjars-swaggerui.version>5.17.14</webjars-swaggerui.version>
@@ -690,6 +691,12 @@
 				<groupId>jakarta.xml.soap</groupId>
 				<artifactId>jakarta.xml.soap-api</artifactId>
 				<version>${jakarta-soap-api-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.messaging.saaj</groupId>
+				<artifactId>saaj-impl</artifactId>
+				<version>${jakarta-saaj-impl-version}</version>
 			</dependency>
 
 			<dependency>
