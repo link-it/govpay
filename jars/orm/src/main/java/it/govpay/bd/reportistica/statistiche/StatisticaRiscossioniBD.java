@@ -65,7 +65,7 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public StatisticaRiscossioniFilter newFilter() throws ServiceException {
+	public StatisticaRiscossioniFilter newFilter() {
 		return new StatisticaRiscossioniFilter(this.getPagamentoService());
 	}
 	
@@ -140,64 +140,57 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE))) {
 						Object applicazioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE));
-						if(applicazioneObj instanceof String) {
-							entry.setCodApplicazione((String) applicazioneObj);
+						if(applicazioneObj instanceof String codApplicazione) {
+							entry.setCodApplicazione(codApplicazione);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO))) {
 						Object uoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO));
-						if(uoObj instanceof String) {
-							entry.setCodUo((String) uoObj);
+						if(uoObj instanceof String codUo) {
+							entry.setCodUo(codUo);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO))) {
 						Object tipoVersamentoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO));
-						if(tipoVersamentoObj instanceof String) {
-							entry.setCodTipoVersamento((String) tipoVersamentoObj);
+						if(tipoVersamentoObj instanceof String tipoVersamento) {
+							entry.setCodTipoVersamento(tipoVersamento);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO))) {
 						Object dominioObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO));
-						if(dominioObj instanceof String) {
-							entry.setCodDominio((String) dominioObj);
+						if(dominioObj instanceof String codDominio) {
+							entry.setCodDominio(codDominio);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE))) {
 						Object divisioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE));
-						if(divisioneObj instanceof String) {
-							entry.setDivisione((String) divisioneObj);
+						if(divisioneObj instanceof String divisione) {
+							entry.setDivisione(divisione);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE))) {
 						Object direzioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE));
-						if(direzioneObj instanceof String) {
-							entry.setDirezione((String) direzioneObj);
+						if(direzioneObj instanceof String direzione) {
+							entry.setDirezione(direzione);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA))) {
 						Object tassonomiaObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA));
-						if(tassonomiaObj instanceof String) {
-							entry.setTassonomia((String) tassonomiaObj);
+						if(tassonomiaObj instanceof String tassonomia) {
+							entry.setTassonomia(tassonomia);
 						}
 					}
-					
-//					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO))) {
-//						Object tipoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO));
-//						if(tipoObj instanceof String) {
-//							entry.setTipo(TipoPagamento.valueOf((String) tipoObj));
-//						}
-//					}
 					
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-
+				// donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

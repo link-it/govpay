@@ -87,7 +87,7 @@ public class JaxbUtils {
 	public static byte[] toByte(CtRichiestaPagamentoTelematico rpt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbRptRtContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new ObjectFactory().createRPT(rpt), baos);
 		return baos.toByteArray();
@@ -96,7 +96,7 @@ public class JaxbUtils {
 	public static byte[] toByte(RR rr) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbRrErContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(rr, baos);
 		return baos.toByteArray();
@@ -105,7 +105,7 @@ public class JaxbUtils {
 	public static byte[] toByte(CtRicevutaTelematica rt) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbRptRtContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new ObjectFactory().createRT(rt), baos);
 		return baos.toByteArray();
@@ -114,7 +114,7 @@ public class JaxbUtils {
 	public static void toIntestazioneCarrelloPPT(IntestazioneCarrelloPPT jaxb, OutputStream os) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbWsRptContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
 	
@@ -169,7 +169,7 @@ public class JaxbUtils {
 		if(jaxb == null) return;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsRptContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
 	
@@ -177,7 +177,7 @@ public class JaxbUtils {
 		if(jaxb == null) return null;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsRptContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(jaxb, baos);
 		return new String(baos.toByteArray());
@@ -214,7 +214,7 @@ public class JaxbUtils {
 	public static byte[] toByte(PaGetPaymentRes rpt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaGetPaymentRes(rpt), baos);
 		return baos.toByteArray();
@@ -223,7 +223,7 @@ public class JaxbUtils {
 	public static byte[] toByte(PaSendRTReq rt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaSendRTReq(rt), baos);
 		return baos.toByteArray();
@@ -248,7 +248,7 @@ public class JaxbUtils {
 	public static byte[] toByte(PaGetPaymentV2Response rpt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaGetPaymentV2Response(rpt), baos);
 		return baos.toByteArray();
@@ -257,7 +257,7 @@ public class JaxbUtils {
 	public static byte[] toByte(PaSendRTV2Request rt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaSendRTV2Request(rt), baos);
 		return baos.toByteArray();

@@ -68,7 +68,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public StatisticaRendicontazioniFilter newFilter() throws ServiceException {
+	public StatisticaRendicontazioniFilter newFilter() {
 		return new StatisticaRendicontazioniFilter(this.getRendicontazioneService());
 	}
 	
@@ -144,15 +144,15 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE))) {
 						Object divisioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE));
-						if(divisioneObj instanceof String) {
-							entry.setDivisione((String) divisioneObj);
+						if(divisioneObj instanceof String divisione) {
+							entry.setDivisione(divisione);
 						}
 					}
 					
 					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE))) {
 						Object direzioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE));
-						if(direzioneObj instanceof String) {
-							entry.setDirezione((String) direzioneObj);
+						if(direzioneObj instanceof String direzione) {
+							entry.setDirezione(direzione);
 						}
 					}
 					
@@ -160,64 +160,64 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 						Fr fr = new Fr();
 						
 						Object codFlussoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO));
-						if(codFlussoObj instanceof String) {
-							entry.setCodFlusso((String) codFlussoObj);
-							fr.setCodFlusso((String) codFlussoObj);
+						if(codFlussoObj instanceof String codFlusso) {
+							entry.setCodFlusso(codFlusso);
+							fr.setCodFlusso(codFlusso);
 						}
 						
 						Object dataOraFlussoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_ORA_FLUSSO));
-						if(dataOraFlussoObj instanceof Date) {
-							fr.setDataFlusso((Date) dataOraFlussoObj);
+						if(dataOraFlussoObj instanceof Date dataOraFlusso) {
+							fr.setDataFlusso(dataOraFlusso);
 						}
 						
 						Object iurObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IUR));
-						if(iurObj instanceof String) {
-							fr.setIur((String) iurObj);
+						if(iurObj instanceof String iur) {
+							fr.setIur(iur);
 						}
 						
 						Object dataRegolamentoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_REGOLAMENTO));
-						if(dataRegolamentoObj instanceof Date) {
-							fr.setDataRegolamento((Date) dataRegolamentoObj);
+						if(dataRegolamentoObj instanceof Date dataRegolamento) {
+							fr.setDataRegolamento(dataRegolamento);
 						}
 						
 						Object codPspObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_PSP));
-						if(codPspObj instanceof String) {
-							fr.setCodPsp((String) codPspObj);
+						if(codPspObj instanceof String codPsp) {
+							fr.setCodPsp(codPsp);
 						}
 						
 						Object codBicRiversamentoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_BIC_RIVERSAMENTO));
-						if(codBicRiversamentoObj instanceof String) {
-							fr.setCodBicRiversamento((String) codBicRiversamentoObj);
+						if(codBicRiversamentoObj instanceof String codBicRiversamento) {
+							fr.setCodBicRiversamento(codBicRiversamento);
 						}
 						
 						Object codDominioObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_DOMINIO));
-						if(codDominioObj instanceof String) {
-							fr.setCodDominio((String) codDominioObj);
+						if(codDominioObj instanceof String codDominio) {
+							fr.setCodDominio(codDominio);
 						}
 						
 						Object numeroPagamentiObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.NUMERO_PAGAMENTI));
-						if(numeroPagamentiObj instanceof Long) {
-							fr.setNumeroPagamenti((Long) numeroPagamentiObj);
+						if(numeroPagamentiObj instanceof Long numeroPagamenti) {
+							fr.setNumeroPagamenti(numeroPagamenti);
 						}
 						
 						Object importoTotaleFlussoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI));
-						if(importoTotaleFlussoObj instanceof Double) {
-							fr.setImportoTotalePagamenti(BigDecimal.valueOf((Double) importoTotaleFlussoObj));
+						if(importoTotaleFlussoObj instanceof BigDecimal importoTotaleFlussi) {
+							fr.setImportoTotalePagamenti(importoTotaleFlussi);
 						}
 						
 						Object statoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.STATO));
-						if(statoObj instanceof String) {
-							fr.setStato(StatoFr.valueOf((String) statoObj));
+						if(statoObj instanceof String stato) {
+							fr.setStato(StatoFr.valueOf(stato));
 						}
 						
 						Object ragioneSocialeDominioObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO));
-						if(ragioneSocialeDominioObj instanceof String) {
-							fr.setRagioneSocialeDominio((String) ragioneSocialeDominioObj);
+						if(ragioneSocialeDominioObj instanceof String ragioneSocialeDominio) {
+							fr.setRagioneSocialeDominio(ragioneSocialeDominio);
 						}
 						
 						Object ragionesSocialePspObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_PSP));
-						if(ragionesSocialePspObj instanceof String) {
-							fr.setRagioneSocialePsp((String) ragionesSocialePspObj);
+						if(ragionesSocialePspObj instanceof String ragionesSocialePsp) {
+							fr.setRagioneSocialePsp(ragionesSocialePsp);
 						}
 						
 						
@@ -227,7 +227,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-
+				// donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

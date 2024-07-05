@@ -58,7 +58,7 @@ public class JaxbUtils {
 		if(jaxb == null) return;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
 	
@@ -66,7 +66,7 @@ public class JaxbUtils {
 		if(jaxb == null) return null;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(jaxb, baos);
 		return new String(baos.toByteArray());
@@ -92,7 +92,7 @@ public class JaxbUtils {
 		if(jaxb == null) return;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
 	
@@ -100,7 +100,7 @@ public class JaxbUtils {
 		if(jaxb == null) return null;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(jaxb, baos);
 		return new String(baos.toByteArray());

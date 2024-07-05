@@ -41,9 +41,10 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 public class StatisticaRendicontazioniDAO extends BaseDAO{
 
 	public StatisticaRendicontazioniDAO() {
+		// donothing
 	}
 
-	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
+	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRiscossioniDTO) throws ServiceException {
 		StatisticaRendicontazioniBD statisticaRiscossioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -55,7 +56,7 @@ public class StatisticaRendicontazioniDAO extends BaseDAO{
 			filter.setLimit(listaRiscossioniDTO.getLimit());
 			filter.setFiltro(listaRiscossioniDTO.getFiltro());
 
-			List<IField> gruppiDaFare = new ArrayList<IField>();
+			List<IField> gruppiDaFare = new ArrayList<>();
 
 			for (GROUP_BY gruppo : listaRiscossioniDTO.getGroupBy()) {
 				switch (gruppo) {
@@ -84,7 +85,7 @@ public class StatisticaRendicontazioniDAO extends BaseDAO{
 
 			long count = statisticaRiscossioniBD.count(filter, gruppiDaFare);
 
-			List<StatisticaRendicontazione> findAll = new ArrayList<StatisticaRendicontazione>();
+			List<StatisticaRendicontazione> findAll = new ArrayList<>();
 
 			if(count > 0) {
 				findAll = statisticaRiscossioniBD.statisticaNumeroRendicontazioni(filter, gruppiDaFare);
