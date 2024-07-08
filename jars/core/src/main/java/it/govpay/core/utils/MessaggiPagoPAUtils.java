@@ -24,6 +24,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtAllegatoRicevuta;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloVersamentoRPT;
@@ -37,6 +38,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
+import it.gov.digitpa.schemas._2011.pagamenti.StTipoAllegatoRicevuta;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
@@ -224,7 +226,12 @@ public class MessaggiPagoPAUtils {
 			CtTransferPAReceiptV2 ctTransferPA = datiSingoliPagamenti.get(indice);
 			
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = new CtDatiSingoloPagamentoRT();
-//			ctDatiSingoloPagamentoRT.setAllegatoRicevuta(null);  // non presente
+			if(ctTransferPA.getMBDAttachment() != null) {
+				CtAllegatoRicevuta ctAllegatoRicevuta = new CtAllegatoRicevuta();
+				ctAllegatoRicevuta.setTestoAllegato(ctTransferPA.getMBDAttachment());
+				ctAllegatoRicevuta.setTipoAllegatoRicevuta(StTipoAllegatoRicevuta.BD);
+				ctDatiSingoloPagamentoRT.setAllegatoRicevuta(ctAllegatoRicevuta );	
+			}
 			ctDatiSingoloPagamentoRT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
 //			ctDatiSingoloPagamentoRT.setCommissioniApplicatePA(null);
 			ctDatiSingoloPagamentoRT.setCommissioniApplicatePSP(receipt.getFee());
