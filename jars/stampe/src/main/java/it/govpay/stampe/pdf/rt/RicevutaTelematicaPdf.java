@@ -116,7 +116,7 @@ public class RicevutaTelematicaPdf{
                     "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);

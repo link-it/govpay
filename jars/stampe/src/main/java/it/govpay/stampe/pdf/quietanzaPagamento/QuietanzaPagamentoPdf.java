@@ -138,7 +138,7 @@ public class QuietanzaPagamentoPdf {
                     "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME), QuietanzaPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -164,7 +164,7 @@ public class QuietanzaPagamentoPdf {
 //	public JRDataSource creaXmlDataSource(Logger log,QuietanzaPagamentoInput input) throws UtilsException, JRException, JAXBException {
 ////		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
 //		Marshaller jaxbMarshaller = getJAXBContextInstance().createMarshaller();
-//		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+//		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 //		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //		JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", "root"), QuietanzaPagamentoInput.class, null, input);
 //		jaxbMarshaller.marshal(jaxbElement, baos);
