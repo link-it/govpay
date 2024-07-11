@@ -133,13 +133,6 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			}
 			listaRptDTO.setCodDomini(domini);
 
-			// Autorizzazione sulle uo
-//			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-//			if(uo == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-//			}
-//			listaRptDTO.setUnitaOperative(uo);
-
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
@@ -180,6 +173,19 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			// autorizzazione sul dominio
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			
+			// se non ho autorizzazione star controllo che il dominio sia tra quelli autorizzati
+			if(!domini.isEmpty()) {
+				if(!domini.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
+				}
+			}
 
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
@@ -191,8 +197,6 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
-			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
-
 			Ricevuta response =  RicevuteConverter.toRsModel(leggiRptDTOResponse.getRpt());
 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
@@ -202,21 +206,5 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			this.logContext(ContextThreadLocal.get());
 		}
     }
-
-    private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
-
-		// se sei una applicazione allora vedi i pagamenti che hai caricato
-		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-
-			Versamento versamento = rpt.getVersamento();
-			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-
-			if(versamento.getApplicazione(configWrapper) == null ||
-					!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
-			}
-		}
-	}
 }
 
