@@ -25,8 +25,8 @@
     <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
 
     <!--  Jackson Provider for JSON/XML -->
-    <b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProviderCustomized"/>
-    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProviderCustomized"/>
+    <b:bean id="jacksonJsonProvider" class="it.govpay.jaxrs.JacksonJsonProviderCustomized"/>
+    <b:bean id="jacksonXmlProvider" class="it.govpay.jaxrs.JacksonXmlProviderCustomized"/>
     
     <!-- FaultBean Exception Mapper -->
     <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>

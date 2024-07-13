@@ -22,6 +22,10 @@
  */
 package it.govpay.core.utils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -55,5 +59,42 @@ public class DateUtils {
 		log.debug("Controllo " +tipoControllo + ": data da verificare ["+daVerificare+"] is before oggi ["+oggi+"]: " + esito + ".");
 		return esito;
 
+	}
+
+	public static Date toJavaDate(LocalDateTime dateTime) {
+		if (dateTime == null)
+			return null;
+		ZonedDateTime zdt = dateTime.atZone(ZoneId.systemDefault());
+		return Date.from(zdt.toInstant());
+	}
+
+	public static Date toJavaDate(LocalDate date) {
+		if (date == null)
+			return null;
+		return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+	}
+
+	public static LocalDateTime toLocalDateTime(Date date) {
+		if (date == null)
+			return null;
+		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+	}
+
+	public static LocalDateTime toOffsetDateTime(Calendar c) {
+		if (c == null)
+			return null;
+		return toLocalDateTime( c.getTime() );
+	}
+
+	public static LocalDate toLocalDate(Date javaDate) {
+		if (javaDate == null)
+			return null;
+		return javaDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+	public static LocalDate toLocalDate(LocalDateTime dateTime) {
+		if (dateTime == null)
+			return null;
+		return dateTime.toLocalDate();
 	}
 }

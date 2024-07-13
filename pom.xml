@@ -69,9 +69,6 @@
 		
 		<!-- nimbus-jose-jwt version -->
 		<nimbus-jose-jwt.version>9.39.3</nimbus-jose-jwt.version>
-		
-		<!-- joda time -->
-		<joda-time.version>2.12.7</joda-time.version>
 
 		<!-- Commons -->
 		<commons-jcs-core.version>3.2.1</commons-jcs-core.version>
@@ -1029,7 +1026,7 @@
 			<!-- Jackson -->
 			<dependency>
 				<groupId>com.fasterxml.jackson.module</groupId>
-				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 
@@ -1060,12 +1057,6 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
 				<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.datatype</groupId>
-				<artifactId>jackson-datatype-joda</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			
@@ -1213,12 +1204,6 @@
 				<groupId>com.nimbusds</groupId>						
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>${nimbus-jose-jwt.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>${joda-time.version}</version>
 			</dependency>
 			
 			<!-- webjar-swagger ui -->

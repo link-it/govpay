@@ -181,7 +181,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 			
 			// lettura dati significativi dalla ricevuta
 			BigDecimal paymentAmount = ctReceipt.getPaymentAmount();
-			Date dataPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime() : new Date();
+			Date dataPagamento = ctReceipt.getPaymentDateTime() != null ? DateUtils.toJavaDate(ctReceipt.getPaymentDateTime()) : new Date();
 			StOutcome ctReceiptOutcome = ctReceipt.getOutcome();
 			it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
 			String pspFiscalCode = ctReceipt.getPspFiscalCode();

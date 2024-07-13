@@ -85,11 +85,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>

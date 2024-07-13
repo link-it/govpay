@@ -304,7 +304,7 @@ public class MaggioliJPPAUtils {
 		popolaIstitutoAttestanteRT23(ricevutaTelematica, rt);
 		popoloaParametriPSP(ricevutaTelematica, rpt);
 		ricevutaTelematica.setRicevutaXML(new String(rpt.getXmlRt()));
-		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(rt.getRiferimentoDataRichiesta()));
+		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(DateUtils.toJavaDate(rt.getRiferimentoDataRichiesta())));
 		ricevutaTelematica.setRiferimentoMessaggioRichiesta(rt.getRiferimentoMessaggioRichiesta());
 		popolaSoggettoPagatoreRT23(ricevutaTelematica, rt);
 		popolaSoggettoVersanteRT23(ricevutaTelematica, rt);

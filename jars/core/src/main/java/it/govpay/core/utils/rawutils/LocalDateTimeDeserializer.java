@@ -20,7 +20,7 @@
 package it.govpay.core.utils.rawutils;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,21 +30,21 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 
 import it.govpay.core.utils.adapter.DataTypeAdapterCXF;
 
-public class LocalDateDeserializer extends StdScalarDeserializer<LocalDate> {
+public class LocalDateTimeDeserializer extends StdScalarDeserializer<LocalDateTime> {
 
 	private static final long serialVersionUID = 1L;
 	
-	public LocalDateDeserializer() {
-        super(LocalDate.class);
+	public LocalDateTimeDeserializer() {
+        super(LocalDateTime.class);
     }
 
     @Override
-    public LocalDate deserialize(JsonParser jsonParser,
-                                 DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public LocalDateTime deserialize(JsonParser jsonParser,
+                                     DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         try {
             JsonToken currentToken = jsonParser.getCurrentToken();
             if (currentToken == JsonToken.VALUE_STRING) {
-                return DataTypeAdapterCXF.parseLocalDate(jsonParser.getText().trim());
+                return DataTypeAdapterCXF.parseLocalDateTime(jsonParser.getText().trim());
             } else {
             	return null;
             }

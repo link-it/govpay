@@ -498,7 +498,7 @@ public class RtUtils extends NdpValidationUtils {
 				CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 				BigDecimal transferAmount = ctDatiSingoloPagamentoRT.getSingoloImportoPagato();
 				String iur = ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione();
-				Date dataEsitoSingoloPagamento = ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento();
+				Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 				BigDecimal commissioniApplicatePSP = ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP(); 
 				
 				// Se non e' stato completato un pagamento, non faccio niente.

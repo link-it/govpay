@@ -38,12 +38,32 @@
  */
 package it.govpay.core.utils.adapter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 
 import jakarta.xml.bind.DatatypeConverter;
 
 public final class DataTypeAdapterCXF {
+    private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER;
+    static {
+    	LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE)
+                .appendLiteral('T')
+                .appendValue(ChronoField.HOUR_OF_DAY, 2)
+                .appendLiteral(':')
+                .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+                .optionalStart()
+                .appendLiteral(':')
+                .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+                .toFormatter();
+    }
 
     private DataTypeAdapterCXF() {
     }
@@ -63,6 +83,14 @@ public final class DataTypeAdapterCXF {
         return DatatypeConverter.printDate(c);
     }
 
+    public static LocalDate parseLocalDate(String value) {
+    	return value != null && !value.isEmpty() ? LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE) : null;
+    }
+
+	public static String printLocalDate(LocalDate value) {
+    	return value != null ? DateTimeFormatter.ISO_LOCAL_DATE.format(value) : null;
+    }
+
     public static Date parseTime(String s) {
         if (s == null || s.isEmpty()) {
             return null;
@@ -78,6 +106,15 @@ public final class DataTypeAdapterCXF {
         return DatatypeConverter.printTime(c);
     }
 
+    public static LocalTime parseLocalTime(String value) {
+    	return value != null && !value.isEmpty() ? LocalTime.parse(value, DateTimeFormatter.ISO_LOCAL_TIME) : null;
+    }
+
+	public static String printLocalTime(LocalTime value) {
+    	return value != null ? DateTimeFormatter.ISO_LOCAL_TIME.format(value) : null;
+    }
+
+
     public static Date parseDateTime(String s) {
         if (s == null || s.isEmpty()) {
             return null;
@@ -91,5 +128,13 @@ public final class DataTypeAdapterCXF {
         Calendar c = Calendar.getInstance();
         c.setTime(dt);
         return DatatypeConverter.printDateTime(c);
+    }
+
+    public static LocalDateTime parseLocalDateTime(String value) {
+    	return value != null && !value.isEmpty() ? LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null;
+    }
+
+	public static String printLocalDateTime(LocalDateTime value) {
+    	return value != null ? LOCAL_DATE_TIME_FORMATTER.format(value) : null;
     }
 }

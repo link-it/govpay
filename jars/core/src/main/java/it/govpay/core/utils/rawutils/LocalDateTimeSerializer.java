@@ -19,24 +19,29 @@
  */
 package it.govpay.core.utils.rawutils;
 
-import java.time.LocalDate;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
-public class DateModule extends SimpleModule {
+import it.govpay.core.utils.adapter.DataTypeAdapterCXF;
+
+public class LocalDateTimeSerializer extends StdScalarSerializer<LocalDateTime> {
 
 	private static final long serialVersionUID = 1L;
 
-	public DateModule() {
-        super();
-        addSerializer(LocalTime.class, new DateTimeSerializer());
-        addSerializer(LocalDate.class, new LocalDateSerializer());
-        addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-        addDeserializer(LocalTime.class, new DateTimeDeserializer());
-        addDeserializer(LocalDate.class, new LocalDateDeserializer());
-        addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+	public LocalDateTimeSerializer() {
+        super(LocalDateTime.class);
+    }
+
+    @Override
+    public void serialize(LocalDateTime dateTime,
+                          JsonGenerator jsonGenerator,
+                          SerializerProvider provider) throws IOException, JsonGenerationException {
+        String dateTimeAsString = DataTypeAdapterCXF.printLocalDateTime(dateTime);
+        jsonGenerator.writeString(dateTimeAsString);
     }
 }
-

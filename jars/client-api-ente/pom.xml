@@ -56,11 +56,6 @@
 			<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-		</dependency>
-		
 	</dependencies>
 
 	<build>
@@ -89,7 +84,6 @@
 <!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-rendicontazioni-ec-v1.yaml</inputSpec> -->
 <!-- 							<language>jaxrs-cxf</language> -->
 <!-- 							<configOptions> -->
-<!-- 								<dateLibrary>joda</dateLibrary> -->
 <!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
 <!-- 								<apiPackage>it.govpay.ec.rendicontazioni.v1</apiPackage> -->
 <!-- 								<invokerPackage>it.govpay.ec.rendicontazioni.v1.client</invokerPackage> -->
@@ -110,7 +104,6 @@
 <!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-ec-v1.yaml</inputSpec> -->
 <!-- 							<language>jaxrs-cxf</language> -->
 <!-- 							<configOptions> -->
-<!-- 								<dateLibrary>joda</dateLibrary> -->
 <!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
 <!-- 								<apiPackage>it.govpay.ec.v1</apiPackage> -->
 <!-- 								<invokerPackage>it.govpay.ec.v1.client</invokerPackage> -->

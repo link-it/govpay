@@ -20,7 +20,7 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -114,7 +114,7 @@ public class RrUtils extends NdpValidationUtils {
 		rr.setCodDominio(rpt.getCodDominio());
 		rr.setCodMsgEsito(null);
 		rr.setCodMsgRevoca(ctRr.getIdentificativoMessaggioRevoca());
-		rr.setDataMsgRevoca(ctRr.getDataOraMessaggioRevoca());
+		rr.setDataMsgRevoca(DateUtils.toJavaDate(ctRr.getDataOraMessaggioRevoca()));
 		rr.setDescrizioneStato(null);
 		rr.setIdRpt(rpt.getId());
 		rr.setImportoTotaleRevocato(null);
@@ -133,7 +133,7 @@ public class RrUtils extends NdpValidationUtils {
 		ctRr.setVersioneOggetto(ctRt.getVersioneOggetto());
 		ctRr.setDominio(toDominio(ctRt.getDominio()));
 		ctRr.setIdentificativoMessaggioRevoca(buildUUID35());
-		ctRr.setDataOraMessaggioRevoca(new Date());
+		ctRr.setDataOraMessaggioRevoca(LocalDateTime.now());
 		ctRr.setIstitutoAttestante(toIstitutoAttestante(ctRt.getIstitutoAttestante()));
 		ctRr.setSoggettoVersante(toSoggettoVersante(ctRt.getSoggettoVersante()));
 		ctRr.setSoggettoPagatore(toSoggettoPagatore(ctRt.getSoggettoPagatore()));
@@ -350,7 +350,7 @@ public class RrUtils extends NdpValidationUtils {
 			
 			// Rileggo per avere la lettura dello stato rpt in transazione
 			rr.setCodMsgEsito(ctEr.getIdentificativoMessaggioEsito());
-			rr.setDataMsgEsito(ctEr.getDataOraMessaggioEsito());
+			rr.setDataMsgEsito(DateUtils.toJavaDate(ctEr.getDataOraMessaggioEsito()));
 			rr.setImportoTotaleRevocato(ctEr.getDatiRevoca().getImportoTotaleRevocato());
 			rr.setStato(StatoRr.ER_ACCETTATA_PA);
 			rr.setXmlEr(er);

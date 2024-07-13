@@ -82,6 +82,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaNotificaPagamentoMaggioliJPPAThread;
@@ -1036,11 +1037,11 @@ public class TracciatiNotificaPagamenti {
 		CtIstitutoMittente istitutoMittente = flussoRiversamento.getIstitutoMittente();
 		CtIstitutoRicevente istitutoRicevente = flussoRiversamento.getIstitutoRicevente();
 		String identificativoFlusso = flussoRiversamento.getIdentificativoFlusso();
-		Date dataOraFlusso = flussoRiversamento.getDataOraFlusso();
+		Date dataOraFlusso = DateUtils.toJavaDate(flussoRiversamento.getDataOraFlusso());
 		String identificativoUnivocoRegolamento = flussoRiversamento.getIdentificativoUnivocoRegolamento();
 		BigDecimal importoTotalePagamenti = flussoRiversamento.getImportoTotalePagamenti();
 		BigDecimal numeroTotalePagamenti = flussoRiversamento.getNumeroTotalePagamenti();
-		Date dataRegolamento = flussoRiversamento.getDataRegolamento();
+		Date dataRegolamento = DateUtils.toJavaDate(flussoRiversamento.getDataRegolamento());
 		String codiceBicBancaDiRiversamento = flussoRiversamento.getCodiceBicBancaDiRiversamento();
 		String idDominio = fr.getCodDominio();
 		
@@ -1050,7 +1051,7 @@ public class TracciatiNotificaPagamenti {
 			List<String> linea = new ArrayList<String>();
 			
 			String codiceEsitoSingoloPagamento = ctDatiSingoliPagamenti.getCodiceEsitoSingoloPagamento();
-			Date dataEsitoSingoloPagamento = ctDatiSingoliPagamenti.getDataEsitoSingoloPagamento();
+			Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(ctDatiSingoliPagamenti.getDataEsitoSingoloPagamento());
 			String identificativoUnivocoRiscossione = ctDatiSingoliPagamenti.getIdentificativoUnivocoRiscossione();
 			String identificativoUnivocoVersamento = ctDatiSingoliPagamenti.getIdentificativoUnivocoVersamento();
 			Integer indiceDatiSingoloPagamento = ctDatiSingoliPagamenti.getIndiceDatiSingoloPagamento();

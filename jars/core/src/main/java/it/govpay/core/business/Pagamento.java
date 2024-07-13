@@ -72,6 +72,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NotificaException;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
@@ -261,8 +262,8 @@ public class Pagamento   {
 			richiesta.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 			richiesta.setPassword(stazione.getPassword());
 			richiesta.setDimensioneLista(BigInteger.valueOf(soglia));
-			richiesta.setRangeA(a.getTime());
-			richiesta.setRangeDa(da.getTime());
+			richiesta.setRangeA(DateUtils.toOffsetDateTime(a));
+			richiesta.setRangeDa(DateUtils.toOffsetDateTime(da));
 
 			if(perDominio) {
 				richiesta.setIdentificativoDominio(dominio.getCodDominio());
