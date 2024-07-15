@@ -26,10 +26,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.Response;
 
-import org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
+import it.govpay.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 
 public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrategy {
 	
