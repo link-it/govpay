@@ -162,7 +162,7 @@
         <!-- dynamicreports-core -->
         <dynamicreports-core.version>6.20.1</dynamicreports-core.version>
         <!-- jasperreports -->
-        <jasperreports.version>7.0.0</jasperreports.version>
+        <jasperreports.version>6.21.3</jasperreports.version>
         
 		<jaxb.api.version>3.0.1</jaxb.api.version>
 		<jaxb.core.version>3.0.2</jaxb.core.version>

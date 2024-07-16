@@ -60,7 +60,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class AvvisoPagamentoPdf {
 
 	private static final String LOG_MSG_AVVISO_PAGAMENTO_INPUT = "AvvisoPagamentoInput: {}";
-	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.jaxen.util.xml.JaxenXPathExecuterFactory";
+	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
 	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
 	private static AvvisoPagamentoPdf instance = null;
 	private static JAXBContext jaxbContext = null;
