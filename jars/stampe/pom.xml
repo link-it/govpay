@@ -143,12 +143,6 @@
 		</dependency>
 		
 		<dependency>
-		    <groupId>net.sf.jasperreports</groupId>
-		    <artifactId>jasperreports-jaxen</artifactId>
-		    <version>${jasperreports.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
 		</dependency>
