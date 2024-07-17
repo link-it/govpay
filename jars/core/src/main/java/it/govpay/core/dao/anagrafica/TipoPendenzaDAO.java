@@ -21,6 +21,7 @@ package it.govpay.core.dao.anagrafica;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -73,7 +74,19 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
 			filter.setSearchModeEquals(true); 
 			
-			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() != null) {
+			String backofficeValidazioneDefinizione = putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault();
+			if(backofficeValidazioneDefinizione != null) {
+				
+				if(backofficeValidazioneDefinizione.startsWith("\""))
+					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(1);
+
+				if(backofficeValidazioneDefinizione.endsWith("\""))
+					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(0, backofficeValidazioneDefinizione.length() - 1);
+				
+				byte[] template = Base64.getDecoder().decode(backofficeValidazioneDefinizione.getBytes());
+				
+				log.trace("Ricevuto schema validazione portale backoffice: {}", new String(template));
+				
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
 	
@@ -85,16 +98,27 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault().getBytes(), config, this.log);
+					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
 			
-			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault() != null) {
+			String pagamentoValidazioneDefinizione = putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault();
+			if(pagamentoValidazioneDefinizione != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
+				
+				if(pagamentoValidazioneDefinizione.startsWith("\""))
+					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(1);
+
+				if(pagamentoValidazioneDefinizione.endsWith("\""))
+					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(0, pagamentoValidazioneDefinizione.length() - 1);
+				
+				byte[] template = Base64.getDecoder().decode(pagamentoValidazioneDefinizione.getBytes());
+				
+				log.trace("Ricevuto schema validazione portale pagamento: {}", new String(template));
 	
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
@@ -104,7 +128,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault().getBytes(), config, this.log);
+					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali pagamento non e' valido.", e);
