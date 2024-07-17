@@ -985,9 +985,9 @@ public class DominiDAO extends BaseDAO{
 				if(backofficeValidazioneDefinizione.endsWith("\""))
 					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(0, backofficeValidazioneDefinizione.length() - 1);
 				
-				log.trace("Ricevuto schema validazione portale backoffice: {}", backofficeValidazioneDefinizione);
-
 				byte[] template = Base64.getDecoder().decode(backofficeValidazioneDefinizione.getBytes());
+				
+				log.trace("Ricevuto schema validazione portale backoffice: {}", new String(template));
 				
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
@@ -1018,9 +1018,9 @@ public class DominiDAO extends BaseDAO{
 				if(pagamentoValidazioneDefinizione.endsWith("\""))
 					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(0, pagamentoValidazioneDefinizione.length() - 1);
 				
-				log.trace("Ricevuto schema validazione portale pagamento: {}", pagamentoValidazioneDefinizione);
-				
 				byte[] template = Base64.getDecoder().decode(pagamentoValidazioneDefinizione.getBytes());
+				
+				log.trace("Ricevuto schema validazione portale pagamento: {}", new String(template));
 
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
