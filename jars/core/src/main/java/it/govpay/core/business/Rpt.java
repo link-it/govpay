@@ -373,10 +373,12 @@ public class Rpt {
 							rpt.setDescrizioneStato(descrizione);
 							rpt.setEsitoPagamento(EsitoPagamento.RIFIUTATO);
 							rpt.setFaultCode(faultCode);
+							log.info("Aggiorno stato = RPT_RIFIUTATA_NODO per l'RPT [{}/{}/{}]", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,EsitoPagamento.RIFIUTATO);
 						}
 
 					} catch (Exception e) {
+						log.warn("Si e' verificato un errore durante l'aggioramento della RPT: {} ,{}", e.getMessage(), e);
 						// Se uno o piu' aggiornamenti vanno male, non importa. 
 						// si risolvera' poi nella verifica pendenti
 					} 
