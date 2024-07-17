@@ -39,7 +39,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 """          
 * set tipoPendenzaDominio.portalePagamento.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-form.json.payload'))
 * set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-freemarker.ftl'))
-* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(karate.readAsString('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
 * set tipoPendenzaDominio.visualizzazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-visualizzazione.json.payload'))
 
 Given url backofficeBasicBaseurl
