@@ -50,10 +50,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 """          
 * set tipoPendenzaDominio.portaleBackoffice.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenzaDominio.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenzaDominio.portaleBackoffice.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
+* set tipoPendenzaDominio.portaleBackoffice.validazione = encodeBase64InputStream(karate.readAsString('msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenzaDominio.portalePagamento.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenzaDominio.portalePagamento.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(karate.readAsString('msg/tipoPendenza-dovuta-validazione-form.json'))
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
