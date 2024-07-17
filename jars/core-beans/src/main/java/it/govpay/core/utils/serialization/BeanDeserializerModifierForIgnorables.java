@@ -30,7 +30,8 @@ import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 
 public class BeanDeserializerModifierForIgnorables extends BeanDeserializerModifier {
 
-    private List<String> ignorables;
+    private static final long serialVersionUID = 1L;
+	private List<String> ignorables;
 
     public BeanDeserializerModifierForIgnorables(List<String> properties) {
     	if(properties!=null)

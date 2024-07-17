@@ -45,6 +45,8 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class ConverterUtils {
+	
+	private ConverterUtils() {}
 
 	private static ObjectMapper mapper;
 	static {

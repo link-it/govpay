@@ -21,6 +21,7 @@ package it.govpay.core.dao.anagrafica;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -975,7 +976,19 @@ public class DominiDAO extends BaseDAO{
 
 			putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdTipoVersamento(tipoVersamento.getId());
 
-			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione() != null) {
+			String backofficeValidazioneDefinizione = putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizione();
+			if(backofficeValidazioneDefinizione != null) {
+				
+				if(backofficeValidazioneDefinizione.startsWith("\""))
+					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(1);
+
+				if(backofficeValidazioneDefinizione.endsWith("\""))
+					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(0, backofficeValidazioneDefinizione.length() - 1);
+				
+				log.trace("Ricevuto schema validazione portale backoffice: {}", backofficeValidazioneDefinizione);
+
+				byte[] template = Base64.getDecoder().decode(backofficeValidazioneDefinizione.getBytes());
+				
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
 
@@ -987,16 +1000,27 @@ public class DominiDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 
 				try {
-					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione().getBytes(), config, this.log);
+					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
 
-			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione() != null) {
+			String pagamentoValidazioneDefinizione = putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoValidazioneDefinizione();
+			if(pagamentoValidazioneDefinizione != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
+				
+				if(pagamentoValidazioneDefinizione.startsWith("\""))
+					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(1);
+
+				if(pagamentoValidazioneDefinizione.endsWith("\""))
+					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(0, pagamentoValidazioneDefinizione.length() - 1);
+				
+				log.trace("Ricevuto schema validazione portale pagamento: {}", pagamentoValidazioneDefinizione);
+				
+				byte[] template = Base64.getDecoder().decode(pagamentoValidazioneDefinizione.getBytes());
 
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
@@ -1006,10 +1030,10 @@ public class DominiDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 
 				try {
-					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione().getBytes(), config, this.log);
+					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali pagamento non e' valido.", e);
 				} 
 			}
 

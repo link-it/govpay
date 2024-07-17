@@ -1,4 +1,4 @@
-<#assign jsonUtilities = class["org.openspcoop2.utils.json.JSONUtils"].getInstance()>
+<#assign jsonUtilities = class["it.govpay.core.utils.rawutils.JSONUtils"].getInstance()>
 <#assign request = jsonUtilities.getAsNode(jsonPath.read("$"))>
 <#assign identificativo = request.get("soggettoPagatore").get("identificativo").asText()>
 <#if identificativo == "XXXXXX00X00X000X">
