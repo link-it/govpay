@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.govpay.jaxrs.JacksonJsonProviderCustomized;
+import it.govpay.core.jaxrs.JacksonJsonProviderCustomized;
 
 public abstract class AbstractBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 	

@@ -1,4 +1,4 @@
-package it.govpay.jaxrs;
+package it.govpay.core.jaxrs;
 
 import java.util.TimeZone;
 
