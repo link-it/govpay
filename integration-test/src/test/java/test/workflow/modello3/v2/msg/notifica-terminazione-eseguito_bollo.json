@@ -92,6 +92,7 @@
          "channelDescription":"#notnull",
          "payer":null,
          "paymentMethod": "##string",
+         "paymentNote": "##string",
          "fee":"1.00",
          "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
          "applicationDate":"#ignore",
