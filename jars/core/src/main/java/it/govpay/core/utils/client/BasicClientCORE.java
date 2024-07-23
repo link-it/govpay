@@ -586,6 +586,7 @@ public abstract class BasicClientCORE {
 			}
 
 			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+			requestConfigBuilder.setRedirectsEnabled(false);
 
 			// Impostazione timeout
 			if(this.debug) {
