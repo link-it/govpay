@@ -207,23 +207,14 @@ And match response ==
 Scenario: Caricamento multivoce con numeroAvviso
 
 * def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
-* set pendenzaPut.numeroAvviso = '001000000000000001'
+* set pendenzaPut.numeroAvviso = '001000000001200001'
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
-Then status 422
-And match response == 
-"""
-{ 
-	categoria: 'RICHIESTA',
-	codice: 'VER_031',
-	descrizione: 'Richiesta non valida',
-	dettaglio: 'Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e\' una Marca da Bollo Telematica.'
-}
-"""
+Then status 201
 
 Scenario: Caricamento multivoce con idVocePendenza non univoco
 

@@ -60,6 +60,22 @@ When method put
 Then status 201
 And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull', UUID: '#notnull'}
 
+Scenario: Caricamento pendenza con MBT con stampa avviso
+
+* def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
+* set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.dataScadenza = null
+* set pendenzaPut.dataValidita = null
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+And param stampaAvviso = true
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '##null', UUID: '#notnull'}'
+
 
 
 
