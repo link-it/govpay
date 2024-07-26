@@ -218,7 +218,7 @@ And match response ==
 Scenario: Caricamento multivoce con numeroAvviso
 
 * def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
-* set pendenzaPut.numeroAvviso = '001000100000000001'
+* set pendenzaPut.numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
