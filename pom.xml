@@ -40,7 +40,6 @@
 		<logger.version>2.23.1</logger.version>
 		
 		<!-- swagger -->
-<!--		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-4</swagger-codegen-maven-plugin.version>-->
 		<swagger-codegen-maven-plugin.version>3.0.57</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.6.14</swagger.version>
 		<swagger.v3.version>2.2.22</swagger.v3.version>
@@ -49,8 +48,11 @@
 		<guava.version>33.2.1-jre</guava.version>
 		
 		<!-- cxf -->
-		<cxf.version>4.0.4</cxf.version>
+		<cxf.version>4.0.5</cxf.version>
 		<cxf.xjc.runtime.version>4.0.1</cxf.xjc.runtime.version>
+		
+		<!-- angus-mail-->
+		<angus-mail.version>1.1.0</angus-mail.version>
 		
 		<!-- jackson -->
 		<jackson.version>2.17.1</jackson.version>
@@ -163,6 +165,10 @@
         <dynamicreports-core.version>6.20.1</dynamicreports-core.version>
         <!-- jasperreports -->
         <jasperreports.version>6.21.3</jasperreports.version>
+        <!-- barcode4j -->
+        <barcode4j.version>2.1</barcode4j.version>
+        <!-- ant version -->
+        <ant.version>1.10.14</ant.version>
         
 		<jaxb.api.version>3.0.1</jaxb.api.version>
 		<jaxb.core.version>3.0.2</jaxb.core.version>
@@ -203,6 +209,13 @@
         	nel metodo chiamante. Nella funzionalita' di controllo delle autorizzazioni sulle UO e' il valore null e il valore 'lista vuota' hanno due significati completamente distinti nel decidere le autorizzazioni di un'utenza. -->
         <sonar.issue.ignore.multicriteria.coreFP4.ruleKey>java:S1168</sonar.issue.ignore.multicriteria.coreFP4.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP4.resourceKey>**/src/main/java/it/govpay/core/autorizzazione/AuthorizationManager.java</sonar.issue.ignore.multicriteria.coreFP4.resourceKey>
+        
+        <!-- owasp config -->
+		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
+		<owasp.plugin.version>10.0.3</owasp.plugin.version>
+		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
+		<owasp.plugin.failBuildOnAnyVulnerability>false</owasp.plugin.failBuildOnAnyVulnerability>
+		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
         
 	</properties>
 
@@ -932,6 +945,22 @@
 						<groupId>org.apache.cxf</groupId>
 	            		<artifactId>cxf-core</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.apache.cxf</groupId>
+	            		<artifactId>cxf-rt-frontend-simple</artifactId>
+					</exclusion>
+				</exclusions>
+	        </dependency>
+	        
+	         <dependency>
+	            <groupId>org.apache.cxf</groupId>
+        		<artifactId>cxf-rt-frontend-simple</artifactId>
+	            <version>${cxf.version}</version>
+	            <exclusions>
+					<exclusion>
+						<groupId>org.eclipse.angus</groupId>
+	            		<artifactId>angus-mail</artifactId>
+					</exclusion>
 				</exclusions>
 	        </dependency>
 
@@ -1022,6 +1051,12 @@
 					</exclusion>
 				</exclusions>
 		    </dependency>
+		    
+		    <dependency>
+				<groupId>org.eclipse.angus</groupId>
+        		<artifactId>angus-mail</artifactId>
+        		<version>${angus-mail.version}</version>
+	        </dependency>
 
 			<!-- Jackson -->
 			<dependency>
@@ -1301,6 +1336,18 @@
 				<artifactId>barbecue</artifactId>
 				<version>${barbecue.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>net.sf.barcode4j</groupId>
+	   			<artifactId>barcode4j</artifactId>
+	   			<version>${barcode4j.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.apache.ant</groupId>
+			    <artifactId>ant</artifactId>
+			    <version>${ant.version}</version>
+			</dependency>
 	
 			<dependency>
 				<groupId>xalan</groupId>
@@ -1453,28 +1500,29 @@
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
-				<version>8.1.2</version>
+				<version>${owasp.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>check owasp</id>
-						<phase>verify</phase>
+						<phase>${owasp}</phase>
 						<configuration>
-							<autoUpdate>true</autoUpdate>
-							<failBuildOnAnyVulnerability>false</failBuildOnAnyVulnerability>
+							<autoUpdate>${owasp.plugin.autoUpdate}</autoUpdate>
+							<failBuildOnAnyVulnerability>${owasp.plugin.failBuildOnAnyVulnerability}</failBuildOnAnyVulnerability>
 							<!-- <failBuildOnCVSS>8</failBuildOnCVSS> -->
 							<!-- <outputDirectory></outputDirectory> -->
 <!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
-                            	<suppressionFile>${owasp.falsePositives.dir}/installer.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
+<!--                            	<suppressionFile>${owasp.falsePositives.dir}/installer.xml</suppressionFile>-->
+<!--                            	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>-->
+<!--                            	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>-->
                             	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/console-backoffice.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/JSON-20240303.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/swagger-parser-safe-url-resolver-2.1.22.xml</suppressionFile>
-                            	
+<!--                            	<suppressionFile>${owasp.falsePositives.dir}/console-backoffice.xml</suppressionFile>-->
+<!--                            	<suppressionFile>${owasp.falsePositives.dir}/JSON-20240303.xml</suppressionFile>-->
+<!--                            	<suppressionFile>${owasp.falsePositives.dir}/swagger-parser-safe-url-resolver-2.1.22.xml</suppressionFile>-->
                             </suppressionFiles>
+                            <nvdApiDelay>120000</nvdApiDelay><!-- 2 minuti -->
+							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>
