@@ -140,6 +140,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dataUltimoAggiornamento) {
       this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimoAggiornamento).format('DD/MM/YYYY') });
     }
+    if(_json.descrizioneStato && 
+    	(_json.stato === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANOMALA))
+    ) {
+      this.info.extraInfo.push({ label: Voce.DESCRIZIONE_STATO+': ', value: _json.descrizioneStato });
+    }
 
     //Json Visualizzazione
     if(_json.tipoPendenza && _json.tipoPendenza.visualizzazione) {

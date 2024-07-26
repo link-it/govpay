@@ -137,7 +137,8 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
-    INCASSATA: 'Riconciliata'
+    INCASSATA: 'Riconciliata',
+    ANOMALA: 'Anomala'
   };
 
   //STATI RPP PAGAMENTI
