@@ -161,7 +161,7 @@ Then status 200
 """          
 * set tipoPendenza.portaleBackoffice.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenza.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.portaleBackoffice.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.portaleBackoffice.validazione =  encodeBase64InputStream(karate.readAsString('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 * set tipoPendenza.tracciatoCsv.richiesta = encodeBase64InputStream(read('msg/freemarker-request-tipopendenza.ftl'))
 * set tipoPendenza.tracciatoCsv.risposta = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tracciato-csv-freemarker-response.ftl'))
@@ -314,7 +314,7 @@ Then status 200
 """          
 * set tipoPendenza.portaleBackoffice.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenza.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.portaleBackoffice.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.portaleBackoffice.validazione =  encodeBase64InputStream(karate.readAsString('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 
 Given url backofficeBaseurl
@@ -466,7 +466,7 @@ Then status 200
 """          
 * set tipoPendenza.portaleBackoffice.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenza.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.portaleBackoffice.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.portaleBackoffice.validazione =  encodeBase64InputStream(karate.readAsString('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 
 Given url backofficeBaseurl
