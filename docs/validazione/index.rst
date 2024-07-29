@@ -16,31 +16,6 @@ Falsi positivi
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
 
-CVE-2023-5072
-==============
-
-file name: json-20240303.jar
-
-La vulnerabilità indicata viene descritta come segue: `Denial of Service in JSON-Java versions up to and including 20230618.  A bug in the parser means that an input string of modest size can lead to indefinite amounts of memory being used.`
-
-La versione della libreria ultilizzata risolve il bug indicato, ma il tool di validazione continua a segnalare la vulnerabilità. Risulta quindi un falso positivo.
-
-CVE-2022-45688
-==============
-
-file name: json-20240303.jar
-
-La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
-
-La versione della libreria ultilizzata risolve il bug indicato, ma il tool di validazione continua a segnalare la vulnerabilità. Risulta quindi un falso positivo.
-
-CVE-2022-40152
-==============
-
-file name: stax2-api-4.2.1.jar
-
-La vulnerabilità 'CVE-2022-40152' è relativa alla dipendenza transitiva 'woodstox-core'. In GovPay non viene utilizzata la versione definita nella dipendenza transitiva, ma bensì la versione woodstox-core-6.4.0.jar che non presenta la vulnerabilità.
-
 CVE-2020-5408
 =============
 
@@ -71,68 +46,11 @@ Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
 CVE-2016-1000027
 ================
 
-file name: spring-web-5.3.36.jar
+file name: spring-web-5.3.37.jar
 
 La vulnerabilità indicata viene descritta come segue: `Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.`
 
 La versione utilizzata è superiore alla '5.3.16' quindi risulta un falso positivo e la classe oggetto della vulnerabilità (https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#remoting-httpinvoker) non viene utilizzata.
-
-CVE-2014-125070
-===============
-
-file name: pom.xml
-
-La vulnerabilità indicata viene descritta come segue: `A vulnerability has been found in yanheven console and classified as problematic. Affected by this vulnerability is the function get_zone_hosts/AvailabilityZonesTable of the file openstack_dashboard/dashboards/admin/aggregates/tables.py. The manipulation leads to cross site scripting. The attack can be launched remotely. The name of the patch is ba908ae88d5925f4f6783eb234cc4ea95017472b. It is recommended to apply a patch to fix this issue. The associated identifier of this vulnerability is VDB-217651.`
-
-La libreria indicata non viene utilizzata in GovPay, pertanto si puo' concludere che si tratti di un falso positivo.
-
-Libreria Swagger-parser-safe-url-resolver-2.1.22
-================================================
-
-La libreria risulta positiva alle seguenti segnalazioni, che si riferiscono però ad un altro libreria: 'https://github.com/ionicabizau/parse-url'. Pertanto si ritengono le vulnerabilità un falso positivo.
-
-- CVE-2022-0722
-- CVE-2022-2216
-- CVE-2022-2217
-- CVE-2022-2218
-- CVE-2022-2900
-- CVE-2022-3224
-
-Librerie installer
-===================
-
-Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di GovPay, utilizzato offline per la configurazione dell'ear, e che non fanno parte degli artefatti dispiegati. Possono pertanto essere ignorate.
-
-- CVE-2007-1036
-- CVE-2012-2312
-- CVE-2013-4128
-- CVE-2014-3488
-- CVE-2014-3599
-- CVE-2015-2156
-- CVE-2016-4978
-- CVE-2018-2799
-- CVE-2019-16869
-- CVE-2019-19343
-- CVE-2019-20444
-- CVE-2019-20445
-- CVE-2020-1945
-- CVE-2020-7238
-- CVE-2020-11612
-- CVE-2021-4277
-- CVE-2021-20318
-- CVE-2021-21290
-- CVE-2021-21295
-- CVE-2021-21409
-- CVE-2021-37136
-- CVE-2021-37137
-- CVE-2021-43797
-- CVE-2022-23437
-- CVE-2022-24823
-- CVE-2022-41881
-- CVE-2022-41915
-- CVE-2023-34462
-- CVE-2023-44487
-
 
 Test di copertura funzionale
 ============================
