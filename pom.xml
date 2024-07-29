@@ -1466,13 +1466,9 @@
 <!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
-                            	<suppressionFile>${owasp.falsePositives.dir}/installer.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/console-backoffice.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/JSON-20240303.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/swagger-parser-safe-url-resolver-2.1.22.xml</suppressionFile>
                             </suppressionFiles>
                             <nvdApiDelay>120000</nvdApiDelay><!-- 2 minuti -->
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
