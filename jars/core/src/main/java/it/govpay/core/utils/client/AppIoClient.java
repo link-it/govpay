@@ -178,7 +178,12 @@ public class AppIoClient extends BasicClientCORE {
 				}
 			}
 			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			String messaggio = e.getResponseBody();
+			if(messaggio == null) {
+				messaggio = e.getMessage();
+			}
+			
+			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
@@ -306,7 +311,12 @@ public class AppIoClient extends BasicClientCORE {
 				}
 			}
 			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			String messaggio = e.getResponseBody();
+			if(messaggio == null) {
+				messaggio = e.getMessage();
+			}
+			
+			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
