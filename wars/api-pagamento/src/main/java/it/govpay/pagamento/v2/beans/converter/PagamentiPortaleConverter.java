@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -40,13 +39,13 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.beans.commons.Anagrafica;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -67,13 +66,8 @@ import it.govpay.pagamento.v2.beans.TipoSoggetto;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class PagamentiPortaleConverter {
-
-	public static final String PENDENZE_KEY = "pendenze";
-	public static final String VOCI_PENDENZE_KEY = "voci";
-	public static final String ID_A2A_KEY = "idA2A";
-	public static final String ID_PENDENZA_KEY = "idPendenza";
-	public static final String ID_DOMINIO_KEY = "idDominio";
-	public static final String IUV_KEY = "iuv";
+	
+	private PagamentiPortaleConverter() {}
 
 	public static PagamentoCreato getPagamentiPortaleResponseOk(PagamentiPortaleDTOResponse dtoResponse) {
 		PagamentoCreato  json = new PagamentoCreato();
@@ -116,7 +110,7 @@ public class PagamentiPortaleConverter {
 		PagamentiPortaleConverter.controlloUtenzaVersante(pagamentiPortaleRequest, user);
 		pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
-		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
+		if(pagamentiPortaleRequest.getPendenze() != null && !pagamentiPortaleRequest.getPendenze().isEmpty()) {
 			List<Object> listRefs = new ArrayList<>();
 
 			int i =0;
@@ -153,7 +147,7 @@ public class PagamentiPortaleConverter {
 	
 							// aggiungo la pendenza da pagare
 							listaPendenzeDaSessione.put((pendenza.getIdA2A()+pendenza.getIdPendenza()), listaIdentificativi.get((pendenza.getIdA2A()+pendenza.getIdPendenza())));
-							log.debug("Letta pendenza [idA2A:"+pendenza.getIdA2A()+", idPendenza: "+pendenza.getIdPendenza()+"] dalla sessione");
+							log.debug("Letta pendenza [idA2A:{}, idPendenza: {}] dalla sessione", pendenza.getIdA2A(), pendenza.getIdPendenza());
 						}
 					}
 
@@ -277,7 +271,7 @@ public class PagamentiPortaleConverter {
 
 	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException, IOException {
 
-		if(voci != null && voci.size() > 0) {
+		if(voci != null && !voci.isEmpty()) {
 			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
