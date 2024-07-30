@@ -47,4 +47,8 @@ public class BaseDAO {
 			}
 		}
 	}
+	
+	public void logError(String message, Throwable t) {
+		this.log.error(message,t);
+	}
 }

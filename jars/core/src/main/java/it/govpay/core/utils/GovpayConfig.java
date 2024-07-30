@@ -174,6 +174,7 @@ public class GovpayConfig {
 	
 	private String checkoutBaseURL;
 	private boolean checkoutEnabled;
+	private boolean checkoutResponseSendRedirectEnabled;
 	
 	private boolean conversioneMessaggiPagoPAV2NelFormatoV1;
 	
@@ -280,6 +281,7 @@ public class GovpayConfig {
 		
 		this.checkoutBaseURL = null;
 		this.checkoutEnabled = false;
+		this.checkoutResponseSendRedirectEnabled = false;
 		
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
 		
@@ -826,6 +828,10 @@ public class GovpayConfig {
 			String checkoutEnabledString = getProperty("it.govpay.checkout.enabled", this.props, false, log);
 			if(checkoutEnabledString != null && Boolean.valueOf(checkoutEnabledString))
 				this.checkoutEnabled = true;
+			
+			String checkoutResponseSendRedirectEnabledString = getProperty("it.govpay.checkout.response.sendRedirect.enabled", this.props, false, log);
+			if(checkoutResponseSendRedirectEnabledString != null && Boolean.valueOf(checkoutResponseSendRedirectEnabledString))
+				this.checkoutResponseSendRedirectEnabled = true;
 
 			String conversioneMessaggiPagoPAV2NelFormatoV1String = getProperty("it.govpay.retrocompatibilitaMessaggiPagoPA.v1.enable", this.props, false, log);
 			if(conversioneMessaggiPagoPAV2NelFormatoV1String != null && Boolean.valueOf(conversioneMessaggiPagoPAV2NelFormatoV1String))
@@ -1311,6 +1317,10 @@ public class GovpayConfig {
 	
 	public boolean isCheckoutEnabled() {
 		return checkoutEnabled;
+	}
+	
+	public boolean isCheckoutResponseSendRedirectEnabled() {
+		return checkoutResponseSendRedirectEnabled;
 	}
 	
 	public boolean isConversioneMessaggiPagoPAV2NelFormatoV1() {

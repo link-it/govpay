@@ -109,9 +109,10 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then status 302
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
 
-* def location = responseHeaders["Location"][0]
+* def location = response.redirect
 
 Given url location
 When method get
@@ -169,9 +170,10 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then status 302
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
 
-* def location = responseHeaders["Location"][0]
+* def location = response.redirect
 
 Given url location
 When method get
