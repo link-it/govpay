@@ -18,6 +18,7 @@ import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 import { HttpResponse } from '@angular/common/http';
+import { forEach } from 'angular2-json-schema-form';
 
 @Component({
   selector: 'link-pendenze',
@@ -34,6 +35,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
 
   @Input() json: any;
   @Input() modified: boolean = false;
+  @Input() pendenzaMBT: boolean = false;
 
 
   protected NOTA = UtilService.NOTA;
@@ -141,6 +143,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dataUltimaComunicazioneAca) {
       this.info.extraInfo.push({ label: Voce.DATA_ULTIMA_COMUNICAZIONE_ACA+': ', value: moment(_json.dataUltimaComunicazioneAca).format('DD/MM/YYYY [ore] HH:mm:ss') });
     }
+    if(_json.descrizioneStato && 
+    	(_json.stato === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANOMALA))
+    ) {
+      this.info.extraInfo.push({ label: Voce.DESCRIZIONE_STATO+': ', value: _json.descrizioneStato });
+    }
 
     //Json Visualizzazione
     if(_json.tipoPendenza && _json.tipoPendenza.visualizzazione) {
@@ -236,6 +243,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         return p;
       }, this);
     }
+    
+    this.pendenzaMBT = this.us.isPendenzaMBT(_json);
   }
 
   protected elencoTentativi() {
@@ -502,8 +511,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     const chunk: any[] = [];
 
     try {
-      //Pdf Avviso di pagamento
-      if(this.json.numeroAvviso) {
+      //Pdf Avviso di pagamento solo se non c'e una marca da bollo'
+      if(this.json.numeroAvviso && !this.pendenzaMBT) {
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }

@@ -37,6 +37,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
+import it.govpay.core.dao.pagamenti.exception.AvvisoNonDisponibileException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.model.configurazione.Hardening;
 import it.govpay.pagamento.v2.controller.BaseController;
@@ -292,7 +293,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			}
 
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] completato con esito ["+(authorized ? "accesso consentito" : "accesso negato")+"].");
-		} catch(PendenzaNonTrovataException e){
+		} catch(PendenzaNonTrovataException | AvvisoNonDisponibileException e){
 			return false;
 		}catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile effettuare il check disponibilita' avviso: "+ e.getMessage(), e);

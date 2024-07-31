@@ -907,16 +907,19 @@ public class PendenzeDAO extends BaseDAO{
 			createOrUpdatePendenzaResponse.setQrCode(iuv.getQrCode() != null ? new String(iuv.getQrCode()) : null);
 
 			if(putVersamentoDTO.isStampaAvviso()) {
-				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-				PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-				printAvvisoDTO.setUpdate(!createOrUpdatePendenzaResponse.isCreated());
-				printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
-				printAvvisoDTO.setIuv(iuv.getIuv());
-				printAvvisoDTO.setVersamento(versamento); 
-				printAvvisoDTO.setSalvaSuDB(false);
-				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
-				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
+				// Inserisco l'avviso nella response solo se non c'e' una MBT
+				if(!VersamentoUtils.isPendenzaMBT(versamento, configWrapper)) {
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
+					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
+					printAvvisoDTO.setUpdate(!createOrUpdatePendenzaResponse.isCreated());
+					printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+					printAvvisoDTO.setIuv(iuv.getIuv());
+					printAvvisoDTO.setVersamento(versamento); 
+					printAvvisoDTO.setSalvaSuDB(false);
+					printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
+					PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+					createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
+				}
 			} else { // non devo fare la stampa.
 				if(!createOrUpdatePendenzaResponse.isCreated()) {
 					// se ho fatto l'update della pendenza e non voglio aggiornare la stampa la cancello cosi quando verra' letta la prima volta si aggiornera' da sola
@@ -1071,16 +1074,19 @@ public class PendenzeDAO extends BaseDAO{
 			createOrUpdatePendenzaResponse.setQrCode(iuv.getQrCode() != null ? new String(iuv.getQrCode()) : null);
 
 			if(putVersamentoDTO.isStampaAvviso()) {
-				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-				PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-				printAvvisoDTO.setUpdate(!createOrUpdatePendenzaResponse.isCreated());
-				printAvvisoDTO.setCodDominio(chiediVersamento.getDominio(configWrapper).getCodDominio());
-				printAvvisoDTO.setIuv(iuv.getIuv());
-				printAvvisoDTO.setVersamento(chiediVersamento); 
-				printAvvisoDTO.setSalvaSuDB(false);
-				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
-				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
+				// Inserisco l'avviso nella response solo se non c'e' una MBT
+				if(!VersamentoUtils.isPendenzaMBT(chiediVersamento, configWrapper)) {
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
+					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
+					printAvvisoDTO.setUpdate(!createOrUpdatePendenzaResponse.isCreated());
+					printAvvisoDTO.setCodDominio(chiediVersamento.getDominio(configWrapper).getCodDominio());
+					printAvvisoDTO.setIuv(iuv.getIuv());
+					printAvvisoDTO.setVersamento(chiediVersamento); 
+					printAvvisoDTO.setSalvaSuDB(false);
+					printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
+					PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+					createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
+				}
 			} else { // non devo fare la stampa.
 				if(!createOrUpdatePendenzaResponse.isCreated()) {
 					// se ho fatto l'update della pendenza e non voglio aggiornare la stampa la cancello cosi quando verra' letta la prima volta si aggiornera' da sola

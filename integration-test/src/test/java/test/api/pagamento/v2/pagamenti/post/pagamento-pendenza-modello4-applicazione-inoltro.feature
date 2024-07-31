@@ -805,14 +805,29 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then assert responseStatus == 502
-And match response == 
+Then assert responseStatus == 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+Given url pagamentiBaseurl
+And path '/pagamenti/byIdSession/', response.idSession
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.rpp[0].rpt.soggettoVersante == 
 """
-{ 
-	categoria: 'EC',
-	codice: '502000',
-	descrizione: 'Errore ente creditore',
-	dettaglio: '#("L\'inoltro del versamento [Dominio: " + idDominio +" TipoVersamento:" + codSpontaneo +"] all\'applicazione competente [Applicazione:" + idA2A +"] e\' fallito con errore: Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e\' una Marca da Bollo Telematica.")'
+{
+	"identificativoUnivocoVersante": {
+		"tipoIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.tipo)",
+		"codiceIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.identificativo)"
+	},
+	"anagraficaVersante":"#(pagamentoPost.soggettoVersante.anagrafica)",
+	"indirizzoVersante":"#(pagamentoPost.soggettoVersante.indirizzo)",
+	"civicoVersante":"#(pagamentoPost.soggettoVersante.civico)",
+	"capVersante":"#(pagamentoPost.soggettoVersante.cap + '')",
+	"localitaVersante":"#(pagamentoPost.soggettoVersante.localita)",
+	"provinciaVersante":"#(pagamentoPost.soggettoVersante.provincia)",
+	"nazioneVersante":"#(pagamentoPost.soggettoVersante.nazione)",
+	"e-mailVersante":"#(pagamentoPost.soggettoVersante.email)"
 }
 """
 
