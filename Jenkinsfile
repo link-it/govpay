@@ -19,6 +19,7 @@ pipeline {
       post {
         success {
           archiveArtifacts 'src/main/resources/setup/target/*.tgz'
+          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
         }
       }
     }
