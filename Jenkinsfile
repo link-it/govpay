@@ -19,7 +19,23 @@ pipeline {
       post {
         success {
           archiveArtifacts 'src/main/resources/setup/target/*.tgz'
-          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+        }
+      }
+    }
+    stage('dependency-check') {
+      steps {
+		dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      }
+      post {
+        success {
+          archiveArtifacts artifacts: 'target/dependency-check-report.xml', allowEmptyArchive: true
+          publishHTML(target: [
+                reportName: 'OWASP Dependency-Check Report',
+                reportDir: 'target',
+                reportFiles: 'dependency-check-report.html',
+                alwaysLinkToLastBuild: true,
+                keepAll: true
+            ])
         }
       }
     }
