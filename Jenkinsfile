@@ -13,7 +13,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -25,6 +25,11 @@ pipeline {
     stage('dependency-check') {
       steps {
 		dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      }
+    }
+    stage('spotbugs-analysis') {
+      steps {
+      	spotbugs canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', pattern: '**/target/spotbugsXml.xml', unHealthy: ''
       }
     }
     stage('install') {
