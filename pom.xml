@@ -1520,6 +1520,7 @@
 <!--                            	<suppressionFile>${owasp.falsePositives.dir}/console-backoffice.xml</suppressionFile>-->
 <!--                            	<suppressionFile>${owasp.falsePositives.dir}/JSON-20240303.xml</suppressionFile>-->
 <!--                            	<suppressionFile>${owasp.falsePositives.dir}/swagger-parser-safe-url-resolver-2.1.22.xml</suppressionFile>-->
+                            	<suppressionFile>${owasp.falsePositives.dir}/openspcoop2_utils-crypt.xml</suppressionFile>
                             </suppressionFiles>
                             <nvdApiDelay>120000</nvdApiDelay><!-- 2 minuti -->
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
