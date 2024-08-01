@@ -22,6 +22,11 @@ pipeline {
         }
       }
     }
+    stage('dependency-check') {
+      steps {
+		dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      }
+    }
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
