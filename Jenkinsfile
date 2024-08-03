@@ -29,7 +29,7 @@ pipeline {
     }
     stage('spotbugs-analysis') {
       steps {
-      	spotBugs canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', pattern: '**/target/spotbugsXml.xml', unHealthy: ''
+      	spotBugs pattern: '**/target/spotbugsXml.xml'
       }
     }
     stage('install') {
