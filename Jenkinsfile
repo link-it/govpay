@@ -29,8 +29,7 @@ pipeline {
     }
     stage('spotbugs-analysis') {
       steps {
-      	def spotbugs = scanForIssues tool: [$class: 'SpotBugs'], pattern: '**/target/spotbugsXml.xml'
-        publishIssues issues:[spotbugs]
+      	scanForIssues sourceCodeRetention: 'LAST_BUILD', tool: spotBugs(pattern: '**/target/spotbugsXml.xml', useRankAsPriority: true)
       }
     }
     stage('install') {
