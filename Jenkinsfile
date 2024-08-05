@@ -29,7 +29,7 @@ pipeline {
     }
     stage('spotbugs-analysis') {
       steps {
-      	spotBugs pattern: '**/target/spotbugsXml.xml'
+      	scanForIssues sourceCodeRetention: 'LAST_BUILD', tool: spotBugs(pattern: '**/target/spotbugsXml.xml', useRankAsPriority: true)
       }
     }
     stage('install') {
