@@ -200,3 +200,74 @@ When method get
 * match response.rpp[0].rt == '#notnull'
 
 
+Scenario: Pagamento avviso precaricato autenticato basic con riferimentoPendenza 
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def importo = pendenzaPut.importo
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
+* set pagamentoPost.soggettoVersante = 
+"""
+{
+  "tipo": "F",
+  "identificativo": "RSSMRA30A01H501I",
+  "anagrafica": "Mario Rossi",
+  "indirizzo": "Piazza della Vittoria",
+  "civico": "10/A",
+  "cap": 0,
+  "localita": "Roma",
+  "provincia": "Roma",
+  "nazione": "IT",
+  "email": "mario.rossi@host.eu",
+  "cellulare": "+39 000-1234567"
+}
+"""
+* set pagamentoPost.urlRitorno = 'http://localhost:8080/portaletestsuite'
+
+* configure followRedirects = false
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+* def location = response.redirect
+
+Given url location
+When method get
+
+* match response == esitoVerifyPayment
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
+
+* call sleep(2000)
+
+# Verifico lo stato della pendenza
+
+* call read('classpath:utils/api/v1/backoffice/pendenza-get-dettaglio.feature')
+* match response.stato == 'ESEGUITA'
+* match response.dataPagamento == '#regex \\d\\d\\d\\d-\\d\\d-\\d\\d'
+* match response.voci[0].stato == 'Eseguito'
+* match response.rpp == '#[1]'
+* match response.rpp[0].stato == 'RT_ACCETTATA_PA'
+* match response.rpp[0].rt == '#notnull'
+

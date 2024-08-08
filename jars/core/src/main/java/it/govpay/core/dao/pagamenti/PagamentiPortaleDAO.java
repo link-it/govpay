@@ -422,12 +422,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						// Aggiorno tutti i versamenti che mi sono stati passati
 						String codVersamentoEnte = versamento.getCodVersamentoEnte();
 						String codApplicazione = versamento.getApplicazione(configWrapper).getCodApplicazione();
-						if(versamento.getId() == null) {
-							log.debug("Pendenza [idA2A:{}, idPendenza: {}] non presente nel sistema, caricamento in corso...", codApplicazione, codVersamentoEnte);
-							versamentiBusiness.caricaVersamento(versamento, true, true, false, null, pagamentiPortaleBD);
-							log.debug("Pendenza [idA2A:{}, idPendenza: {}] caricamento e generazione del numero avviso (se previsto) completati.", codApplicazione, codVersamentoEnte);
+						boolean create = versamento.getId() == null;
+						String msg = create ? "caricamento" : "aggiornamento";
+						if(!create) {
+							// lettura dei singoli versamenti
+							versamento.getSingoliVersamenti(configWrapper);
 						}
-						log.debug("Pendenza [idA2A:{}, idPendenza: {}, NumeroAvviso: {}].", codApplicazione, codVersamentoEnte, versamento.getNumeroAvviso());
+						log.debug("Pendenza [idA2A:{}, idPendenza: {}] {} in corso...", codApplicazione, codVersamentoEnte, msg);
+						versamentiBusiness.caricaVersamento(versamento, true, true, false, null, pagamentiPortaleBD);
+						log.debug("Pendenza [idA2A:{}, idPendenza: {}] {} e generazione del numero avviso (se previsto) completati: NAV: {}", codApplicazione, codVersamentoEnte, msg, versamento.getNumeroAvviso());
 					}
 					log.debug("Controllo esistenza del numero avviso per tutte le pendenze completato.");
 
