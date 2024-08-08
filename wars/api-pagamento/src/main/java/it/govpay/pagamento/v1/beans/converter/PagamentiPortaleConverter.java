@@ -69,7 +69,7 @@ public class PagamentiPortaleConverter {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
 
 		json.setId(dtoResponse.getId());
-		json.setLocation(UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
+		json.setLocation(dtoResponse.getId().equals("0") ? "" : UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
 		json.setRedirect(dtoResponse.getRedirectUrl());
 		json.setIdSession(dtoResponse.getIdSessione()); 
 
