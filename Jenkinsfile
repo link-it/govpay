@@ -29,7 +29,8 @@ pipeline {
     }
     stage('spotbugs-analysis') {
       steps {
-      	scanForIssues sourceCodeRetention: 'LAST_BUILD', tool: spotBugs(pattern: '**/target/spotbugsXml.xml', useRankAsPriority: true)
+        scanForIssues sourceCodeRetention: 'LAST_BUILD', tool: spotBugs(id: 'spotbugs', name: 'SpotBugs', pattern: '**/target/spotbugsXml.xml', useRankAsPriority: true)
+      	publishIssues checksAnnotationScope: 'ALL', id: 'spotbugs', issues: [], name: 'SpotBugs'
       }
     }
     stage('install') {
