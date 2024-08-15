@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
 import java.io.File;
@@ -25,7 +27,7 @@ import java.io.OutputStream;
 import org.openspcoop2.utils.beans.WriteToSerializerType;
 import org.openspcoop2.generic_project.exception.SerializerException;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 /**     
  * XML Serializer of beans with jaxb
@@ -44,7 +46,7 @@ public class JaxbSerializer extends AbstractSerializer {
 	
 	
 	/**
-	 * Serialize to file system in <var>fileName</var> the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to file system in <var>fileName</var> the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param fileName Xml file to serialize the object <var>jaxbElement</var>
 	 * @param jaxbElement Object to be serialized in xml file <var>fileName</var>
@@ -54,7 +56,7 @@ public class JaxbSerializer extends AbstractSerializer {
 		this.objToXml(fileName, jaxbElement.getValue().getClass(), jaxbElement, false);
 	}
 	/**
-	 * Serialize to file system in <var>fileName</var> the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to file system in <var>fileName</var> the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param fileName Xml file to serialize the object <var>jaxbElement</var>
 	 * @param jaxbElement Object to be serialized in xml file <var>fileName</var>
@@ -66,7 +68,7 @@ public class JaxbSerializer extends AbstractSerializer {
 	}
 	
 	/**
-	 * Serialize to file system in <var>file</var> the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to file system in <var>file</var> the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param file Xml file to serialize the object <var>jaxbElement</var>
 	 * @param jaxbElement Object to be serialized in xml file <var>fileName</var>
@@ -76,7 +78,7 @@ public class JaxbSerializer extends AbstractSerializer {
 		this.objToXml(file, jaxbElement.getValue().getClass(), jaxbElement, false);
 	}
 	/**
-	 * Serialize to file system in <var>file</var> the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to file system in <var>file</var> the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param file Xml file to serialize the object <var>jaxbElement</var>
 	 * @param jaxbElement Object to be serialized in xml file <var>fileName</var>
@@ -88,7 +90,7 @@ public class JaxbSerializer extends AbstractSerializer {
 	}
 	
 	/**
-	 * Serialize to output stream <var>out</var> the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to output stream <var>out</var> the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param out OutputStream to serialize the object <var>jaxbElement</var>
 	 * @param jaxbElement Object to be serialized in xml file <var>fileName</var>
@@ -98,7 +100,7 @@ public class JaxbSerializer extends AbstractSerializer {
 		this.objToXml(out, jaxbElement.getValue().getClass(), jaxbElement, false);
 	}
 	/**
-	 * Serialize to output stream <var>out</var> the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to output stream <var>out</var> the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param out OutputStream to serialize the object <var>jaxbElement</var>
 	 * @param jaxbElement Object to be serialized in xml file <var>fileName</var>
@@ -110,7 +112,7 @@ public class JaxbSerializer extends AbstractSerializer {
 	}
 			
 	/**
-	 * Serialize to byte array the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to byte array the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param jaxbElement Object to be serialized
 	 * @return Object to be serialized in byte array
@@ -120,7 +122,7 @@ public class JaxbSerializer extends AbstractSerializer {
 		return this.objToXml(jaxbElement.getValue().getClass(), jaxbElement, false).toByteArray();
 	}
 	/**
-	 * Serialize to byte array the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to byte array the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param jaxbElement Object to be serialized
 	 * @param prettyPrint if true output the XML with indenting
@@ -132,7 +134,7 @@ public class JaxbSerializer extends AbstractSerializer {
 	}
 	
 	/**
-	 * Serialize to String the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to String the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param jaxbElement Object to be serialized
 	 * @return Object to be serialized as String
@@ -142,7 +144,7 @@ public class JaxbSerializer extends AbstractSerializer {
 		return this.objToXml(jaxbElement.getValue().getClass(), jaxbElement, false).toString();
 	}
 	/**
-	 * Serialize to String the object <var>jaxbElement</var> of type {@link javax.xml.bind.JAXBElement}
+	 * Serialize to String the object <var>jaxbElement</var> of type {@link jakarta.xml.bind.JAXBElement}
 	 * 
 	 * @param jaxbElement Object to be serialized
 	 * @param prettyPrint if true output the XML with indenting

@@ -12,7 +12,7 @@ dependsOn:
     - name: Java
       optional: false
       version: ''
-      versionMax: ''
+      versionMax: '11'
       versionMin: '8'
 description:
   it:

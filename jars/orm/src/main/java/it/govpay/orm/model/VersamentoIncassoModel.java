@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VersamentoIncasso;
@@ -86,14 +88,14 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ACK = new Field("ack",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.ANOMALO = new Field("anomalo",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.math.BigDecimal.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.math.BigDecimal.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DIVISIONE = new Field("divisione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_DATE = new Field("smartOrderDate",long.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.SMART_ORDER_RANK = new Field("smartOrderRank",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.SMART_ORDER_RANK = new Field("smartOrderRank",java.math.BigInteger.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
@@ -154,14 +156,14 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ACK = new ComplexField(father,"ack",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.ANOMALO = new ComplexField(father,"anomalo",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.math.BigDecimal.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.math.BigDecimal.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_DATE = new ComplexField(father,"smartOrderDate",long.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.SMART_ORDER_RANK = new ComplexField(father,"smartOrderRank",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.SMART_ORDER_RANK = new ComplexField(father,"smartOrderRank",java.math.BigInteger.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);

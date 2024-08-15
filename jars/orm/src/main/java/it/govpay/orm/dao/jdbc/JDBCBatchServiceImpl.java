@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -31,7 +33,7 @@ import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
 
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -61,6 +63,11 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
@@ -121,6 +128,13 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+			
+
+
 		// Object batch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getBatchFieldConverter().toTable(Batch.model()));
@@ -149,7 +163,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdBatch id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -159,7 +173,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdBatch id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -169,7 +183,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdBatch id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -180,7 +194,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -191,7 +205,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -202,7 +216,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -261,6 +275,9 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
@@ -323,5 +340,13 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	@Override
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
+	}
+	
+	@Override
+	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
+	
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
+																							sql,param);
+	
 	}
 }

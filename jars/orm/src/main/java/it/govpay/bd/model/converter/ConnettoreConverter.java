@@ -27,6 +27,8 @@ import it.govpay.model.Versionabile.Versione;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreConverter {
+	
+	private ConnettoreConverter() {}
 
 	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException {
 		Connettore dto = new Connettore();

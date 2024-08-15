@@ -20,19 +20,19 @@
 
 package it.govpay.core.utils.adapter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateTimeAdapter extends XmlAdapter<String, Date>
+public class DateTimeAdapter extends XmlAdapter<String, LocalDateTime>
 {
 	@Override
-	public Date unmarshal(String value) {
-		return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.parseDateTime(value));
+	public LocalDateTime unmarshal(String value) {
+		return DataTypeAdapterCXF.parseLocalDateTime(value);
 	}
 
 	@Override
-	public String marshal(Date value) {
-		return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.printDateTime(value));
+	public String marshal(LocalDateTime value) {
+		return DataTypeAdapterCXF.printLocalDateTime(value);
 	}
 }

@@ -26,7 +26,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
@@ -121,7 +121,10 @@ public class ReCaptchaValidator {
         	// imposto i timeout di connessione
         	HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         	factory.setConnectTimeout(this.captchaSettings.getGoogleCatpcha().getConnectionTimeout());
-        	factory.setReadTimeout(this.captchaSettings.getGoogleCatpcha().getReadTimeout());
+        	// TODO da verificare come configurare questo timeout nel SocketConfig e quindi nel client
+        	//      da passare poi al RestTemplate. La creazione del client è "pesante" e merita cercare
+        	//      di riusare i client
+        	// factory.setReadTimeout(this.captchaSettings.getGoogleCatpcha().getReadTimeout());
         	
            	RestTemplate restTemplate = new RestTemplate(factory);
            	

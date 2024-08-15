@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.model.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,8 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.orm.IdIncasso;
 
 public class FrConverter {
+	
+	private FrConverter() {}
 
 	public static List<Fr> toDTOList(List<it.govpay.orm.FR> lst) {
 		List<Fr> lstDTO = new ArrayList<>();
@@ -51,7 +52,7 @@ public class FrConverter {
 		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
-		dto.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getImportoTotalePagamenti()));
+		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
 		dto.setIur(vo.getIur());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
 		dto.setXml(vo.getXml());
@@ -75,7 +76,7 @@ public class FrConverter {
 		vo.setDataRegolamento(dto.getDataRegolamento());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti().doubleValue());
+		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti());
 		vo.setIur(dto.getIur());
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
 		vo.setObsoleto(dto.getObsoleto());

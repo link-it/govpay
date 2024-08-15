@@ -8555,7 +8555,6 @@ components:
           example: '1'
         prossimiRisultati:
           type: string
-          format: integer
           example: '/risorsa?pagina=2'
         maxRisultati:
           type: number

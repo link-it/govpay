@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -138,7 +138,7 @@ public class QuietanzaPagamentoPdf {
                     "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME), QuietanzaPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -164,7 +164,7 @@ public class QuietanzaPagamentoPdf {
 //	public JRDataSource creaXmlDataSource(Logger log,QuietanzaPagamentoInput input) throws UtilsException, JRException, JAXBException {
 ////		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
 //		Marshaller jaxbMarshaller = getJAXBContextInstance().createMarshaller();
-//		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+//		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 //		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //		JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", "root"), QuietanzaPagamentoInput.class, null, input);
 //		jaxbMarshaller.marshal(jaxbElement, baos);

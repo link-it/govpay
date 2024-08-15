@@ -20,6 +20,7 @@
 package it.govpay.core.beans;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 import it.govpay.model.Evento.RuoloEvento;
@@ -170,7 +171,7 @@ public class EventoContext implements Serializable {
 	private Long idTracciato;
 
 	private Throwable exception;
-	private Integer severita;
+	private BigInteger severita;
 
 	private String clusterId;
 	private String transactionId;
@@ -431,11 +432,11 @@ public class EventoContext implements Serializable {
 		this.exception = exception;
 	}
 
-	public Integer getSeverita() {
+	public BigInteger getSeverita() {
 		return severita;
 	}
 
-	public void setSeverita(Integer severita) {
+	public void setSeverita(BigInteger severita) {
 		this.severita = severita;
 	}
 

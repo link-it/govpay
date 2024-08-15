@@ -150,7 +150,7 @@ public class IuvBD extends BasicBD {
 						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
 					if(dominio.getSegregationCode() == null)
 						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
-					check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
+					check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode().intValue()); 
 					iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
 					break;
 				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 

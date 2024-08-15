@@ -16,15 +16,6 @@ Falsi positivi
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
 
-CVE-2020-5408
-=============
-
-file name: spring-security-crypto-5.8.12.jar
-
-La vulnerabilità indicata viene descritta come segue: `Spring Security versions 5.3.x prior to 5.3.2, 5.2.x prior to 5.2.4, 5.1.x prior to 5.1.10, 5.0.x prior to 5.0.16 and 4.2.x prior to 4.2.16 use a fixed null initialization vector with CBC Mode in the implementation of the queryable text encryptor. A malicious user with access to the data that has been encrypted using such an encryptor may be able to derive the unencrypted values using a dictionary attack.`
-
-La versione utilizzata è superiore alla '5.3.2' quindi risulta un falso positivo ed in GovPay il metodo oggetto della vulnerabilità (Encryptors#queryableText(CharSequence, CharSequence)) non viene utilizzato.
-
 CVE-2017-10355
 ================
 
@@ -42,15 +33,6 @@ Il contenuto del blog, quando era esistente, viene riportato nell'issue '4614' d
 Il metodo indicato non è utilizzato su GovPay.
 Nella discussione inoltre si fa riferimento alla vulnerabilità descritta in 'https://security.snyk.io/vuln/SNYK-JAVA-XERCES-31497' che consentiva di attuare attacchi DOS.
 Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
-
-CVE-2016-1000027
-================
-
-file name: spring-web-5.3.37.jar
-
-La vulnerabilità indicata viene descritta come segue: `Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.`
-
-La versione utilizzata è superiore alla '5.3.16' quindi risulta un falso positivo e la classe oggetto della vulnerabilità (https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#remoting-httpinvoker) non viene utilizzata.
 
 
 Test di copertura funzionale

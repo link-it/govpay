@@ -20,12 +20,13 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -181,7 +182,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 
 			// lettura dati significativi dalla ricevuta
 			BigDecimal paymentAmount = ctReceipt.getPaymentAmount();
-			Date dataPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime() : new Date();
+			Date dataPagamento = ctReceipt.getPaymentDateTime() != null ? DateUtils.toJavaDate(ctReceipt.getPaymentDateTime()) : new Date();
 			StOutcome ctReceiptOutcome = ctReceipt.getOutcome();
 			it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
 			String pspFiscalCode = ctReceipt.getPspFiscalCode();
@@ -390,7 +391,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 				Pagamento pagamento = null;
 				boolean insert = true;
 				try {
-					pagamento = pagamentiBD.getPagamento(dominioSingoloVersamento.getCodDominio(), iuv, receiptId, idTransfer);
+					pagamento = pagamentiBD.getPagamento(dominioSingoloVersamento.getCodDominio(), iuv, receiptId, BigInteger.valueOf(idTransfer));
 
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione
@@ -513,7 +514,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 	public static Rpt ricostruisciRPT(String codDominio, String iuv, PaSendRTV2Request ctRt, TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento, BDConfigWrapper configWrapper, BasicBD basicBd) throws ServiceException, NotFoundException {
 		String receiptId = ctRt.getReceipt().getReceiptId();
-		Date paymentDateTime = ctRt.getReceipt().getPaymentDateTime();
+		Date paymentDateTime = DateUtils.toJavaDate(ctRt.getReceipt().getPaymentDateTime());
 		VersioneRPT versioneRPT = VersioneRPT.SANP_321_V2;
 		return CtReceiptUtils.ricostruisciRPT(codDominio, iuv, receiptId, paymentDateTime, versioneRPT, tipoVersamento, modelloPagamento, configWrapper, basicBd);
 	}

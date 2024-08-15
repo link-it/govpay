@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,26 +49,26 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Applicazione.model())){
 				Applicazione object = new Applicazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodApplicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType(),
+				setParameter(object, "setCodApplicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType()));
-				this.setParameter(object, "setAutoIUV", Applicazione.model().AUTO_IUV.getFieldType(),
+				setParameter(object, "setAutoIUV", Applicazione.model().AUTO_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "auto_iuv", Applicazione.model().AUTO_IUV.getFieldType()));
-				this.setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
+				setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "firma_ricevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType()));
 				setParameter(object, "setCodConnettoreIntegrazione", Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_integrazione", Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType()));
 				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trusted", Applicazione.model().TRUSTED.getFieldType()));
-				this.setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
+				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione_iuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()));
-				this.setParameter(object, "setRegExp", Applicazione.model().REG_EXP.getFieldType(),
+				setParameter(object, "setRegExp", Applicazione.model().REG_EXP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "reg_exp", Applicazione.model().REG_EXP.getFieldType()));
 				return object;
 			}
@@ -88,21 +90,21 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Applicazione.model())){
 				Applicazione object = new Applicazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodApplicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType(),
+				setParameter(object, "setCodApplicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codApplicazione"));
-				this.setParameter(object, "setAutoIUV", Applicazione.model().AUTO_IUV.getFieldType(),
+				setParameter(object, "setAutoIUV", Applicazione.model().AUTO_IUV.getFieldType(),
 					this.getObjectFromMap(map,"autoIUV"));
-				this.setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
+				setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
 					this.getObjectFromMap(map,"firmaRicevuta"));
 				setParameter(object, "setCodConnettoreIntegrazione", Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreIntegrazione"));
 				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					this.getObjectFromMap(map,"trusted"));
-				this.setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
+				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codApplicazioneIuv"));
-				this.setParameter(object, "setRegExp", Applicazione.model().REG_EXP.getFieldType(),
+				setParameter(object, "setRegExp", Applicazione.model().REG_EXP.getFieldType(),
 					this.getObjectFromMap(map,"regExp"));
 				return object;
 			}

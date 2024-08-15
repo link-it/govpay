@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,20 +49,20 @@ public class StazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Stazione.model())){
 				Stazione object = new Stazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
+				setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_stazione", Stazione.model().COD_STAZIONE.getFieldType()));
-				this.setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
+				setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "password", Stazione.model().PASSWORD.getFieldType()));
-				this.setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
-				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
+				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
 				setParameter(object, "setVersione", Stazione.model().VERSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "versione", Stazione.model().VERSIONE.getFieldType()));
@@ -84,15 +86,15 @@ public class StazioneFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Stazione.model())){
 				Stazione object = new Stazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
+				setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codStazione"));
-				this.setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
+				setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
 					this.getObjectFromMap(map,"password"));
-				this.setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
+				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"applicationCode"));
 				setParameter(object, "setVersione", Stazione.model().VERSIONE.getFieldType(),
 					this.getObjectFromMap(map,"versione"));

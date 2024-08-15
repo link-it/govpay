@@ -131,6 +131,14 @@
 			<AppenderRef ref="STDOUT" />
 		</Logger>
 
+		<Logger name="org.apache.cxf.ws" level="${it.govpay.log.level}" additivity="false">
+			<AppenderRef ref="govpay" />
+		</Logger>
+
+		<Logger name="org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean" level="${it.govpay.log.level}" additivity="false">
+			<AppenderRef ref="govpay" />
+		</Logger>
+
 		<Logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>

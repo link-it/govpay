@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -309,7 +310,7 @@ public class PagamentiPortaleBD extends BasicBD{
 				vo.setAck(BasicBD.getValueOrNull(row.get(pos++),Boolean.class));
 				vo.setPrincipal(BasicBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setTipoUtenza(BasicBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setSeverita(BasicBD.getValueOrNull(row.get(pos++),Integer.class));
+				vo.setSeverita(BasicBD.getValueOrNull(row.get(pos++),BigInteger.class));
 				
 				Long idApplicazioneLong = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 				if(idApplicazioneLong != null) {

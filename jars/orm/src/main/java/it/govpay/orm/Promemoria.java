@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,26 +34,26 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Promemoria">
- * 		&lt;sequence>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="destinatarioTo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="destinatarioCc" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="messaggioContentType" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="oggetto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="messaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="allegaPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
- * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataProssimaSpedizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tentativiSpedizione" type="{http://www.w3.org/2001/XMLSchema}unsignedLong" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="Promemoria"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="destinatarioTo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="destinatarioCc" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="messaggioContentType" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="oggetto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="messaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="allegaPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/&gt;
+ * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataProssimaSpedizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="tentativiSpedizione" type="{http://www.w3.org/2001/XMLSchema}unsignedLong" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -86,22 +87,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "Promemoria")
 
-public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class Promemoria extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public Promemoria() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public IdVersamento getIdVersamento() {
@@ -238,9 +226,6 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.PromemoriaModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.Promemoria.modelStaticInstance==null){
@@ -261,58 +246,58 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="idRPT",required=false,nillable=false)
   protected IdRpt idRPT;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)
   protected java.lang.String tipo;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataCreazione",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataCreazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
   protected java.lang.String stato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrizioneStato",required=false,nillable=false)
   protected java.lang.String descrizioneStato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="destinatarioTo",required=true,nillable=false)
   protected java.lang.String destinatarioTo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="destinatarioCc",required=false,nillable=false)
   protected java.lang.String destinatarioCc;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="messaggioContentType",required=false,nillable=false)
   protected java.lang.String messaggioContentType;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="oggetto",required=false,nillable=false)
   protected java.lang.String oggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="messaggio",required=false,nillable=false)
   protected java.lang.String messaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="allegaPdf",required=true,nillable=false,defaultValue="false")
   protected boolean allegaPdf = false;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataAggiornamentoStato",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataAggiornamentoStato;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataProssimaSpedizione",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataProssimaSpedizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="unsignedLong")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="unsignedLong")
   @XmlElement(name="tentativiSpedizione",required=false,nillable=false)
   protected java.lang.Long tentativiSpedizione;
 

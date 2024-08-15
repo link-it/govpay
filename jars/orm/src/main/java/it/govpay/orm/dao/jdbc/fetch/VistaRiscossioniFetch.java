@@ -17,18 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
+
+import org.openspcoop2.generic_project.beans.IModel;
+import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
 import java.util.Map;
 
-import org.openspcoop2.generic_project.beans.IModel;
-import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
-import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.VistaRiscossioni;
 
@@ -47,8 +49,8 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaRiscossioni.model())){
 				VistaRiscossioni object = new VistaRiscossioni();
@@ -73,7 +75,7 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 				setParameter(object, "setCodSingoloVersamentoEnte", VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_singolo_versamento_ente", VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setIndiceDati", VistaRiscossioni.model().INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_dati", VistaRiscossioni.model().INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "indice_dati", VistaRiscossioni.model().INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setCodVersamentoEnte", VistaRiscossioni.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", VistaRiscossioni.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setCodApplicazione", VistaRiscossioni.model().COD_APPLICAZIONE.getFieldType(),

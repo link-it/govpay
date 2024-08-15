@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,13 +34,13 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="id-acl">
- * 		&lt;sequence>
- * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="id-acl"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -60,22 +61,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "id-acl")
 
-public class IdAcl extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class IdAcl extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public IdAcl() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public java.lang.String getRuolo() {
@@ -104,19 +92,16 @@ public class IdAcl extends org.openspcoop2.utils.beans.BaseBean implements Seria
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
 
 
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ruolo",required=true,nillable=false)
   protected java.lang.String ruolo;
 
   @XmlElement(name="idUtenza",required=true,nillable=false)
   protected IdUtenza idUtenza;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="servizio",required=true,nillable=false)
   protected java.lang.String servizio;
 

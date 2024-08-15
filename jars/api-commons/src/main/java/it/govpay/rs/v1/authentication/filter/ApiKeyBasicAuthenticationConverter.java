@@ -19,7 +19,7 @@
  */
 package it.govpay.rs.v1.authentication.filter;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;

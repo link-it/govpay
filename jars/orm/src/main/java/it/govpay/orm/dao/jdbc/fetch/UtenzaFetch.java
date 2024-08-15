@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,18 +49,18 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Utenza.model())){
 				Utenza object = new Utenza();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
+				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", Utenza.model().PRINCIPAL.getFieldType()));
-				this.setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
+				setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal_originale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()));
-				this.setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
 				setParameter(object, "setAutorizzazioneDominiStar", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "autorizzazione_domini_star", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()));
@@ -88,13 +90,13 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Utenza.model())){
 				Utenza object = new Utenza();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
+				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
-				this.setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
+				setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
 					this.getObjectFromMap(map,"principalOriginale"));
-				this.setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setAutorizzazioneDominiStar", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType(),
 					this.getObjectFromMap(map,"autorizzazione_domini_star"));

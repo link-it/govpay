@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.IdFr;
@@ -51,7 +53,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 		this.DATA_REGOLAMENTO = new Field("dataRegolamento",java.util.Date.class,"id-fr",IdFr.class);
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"id-fr",IdFr.class);
 		this.NUMERO_PAGAMENTI = new Field("numeroPagamenti",long.class,"id-fr",IdFr.class);
-		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.lang.Double.class,"id-fr",IdFr.class);
+		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.math.BigDecimal.class,"id-fr",IdFr.class);
 		this.COD_BIC_RIVERSAMENTO = new Field("codBicRiversamento",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new Field("ragioneSocialeDominio",java.lang.String.class,"id-fr",IdFr.class);
@@ -73,7 +75,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 		this.DATA_REGOLAMENTO = new ComplexField(father,"dataRegolamento",java.util.Date.class,"id-fr",IdFr.class);
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"id-fr",IdFr.class);
 		this.NUMERO_PAGAMENTI = new ComplexField(father,"numeroPagamenti",long.class,"id-fr",IdFr.class);
-		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.lang.Double.class,"id-fr",IdFr.class);
+		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.math.BigDecimal.class,"id-fr",IdFr.class);
 		this.COD_BIC_RIVERSAMENTO = new ComplexField(father,"codBicRiversamento",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"ragioneSocialeDominio",java.lang.String.class,"id-fr",IdFr.class);

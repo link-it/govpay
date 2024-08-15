@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,42 +34,42 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="VistaRiscossioni">
- * 		&lt;sequence>
- * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="cod_flusso" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="fr_iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codEntrata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="identificativoDebitore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="anno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="descrTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="metadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="VistaRiscossioni"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="cod_flusso" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="fr_iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codEntrata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="identificativoDebitore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="anno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="descrTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="importoVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="metadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -118,22 +119,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "VistaRiscossioni")
 
-public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public VistaRiscossioni() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public java.lang.String getCodDominio() {
@@ -192,19 +180,19 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
     this.numeroPagamenti = numeroPagamenti;
   }
 
-  public java.lang.Double getImportoTotalePagamenti() {
+  public java.math.BigDecimal getImportoTotalePagamenti() {
     return this.importoTotalePagamenti;
   }
 
-  public void setImportoTotalePagamenti(java.lang.Double importoTotalePagamenti) {
+  public void setImportoTotalePagamenti(java.math.BigDecimal importoTotalePagamenti) {
     this.importoTotalePagamenti = importoTotalePagamenti;
   }
 
-  public java.lang.Double getImportoPagato() {
+  public java.math.BigDecimal getImportoPagato() {
     return this.importoPagato;
   }
 
-  public void setImportoPagato(java.lang.Double importoPagato) {
+  public void setImportoPagato(java.math.BigDecimal importoPagato) {
     this.importoPagato = importoPagato;
   }
 
@@ -216,11 +204,11 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
     this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
   }
 
-  public java.lang.Integer getIndiceDati() {
+  public java.math.BigInteger getIndiceDati() {
     return this.indiceDati;
   }
 
-  public void setIndiceDati(java.lang.Integer indiceDati) {
+  public void setIndiceDati(java.math.BigInteger indiceDati) {
     this.indiceDati = indiceDati;
   }
 
@@ -394,9 +382,6 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.VistaRiscossioniModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.VistaRiscossioni.modelStaticInstance==null){
@@ -411,134 +396,134 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
   }
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=true,nillable=false)
   protected java.lang.String codDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuv",required=true,nillable=false)
   protected java.lang.String iuv;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iur",required=true,nillable=false)
   protected java.lang.String iur;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="cod_flusso",required=true,nillable=false)
   protected java.lang.String codFlusso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="fr_iur",required=true,nillable=false)
   protected java.lang.String frIur;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataRegolamento",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataRegolamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="numeroPagamenti",required=false,nillable=false)
   protected long numeroPagamenti;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="importoTotalePagamenti",required=false,nillable=false)
-  protected java.lang.Double importoTotalePagamenti;
+  protected java.math.BigDecimal importoTotalePagamenti;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="importoPagato",required=false,nillable=false)
-  protected java.lang.Double importoPagato;
+  protected java.math.BigDecimal importoPagato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="indiceDati",required=true,nillable=false)
-  protected java.lang.Integer indiceDati;
+  protected java.math.BigInteger indiceDati;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codVersamentoEnte;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazione",required=true,nillable=false)
   protected java.lang.String codApplicazione;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataPagamento",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataPagamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codTipoVersamento",required=false,nillable=false)
   protected java.lang.String codTipoVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codEntrata",required=false,nillable=false)
   protected java.lang.String codEntrata;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="identificativoDebitore",required=false,nillable=false)
   protected java.lang.String identificativoDebitore;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreAnagrafica",required=true,nillable=false)
   protected java.lang.String debitoreAnagrafica;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="anno",required=false,nillable=false)
   protected java.lang.String anno;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrTipoVersamento",required=true,nillable=false)
   protected java.lang.String descrTipoVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codPsp",required=true,nillable=false)
   protected java.lang.String codPsp;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ragioneSocialePsp",required=false,nillable=false)
   protected java.lang.String ragioneSocialePsp;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codRata",required=false,nillable=false)
   protected java.lang.String codRata;
 
   @XmlElement(name="idDocumento",required=false,nillable=false)
   protected IdDocumento idDocumento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="causaleVersamento",required=false,nillable=false)
   protected java.lang.String causaleVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoVersamento",required=true,nillable=false)
   protected double importoVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="numeroAvviso",required=false,nillable=false)
   protected java.lang.String numeroAvviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPagamento",required=false,nillable=false)
   protected java.lang.String iuvPagamento;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataCreazione",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataCreazione;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataScadenza",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataScadenza;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="contabilita",required=false,nillable=false)
   protected java.lang.String contabilita;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="metadata",required=false,nillable=false)
   protected java.lang.String metadata;
 

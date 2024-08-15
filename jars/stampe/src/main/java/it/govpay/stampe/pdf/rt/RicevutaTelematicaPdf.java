@@ -26,10 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -116,7 +116,7 @@ public class RicevutaTelematicaPdf{
                     "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);

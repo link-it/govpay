@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,27 +34,27 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Incasso">
- * 		&lt;sequence>
- * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataValuta" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataContabile" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataOraIncasso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="nomeDispositivo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="sct" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="identificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codFlussoRendicontazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="Incasso"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataValuta" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataContabile" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataOraIncasso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="nomeDispositivo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sct" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="identificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codFlussoRendicontazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -88,22 +89,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "Incasso")
 
-public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class Incasso extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public Incasso() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public java.lang.String getTrn() {
@@ -130,11 +118,11 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.causale = causale;
   }
 
-  public java.lang.Double getImporto() {
+  public java.math.BigDecimal getImporto() {
     return this.importo;
   }
 
-  public void setImporto(java.lang.Double importo) {
+  public void setImporto(java.math.BigDecimal importo) {
     this.importo = importo;
   }
 
@@ -244,9 +232,6 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.IncassoModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.Incasso.modelStaticInstance==null){
@@ -261,38 +246,38 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   }
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="trn",required=true,nillable=false)
   protected java.lang.String trn;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=true,nillable=false)
   protected java.lang.String codDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="causale",required=false,nillable=false)
   protected java.lang.String causale;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="importo",required=true,nillable=false)
-  protected java.lang.Double importo;
+  protected java.math.BigDecimal importo;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="date")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="date")
   @XmlElement(name="dataValuta",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataValuta;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="date")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="date")
   @XmlElement(name="dataContabile",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataContabile;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataOraIncasso",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataOraIncasso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nomeDispositivo",required=false,nillable=false)
   protected java.lang.String nomeDispositivo;
 
@@ -302,31 +287,31 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="idOperatore",required=false,nillable=false)
   protected IdOperatore idOperatore;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ibanAccredito",required=false,nillable=false)
   protected java.lang.String ibanAccredito;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="sct",required=false,nillable=false)
   protected java.lang.String sct;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="identificativo",required=true,nillable=false)
   protected java.lang.String identificativo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuv",required=false,nillable=false)
   protected java.lang.String iuv;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codFlussoRendicontazione",required=false,nillable=false)
   protected java.lang.String codFlussoRendicontazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
   protected java.lang.String stato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrizioneStato",required=false,nillable=false)
   protected java.lang.String descrizioneStato;
 

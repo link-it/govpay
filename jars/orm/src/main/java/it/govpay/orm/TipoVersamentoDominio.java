@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,66 +34,66 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TipoVersamentoDominio">
- * 		&lt;sequence>
- * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}TipoVersamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boFormTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boFormDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boValidazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boTrasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boTrasformazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boCodApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="boAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagFormTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagFormDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagFormImpaginazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagValidazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagTrasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagTrasformazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagCodApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromAvvAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromAvvPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromAvvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromAvvOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromAvvMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromRicAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromRicPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromRicTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromRicOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromRicMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromRicEseguiti" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromScadAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromScadPreavviso" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromScadTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromScadOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvMailPromScadMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="visualizzazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tracCsvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="appIoApiKey" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromAvvAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromAvvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromAvvOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromAvvMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromRicAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromRicTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromRicOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromRicMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromRicEseguiti" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromScadAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromScadPreavviso" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromScadTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromScadOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvAppIoPromScadMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="TipoVersamentoDominio"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}TipoVersamento" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boFormTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boFormDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boValidazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boTrasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boTrasformazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boCodApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="boAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagFormTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagFormDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagFormImpaginazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagValidazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagTrasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagTrasformazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagCodApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromAvvAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromAvvPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromAvvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromAvvOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromAvvMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromRicAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromRicPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromRicTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromRicOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromRicMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromRicEseguiti" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromScadAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromScadPreavviso" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromScadTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromScadOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvMailPromScadMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="visualizzazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tracCsvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="appIoApiKey" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromAvvAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromAvvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromAvvOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromAvvMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromRicAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromRicTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromRicOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromRicMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromRicEseguiti" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromScadAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromScadPreavviso" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromScadTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromScadOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="avvAppIoPromScadMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -166,22 +167,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "TipoVersamentoDominio")
 
-public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public TipoVersamentoDominio() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public TipoVersamento getTipoVersamento() {
@@ -440,11 +428,11 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.avvMailPromScadAbilitato = avvMailPromScadAbilitato;
   }
 
-  public java.lang.Integer getAvvMailPromScadPreavviso() {
+  public java.math.BigInteger getAvvMailPromScadPreavviso() {
     return this.avvMailPromScadPreavviso;
   }
 
-  public void setAvvMailPromScadPreavviso(java.lang.Integer avvMailPromScadPreavviso) {
+  public void setAvvMailPromScadPreavviso(java.math.BigInteger avvMailPromScadPreavviso) {
     this.avvMailPromScadPreavviso = avvMailPromScadPreavviso;
   }
 
@@ -600,11 +588,11 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.avvAppIoPromScadAbilitato = avvAppIoPromScadAbilitato;
   }
 
-  public java.lang.Integer getAvvAppIoPromScadPreavviso() {
+  public java.math.BigInteger getAvvAppIoPromScadPreavviso() {
     return this.avvAppIoPromScadPreavviso;
   }
 
-  public void setAvvAppIoPromScadPreavviso(java.lang.Integer avvAppIoPromScadPreavviso) {
+  public void setAvvAppIoPromScadPreavviso(java.math.BigInteger avvAppIoPromScadPreavviso) {
     this.avvAppIoPromScadPreavviso = avvAppIoPromScadPreavviso;
   }
 
@@ -634,9 +622,6 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.TipoVersamentoDominioModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.TipoVersamentoDominio.modelStaticInstance==null){
@@ -657,219 +642,219 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @XmlElement(name="idDominio",required=true,nillable=false)
   protected IdDominio idDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codificaIuv",required=false,nillable=false)
   protected java.lang.String codificaIuv;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagaTerzi",required=false,nillable=false)
   protected Boolean pagaTerzi;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="abilitato",required=false,nillable=false)
   protected Boolean abilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boFormTipo",required=false,nillable=false)
   protected java.lang.String boFormTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boFormDefinizione",required=false,nillable=false)
   protected java.lang.String boFormDefinizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boValidazioneDef",required=false,nillable=false)
   protected java.lang.String boValidazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boTrasformazioneTipo",required=false,nillable=false)
   protected java.lang.String boTrasformazioneTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boTrasformazioneDef",required=false,nillable=false)
   protected java.lang.String boTrasformazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boCodApplicazione",required=false,nillable=false)
   protected java.lang.String boCodApplicazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="boAbilitato",required=false,nillable=false)
   protected Boolean boAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormTipo",required=false,nillable=false)
   protected java.lang.String pagFormTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormDefinizione",required=false,nillable=false)
   protected java.lang.String pagFormDefinizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormImpaginazione",required=false,nillable=false)
   protected java.lang.String pagFormImpaginazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagValidazioneDef",required=false,nillable=false)
   protected java.lang.String pagValidazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagTrasformazioneTipo",required=false,nillable=false)
   protected java.lang.String pagTrasformazioneTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagTrasformazioneDef",required=false,nillable=false)
   protected java.lang.String pagTrasformazioneDef;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagCodApplicazione",required=false,nillable=false)
   protected java.lang.String pagCodApplicazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagAbilitato",required=false,nillable=false)
   protected Boolean pagAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvAbilitato",required=false,nillable=false)
   protected Boolean avvMailPromAvvAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvPdf",required=false,nillable=false)
   protected Boolean avvMailPromAvvPdf;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvTipo",required=false,nillable=false)
   protected java.lang.String avvMailPromAvvTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvOggetto",required=false,nillable=false)
   protected java.lang.String avvMailPromAvvOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromAvvMessaggio",required=false,nillable=false)
   protected java.lang.String avvMailPromAvvMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicAbilitato",required=false,nillable=false)
   protected Boolean avvMailPromRicAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicPdf",required=false,nillable=false)
   protected Boolean avvMailPromRicPdf;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicTipo",required=false,nillable=false)
   protected java.lang.String avvMailPromRicTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicOggetto",required=false,nillable=false)
   protected java.lang.String avvMailPromRicOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicMessaggio",required=false,nillable=false)
   protected java.lang.String avvMailPromRicMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromRicEseguiti",required=false,nillable=false)
   protected Boolean avvMailPromRicEseguiti;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadAbilitato",required=false,nillable=false)
   protected Boolean avvMailPromScadAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="avvMailPromScadPreavviso",required=false,nillable=false)
-  protected java.lang.Integer avvMailPromScadPreavviso;
+  protected java.math.BigInteger avvMailPromScadPreavviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadTipo",required=false,nillable=false)
   protected java.lang.String avvMailPromScadTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadOggetto",required=false,nillable=false)
   protected java.lang.String avvMailPromScadOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvMailPromScadMessaggio",required=false,nillable=false)
   protected java.lang.String avvMailPromScadMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="visualizzazioneDefinizione",required=false,nillable=false)
   protected java.lang.String visualizzazioneDefinizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTipo",required=false,nillable=false)
   protected java.lang.String tracCsvTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvHeaderRisposta",required=false,nillable=false)
   protected java.lang.String tracCsvHeaderRisposta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTemplateRichiesta",required=false,nillable=false)
   protected java.lang.String tracCsvTemplateRichiesta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTemplateRisposta",required=false,nillable=false)
   protected java.lang.String tracCsvTemplateRisposta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="appIoApiKey",required=false,nillable=false)
   protected java.lang.String appIoApiKey;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvAbilitato",required=false,nillable=false)
   protected Boolean avvAppIoPromAvvAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvTipo",required=false,nillable=false)
   protected java.lang.String avvAppIoPromAvvTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvOggetto",required=false,nillable=false)
   protected java.lang.String avvAppIoPromAvvOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromAvvMessaggio",required=false,nillable=false)
   protected java.lang.String avvAppIoPromAvvMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicAbilitato",required=false,nillable=false)
   protected Boolean avvAppIoPromRicAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicTipo",required=false,nillable=false)
   protected java.lang.String avvAppIoPromRicTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicOggetto",required=false,nillable=false)
   protected java.lang.String avvAppIoPromRicOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicMessaggio",required=false,nillable=false)
   protected java.lang.String avvAppIoPromRicMessaggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromRicEseguiti",required=false,nillable=false)
   protected Boolean avvAppIoPromRicEseguiti;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadAbilitato",required=false,nillable=false)
   protected Boolean avvAppIoPromScadAbilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="avvAppIoPromScadPreavviso",required=false,nillable=false)
-  protected java.lang.Integer avvAppIoPromScadPreavviso;
+  protected java.math.BigInteger avvAppIoPromScadPreavviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadTipo",required=false,nillable=false)
   protected java.lang.String avvAppIoPromScadTipo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadOggetto",required=false,nillable=false)
   protected java.lang.String avvAppIoPromScadOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvAppIoPromScadMessaggio",required=false,nillable=false)
   protected java.lang.String avvAppIoPromScadMessaggio;
 

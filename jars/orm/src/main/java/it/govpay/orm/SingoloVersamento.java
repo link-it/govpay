@@ -17,14 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,29 +35,29 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SingoloVersamento">
- * 		&lt;sequence>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="statoSingoloVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="importoSingoloVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tipoBollo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="hashDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="provinciaResidenza" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idIbanAppoggio" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="metadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="SingoloVersamento"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="statoSingoloVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="importoSingoloVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="tipoBollo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="hashDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="provinciaResidenza" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idIbanAppoggio" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="descrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="metadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -92,22 +94,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "SingoloVersamento")
 
-public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public SingoloVersamento() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public IdVersamento getIdVersamento() {
@@ -222,11 +211,11 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.datiAllegati = datiAllegati;
   }
 
-  public java.lang.Integer getIndiceDati() {
+  public java.math.BigInteger getIndiceDati() {
     return this.indiceDati;
   }
 
-  public void setIndiceDati(java.lang.Integer indiceDati) {
+  public void setIndiceDati(java.math.BigInteger indiceDati) {
     this.indiceDati = indiceDati;
   }
 
@@ -264,9 +253,6 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.SingoloVersamentoModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.SingoloVersamento.modelStaticInstance==null){
@@ -287,27 +273,27 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="idTributo",required=false,nillable=false)
   protected IdTributo idTributo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="statoSingoloVersamento",required=true,nillable=false)
   protected java.lang.String statoSingoloVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoSingoloVersamento",required=true,nillable=false)
   protected double importoSingoloVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoBollo",required=false,nillable=false)
   protected java.lang.String tipoBollo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="hashDocumento",required=false,nillable=false)
   protected java.lang.String hashDocumento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="provinciaResidenza",required=false,nillable=false)
   protected java.lang.String provinciaResidenza;
 
@@ -317,38 +303,38 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
   protected IdIbanAccredito idIbanAppoggio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoContabilita",required=false,nillable=false)
   protected java.lang.String tipoContabilita;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codiceContabilita",required=false,nillable=false)
   protected java.lang.String codiceContabilita;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrizione",required=false,nillable=false)
   protected java.lang.String descrizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiAllegati",required=false,nillable=false)
   protected java.lang.String datiAllegati;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="indiceDati",required=true,nillable=false)
-  protected java.lang.Integer indiceDati;
+  protected java.math.BigInteger indiceDati;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrizioneCausaleRPT",required=false,nillable=false)
   protected java.lang.String descrizioneCausaleRPT;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="contabilita",required=false,nillable=false)
   protected java.lang.String contabilita;
 
   @XmlElement(name="idDominio",required=false,nillable=false)
   protected IdDominio idDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="metadata",required=false,nillable=false)
   protected java.lang.String metadata;
 

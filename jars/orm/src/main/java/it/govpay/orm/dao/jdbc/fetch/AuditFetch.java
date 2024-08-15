@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,20 +49,20 @@ public class AuditFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Audit.model())){
 				Audit object = new Audit();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setData", Audit.model().DATA.getFieldType(),
+				setParameter(object, "setData", Audit.model().DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data", Audit.model().DATA.getFieldType()));
-				this.setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
+				setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_oggetto", Audit.model().ID_OGGETTO.getFieldType()));
-				this.setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
+				setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_oggetto", Audit.model().TIPO_OGGETTO.getFieldType()));
-				this.setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
+				setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "oggetto", Audit.model().OGGETTO.getFieldType()));
 				return object;
 			}
@@ -82,15 +84,15 @@ public class AuditFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Audit.model())){
 				Audit object = new Audit();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setData", Audit.model().DATA.getFieldType(),
+				setParameter(object, "setData", Audit.model().DATA.getFieldType(),
 					this.getObjectFromMap(map,"data"));
-				this.setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
+				setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"idOggetto"));
-				this.setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
+				setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"tipoOggetto"));
-				this.setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
+				setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"oggetto"));
 				return object;
 			}

@@ -34,6 +34,8 @@ import it.govpay.model.IdUnitaOperativa;
 
 public class UtenzaConverter {
 	
+	private UtenzaConverter() {}
+	
 	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BDConfigWrapper configWrapper) throws ServiceException {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
@@ -78,7 +80,7 @@ public class UtenzaConverter {
 		it.govpay.orm.Utenza vo = new it.govpay.orm.Utenza();
 		vo.setId(dto.getId());
 		try {
-			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.subject));
+			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.SUBJECT));
 		} catch (Exception e) {
 			vo.setPrincipal(dto.getPrincipal());
 		}

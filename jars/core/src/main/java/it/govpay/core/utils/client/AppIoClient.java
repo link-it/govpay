@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -181,7 +181,12 @@ public class AppIoClient extends BasicClientCORE {
 				}
 			}
 			dumpResponse.getHeaders().put(STATUS_LINE, ""+responseCode);
-			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			String messaggio = e.getResponseBody();
+			if(messaggio == null) {
+				messaggio = e.getMessage();
+			}
+			
+			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
@@ -305,7 +310,12 @@ public class AppIoClient extends BasicClientCORE {
 				}
 			}
 			dumpResponse.getHeaders().put(STATUS_LINE, ""+responseCode);
-			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			String messaggio = e.getResponseBody();
+			if(messaggio == null) {
+				messaggio = e.getMessage();
+			}
+			
+			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);

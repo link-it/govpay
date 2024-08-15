@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;

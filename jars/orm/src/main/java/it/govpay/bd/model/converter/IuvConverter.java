@@ -29,6 +29,8 @@ import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
 
 public class IuvConverter {
+	
+	private IuvConverter() {}
 
 	public static List<Iuv> toDTOList(List<it.govpay.orm.IUV> applicazioneLst) throws CodificaInesistenteException {
 		List<Iuv> lstDTO = new ArrayList<>();

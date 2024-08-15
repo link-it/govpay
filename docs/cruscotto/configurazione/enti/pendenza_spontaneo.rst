@@ -50,5 +50,6 @@ oppure un JSON compatibile con il successivo servizio di inoltro, se configurato
 Inoltro
 ~~~~~~~
 
-È possibile inviare i dati ricevuti ed eventualmente trasformati ad una applicazione per il processo di istruttoria. Il JSON ritornato da tale
-servizio deve rispettare lo schema di una `PendenzaPost <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.7.x/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost&nocors>`_.
+E' possibile inviare i dati ricevuti ed eventualmente trasformati ad una applicazione per il processo di istruttoria. Il JSON ritornato da tale
+servizio deve rispettare lo schema di una `PendenzaPost <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost&nocors>`_.
+

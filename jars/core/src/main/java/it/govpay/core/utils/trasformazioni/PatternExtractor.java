@@ -21,7 +21,6 @@ package it.govpay.core.utils.trasformazioni;
 
 import java.util.List;
 
-import org.openspcoop2.utils.json.JsonPathExpressionEngine;
 import org.openspcoop2.utils.json.JsonPathNotFoundException;
 import org.openspcoop2.utils.json.JsonPathNotValidException;
 import org.openspcoop2.utils.xml.AbstractXPathExpressionEngine;

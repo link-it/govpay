@@ -26,6 +26,8 @@ import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.IdOperatore;
 
 public class TracciatoConverter {
+	
+	private TracciatoConverter() {}
 
 	public static Tracciato toDTO(it.govpay.orm.Tracciato vo) {
 		Tracciato dto = new Tracciato();

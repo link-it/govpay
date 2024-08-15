@@ -29,7 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
@@ -48,11 +48,13 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class ConverterUtils {
+	
+	private ConverterUtils() {}
 
 	private static ObjectMapper mapper;
 	static {
 		mapper = new ObjectMapper();
-		mapper.registerModule(new JaxbAnnotationModule());
+		mapper.registerModule(new JakartaXmlBindAnnotationModule());
 		mapper.registerModule(new DateModule());
 		mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

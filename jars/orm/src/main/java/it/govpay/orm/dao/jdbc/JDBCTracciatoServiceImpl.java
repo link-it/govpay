@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -24,13 +26,14 @@ import java.sql.Connection;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import org.slf4j.Logger;
+
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdTracciato;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
 
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -242,7 +245,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciato id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -252,7 +255,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciato id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -262,7 +265,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciato id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -273,7 +276,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -284,7 +287,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -295,7 +298,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -354,6 +357,9 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
@@ -416,5 +422,13 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	@Override
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
+	}
+	
+	@Override
+	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
+	
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
+																							sql,param);
+	
 	}
 }

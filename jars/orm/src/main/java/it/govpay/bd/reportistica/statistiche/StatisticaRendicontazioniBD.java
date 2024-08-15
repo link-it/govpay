@@ -30,7 +30,7 @@ import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.Function;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -68,7 +68,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public StatisticaRendicontazioniFilter newFilter() throws ServiceException {
+	public StatisticaRendicontazioniFilter newFilter() {
 		return new StatisticaRendicontazioniFilter(this.getRendicontazioneService());
 	}
 	
@@ -142,82 +142,82 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					else
 						entry.setImporto(BigDecimal.ZERO);
 					
-					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE))) {
-						Object divisioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE));
-						if(divisioneObj instanceof String) {
-							entry.setDivisione((String) divisioneObj);
+					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE))) {
+						Object divisioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE));
+						if(divisioneObj instanceof String divisione) {
+							entry.setDivisione(divisione);
 						}
 					}
 					
-					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE))) {
-						Object direzioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE));
-						if(direzioneObj instanceof String) {
-							entry.setDirezione((String) direzioneObj);
+					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE))) {
+						Object direzioneObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE));
+						if(direzioneObj instanceof String direzione) {
+							entry.setDirezione(direzione);
 						}
 					}
 					
-					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO))) {
+					if(map.containsKey(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO))) {
 						Fr fr = new Fr();
 						
-						Object codFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO));
-						if(codFlussoObj instanceof String) {
-							entry.setCodFlusso((String) codFlussoObj);
-							fr.setCodFlusso((String) codFlussoObj);
+						Object codFlussoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO));
+						if(codFlussoObj instanceof String codFlusso) {
+							entry.setCodFlusso(codFlusso);
+							fr.setCodFlusso(codFlusso);
 						}
 						
-						Object dataOraFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_ORA_FLUSSO));
-						if(dataOraFlussoObj instanceof Date) {
-							fr.setDataFlusso((Date) dataOraFlussoObj);
+						Object dataOraFlussoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_ORA_FLUSSO));
+						if(dataOraFlussoObj instanceof Date dataOraFlusso) {
+							fr.setDataFlusso(dataOraFlusso);
 						}
 						
-						Object iurObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IUR));
-						if(iurObj instanceof String) {
-							fr.setIur((String) iurObj);
+						Object iurObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IUR));
+						if(iurObj instanceof String iur) {
+							fr.setIur(iur);
 						}
 						
-						Object dataRegolamentoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_REGOLAMENTO));
-						if(dataRegolamentoObj instanceof Date) {
-							fr.setDataRegolamento((Date) dataRegolamentoObj);
+						Object dataRegolamentoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_REGOLAMENTO));
+						if(dataRegolamentoObj instanceof Date dataRegolamento) {
+							fr.setDataRegolamento(dataRegolamento);
 						}
 						
-						Object codPspObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_PSP));
-						if(codPspObj instanceof String) {
-							fr.setCodPsp((String) codPspObj);
+						Object codPspObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_PSP));
+						if(codPspObj instanceof String codPsp) {
+							fr.setCodPsp(codPsp);
 						}
 						
-						Object codBicRiversamentoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_BIC_RIVERSAMENTO));
-						if(codBicRiversamentoObj instanceof String) {
-							fr.setCodBicRiversamento((String) codBicRiversamentoObj);
+						Object codBicRiversamentoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_BIC_RIVERSAMENTO));
+						if(codBicRiversamentoObj instanceof String codBicRiversamento) {
+							fr.setCodBicRiversamento(codBicRiversamento);
 						}
 						
-						Object codDominioObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_DOMINIO));
-						if(codDominioObj instanceof String) {
-							fr.setCodDominio((String) codDominioObj);
+						Object codDominioObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_DOMINIO));
+						if(codDominioObj instanceof String codDominio) {
+							fr.setCodDominio(codDominio);
 						}
 						
-						Object numeroPagamentiObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.NUMERO_PAGAMENTI));
-						if(numeroPagamentiObj instanceof Long) {
-							fr.setNumeroPagamenti((Long) numeroPagamentiObj);
+						Object numeroPagamentiObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.NUMERO_PAGAMENTI));
+						if(numeroPagamentiObj instanceof Long numeroPagamenti) {
+							fr.setNumeroPagamenti(numeroPagamenti);
 						}
 						
-						Object importoTotaleFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI));
-						if(importoTotaleFlussoObj instanceof Double) {
-							fr.setImportoTotalePagamenti(BigDecimal.valueOf((Double) importoTotaleFlussoObj));
+						Object importoTotaleFlussoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI));
+						if(importoTotaleFlussoObj instanceof BigDecimal importoTotaleFlussi) {
+							fr.setImportoTotalePagamenti(importoTotaleFlussi);
 						}
 						
-						Object statoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.STATO));
-						if(statoObj instanceof String) {
-							fr.setStato(StatoFr.valueOf((String) statoObj));
+						Object statoObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.STATO));
+						if(statoObj instanceof String stato) {
+							fr.setStato(StatoFr.valueOf(stato));
 						}
 						
-						Object ragioneSocialeDominioObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO));
-						if(ragioneSocialeDominioObj instanceof String) {
-							fr.setRagioneSocialeDominio((String) ragioneSocialeDominioObj);
+						Object ragioneSocialeDominioObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO));
+						if(ragioneSocialeDominioObj instanceof String ragioneSocialeDominio) {
+							fr.setRagioneSocialeDominio(ragioneSocialeDominio);
 						}
 						
-						Object ragionesSocialePspObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_PSP));
-						if(ragionesSocialePspObj instanceof String) {
-							fr.setRagioneSocialePsp((String) ragionesSocialePspObj);
+						Object ragionesSocialePspObj = map.get(GenericJDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_PSP));
+						if(ragionesSocialePspObj instanceof String ragionesSocialePsp) {
+							fr.setRagioneSocialePsp(ragionesSocialePsp);
 						}
 						
 						
@@ -227,7 +227,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-
+				// donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

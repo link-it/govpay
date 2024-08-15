@@ -181,7 +181,7 @@ public class PendenzeConverter {
 
 		if(pagamenti != null && pagamenti.size() > 0) {
 			for (PagamentoPortale pagamento : pagamenti) {
-				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,null,null));
+				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,null));
 			}
 		}
 

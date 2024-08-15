@@ -19,47 +19,47 @@
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
 
-        <profiles>
-                <profile>
-                        <id>java-11</id>
-                        <activation>
-                                <activeByDefault>true</activeByDefault>
-                        </activation>
+	<profiles>
+		<profile>
+			<id>java-21</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
-                        <dependencies>
-                                <dependency>
-                                        <groupId>javax.xml.bind</groupId>
-                                        <artifactId>jaxb-api</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                                <dependency>
-                                        <groupId>com.sun.xml.bind</groupId>
-                                        <artifactId>jaxb-core</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                                <dependency>
-                                        <groupId>com.sun.xml.bind</groupId>
-                                        <artifactId>jaxb-impl</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                        </dependencies>
-                </profile>
-        </profiles>
+			<dependencies>
+				<dependency>
+					<groupId>jakarta.xml.bind</groupId>
+					<artifactId>jakarta.xml.bind-api</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>*</groupId>
+							<artifactId>*</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-core</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>*</groupId>
+							<artifactId>*</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-impl</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>*</groupId>
+							<artifactId>*</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<dependencies>
 
@@ -111,11 +111,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 		</dependency>
@@ -143,8 +138,18 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.xml.soap</groupId>
+			<artifactId>jakarta.xml.soap-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.messaging.saaj</groupId>
+			<artifactId>saaj-impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -160,12 +165,12 @@
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
-			<groupId>com.jcraft</groupId>
+			<groupId>com.github.mwiede</groupId>
 			<artifactId>jsch</artifactId>
 		</dependency>
 
@@ -227,6 +232,11 @@
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-random</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -329,6 +339,11 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
 		</dependency>
 		
 		<dependency>

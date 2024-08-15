@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
-import javax.activation.DataHandler;
+import jakarta.activation.DataHandler;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;

@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -125,7 +125,7 @@ public class ProspettoRiscossioniPdf {
                     "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		
 			JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME), ProspettoRiscossioniInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -159,7 +159,7 @@ public class ProspettoRiscossioniPdf {
 	
 	public JRDataSource creaXmlDataSource(Logger log,ProspettoRiscossioniInput input) throws UtilsException, JRException, JAXBException {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME), ProspettoRiscossioniInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);

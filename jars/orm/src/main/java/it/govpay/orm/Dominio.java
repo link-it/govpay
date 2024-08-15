@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,29 +34,29 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Dominio">
- * 		&lt;sequence>
- * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/>
- * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="cbill" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="autStampaPoste" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreMyPivot" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreSecim" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreGovPay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreMaggioliJPPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tassonomiaPagoPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="Dominio"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/&gt;
+ * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="cbill" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="autStampaPoste" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codConnettoreMyPivot" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codConnettoreSecim" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codConnettoreGovPay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codConnettoreMaggioliJPPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="tassonomiaPagoPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -92,22 +93,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "Dominio")
 
-public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public Dominio() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public IdStazione getIdStazione() {
@@ -178,15 +166,15 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.iuvPrefix = iuvPrefix;
   }
 
-  public java.lang.Integer getSegregationCode() {
+  public java.math.BigInteger getSegregationCode() {
     if(this._decimalWrapper_segregationCode!=null){
-		return (java.lang.Integer) this._decimalWrapper_segregationCode.getObject(java.lang.Integer.class);
+		return (java.math.BigInteger) this._decimalWrapper_segregationCode.getObject(java.math.BigInteger.class);
 	}else{
 		return this.segregationCode;
 	}
   }
 
-  public void setSegregationCode(java.lang.Integer segregationCode) {
+  public void setSegregationCode(java.math.BigInteger segregationCode) {
     if(segregationCode!=null){
 		this._decimalWrapper_segregationCode = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,2,segregationCode);
 	}
@@ -278,9 +266,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.DominioModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.Dominio.modelStaticInstance==null){
@@ -298,82 +283,82 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="idStazione",required=false,nillable=false)
   protected IdStazione idStazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=true,nillable=false)
   protected java.lang.String codDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="gln",required=false,nillable=false)
   protected java.lang.String gln;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ragioneSociale",required=true,nillable=false)
   protected java.lang.String ragioneSociale;
 
   @XmlElement(name="idApplicazioneDefault",required=false,nillable=false)
   protected IdApplicazione idApplicazioneDefault;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="auxDigit",required=true,nillable=false,defaultValue="0")
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,  0);
 
-  @javax.xml.bind.annotation.XmlTransient
+  @jakarta.xml.bind.annotation.XmlTransient
   protected int auxDigit;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPrefix",required=false,nillable=false)
   protected java.lang.String iuvPrefix;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="segregationCode",required=false,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_segregationCode = null;
 
-  @javax.xml.bind.annotation.XmlTransient
-  protected java.lang.Integer segregationCode;
+  @jakarta.xml.bind.annotation.XmlTransient
+  protected java.math.BigInteger segregationCode;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="logo",required=false,nillable=false)
   protected byte[] logo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="cbill",required=false,nillable=false)
   protected java.lang.String cbill;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="autStampaPoste",required=false,nillable=false)
   protected java.lang.String autStampaPoste;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreMyPivot",required=false,nillable=false)
   protected java.lang.String codConnettoreMyPivot;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreSecim",required=false,nillable=false)
   protected java.lang.String codConnettoreSecim;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreGovPay",required=false,nillable=false)
   protected java.lang.String codConnettoreGovPay;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreHyperSicAPK",required=false,nillable=false)
   protected java.lang.String codConnettoreHyperSicAPK;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreMaggioliJPPA",required=false,nillable=false)
   protected java.lang.String codConnettoreMaggioliJPPA;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="intermediato",required=true,nillable=false)
   protected boolean intermediato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tassonomiaPagoPA",required=false,nillable=false)
   protected java.lang.String tassonomiaPagoPA;
 

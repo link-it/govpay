@@ -22,7 +22,7 @@ package it.govpay.core.utils.adapter;
 
 import java.math.BigDecimal;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class DecimalAdapter extends XmlAdapter<String, BigDecimal> {
 

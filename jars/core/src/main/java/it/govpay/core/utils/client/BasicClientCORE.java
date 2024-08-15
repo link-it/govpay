@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
@@ -41,43 +42,47 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ConnectionKeepAliveStrategy;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultClientConnectionReuseStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpEntityContainer;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpOptions;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpTrace;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.DefaultClientConnectionReuseStrategy;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.HttpsSupport;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -365,7 +370,7 @@ public abstract class BasicClientCORE {
 	}
 
 	private static Map<String, PoolingHttpClientConnectionManager> cmMap = new HashMap<>();
-	private static synchronized void initialize(String key, SSLConnectionSocketFactory sslConnectionSocketFactory){
+	private static synchronized void initialize(String key, Integer connectionTimeout, Integer readTimeout, SSLConnectionSocketFactory sslConnectionSocketFactory){
 		if(!BasicClientCORE.cmMap.containsKey(key)){
 
 			PoolingHttpClientConnectionManager cm = null;
@@ -386,6 +391,11 @@ public abstract class BasicClientCORE {
 			//HttpHost localhost = new HttpHost("locahost", 80)
 			//cm.setMaxPerRoute(new HttpRoute(localhost), 50)
 
+			ConnectionConfig.Builder connConfigBuilder = ConnectionConfig.custom();
+			connConfigBuilder.setConnectTimeout(connectionTimeout, TimeUnit.MILLISECONDS);
+			connConfigBuilder.setSocketTimeout(readTimeout, TimeUnit.MILLISECONDS);
+			cm.setDefaultConnectionConfig(connConfigBuilder.build());
+
 			BasicClientCORE.cmMap.put(key, cm);
 		}
 	}
@@ -404,10 +414,10 @@ public abstract class BasicClientCORE {
 				sslSocketFactory = new WrappedLogSSLSocketFactory(sslSocketFactory, log, key, clientCertificateConfigurated);
 			}		
 
-			HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+			HostnameVerifier hostnameVerifier = HttpsSupport.getDefaultHostnameVerifier();
 
 			if(hostnameVerifier==null) {
-				hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+				hostnameVerifier = HttpsSupport.getDefaultHostnameVerifier();
 			}
 			sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslSocketFactory, hostnameVerifier);
 		}
@@ -416,7 +426,7 @@ public abstract class BasicClientCORE {
 
 			// Caso con pool
 			if(!BasicClientCORE.cmMap.containsKey(key)){
-				BasicClientCORE.initialize(key, sslConnectionSocketFactory);
+				BasicClientCORE.initialize(key, this.connectionTimeout, this.readTimeout, sslConnectionSocketFactory);
 			}
 
 			PoolingHttpClientConnectionManager cm = BasicClientCORE.cmMap.get(key);
@@ -438,7 +448,10 @@ public abstract class BasicClientCORE {
 		}
 		else {
 			if(sslConnectionSocketFactory!=null) {
-				httpClientBuilder.setSSLSocketFactory(sslConnectionSocketFactory);		
+				HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
+																						  .setSSLSocketFactory(sslConnectionSocketFactory)
+																						  .build();
+				httpClientBuilder.setConnectionManager(cm);		
 			}
 		}
 
@@ -541,7 +554,7 @@ public abstract class BasicClientCORE {
 			if(httpMethod==null){
 				throw new ClientException("HttpRequestMethod non definito");
 			}
-			HttpRequestBase httpRequest = null;
+			HttpUriRequestBase httpRequest = null;
 			switch (httpMethod) {
 			case GET:
 				httpRequest = new HttpGet(url.toString());
@@ -568,20 +581,19 @@ public abstract class BasicClientCORE {
 				httpRequest = new HttpPatch(url.toString());
 				break;	
 			default:
-				httpRequest = new CustomHttpEntity(httpMethod, url.toString());
+				httpRequest = new HttpUriRequestBase(httpMethod.name(), URI.create(url.toString()));
 				break;
 			}
 
 			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+			requestConfigBuilder.setRedirectsEnabled(false);
 
 			// Impostazione timeout
 			if(this.debug) {
 				log.debug("Impostazione timeout...");
 				log.debug("Impostazione http timeout: ConnectionTimeout[{}] ReadTimeout[{}] ConnectionRequestTimeout[{}]", this.connectionTimeout, this.readTimeout, this.connectionRequestTimeout);
 			}
-			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout);
-			requestConfigBuilder.setConnectTimeout(this.connectionTimeout);
-			requestConfigBuilder.setSocketTimeout(this.readTimeout);
+			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout, TimeUnit.MILLISECONDS);
 
 			// Gestione automatica del redirect
 			//this.httpConn.setInstanceFollowRedirects(true) 
@@ -591,8 +603,8 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Impostazione content type [{}]", contentType);
 				this.dumpRequest.setContentType(contentType);
-				this.dumpRequest.getHeaders().put(HTTP.CONTENT_TYPE, contentType);
-				httpRequest.addHeader(HTTP.CONTENT_TYPE, contentType);
+				this.dumpRequest.getHeaders().put(HttpHeaders.CONTENT_TYPE, contentType);
+				httpRequest.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
 			}
 
 			// Aggiunga del SoapAction Header in caso di richiesta SOAP
@@ -719,17 +731,13 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Spedizione byte...");
 
-				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg());
-				if(httpRequest instanceof HttpEntityEnclosingRequestBase){
-					((HttpEntityEnclosingRequestBase)httpRequest).setEntity(httpEntity);
+				ContentType msgContentType = null;
+				if (contentType != null) {
+					msgContentType = ContentType.create(contentType);
 				}
-				else{
-					responseCode = 500;
-					throw new ClientException("Tipo ["+httpRequest.getClass().getName()+"] non utilizzabile per una richiesta di tipo ["+httpMethod+"]", responseCode);
-				}
-				if(contentType != null) {
-					((ByteArrayEntity) httpEntity).setContentType(contentType);
-				}
+
+				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg(), msgContentType);
+				httpRequest.setEntity(httpEntity);
 			}
 
 			// Imposto Configurazione
@@ -739,7 +747,7 @@ public abstract class BasicClientCORE {
 			if(this.debug) {
 				log.debug("Elenco Header impostati nella request:");
 				
-				for (Header prop : httpRequest.getAllHeaders()) {
+				for (Header prop : httpRequest.getHeaders()) {
 					log.debug("Header [{}]: [{}]", prop.getName(), prop.getValue());
 				}
 				
@@ -769,14 +777,16 @@ public abstract class BasicClientCORE {
 				}
 				throw new ClientException(e, responseCode);
 			}
-			this.httpEntityResponse = httpResponse.getEntity();
+			if (httpResponse instanceof HttpEntityContainer) {
+				this.httpEntityResponse = ((HttpEntityContainer)httpResponse).getEntity();
+			}
 
 			this.dumpResponse.getHeaders().put("HTTP-Method", httpMethod.name());
 			this.dumpResponse.getHeaders().put("RequestPath", this.url.toString());
 
 			if(this.debug)
 				log.debug("Analisi risposta...");
-			Header [] hdrRisposta = httpResponse.getAllHeaders();
+			Header [] hdrRisposta = httpResponse.getHeaders();
 			if(hdrRisposta!=null){
 				for (int i = 0; i < hdrRisposta.length; i++) {
 
@@ -826,7 +836,7 @@ public abstract class BasicClientCORE {
 			if(this.debug)
 				log.debug("Analisi risposta input stream e risultato http...");
 
-			responseCode = httpResponse.getStatusLine().getStatusCode();
+			responseCode = httpResponse.getCode();
 
 			try {
 				if(responseCode < 400) { // httpstatus 3xx sono casi ok
@@ -1111,32 +1121,5 @@ public abstract class BasicClientCORE {
 
 	public void setTipoEventoCustom(String tipoEventoCustom) {
 		this.tipoEventoCustom = tipoEventoCustom;
-	}
-
-	class CustomHttpEntity extends HttpEntityEnclosingRequestBase{
-
-		private HttpRequestMethod httpMethod;
-		public CustomHttpEntity(HttpRequestMethod httpMethod) {
-			super();
-			this.httpMethod = httpMethod;
-		} 
-
-		public CustomHttpEntity(HttpRequestMethod httpMethod, final URI uri) {
-			super();
-			setURI(uri);
-			this.httpMethod = httpMethod;
-		}
-
-		public CustomHttpEntity(HttpRequestMethod httpMethod, final String uri) {
-			super();
-			setURI(URI.create(uri));
-			this.httpMethod = httpMethod;
-		}
-
-		@Override
-		public String getMethod() {
-			return this.httpMethod.name();
-		}
-
 	}
 }

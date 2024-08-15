@@ -236,9 +236,10 @@ Scenario: pathMatches(appIoPath+'/profiles/') && methodIs('get')
 Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'VRDGPP65B03A113N'
  	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
 	* def responseStatus = 401
-  * def responseBody401 = {} 
-  * eval responseBody401.statusCode = 401
-  * eval responseBody401.message = 'Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription.'
+	* copy responseBody401 = appIoResponseProblem
+	* eval responseBody401.title = 'Unauhtorized'
+  * eval responseBody401.status = 401
+  * eval responseBody401.detail = 'Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription.'
 	* def response = responseBody401
 	
 # Utente non registrato

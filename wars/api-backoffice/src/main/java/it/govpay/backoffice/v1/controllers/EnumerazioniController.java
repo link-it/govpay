@@ -23,22 +23,20 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.JSONUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
 import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.rawutils.ConverterUtils;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 
 
@@ -129,12 +127,11 @@ public class EnumerazioniController extends BaseController {
 	 * @throws UtilsException
 	 */
 	private String toJsonArray(List<String> results) throws UtilsException {
-		ArrayNode newArrayNode = JSONUtils.getInstance().newArrayNode();
-		for(String str: results) {
-			newArrayNode.add(str);
+		try {
+			return ConverterUtils.toJSON(results);
+		} catch (IOException e) {
+			throw new UtilsException(e);
 		}
-
-		return JSONUtils.getInstance().toString(newArrayNode);
 	}
 }
 

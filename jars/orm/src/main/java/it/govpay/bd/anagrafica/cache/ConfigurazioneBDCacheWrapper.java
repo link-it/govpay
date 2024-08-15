@@ -23,6 +23,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+import org.openspcoop2.utils.cache.CacheType;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -31,7 +32,7 @@ import it.govpay.bd.configurazione.ConfigurazioneBD;
 public class ConfigurazioneBDCacheWrapper extends AbstractCacheWrapper {
 
 	public ConfigurazioneBDCacheWrapper(boolean initializeCache, Logger log) throws UtilsException {
-		super("configurazione", initializeCache, log);
+		super(CacheType.JCS, "configurazione", initializeCache, log);
 	}
 
 	@Override

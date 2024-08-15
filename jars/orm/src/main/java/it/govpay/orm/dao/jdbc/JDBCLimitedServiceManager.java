@@ -17,109 +17,115 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
+
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.Connection;
 
 import javax.sql.DataSource;
 
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.orm.dao.IACLService;
-import it.govpay.orm.dao.IACLServiceSearch;
-import it.govpay.orm.dao.IAllegatoService;
-import it.govpay.orm.dao.IAllegatoServiceSearch;
-import it.govpay.orm.dao.IApplicazioneService;
-import it.govpay.orm.dao.IApplicazioneServiceSearch;
-import it.govpay.orm.dao.IAuditService;
-import it.govpay.orm.dao.IAuditServiceSearch;
-import it.govpay.orm.dao.IBatchService;
-import it.govpay.orm.dao.IBatchServiceSearch;
-import it.govpay.orm.dao.IConfigurazioneService;
 import it.govpay.orm.dao.IConfigurazioneServiceSearch;
-import it.govpay.orm.dao.IConnettoreService;
-import it.govpay.orm.dao.IConnettoreServiceSearch;
-import it.govpay.orm.dao.IDocumentoService;
-import it.govpay.orm.dao.IDocumentoServiceSearch;
-import it.govpay.orm.dao.IDominioService;
+import it.govpay.orm.dao.IConfigurazioneService;
 import it.govpay.orm.dao.IDominioServiceSearch;
-import it.govpay.orm.dao.IEventoService;
-import it.govpay.orm.dao.IEventoServiceSearch;
-import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.IFRServiceSearch;
-import it.govpay.orm.dao.IIUVService;
-import it.govpay.orm.dao.IIUVServiceSearch;
-import it.govpay.orm.dao.IIbanAccreditoService;
-import it.govpay.orm.dao.IIbanAccreditoServiceSearch;
-import it.govpay.orm.dao.IIncassoService;
-import it.govpay.orm.dao.IIncassoServiceSearch;
-import it.govpay.orm.dao.IIntermediarioService;
+import it.govpay.orm.dao.IDominioService;
+import it.govpay.orm.dao.IUoServiceSearch;
+import it.govpay.orm.dao.IUoService;
+import it.govpay.orm.dao.IConnettoreServiceSearch;
+import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IIntermediarioServiceSearch;
-import it.govpay.orm.dao.INotificaAppIOService;
-import it.govpay.orm.dao.INotificaAppIOServiceSearch;
-import it.govpay.orm.dao.INotificaService;
-import it.govpay.orm.dao.INotificaServiceSearch;
-import it.govpay.orm.dao.IOperatoreService;
-import it.govpay.orm.dao.IOperatoreServiceSearch;
-import it.govpay.orm.dao.IOperazioneService;
-import it.govpay.orm.dao.IOperazioneServiceSearch;
-import it.govpay.orm.dao.IPagamentoPortaleService;
-import it.govpay.orm.dao.IPagamentoPortaleServiceSearch;
-import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
-import it.govpay.orm.dao.IPagamentoPortaleVersamentoServiceSearch;
-import it.govpay.orm.dao.IPagamentoService;
-import it.govpay.orm.dao.IPagamentoServiceSearch;
-import it.govpay.orm.dao.IPromemoriaService;
-import it.govpay.orm.dao.IPromemoriaServiceSearch;
-import it.govpay.orm.dao.IRPTService;
-import it.govpay.orm.dao.IRPTServiceSearch;
-import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRRServiceSearch;
-import it.govpay.orm.dao.IRendicontazioneService;
-import it.govpay.orm.dao.IRendicontazioneServiceSearch;
-import it.govpay.orm.dao.ISingoloVersamentoService;
-import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
-import it.govpay.orm.dao.IStampaService;
-import it.govpay.orm.dao.IStampaServiceSearch;
-import it.govpay.orm.dao.IStazioneService;
+import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.IStazioneServiceSearch;
+import it.govpay.orm.dao.IStazioneService;
+import it.govpay.orm.dao.IApplicazioneServiceSearch;
+import it.govpay.orm.dao.IApplicazioneService;
+import it.govpay.orm.dao.IIbanAccreditoServiceSearch;
+import it.govpay.orm.dao.IIbanAccreditoService;
+import it.govpay.orm.dao.ITributoServiceSearch;
+import it.govpay.orm.dao.ITributoService;
+import it.govpay.orm.dao.ITipoTributoServiceSearch;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoTributoServiceSearch;
-import it.govpay.orm.dao.ITipoVersamentoDominioService;
-import it.govpay.orm.dao.ITipoVersamentoDominioServiceSearch;
-import it.govpay.orm.dao.ITipoVersamentoService;
-import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
-import it.govpay.orm.dao.ITracciatoNotificaPagamentiService;
-import it.govpay.orm.dao.ITracciatoNotificaPagamentiServiceSearch;
-import it.govpay.orm.dao.ITracciatoService;
-import it.govpay.orm.dao.ITracciatoServiceSearch;
-import it.govpay.orm.dao.ITributoService;
-import it.govpay.orm.dao.ITributoServiceSearch;
-import it.govpay.orm.dao.IUoService;
-import it.govpay.orm.dao.IUoServiceSearch;
-import it.govpay.orm.dao.IUtenzaDominioService;
+import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.IAuditServiceSearch;
+import it.govpay.orm.dao.IAuditService;
+import it.govpay.orm.dao.IACLServiceSearch;
+import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IUtenzaDominioServiceSearch;
-import it.govpay.orm.dao.IUtenzaService;
-import it.govpay.orm.dao.IUtenzaServiceSearch;
-import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
+import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaTipoVersamentoServiceSearch;
-import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
-import it.govpay.orm.dao.IVersamentoService;
+import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
+import it.govpay.orm.dao.IUtenzaServiceSearch;
+import it.govpay.orm.dao.IUtenzaService;
+import it.govpay.orm.dao.IOperatoreServiceSearch;
+import it.govpay.orm.dao.IOperatoreService;
+import it.govpay.orm.dao.IIUVServiceSearch;
+import it.govpay.orm.dao.IIUVService;
+import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
+import it.govpay.orm.dao.ITipoVersamentoService;
+import it.govpay.orm.dao.ITipoVersamentoDominioServiceSearch;
+import it.govpay.orm.dao.ITipoVersamentoDominioService;
+import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
+import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
-import it.govpay.orm.dao.IVistaEventiPagamentoService;
-import it.govpay.orm.dao.IVistaEventiPagamentoServiceSearch;
-import it.govpay.orm.dao.IVistaEventiRptService;
-import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
-import it.govpay.orm.dao.IVistaEventiVersamentoService;
+import it.govpay.orm.dao.IVersamentoService;
+import it.govpay.orm.dao.IDocumentoServiceSearch;
+import it.govpay.orm.dao.IDocumentoService;
+import it.govpay.orm.dao.IEventoServiceSearch;
+import it.govpay.orm.dao.IEventoService;
+import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.ISingoloVersamentoService;
+import it.govpay.orm.dao.IRPTServiceSearch;
+import it.govpay.orm.dao.IRPTService;
+import it.govpay.orm.dao.IRRServiceSearch;
+import it.govpay.orm.dao.IRRService;
+import it.govpay.orm.dao.IRendicontazioneServiceSearch;
+import it.govpay.orm.dao.IRendicontazioneService;
+import it.govpay.orm.dao.IPagamentoPortaleVersamentoServiceSearch;
+import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
+import it.govpay.orm.dao.IPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IPagamentoPortaleService;
+import it.govpay.orm.dao.IPagamentoServiceSearch;
+import it.govpay.orm.dao.IPagamentoService;
+import it.govpay.orm.dao.INotificaServiceSearch;
+import it.govpay.orm.dao.INotificaService;
+import it.govpay.orm.dao.INotificaAppIOServiceSearch;
+import it.govpay.orm.dao.INotificaAppIOService;
+import it.govpay.orm.dao.IPromemoriaServiceSearch;
+import it.govpay.orm.dao.IPromemoriaService;
+import it.govpay.orm.dao.IIncassoServiceSearch;
+import it.govpay.orm.dao.IIncassoService;
+import it.govpay.orm.dao.IFRServiceSearch;
+import it.govpay.orm.dao.IFRService;
+import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
+import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IBatchServiceSearch;
+import it.govpay.orm.dao.IBatchService;
+import it.govpay.orm.dao.IOperazioneServiceSearch;
+import it.govpay.orm.dao.IOperazioneService;
+import it.govpay.orm.dao.ITracciatoServiceSearch;
+import it.govpay.orm.dao.ITracciatoService;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiServiceSearch;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiService;
+import it.govpay.orm.dao.IStampaServiceSearch;
+import it.govpay.orm.dao.IStampaService;
+import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
+import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaEventiVersamentoService;
+import it.govpay.orm.dao.IVistaEventiPagamentoServiceSearch;
+import it.govpay.orm.dao.IVistaEventiPagamentoService;
+import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
+import it.govpay.orm.dao.IVistaEventiRptService;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
-import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
-import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
-import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
-import it.govpay.orm.dao.IVistaVersamentoNonRendicontatoServiceSearch;
 import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoNonRendicontatoServiceSearch;
+import it.govpay.orm.dao.IAllegatoServiceSearch;
+import it.govpay.orm.dao.IAllegatoService;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -134,30 +140,31 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 
 	private JDBCServiceManager unlimitedJdbcServiceManager;
 
-	public JDBCLimitedServiceManager(JDBCServiceManager jdbcServiceManager) throws ServiceException {
-		this.datasource = jdbcServiceManager.get_Datasource();
-		this.connection = jdbcServiceManager.get_Connection();
-		this.log = jdbcServiceManager.get_Logger();
-		this.jdbcProperties = jdbcServiceManager.get_JdbcProperties();
+	public JDBCLimitedServiceManager(JDBCServiceManager jdbcServiceManager) {
+		this.datasource = jdbcServiceManager.getDatasourceInternalResource();
+		this.connection = jdbcServiceManager.getConnectionInternalResource();
+		this.log = jdbcServiceManager.getLoggerInternalResource();
+		this.jdbcProperties = jdbcServiceManager.getJdbcPropertiesInternalResource();
 		this.unlimitedJdbcServiceManager = jdbcServiceManager;
 	}
 	
+	private static final String CONNNECTION_MANAGED = "Connection managed from framework";
 	
 	@Override
 	public Connection getConnection() throws ServiceException {
-		throw new ServiceException("Connection managed from framework");
+		throw new ServiceException(CONNNECTION_MANAGED);
 	}
 	@Override
 	public void closeConnection(Connection connection) throws ServiceException {
-		throw new ServiceException("Connection managed from framework");
+		throw new ServiceException(CONNNECTION_MANAGED);
 	}
 	@Override
-	protected Connection get_Connection() throws ServiceException {
-		throw new ServiceException("Connection managed from framework");
+	protected Connection getConnectionInternalResource() {
+		throw new org.openspcoop2.utils.UtilsRuntimeException(CONNNECTION_MANAGED);
 	}
 	@Override
-	protected DataSource get_Datasource() throws ServiceException {
-		throw new ServiceException("Connection managed from framework");
+	protected DataSource getDatasourceInternalResource() {
+		throw new org.openspcoop2.utils.UtilsRuntimeException(CONNNECTION_MANAGED);
 	}
 	
 	

@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,14 +49,14 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Operatore.model())){
 				Operatore object = new Operatore();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
+				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "nome", Operatore.model().NOME.getFieldType()));
 				return object;
 			}
@@ -76,9 +78,9 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Operatore.model())){
 				Operatore object = new Operatore();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
+				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
 					this.getObjectFromMap(map,"nome"));
 				return object;
 			}

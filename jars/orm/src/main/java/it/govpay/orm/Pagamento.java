@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,32 +34,32 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Pagamento">
- * 		&lt;sequence>
- * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="allegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="causaleRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="datiRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="esitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="datiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="Pagamento"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="allegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="causaleRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="datiRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="importoRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="esitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="datiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -98,22 +99,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "Pagamento")
 
-public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class Pagamento extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public Pagamento() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public IdRpt getIdRPT() {
@@ -188,11 +176,11 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.dataPagamento = dataPagamento;
   }
 
-  public java.lang.Double getCommissioniPsp() {
+  public java.math.BigDecimal getCommissioniPsp() {
     return this.commissioniPsp;
   }
 
-  public void setCommissioniPsp(java.lang.Double commissioniPsp) {
+  public void setCommissioniPsp(java.math.BigDecimal commissioniPsp) {
     this.commissioniPsp = commissioniPsp;
   }
 
@@ -244,11 +232,11 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.datiRevoca = datiRevoca;
   }
 
-  public java.lang.Double getImportoRevocato() {
+  public java.math.BigDecimal getImportoRevocato() {
     return this.importoRevocato;
   }
 
-  public void setImportoRevocato(java.lang.Double importoRevocato) {
+  public void setImportoRevocato(java.math.BigDecimal importoRevocato) {
     this.importoRevocato = importoRevocato;
   }
 
@@ -294,9 +282,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.PagamentoModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.Pagamento.modelStaticInstance==null){
@@ -317,84 +302,84 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
   protected IdSingoloVersamento idSingoloVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=true,nillable=false)
   protected java.lang.String codDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuv",required=true,nillable=false)
   protected java.lang.String iuv;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="indiceDati",required=true,nillable=false)
   protected int indiceDati;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoPagato",required=true,nillable=false)
   protected double importoPagato;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataAcquisizione",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataAcquisizione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iur",required=true,nillable=false)
   protected java.lang.String iur;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataPagamento",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataPagamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="commissioniPsp",required=false,nillable=false)
-  protected java.lang.Double commissioniPsp;
+  protected java.math.BigDecimal commissioniPsp;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoAllegato",required=false,nillable=false)
   protected java.lang.String tipoAllegato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="allegato",required=false,nillable=false)
   protected byte[] allegato;
 
   @XmlElement(name="idRr",required=false,nillable=false)
   protected IdRr idRr;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataAcquisizioneRevoca",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataAcquisizioneRevoca;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="causaleRevoca",required=false,nillable=false)
   protected java.lang.String causaleRevoca;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiRevoca",required=false,nillable=false)
   protected java.lang.String datiRevoca;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="importoRevocato",required=false,nillable=false)
-  protected java.lang.Double importoRevocato;
+  protected java.math.BigDecimal importoRevocato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="esitoRevoca",required=false,nillable=false)
   protected java.lang.String esitoRevoca;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiEsitoRevoca",required=false,nillable=false)
   protected java.lang.String datiEsitoRevoca;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=false,nillable=false)
   protected java.lang.String stato;
 
   @XmlElement(name="idIncasso",required=false,nillable=false)
   protected IdIncasso idIncasso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)
   protected java.lang.String tipo;
 

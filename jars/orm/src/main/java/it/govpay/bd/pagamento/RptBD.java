@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -304,7 +305,7 @@ public class RptBD extends BasicBD {
 			if(pspRedirectUrl != null)
 				lstUpdateFields.add(new UpdateField(RPT.model().PSP_REDIRECT_URL, pspRedirectUrl));
 			if(esito!= null) 
-				lstUpdateFields.add(new UpdateField(RPT.model().COD_ESITO_PAGAMENTO, esito.getCodifica()));
+				lstUpdateFields.add(new UpdateField(RPT.model().COD_ESITO_PAGAMENTO, BigInteger.valueOf(esito.getCodifica())));
 
 			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -836,8 +837,6 @@ public class RptBD extends BasicBD {
 			return count;
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			return 0;
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();

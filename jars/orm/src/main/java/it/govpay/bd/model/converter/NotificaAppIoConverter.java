@@ -31,6 +31,8 @@ import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.IdVersamento;
 
 public class NotificaAppIoConverter {
+	
+	private NotificaAppIoConverter() {}
 
 	public static it.govpay.orm.NotificaAppIO toVO(NotificaAppIo dto) {
 		it.govpay.orm.NotificaAppIO vo = new it.govpay.orm.NotificaAppIO();

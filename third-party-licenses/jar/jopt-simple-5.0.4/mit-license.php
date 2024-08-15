@@ -290,7 +290,7 @@ jQuery(function(jQuery){jQuery.datepicker.setDefaults({"closeText":"Close","curr
 <script type="text/javascript" src="https://c0.wp.com/c/6.6.1/wp-includes/js/jquery/ui/dialog.min.js" id="jquery-ui-dialog-js"></script>
 <script type="text/javascript" id="events-manager-js-extra">
 /* <![CDATA[ */
-var EM = {"ajaxurl":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php","locationajaxurl":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php?action=locations_search","firstDay":"1","locale":"en","dateFormat":"yy-mm-dd","ui_css":"https:\/\/opensource.org\/wp-content\/plugins\/events-manager\/includes\/css\/jquery-ui\/build.min.css","show24hours":"0","is_ssl":"1","autocomplete_limit":"10","calendar":{"breakpoints":{"small":560,"medium":908,"large":false}},"phone":"","datepicker":{"format":"Y-m-d"},"search":{"breakpoints":{"small":650,"medium":850,"full":false}},"url":"https:\/\/opensource.org\/wp-content\/plugins\/events-manager","bookingInProgress":"Please wait while the booking is being submitted.","tickets_save":"Save Ticket","bookingajaxurl":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php","bookings_export_save":"Export Bookings","bookings_settings_save":"Save Settings","booking_delete":"Are you sure you want to delete?","booking_offset":"30","bookings":{"submit_button":{"text":{"default":"Submit Booking","free":"Submit Booking","payment":"Submit Booking - %s","processing":"Processing ..."}},"update_listener":""},"bb_full":"Sold Out","bb_book":"Book Now","bb_booking":"Booking...","bb_booked":"Booking Submitted","bb_error":"Booking Error. Try again?","bb_cancel":"Cancel","bb_canceling":"Canceling...","bb_cancelled":"Cancelled","bb_cancel_error":"Cancellation Error. Try again?","txt_search":"Search","txt_searching":"Searching...","txt_loading":"Loading...","cache":"1","api_nonce":"ef7ae760bf","attendance_api_url":"https:\/\/opensource.org\/wp-json\/events-manager\/v1\/attendance"};
+var EM = {"ajaxurl":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php","locationajaxurl":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php?action=locations_search","firstDay":"1","locale":"en","dateFormat":"yy-mm-dd","ui_css":"https:\/\/opensource.org\/wp-content\/plugins\/events-manager\/includes\/css\/jquery-ui\/build.min.css","show24hours":"0","is_ssl":"1","autocomplete_limit":"10","calendar":{"breakpoints":{"small":560,"medium":908,"large":false}},"phone":"","datepicker":{"format":"Y-m-d"},"search":{"breakpoints":{"small":650,"medium":850,"full":false}},"url":"https:\/\/opensource.org\/wp-content\/plugins\/events-manager","bookingInProgress":"Please wait while the booking is being submitted.","tickets_save":"Save Ticket","bookingajaxurl":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php","bookings_export_save":"Export Bookings","bookings_settings_save":"Save Settings","booking_delete":"Are you sure you want to delete?","booking_offset":"30","bookings":{"submit_button":{"text":{"default":"Submit Booking","free":"Submit Booking","payment":"Submit Booking - %s","processing":"Processing ..."}},"update_listener":""},"bb_full":"Sold Out","bb_book":"Book Now","bb_booking":"Booking...","bb_booked":"Booking Submitted","bb_error":"Booking Error. Try again?","bb_cancel":"Cancel","bb_canceling":"Canceling...","bb_cancelled":"Cancelled","bb_cancel_error":"Cancellation Error. Try again?","txt_search":"Search","txt_searching":"Searching...","txt_loading":"Loading...","cache":"1","api_nonce":"b04b327dd5","attendance_api_url":"https:\/\/opensource.org\/wp-json\/events-manager\/v1\/attendance"};
 /* ]]> */
 </script>
 <script type="text/javascript" src="https://149753425.v2.pressablecdn.com/wp-content/plugins/events-manager/includes/js/events-manager.js?ver=6.4.10.2" id="events-manager-js"></script>
@@ -367,7 +367,7 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 				clip: rect(1px, 1px, 1px, 1px);
 			}
 					</style>
-		
+
 <!-- Jetpack Open Graph Tags -->
 <meta property="og:type" content="article" />
 <meta property="og:title" content="The MIT License" />
@@ -417,7 +417,7 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 </ul></div>				</nav><!-- #site-navigation -->
 				<section class="open-search-wrapper">
 				<a aria-label="Open Search" class="open-search open-button jetpack-search-filter__link" href="#">
-					
+
 <svg xmlns="http://www.w3.org/2000/svg" width="44px" height="44px" viewBox="0 0 44 44">
 <path fill="#414042" d="M19.2568,28.5067c2.0558,0,4.0528-0.686,5.6746-1.9494l6.1188,6.1197
 	c0.457,0.4415,1.1854,0.4288,1.6268-0.0283c0.4307-0.446,0.4307-1.153,0-1.5989l-6.1187-6.1196
@@ -479,12 +479,12 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 		</section>
 	</main><!-- #primary -->
 
-	
+
 </section>
 
 
 		<footer id="colophon" class="footer site-footer" role="contentinfo">
-				
+
 				<div class="footer--inner">
 					<section class="footer-cta">
 						<div class="wp-block-columns">
@@ -572,7 +572,7 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 		<div class="jetpack-instant-search__widget-area" style="display: none">
 							<div id="jetpack-search-filters-4" class="widget jetpack-filters widget_search">			<div id="jetpack-search-filters-4-wrapper" class="jetpack-instant-search-wrapper">
 		</div></div>					</div>
-		
+
 <!-- Consent Management powered by Complianz | GDPR/CCPA Cookie Consent https://wordpress.org/plugins/complianz-gdpr -->
 <div id="cmplz-cookiebanner-container"><div class="cmplz-cookiebanner cmplz-hidden banner-1 bottom-right-view-preferences optin cmplz-bottom-right cmplz-categories-type-view-preferences" aria-modal="true" data-nosnippet="true" role="dialog" aria-live="polite" aria-labelledby="cmplz-header-1-optin" aria-describedby="cmplz-message-1-optin">
 	<div class="cmplz-header">
@@ -729,18 +729,18 @@ var wpcf7 = {"api":{"root":"https:\/\/opensource.org\/wp-json\/","namespace":"co
 <script type="text/javascript" src="https://149753425.v2.pressablecdn.com/wp-content/plugins/gutenberg/build/url/index.min.js?ver=a6fb0cfbb9a37fe64b17" id="wp-url-js"></script>
 <script type="text/javascript" id="jetpack-instant-search-js-before">
 /* <![CDATA[ */
-var JetpackInstantSearchOptions=JSON.parse(decodeURIComponent("%7B%22overlayOptions%22%3A%7B%22colorTheme%22%3A%22light%22%2C%22enableInfScroll%22%3Atrue%2C%22enableFilteringOpensOverlay%22%3Atrue%2C%22enablePostDate%22%3Atrue%2C%22enableSort%22%3Atrue%2C%22highlightColor%22%3A%22%23fdd7b9%22%2C%22overlayTrigger%22%3A%22submit%22%2C%22resultFormat%22%3A%22expanded%22%2C%22showPoweredBy%22%3Atrue%2C%22defaultSort%22%3A%22relevance%22%2C%22excludedPostTypes%22%3A%5B%22attachment%22%5D%7D%2C%22homeUrl%22%3A%22https%3A%5C%2F%5C%2Fopensource.org%22%2C%22locale%22%3A%22en-US%22%2C%22postsPerPage%22%3A12%2C%22siteId%22%3A210318891%2C%22postTypes%22%3A%7B%22post%22%3A%7B%22singular_name%22%3A%22Post%22%2C%22name%22%3A%22Posts%22%7D%2C%22page%22%3A%7B%22singular_name%22%3A%22Page%22%2C%22name%22%3A%22Pages%22%7D%2C%22attachment%22%3A%7B%22singular_name%22%3A%22Media%22%2C%22name%22%3A%22Media%22%7D%2C%22board-member%22%3A%7B%22singular_name%22%3A%22Board%20Member%22%2C%22name%22%3A%22Board%20Members%22%7D%2C%22license%22%3A%7B%22singular_name%22%3A%22License%22%2C%22name%22%3A%22Licenses%22%7D%2C%22meeting-minutes%22%3A%7B%22singular_name%22%3A%22Meeting%20Minutes%22%2C%22name%22%3A%22Meeting%20Minutes%22%7D%2C%22press-mentions%22%3A%7B%22singular_name%22%3A%22Press%20mentions%22%2C%22name%22%3A%22Press%20mentions%22%7D%7D%2C%22webpackPublicPath%22%3A%22https%3A%5C%2F%5C%2Fopensource.org%5C%2Fwp-content%5C%2Fplugins%5C%2Fjetpack%5C%2Fjetpack_vendor%5C%2Fautomattic%5C%2Fjetpack-search%5C%2Fbuild%5C%2Finstant-search%5C%2F%22%2C%22isPhotonEnabled%22%3Atrue%2C%22isFreePlan%22%3Afalse%2C%22apiRoot%22%3A%22https%3A%5C%2F%5C%2Fopensource.org%5C%2Fwp-json%5C%2F%22%2C%22apiNonce%22%3A%22ef7ae760bf%22%2C%22isPrivateSite%22%3Afalse%2C%22isWpcom%22%3Afalse%2C%22hasOverlayWidgets%22%3Atrue%2C%22widgets%22%3A%5B%7B%22filters%22%3A%5B%7B%22name%22%3A%22Post%20Types%22%2C%22type%22%3A%22post_type%22%2C%22count%22%3A6%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22post_type_0%22%7D%2C%7B%22name%22%3A%22Categories%22%2C%22type%22%3A%22taxonomy%22%2C%22taxonomy%22%3A%22category%22%2C%22count%22%3A5%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22taxonomy_1%22%7D%2C%7B%22name%22%3A%22Tags%22%2C%22type%22%3A%22taxonomy%22%2C%22taxonomy%22%3A%22post_tag%22%2C%22count%22%3A5%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22taxonomy_2%22%7D%2C%7B%22name%22%3A%22Year%22%2C%22type%22%3A%22date_histogram%22%2C%22count%22%3A5%2C%22field%22%3A%22post_date%22%2C%22interval%22%3A%22year%22%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22date_histogram_3%22%7D%5D%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%7D%5D%2C%22widgetsOutsideOverlay%22%3A%5B%5D%2C%22hasNonSearchWidgets%22%3Afalse%2C%22preventTrackingCookiesReset%22%3Afalse%7D"));
+var JetpackInstantSearchOptions=JSON.parse(decodeURIComponent("%7B%22overlayOptions%22%3A%7B%22colorTheme%22%3A%22light%22%2C%22enableInfScroll%22%3Atrue%2C%22enableFilteringOpensOverlay%22%3Atrue%2C%22enablePostDate%22%3Atrue%2C%22enableSort%22%3Atrue%2C%22highlightColor%22%3A%22%23fdd7b9%22%2C%22overlayTrigger%22%3A%22submit%22%2C%22resultFormat%22%3A%22expanded%22%2C%22showPoweredBy%22%3Atrue%2C%22defaultSort%22%3A%22relevance%22%2C%22excludedPostTypes%22%3A%5B%22attachment%22%5D%7D%2C%22homeUrl%22%3A%22https%3A%5C%2F%5C%2Fopensource.org%22%2C%22locale%22%3A%22en-US%22%2C%22postsPerPage%22%3A12%2C%22siteId%22%3A210318891%2C%22postTypes%22%3A%7B%22post%22%3A%7B%22singular_name%22%3A%22Post%22%2C%22name%22%3A%22Posts%22%7D%2C%22page%22%3A%7B%22singular_name%22%3A%22Page%22%2C%22name%22%3A%22Pages%22%7D%2C%22attachment%22%3A%7B%22singular_name%22%3A%22Media%22%2C%22name%22%3A%22Media%22%7D%2C%22board-member%22%3A%7B%22singular_name%22%3A%22Board%20Member%22%2C%22name%22%3A%22Board%20Members%22%7D%2C%22license%22%3A%7B%22singular_name%22%3A%22License%22%2C%22name%22%3A%22Licenses%22%7D%2C%22meeting-minutes%22%3A%7B%22singular_name%22%3A%22Meeting%20Minutes%22%2C%22name%22%3A%22Meeting%20Minutes%22%7D%2C%22press-mentions%22%3A%7B%22singular_name%22%3A%22Press%20mentions%22%2C%22name%22%3A%22Press%20mentions%22%7D%7D%2C%22webpackPublicPath%22%3A%22https%3A%5C%2F%5C%2Fopensource.org%5C%2Fwp-content%5C%2Fplugins%5C%2Fjetpack%5C%2Fjetpack_vendor%5C%2Fautomattic%5C%2Fjetpack-search%5C%2Fbuild%5C%2Finstant-search%5C%2F%22%2C%22isPhotonEnabled%22%3Atrue%2C%22isFreePlan%22%3Afalse%2C%22apiRoot%22%3A%22https%3A%5C%2F%5C%2Fopensource.org%5C%2Fwp-json%5C%2F%22%2C%22apiNonce%22%3A%22b04b327dd5%22%2C%22isPrivateSite%22%3Afalse%2C%22isWpcom%22%3Afalse%2C%22hasOverlayWidgets%22%3Atrue%2C%22widgets%22%3A%5B%7B%22filters%22%3A%5B%7B%22name%22%3A%22Post%20Types%22%2C%22type%22%3A%22post_type%22%2C%22count%22%3A6%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22post_type_0%22%7D%2C%7B%22name%22%3A%22Categories%22%2C%22type%22%3A%22taxonomy%22%2C%22taxonomy%22%3A%22category%22%2C%22count%22%3A5%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22taxonomy_1%22%7D%2C%7B%22name%22%3A%22Tags%22%2C%22type%22%3A%22taxonomy%22%2C%22taxonomy%22%3A%22post_tag%22%2C%22count%22%3A5%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22taxonomy_2%22%7D%2C%7B%22name%22%3A%22Year%22%2C%22type%22%3A%22date_histogram%22%2C%22count%22%3A5%2C%22field%22%3A%22post_date%22%2C%22interval%22%3A%22year%22%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%2C%22filter_id%22%3A%22date_histogram_3%22%7D%5D%2C%22widget_id%22%3A%22jetpack-search-filters-4%22%7D%5D%2C%22widgetsOutsideOverlay%22%3A%5B%5D%2C%22hasNonSearchWidgets%22%3Afalse%2C%22preventTrackingCookiesReset%22%3Afalse%7D"));
 /* ]]> */
 </script>
 <script type="text/javascript" src="https://149753425.v2.pressablecdn.com/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-search/build/instant-search/jp-search.js?minify=false&amp;ver=8a6c1a97119fb3a4a477" id="jetpack-instant-search-js"></script>
-<script data-service="jetpack-statistics" data-category="statistics" type="text/plain" data-cmplz-src="//stats.wp.com/w.js?ver=202430" id="jp-tracks-js"></script>
+<script data-service="jetpack-statistics" data-category="statistics" type="text/plain" data-cmplz-src="//stats.wp.com/w.js?ver=202431" id="jp-tracks-js"></script>
 <script type="text/javascript" id="osi-theme-scripts-js-before">
 /* <![CDATA[ */
 const OSI_LICENSE_DB = {"ajaxURL":"https:\/\/opensource.org\/wp-admin\/admin-ajax.php","action":"osi_license_db"}
 /* ]]> */
 </script>
 <script type="text/javascript" src="https://149753425.v2.pressablecdn.com/wp-content/themes/osi/assets/js/build/theme.js?ver=1687357502" id="osi-theme-scripts-js"></script>
-<script data-service="jetpack-statistics" data-category="statistics" type="text/plain" data-cmplz-src="https://stats.wp.com/e-202430.js" id="jetpack-stats-js" data-wp-strategy="defer"></script>
+<script data-service="jetpack-statistics" data-category="statistics" type="text/plain" data-cmplz-src="https://stats.wp.com/e-202431.js" id="jetpack-stats-js" data-wp-strategy="defer"></script>
 <script type="text/javascript" id="jetpack-stats-js-after">
 /* <![CDATA[ */
 _stq = window._stq || [];
@@ -750,7 +750,7 @@ _stq.push([ "clickTrackerInit", "210318891", "395" ]);
 </script>
 <script type="text/javascript" id="cmplz-cookiebanner-js-extra">
 /* <![CDATA[ */
-var complianz = {"prefix":"cmplz_","user_banner_id":"1","set_cookies":[],"block_ajax_content":"","banner_version":"38","version":"7.1.0","store_consent":"","do_not_track_enabled":"1","consenttype":"optin","region":"eu","geoip":"","dismiss_timeout":"","disable_cookiebanner":"1","soft_cookiewall":"","dismiss_on_scroll":"","cookie_expiry":"365","url":"https:\/\/opensource.org\/wp-json\/complianz\/v1\/","locale":"lang=en&locale=en_US","set_cookies_on_root":"","cookie_domain":"","current_policy_id":"16","cookie_path":"\/","categories":{"statistics":"statistics","marketing":"marketing"},"tcf_active":"","placeholdertext":"Click to accept {category} cookies and enable this content","css_file":"https:\/\/opensource.org\/wp-content\/uploads\/complianz\/css\/banner-{banner_id}-{type}.css?v=38","page_links":{"eu":{"cookie-statement":{"title":"","url":"https:\/\/opensource.org\/license\/mit"}}},"tm_categories":"","forceEnableStats":"","preview":"","clean_cookies":"","aria_label":"Click to accept {category} cookies and enable this content"};
+var complianz = {"prefix":"cmplz_","user_banner_id":"1","set_cookies":[],"block_ajax_content":"","banner_version":"38","version":"7.1.0","store_consent":"","do_not_track_enabled":"1","consenttype":"optin","region":"eu","geoip":"","dismiss_timeout":"","disable_cookiebanner":"1","soft_cookiewall":"","dismiss_on_scroll":"","cookie_expiry":"365","url":"https:\/\/opensource.org\/wp-json\/complianz\/v1\/","locale":"lang=en&locale=en_US","set_cookies_on_root":"","cookie_domain":"","current_policy_id":"16","cookie_path":"\/","categories":{"statistics":"statistics","marketing":"marketing"},"tcf_active":"","placeholdertext":"Click to accept {category} cookies and enable this content","css_file":"https:\/\/opensource.org\/wp-content\/uploads\/complianz\/css\/banner-{banner_id}-{type}.css?v=38","page_links":{"eu":{"cookie-statement":{"title":"","url":"https:\/\/opensource.org\/license\/gpl-3-0"}}},"tm_categories":"","forceEnableStats":"","preview":"","clean_cookies":"","aria_label":"Click to accept {category} cookies and enable this content"};
 /* ]]> */
 </script>
 <script defer type="text/javascript" src="https://149753425.v2.pressablecdn.com/wp-content/plugins/complianz-gdpr/cookiebanner/js/complianz.min.js?ver=1717180759" id="cmplz-cookiebanner-js"></script>
@@ -758,8 +758,8 @@ var complianz = {"prefix":"cmplz_","user_banner_id":"1","set_cookies":[],"block_
 </body>
 </html>
 <!--
-	generated 229 seconds ago
-	generated in 0.782 seconds
-	served from batcache in 0.002 seconds
-	expires in 71 seconds
+	generated 223 seconds ago
+	generated in 0.636 seconds
+	served from batcache in 0.004 seconds
+	expires in 77 seconds
 -->

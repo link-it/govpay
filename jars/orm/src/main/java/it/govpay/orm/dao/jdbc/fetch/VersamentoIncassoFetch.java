@@ -17,18 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
+
+import org.openspcoop2.generic_project.beans.IModel;
+import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
 import java.util.Map;
 
-import org.openspcoop2.generic_project.beans.IModel;
-import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
-import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.VersamentoIncasso;
 
@@ -47,8 +49,8 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VersamentoIncasso.model())){
 				VersamentoIncasso object = new VersamentoIncasso();
@@ -145,7 +147,7 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 				setParameter(object, "setSmartOrderDate", VersamentoIncasso.model().SMART_ORDER_DATE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "smart_order_date", VersamentoIncasso.model().SMART_ORDER_DATE.getFieldType()));
 				setParameter(object, "setSmartOrderRank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "smart_order_rank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "smart_order_rank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setIdSessione", VersamentoIncasso.model().ID_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_sessione", VersamentoIncasso.model().ID_SESSIONE.getFieldType()));
 				setParameter(object, "setSrcIuv", VersamentoIncasso.model().SRC_IUV.getFieldType(),

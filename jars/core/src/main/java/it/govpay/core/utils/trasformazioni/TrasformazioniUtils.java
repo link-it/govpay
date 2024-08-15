@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.openspcoop2.utils.date.DateManager;
 import org.openspcoop2.utils.resources.TemplateUtils;

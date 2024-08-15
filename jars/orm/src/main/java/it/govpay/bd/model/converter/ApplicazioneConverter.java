@@ -29,6 +29,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
+	
+	private ApplicazioneConverter() {}
 
 	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreIntegrazione) throws CodificaInesistenteException {
 		Applicazione dto = new Applicazione();
@@ -59,7 +61,7 @@ public class ApplicazioneConverter {
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setId(dto.getIdUtenza());
 		try {
-			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.subject));
+			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.SUBJECT));
 		} catch (Exception e) {
 			idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
 		}
