@@ -367,7 +367,7 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 				clip: rect(1px, 1px, 1px, 1px);
 			}
 					</style>
-
+		
 <!-- Jetpack Open Graph Tags -->
 <meta property="og:type" content="article" />
 <meta property="og:title" content="The MIT License" />
@@ -417,7 +417,7 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 </ul></div>				</nav><!-- #site-navigation -->
 				<section class="open-search-wrapper">
 				<a aria-label="Open Search" class="open-search open-button jetpack-search-filter__link" href="#">
-
+					
 <svg xmlns="http://www.w3.org/2000/svg" width="44px" height="44px" viewBox="0 0 44 44">
 <path fill="#414042" d="M19.2568,28.5067c2.0558,0,4.0528-0.686,5.6746-1.9494l6.1188,6.1197
 	c0.457,0.4415,1.1854,0.4288,1.6268-0.0283c0.4307-0.446,0.4307-1.153,0-1.5989l-6.1187-6.1196
@@ -479,12 +479,12 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 		</section>
 	</main><!-- #primary -->
 
-
+	
 </section>
 
 
 		<footer id="colophon" class="footer site-footer" role="contentinfo">
-
+				
 				<div class="footer--inner">
 					<section class="footer-cta">
 						<div class="wp-block-columns">
@@ -572,7 +572,7 @@ window.plausible = window.plausible || function() { (window.plausible.q = window
 		<div class="jetpack-instant-search__widget-area" style="display: none">
 							<div id="jetpack-search-filters-4" class="widget jetpack-filters widget_search">			<div id="jetpack-search-filters-4-wrapper" class="jetpack-instant-search-wrapper">
 		</div></div>					</div>
-
+		
 <!-- Consent Management powered by Complianz | GDPR/CCPA Cookie Consent https://wordpress.org/plugins/complianz-gdpr -->
 <div id="cmplz-cookiebanner-container"><div class="cmplz-cookiebanner cmplz-hidden banner-1 bottom-right-view-preferences optin cmplz-bottom-right cmplz-categories-type-view-preferences" aria-modal="true" data-nosnippet="true" role="dialog" aria-live="polite" aria-labelledby="cmplz-header-1-optin" aria-describedby="cmplz-message-1-optin">
 	<div class="cmplz-header">
