@@ -128,8 +128,11 @@ public class FlussiRendicontazioneConverter {
 
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
-		if(rendicontazione.getIndiceDati()!=null)
+		if(rendicontazione.getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
 
@@ -153,8 +156,11 @@ public class FlussiRendicontazioneConverter {
 		it.govpay.ragioneria.v2.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v2.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
-		if(rendicontazione.getIndiceDati()!=null)
+		if(rendicontazione.getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
 
