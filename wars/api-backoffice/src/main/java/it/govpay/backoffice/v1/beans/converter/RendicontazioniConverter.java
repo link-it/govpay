@@ -48,8 +48,11 @@ public class RendicontazioniConverter {
 		if(rendicontazione.getRendicontazione().getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getRendicontazione().getEsito().getCodifica()));
 		rsModel.setImporto(rendicontazione.getRendicontazione().getImporto());
-		if(rendicontazione.getRendicontazione().getIndiceDati()!=null)
+		if(rendicontazione.getRendicontazione().getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getRendicontazione().getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setIur(rendicontazione.getRendicontazione().getIur());
 		rsModel.setIuv(rendicontazione.getRendicontazione().getIuv());
