@@ -89,7 +89,7 @@ public class NodoClient extends BasicClientCORE {
 		this.operationID = operationID;
 	}
 
-	public Risposta send(String azione, byte[] body) throws GovPayException, ClientException, UtilsException {
+	public Risposta send(String azione, byte[] body) throws ClientException, UtilsException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");

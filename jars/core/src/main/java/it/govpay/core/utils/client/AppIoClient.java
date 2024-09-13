@@ -65,6 +65,13 @@ public class AppIoClient extends BasicClientCORE {
 
 		this.apiClient = new AppIoAPIClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
+		// Imposto timeout specifici per AppIO
+		if(this.connectionTimeout != null) {
+			this.apiClient.setConnectTimeout(this.connectionTimeout);
+		}
+		if(this.readTimeout != null) {
+			this.apiClient.setReadTimeout(this.readTimeout);
+		}
 
 		this.operationID = operationID;
 		this.setGiornale(giornale);
@@ -93,7 +100,7 @@ public class AppIoClient extends BasicClientCORE {
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
 
 			// create path and map variables
-			String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode.toString())) : "/profiles/{fiscal_code}";
+			String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode)) : "/profiles/{fiscal_code}";
 
 			// Url Completa che viene invocata
 			String urlString = this.url.toExternalForm();

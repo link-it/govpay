@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.utils.client.beans.TipoConnettore;
+import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
@@ -44,7 +45,7 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 	private it.govpay.bd.model.TracciatoNotificaPagamenti tracciato;
 	
 	public EnteRendicontazioniClient(Dominio dominio, it.govpay.bd.model.TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException, ServiceException {
-		super(dominio, TipoConnettore.GOVPAY, connettore, eventoCtx); 
+		super(dominio, TipoConnettore.GOVPAY, TipoDestinatario.GOVPAY, connettore, eventoCtx); 
 		this.operationID = operationID;
 		this.dominio = dominio;
 		this.tracciato = tracciato;
