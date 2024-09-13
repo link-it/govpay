@@ -61,12 +61,11 @@ public class CheckoutClient extends BasicClientCORE {
 	 * @throws GovPayException Errori interni
 	 */
 	public String inviaCartRequest(CartRequest cartRequest) throws ClientException, GovPayException {
-		log.debug("Spedisco richiesta verso il Checkout alla URL ("+this.url+")");
+		log.debug("Spedisco richiesta verso il Checkout alla URL ({})", this.url);
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
 		String jsonBody = "";
 		StringBuilder sb = new StringBuilder();
-//		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
 		String swaggerOperationID = SWAGGER_OPERATION_POST_CARTS_OPERATION_ID;
 		sb.append(CHECKOUT_V1_CARTS_OPERATION_PATH);
@@ -76,14 +75,14 @@ public class CheckoutClient extends BasicClientCORE {
 		} catch (IOException e) {
 			throw new GovPayException(e);
 		}
-		log.trace("CartRequest creata: ["+jsonBody+"]");
+		log.trace("CartRequest creata: [{}]", jsonBody);
 		
 		this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 		
 		// lettura header Location
 		String location = this.dumpResponse.getHeaders().get(HttpHeaders.LOCATION);
 		
-		log.debug("Spedizione richiesta verso il Checkout completata con esito ["+this.getEventoCtx().getStatus()+"], Location ["+location+"].");
+		log.debug("Spedizione richiesta verso il Checkout completata con esito [{}], Location [{}].", this.getEventoCtx().getStatus(), location);
 		return location;
 	}
 
