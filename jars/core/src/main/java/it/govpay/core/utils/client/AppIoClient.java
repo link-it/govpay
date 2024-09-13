@@ -72,6 +72,13 @@ public class AppIoClient extends BasicClientCORE {
 
 		this.apiClient = new AppIoAPIClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
+		// Imposto timeout specifici per AppIO
+		if(this.connectionTimeout != null) {
+			this.apiClient.setConnectTimeout(this.connectionTimeout);
+		}
+		if(this.readTimeout != null) {
+			this.apiClient.setReadTimeout(this.readTimeout);
+		}
 
 		this.operationID = operationID;
 		this.setGiornale(giornale);
