@@ -157,7 +157,7 @@ public abstract class BasicClientCORE {
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
 	private String tipoEventoCustom;
-	protected TipoDestinatario tipoDestinatario;
+//	protected TipoDestinatario tipoDestinatario;
 	
 	private Oauth2ClientCredentialsManager oauth2ClientCredentialsManager = Oauth2ClientCredentialsManager.getInstance();
 
@@ -184,37 +184,34 @@ public abstract class BasicClientCORE {
 	protected SSLSocketFactory sslContextFactory;
 
 	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione, EventoContext eventoCtx) throws ClientInitializeException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(), eventoCtx);
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(), eventoCtx, TipoDestinatario.INTERMEDIARIO);
 		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
-		this.tipoDestinatario = TipoDestinatario.INTERMEDIARIO;
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(intermediario);
 		integrationCtx.setTipoConnettore(null);
-		integrationCtx.setTipoDestinatario(tipoDestinatario);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.INTERMEDIARIO);
 	}
 
 	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione(), eventoCtx);
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione(), eventoCtx, TipoDestinatario.APPLICAZIONE);
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
-		this.tipoDestinatario = TipoDestinatario.APPLICAZIONE;
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(applicazione);
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(tipoConnettore);
-		integrationCtx.setTipoDestinatario(tipoDestinatario);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.APPLICAZIONE);
 	}
 
 	protected BasicClientCORE(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this(tipoDestinatario +"_" + operazioneSwagger, connettore, eventoCtx);
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore, eventoCtx, tipoDestinatario);
 		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
 		destinatario = tipoDestinatario.toString();
-		this.tipoDestinatario = tipoDestinatario;
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
@@ -223,11 +220,10 @@ public abstract class BasicClientCORE {
 	}
 
 	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore,  TipoDestinatario tipoDestinatario, ConnettoreNotificaPagamenti connettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx);
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx, tipoDestinatario);
 		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
 		mittente = "GovPay";
 		destinatario = "Servizio" + tipoDestinatario.toString();
-		this.tipoDestinatario = tipoDestinatario;
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
@@ -235,8 +231,8 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
-	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
-		impostaTimeoutConnessione();
+	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx, TipoDestinatario tipoDestinatario) throws ClientInitializeException {
+		impostaTimeoutConnessione(tipoDestinatario);
 		
 		this.dumpRequest = new DumpRequest();
 		this.dumpResponse = new DumpResponse();
@@ -367,7 +363,7 @@ public abstract class BasicClientCORE {
 		}
 	}
 
-	private void impostaTimeoutConnessione() {
+	private void impostaTimeoutConnessione(TipoDestinatario tipoDestinatario) {
 		switch (tipoDestinatario) {
 		case INTERMEDIARIO:
 		case CHECKOUT_PAGOPA:
