@@ -202,9 +202,15 @@
 
 =======================================================================
 
+<<<<<<<< HEAD:third-party-licenses/jar/spring-jcl-6.1.10/license.txt
 SPRING FRAMEWORK 6.1.10 SUBCOMPONENTS:
 
 Spring Framework 6.1.10 includes a number of subcomponents
+========
+SPRING FRAMEWORK 5.3.39 SUBCOMPONENTS:
+
+Spring Framework 5.3.39 includes a number of subcomponents
+>>>>>>>> 917d33bc5 (Risolte segnalazioni dipendenze librerie spring-expression e spring-web.):third-party-licenses/jar/spring-beans-5.3.39/license.txt
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
