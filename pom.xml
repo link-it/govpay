@@ -64,7 +64,7 @@
 		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.3.37</spring.version>
+		<spring.version>5.3.39</spring.version>
 		
 		<!-- Spring Security -->
 		<spring.security.version>5.8.13</spring.security.version>
