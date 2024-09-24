@@ -202,9 +202,15 @@
 
 =======================================================================
 
+<<<<<<<< HEAD:third-party-licenses/jar/spring-tx-6.1.9/license.txt
 SPRING FRAMEWORK 6.1.9 SUBCOMPONENTS:
 
 Spring Framework 6.1.9 includes a number of subcomponents
+========
+SPRING FRAMEWORK 5.3.39 SUBCOMPONENTS:
+
+Spring Framework 5.3.39 includes a number of subcomponents
+>>>>>>>> ad141dc25 (Risolte segnalazioni dipendenze librerie spring-expression e spring-web.):third-party-licenses/jar/spring-aop-5.3.39/license.txt
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source

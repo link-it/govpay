@@ -942,11 +942,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		String codDominio = receipt.getFiscalCode();
 		String iuv = receipt.getCreditorReferenceId();
+		String ccp = receipt.getReceiptId();
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
-		appContext.setCorrelationId(codDominio + iuv);
+		appContext.setCorrelationId(codDominio + iuv + ccp);
 
 		Actor from = new Actor();
 		from.setName(GpContext.NodoDeiPagamentiSPC);
@@ -960,6 +961,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
@@ -970,7 +972,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
 
-		log.info("Ricevuta richiesta paSendRT [" + codDominio + "][" + iuv + "]");
+		log.info("Ricevuta richiesta paSendRT [" + codDominio + "][" + iuv + "][" + ccp + "]");
 		PaSendRTRes response = new PaSendRTRes();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -1431,6 +1433,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
 			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
+			appContext.getRequest().addGenericProperty(new Property("codPsp", "non previsto per paGetPayment"));
+			appContext.getRequest().addGenericProperty(new Property("codCanale", "non previsto per paGetPayment"));
 			
 			try {
 				ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
@@ -1969,11 +1973,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		String codDominio = receipt.getFiscalCode();
 		String iuv = receipt.getCreditorReferenceId();
+		String ccp = receipt.getReceiptId();
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
-		appContext.setCorrelationId(codDominio + iuv);
+		appContext.setCorrelationId(codDominio + iuv + ccp);
 
 		Actor from = new Actor();
 		from.setName(GpContext.NodoDeiPagamentiSPC);
@@ -1987,6 +1992,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
@@ -1997,7 +2003,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
 
-		log.info("Ricevuta richiesta paSendRTV2 [" + codDominio + "][" + iuv + "]");
+		log.info("Ricevuta richiesta paSendRTV2 [" + codDominio + "][" + iuv + "][" + ccp + "]");
 		PaSendRTV2Response response = new PaSendRTV2Response();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -2150,6 +2156,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
 			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
+			appContext.getRequest().addGenericProperty(new Property("codPsp", "non previsto per paGetPaymentV2"));
+			appContext.getRequest().addGenericProperty(new Property("codCanale", "non previsto per paGetPaymentV2"));
 			
 			try {
 				ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
