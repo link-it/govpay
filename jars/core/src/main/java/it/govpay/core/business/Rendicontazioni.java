@@ -108,7 +108,7 @@ public class Rendicontazioni {
 		private String descrizioneEsito;
 		
 		public DownloadRendicontazioniResponse() {
-			rndDwn = new ArrayList<RendicontazioneScaricata>();
+			rndDwn = new ArrayList<>();
 		}
 		
 		public List<RendicontazioneScaricata> getRndDwn() {
@@ -189,6 +189,7 @@ public class Rendicontazioni {
 	private static Logger log = LoggerWrapperFactory.getLogger(Rendicontazioni.class);
 
 	public Rendicontazioni() {
+		// do nothing
 	}
 
 	public DownloadRendicontazioniResponse downloadRendicontazioni(IContext ctx) throws GovPayException, UtilsException { 
@@ -258,7 +259,7 @@ public class Rendicontazioni {
 				// Lista per i flussi che dovremo acquisire
 				List<RendicontazioneScaricata> flussiDaAcquisire = new ArrayList<>();
 				// Elenco dei riferimenti ai flussi per verificare che la lista da acquisire non abbia duplicati				
-				Set<String> keys = new HashSet<String>();
+				Set<String> keys = new HashSet<>();
 				log.info("Verifica esistenza sul db dei flussi da acquisire...");
 				for(RendicontazioneScaricata rnd : flussiDaPagoPA) {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
@@ -302,6 +303,7 @@ public class Rendicontazioni {
 					
 					NodoClient chiediFlussoRendicontazioneClient = null;
 					EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
+					eventoCtx.setCodDominio(rnd.getCodDominio());
 					popolaDatiPagoPAEvento(eventoCtx, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
 					
 					try {
@@ -310,6 +312,7 @@ public class Rendicontazioni {
 							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE);
 							appContext.getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
 							appContext.getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
+							appContext.getRequest().addGenericProperty(new Property("codDominio", rnd.getCodDominio()));
 							
 							NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
 							richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
@@ -417,7 +420,8 @@ public class Rendicontazioni {
 
 						fr.setXml(tracciato);
 
-						String codPsp = null, codDominio = null;
+						String codPsp = null;
+						String codDominio = null;
 						String ragioneSocialePsp = flussoRendicontazione.getIstitutoMittente() != null ? flussoRendicontazione.getIstitutoMittente().getDenominazioneMittente() : null;
 						String ragioneSocialeDominio = null; 
 						codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
@@ -804,6 +808,7 @@ public class Rendicontazioni {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		NodoClient chiediFlussoRendicontazioniClient = null;
 		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
+		eventoCtx.setCodDominio(dominio.getCodDominio());
 		try {
 			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE);
 			appContext.getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
