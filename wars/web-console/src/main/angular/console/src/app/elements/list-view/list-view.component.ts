@@ -35,8 +35,13 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
 
   protected _formSubmit(event) {
     if(this.sideList) {
-      let _query:string = this._formQuery(event);
-      let _rsc = this.ls.getRouterStateConfig();
+	  let _rsc = this.ls.getRouterStateConfig();
+	  let fixNAV_IUV = false;
+	  if (_rsc.data.type === UtilService.GIORNALE_EVENTI) {
+	          fixNAV_IUV = true;
+	        }
+      let _query:string = this._formQuery(event, fixNAV_IUV);
+      
       if (_rsc.data.type === UtilService.RICEVUTE) {
         _query += '&esito=ESEGUITO';
       }
@@ -46,14 +51,19 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
     }
   }
 
-  protected _formQuery(event): string {
+  protected _formQuery(event, fixNAV_IUV): string {
     if(this.sideList) {
       let _keys: string[] = (event.value)?Object.keys(event.value):[];
       let _values = [];
       _keys.forEach(function(key) {
         if(this.us.hasValue(event.value[key])) {
           let _key = key.replace('_ctrl','');
-          _values.push(`${_key}=${event.value[key]}`);
+		  if(_key === 'iuv' && fixNAV_IUV) {
+			let searchIUVVal = UtilService.navToIuv(event.value[key]);
+			_values.push(`${_key}=${searchIUVVal}`);			
+		  } else {
+			_values.push(`${_key}=${event.value[key]}`);
+		  }
         }
       }, this);
       return _values.join('&');
