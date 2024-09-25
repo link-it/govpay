@@ -25,8 +25,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.Locale;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
@@ -34,6 +32,8 @@ import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.ValidationException;
 
 public class IuvUtils {
+	
+	private IuvUtils() {}
 
 	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale, String numeroAvviso) {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
@@ -69,7 +69,7 @@ public class IuvUtils {
 		}
 	}
 
-	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
+	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
@@ -104,15 +104,15 @@ public class IuvUtils {
 		}
 	}
 
-	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) {
 		return toIuv(versamento, applicazione, dominio, true);
 	}
 	
-	public static Iuv toIuvFromNumeroAvviso(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+	public static Iuv toIuvFromNumeroAvviso(Versamento versamento, Applicazione applicazione, Dominio dominio) {
 		return toIuv(versamento, applicazione, dominio, false);
 	}
 
-	private static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio, boolean generaNumeroAvviso) throws ServiceException {
+	private static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio, boolean generaNumeroAvviso) {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
@@ -133,7 +133,7 @@ public class IuvUtils {
 		return iuvGenerato;
 	}
 	
-	public static String toNumeroAvviso(String iuv, Dominio dominio) throws ServiceException { 
+	public static String toNumeroAvviso(String iuv, Dominio dominio) { 
 		String iuvGenerato = iuv;
 		if(dominio.getAuxDigit() == 0)
 			iuvGenerato = dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + iuv;
