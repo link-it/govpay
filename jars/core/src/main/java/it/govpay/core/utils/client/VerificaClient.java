@@ -143,8 +143,8 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			List<Property> headerProperties = new ArrayList<>();
 			headerProperties.add(new Property("Accept", "application/json"));
 			String jsonResponse = "";
-			String swaggerOperationID = getOperationVerificaPendenzaConConnettoreV1(iuv);
-			String path = getPathVerificaPendenzaConConnettoreV1(codVersamentoEnte, codDominio, iuv);
+			String swaggerOperationID = getOperationVerificaPendenzaConConnettoreV1(this.codApplicazione, codVersamentoEnte, codDominio, iuv);
+			String path = getPathVerificaPendenzaConConnettoreV1(this.codApplicazione, codVersamentoEnte, codDominio, iuv);
 
 			PendenzaVerificata pendenzaVerificata = null;
 				try {
@@ -234,45 +234,53 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 		}
 	}
 	
-	private String getOperationVerificaPendenzaConConnettoreV1(String iuv) {
-		// selezione dell'operazione da utilizzare
-		if(this.operazioneVerifica != null) {
-			if(Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_ID;
-			} else if(Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return VERIFICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_ID;
-			}   
-		} else {
-			if(iuv == null) {
-				return VERIFICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_ID;
-			}
-		}
-		
-		return VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_ID;
+	private String getOperationVerificaPendenzaConConnettoreV1(String codApplicazione, String codVersamentoEnte, String codDominio, String iuv) {
+	    // selezione dell'operazione da utilizzare
+	    if (this.operazioneVerifica != null) {
+	        if (Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codDominio e iuv
+	            if (codDominio != null && iuv != null) {
+	                return VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_ID;
+	            }
+	        } else if (Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codApplicazione e codVersamentoEnte
+	            if (this.codApplicazione != null && codVersamentoEnte != null) {
+	                return VERIFICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_ID;
+	            }
+	        }
+	    }
+
+	    // Default operation: Se iuv è null, restituisce VERIFY_PENDENZA come operazione di default oppure GET_AVVISO se iuv non è null
+	    return (iuv == null) ? VERIFICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_ID : VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_ID;
 	}
 	
-	private String getPathVerificaPendenzaConConnettoreV1(String codVersamentoEnte, String codDominio, String iuv)  {
-		// selezione dell'operazione da utilizzare
-		if(this.operazioneVerifica != null) {
-			if(Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return MessageFormat.format(VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_PATH, codDominio, iuv);
-			} else if(Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return MessageFormat.format(VERIfICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_PATH, this.codApplicazione, codVersamentoEnte);
-			}   
-		} else {
-			if(iuv == null) {
-				return MessageFormat.format(VERIfICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_PATH, this.codApplicazione, codVersamentoEnte);
-			} else {
-				return MessageFormat.format(VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_PATH, codDominio, iuv);
-			}
-		}
-		
-		return MessageFormat.format(VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_PATH, codDominio, iuv);
+	private String getPathVerificaPendenzaConConnettoreV1(String codApplicazione, String codVersamentoEnte, String codDominio, String iuv) {
+	    String operationPath;
+
+	    if (this.operazioneVerifica != null) {
+	        if (Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codDominio e iuv
+	            if (codDominio != null && iuv != null) {
+	                operationPath = VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_PATH;
+	                return MessageFormat.format(operationPath, codDominio, iuv);
+	            }
+	        } else if (Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codApplicazione e codVersamentoEnte
+	            if (codApplicazione != null && codVersamentoEnte != null) {
+	                operationPath = VERIfICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_PATH;
+	                return MessageFormat.format(operationPath, this.codApplicazione, codVersamentoEnte);
+	            }
+	        }
+	    }
+
+	    // Default operation if operazioneVerifica is null or parameters are missing
+	    operationPath = (iuv == null) ? VERIfICA_PENDENZE_V1_VERIFY_PENDENZA_OPERATION_PATH : VERIFICA_PENDENZE_V1_GET_AVVISO_OPERATION_PATH;
+	    return MessageFormat.format(operationPath, (iuv == null) ? codApplicazione : codDominio, (iuv == null) ? codVersamentoEnte : iuv);
 	}
 	
 	public Versamento eseguiVerificaPendenzaConConnettoreV2(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
 			String codDominio, String iuv) throws ClientException, VersamentoNonValidoException,
-			GovPayException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException,
+			GovPayException, VersamentoAnnullatoException, VersamentoScadutoException,
 			VersamentoSconosciutoException {
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 		String bundlekeyD = bundlekey != null ? bundlekey : "-";
@@ -293,8 +301,8 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			List<Property> headerProperties = new ArrayList<>();
 			headerProperties.add(new Property("Accept", "application/json"));
 			String jsonResponse = "";
-			String swaggerOperationID = getOperationVerificaPendenzaConConnettoreV2(iuv);
-			String path = getPathVerificaPendenzaConConnettoreV2(configWrapper, codVersamentoEnte, codDominio, iuv);
+			String swaggerOperationID = getOperationVerificaPendenzaConConnettoreV2(this.codApplicazione, codVersamentoEnte, codDominio, iuv);
+			String path = getPathVerificaPendenzaConConnettoreV2(configWrapper, this.codApplicazione, codVersamentoEnte, codDominio, iuv);
 
 			it.govpay.ec.v2.beans.PendenzaVerificata pendenzaVerificata = null;
 				try {
@@ -395,50 +403,57 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 		}
 	}
 	
-	private String getOperationVerificaPendenzaConConnettoreV2(String iuv) {
-		// selezione dell'operazione da utilizzare
-		if(this.operazioneVerifica != null) {
-			if(Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_ID;
-			} else if(Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return VERIFICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_ID;
-			}   
-		} else {
-			if(iuv == null) {
-				return VERIFICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_ID;
-			}
-		}
-		
-		return VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_ID;
+	private String getOperationVerificaPendenzaConConnettoreV2(String codApplicazione, String codVersamentoEnte, String codDominio, String iuv) {
+	    // selezione dell'operazione da utilizzare
+	    if (this.operazioneVerifica != null) {
+	        if (Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codDominio e iuv
+	            if (codDominio != null && iuv != null) {
+	                return VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_ID;
+	            }
+	        } else if (Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codApplicazione e codVersamentoEnte
+	            if (codApplicazione != null && codVersamentoEnte != null) {
+	                return VERIFICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_ID;
+	            }
+	        }
+	    }
+
+	    // Default operation: Se iuv è null, restituisce VERIFY_PENDENZA come operazione di default oppure GET_AVVISO se iuv non è null
+	    return (iuv == null) ? VERIFICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_ID : VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_ID;
 	}
 	
-	private String getPathVerificaPendenzaConConnettoreV2(BDConfigWrapper configWrapper, String codVersamentoEnte, String codDominio, String iuv) throws ServiceException {
-		// selezione dell'operazione da utilizzare
-		if(this.operazioneVerifica != null) {
-			if(Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica)) {
-				String numeroAvviso = iuv;
-				try {
-					numeroAvviso = IuvUtils.toNumeroAvviso(iuv, AnagraficaManager.getDominio(configWrapper, codDominio));
-				} catch (NotFoundException e) {	}
-				
-				return MessageFormat.format(VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_PATH, codDominio, numeroAvviso);
-			} else if(Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
-				return MessageFormat.format(VERIfICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_PATH, this.codApplicazione, codVersamentoEnte);
-			}   
-		} else {
-			if(iuv == null) {
-				return MessageFormat.format(VERIfICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_PATH, this.codApplicazione, codVersamentoEnte);
-			} else {
-				String numeroAvviso = iuv;
-				try {
-					numeroAvviso = IuvUtils.toNumeroAvviso(iuv, AnagraficaManager.getDominio(configWrapper, codDominio));
-				} catch (NotFoundException e) {	}
-				
-				return MessageFormat.format(VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_PATH, codDominio, numeroAvviso);
+	private String getPathVerificaPendenzaConConnettoreV2(BDConfigWrapper configWrapper, String codApplicazione, String codVersamentoEnte, String codDominio, String iuv) throws ServiceException {
+	    String operationPath;
+
+	    String numeroAvviso = iuv;
+	    if(iuv != null) {
+	    	try {
+				numeroAvviso = IuvUtils.toNumeroAvviso(iuv, AnagraficaManager.getDominio(configWrapper, codDominio));
+			} catch (NotFoundException e) {
+				// donothing
 			}
-		}
-		
-		return null;
+	    }
+	    
+	    if (this.operazioneVerifica != null) {
+	        if (Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica))  {
+	            // Check di esistenza per codDominio e iuv
+	            if (codDominio != null && iuv != null) {
+	                operationPath = VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_PATH;
+	                return MessageFormat.format(operationPath, codDominio, numeroAvviso);
+	            }
+	        } else if (Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica)) {
+	            // Check di esistenza per codApplicazione e codVersamentoEnte
+	            if (codApplicazione != null && codVersamentoEnte != null) {
+	                operationPath = VERIfICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_PATH;
+	                return MessageFormat.format(operationPath, this.codApplicazione, codVersamentoEnte);
+	            }
+	        }
+	    }
+
+	    // Default operation if operazioneVerifica is null or parameters are missing
+	    operationPath = (iuv == null) ? VERIfICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_PATH : VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_PATH;
+	    return MessageFormat.format(operationPath, (iuv == null) ? codApplicazione : codDominio, (iuv == null) ? codVersamentoEnte : numeroAvviso);
 	}
 	
 	/**
