@@ -823,6 +823,8 @@ CREATE TABLE versamenti
 	avv_app_io_data_prom_scadenza TIMESTAMP,
 	avv_app_io_prom_scad_notificat NUMBER,
 	proprieta CLOB,
+	data_ultima_modifica_aca TIMESTAMP,
+	data_ultima_comunicazione_aca TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -853,6 +855,7 @@ CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti
@@ -887,6 +890,7 @@ CREATE TABLE singoli_versamenti
 	indice_dati NUMBER NOT NULL,
 	descrizione_causale_rpt VARCHAR2(140 CHAR),
 	contabilita CLOB,
+	metadata CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -1064,7 +1068,7 @@ CREATE TABLE rpt
 	cod_sessione_portale VARCHAR2(255 CHAR),
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
 	psp_redirect_url VARCHAR2(512 CHAR),
-	xml_rpt BLOB NOT NULL,
+	xml_rpt BLOB,
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url CLOB,
@@ -1106,6 +1110,7 @@ CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
+CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
 
 ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
@@ -1518,6 +1523,8 @@ CREATE TABLE rendicontazioni
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
+CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
 CREATE TRIGGER trg_rendicontazioni
 BEFORE
 insert on rendicontazioni
@@ -1576,6 +1583,8 @@ CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+CREATE INDEX idx_evt_fk_inc ON eventi (id_incasso);
+CREATE INDEX idx_evt_fk_trac ON eventi (id_tracciato);
 CREATE TRIGGER trg_eventi
 BEFORE
 insert on eventi
@@ -1914,7 +1923,8 @@ CREATE VIEW v_riscossioni AS (
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
     versamenti.data_creazione AS data_creazione,
-    singoli_versamenti.contabilita AS contabilita
+    singoli_versamenti.contabilita AS contabilita,
+    singoli_versamenti.metadata AS metadata 
    FROM fr
    JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
    LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -2093,6 +2103,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -2341,6 +2352,8 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -2404,6 +2417,7 @@ CREATE VIEW v_vrs_non_rnd AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,

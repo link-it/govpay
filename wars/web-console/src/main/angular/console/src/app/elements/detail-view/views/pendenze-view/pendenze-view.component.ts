@@ -137,8 +137,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dataScadenza) {
       this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
     }
-    if(_json.dataUltimoAggiornamento) {
-      this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimoAggiornamento).format('DD/MM/YYYY') });
+    if(_json.dataUltimaModificaAca) {
+      this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimaModificaAca).format('DD/MM/YYYY [ore] HH:mm:ss') });
+    }
+    if(_json.dataUltimaComunicazioneAca) {
+      this.info.extraInfo.push({ label: Voce.DATA_ULTIMA_COMUNICAZIONE_ACA+': ', value: moment(_json.dataUltimaComunicazioneAca).format('DD/MM/YYYY [ore] HH:mm:ss') });
     }
     if(_json.descrizioneStato && 
     	(_json.stato === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANOMALA))
@@ -185,7 +188,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       }
       _std.sottotitolo = Dato.arraysToDato(lbls, vals, ', ');
       if(!item.tipoBollo) {
-		let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
+        let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
         _std.elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, item.codiceContabilita ], '/') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
         _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
@@ -196,12 +199,17 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       let p = new Parameters();
       _std.item = item;
       if(item.dominio){
-		_std.item.dominio = item.dominio;
-		_std.item.idDominio = item.dominio.idDominio;
-	  } else {
-		_std.item.dominio = this.json.dominio;
-		_std.item.idDominio = this.json.dominio.idDominio;
-	  }
+        _std.item.dominio = item.dominio;
+        _std.item.idDominio = item.dominio.idDominio;
+      } else {
+        _std.item.dominio = this.json.dominio;
+        _std.item.idDominio = this.json.dominio.idDominio;
+      }
+      // Metadata
+      if (item.metadata && item.metadata.mapEntries) {
+        const _mapEntries = item.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
+        _std.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+      }
       p.jsonP = item;
       p.model = _std;
       p.type = UtilService.NEW_STANDARD_COLLAPSE;

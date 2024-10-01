@@ -70,6 +70,7 @@ import java.io.Serializable;
  * 			&lt;element name="sngIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="sngDescrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sngContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sngMetadata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsNome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -195,6 +196,7 @@ import java.io.Serializable;
   	"sngIndiceDati",
   	"sngDescrizioneCausaleRPT",
   	"sngContabilita",
+  	"sngMetadata",
   	"vrsId",
   	"vrsCodVersamentoEnte",
   	"vrsNome",
@@ -572,6 +574,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setSngContabilita(java.lang.String sngContabilita) {
     this.sngContabilita = sngContabilita;
+  }
+
+  public java.lang.String getSngMetadata() {
+    return this.sngMetadata;
+  }
+
+  public void setSngMetadata(java.lang.String sngMetadata) {
+    this.sngMetadata = sngMetadata;
   }
 
   public long getVrsId() {
@@ -1353,6 +1363,10 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="sngContabilita",required=false,nillable=false)
   protected java.lang.String sngContabilita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sngMetadata",required=false,nillable=false)
+  protected java.lang.String sngMetadata;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="vrsId",required=false,nillable=false)

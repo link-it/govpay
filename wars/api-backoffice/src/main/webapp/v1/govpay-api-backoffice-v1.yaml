@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.40.0"
+  version: "1.41.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -4733,6 +4733,8 @@ components:
           type: number
           description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
           example: 10000
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
     mailBatch:
       type: object
       required:
@@ -6795,6 +6797,16 @@ components:
             UUID:
               type: string
               description: Parametro di randomizzazione delle URL di pagamento statiche
+            dataUltimaModificaAca:
+              type: string
+              format: date-time
+              description: Data di ultimo aggiornamento dei dati da inviare ad ACA
+              example: '2018-12-31'
+            dataUltimaComunicazioneAca:
+              type: string
+              format: date-time
+              description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6877,6 +6889,16 @@ components:
             UUID:
               type: string
               description: Parametro di randomizzazione delle URL di pagamento statiche
+            dataUltimaModificaAca:
+              type: string
+              format: date-time
+              description: Data di ultimo aggiornamento dei dati da inviare ad ACA
+              example: '2018-12-31'
+            dataUltimaComunicazioneAca:
+              type: string
+              format: date-time
+              description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6935,6 +6957,8 @@ components:
           maxLength: 140
         contabilita:
           $ref: '#/components/schemas/contabilita'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
@@ -9608,6 +9632,32 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
+    MapEntry:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: chiave del metadata
+          minLength: 1
+          maxLength: 140
+        value:
+          type: string
+          description: valore del metadata
+          minLength: 1
+          maxLength: 140
+    Metadata:
+      type: object
+      description: Metadata Custom da inserire nella ricevuta di pagamento
+      properties:
+        mapEntries:
+          type: array
+          items: 
+            minItems: 1
+            maxItems: 5
+            $ref: '#/components/schemas/MapEntry'
     ModelloPagamento:
       type: string
       description: Modello di pagamento
@@ -9767,6 +9817,20 @@ components:
           type: string
           description: >-
               causale della pendenza nella lingua secondaria da inserire nell'avviso
+        informativaImportoAvviso:
+          type: string
+          description: >- 
+            se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+          maxLength: 255
+        linguaSecondariaInformativaImportoAvviso:
+          type: string
+          description: >- 
+            se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+          maxLength: 255
+        dataScandenzaAvviso:
+          type: string
+          format: date
+          description: se valorizzata, sostituisce la data di scadenza standard.
     RisultatiPerPagina:
       type: integer
       default: 25

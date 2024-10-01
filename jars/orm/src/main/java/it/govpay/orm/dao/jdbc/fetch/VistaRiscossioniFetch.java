@@ -112,6 +112,8 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "contabilita", VistaRiscossioni.model().CONTABILITA.getFieldType()));
+				setParameter(object, "setMetadata", VistaRiscossioni.model().METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "metadata", VistaRiscossioni.model().METADATA.getFieldType()));
 				return object;
 			}
 			
@@ -192,6 +194,8 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataScadenza"));
 				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"contabilita"));
+				setParameter(object, "setMetadata", VistaRiscossioni.model().METADATA.getFieldType(),
+					this.getObjectFromMap(map,"metadata"));
 				return object;
 			}
 			

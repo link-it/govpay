@@ -55,7 +55,6 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.model.Evento.RuoloEvento;
-import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
 
 public class GpContext extends ApplicationContext {
@@ -228,18 +227,13 @@ public class GpContext extends ApplicationContext {
 		return context;
 	}
 
-	public static GpContext newBatchContext() throws ServiceException{
+	public static GpContext newBatchContext() {
 		GpContext context = new GpContext();
 		
 		ApplicationTransaction transaction = context.getTransaction();
 		transaction.setRole(Role.CLIENT);
 		transaction.setProtocol(TIPO_PROTOCOLLO_TASK);
 		
-//		Actor to = new Actor();
-//		to.setName(GovPay);
-//		to.setType(TIPO_SOGGETTO_GOVPAY);
-//		transaction.setTo(to);
-
 		HttpServer server = new HttpServer();
 		server.setName(GOVPAY);
 		transaction.addServer(server);
@@ -253,26 +247,16 @@ public class GpContext extends ApplicationContext {
 		
 		return context;
 	}
-
-	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_620_ENCODED);
+	
+	public String setupNodoClient(String codDominio, String azione) {
+		return this.setupNodoClient(null, codDominio, null, azione);
 	}
 
-	private synchronized String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
-//		Actor to = new Actor();
-//		to.setName(NodoDeiPagamentiSPC);
-//		to.setType(TIPO_SOGGETTO_NDP);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setTo(to);
-//
-//		Actor from = new Actor();
-//		from.setName(codStazione);
-//		from.setType(TIPO_SOGGETTO_STAZIONE);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setFrom(from);
-		
-		// TODO Capire come indicare gli actor per i vari server.
+	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
+		return this.setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString());
+	}
 
-		// this.setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
-
+	public synchronized String setupNodoClient(String codStazione, String codDominio, String servizio, String azione) {
 		HttpServer server = new HttpServer();
 		server.setName(NodoDeiPagamentiSPC);
 		server.setIdOperation(UUID.randomUUID().toString());
@@ -282,20 +266,6 @@ public class GpContext extends ApplicationContext {
 	}
 
 	public synchronized String setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
-//		Actor to = new Actor();
-//		to.setName(codApplicazione);
-//		to.setType(TIPO_SOGGETTO_APP);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setTo(to);
-//
-//		Actor from = new Actor();
-//		from.setName(GovPay);
-//		from.setType(TIPO_SERVIZIO_GOVPAY);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setFrom(from);
-		
-		// TODO Capire come indicare gli actor per i vari server.
-
-		// this.setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
-
 		HttpServer server = new HttpServer();
 		server.setName(codApplicazione);
 		server.setEndpoint(url);

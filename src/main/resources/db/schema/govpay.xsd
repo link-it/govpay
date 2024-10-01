@@ -1932,6 +1932,14 @@
 							<linkit:sql-table-index-field name="avvAppIoPromScadNotificato"/>
 							<linkit:sql-table-index-field name="avvAppIoDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_iuv_dominio">
+							<linkit:sql-table-index-column name="iuv_versamento"/>
+							<linkit:sql-table-index-column name="id_dominio"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_sped_aca">
+							<linkit:sql-table-index-field name="dataUltimaModificaAca" order="DESC" ignoreTypeCompatibility="true"/>
+							<linkit:sql-table-index-field name="dataUltimaComunicazioneAca" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2149,6 +2157,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2222,6 +2233,12 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_evt_fk_fr">
 							<linkit:sql-table-index-column name="id_fr"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_fk_inc">
+							<linkit:sql-table-index-column name="id_incasso"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_fk_trac">
+							<linkit:sql-table-index-column name="id_tracciato"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -2436,6 +2453,16 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2468,6 +2495,11 @@
 							<linkit:sql-table-index-column name="id_pagamento_portale"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rpt_data_msg_richiesta">
+							<linkit:sql-table-index-field name="dataMsgRichiesta" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_ric_pend_scad">
+							<linkit:sql-table-index-field name="codDominio"/>
+							<linkit:sql-table-index-field name="versione"/>
 							<linkit:sql-table-index-field name="dataMsgRichiesta" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
@@ -2554,7 +2586,7 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="xmlRPT" type="xsd:base64Binary"/>
+			<xsd:element name="xmlRPT" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="callbackURL" type="String512" minOccurs="0">
 				<xsd:annotation>
@@ -2664,6 +2696,12 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rnd_iuv">
 							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_fk_singoli_versamenti">
+							<linkit:sql-table-index-column name="id_singolo_versamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_fk_pagamenti">
+							<linkit:sql-table-index-column name="id_pagamento"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3386,6 +3424,15 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="sngMetadata"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 			<xsd:element name="vrsId" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="vrsCodVersamentoEnte" type="String35"/>
@@ -3628,7 +3675,7 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="xmlRPT" type="xsd:base64Binary"/>
+			<xsd:element name="xmlRPT" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="callbackURL" type="String512" minOccurs="0">
 				<xsd:annotation>
@@ -4106,22 +4153,6 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="TipoTracciatoType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="VERSAMENTI" />
-			<xsd:enumeration value="INCASSI" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="TipoOperazioneType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="ADD" />
-			<xsd:enumeration value="DEL" />
-			<xsd:enumeration value="INC" />
-			<xsd:enumeration value="N_V" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
 	<xsd:simpleType name="StatoOperazioneType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="NON_VALIDO" />
@@ -4388,6 +4419,15 @@
 			<xsd:element name="dataCreazione" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="contabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -4706,6 +4746,10 @@
 							<linkit:sql-table-index-field name="avvAppIoPromScadNotificato"/>
 							<linkit:sql-table-index-field name="avvAppIoDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_sped_aca">
+							<linkit:sql-table-index-field name="dataUltimaModificaAca" order="DESC" ignoreTypeCompatibility="true"/>
+							<linkit:sql-table-index-field name="dataUltimaComunicazioneAca" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -4926,6 +4970,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+
+			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -4961,6 +5008,15 @@
 			<xsd:element name="sngIndiceDati" type="xsd:positiveInteger" minOccurs="1"/>
 			<xsd:element name="sngDescrizioneCausaleRPT" type="String140" minOccurs="0"/>
 			<xsd:element name="sngContabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="sngMetadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -5171,5 +5227,5 @@
 			<xsd:element name="rawContenuto" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
 </xsd:schema>

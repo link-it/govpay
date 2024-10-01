@@ -102,6 +102,8 @@ import java.io.Serializable;
  * 			&lt;element name="codDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="docDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="proprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataUltimaModificaAca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataUltimaComunicazioneAca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -182,7 +184,9 @@ import java.io.Serializable;
   	"idOperazione",
   	"codDocumento",
   	"docDescrizione",
-  	"proprieta"
+  	"proprieta",
+  	"dataUltimaModificaAca",
+  	"dataUltimaComunicazioneAca"
   }
 )
 
@@ -754,6 +758,22 @@ public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBean implem
     this.proprieta = proprieta;
   }
 
+  public java.util.Date getDataUltimaModificaAca() {
+    return this.dataUltimaModificaAca;
+  }
+
+  public void setDataUltimaModificaAca(java.util.Date dataUltimaModificaAca) {
+    this.dataUltimaModificaAca = dataUltimaModificaAca;
+  }
+
+  public java.util.Date getDataUltimaComunicazioneAca() {
+    return this.dataUltimaComunicazioneAca;
+  }
+
+  public void setDataUltimaComunicazioneAca(java.util.Date dataUltimaComunicazioneAca) {
+    this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1039,5 +1059,15 @@ public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBean implem
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="proprieta",required=false,nillable=false)
   protected java.lang.String proprieta;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataUltimaModificaAca",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataUltimaModificaAca;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataUltimaComunicazioneAca",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataUltimaComunicazioneAca;
 
 }

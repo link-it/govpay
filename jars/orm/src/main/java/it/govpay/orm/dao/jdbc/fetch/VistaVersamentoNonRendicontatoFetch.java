@@ -71,6 +71,8 @@ public class VistaVersamentoNonRendicontatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaVersamentoNonRendicontato.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setSngContabilita", VistaVersamentoNonRendicontato.model().SNG_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_contabilita", VistaVersamentoNonRendicontato.model().SNG_CONTABILITA.getFieldType()));
+				setParameter(object, "setSngMetadata", VistaVersamentoNonRendicontato.model().SNG_METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sng_metadata", VistaVersamentoNonRendicontato.model().SNG_METADATA.getFieldType()));
 				setParameter(object, "setVrsId", VistaVersamentoNonRendicontato.model().VRS_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaVersamentoNonRendicontato.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaVersamentoNonRendicontato.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -249,6 +251,8 @@ public class VistaVersamentoNonRendicontatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"sngDescrizioneCausaleRPT"));
 				setParameter(object, "setSngContabilita", VistaVersamentoNonRendicontato.model().SNG_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"sngContabilita"));
+				setParameter(object, "setSngMetadata", VistaVersamentoNonRendicontato.model().SNG_METADATA.getFieldType(),
+					this.getObjectFromMap(map,"sngMetadata"));
 				setParameter(object, "setVrsId", VistaVersamentoNonRendicontato.model().VRS_ID.getFieldType(),
 					this.getObjectFromMap(map,"vrsId"));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaVersamentoNonRendicontato.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),

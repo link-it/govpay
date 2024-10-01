@@ -159,7 +159,7 @@ public class PendenzePagateConverter {
 		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-		
+		rsModel.setMetadata(PendenzeConverter.toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 		
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {

@@ -214,6 +214,8 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 			fields.add(VistaVersamento.model().COD_DOCUMENTO);
 			fields.add(VistaVersamento.model().DOC_DESCRIZIONE);
 			fields.add(VistaVersamento.model().PROPRIETA);
+			fields.add(VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA);
+			fields.add(VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));

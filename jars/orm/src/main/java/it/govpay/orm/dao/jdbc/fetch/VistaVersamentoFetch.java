@@ -170,6 +170,10 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "doc_descrizione", VistaVersamento.model().DOC_DESCRIZIONE.getFieldType()));
 				setParameter(object, "setProprieta", VistaVersamento.model().PROPRIETA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "proprieta", VistaVersamento.model().PROPRIETA.getFieldType()));
+				setParameter(object, "setDataUltimaModificaAca", VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ultima_modifica_aca", VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()));
+				setParameter(object, "setDataUltimaComunicazioneAca", VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ultima_comunicazione_aca", VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()));
 				return object;
 			}
 			
@@ -308,6 +312,10 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"docDescrizione"));
 				setParameter(object, "setProprieta", VistaVersamento.model().PROPRIETA.getFieldType(),
 					this.getObjectFromMap(map,"proprieta"));
+				setParameter(object, "setDataUltimaModificaAca", VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType(),
+					this.getObjectFromMap(map,"dataUltimaModificaAca"));
+				setParameter(object, "setDataUltimaComunicazioneAca", VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
+					this.getObjectFromMap(map,"dataUltimaComunicazioneAca"));
 				return object;
 			}
 			

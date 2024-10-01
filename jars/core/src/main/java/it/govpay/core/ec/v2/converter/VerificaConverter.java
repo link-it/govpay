@@ -127,6 +127,7 @@ public class VerificaConverter {
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setContabilita(contabilitaToStringDTO(vocePendenza.getContabilita()));
 				sv.setCodDominio(vocePendenza.getIdDominio());
+				sv.setMetadata(PendenzeConverter.toMetadataDTO(vocePendenza.getMetadata()));
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {

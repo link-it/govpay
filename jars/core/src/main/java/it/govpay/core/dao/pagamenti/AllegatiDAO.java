@@ -50,8 +50,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.AllegatoNonTrovatoException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.TipoVersamento;
 import it.govpay.orm.dao.jdbc.converter.AllegatoFieldConverter;
 import it.govpay.orm.model.AllegatoModel;
@@ -59,7 +57,7 @@ import it.govpay.orm.model.AllegatoModel;
 public class AllegatiDAO  extends BaseDAO {
 
 
-	public LeggiAllegatoDTOResponse leggiAllegato(LeggiAllegatoDTO leggiAllegatoDTO) throws ServiceException,AllegatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiAllegatoDTOResponse leggiAllegato(LeggiAllegatoDTO leggiAllegatoDTO) throws ServiceException,AllegatoNonTrovatoException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		AllegatiBD allegatoBD = null;
 
@@ -106,7 +104,7 @@ public class AllegatiDAO  extends BaseDAO {
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -159,11 +157,7 @@ public class AllegatiDAO  extends BaseDAO {
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 		}
@@ -241,9 +235,7 @@ public class AllegatiDAO  extends BaseDAO {
 			}
 			return baos;
 
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 		}

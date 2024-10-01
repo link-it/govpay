@@ -545,6 +545,8 @@ public class Incassi {
 									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
 									// Aggiornamento stato promemoria
 									versamentiBD.updateVersamentoInformazioniAvvisatura(versamento.getId(), true, null, true, null, true, null);
+									// Aggiornamento data ultima modifica ACA, per la chiusura di una pendenza pagata fuori PagoPA.
+									versamentiBD.updateUltimaModificaAca(versamento.getId());
 									
 									break;
 								case ESEGUITO:

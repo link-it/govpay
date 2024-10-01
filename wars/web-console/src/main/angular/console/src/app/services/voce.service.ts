@@ -77,6 +77,8 @@ export class Voce {
   public static DATA_RICHIESTA: string = 'Data richiesta';
   public static DATA_RICHIESTA_PAGAMENTO: string = 'Data richiesta';
   public static DATA_RISPOSTA: string = 'Data risposta';
+  public static DATA_ULTIMA_COMUNICAZIONE_ACA: string = 'Ultimo invio all\'ACA';
+  public static DATA_ULTIMA_MODIFICA_ACA: string = 'Ultimo aggiornamento dati ACA';
   public static DATA_ULTIMO_AGGIORNAMENTO: string = 'Ultimo aggiornamento';
   public static DATA_VALUTA_INCASSO: string = 'Data valuta incasso';
   public static DATA_VALIDITA: string = 'Data validità';

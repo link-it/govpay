@@ -63,6 +63,7 @@ public class VersamentoNonRendicontatoConverter {
 			singoloVersamento.setIndiceDati(vo.getSngIndiceDati()); 
 			singoloVersamento.setDescrizioneCausaleRPT(vo.getSngDescrizioneCausaleRPT());
 			singoloVersamento.setContabilita(vo.getSngContabilita());
+			singoloVersamento.setMetadata(vo.getSngMetadata());
 	
 			dto.setSingoloVersamento(singoloVersamento);
 		}

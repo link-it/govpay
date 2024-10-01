@@ -30,6 +30,7 @@ import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
@@ -43,12 +44,6 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.xml.sax.SAXException;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.backoffice.v1.beans.EsitoRpt;
 import it.govpay.backoffice.v1.beans.ListaRpp;
 import it.govpay.backoffice.v1.beans.PatchOp;
@@ -59,6 +54,7 @@ import it.govpay.backoffice.v1.beans.RppIndex;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.RptConverter;
+import it.govpay.bd.model.Rpt;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
@@ -74,7 +70,8 @@ import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
-import it.govpay.core.utils.MessaggiPagoPAUtils;
+import it.govpay.core.utils.MessaggiPagoPARptUtils;
+import it.govpay.core.utils.MessaggiPagoPARtUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -83,7 +80,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagopa.beans.utils.JaxbUtils;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RppController extends BaseController {
 
@@ -410,71 +407,20 @@ public class RppController extends BaseController {
 
 	private Response creaMessaggioRpt(Boolean retrocompatibilitaMessaggiPagoPAV1, String methodName, String transactionId,
 			String accept, LeggiRptDTOResponse leggiRptDTOResponse)
-					throws JAXBException, SAXException, ServiceException {
+					throws JAXBException, SAXException, ServiceException, CodificaInesistenteException {
+		
+		String mediaType = null;
+		Object messaggioRPT = null;
 		if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
-			switch (leggiRptDTOResponse.getRpt().getVersione()) {
-			case SANP_230:
-				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
-			case SANP_240:
-			case RPTV1_RTV2:
-				PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-				if(retrocompatibilitaMessaggiPagoPAV1) {
-					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes, leggiRptDTOResponse.getRpt());
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(ctRpt2),transactionId).build();
-				} else {
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentRes.getData()),transactionId).build();
-				}
-			case SANP_321_V2:
-			case RPTV2_RTV1:
-				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-				if(retrocompatibilitaMessaggiPagoPAV1) {
-					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, leggiRptDTOResponse.getRpt());
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(ctRpt2),transactionId).build();
-				}else {
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentV2Response.getData()),transactionId).build();
-				}
-			}
-
-			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
-		}else {
-			switch (leggiRptDTOResponse.getRpt().getVersione()) {
-			case SANP_230:
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
-			case SANP_240:
-			case RPTV1_RTV2:
-				if(retrocompatibilitaMessaggiPagoPAV1) {
-					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes, leggiRptDTOResponse.getRpt());
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(JaxbUtils.toByte(ctRpt2)),transactionId).build();
-				} else {
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
-				}
-			case SANP_321_V2:
-			case RPTV2_RTV1:
-				if(retrocompatibilitaMessaggiPagoPAV1) {
-					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, leggiRptDTOResponse.getRpt());
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(JaxbUtils.toByte(ctRpt2)),transactionId).build();
-				} else {
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
-				}
-			}
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
+			mediaType = MediaType.APPLICATION_JSON;
+			messaggioRPT = MessaggiPagoPARptUtils.getMessaggioRPT(leggiRptDTOResponse.getRpt(), FormatoRicevuta.JSON, retrocompatibilitaMessaggiPagoPAV1);
+		} else {
+			mediaType = MediaType.TEXT_XML;
+			messaggioRPT = MessaggiPagoPARptUtils.getMessaggioRPT(leggiRptDTOResponse.getRpt(), FormatoRicevuta.XML, retrocompatibilitaMessaggiPagoPAV1);
 		}
+		
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+		return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(messaggioRPT),transactionId).build();
 	}
 
 	public Response getRt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
@@ -508,134 +454,59 @@ public class RppController extends BaseController {
 			RptDAO ricevuteDAO = new RptDAO();
 
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = null;
-
+			
+			String mediaType = null;
+			Object messaggioRT = null;
+			
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
-				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-
-				// controllo che il dominio sia autorizzato
-				if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-					throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-				}
-				
-				// controllo che il tipo pendenza sia autorizzato
-				if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
-					throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
-				}
-
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
-			} else {
-				if(accept.toLowerCase().contains("application/pdf")) {
-					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
-					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-					String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
-					byte[] b = ricevutaDTOResponse.getPdf();
-
-					// controllo che il dominio sia autorizzato
-					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-					}
-					
-					// controllo che il tipo pendenza sia autorizzato
-					if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
-					}
-
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
-				} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
-					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
-					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-
-					// controllo che il dominio sia autorizzato
-					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-					}
-					
-					// controllo che il tipo pendenza sia autorizzato
-					if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
-					}
-
-					switch (ricevutaDTOResponse.getRpt().getVersione()) {
-					case SANP_230:
-						CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
-					case SANP_240:
-					case RPTV2_RTV1:
-						PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-						if(retrocompatibilitaMessaggiPagoPAV1) {
-							CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq, ricevutaDTOResponse.getRpt());
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(ctRt2),transactionId).build();
-						} else { 
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
-						}
-					case SANP_321_V2:
-					case RPTV1_RTV2:
-						PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-						if(retrocompatibilitaMessaggiPagoPAV1) {
-							CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTV2Request, ricevutaDTOResponse.getRpt());
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(ctRt2),transactionId).build();
-						} else {
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTV2Request.getReceipt()),transactionId).build();
-						}
-					}
-
-					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
-				} else {
-					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
-					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-
-					// controllo che il dominio sia autorizzato
-					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-					}
-					
-					// controllo che il tipo pendenza sia autorizzato
-					if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
-					}
-
-					switch (ricevutaDTOResponse.getRpt().getVersione()) {
-					case SANP_230:
-						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
-					case SANP_240:
-					case RPTV2_RTV1:
-						if(retrocompatibilitaMessaggiPagoPAV1) {
-							PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-							CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq, ricevutaDTOResponse.getRpt());
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(JaxbUtils.toByte(ctRt2)),transactionId).build();
-						} else {
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
-						}
-					case SANP_321_V2:
-					case RPTV1_RTV2:
-						if(retrocompatibilitaMessaggiPagoPAV1) {
-							PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-							CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTV2Request, ricevutaDTOResponse.getRpt());
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(JaxbUtils.toByte(ctRt2)),transactionId).build();
-						} else {
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
-						}
-					}
-
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
-				}
+				mediaType = MediaType.APPLICATION_OCTET_STREAM;
+			} else if(accept.toLowerCase().contains("application/pdf")) {
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
+				mediaType = "application/pdf";
+			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
+				mediaType = MediaType.APPLICATION_JSON;
+			} else { //XML
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
+				mediaType = MediaType.TEXT_XML;
 			}
+			
+			// lettura della RT uguale per tutte le casistiche
+			ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+			}
+			
+			// controllo che il tipo pendenza sia autorizzato
+			if(!AuthorizationManager.isTipoVersamentoAuthorized(user, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, null, ricevutaDTOResponse.getTipoVersamento().getCodTipoVersamento());
+			}
+			
+			Rpt rpt = ricevutaDTOResponse.getRpt();
+			String rtPdfEntryName = null;
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
+				messaggioRT = new String(ricevutaDTOResponse.getRpt().getXmlRt());
+			} else if(accept.toLowerCase().contains("application/pdf")) {
+				messaggioRT = ricevutaDTOResponse.getPdf();
+				rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
+			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				messaggioRT = MessaggiPagoPARtUtils.getMessaggioRT(rpt, FormatoRicevuta.JSON, retrocompatibilitaMessaggiPagoPAV1);
+			} else { //XML
+				messaggioRT = MessaggiPagoPARtUtils.getMessaggioRT(rpt, FormatoRicevuta.XML, retrocompatibilitaMessaggiPagoPAV1);
+			}
+			
+			ResponseBuilder entity = Response.status(Status.OK).type(mediaType).entity(messaggioRT);
+			
+			if(accept.toLowerCase().contains("application/pdf")) {
+				entity.header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"");
+			}
+			
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			return this.handleResponseOk(entity,transactionId).build();
+		
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

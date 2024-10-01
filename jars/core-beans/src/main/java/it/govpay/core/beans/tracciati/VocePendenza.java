@@ -34,6 +34,7 @@ import it.govpay.core.exceptions.IOException;
 	"datiAllegati",
 	"descrizioneCausaleRPT",
 	"contabilita",
+	"metadata",
 	"idDominio",
 	"hashDocumento",
 	"tipoBollo",
@@ -113,6 +114,9 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
+  
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -268,11 +272,21 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     this.contabilita = contabilita;
   }
 
-  public VocePendenza hashDocumento(String hashDocumento) {
-    this.hashDocumento = hashDocumento;
+  /**
+   **/
+  public VocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
     return this;
   }
-  
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
   /**
    * Identificativo del dominio creditore
    **/
@@ -287,6 +301,13 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
+  }
+  
+  /**
+   **/
+  public VocePendenza hashDocumento(String hashDocumento) {
+    this.hashDocumento = hashDocumento;
+    return this;
   }
 
   @JsonProperty("hashDocumento")
@@ -406,6 +427,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, vocePendenza.contabilita) &&
+        Objects.equals(metadata, vocePendenza.metadata) &&
         Objects.equals(idDominio, vocePendenza.idDominio) &&
         Objects.equals(this.hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(this.tipoBollo, vocePendenza.tipoBollo) &&
@@ -418,7 +440,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
+    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, contabilita, metadata, idDominio, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
   }
 
   public static VocePendenza parse(String json) throws IOException {
@@ -443,6 +465,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
     sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.14.0"
+  version: "2.16.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -1148,7 +1148,33 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2' 
+          example: '/risorsa?pagina=2'
+    MapEntry:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: chiave del metadata
+          minLength: 1
+          maxLength: 140
+        value:
+          type: string
+          description: valore del metadata
+          minLength: 1
+          maxLength: 140
+    Metadata:
+      type: object
+      description: Metadata Custom da inserire nella ricevuta di pagamento
+      properties:
+        mapEntries:
+          type: array
+          items: 
+            minItems: 1
+            maxItems: 5
+            $ref: '#/components/schemas/MapEntry'
     NuovaPendenza:  
       type: object
       required:
@@ -1302,6 +1328,8 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            metadata:
+                $ref: '#/components/schemas/Metadata'
             idDominio:
               type: string
               description: Identificativo del dominio creditore
@@ -1631,6 +1659,10 @@ components:
           description: >- 
             se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
           maxLength: 255
+        dataScandenzaAvviso:
+          type: string
+          format: date
+          description: se valorizzata, sostituisce la data di scadenza standard.
     QuotaContabilita:
       type: object
       required:
@@ -2223,6 +2255,8 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            metadata:
+                $ref: '#/components/schemas/Metadata'
             indice:
               type: number
               description: indice di voce all'interno della pendenza

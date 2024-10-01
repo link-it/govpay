@@ -48,6 +48,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAV2;
@@ -56,16 +57,21 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtRichiestaMarcaDaBollo;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.SingoloVersamento.TipoBollo;
 
 public class MessaggiPagoPAUtils {
 
+	private MessaggiPagoPAUtils() {}
 	
 	public static CtRichiestaPagamentoTelematico toCtRichiestaPagamentoTelematico(PaGetPaymentRes paGetPaymentRes, Rpt rpt) throws ServiceException {
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
@@ -347,5 +353,99 @@ public class MessaggiPagoPAUtils {
 		soggettoDebitore.setNazionePagatore(RptBuilder.getNotEmpty(debitore.getCountry()));
 		soggettoDebitore.setProvinciaPagatore(RptBuilder.getNotEmpty(debitore.getStateProvinceRegion()));
 		return soggettoDebitore;
+	}
+	
+	public static PaGetPaymentRes ricostruisciPaGetPaymentRes(PaSendRTReq paSendRTReq, Rpt rpt, Versamento versamento) {
+		if(paSendRTReq == null) return null;
+		
+		CtReceipt receipt = paSendRTReq.getReceipt();
+		
+		PaGetPaymentRes paGetPaymentRes = new PaGetPaymentRes();
+		
+		CtPaymentPA ctPaymentPA = new CtPaymentPA();
+		
+		ctPaymentPA.setCompanyName(receipt.getCompanyName());
+		ctPaymentPA.setCreditorReferenceId(receipt.getCreditorReferenceId());
+		ctPaymentPA.setDebtor(receipt.getDebtor());
+		ctPaymentPA.setDescription(receipt.getDescription());
+		ctPaymentPA.setDueDate(CtPaymentPABuilder.calcolaDueDate(versamento));
+		ctPaymentPA.setLastPayment(null);
+		ctPaymentPA.setMetadata(receipt.getMetadata());
+		ctPaymentPA.setOfficeName(receipt.getOfficeName());
+		ctPaymentPA.setPaymentAmount(receipt.getPaymentAmount());
+		ctPaymentPA.setRetentionDate(null);
+		ctPaymentPA.setTransferList(receipt.getTransferList());
+		
+		paGetPaymentRes.setData(ctPaymentPA );
+		paGetPaymentRes.setOutcome(StOutcome.OK); 
+		
+		return paGetPaymentRes;
+	}
+	
+	public static PaGetPaymentV2Response ricostruisciPaGetPaymentV2Response(PaSendRTV2Request paSendRTV2Request, Rpt rpt, Versamento versamento) throws ServiceException {
+		if(paSendRTV2Request == null) return null;
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		CtReceiptV2 receipt = paSendRTV2Request.getReceipt();
+		
+		PaGetPaymentV2Response paGetPaymentV2Response = new PaGetPaymentV2Response();
+		
+		CtPaymentPAV2 ctPaymentPA = new CtPaymentPAV2();
+		
+		ctPaymentPA.setCompanyName(receipt.getCompanyName());
+		ctPaymentPA.setCreditorReferenceId(receipt.getCreditorReferenceId());
+		ctPaymentPA.setDebtor(receipt.getDebtor());
+		ctPaymentPA.setDescription(receipt.getDescription());
+		ctPaymentPA.setDueDate(CtPaymentPABuilder.calcolaDueDate(versamento));
+		ctPaymentPA.setLastPayment(null);
+		ctPaymentPA.setMetadata(receipt.getMetadata());
+		ctPaymentPA.setOfficeName(receipt.getOfficeName());
+		ctPaymentPA.setPaymentAmount(receipt.getPaymentAmount());
+		ctPaymentPA.setRetentionDate(null);
+		
+		if(receipt.getTransferList() != null) {
+			CtTransferListPAV2 ctTransferListPAV2 = new CtTransferListPAV2();
+			
+			List<CtTransferPAReceiptV2> datiSingoliPagamenti = receipt.getTransferList().getTransfer();
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+			
+			for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
+				CtTransferPAReceiptV2 ctTransferPAReceiptV2 = datiSingoliPagamenti.get(indice);
+				CtTransferPAV2 ctTransferPAV2 = new CtTransferPAV2();
+				
+				ctTransferPAV2.setCompanyName(ctTransferPAReceiptV2.getCompanyName());
+				ctTransferPAV2.setFiscalCodePA(ctTransferPAReceiptV2.getFiscalCodePA());
+				ctTransferPAV2.setIBAN(ctTransferPAReceiptV2.getIBAN());
+				ctTransferPAV2.setIdTransfer(ctTransferPAReceiptV2.getIdTransfer());
+				ctTransferPAV2.setMetadata(ctTransferPAReceiptV2.getMetadata());
+				ctTransferPAV2.setRemittanceInformation(ctTransferPAReceiptV2.getRemittanceInformation());
+				if(ctTransferPAReceiptV2.getMBDAttachment() != null) {
+					SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
+					
+					CtRichiestaMarcaDaBollo marcaBollo = new CtRichiestaMarcaDaBollo();
+					if(singoloVersamento.getHashDocumento() != null)
+						marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
+					marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+					if(singoloVersamento.getTipoBollo() != null)
+						marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+					else
+						marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
+					ctTransferPAV2.setRichiestaMarcaDaBollo(marcaBollo);
+				}
+				ctTransferPAV2.setTransferAmount(ctTransferPAReceiptV2.getTransferAmount());
+				ctTransferPAV2.setTransferCategory(ctTransferPAReceiptV2.getTransferCategory());
+				
+				ctTransferListPAV2.getTransfer().add(ctTransferPAV2 );
+			}
+			
+			
+			ctPaymentPA.setTransferList(ctTransferListPAV2 );
+		}
+		
+		
+		paGetPaymentV2Response.setData(ctPaymentPA  );
+		paGetPaymentV2Response.setOutcome(StOutcome.OK); 
+		
+		return paGetPaymentV2Response;
 	}
 }

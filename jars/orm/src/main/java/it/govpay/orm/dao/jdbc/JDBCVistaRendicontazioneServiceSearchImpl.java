@@ -195,6 +195,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().SNG_INDICE_DATI);
 			fields.add(VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT);
 			fields.add(VistaRendicontazione.model().SNG_CONTABILITA);
+			fields.add(VistaRendicontazione.model().SNG_METADATA);
 			
 			fields.add(VistaRendicontazione.model().VRS_ID);
 			fields.add(VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE);

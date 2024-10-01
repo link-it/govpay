@@ -97,6 +97,7 @@ public class EntrataPrevistaConverter {
 		}
 
 		dto.setContabilita(vo.getContabilita());
+		dto.setMetadata(vo.getMetadata());
 
 		return dto;
 	}

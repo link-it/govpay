@@ -66,6 +66,7 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private String numeroAvviso;
 	private String contabilita;
 	private Date dataCreazione;
+	private String metadata;
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -311,6 +312,12 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 		}
 		
 		return result;
+	}
+	public String getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
 	}
 	
 }

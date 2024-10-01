@@ -298,6 +298,13 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 				return "contabilita";
 			}
 		}
+		if(field.equals(VistaRiscossioni.model().METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".metadata";
+			}else{
+				return "metadata";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -408,6 +415,9 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 		if(field.equals(VistaRiscossioni.model().CONTABILITA)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().METADATA)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 

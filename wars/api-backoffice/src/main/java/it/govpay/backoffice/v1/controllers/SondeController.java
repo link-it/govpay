@@ -219,7 +219,7 @@ public class SondeController extends BaseController{
 			long num = -1;
 			RptBD rptBD = new RptBD(bd);
 			rptBD.setAtomica(false); // connessione condivisa
-			num = rptBD.countRptScadute(null, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins());
+			num = rptBD.countRptScadute(null, GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins());
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
 		if(Costanti.CHECK_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI.equals(nome)) {

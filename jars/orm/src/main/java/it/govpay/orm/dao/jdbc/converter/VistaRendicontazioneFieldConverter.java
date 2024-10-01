@@ -340,6 +340,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "sng_contabilita";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".sng_metadata";
+			}else{
+				return "sng_metadata";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".vrs_id";
@@ -1028,6 +1035,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().SNG_CONTABILITA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){

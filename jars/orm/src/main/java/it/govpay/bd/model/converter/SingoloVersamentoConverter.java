@@ -73,6 +73,8 @@ public class SingoloVersamentoConverter {
 		if(vo.getIdDominio() != null)
 			dto.setIdDominio(vo.getIdDominio().getId());
 		
+		dto.setMetadata(vo.getMetadata());
+		
 		return dto;
 	}
 
@@ -123,6 +125,8 @@ public class SingoloVersamentoConverter {
 			idDominio.setId(dto.getIdDominio());
 			vo.setIdDominio(idDominio);
 		}
+		
+		vo.setMetadata(dto.getMetadata());
 		
 		return vo;
 	}

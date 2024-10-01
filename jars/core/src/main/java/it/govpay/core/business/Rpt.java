@@ -252,7 +252,7 @@ public class Rpt {
 					// blocco dei pagamenti modello 3 per le RPT SANP 2.4.0
 					// il nuovo pagamento modello 3 ha un timeout sempre impostato di max 30 minuti
 					if(pagamentoPortale != null && pagamentoPortale.getTipo() == 1) {
-						log.debug("Blocco pagamento per il Mod3 SANP 2.4 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() + " minuti]"); 
+						log.debug("Blocco pagamento per il Mod3 SANP 2.4 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins() + " minuti]"); 
 						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
 
 						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
@@ -266,7 +266,7 @@ public class Rpt {
 
 						// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
 						// Altrimenti lancio il fault
-						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() * 60000);
+						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins() * 60000);
 
 						for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
 							Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();

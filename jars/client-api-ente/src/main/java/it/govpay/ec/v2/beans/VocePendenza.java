@@ -59,6 +59,9 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
   @Schema(description = "")
   private Contabilita contabilita = null;
   
+  @Schema(description = "")
+  private Metadata metadata = null;
+  
   @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Pendenza pendenza = null;
  /**
@@ -171,6 +174,24 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
   }
 
  /**
+   * Get metadata
+   * @return metadata
+  **/
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
+  public VocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+ /**
    * Get pendenza
    * @return pendenza
   **/
@@ -201,6 +222,7 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();

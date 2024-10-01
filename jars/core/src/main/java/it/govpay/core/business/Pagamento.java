@@ -624,8 +624,8 @@ public class Pagamento   {
 			for (String codDominio : codDomini) {
 				int offset = 0;
 				int limit = 100;
-				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
-				log.trace(MessageFormat.format("Identificate su GovPay per il Dominio [{0}]: {1} transazioni scadute da piu'' di [{2}] minuti.", codDominio, rtList.size(), GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
+				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins(), offset, limit, dataUltimoCheck);
+				log.trace(MessageFormat.format("Identificate su GovPay per il Dominio [{0}]: {1} transazioni scadute da piu'' di [{2}] minuti.", codDominio, rtList.size(), GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
 				do {
 					if(rtList.size() > 0) {
 						for (Rpt rpt : rtList) {
@@ -633,11 +633,11 @@ public class Pagamento   {
 								rptBD.setAutoCommit(false);
 
 								rpt.setStato(StatoRpt.RPT_SCADUTA);
-								rpt.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
+								rpt.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
 								PagamentoPortale oldPagamentoPortale = rpt.getPagamentoPortale();
 								if(oldPagamentoPortale != null) {
 									oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
-									oldPagamentoPortale.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
+									oldPagamentoPortale.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
 								}
 								rptBD.updateRpt(rpt.getId(), rpt);
 								if(oldPagamentoPortale != null) {
@@ -659,8 +659,8 @@ public class Pagamento   {
 					}
 
 					offset += limit;
-					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
-					log.trace(MessageFormat.format("Identificate su GovPay per il Dominio [{0}]: {1} transazioni scadute da piu'' di [{2}] minuti.", codDominio, rtList.size(), GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
+					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins(), offset, limit, dataUltimoCheck);
+					log.trace(MessageFormat.format("Identificate su GovPay per il Dominio [{0}]: {1} transazioni scadute da piu'' di [{2}] minuti.", codDominio, rtList.size(), GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
 				}while(rtList.size() > 0);
 			}
 		} catch (Exception e) {

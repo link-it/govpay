@@ -35,21 +35,15 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
-import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPA;
-import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
-import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Request;
-import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StTransferType;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtMapEntry;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtMetadata;
-import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtRichiestaMarcaDaBollo;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -70,7 +64,6 @@ import it.govpay.model.QuotaContabilita;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.VersioneRPT;
-import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
@@ -106,9 +99,9 @@ public class CtPaymentPABuilder {
 	public static final String CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY = "TIPOLOGIABILANCIO";
 	public static final String CONTABILITA_QUOTA_ENTRY_KEY = "CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT";
 
-	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
+	public Rpt buildCtPaymentPA (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
 
-		return this.buildRpt(requestBody,
+		return this.buildCtPaymentPA(requestBody,
 				null,
 				versamento,
 				iuv,
@@ -121,7 +114,7 @@ public class CtPaymentPABuilder {
 				);
 	}
 
-	private Rpt buildRpt(PaGetPaymentReq requestBody,
+	private Rpt buildCtPaymentPA(PaGetPaymentReq requestBody,
 			String codCarrello, 
 			Versamento versamento, 
 			String iuv, 
@@ -142,7 +135,7 @@ public class CtPaymentPABuilder {
 		rpt.setCallbackURL(redirect);
 		rpt.setCodCarrello(codCarrello);
 		rpt.setCodDominio(dominio.getCodDominio());
-		rpt.setCodMsgRichiesta(this.buildUUID35());
+		rpt.setCodMsgRichiesta(CtPaymentPABuilder.buildUUID35());
 		rpt.setCodSessione(null);
 		rpt.setCodStazione(dominio.getStazione().getCodStazione());
 		rpt.setDataAggiornamento(new Date());
@@ -209,7 +202,7 @@ public class CtPaymentPABuilder {
 			ctRpt.setOfficeName(versamento.getUo(configWrapper).getAnagrafica().getRagioneSociale());
 		}
 
-		CtSubject debtor = this.buildSoggettoPagatore(versamento.getAnagraficaDebitore());
+		CtSubject debtor = CtPaymentPABuilder.buildSoggettoPagatore(versamento.getAnagraficaDebitore());
 		ctRpt.setDebtor(debtor);
 		ctRpt.setMetadata(null);
 
@@ -308,11 +301,7 @@ public class CtPaymentPABuilder {
 
 			transferEl.setRemittanceInformation(RptBuilder.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 
-			// TODO come generare la stringa indicata nell'xsd
-
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
-
-			transferEl.setMetadata(impostaValoriContabilita(singoloVersamento));
 
 			transferList.getTransfer().add(transferEl );
 			i++;
@@ -330,280 +319,37 @@ public class CtPaymentPABuilder {
 		return rpt;
 	}
 
-	private String buildUUID35() {
+	public static String buildUUID35() {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	private CtSubject buildSoggettoPagatore(Anagrafica debitore) {
+	public static CtSubject buildSoggettoPagatore(Anagrafica debitore) {
 		CtSubject soggettoDebitore = new CtSubject();
 		CtEntityUniqueIdentifier idUnivocoDebitore = new CtEntityUniqueIdentifier();
 		String cFiscale = debitore.getCodUnivoco();
 		idUnivocoDebitore.setEntityUniqueIdentifierValue(cFiscale);
 		idUnivocoDebitore.setEntityUniqueIdentifierType((cFiscale.length() == 16) ? StEntityUniqueIdentifierType.F : StEntityUniqueIdentifierType.G);
 		soggettoDebitore.setFullName(debitore.getRagioneSociale());
-		soggettoDebitore.setPostalCode(this.getNotEmpty(debitore.getCap()));
-		soggettoDebitore.setCivicNumber(this.getNotEmpty(debitore.getCivico()));
-		soggettoDebitore.setEMail(this.getNotEmpty(debitore.getEmail()));
+		soggettoDebitore.setPostalCode(CtPaymentPABuilder.getNotEmpty(debitore.getCap()));
+		soggettoDebitore.setCivicNumber(CtPaymentPABuilder.getNotEmpty(debitore.getCivico()));
+		soggettoDebitore.setEMail(CtPaymentPABuilder.getNotEmpty(debitore.getEmail()));
 		soggettoDebitore.setUniqueIdentifier(idUnivocoDebitore);
-		soggettoDebitore.setStreetName(this.getNotEmpty(debitore.getIndirizzo()));
-		soggettoDebitore.setCity(this.getNotEmpty(debitore.getLocalita()));
-		soggettoDebitore.setCountry(this.getNotEmpty(debitore.getNazione()));
-		soggettoDebitore.setStateProvinceRegion(this.getNotEmpty(debitore.getProvincia()));
+		soggettoDebitore.setStreetName(CtPaymentPABuilder.getNotEmpty(debitore.getIndirizzo()));
+		soggettoDebitore.setCity(CtPaymentPABuilder.getNotEmpty(debitore.getLocalita()));
+		soggettoDebitore.setCountry(CtPaymentPABuilder.getNotEmpty(debitore.getNazione()));
+		soggettoDebitore.setStateProvinceRegion(CtPaymentPABuilder.getNotEmpty(debitore.getProvincia()));
 		return soggettoDebitore;
 	}
 
-	private String getNotEmpty(String text) {
+	private static String getNotEmpty(String text) {
 		if(text == null || text.trim().isEmpty())
 			return null;
 		else
 			return text;
 	}
 
-	public Rpt buildRptAttivata_SANP_321_V2 (PaGetPaymentV2Request requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
-
-		return this.buildRpt_V2(requestBody,
-				null,
-				versamento,
-				iuv,
-				ccp,
-				numeroavviso,
-				TipoVersamento.ATTIVATO_PRESSO_PSP,
-				ModelloPagamento.ATTIVATO_PRESSO_PSP,
-				StAutenticazioneSoggetto.N_A.value(),
-				null
-				);
-	}
-
-	private Rpt buildRpt_V2(PaGetPaymentV2Request requestBody,
-			String codCarrello, 
-			Versamento versamento, 
-			String iuv, 
-			String ccp, 
-			String numeroavviso, 
-			TipoVersamento tipoVersamento,
-			ModelloPagamento modelloPagamento,
-			String autenticazione, 
-			String redirect) throws ServiceException, IOException {
-
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-
-		Dominio dominio = versamento.getDominio(configWrapper); 
-		UnitaOperativa uo = versamento.getUo(configWrapper);
-
-		Rpt rpt = new Rpt();
-		rpt.setVersione(VersioneRPT.SANP_321_V2);
-		rpt.setCallbackURL(redirect);
-		rpt.setCodCarrello(codCarrello);
-		rpt.setCodDominio(dominio.getCodDominio());
-		rpt.setCodMsgRichiesta(this.buildUUID35());
-		rpt.setCodSessione(null);
-		rpt.setCodStazione(dominio.getStazione().getCodStazione());
-		rpt.setDataAggiornamento(new Date());
-		rpt.setDataMsgRichiesta(new Date());
-		rpt.setDescrizioneStato(null);
-		rpt.setId(null);
-		rpt.setTipoVersamento(tipoVersamento);
-		rpt.setIdVersamento(versamento.getId());
-		rpt.setVersamento(versamento);
-		rpt.setIuv(iuv);
-		rpt.setCcp(ccp);
-		rpt.setModelloPagamento(modelloPagamento);
-		rpt.setPspRedirectURL(null);
-		rpt.setStato(StatoRpt.RPT_ATTIVATA);
-		rpt.setIdTransazioneRpt(ContextThreadLocal.get().getTransactionId());
-		rpt.setBloccante(true);
-		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
-
-		PaGetPaymentV2Response paGetPaymentRes = new PaGetPaymentV2Response();
-		CtPaymentPAV2 ctRpt = new CtPaymentPAV2();
-
-		/*
-			Its contains all payment information :
-
-			- `creditorReferenceId` : its equal to **IUV** _Identificativo Univoco Versamento_ 
-			- `paymentAmount` : amount, it must be equal to the sums of `transferAmount` present in the `transferList`
-			- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
-			- `retentionDate` : indicates the retention payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
-			- `lastPayment` : boolean flag used for in installment payments 
-			- `description` : free text available to describe the payment reasons
-			- `companyName` : Public Administration full name
-			- `officeName` : Public Admninistration Department Name
-			- `debtor` : identifies the debtor to whom the debt position refers
-			- `transferList` : the list of all available transfer information (_see below to details_)
-			- `metadata` : (_see below to details_)
-		 */
-
-		ctRpt.setCreditorReferenceId(iuv);
-
-		// L'amount con il dueDate mi deve far scegliere tra le opzioni di pagamento
-		// da attivare. Al momento viene gestita una sola opzione di pagamento
-		// pertanto ignoro l'importo comunicato e rispondo sempre con il dovuto.
-		// https://github.com/pagopa/pagopa-api/issues/194
-
-		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-		ctRpt.setDueDate(calcolaDueDate(versamento));
-
-		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
-		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
-		// se non e' una rata o rata unica e' sempre true. 
-		ctRpt.setLastPayment(true); 
-
-		if(versamento.getCausaleVersamento() != null) {
-			if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
-				ctRpt.setDescription(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
-			}
-		} else {
-			ctRpt.setDescription(" ");
-		}
-
-		ctRpt.setCompanyName(dominio.getRagioneSociale());
-
-		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
-			ctRpt.setOfficeName(versamento.getUo(configWrapper).getAnagrafica().getRagioneSociale());
-		}
-
-		CtSubject debtor = this.buildSoggettoPagatore(versamento.getAnagraficaDebitore());
-		ctRpt.setDebtor(debtor);
-		ctRpt.setMetadata(null);
-
-		CtTransferListPAV2 transferList = new CtTransferListPAV2();
-		ctRpt.setTransferList(transferList );
-
-		boolean utilizzaIBANPostali = false;
-		StTransferType transferType = requestBody.getTransferType();
-		if(transferType != null && transferType.equals(StTransferType.POSTAL)) {
-			utilizzaIBANPostali = true;
-		}
-
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
-		int i=1;
-		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			CtTransferPAV2 transferEl = new CtTransferPAV2();
-
-			/*
-			Structure containing the details of possible tranfer payments.
-
-			Currently set at 5 eligible payments per single position.
-
-			Where each `transfer` items contains :
-
-			- `idTransfer` : index of the list (from `1` to `5`) 
-			- `transferAmount` : amount 
-			- `fiscalCodePA` : Tax code of the public administration
-			- `IBAN` : contains the IBAN of the account to be credited
-			- `remittanceInformation` : reason for payment (_alias_ `causaleVersamento`)
-			- `transferCategory` : contains taxonomic code, composed by `Codice tipo Ente Creditore`+`Progressivo macro area`+`Codice tipologia servizio`+`Motivo Giuridico` ( ex. `0101002IM` ) 
-			| Segment                     | Regex                       |Example |
-			|-----------------------------|-----------------------------|--------|
-			|Codice tipo Ente Creditore   | `\d{2}`                     | 01     |
-			|Progressivo macro area       | `\d{2}`                     | 01     |
-			|Codice tipologia servizio    | `\d{2}`                     | 002    |
-			|Motivo Giuridico             | `\w{2}`                     | IM     |
-
-			 */
-
-			transferEl.setIdTransfer(i);
-			transferEl.setTransferAmount(singoloVersamento.getImportoSingoloVersamento());
-
-
-			// Imposto IBAN e codice fiscale ente proprietario dell'iban
-
-			// sv con tributo definito
-			it.govpay.bd.model.Tributo tributo = singoloVersamento.getTributo(configWrapper);
-			IbanAccredito ibanScelto = null;
-			IbanAccredito ibanAccredito = null;
-			IbanAccredito ibanAppoggio = null;
-			if(tributo != null) {
-				ibanAccredito = tributo.getIbanAccredito();
-				ibanAppoggio = tributo.getIbanAppoggio();
-			} else { // sv con le informazioni tributo direttamente nei dati 
-				ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
-				ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
-			}
-
-			// solo il transfer 1 e' vincolato ad essere postale se richiesto
-			if(i == 1) {
-				if(ibanAccredito != null) {
-					ibanScelto = ibanAccredito;
-
-					// devo utilizzare iban postale
-					if(utilizzaIBANPostali) {
-						if(!ibanAccredito.isPostale()) {
-							// provo a verificare se l'iban appoggio e' postale
-							if(ibanAppoggio != null && ibanAppoggio.isPostale()) {
-								ibanScelto = ibanAppoggio;
-							}
-						} 
-					}
-				}  else if(ibanAppoggio != null) {
-					// se capito qua dentro ho solo l'iban di appoggio, quindi devo utilizzarlo sia che sia postale o meno 
-					ibanScelto = ibanAppoggio;
-				}
-			} else {
-				// altri transfer
-				if(ibanAccredito != null) {
-					ibanScelto = ibanAccredito;
-				} else if(ibanAppoggio != null) {
-					ibanScelto = ibanAppoggio;
-				}
-			}
-
-			if(ibanScelto != null) {
-				transferEl.setIBAN(ibanScelto.getCodIban());
-				try {
-					Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanScelto.getIdDominio());
-					transferEl.setFiscalCodePA(dominio2.getCodDominio());
-				} catch (NotFoundException e) {
-					// se passo qui ho fallito la validazione della pendenza !
-					throw new ServiceException("Dominio ["+ibanScelto.getIdDominio()+"] non censito in base dati.");
-				}
-			} else { // MBT
-				CtRichiestaMarcaDaBollo marcaBollo = new CtRichiestaMarcaDaBollo();
-				if(singoloVersamento.getHashDocumento() != null)
-					marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
-				marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-				if(singoloVersamento.getTipoBollo() != null)
-					marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
-				else
-					marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
-				transferEl.setRichiestaMarcaDaBollo(marcaBollo);
-
-				// Dominio
-				Dominio dominio2 = singoloVersamento.getDominio(configWrapper);
-				if(dominio2 != null) {
-					transferEl.setFiscalCodePA(dominio2.getCodDominio());
-				} else {
-					// se non e' definito il dominio utilizzo quello del versamento.
-					transferEl.setFiscalCodePA(dominio.getCodDominio());
-				}
-			}
-
-			transferEl.setRemittanceInformation(RptBuilder.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
-
-			// TODO come generare la stringa indicata nell'xsd
-
-			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
-
-			transferEl.setMetadata(impostaValoriContabilita(singoloVersamento));
-
-			transferList.getTransfer().add(transferEl );
-			i++;
-		}
-
-		byte[] rptXml;
-		paGetPaymentRes.setOutcome(StOutcome.OK);
-		paGetPaymentRes.setData(ctRpt);
-		try {
-			rptXml = JaxbUtils.toByte(paGetPaymentRes);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-		rpt.setXmlRpt(rptXml);
-		return rpt;
-	}
-
 	@SuppressWarnings("unchecked")
-	private static CtMetadata impostaValoriContabilita(SingoloVersamento singoloVersamento) throws IOException {
+	public static CtMetadata impostaValoriContabilita(SingoloVersamento singoloVersamento) throws IOException {
 		CtMetadata ctMetadata = null;
 		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
 		String contabilitaString = singoloVersamento.getContabilita();
@@ -700,7 +446,7 @@ public class CtPaymentPABuilder {
 								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 
 								for (String key : parse.keySet()) {
-									if(ctMetadata.getMapEntry().size() < 10) {
+									if(ctMetadata.getMapEntry().size() < 15) {
 										CtMapEntry ctMapEntry = new CtMapEntry();
 
 										ctMapEntry.setKey(key);
@@ -714,7 +460,7 @@ public class CtPaymentPABuilder {
 							java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
 
 							for (Object key : parse.keySet()) {
-								if(ctMetadata.getMapEntry().size() < 10) {
+								if(ctMetadata.getMapEntry().size() < 15) {
 									CtMapEntry ctMapEntry = new CtMapEntry();
 
 									ctMapEntry.setKey(key.toString());
@@ -791,129 +537,7 @@ public class CtPaymentPABuilder {
 		return ctMetadata;
 	}
 
-//	@SuppressWarnings("unchecked")
-//	private static CtMetadata impostaValoriContabilita_SANP34(SingoloVersamento singoloVersamento) throws IOException {
-//		CtMetadata ctMetadata = null;
-//		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
-//		String contabilitaString = singoloVersamento.getContabilita();
-//
-//		if(contabilitaString != null && contabilitaString.length() > 0) {
-//			it.govpay.model.Contabilita dto = ConverterUtils.parse(singoloVersamento.getContabilita(), it.govpay.model.Contabilita.class);
-//
-//			List<QuotaContabilita> quote = dto.getQuote();
-//
-//			if(quote != null && quote.size() > 0) {
-//				ctMetadata = new CtMetadata();
-//
-//				List<CtMapEntry> listEntriesProvvisoria = new ArrayList<>();
-//				int nQuota = 1;
-//				for (QuotaContabilita quotaContabilita : quote) {
-//
-//					String tipologia = null;
-//					// RC_TIP_N: valorizzato con tipologia
-//					if(quotaContabilita.getTipologia() != null) {
-//						tipologia = quotaContabilita.getTipologia();
-//						CtMapEntry ctMapEntry = new CtMapEntry();
-//
-//						ctMapEntry.setKey(MessageFormat.format(CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_KEY, nQuota));
-//						ctMapEntry.setValue(tipologia);
-//
-//						listEntriesProvvisoria.add(ctMapEntry );
-//					} 
-//
-//					// lettura parametri custom
-//					Object proprietaCustomObj = quotaContabilita.getProprietaCustom();
-//					Map<String, String> proprietaCustomMap = new HashMap<>();
-//					if(proprietaCustomObj != null) {
-//						if(proprietaCustomObj instanceof String) {
-//							String proprietaCustom = (String) proprietaCustomObj;
-//
-//							if(proprietaCustom != null && proprietaCustom.length() > 0) {
-//								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
-//
-//								for (String key : parse.keySet()) {
-//									proprietaCustomMap.put(key, parse.get(key).toString());
-//								}
-//							}
-//						}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
-//							java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
-//
-//							for (Object key : parse.keySet()) {
-//								proprietaCustomMap.put(key.toString(), parse.get(key).toString());
-//							}
-//						}
-//					}
-//
-//					if(tipologia != null) {
-//						switch(tipologia) {
-//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_DL118:
-//							/*
-//							 RC_TIP_N: valorizzato con tipologia
-//							 RC_CAP_N: valorizzato con capitolo
-//							RC_ART_N: valorizzato con articolo
-//							RC_ACC_N: valorizzato con accertamento
-//							RC_AC_N: valorizzato con annoEsercizio CAMPO OBBLIGATORIO
-//							RC_IMP_N: valorizzato con importo CAMPO OBBLIGATORIO
-//							RC_CU_N: valorizzato da proprieta' custom codiceUfficio
-//							RC_PF5_N: valorizzato da proprieta' custom pf5livello
-//							Capitolo e Accertamento sono fra loro alternativi, uno dei due deve essere inserito. Accertamento e pf_5_livello sono fra loro alternativi. 
-//							 * */
-//							// RC_AC_N: valorizzato con annoEsercizio CAMPO OBBLIGATORIO
-//							{
-//								CtMapEntry ctMapEntry = new CtMapEntry();
-//	
-//								ctMapEntry.setKey(MessageFormat.format(CONTABILITA_QUOTA_ANNO_COMPETENZA_PARAM_KEY, nQuota));
-//								ctMapEntry.setValue(quotaContabilita.getAnnoEsercizio() + "");
-//	
-//								ctMetadata.getMapEntry().add(ctMapEntry );
-//							}
-//
-//							
-//							
-//							break;
-//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_TIPICO:
-//							/*
-//							 RC_TIP_N: valorizzato con tipologia
-//								RC_AC_N: valorizzato con annoEsercizio Campo obbligatorio
-//								RC_IMP_N: valorizzato con importo Campo obbligatorio
-//								RC_CU_N: valorizzato da proprieta' custom codiceUfficio
-//								RC_TI_N: valorizzato da proprieta' custom tipoIncasso Campo obbligatorio
-//								RC_EF_N: valorizzato da proprieta' custom emissioneFattura
-//								RC_ND_N: valorizzato da proprieta' custom numeroDocumento
-//								Emissione fattura e nr_documento sono fra loro alternativi. 
-//							 */
-//
-//							break;
-//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_CIVILISTICO:
-//							/*
-//							 RC_TIP_N: valorizzato con tipologia
-//							RC_AC_N: valorizzato con annoEsercizio Campo obbligatorio
-//							RC_IMP_N: valorizzato con importo Campo obbligatorio
-//							RC_CU_N: valorizzato da proprieta' custom codiceUfficio
-//							RC_CON_N: valorizzato da proprieta' custom conto
-//							RC_COM_N: valorizzato da proprieta' custom commessa
-//							RC_ND_N: valorizzato da proprieta' custom numeroDocumento
-//							Conto, Commessa e Nr Documento sono fra loro alternativi, uno dei tre deve essere inserito.
-//							 */
-//							break;
-//						default: 
-//							break;
-//						}
-//					}
-//				}
-//
-//				// massimo 10 entries
-//				if(listEntriesProvvisoria.size() <= 10) {
-//					ctMetadata.getMapEntry().addAll(listEntriesProvvisoria);
-//				} else {
-//					ctMetadata.getMapEntry().addAll(listEntriesProvvisoria.subList(0, 9));
-//				}
-//			}
-//		}
-//		return ctMetadata;
-//	}
-
-	private static Date calcolaDueDate(Versamento versamento) {
+	public static Date calcolaDueDate(Versamento versamento) {
 		if(versamento.getDataValidita() != null) {
 			return versamento.getDataValidita(); // indicates the expiration payment date
 		} else if(versamento.getDataScadenza() != null) {

@@ -38,6 +38,8 @@ import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Documento;
 import it.govpay.backoffice.v1.beans.LinguaSecondaria;
+import it.govpay.backoffice.v1.beans.MapEntry;
+import it.govpay.backoffice.v1.beans.Metadata;
 import it.govpay.backoffice.v1.beans.NuovaVocePendenza;
 import it.govpay.backoffice.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.backoffice.v1.beans.Pendenza;
@@ -80,7 +82,8 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class PendenzeConverter {
-
+	
+	private PendenzeConverter(){}
 
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, ValidationException, it.govpay.core.exceptions.IOException {
 		return toRsModel(dto.getVersamento(),
@@ -206,6 +209,9 @@ public class PendenzeConverter {
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 
 		rsModel.setAllegati(toAllegatiRsModel(allegati));
+		
+		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
+		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
 
 		return rsModel;
 	}
@@ -321,6 +327,9 @@ public class PendenzeConverter {
 		rsModel.setUUID(versamento.getIdSessione());
 
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		
+		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
+		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
 
 		return rsModel;
 	}
@@ -389,6 +398,8 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
+		
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
 	}
@@ -438,6 +449,8 @@ public class PendenzeConverter {
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
+		
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
 	}
@@ -487,6 +500,8 @@ public class PendenzeConverter {
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
+		
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
 	}
@@ -641,7 +656,7 @@ public class PendenzeConverter {
 		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
-
+		
 		return versamento;
 	}
 
@@ -739,6 +754,7 @@ public class PendenzeConverter {
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setCodDominio(vocePendenza.getIdDominio());
+				sv.setMetadata(toMetadataDTO(vocePendenza.getMetadata()));
 
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 
@@ -854,6 +870,9 @@ public class PendenzeConverter {
 			}
 
 			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			dto.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			dto.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			dto.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return dto;
@@ -901,6 +920,9 @@ public class PendenzeConverter {
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return rsModel;
@@ -946,5 +968,51 @@ public class PendenzeConverter {
 		}
 
 		return allegatiDTO;
+	}
+	
+	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
+		it.govpay.core.beans.tracciati.Metadata dto = null;
+		if(metadata != null) {
+			dto = new it.govpay.core.beans.tracciati.Metadata();
+			
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
+				
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
+					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
+					mapEntryDto.setKey(mapEntry.getKey());
+					mapEntryDto.setValue(mapEntry.getValue());
+				
+					mapEntriesDto.add(mapEntryDto);
+				}
+				
+				dto.setMapEntries(mapEntriesDto);
+			}
+		}
+
+		return dto;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+				
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+				
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+				
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
+		return rsModel;
 	}
 }
