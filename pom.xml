@@ -61,10 +61,10 @@
 		<jersey.version>3.1.7</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>6.1.10</spring.version>
+		<spring.version>6.1.12</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>6.3.1</spring.security.version>
+		<spring.security.version>6.3.3</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>3.2.4</spring.ldap.version>
