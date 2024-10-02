@@ -3418,6 +3418,7 @@ paths:
         - $ref: '#/components/parameters/flussoRendicontazioneDataFlussoA'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/idFlusso'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/direzioni'
