@@ -267,7 +267,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				//newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				IExpression newExpressionUO = this.newExpression();
 				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
 				
