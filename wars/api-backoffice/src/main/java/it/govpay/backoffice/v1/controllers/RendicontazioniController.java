@@ -63,7 +63,7 @@ public class RendicontazioniController extends BaseController {
 
     public Response findRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi,
     		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA,
-    		String idFlusso, String iuv, List<String> direzione, List<String> divisione, Boolean metadatiPaginazione, Boolean maxRisultati, Boolean escludiObsoleti) {
+    		String idDominio, String idFlusso, String iuv, List<String> direzione, List<String> divisione, Boolean metadatiPaginazione, Boolean maxRisultati, Boolean escludiObsoleti) {
     	String methodName = "findRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
@@ -107,6 +107,7 @@ public class RendicontazioniController extends BaseController {
 				findRendicontazioniDTO.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
+			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setCodFlusso(idFlusso);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
 			findRendicontazioniDTO.setIuv(iuv);

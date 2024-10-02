@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.40.0"
+  version: "1.41.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3418,6 +3418,7 @@ paths:
         - $ref: '#/components/parameters/flussoRendicontazioneDataFlussoA'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/idFlusso'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/direzioni'
