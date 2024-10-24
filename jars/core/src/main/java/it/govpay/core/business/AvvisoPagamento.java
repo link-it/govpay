@@ -47,11 +47,13 @@ import it.govpay.core.beans.tracciati.LinguaSecondaria;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.dao.pagamenti.exception.DocumentoNonDisponibileException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.InvalidSwitchValueException;
 import it.govpay.core.exceptions.PropertyNotFoundException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.LabelAvvisiProperties;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.stampe.AvvisoPagamentoUtils;
 import it.govpay.core.utils.stampe.AvvisoPagamentoV2Utils;
 import it.govpay.model.Stampa;
@@ -348,6 +350,13 @@ public class AvvisoPagamento {
 				throw new UnprocessableEntityException(MessageFormat.format("Non sono state trovate pendenze da includere nella stampa del documento [IDA2A: {0} | CodDocumento: {1}].", codApplicazione, documento.getCodDocumento()));
 			} else {
 				throw new UnprocessableEntityException(MessageFormat.format("I numeri avviso indicati [{0}] non individuano alcuna pendenza valida da includere nella stampa del documento [IDA2A: {1} | CodDocumento: {2}].", StringUtils.join(numeriAvviso,","), codApplicazione, documento.getCodDocumento()));
+			}
+		}
+		
+		// #728 verifico che non siano presenti MBT
+		for (Versamento versamento : versamenti) {
+			if(VersamentoUtils.isPendenzaMBT(versamento, configWrapper)) {
+				throw new DocumentoNonDisponibileException("Stampa Documento non disponibile: sono presenti dei pagamenti di Marca da Bollo");
 			}
 		}
 

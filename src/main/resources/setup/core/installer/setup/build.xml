@@ -28,7 +28,7 @@
         <java classname="org.openspcoop2.utils.crypt.Password" fork="true" outputproperty="antinstaller_principal_pwd_md5">
                 <arg value="${antinstaller_principal_pwd}" />
                 <classpath>
-                        <path location="${librerie}/shared/openspcoop2_utils-crypt-3.2.0.jar"/>
+                        <path location="${librerie}/shared/openspcoop2_utils-crypt-3.2.1.jar"/>
                 </classpath>
         </java>
 	

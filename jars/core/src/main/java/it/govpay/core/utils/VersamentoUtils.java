@@ -705,23 +705,10 @@ public class VersamentoUtils {
 		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 
 		int index = 1;
-		boolean hasBollo = false;
 		for(it.govpay.core.beans.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ , configWrapper));
 			
-			if(!hasBollo) {
-				if(singoloVersamento.getBolloTelematico() != null) {
-					hasBollo = true;
-				}
-			}
-		}
-		
-		// in un versamento multivoce non si puo' passare il numero avviso
-		// #364 / #448 2022/02/03 rilassato vincolo di caricamento pendenza multivoce con numero avviso solo non esiste una voce di tipo MBT
-		if(hasBollo) {
-			if(versamento.getSingoloVersamento().size() > 1 && StringUtils.isNotEmpty(versamento.getNumeroAvviso())) {
-				throw new GovPayException(EsitoOperazione.VER_031);
-			}			
+			// #728 Eliminato controllo presenza MBT in caso di multivoce con numeroavviso passato come input, nel modello unico e' possibile avere il numero avviso con la MBT.
 		}
 
 		model.setTassonomia(versamento.getTassonomia());
@@ -1237,23 +1224,8 @@ public class VersamentoUtils {
 	}
 	
 	public static boolean generaIUV(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
-		
-		boolean hasBollo = false;
-		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti()) {
-			if(!hasBollo) {
-				if(singoloVersamento.getTipoBollo() != null && singoloVersamento.getHashDocumento() != null && singoloVersamento.getProvinciaResidenza() != null) {
-					hasBollo = true;
-				}
-			}
-		}
-		
-		// se non c'e' una voce con il bollo devo semplicemente controllare che non me lo passino
-		if(!hasBollo) {
-			return versamento.getNumeroAvviso() == null;
-		} else {
-		// altrimenti non si genera
-			return false;
-		}
+		// #728 Lo iuv si deve generare sempre se non viene passato un numero avviso come input.
+		return versamento.getNumeroAvviso() == null;
 	}
 	
 	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
@@ -1299,7 +1271,6 @@ public class VersamentoUtils {
 				if(!dominioSV.getCodDominio().equals(dominio.getCodDominio()))
 					return dominioSV;
 				
-//				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
 			} catch (NotFoundException e) {
 				// se passo qui ho fallito la validazione della pendenza !
 				throw new ServiceException(MessageFormat.format("Dominio [{0}] non censito in base dati.", singoloVersamento.getIdDominio()));

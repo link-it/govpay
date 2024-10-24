@@ -157,6 +157,7 @@ public abstract class BasicClientCORE {
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
 	private String tipoEventoCustom;
+//	protected TipoDestinatario tipoDestinatario;
 	
 	private Oauth2ClientCredentialsManager oauth2ClientCredentialsManager = Oauth2ClientCredentialsManager.getInstance();
 
@@ -183,7 +184,7 @@ public abstract class BasicClientCORE {
 	protected SSLSocketFactory sslContextFactory;
 
 	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione, EventoContext eventoCtx) throws ClientInitializeException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(), eventoCtx);
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(), eventoCtx, TipoDestinatario.INTERMEDIARIO);
 		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
@@ -195,7 +196,7 @@ public abstract class BasicClientCORE {
 	}
 
 	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione(), eventoCtx);
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione(), eventoCtx, TipoDestinatario.APPLICAZIONE);
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
@@ -207,10 +208,10 @@ public abstract class BasicClientCORE {
 	}
 
 	protected BasicClientCORE(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this(tipoDestinatario +"_" + operazioneSwagger, connettore, eventoCtx);
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore, eventoCtx, tipoDestinatario);
 		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
-		destinatario = "APP_IO";
+		destinatario = tipoDestinatario.toString();
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
@@ -218,22 +219,20 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
-	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx);
+	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore,  TipoDestinatario tipoDestinatario, ConnettoreNotificaPagamenti connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx, tipoDestinatario);
 		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
 		mittente = "GovPay";
-		destinatario = "ServizioMyPivot";
+		destinatario = "Servizio" + tipoDestinatario.toString();
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(tipoConnettore);
-		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
-	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
-		this.readTimeout = GovpayConfig.getInstance().getReadTimeout();
-		this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeout();
-		this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeout();
+	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx, TipoDestinatario tipoDestinatario) throws ClientInitializeException {
+		impostaTimeoutConnessione(tipoDestinatario);
 		
 		this.dumpRequest = new DumpRequest();
 		this.dumpResponse = new DumpResponse();
@@ -361,6 +360,38 @@ public abstract class BasicClientCORE {
 		// Oauth2 Client Credentials
 		if(connettore.getTipoAutenticazione().equals(EnumAuthType.OAUTH2_CLIENT_CREDENTIALS)) {
 			this.isOauth2ClientCredentialsEnabled = true;
+		}
+	}
+
+	private void impostaTimeoutConnessione(TipoDestinatario tipoDestinatario) {
+		switch (tipoDestinatario) {
+		case INTERMEDIARIO:
+		case CHECKOUT_PAGOPA:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutPagoPA();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutPagoPA();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutPagoPA();
+			break;
+		case APPLICAZIONE:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutEnte();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutEnte();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutEnte();
+			break;
+		case APP_IO:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutAppIO();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutAppIO();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutAppIO();
+			break;
+		case MAGGIOLI_JPPA:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutMaggioliJPPA();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutMaggioliJPPA();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutMaggioliJPPA();
+			break;
+		case GOVPAY:
+		default:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeout();
+			break;
 		}
 	}
 

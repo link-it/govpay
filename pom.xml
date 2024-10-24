@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.7.7</version>
+	<version>3.7.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -54,7 +54,7 @@
 		<guava.version>33.2.1-jre</guava.version>
 		
 		<!-- cxf -->
-		<cxf.version>3.5.8</cxf.version>
+		<cxf.version>3.5.9</cxf.version>
 		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 		
 		<!-- jackson -->
@@ -64,10 +64,10 @@
 		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.3.36</spring.version>
+		<spring.version>5.3.39</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.8.12</spring.security.version>
+		<spring.security.version>5.8.13</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.1</spring.ldap.version>
@@ -208,6 +208,13 @@
         	nel metodo chiamante. Nella funzionalita' di controllo delle autorizzazioni sulle UO e' il valore null e il valore 'lista vuota' hanno due significati completamente distinti nel decidere le autorizzazioni di un'utenza. -->
         <sonar.issue.ignore.multicriteria.coreFP4.ruleKey>java:S1168</sonar.issue.ignore.multicriteria.coreFP4.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP4.resourceKey>**/src/main/java/it/govpay/core/autorizzazione/AuthorizationManager.java</sonar.issue.ignore.multicriteria.coreFP4.resourceKey>
+        
+        <!-- owasp config -->
+		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
+		<owasp.plugin.version>10.0.3</owasp.plugin.version>
+		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
+		<owasp.plugin.failBuildOnAnyVulnerability>false</owasp.plugin.failBuildOnAnyVulnerability>
+		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
         
 	</properties>
 
@@ -1446,35 +1453,49 @@
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
-				<version>8.1.2</version>
+				<version>${owasp.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>check owasp</id>
-						<phase>verify</phase>
+						<phase>${owasp}</phase>
 						<configuration>
-							<autoUpdate>true</autoUpdate>
-							<failBuildOnAnyVulnerability>false</failBuildOnAnyVulnerability>
+							<autoUpdate>${owasp.plugin.autoUpdate}</autoUpdate>
+							<failBuildOnAnyVulnerability>${owasp.plugin.failBuildOnAnyVulnerability}</failBuildOnAnyVulnerability>
 							<!-- <failBuildOnCVSS>8</failBuildOnCVSS> -->
 							<!-- <outputDirectory></outputDirectory> -->
 <!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
-                            	<suppressionFile>${owasp.falsePositives.dir}/installer.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/console-backoffice.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/JSON-20240303.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/swagger-parser-safe-url-resolver-2.1.22.xml</suppressionFile>
-                            	
+                            	<suppressionFile>${owasp.falsePositives.dir}/openspcoop2_utils-crypt.xml</suppressionFile>
                             </suppressionFiles>
+                            <nvdApiDelay>120000</nvdApiDelay><!-- 2 minuti -->
+							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>		
+	        <plugin>
+	            <groupId>com.github.spotbugs</groupId>
+	            <artifactId>spotbugs-maven-plugin</artifactId>
+	            <version>4.8.6.0</version>
+	            <configuration>
+<!--	                <includeFilterFile>spotbugs-security-include.xml</includeFilterFile>-->
+<!--	                <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>-->
+	                <plugins>
+	                    <plugin>
+	                        <groupId>com.h3xstream.findsecbugs</groupId>
+	                        <artifactId>findsecbugs-plugin</artifactId>
+	                        <version>1.12.0</version>
+	                    </plugin>
+	                </plugins>
+	            </configuration>
+	        </plugin>
 		</plugins>
 	</build>
 	<repositories>

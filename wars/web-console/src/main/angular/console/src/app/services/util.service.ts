@@ -137,7 +137,8 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
-    INCASSATA: 'Riconciliata'
+    INCASSATA: 'Riconciliata',
+    ANOMALA: 'Anomala'
   };
 
   //STATI RPP PAGAMENTI
@@ -958,35 +959,44 @@ export class UtilService {
   onError(error: any, customMessage?: string) {
     let _msg = 'Warning: status ' + error.status;
     try {
+		let _error = this.blobToJson(error.error);	
+		
       switch(error.status) {
         case 401:
           UtilService.cleanUser();
-          if(error.error) {
-            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
+          if(_error) {
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
           } else {
             _msg = 'Accesso al servizio non autorizzato. Autenticarsi per avviare la sessione.';
           }
           break;
         case 403:
-          if(!error.error) {
+          if(!_error) {
             UtilService.cleanUser();
             _msg = 'Accesso non autorizzato. Sessione non valida.';
           } else {
-            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
           }
           break;
         case 404:
           _msg = 'Servizio non disponibile.';
           break;
+      case 422:
+		  if(!_error) {
+            _msg = 'Operazione non disponibile.';
+          } else {
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
+          }
+          break;
         case 500:
           _msg = 'Errore interno del server.';
           break;
         case 504:
-          _msg = (error.error)?error.error:'Gateway Timeout.';
+          _msg = (_error)?_error:'Gateway Timeout.';
           break;
         default:
-          if(error.error) {
-            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
+          if(_error) {
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
           } else {
             _msg = customMessage?customMessage:error.message;
           }
@@ -999,6 +1009,26 @@ export class UtilService {
     }
     this.alert(_msg);
   }
+  
+  blobToJson(_blob : any): any {
+	if(_blob instanceof Blob){
+		let contentType = _blob.type;
+		
+	    const url = URL.createObjectURL(_blob);
+	    let xmlRequest = new XMLHttpRequest();
+	    xmlRequest.open('GET', url, false);
+	    xmlRequest.send();
+	    URL.revokeObjectURL(url);
+	    let _res = xmlRequest.responseText;
+	    
+	    if(contentType === 'application/json' || contentType === 'application/problem+json') {
+			return JSON.parse(_res);
+		}
+	    return _res;
+    }
+    
+    return _blob;
+   }
 
   /**
    *
@@ -2056,6 +2086,37 @@ export class UtilService {
     }
     return result;
   }
+  
+  public static navToIuv(numeroAvviso: any) {
+      try {
+          if (numeroAvviso == null) {
+              return null;
+          }
+
+          if (numeroAvviso.length !== 18) {
+              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: Consentite 18 cifre trovate [${numeroAvviso.length}].`);
+          }
+
+          if (!/^\d+$/.test(numeroAvviso)) {
+              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: non è in formato numerico.`);
+          }
+
+          if (numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
+              return numeroAvviso.substring(3);
+          } else if (numeroAvviso.startsWith("1")) { // '1' + reference(17)
+              return numeroAvviso.substring(1);
+          } else if (numeroAvviso.startsWith("2")) { // '2' + ref(15) + check(2)
+              return numeroAvviso.substring(1);
+          } else if (numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+              return numeroAvviso.substring(1);
+          } else {
+              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: prima cifra non è [0|1|2|3]`);
+          }
+      } catch (error) {
+          //console.error(error.message); // Facoltativo, log dell'errore per debugging
+          return numeroAvviso; // Restituisci il valore di input in caso di errore
+      }
+  }
 
   /**
    * Caricamenti asincroni
@@ -2267,5 +2328,9 @@ export class UtilService {
       exportLabel: _exportLabel,
       quoteCount : _quoteCount
     };
+  }
+  
+  isPendenzaMBT(_json: any) : boolean{
+	return _json.voci.some((voce: any) => voce.provinciaResidenza && voce.provinciaResidenza != null);
   }
 }

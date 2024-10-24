@@ -22,8 +22,8 @@ Scenario: Numero avviso su multivoce
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
 * match response contains { dati: '##null'}
-* match response.faultBean == esitoAttivaRPT
-* match response.faultBean.description contains 'numero avviso per una pendenza di tipo multivoce'
+* match response.faultBean == {"faultCode":"PAA_SEMANTICA","faultString":"Errore semantico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
+* match response.faultBean.description contains 'Il versamento contiene piu\' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.'
 
 Scenario Outline: <field> non valida
 

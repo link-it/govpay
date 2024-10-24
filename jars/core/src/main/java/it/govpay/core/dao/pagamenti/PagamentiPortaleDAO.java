@@ -403,9 +403,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			// il checkout si puo' utilizzare solo se la funzionalita' e' abilitata e la stazione e' V2
 			if(GovpayConfig.getInstance().isCheckoutEnabled() && stazione != null ) {
 				// check versione
-				if(stazione.getVersione().equals(Versione.V2)) {
+				Versione versioneStazione = stazione.getVersione();
+				if(versioneStazione.equals(Versione.V2)) {
 
-					log.debug("La stazione utilizzata ["+stazione.getCodStazione()+"] ha versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA...");
+					String codStazione = stazione.getCodStazione();
+					log.debug("La stazione utilizzata [{}] ha versione [{}], invocazione verso il Checkout PagoPA...", codStazione, versioneStazione);
 					String email = null;
 
 					// urlritorno obbligatoria
@@ -418,20 +420,28 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					log.debug("Controllo esistenza del numero avviso per tutte le pendenze in corso...");
 					for(Versamento versamento : versamenti) {
 						// Aggiorno tutti i versamenti che mi sono stati passati
-						if(versamento.getId() == null) {
-							log.debug("Pendenza [idA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", idPendenza: "+versamento.getCodVersamentoEnte()+"] non presente nel sistema, caricamento in corso...");
-							versamentiBusiness.caricaVersamento(versamento, true, true, false, null, pagamentiPortaleBD);
-							log.debug("Pendenza [idA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", idPendenza: "+versamento.getCodVersamentoEnte()+"] caricamento e generazione del numero avviso (se previsto) completati.");
+						String codVersamentoEnte = versamento.getCodVersamentoEnte();
+						String codApplicazione = versamento.getApplicazione(configWrapper).getCodApplicazione();
+						boolean create = versamento.getId() == null;
+						String msg = create ? "caricamento" : "aggiornamento";
+						if(!create) {
+							// lettura dei singoli versamenti
+							versamento.getSingoliVersamenti(configWrapper);
 						}
-						log.debug("Pendenza [idA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", idPendenza: "+versamento.getCodVersamentoEnte()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"].");
+						log.debug("Pendenza [idA2A:{}, idPendenza: {}] {} in corso...", codApplicazione, codVersamentoEnte, msg);
+						versamentiBusiness.caricaVersamento(versamento, true, true, false, null, pagamentiPortaleBD);
+						log.debug("Pendenza [idA2A:{}, idPendenza: {}] {} e generazione del numero avviso (se previsto) completati: NAV: {}", codApplicazione, codVersamentoEnte, msg, versamento.getNumeroAvviso());
 					}
 					log.debug("Controllo esistenza del numero avviso per tutte le pendenze completato.");
 
 					response.setId("0");
-					response.setRedirect(true); 
+					response.setIdSessione("0");
+					response.setIdSessionePsp("0");
+					// indico se restituire un redirect o un json
+					response.setRedirect(GovpayConfig.getInstance().isCheckoutResponseSendRedirectEnabled()); 
 
 					String checkoutBaseUrl = GovpayConfig.getInstance().getCheckoutBaseURL();
-					log.debug("Url Base Checkout: " + checkoutBaseUrl);
+					log.debug("Url Base Checkout: {}", checkoutBaseUrl);
 					String operationId = appContext.setupAppIOClient(CheckoutClient.SWAGGER_OPERATION_POST_CARTS_OPERATION_ID, checkoutBaseUrl);
 
 					// Esecuizione della chiamata verso PagoPA
@@ -443,16 +453,17 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						CheckoutClient checkoutClient = new CheckoutClient(CheckoutClient.SWAGGER_OPERATION_POST_CARTS_OPERATION_ID, checkoutBaseUrl, operationId, giornale, new EventoContext(Componente.API_PAGOPA));
 						String location = checkoutClient.inviaCartRequest(cartRequest);
 
-						log.debug("Stazione ["+stazione.getCodStazione()+"] versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA completata, ricevuta URL redirect ["+location+"]");
+						log.debug("Stazione [{}] versione [{}], invocazione verso il Checkout PagoPA completata, ricevuta URL redirect [{}]", codStazione, versioneStazione, location);
 						response.setLocation(location);
+						response.setRedirectUrl(location);
 					} catch (UnsupportedEncodingException e) {
-						log.error("Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
+						this.logError("Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					} catch (ClientException e) {
-						log.error("Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						this.logError("Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					} catch (ClientInitializeException e) {
-						log.error("Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						this.logError("Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					}
 

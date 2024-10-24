@@ -8,18 +8,28 @@ pipeline {
     stage('cleanup') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
-        sh '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean'
+        sh '/opt/apache-maven-3.6.3/bin/mvn clean'
       }
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
         success {
           archiveArtifacts 'src/main/resources/setup/target/*.tgz'
         }
+      }
+    }
+    stage('dependency-check') {
+      steps {
+		dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      }
+    }
+    stage('spotbugs-analysis') {
+      steps {
+      	recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [spotBugs(id: 'spotbugs', name: 'SpotBugs', pattern: '**/target/spotbugsXml.xml', useRankAsPriority: true)]
       }
     }
     stage('install') {
@@ -31,7 +41,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test' 
+        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test' 
       }
       post {
         always {

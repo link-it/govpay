@@ -168,12 +168,28 @@ public class GovpayConfig {
 	private Integer numeroMassimoConnessioniPerPool;
 	private Integer numeroMassimoConnessioniPerRouteDefault;
 	
+	// timeout specifici per tipo connettore
+	private Integer connectionTimeoutPagoPA;
+	private Integer readTimeoutPagoPA;
+	private Integer connectionRequestTimeoutPagoPA;
+	private Integer connectionTimeoutEnte;
+	private Integer readTimeoutEnte;
+	private Integer connectionRequestTimeoutEnte;
+	private Integer connectionTimeoutAppIO;
+	private Integer readTimeoutAppIO;
+	private Integer connectionRequestTimeoutAppIO;
+	private Integer connectionTimeoutMaggioliJPPA;
+	private Integer readTimeoutMaggioliJPPA;
+	private Integer connectionRequestTimeoutMaggioliJPPA;
+	
+	
 	private Integer numeroMassimoGiorniRPTPendenti;
 	
 	private String templateQuietanzaPagamento;
 	
 	private String checkoutBaseURL;
 	private boolean checkoutEnabled;
+	private boolean checkoutResponseSendRedirectEnabled;
 	
 	private boolean conversioneMessaggiPagoPAV2NelFormatoV1;
 	
@@ -269,6 +285,18 @@ public class GovpayConfig {
 		this.connectionRequestTimeout = 180000;
 		this.numeroMassimoConnessioniPerRouteDefault = 20;
 		this.numeroMassimoConnessioniPerPool = 200;
+		this.readTimeoutPagoPA = 180000;
+		this.connectionTimeoutPagoPA = 10000;
+		this.connectionRequestTimeoutPagoPA = 180000;
+		this.readTimeoutEnte = 5000;
+		this.connectionTimeoutEnte = 2000;
+		this.connectionRequestTimeoutEnte = 1000;
+		this.readTimeoutAppIO = 180000;
+		this.connectionTimeoutAppIO = 10000;
+		this.connectionRequestTimeoutAppIO = 180000;
+		this.readTimeoutMaggioliJPPA = 180000;
+		this.connectionTimeoutMaggioliJPPA = 10000;
+		this.connectionRequestTimeoutMaggioliJPPA = 180000;
 		
 		this.aggiornamentoValiditaMandatorio = false;
 		
@@ -278,6 +306,7 @@ public class GovpayConfig {
 		
 		this.checkoutBaseURL = null;
 		this.checkoutEnabled = false;
+		this.checkoutResponseSendRedirectEnabled = false;
 		
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
 		
@@ -787,6 +816,105 @@ public class GovpayConfig {
 				this.numeroMassimoConnessioniPerRouteDefault = 20;
 			}
 			
+			String connectTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutPagoPA = Integer.parseInt(connectTimeoutPagoPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.pagopa.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutPagoPA = 10000;
+			}
+			
+			String readTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutPagoPA = Integer.parseInt(readTimeoutPagoPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.pagopa.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutPagoPA = 180000;
+			}
+			
+			String connectionRequestTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutPagoPA = Integer.parseInt(connectionRequestTimeoutPagoPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.pagopa.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutPagoPA = 10000;
+			}
+			
+			String connectTimeoutEnteString = getProperty("it.govpay.client.ente.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutEnte = Integer.parseInt(connectTimeoutEnteString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.ente.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutEnte = 10000;
+			}
+			
+			String readTimeoutEnteString = getProperty("it.govpay.client.ente.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutEnte = Integer.parseInt(readTimeoutEnteString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.ente.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutEnte = 180000;
+			}
+			
+			String connectionRequestTimeoutEnteString = getProperty("it.govpay.client.ente.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutEnte = Integer.parseInt(connectionRequestTimeoutEnteString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.ente.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutEnte = 10000;
+			}
+			
+			String connectTimeoutAppIOString = getProperty("it.govpay.client.appio.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutAppIO = Integer.parseInt(connectTimeoutAppIOString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.appio.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutAppIO = 10000;
+			}
+			
+			String readTimeoutAppIOString = getProperty("it.govpay.client.appio.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutAppIO = Integer.parseInt(readTimeoutAppIOString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.appio.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutAppIO = 180000;
+			}
+			
+			String connectionRequestTimeoutAppIOString = getProperty("it.govpay.client.appio.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutAppIO = Integer.parseInt(connectionRequestTimeoutAppIOString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.appio.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutAppIO = 10000;
+			}
+			
+			String connectTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutMaggioliJPPA = Integer.parseInt(connectTimeoutMaggioliJPPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.maggioli.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutMaggioliJPPA = 10000;
+			}
+			
+			String readTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutMaggioliJPPA = Integer.parseInt(readTimeoutMaggioliJPPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.maggioli.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutMaggioliJPPA = 180000;
+			}
+			
+			String connectionRequestTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutMaggioliJPPA = Integer.parseInt(connectionRequestTimeoutMaggioliJPPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.maggioli.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutMaggioliJPPA = 10000;
+			}
+			
+			
+			
+			
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
 				this.aggiornamentoValiditaMandatorio = true;
@@ -822,6 +950,10 @@ public class GovpayConfig {
 			String checkoutEnabledString = getProperty("it.govpay.checkout.enabled", this.props, false, log);
 			if(checkoutEnabledString != null && Boolean.valueOf(checkoutEnabledString))
 				this.checkoutEnabled = true;
+			
+			String checkoutResponseSendRedirectEnabledString = getProperty("it.govpay.checkout.response.sendRedirect.enabled", this.props, false, log);
+			if(checkoutResponseSendRedirectEnabledString != null && Boolean.valueOf(checkoutResponseSendRedirectEnabledString))
+				this.checkoutResponseSendRedirectEnabled = true;
 
 			String conversioneMessaggiPagoPAV2NelFormatoV1String = getProperty("it.govpay.retrocompatibilitaMessaggiPagoPA.v1.enable", this.props, false, log);
 			if(conversioneMessaggiPagoPAV2NelFormatoV1String != null && Boolean.valueOf(conversioneMessaggiPagoPAV2NelFormatoV1String))
@@ -1289,6 +1421,54 @@ public class GovpayConfig {
 		return numeroMassimoConnessioniPerRouteDefault;
 	}
 	
+	public Integer getConnectionTimeoutPagoPA() {
+		return connectionTimeoutPagoPA;
+	}
+	
+	public Integer getReadTimeoutPagoPA() {
+		return readTimeoutPagoPA;
+	}
+	
+	public Integer getConnectionRequestTimeoutPagoPA() {
+		return connectionRequestTimeoutPagoPA;
+	}
+	
+	public Integer getConnectionTimeoutEnte() {
+		return connectionTimeoutEnte;
+	}
+	
+	public Integer getReadTimeoutEnte() {
+		return readTimeoutEnte;
+	}
+	
+	public Integer getConnectionRequestTimeoutEnte() {
+		return connectionRequestTimeoutEnte;
+	}
+	
+	public Integer getConnectionTimeoutAppIO() {
+		return connectionTimeoutAppIO;
+	}
+	
+	public Integer getReadTimeoutAppIO() {
+		return readTimeoutAppIO;
+	}
+	
+	public Integer getConnectionRequestTimeoutAppIO() {
+		return connectionRequestTimeoutAppIO;
+	}
+	
+	public Integer getConnectionTimeoutMaggioliJPPA() {
+		return connectionTimeoutMaggioliJPPA;
+	}
+	
+	public Integer getReadTimeoutMaggioliJPPA() {
+		return readTimeoutMaggioliJPPA;
+	}
+	
+	public Integer getConnectionRequestTimeoutMaggioliJPPA() {
+		return connectionRequestTimeoutMaggioliJPPA;
+	}
+	
 	public Integer getTimeoutInvioRPTModello3Millis() {
 		return timeoutInvioRPTModello3Millis;
 	}
@@ -1303,6 +1483,10 @@ public class GovpayConfig {
 	
 	public boolean isCheckoutEnabled() {
 		return checkoutEnabled;
+	}
+	
+	public boolean isCheckoutResponseSendRedirectEnabled() {
+		return checkoutResponseSendRedirectEnabled;
 	}
 	
 	public boolean isConversioneMessaggiPagoPAV2NelFormatoV1() {

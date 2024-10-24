@@ -33,26 +33,26 @@ set LIBRARIES=%ROOT_OPENSPCOOP%\installer\lib
 set ANTINSTALLER_LIBRARIES=%LIBRARIES%\antinstaller
 
 REM # Installer from command line classpath
-set CLASSPATH=%LIBRARIES%\shared\xercesImpl-2.9.1.jar
+set CLASSPATH=%LIBRARIES%\shared\xercesImpl-2.12.2.jar
 set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\xml-apis_antinstaller0.8b.jar
 set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-installer-0.8b.jar
 set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ai-icons-eclipse_antinstaller0.8b.jar
 
 REM # JGoodies Look And Feel
-set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\jgoodies-edited-1_2_2.jar
+set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\jgoodies-edited-1.2.2-gov4j-1.jar
 
 REM # minimal ANT classpath requirements
-set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-1.8.0.jar
-set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-launcher-1.8.0.jar
+set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-1.10.11.jar
+set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-launcher-1.10.11.jar
 set CLASSPATH=%CLASSPATH%;%ROOT_OPENSPCOOP%\installer\setup\deploy\resources
 
 REM # minimal regular expression env
-set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-apache-regexp-1.8.0.jar
+set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-apache-regexp-1.10.11.jar
 set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\jakarta-regexp-1.5.jar
 
 REM # unix tasks
-set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-nodeps-1.8.0.jar
-set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-trax.jar
+REM # set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-nodeps-1.8.0.jar
+REM # set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-trax.jar
 
 %COMMAND% -classpath %CLASSPATH%  org.tp23.antinstaller.runtime.ExecInstall %INTERFACE% %ROOT_OPENSPCOOP%\installer\setup
 

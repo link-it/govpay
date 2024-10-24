@@ -34,6 +34,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
+import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
@@ -55,7 +56,7 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 	private static ObjectFactory objectFactory;
 
 	public MaggioliJPPAClient(Dominio dominio, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
-		super(dominio, TipoConnettore.MAGGIOLI_JPPA, connettore, eventoCtx);
+		super(dominio, TipoConnettore.MAGGIOLI_JPPA, TipoDestinatario.MAGGIOLI_JPPA, connettore, eventoCtx);
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
@@ -74,7 +75,7 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 		this.operationID = operationID;
 	}
 
-	public CtRispostaStandard send(String azione, byte[] body) throws GovPayException, ClientException, UtilsException {
+	public CtRispostaStandard send(String azione, byte[] body) throws ClientException, UtilsException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -117,7 +118,7 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 		}
 	}
 	
-	public CtRispostaStandard maggioliJPPAInviaEsitoPagamentoRichiesta(CtRichiestaStandard richiestaStandard) throws GovPayException, ClientException, UtilsException {
+	public CtRispostaStandard maggioliJPPAInviaEsitoPagamentoRichiesta(CtRichiestaStandard richiestaStandard) throws ClientException, UtilsException {
 		byte [] body = MaggioliJPPAUtils.getBody(true, objectFactory.createInviaEsitoPagamentoRichiesta(richiestaStandard), null);
 		this.setTipoEventoCustom(Azione.maggioliInviaEsitoPagamento.toString());
 		return this.send(SOAP_ACTION_INVIA_ESITO_PAGAMENTO, body);

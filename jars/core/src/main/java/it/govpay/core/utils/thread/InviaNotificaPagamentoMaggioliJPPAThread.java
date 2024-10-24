@@ -203,7 +203,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			this.esito = StEsito.ERROR.toString();
 			this.descrizioneEsito = e.getMessage();
 			this.exception = e;
-		} catch (GovPayException | UtilsException | DatatypeConfigurationException e) {
+		} catch (UtilsException | DatatypeConfigurationException e) {
 			log.error("Errore nella spedizione della Notifica Pagamento", e);
 			if(eventoCtx != null) {
 				if(e instanceof GovPayException) {
