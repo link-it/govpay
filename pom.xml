@@ -7,21 +7,78 @@
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
-	<modules>
-		<module>jars</module>
-		<module>wars</module>
-		<module>ear</module>
-	</modules>
+	
 
 	<profiles>
 		<profile>
 			<activation>
            			<activeByDefault>true</activeByDefault>
         		</activation>
-			<id>java-21</id>
+			<id>govpay-ear</id>
 			<properties>
 				<javaVersion>21</javaVersion>
 			</properties>
+			<modules>
+				<module>jars</module>
+				<module>wars</module>
+				<module>ear</module>
+			</modules>
+			<dependencyManagement>
+				<dependencies>
+					<dependency>
+						<groupId>it.govpay</groupId>
+						<artifactId>ear</artifactId>
+						<version>${project.version}</version>
+						<type>ear</type>
+						<scope>compile</scope>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jboss.as.plugins</groupId>
+						<artifactId>jboss-as-maven-plugin</artifactId>
+						<version>7.6.Final</version>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>govpay-tomcat</id>
+			<properties>
+				<javaVersion>21</javaVersion>
+				<!-- Nomi dei war -->
+				<api-backoffice-tomcat-war-name>govpay-api-backoffice</api-backoffice-tomcat-war-name>
+				<api-jppapdp-tomcat-war-name>govpay-api-jppapdp</api-jppapdp-tomcat-war-name>
+				<api-pagamento-tomcat-war-name>govpay-api-pagamento</api-pagamento-tomcat-war-name>
+				<api-pagopa-tomcat-war-name>govpay-api-pagopa</api-pagopa-tomcat-war-name>
+				<api-pendenze-tomcat-war-name>govpay-api-pendenze</api-pendenze-tomcat-war-name>
+				<api-ragioneria-tomcat-war-name>govpay-api-ragioneria</api-ragioneria-tomcat-war-name>
+				<api-user-tomcat-war-name>govpay-api-user</api-user-tomcat-war-name>
+				<web-connector-tomcat-war-name>govpay-web-connector</web-connector-tomcat-war-name>
+				<web-console-tomcat-war-name>govpay-cnsole</web-console-tomcat-war-name>
+				
+				<!-- versioni jar -->
+				<angus-mail.version>2.0.3</angus-mail.version>
+			</properties>
+			<modules>
+				<module>jars</module>
+				<module>wars</module>
+			</modules>
+			<dependencyManagement>
+				<dependencies>
+					<dependency>
+						<groupId>org.eclipse.angus</groupId>
+    					<artifactId>angus-mail</artifactId>
+    					<version>${angus-mail.version}</version>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
 		</profile>
 	</profiles>
 
@@ -257,14 +314,6 @@
 				<artifactId>core</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>ear</artifactId>
-				<version>${project.version}</version>
-				<type>ear</type>
 				<scope>compile</scope>
 			</dependency>
 
@@ -1476,15 +1525,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.jboss.as.plugins</groupId>
-				<artifactId>jboss-as-maven-plugin</artifactId>
-				<version>7.6.Final</version>
-				<inherited>true</inherited>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 				<version>2.2.1</version>
@@ -1541,6 +1581,10 @@
 	                </plugins>
 	            </configuration>
 	        </plugin>
+	        <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
 		</plugins>
 	</build>
 	<repositories>

@@ -34,6 +34,7 @@ import java.util.TimeZone;
 import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.jcs3.engine.control.CompositeCacheManager;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.LoggerFactory;
@@ -51,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.xml.sax.SAXException;
 
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.utils.logger.Log4JUtils;
@@ -64,6 +66,7 @@ public class StartupUtils {
 	private StartupUtils() {}
 
 	private static boolean initialized = false;
+	private static boolean destroyed = false;
 	
 	public static synchronized IContext startup(Logger log, String warName, String govpayVersion, String buildVersion, 
 			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, String tipoServizioGovpay,
@@ -208,5 +211,47 @@ public class StartupUtils {
 	
 	public static String getGovpayVersion(String warName, String govpayVersion, String buildVersion) {
 		return warName + " " + govpayVersion + " (build " + buildVersion + ")";
+	}
+	
+	public static synchronized void stopServices(Logger log, String warName, String govpayVersion, String buildVersion, String dominioAnagraficaManager) throws RuntimeException {
+		
+		String versioneGovPay = getGovpayVersion(warName, govpayVersion, buildVersion);
+		if(!destroyed) {
+			
+			log.info("Shutdown {} in corso...", versioneGovPay);
+			
+			log.info("De-registrazione delle cache ...");
+			AnagraficaManager.unregister();
+			log.info("De-registrazione delle cache completato");
+			
+			log.info("Shutdown pool thread notifiche ...");
+			try {
+				ThreadExecutorManager.shutdown();
+				log.info("Shutdown pool thread notifiche completato.");
+			} catch (InterruptedException e) {
+				log.warn("Shutdown pool thread notifiche fallito: "+ e.getMessage(), e);
+				 // Restore interrupted state...
+			    Thread.currentThread().interrupt();
+			}
+			
+			// Arresto di JCS e dei thread associati
+	        CompositeCacheManager cacheManager = CompositeCacheManager.getInstance();
+	        if (cacheManager != null) {
+	            cacheManager.shutDown();
+	        }
+			
+			log.info("Shutdown del Connection Manager ...");
+			try {
+				ConnectionManager.shutdown();
+				log.info("Shutdown del Connection Manager completato.");
+			} catch (Exception e) {
+				log.warn("Errore nello shutdown del Connection Manager: " + e.getMessage(), e);
+			}
+			
+			log.info("Shutdown di {} completato.",versioneGovPay);
+			
+		}
+		
+		destroyed = true;
 	}
 }

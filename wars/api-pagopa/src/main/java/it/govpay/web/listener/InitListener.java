@@ -105,31 +105,33 @@ public class InitListener implements ServletContextListener {
 		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
 		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
 		
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
+		StartupUtils.stopServices(log, warName, InitConstants.GOVPAY_VERSION, commit, dominioAnagraficaManager);
 		
-		log.info("De-registrazione delle cache ...");
-		AnagraficaManager.unregister();
-		log.info("De-registrazione delle cache completato");
-		
-		log.info("Shutdown pool thread notifiche ...");
-		try {
-			ThreadExecutorManager.shutdown();
-			log.info("Shutdown pool thread notifiche completato.");
-		} catch (InterruptedException e) {
-			log.warn("Shutdown pool thread notifiche fallito:" + e);
-			 // Restore interrupted state...
-		    Thread.currentThread().interrupt();
-		}
-		
-		log.info("Shutdown del Connection Manager ...");
-		try {
-			ConnectionManager.shutdown();
-			log.info("Shutdown del Connection Manager completato.");
-		} catch (Exception e) {
-			log.warn("Errore nello shutdown del Connection Manager: " + e);
-		}
-		
-		log.info("Shutdown di "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
+//		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
+//		
+//		log.info("De-registrazione delle cache ...");
+//		AnagraficaManager.unregister();
+//		log.info("De-registrazione delle cache completato");
+//		
+//		log.info("Shutdown pool thread notifiche ...");
+//		try {
+//			ThreadExecutorManager.shutdown();
+//			log.info("Shutdown pool thread notifiche completato.");
+//		} catch (InterruptedException e) {
+//			log.warn("Shutdown pool thread notifiche fallito:" + e);
+//			 // Restore interrupted state...
+//		    Thread.currentThread().interrupt();
+//		}
+//		
+//		log.info("Shutdown del Connection Manager ...");
+//		try {
+//			ConnectionManager.shutdown();
+//			log.info("Shutdown del Connection Manager completato.");
+//		} catch (Exception e) {
+//			log.warn("Errore nello shutdown del Connection Manager: " + e);
+//		}
+//		
+//		log.info("Shutdown di "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
 
 	}
 

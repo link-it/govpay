@@ -404,13 +404,25 @@ public class TracciatiNotificaPagamenti {
 							Connection wrappedConnection = wrappedConn.getWrappedConnection();
 
 							Connection underlyingConnection = null;
+							
+							Method method = null;
 							try {
-								Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+								method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+								
+							} catch (NoSuchMethodException | SecurityException | IllegalArgumentException e) {
+								log.trace("Installazione WF con driver postgresql non installato come modulo oppure un'installazione tomcat: " + e.getMessage(), e);
+							} 
+							
+							try {
 
-								Object invoke = method.invoke(wrappedConnection);
-
-								underlyingConnection = (Connection) invoke;
-							} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+								if(method != null) {
+									Object invoke = method.invoke(wrappedConnection);
+									underlyingConnection = (Connection) invoke;
+								} else {
+									underlyingConnection = wrappedConnection;
+								}
+							
+							} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 								throw new ServiceException(e);
 							}

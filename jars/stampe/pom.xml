@@ -14,48 +14,6 @@
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Stampe</name>
 
-	<profiles>
-		<profile>
-			<id>java-21</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-
-			<dependencies>
-				<dependency>
-					<groupId>jakarta.xml.bind</groupId>
-					<artifactId>jakarta.xml.bind-api</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>*</groupId>
-							<artifactId>*</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.xml.bind</groupId>
-					<artifactId>jaxb-core</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>*</groupId>
-							<artifactId>*</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.xml.bind</groupId>
-					<artifactId>jaxb-impl</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>*</groupId>
-							<artifactId>*</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
-
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
@@ -111,10 +69,6 @@
 					<groupId>net.sf.barcode4j</groupId>
    					<artifactId>barcode4j</artifactId>
 				</exclusion>
-<!--				<exclusion>-->
-<!--					<groupId>javax.xml.bind</groupId>-->
-<!--   					<artifactId>jaxb-api</artifactId>-->
-<!--				</exclusion>-->
 				<exclusion>
 					<groupId>org.glassfish.jaxb</groupId>
    					<artifactId>jaxb-core</artifactId>
@@ -215,6 +169,37 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
    			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>

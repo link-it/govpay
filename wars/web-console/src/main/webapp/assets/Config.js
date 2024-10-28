@@ -17,7 +17,7 @@
   }
 
   function httpDocumentsRoot() {
-    return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni/documenti
+    return hostname() + '${it.govpay.backoffice.gui.documentBaseUrl}'; // Root URL informazioni/documenti
   }
 
   // Map key generators

@@ -102,8 +102,10 @@ public class InitListener implements ServletContextListener {
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
 		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
 		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
+		
+		StartupUtils.stopServices(log, warName, InitConstants.GOVPAY_VERSION, commit, dominioAnagraficaManager);
 
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
+//		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
 
 //		log.info("De-registrazione delle cache ...");
 //		AnagraficaManager.unregister();
@@ -117,6 +119,6 @@ public class InitListener implements ServletContextListener {
 //			log.warn("Errore nello shutdown del Connection Manager: " + e);
 //		}
 
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
+//		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
 	}
 }
