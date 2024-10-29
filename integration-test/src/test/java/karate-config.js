@@ -29,6 +29,13 @@ function() {
 			recaptcha_api_url: 'http://localhost:8888/recaptcha',
 			appio_api_url: 'http://localhost:8888/appio',
 			maggioli_url: 'http://localhost:8888/maggioli',
+			deploy_ear: true,
 	};
+	
+	if (env == 'tomcat') {
+		config.deploy_ear = false;
+		config.ndpsym_url = 'http://localhost:8180/govpay-ndpsym';
+	}
+	
 	return config;
 }

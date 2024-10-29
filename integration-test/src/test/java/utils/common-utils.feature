@@ -22,10 +22,15 @@ Scenario:
   * def getGovPayApiBaseUrl =
     """
 		function(param) {
-			if (param.api == 'pagamento' || param.api == 'user')
-				return govpay_url + '/govpay/frontend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
-			else
-				return govpay_url + '/govpay/backend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
+			if(deploy_ear){
+				if (param.api == 'pagamento' || param.api == 'user')
+					return govpay_url + '/govpay/frontend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
+				else
+					return govpay_url + '/govpay/backend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
+			} else {
+					return govpay_url + '/govpay-api-' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
+			}
+			
 		}
     """
     
