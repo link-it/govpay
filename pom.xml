@@ -67,7 +67,7 @@
 		<spring.version>5.3.39</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.8.13</spring.security.version>
+		<spring.security.version>5.8.15</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.1</spring.ldap.version>
