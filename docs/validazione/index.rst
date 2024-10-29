@@ -16,6 +16,23 @@ Falsi positivi
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
 
+CVE-2024-38820
+==============
+
+Libreria: org.springframework:\* < 5.3.41
+
+La vulnerabilità indicata viene descritta come segue: `The fix for CVE-2022-22968 made disallowedFields patterns in DataBinder case insensitive. However, String.toLowerCase() has some Locale dependent exceptions that could potentially result in fields not protected as expected.`
+
+Nel progetto vengono utilizzate delle versioni ricompilate dei seguenti jar:
+- spring-beans-5.3.39-gov4j-1.jar
+- spring-context-5.3.39-gov4j-1.jar
+- spring-context-support-5.3.39-gov4j-1.jar
+- spring-core-5.3.39-gov4j-1.jar
+- spring-expression-5.3.39-gov4j-1.jar
+- spring-web-5.3.39-gov4j-1.jar
+La tag version 'v5.3.39' è stata modificata per riportare il `contenuto delle modifiche <https://github.com/spring-projects/spring-framework/commit/23656aebc6c7d0f9faff1080981eb4d55eff296c.diff>`_ evidenziate nel commit `23656ae <https://github.com/spring-projects/spring-framework/commit/23656aebc6c7d0f9faff1080981eb4d55eff296c>`_ sul progetto github `spring-projects/spring-framework <https://github.com/spring-projects/spring-framework>`_. Il commit `23656ae <https://github.com/spring-projects/spring-framework/commit/23656aebc6c7d0f9faff1080981eb4d55eff296c>`_ contiene il fix *'Use Locale.ROOT consistently for toLower/toUpperCase'* riferito nel `advisory-database di github <https://github.com/github/advisory-database/pull/4946>`_ come risoluzione per `CVE-2024-38820 <https://github.com/advisories/GHSA-4gc7-5j7h-4qph>`_.
+All'interno degli archivi jar è possibile trovare i file diff (5.3.39.diff, 5.3.39.adjunctToLowerCase.diff, 5.3.39.adjunctToUpperCase.diff, 5.3.9.compileJava11.diff) applicati sui sorgenti del tag 'v5.3.39' oltre ai sorgenti '\.java' delle classi modificate.
+
 CVE-2020-5408
 =============
 
