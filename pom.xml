@@ -1565,6 +1565,7 @@
 <!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
+								<suppressionFile>${owasp.falsePositives.dir}/CVE-2023-30614.xml</suppressionFile>
 								<suppressionFile>${owasp.falsePositives.dir}/CVE-2024-38820.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
