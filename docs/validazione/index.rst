@@ -16,6 +16,14 @@ Falsi positivi
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
 
+CVE-2023-30614
+==============
+
+file name: pom.xml
+
+La vulnerabilità indicata si riferisce alla libreria `Pay is a payments engine for Ruby on Rails 6.0 and higher` non utilizzata in GovPay.
+
+
 CVE-2024-38820
 ==============
 
