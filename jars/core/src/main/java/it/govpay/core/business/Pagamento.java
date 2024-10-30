@@ -35,12 +35,10 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.TipoRPTPendente;
@@ -50,14 +48,12 @@ import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.EventiBD;
-import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
@@ -65,29 +61,18 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
-import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
-import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
-import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.EventoUtils;
-import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
-import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
-import it.govpay.core.utils.thread.InviaNotificaThread;
-import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.configurazione.Giornale;
 
 public class Pagamento   {
@@ -95,6 +80,7 @@ public class Pagamento   {
 	private static Logger log = LoggerWrapperFactory.getLogger(Pagamento.class);
 
 	public Pagamento() {
+		// donothing
 	}
 
 	public String verificaTransazioniPendenti() throws GovPayException {
@@ -117,7 +103,6 @@ public class Pagamento   {
 
 				Intermediario intermediario = stazione.getIntermediario(configWrapper);
 
-				//this.closeConnection();
 				ctx.getApplicationLogger().log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug(MessageFormat.format("Recupero i pendenti [CodStazione: {0}]", stazione.getCodStazione()));
 
@@ -141,7 +126,6 @@ public class Pagamento   {
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
-				//	this.setupConnection(ContextThreadLocal.get().getTransactionId());
 
 				RptBD rptBD = new RptBD(configWrapper);
 
@@ -403,185 +387,6 @@ public class Pagamento   {
 			}
 		}
 		return statiRptPendenti;
-	}
-
-	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException, IOException, NotificaException {
-		IContext ctx = ContextThreadLocal.get();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		GpContext appContext = (GpContext) ctx.getApplicationContext();
-		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
-		Rpt rpt = null;
-		Giornale giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
-		try {
-			RptBD rptBD = new RptBD(configWrapper);
-			rpt = rptBD.getRpt(dto.getCodDominio(), dto.getIuv(), dto.getCcp(), true);
-
-			if(dto.getPagamento() == null || dto.getPagamento().isEmpty()) {
-				for(it.govpay.bd.model.Pagamento pagamento : rpt.getPagamenti()) {
-					if(pagamento.getImportoRevocato() != null) continue;
-					pagamento.setCausaleRevoca(dto.getCausaleRevoca());
-					pagamento.setDatiRevoca(dto.getDatiAggiuntivi());
-					ctx.getApplicationLogger().log("rr.stornoPagamentoRichiesto", pagamento.getIur(), pagamento.getImportoPagato().toString());
-					pagamentiDaStornare.add(pagamento);
-				}
-			} else {
-				for(AvviaRichiestaStornoDTO.Pagamento p : dto.getPagamento()) {
-					it.govpay.bd.model.Pagamento pagamento = rpt.getPagamento(p.getIur());
-					if(pagamento.getImportoRevocato() != null) 
-						throw new GovPayException(EsitoOperazione.PAG_009, p.getIur());
-					pagamento.setCausaleRevoca(p.getCausaleRevoca());
-					pagamento.setDatiRevoca(p.getDatiAggiuntivi());
-					ctx.getApplicationLogger().log("rr.stornoPagamentoTrovato", pagamento.getIur(), pagamento.getImportoPagato().toString());
-					pagamentiDaStornare.add(pagamento);
-				}
-			}
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PAG_008, dto.getCodApplicazione());
-		}
-
-		if(pagamentiDaStornare.isEmpty()) {
-			throw new GovPayException(EsitoOperazione.PAG_011);
-		}
-
-
-		Rr rr = RrUtils.buildRr(rpt, pagamentiDaStornare);
-		RrBD rrBD = null;
-
-		Notifica notifica = new Notifica(rr, TipoNotifica.ATTIVAZIONE, configWrapper);
-		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
-		
-
-		ctx.getApplicationLogger().log("rr.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
-		try {
-			rrBD = new RrBD(configWrapper);
-			
-			rrBD.setupConnection(configWrapper.getTransactionID());
-			
-			rrBD.setAtomica(false);
-			
-			rrBD.setAutoCommit(false);
-			
-			PagamentiBD pagamentiBD = new PagamentiBD(rrBD);
-			pagamentiBD.setAtomica(false);
-			
-			rrBD.insertRr(rr);
-			notifica.setIdRr(rr.getId());
-			boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rrBD);
-			for(it.govpay.bd.model.Pagamento pagamento : pagamentiDaStornare) {
-				pagamento.setIdRr(rr.getId());
-				pagamentiBD.updatePagamento(pagamento);
-			}
-			rrBD.commit();
-			
-			if(schedulaThreadInvio)
-				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
-		} catch (ServiceException e) {
-			if(rrBD != null && !rrBD.isAutoCommit() )
-				rrBD.rollback();
-			throw e;
-		} 
-		finally {
-			if(rrBD != null)
-				rrBD.closeConnection();
-		}
-
-		AvviaRichiestaStornoDTOResponse response = new AvviaRichiestaStornoDTOResponse();
-		response.setCodRichiestaStorno(rr.getCodMsgRevoca());
-
-		NodoClient nodoInviaRRClient = null;
-		rrBD = null;
-		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
-		try {
-
-			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), EventoContext.Azione.NODOINVIARICHIESTASTORNO);
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
-			ctx.getApplicationLogger().log("rr.invioRr");
-
-			// salvataggio id Rpt/ versamento/ pagamento
-			eventoCtx.setCodDominio(rpt.getCodDominio());
-			eventoCtx.setIuv(rpt.getIuv());
-			eventoCtx.setCcp(rpt.getCcp());
-			eventoCtx.setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-			eventoCtx.setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
-			if(rpt.getPagamentoPortale() != null)
-				eventoCtx.setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
-			
-			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(configWrapper), operationId, giornale, eventoCtx);
-			
-			Risposta risposta = RrUtils.inviaRr(nodoInviaRRClient, rr, rpt, operationId);
-			eventoCtx.setEsito(Esito.OK);
-			
-			rrBD = new RrBD(configWrapper);
-			
-			rrBD.setupConnection(configWrapper.getTransactionID());
-
-			if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
-
-				ctx.getApplicationLogger().log("rr.invioRrKo");
-
-				// RR rifiutata dal Nodo
-				// Aggiorno lo stato e ritorno l'errore
-
-				FaultBean fb = risposta.getFaultBean();
-				String descrizione = null; 
-				String faultCode = "PPT_ERRORE_GENERICO";
-				if(fb != null) {
-					faultCode = fb.getFaultCode();
-					descrizione = faultCode + ": " + fb.getFaultString();
-				}
-
-				if(eventoCtx != null) {
-					eventoCtx.setSottotipoEsito(faultCode);
-					eventoCtx.setEsito(Esito.KO);
-					eventoCtx.setDescrizioneEsito(descrizione);
-				}
-
-				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
-
-				log.warn(risposta.getLog());
-				throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
-			} else {
-				ctx.getApplicationLogger().log("rr.invioRrOk");
-				// RPT accettata dal Nodo
-				// Aggiorno lo stato e ritorno
-				rrBD.updateRr(rr.getId(), StatoRr.RR_ACCETTATA_NODO, null);
-				return response;
-			}
-		} catch (ClientException e) {
-			if(eventoCtx != null) {
-				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
-				eventoCtx.setEsito(Esito.FAIL);
-				eventoCtx.setDescrizioneEsito(e.getMessage());
-				eventoCtx.setException(e);
-			}	
-			ctx.getApplicationLogger().log("rr.invioRrKo");
-			if(rrBD == null) {
-				rrBD = new RrBD(configWrapper);
-				rrBD.setupConnection(configWrapper.getTransactionID());
-			}
-			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
-			throw new GovPayException(EsitoOperazione.NDP_000, e);
-		} catch (ClientInitializeException e) {
-			log.error("Errore durante la creazione del client per la richiesta di storno", e);
-			if(eventoCtx != null) {
-				eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-				eventoCtx.setEsito(Esito.FAIL);
-				eventoCtx.setDescrizioneEsito(e.getMessage());
-				eventoCtx.setException(e);
-			}	
-			ctx.getApplicationLogger().log("rr.invioRrKo");
-			if(rrBD == null) {
-				rrBD = new RrBD(configWrapper);
-				rrBD.setupConnection(configWrapper.getTransactionID());
-			}
-			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
-			throw new GovPayException(EsitoOperazione.NDP_000, e);
-		} finally {
-			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
-				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
-			}
-		}
 	}
 
 	public Rr chiediStorno(Applicazione applicazioneAutenticata, String codRichiestaStorno) throws ServiceException, GovPayException {

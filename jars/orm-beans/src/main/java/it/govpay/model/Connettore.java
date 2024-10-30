@@ -39,6 +39,7 @@ public class Connettore extends Versionabile {
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
+    public static final String P_SUBSCRIPTION_KEY_RECUPERO_RT_VALUE = "SUBSCRIPTION_KEY_RECUPERO_RT_VALUE";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME = "HTTP_HEADER_AUTH_HEADER_VALUE";
 	
@@ -77,8 +78,10 @@ public class Connettore extends Versionabile {
 	private String httpPassw;
 	private String url;
 	private String urlServiziAvvisatura;
+	private String urlServiziRecuperoRT;
 	private boolean azioneInUrl;
 	private String subscriptionKeyValue;
+	private String subscriptionKeyRecuperoRTValue;
 	private String httpHeaderName;
 	private String httpHeaderValue;
 	private String apiKey;
@@ -105,10 +108,12 @@ public class Connettore extends Versionabile {
 		this.sslTsType = src.sslTsType;
 		this.sslType = src.sslType;
 		this.subscriptionKeyValue = src.subscriptionKeyValue;
+		this.subscriptionKeyRecuperoRTValue = src.subscriptionKeyRecuperoRTValue;
 		this.tipoAutenticazione = src.tipoAutenticazione;
 		this.tipoSsl = src.tipoSsl;
 		this.url = src.url;
 		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
+		this.urlServiziRecuperoRT = src.urlServiziRecuperoRT;
 		this.httpHeaderName = src.httpHeaderName;
 		this.httpHeaderValue = src.httpHeaderValue;
 		this.apiKey = src.apiKey;
@@ -271,5 +276,17 @@ public class Connettore extends Versionabile {
 	}
 	public void setOauth2ClientCredentialsScope(String oauth2ClientCredentialsScope) {
 		this.oauth2ClientCredentialsScope = oauth2ClientCredentialsScope;
+	}
+	public String getSubscriptionKeyRecuperoRTValue() {
+		return subscriptionKeyRecuperoRTValue;
+	}
+	public void setSubscriptionKeyRecuperoRTValue(String subscriptionKeyRecuperoRTValue) {
+		this.subscriptionKeyRecuperoRTValue = subscriptionKeyRecuperoRTValue;
+	}
+	public String getUrlServiziRecuperoRT() {
+		return urlServiziRecuperoRT;
+	}
+	public void setUrlServiziRecuperoRT(String urlServiziRecuperoRT) {
+		this.urlServiziRecuperoRT = urlServiziRecuperoRT;
 	}
 }

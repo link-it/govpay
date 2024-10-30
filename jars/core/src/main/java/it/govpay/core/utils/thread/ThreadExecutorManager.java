@@ -37,6 +37,7 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorCaricamentoTracciati;
 	private static ExecutorService executorSpedizioneTracciatiNotificaPagamenti;
 	private static ExecutorService executorSpedizioneNotificaPagamentoMaggioli;
+	private static ExecutorService executorRecuperaRT;
 	private static boolean initialized = false;
 
 	private static synchronized void init() {
@@ -113,6 +114,11 @@ public class ThreadExecutorManager {
 		while (!executorSpedizioneNotificaPagamentoMaggioli.isTerminated()) {
 			Thread.sleep(500);
 		}
+		
+		executorRecuperaRT.shutdown();
+		while (!executorRecuperaRT.isTerminated()) {
+			Thread.sleep(500);
+		}
 	}
 
 	public static ExecutorService getClientPoolExecutorNotifica() {
@@ -141,5 +147,9 @@ public class ThreadExecutorManager {
 	
 	public static ExecutorService getExecutorSpedizioneNotificaPagamentoMaggioli() {
 		return executorSpedizioneNotificaPagamentoMaggioli;
+	}
+	
+	public static ExecutorService getExecutorRecuperaRT() {
+		return executorRecuperaRT;
 	}
 }

@@ -44,10 +44,13 @@ import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IncassiBD;
+import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
@@ -59,10 +62,12 @@ import it.govpay.core.utils.client.BasicClientCORE;
 import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.RecuperaRTThread;
 import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.Intermediario;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.configurazione.AppIOBatch;
@@ -104,6 +109,9 @@ public class Operazioni{
 	
 	public static final String BATCH_CHIUSURA_RPT_SCADUTE = "rpt-scadute";
 	public static final String CHECK_CHIUSURA_RPT_SCADUTE = "check-rpt-scadute";
+	
+	public static final String BATCH_RECUPERO_RT = "recupero-rt";
+	public static final String CHECK_RECUPERO_RT = "check-recupero-rt";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
@@ -117,6 +125,8 @@ public class Operazioni{
 	
 	private static boolean eseguiElaborazioneRiconciliazioni;
 	private static boolean eseguiElaborazioneChiusuraRptScadute;
+	
+	private static boolean eseguiRecuperoRT;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -237,6 +247,18 @@ public class Operazioni{
 	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
 		return eseguiElaborazioneChiusuraRptScadute;
 	}
+	
+	public static synchronized void setEseguiRecuperoRT() {
+		eseguiRecuperoRT = true;
+	}
+
+	public static synchronized void resetEseguiRecuperoRT() {
+		eseguiRecuperoRT = false;
+	}
+
+	public static synchronized boolean getEseguiRecuperoRT() {
+		return eseguiRecuperoRT;
+	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -279,6 +301,105 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, PND);
+		}
+	}
+	
+	public static String recuperoRt(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Recupero RT");
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_RECUPERO_RT)) {
+				
+				// ricerca domini con recupero RT abilitato
+				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
+
+				for (String codDominio : domini) {
+					it.govpay.bd.model.Dominio dominio = null;
+					log.debug("Recupero RT per il Dominio [{}].", codDominio);
+					try {
+						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+					}catch(NotFoundException e) {
+						log.debug("Dominio [{}] non trovato, passo al prossimo.", dominio);
+						continue;
+					}
+						
+					Stazione stazione = dominio.getStazione();
+					Intermediario intermediario = stazione.getIntermediario(configWrapper);
+					
+					// avvio la procedura solo se il servizio di recupero e' configurato
+					if(intermediario.getConnettorePdd().getSubscriptionKeyRecuperoRTValue() != null) {
+						
+						RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(configWrapper);
+						
+						Integer numeroGiorniSoglia = 15;
+						List<Rendicontazione> rendicontazioniSenzaPagamento = rendicontazioniBD.getRendicontazioniSenzaPagamento(codDominio, numeroGiorniSoglia);
+						
+						if(rendicontazioniSenzaPagamento.isEmpty()) {
+							log.debug("Recupero RT per il Dominio [{}] completato, non sono state trovate RT da recuperare.", codDominio);
+						} else {
+							log.info("Recupero RT per il Dominio [{}] trovate [{}] RT da recuperare.", codDominio, rendicontazioniSenzaPagamento.size());
+							
+							List<RecuperaRTThread> threads = new ArrayList<>();
+							
+							for (Rendicontazione rendicontazione : rendicontazioniSenzaPagamento) {
+								RecuperaRTThread sender = new RecuperaRTThread(dominio, rendicontazione, ctx);
+								ThreadExecutorManager.getExecutorRecuperaRT().execute(sender);
+								threads.add(sender);
+							}
+							
+							log.info("Processi di recupero RT per il Dominio [{}] avviati.", codDominio);
+							aggiornaSondaOK(configWrapper, BATCH_RECUPERO_RT);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+									log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
+								}
+								boolean completed = true;
+								for(RecuperaRTThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(RecuperaRTThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
+									break; // esco
+								}
+							}
+
+							// Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_RECUPERO_RT);
+							log.info("Processi di recupero RT per il Dominio [{}] terminati.", codDominio);
+						}
+					} else {
+						// servizion non configurato
+						log.warn("Recupero RT per il Dominio [{}] non effettuato: Intermediario [{}] non configurato.", codDominio, intermediario.getCodIntermediario());
+					}
+				}
+				
+				aggiornaSondaOK(configWrapper, BATCH_RECUPERO_RT);
+				log.info("Recupero RT completato.");
+				return "Recupero RT completato.";
+			} else {
+				log.info("Eseguo Batch Recupero RT: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
+			}
+		} catch (ServiceException | IOException e) {
+			log.error("Recupero RT fallito", e);
+			aggiornaSondaKO(configWrapper, BATCH_RECUPERO_RT, e);
+			return "Recupero RT fallito#" + e;
+		} finally {
+			BatchManager.stopEsecuzione(configWrapper, BATCH_RECUPERO_RT);
 		}
 	}
 	
