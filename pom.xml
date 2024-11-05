@@ -64,10 +64,11 @@
 		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
+		<spring.gov4j.version>5.3.39-gov4j-1</spring.gov4j.version>
 		<spring.version>5.3.39</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.8.13</spring.security.version>
+		<spring.security.version>5.8.15</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.1</spring.ldap.version>
@@ -1111,12 +1112,42 @@
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring.gov4j.version}</version>
             </dependency>
             
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
+                <version>${spring.gov4j.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.gov4j.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.gov4j.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.gov4j.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-jcl</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             
@@ -1125,6 +1156,24 @@
             	<groupId>org.springframework.security</groupId>
             	<artifactId>spring-security-web</artifactId>
             	<version>${spring.security.version}</version>
+            	<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <dependency>
@@ -1159,12 +1208,36 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
       	    	<version>${spring.security.version}</version>
+      	    	<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-ldap</artifactId>
                 <version>${spring.security.version}</version>
+                <exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <!-- Spring Security OAuth2 -->
@@ -1177,6 +1250,10 @@
 						<groupId>com.nimbusds</groupId>						
 						<artifactId>nimbus-jose-jwt</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			
@@ -1184,12 +1261,24 @@
 			    <groupId>org.springframework.security</groupId>
 			    <artifactId>spring-security-oauth2-client</artifactId>
 			    <version>${spring.security.version}</version>
+			    <exclusions>
+		    		<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+			    </exclusions>
 			</dependency>
 			
 			<dependency>
 			    <groupId>org.springframework.security</groupId>
 			    <artifactId>spring-security-oauth2-resource-server</artifactId>
 			    <version>${spring.security.version}</version>
+			     <exclusions>
+		    		<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+			    </exclusions>	
 			</dependency>
             
             <!-- Spring Security Ldap Plugin -->
@@ -1197,6 +1286,16 @@
     	        <groupId>org.springframework.ldap</groupId>
 	            <artifactId>spring-ldap-core</artifactId>
            		<version>${spring.ldap.version}</version>
+           		<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
         	</dependency>
         	
         	<!-- nimbus jose jwt-->
@@ -1466,6 +1565,8 @@
 <!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
+								<suppressionFile>${owasp.falsePositives.dir}/CVE-2023-30614.xml</suppressionFile>
+								<suppressionFile>${owasp.falsePositives.dir}/CVE-2024-38820.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>
@@ -1485,8 +1586,6 @@
 	            <artifactId>spotbugs-maven-plugin</artifactId>
 	            <version>4.8.6.0</version>
 	            <configuration>
-<!--	                <includeFilterFile>spotbugs-security-include.xml</includeFilterFile>-->
-<!--	                <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>-->
 	                <plugins>
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>

@@ -207,7 +207,7 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2024-10-25'
+releaseDate: '2024-10-31'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
 softwareVersion: 3.7.8
