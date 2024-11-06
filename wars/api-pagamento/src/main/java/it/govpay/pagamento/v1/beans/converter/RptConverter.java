@@ -68,6 +68,7 @@ public class RptConverter {
 			if(xmlRpt != null) {
 				switch (rpt.getVersione()) {
 				case SANP_230:
+				case RPTSANP230_RTV2:
 					CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(xmlRpt, false);
 
 					CtSoggettoVersante soggettoVersante = ctRpt.getSoggettoVersante();
@@ -260,6 +261,7 @@ public class RptConverter {
 					break;
 				case SANP_321_V2:
 				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();
@@ -305,6 +307,7 @@ public class RptConverter {
 			if(xmlRpt != null) {
 				switch (rpt.getVersione()) {
 				case SANP_230:
+				case RPTSANP230_RTV2:
 					CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(xmlRpt, false);
 
 					CtSoggettoVersante soggettoVersante = ctRpt.getSoggettoVersante();
@@ -499,6 +502,7 @@ public class RptConverter {
 					break;
 				case SANP_321_V2:
 				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();

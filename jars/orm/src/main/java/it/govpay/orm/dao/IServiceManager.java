@@ -660,32 +660,6 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:RR type:RR
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RR}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RR}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRRServiceSearch getRRServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RR}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RR}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRRService getRRService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:Rendicontazione type:Rendicontazione
 	 =====================================================================================================================
 	*/

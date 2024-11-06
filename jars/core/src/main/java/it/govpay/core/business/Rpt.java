@@ -436,99 +436,15 @@ public class Rpt {
 					inviaCarrelloRPTEventoCtx.setException(e);
 				}
 				ctx.getApplicationLogger().log("rpt.invioFail", e.getMessage());
-				NodoChiediStatoRPTRisposta risposta = null;
-				log.info("Attivazione della procedura di recupero del processo di pagamento.");
-
-				NodoClient chiediStatoRptClient = null;
-
-				EventoContext chiediStatoRPTEventoCtx = new EventoContext(Componente.API_PAGOPA);
+				
 				try {
-					try {
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), EventoContext.Azione.NODOCHIEDISTATORPT);
-						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
-						
-						// salvataggio id Rpt/ versamento/ pagamento
-						chiediStatoRPTEventoCtx.setCodDominio(rpts.get(0).getCodDominio());
-						chiediStatoRPTEventoCtx.setIuv(rpts.get(0).getIuv());
-						chiediStatoRPTEventoCtx.setCcp(rpts.get(0).getCcp());
-						chiediStatoRPTEventoCtx.setIdA2A(rpts.get(0).getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-						chiediStatoRPTEventoCtx.setIdPendenza(rpts.get(0).getVersamento().getCodVersamentoEnte());
-						if(rpts.get(0).getPagamentoPortale() != null)
-							chiediStatoRPTEventoCtx.setIdPagamento(rpts.get(0).getPagamentoPortale().getIdSessione());
-						
-						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, chiediStatoRPTEventoCtx);
-
-						risposta = RptUtils.chiediStatoRPT(chiediStatoRptClient, intermediario, stazione, rpts.get(0), operationId);
-						chiediStatoRPTEventoCtx.setEsito(Esito.OK);
-					} catch (ClientException ee) {
-						if(chiediStatoRPTEventoCtx != null) {
-							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
-							chiediStatoRPTEventoCtx.setDescrizioneEsito(ee.getMessage());
-							chiediStatoRPTEventoCtx.setException(ee);
-						}
-						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
-						log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
-						this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, e);
-						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
-					} catch (ClientInitializeException ee) {
-						if(chiediStatoRPTEventoCtx != null) {
-							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
-							chiediStatoRPTEventoCtx.setDescrizioneEsito(ee.getMessage());
-							chiediStatoRPTEventoCtx.setException(ee);
-						}
-						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
-						log.warn("Errore nella creazione del client per la richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
-						this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, e);
-						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
-					} finally {
-
-					}
-					if(risposta.getEsito() == null) {
-						if(chiediStatoRPTEventoCtx != null) {
-							chiediStatoRPTEventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
-							chiediStatoRPTEventoCtx.setEsito(Esito.FAIL);
-							chiediStatoRPTEventoCtx.setDescrizioneEsito(risposta.getFault().getFaultString());
-						}
-						// anche la chiedi stato e' fallita
-						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
-						log.warn("Recupero sessione fallito. Errore nella richiesta di stato RPT: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
-					} else {
-						StatoRpt statoRpt = StatoRpt.toEnum(risposta.getEsito().getStato());
-						log.info("Acquisito stato RPT dal nodo: " + risposta.getEsito().getStato());
-
-
-						if(statoRpt.equals(StatoRpt.RT_ACCETTATA_PA) || statoRpt.equals(StatoRpt.RT_RIFIUTATA_PA)) {
-							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTcompletato");
-							log.info("Processo di pagamento gia' completato.");
-							if(chiediStatoRPTEventoCtx != null) {
-								chiediStatoRPTEventoCtx.setSottotipoEsito("PAA_NODO_INDISPONIBILE"); 
-								chiediStatoRPTEventoCtx.setEsito(Esito.KO);
-								chiediStatoRPTEventoCtx.setDescrizioneEsito("Richiesta di pagamento gia' gestita dal Nodo dei Pagamenti");
-							}
-							// Ho gia' trattato anche la RT. Non faccio nulla.
-							throw new GovPayException(EsitoOperazione.NDP_000, e, "Richiesta di pagamento gia' gestita dal Nodo dei Pagamenti");
-						}
-
-
-						// Ho lo stato aggiornato. Aggiorno il db
-						if(risposta.getEsito().getUrl() != null) {
-							log.info("Processo di pagamento recuperato. Url di redirect: " + risposta.getEsito().getUrl());
-							appContext.getResponse().addGenericProperty(new Property("redirectUrl", risposta.getEsito().getUrl()));
-							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTOk");
-						} else {
-							log.info("Processo di pagamento recuperato. Nessuna URL di redirect.");
-							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTOk");
-						}
-						return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), pagamentoPortale, e);
-					}
+					// 2024-11-04 eliminato recupero della rpt, operazione non piu' supportata da PagoPA
+					this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, e);
+					throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 				} catch (NotificaException e1) {
 					throw new GovPayException(e);
 				} finally {
-					if(chiediStatoRPTEventoCtx != null && chiediStatoRPTEventoCtx.isRegistraEvento()) {
-						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRPTEventoCtx,log));
-					}
+					// donothing
 				}
 			} catch (NotificaException e) {
 				throw new GovPayException(e);

@@ -82,6 +82,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	private int dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
+	private int dimensionePoolThreadRecuperoRT;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -96,7 +97,6 @@ public class GovpayConfig {
 	private Integer timeoutPendentiModello3Mins;
 	private boolean timeoutPendentiModello1;
 	private Integer timeoutPendentiModello1Mins;
-	private Integer intervalloControlloRptPendenti;
 	
 	private Integer timeoutPendentiModello3SANP24Mins;
 	
@@ -195,7 +195,6 @@ public class GovpayConfig {
 	
 	private Integer numeroGiorniValiditaPendenza;
 	
-	private boolean batchRecuperoRPTPendenti;
 	private boolean batchAcquisizioneRendicontazioni;
 	private boolean batchChiusuraRPTScadute;
 	private boolean batchElaborazioneRiconciliazioni;
@@ -203,8 +202,12 @@ public class GovpayConfig {
 	private boolean batchSpedizioneNotifiche;
 	private boolean batchSpedizioneNotificheAppIO;
 	private boolean batchSpedizionePromemoria;
+	private boolean batchRecuperoRT;
 	
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
+	
+	
+	private Integer numeroGiorniRendicontazioniSenzaPagamento;
 	
 	
 	public GovpayConfig(InputStream is) throws IOException {
@@ -216,6 +219,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadRPT = 10;
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 		this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
+		this.dimensionePoolThreadRecuperoRT = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -249,7 +253,6 @@ public class GovpayConfig {
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		this.autenticazioneSSLHeaderProperties = new Properties();
 		
-		this.intervalloControlloRptPendenti = 30;
 		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
 		
 		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
@@ -311,7 +314,6 @@ public class GovpayConfig {
 		
 		this.keywordsDaSostituireIdentificativiDebitoreAvviso = new ArrayList<>();
 		
-		this.batchRecuperoRPTPendenti = false;
 		this.batchAcquisizioneRendicontazioni = false;
 		this.batchChiusuraRPTScadute = false;
 		this.batchElaborazioneRiconciliazioni = false;
@@ -319,6 +321,9 @@ public class GovpayConfig {
 		this.batchSpedizioneNotifiche = false;
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
+		this.batchRecuperoRT = false;
+		
+		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 		
 
 		// Recupero il property all'interno dell'EAR
@@ -465,6 +470,20 @@ public class GovpayConfig {
 			} catch (PropertyNotFoundException | InvalidPropertyException e) {
 				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
 				this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.recuperoRT", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadRecuperoRT = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (NumberFormatException e) {
+						throw new InvalidPropertyException("Valore della property \"it.govpay.thread.pool.recuperoRT\" non e' un numero intero");
+					}
+				}
+			} catch (PropertyNotFoundException | InvalidPropertyException e) {
+				log.warn(MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, e.getMessage(), 10);
+				this.dimensionePoolThreadRecuperoRT = 10;
 			}
 
 
@@ -631,14 +650,6 @@ public class GovpayConfig {
 			String numeroMassimoEntriesProspettoRiscossioneString = getProperty("it.govpay.reportistica.prospettoRiscossione.numeroMassimoEntries", props, false, log);
 			if(StringUtils.isNotEmpty(numeroMassimoEntriesProspettoRiscossioneString)) {
 				this.numeroMassimoEntriesProspettoRiscossione = Integer.parseInt(numeroMassimoEntriesProspettoRiscossioneString);;
-			}
-			
-			String intervalloControlloRptPendentiString = getProperty("it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt", props, false, log);
-			try {
-				this.intervalloControlloRptPendenti = Integer.parseInt(intervalloControlloRptPendentiString);
-			} catch(NullPointerException | NumberFormatException t) {
-				log.info("Proprieta \"it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt\" impostata con valore di default (100000)");
-				this.intervalloControlloRptPendenti = 100000;
 			}
 			
 			String intervalloDisponibilitaPagamentoUtenzaAnonimaString = getProperty("it.govpay.autenticazione.utenzaAnonima.intervalloDisponibilitaPagamento", props, false, log);
@@ -965,10 +976,6 @@ public class GovpayConfig {
 				}
 			}
 			
-			String batchRecuperoRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.enabled", this.props, false, log);
-			if(batchRecuperoRPTPendentiString != null && Boolean.valueOf(batchRecuperoRPTPendentiString))
-				this.batchRecuperoRPTPendenti = true;
-			
 			String batchAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.enabled", this.props, false, log);
 			if(batchAcquisizioneRendicontazioniString != null && Boolean.valueOf(batchAcquisizioneRendicontazioniString))
 				this.batchAcquisizioneRendicontazioni = true;
@@ -997,12 +1004,24 @@ public class GovpayConfig {
 			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
 				this.batchSpedizionePromemoria = true;
 			
+			String batchRecuperoRTString = getProperty("it.govpay.batch.recuperoRT.enabled", this.props, false, log);
+			if(batchRecuperoRTString != null && Boolean.valueOf(batchRecuperoRTString))
+				this.batchRecuperoRT = true;
+			
 			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
 			if(StringUtils.isNotEmpty(keywordsS)) {
 				String[] split = keywordsS.split(",");
 				if(split != null && split.length > 0) {
 					this.keywordsDaSostituireIdentificativiDebitoreAvviso = Arrays.asList(split);
 				}
+			}
+			
+			String numeroGiorniRendicontazioniSenzaPagamentoString = getProperty("it.govpay.batch.recuperoRT.limiteTemporaleRecupero", this.props, false, log);
+			try{
+				this.numeroGiorniRendicontazioniSenzaPagamento = Integer.parseInt(numeroGiorniRendicontazioniSenzaPagamentoString);
+			} catch(NullPointerException | NumberFormatException t) {
+				log.info("Proprieta \"it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero\" impostata con valore di default 15");
+				this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 			}
 			
 		} catch (PropertyNotFoundException e) {
@@ -1149,6 +1168,10 @@ public class GovpayConfig {
 	public int getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli() {
 		return dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	}
+	
+	public int getDimensionePoolThreadRecuperoRT() {
+		return dimensionePoolThreadRecuperoRT;
+	}
 
 	public String getKsLocation() {
 		return this.ksLocation;
@@ -1272,10 +1295,6 @@ public class GovpayConfig {
 
 	public int getNumeroMassimoEntriesProspettoRiscossione() {
 		return numeroMassimoEntriesProspettoRiscossione;
-	}
-
-	public Integer getIntervalloControlloRptPendenti() {
-		return intervalloControlloRptPendenti;
 	}
 
 	public Integer getIntervalloDisponibilitaPagamentoUtenzaAnonima() {
@@ -1490,10 +1509,6 @@ public class GovpayConfig {
 		return autenticazioneApiKeyNomeHeaderApiIdFruizione;
 	}
 
-	public boolean isBatchRecuperoRPTPendenti() {
-		return batchRecuperoRPTPendenti;
-	}
-
 	public boolean isBatchAcquisizioneRendicontazioni() {
 		return batchAcquisizioneRendicontazioni;
 	}
@@ -1521,9 +1536,16 @@ public class GovpayConfig {
 	public boolean isBatchSpedizionePromemoria() {
 		return batchSpedizionePromemoria;
 	}
+	
+	public boolean isBatchRecuperoRT() {
+		return batchRecuperoRT;
+	}
 
 	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
 	
+	public Integer getNumeroGiorniRendicontazioniSenzaPagamento() {
+		return numeroGiorniRendicontazioniSenzaPagamento;
+	}
 }

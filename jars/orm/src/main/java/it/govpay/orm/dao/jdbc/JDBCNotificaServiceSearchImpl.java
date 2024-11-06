@@ -153,7 +153,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 			fields.add(new CustomField("id", Long.class, "id", this.getNotificaFieldConverter().toTable(Notifica.model())));
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getNotificaFieldConverter().toTable(Notifica.model())));
 			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getNotificaFieldConverter().toTable(Notifica.model())));
-			fields.add(new CustomField("id_rr", Long.class, "id_rr", this.getNotificaFieldConverter().toTable(Notifica.model())));
 			fields.add(Notifica.model().TIPO_ESITO);
 			fields.add(Notifica.model().DATA_CREAZIONE);
 			fields.add(Notifica.model().STATO);
@@ -167,14 +166,9 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 			for(Map<String, Object> map: returnMap) {
 				Long id_applicazione = (Long) map.remove("id_applicazione");
 				Object id_rptObj = map.remove("id_rpt");
-				Object id_rrObj = map.remove("id_rr");
 				Long id_rpt = null;
 				if(id_rptObj instanceof Long)
 					id_rpt = (Long) id_rptObj; 
-				
-				Long id_rr = null;
-				if(id_rrObj instanceof Long)
-					id_rr = (Long) id_rrObj; 
 				
 				Notifica notifica = (Notifica)this.getNotificaFetch().fetch(jdbcProperties.getDatabase(), Notifica.model(), map);
 				
@@ -187,12 +181,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 					it.govpay.orm.IdRpt id_notifica_rpt = new it.govpay.orm.IdRpt();
 					id_notifica_rpt.setId(id_rpt);
 					notifica.setIdRpt(id_notifica_rpt);
-				}
-
-				if(id_rr != null) {
-					it.govpay.orm.IdRr id_notifica_rr = new it.govpay.orm.IdRr();
-					id_notifica_rr.setId(id_rr);
-					notifica.setIdRr(id_notifica_rr);
 				}
 
 				list.add(notifica);
@@ -490,10 +478,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 				imgSaved.getIdRpt()!=null){
 			obj.getIdRpt().setId(imgSaved.getIdRpt().getId());
 		}
-		if(obj.getIdRr()!=null && 
-				imgSaved.getIdRr()!=null){
-			obj.getIdRr().setId(imgSaved.getIdRr().getId());
-		}
 
 	}
 	
@@ -565,11 +549,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 			sqlQueryObject.addWhereCondition(tableName1+".id_rpt="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(Notifica.model().ID_RR,false)){
-			String tableName1 = this.getNotificaFieldConverter().toAliasTable(Notifica.model());
-			String tableName2 = this.getNotificaFieldConverter().toAliasTable(Notifica.model().ID_RR);
-			sqlQueryObject.addWhereCondition(tableName1+".id_rr="+tableName2+".id");
-		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -605,12 +584,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 		mapTableToPKColumn.put(converter.toTable(Notifica.model().ID_RPT),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Notifica.model().ID_RPT))
-			));
-
-		// Notifica.model().ID_RR
-		mapTableToPKColumn.put(converter.toTable(Notifica.model().ID_RR),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Notifica.model().ID_RR))
 			));
         return mapTableToPKColumn;		
 	}

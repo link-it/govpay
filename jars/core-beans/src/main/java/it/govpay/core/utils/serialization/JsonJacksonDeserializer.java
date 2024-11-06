@@ -46,10 +46,10 @@ public class JsonJacksonDeserializer implements IDeserializer{
 	private ObjectMapper mapper;
 
 	public JsonJacksonDeserializer() {
-		this(new SerializationConfig());
+		this(new GovPaySerializationConfig());
 	}
 	
-	public JsonJacksonDeserializer(SerializationConfig config) {
+	public JsonJacksonDeserializer(GovPaySerializationConfig config) {
 		BeanDeserializerModifier modifier = new BeanDeserializerModifierForIgnorables(config.getExcludes());
 		DeserializerFactory dFactory = BeanDeserializerFactory.instance.withDeserializerModifier(modifier);
 

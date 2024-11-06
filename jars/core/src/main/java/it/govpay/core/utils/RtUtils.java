@@ -68,7 +68,6 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
-//import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotificaException;
@@ -349,9 +348,7 @@ public class RtUtils extends NdpValidationUtils {
 			try {
 				ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 				esito = RtUtils.validaSemantica(ctRpt, ctRt);
-			} catch (JAXBException e) {
-				throw e;
-			} catch (SAXException e) {
+			} catch (JAXBException | SAXException e) {
 				throw e;
 			}
 			

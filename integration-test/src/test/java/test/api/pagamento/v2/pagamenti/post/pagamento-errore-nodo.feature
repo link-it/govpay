@@ -100,8 +100,6 @@ And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza)'
 And match response.risultati[0].rt == '#notpresent'
 And match response.risultati[0].stato == 'RPT_ERRORE_INVIO_A_NODO'
 
-* callonce read('classpath:utils/govpay-op-acquisisci-verifica-transazioni-pendenti.feature')
-
 Given url pagamentiBaseurl
 And path '/rpp'
 And param idPendenza = idPendenza
@@ -189,9 +187,7 @@ And match response ==
 """
 And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza)'
 And match response.risultati[0].rt == '#notpresent'
-And match response.risultati[0].stato == 'RPT_ATTIVATA'
-
-* callonce read('classpath:utils/govpay-op-acquisisci-verifica-transazioni-pendenti.feature')
+And match response.risultati[0].stato == 'RPT_ERRORE_INVIO_A_NODO'
 
 Given url pagamentiBaseurl
 And path '/rpp'

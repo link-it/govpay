@@ -34,8 +34,7 @@ public class Connettore extends Versionabile {
 	public static final String P_SSLTYPE_NAME = "SSLTYPE";
 	public static final String P_HTTPUSER_NAME = "HTTPUSER";
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
-	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per il servizio RPT
-	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
+	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per i servizi verso PagoPA
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
@@ -77,11 +76,8 @@ public class Connettore extends Versionabile {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
-	private String urlServiziAvvisatura;
-	private String urlServiziRecuperoRT;
 	private boolean azioneInUrl;
 	private String subscriptionKeyValue;
-	private String subscriptionKeyRecuperoRTValue;
 	private String httpHeaderName;
 	private String httpHeaderValue;
 	private String apiKey;
@@ -108,12 +104,9 @@ public class Connettore extends Versionabile {
 		this.sslTsType = src.sslTsType;
 		this.sslType = src.sslType;
 		this.subscriptionKeyValue = src.subscriptionKeyValue;
-		this.subscriptionKeyRecuperoRTValue = src.subscriptionKeyRecuperoRTValue;
 		this.tipoAutenticazione = src.tipoAutenticazione;
 		this.tipoSsl = src.tipoSsl;
 		this.url = src.url;
-		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
-		this.urlServiziRecuperoRT = src.urlServiziRecuperoRT;
 		this.httpHeaderName = src.httpHeaderName;
 		this.httpHeaderValue = src.httpHeaderValue;
 		this.apiKey = src.apiKey;
@@ -217,12 +210,6 @@ public class Connettore extends Versionabile {
 	public Tipo getTipo() {
 		return Tipo.valueOf(super.getVersione().getApi());
 	}
-	public String getUrlServiziAvvisatura() {
-		return urlServiziAvvisatura;
-	}
-	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
-		this.urlServiziAvvisatura = urlServiziAvvisatura;
-	}
 	public String getSubscriptionKeyValue() {
 		return subscriptionKeyValue;
 	}
@@ -276,17 +263,5 @@ public class Connettore extends Versionabile {
 	}
 	public void setOauth2ClientCredentialsScope(String oauth2ClientCredentialsScope) {
 		this.oauth2ClientCredentialsScope = oauth2ClientCredentialsScope;
-	}
-	public String getSubscriptionKeyRecuperoRTValue() {
-		return subscriptionKeyRecuperoRTValue;
-	}
-	public void setSubscriptionKeyRecuperoRTValue(String subscriptionKeyRecuperoRTValue) {
-		this.subscriptionKeyRecuperoRTValue = subscriptionKeyRecuperoRTValue;
-	}
-	public String getUrlServiziRecuperoRT() {
-		return urlServiziRecuperoRT;
-	}
-	public void setUrlServiziRecuperoRT(String urlServiziRecuperoRT) {
-		this.urlServiziRecuperoRT = urlServiziRecuperoRT;
 	}
 }

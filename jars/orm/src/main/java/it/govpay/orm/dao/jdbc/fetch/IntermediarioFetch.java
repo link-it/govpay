@@ -58,7 +58,9 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_intermediario", Intermediario.model().COD_INTERMEDIARIO.getFieldType()));
 				this.setParameter(object, "setCodConnettorePdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_pdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType()));
-				this.setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
+				setParameter(object, "setCodConnettoreRecuperoRT", Intermediario.model().COD_CONNETTORE_RECUPERO_RT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_recupero_rt", Intermediario.model().COD_CONNETTORE_RECUPERO_RT.getFieldType()));
+				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_ftp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 				this.setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "denominazione", Intermediario.model().DENOMINAZIONE.getFieldType()));
@@ -94,7 +96,9 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codIntermediario"));
 				this.setParameter(object, "setCodConnettorePdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType(),
 					this.getObjectFromMap(map,"codConnettorePdd"));
-				this.setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
+				setParameter(object, "setCodConnettoreRecuperoRT", Intermediario.model().COD_CONNETTORE_RECUPERO_RT.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreRecuperoRT"));
+				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreFtp"));
 				this.setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"denominazione"));

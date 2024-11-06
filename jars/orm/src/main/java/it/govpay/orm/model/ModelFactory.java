@@ -77,8 +77,6 @@ public class ModelFactory {
 	
 	public static RPTModel RPT = new RPTModel();
 	
-	public static RRModel RR = new RRModel();
-	
 	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
 	
 	public static PagamentoPortaleVersamentoModel PAGAMENTO_PORTALE_VERSAMENTO = new PagamentoPortaleVersamentoModel();

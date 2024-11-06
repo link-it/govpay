@@ -104,6 +104,7 @@ public class RicevuteConverter {
 			ricevutaRpt.setXml((byte[]) messaggioRPTRaw);
 			switch (rpt.getVersione()) {
 			case SANP_230:
+			case RPTSANP230_RTV2:
 				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ragioneria.v3.beans.RicevutaRpt.TipoEnum.CTRICHIESTAPAGAMENTOTELEMATICO);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -140,6 +141,7 @@ public class RicevuteConverter {
 					break;
 				case SANP_321_V2:
 				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					break;
 				}

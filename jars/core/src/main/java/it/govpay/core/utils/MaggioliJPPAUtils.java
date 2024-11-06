@@ -78,6 +78,8 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.StTipoVersamento;
 
 public class MaggioliJPPAUtils {
+	
+	private MaggioliJPPAUtils() {}
 
 	// root element elemento di input
 	public static final String INVIA_ESITO_PAGAMENTO_RICHIESTA_ROOT_ELEMENT_NAME = "InviaEsitoPagamentoRichiesta"; 
@@ -257,6 +259,7 @@ public class MaggioliJPPAUtils {
 		break;
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 		{
 			popolaRicevutaDaRPT32(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}

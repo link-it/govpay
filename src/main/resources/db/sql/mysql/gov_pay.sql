@@ -23,6 +23,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL COMMENT 'Identificativo intermediario su pagopa',
 	cod_connettore_pdd VARCHAR(35) NOT NULL COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso pagopa',
+	cod_connettore_recupero_rt VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio recupero-rt pagopa',,
 	cod_connettore_ftp VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore ftp verso pagopa',
 	denominazione VARCHAR(255) NOT NULL COMMENT 'Nome dell\'intermediario',
 	principal VARCHAR(756) NOT NULL COMMENT 'Principal in forma canonica con cui si autentica l\'intermediario a govpay',
@@ -802,37 +803,6 @@ CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richies
 ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE INDEX idx_rpt_id_transazione (iuv, ccp, cod_dominio);
 
 
-CREATE TABLE rr
-(
-	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
-	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco di versamento',
-	ccp VARCHAR(35) NOT NULL COMMENT 'Codice contesto di pagamento',
-	cod_msg_revoca VARCHAR(35) NOT NULL COMMENT 'Identificativo della richiesta di revoca',
-	data_msg_revoca DATETIME(3) NOT NULL DEFAULT now() COMMENT 'Data di emissione della revoca',
-	data_msg_esito DATETIME(3) COMMENT 'Data del messaggio di esito',
-	stato VARCHAR(35) NOT NULL COMMENT 'Stato della revoca',
-	descrizione_stato VARCHAR(512) COMMENT 'Descrizione dello stato della revoca',
-	importo_totale_richiesto DOUBLE NOT NULL COMMENT 'Importo della richiesta',
-	cod_msg_esito VARCHAR(35) COMMENT 'Codice di esito della revoca',
-	importo_totale_revocato DOUBLE COMMENT 'Importo revocato',
-	xml_rr MEDIUMBLOB NOT NULL COMMENT 'XML della richiesta di revoca in base64',
-	xml_er MEDIUMBLOB COMMENT 'XML dell\'esito della revoca di revoca in base64',
-	cod_transazione_rr VARCHAR(36) COMMENT 'Identificativo della comunicazione della richiesta di revoca',
-	cod_transazione_er VARCHAR(36) COMMENT 'Identificativo della comunicazione dell\'esito di revoca',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_rpt BIGINT NOT NULL COMMENT 'Riferimento alla richiesta di pagamento oggetto della revoca',
-	-- unique constraints
-	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT pk_rr PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di revoca';
-
--- index
-CREATE UNIQUE INDEX index_rr_1 ON rr (cod_msg_revoca);
-
-
 
 CREATE TABLE notifiche
 (
@@ -848,11 +818,9 @@ CREATE TABLE notifiche
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale destinatario della notifica',
 	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagamento oggetto della notifica',
-	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca oggetto della notifica',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche';
 
@@ -1044,12 +1012,10 @@ CREATE TABLE pagamenti
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagmaento',
 	id_singolo_versamento BIGINT COMMENT 'Riferimento alla voce della pendenza pagata',
-	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca',
 	id_incasso BIGINT COMMENT 'Riferimento all\'operazione di riconciliazione',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pagamenti';
@@ -1288,7 +1254,6 @@ ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rr;
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_singolo_versamento;
 
 ALTER TABLE pagamenti_portale DROP FOREIGN KEY fk_ppt_id_applicazione;
@@ -1937,7 +1902,6 @@ SELECT
 	pagamenti.tipo AS tipo,                  
 	pagamenti.id_rpt AS id_rpt,                  
 	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
-	pagamenti.id_rr AS id_rr,                  
 	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,

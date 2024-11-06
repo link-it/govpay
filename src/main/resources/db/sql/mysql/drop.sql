@@ -28,7 +28,6 @@ DROP TABLE iuv;
 DROP TABLE promemoria;
 DROP TABLE notifiche_app_io;
 DROP TABLE notifiche;
-DROP TABLE rr;
 DROP TABLE rpt;
 DROP TABLE trac_notif_pag;
 DROP TABLE pag_port_versamenti;

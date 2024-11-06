@@ -53,7 +53,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.TIPO_ALLEGATO = new Field("tipoAllegato",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.ALLEGATO = new Field("allegato",byte[].class,"Pagamento",Pagamento.class);
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"Pagamento",Pagamento.class));
 		this.DATA_ACQUISIZIONE_REVOCA = new Field("dataAcquisizioneRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.CAUSALE_REVOCA = new Field("causaleRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_REVOCA = new Field("datiRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -82,7 +81,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.TIPO_ALLEGATO = new ComplexField(father,"tipoAllegato",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.ALLEGATO = new ComplexField(father,"allegato",byte[].class,"Pagamento",Pagamento.class);
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"Pagamento",Pagamento.class));
 		this.DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"dataAcquisizioneRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.CAUSALE_REVOCA = new ComplexField(father,"causaleRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_REVOCA = new ComplexField(father,"datiRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -120,8 +118,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	public IField TIPO_ALLEGATO = null;
 	 
 	public IField ALLEGATO = null;
-	 
-	public it.govpay.orm.model.IdRrModel ID_RR = null;
 	 
 	public IField DATA_ACQUISIZIONE_REVOCA = null;
 	 

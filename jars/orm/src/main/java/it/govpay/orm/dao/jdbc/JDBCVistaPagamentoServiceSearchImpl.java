@@ -153,7 +153,6 @@ public class JDBCVistaPagamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(VistaPagamento.model())));
 			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getFieldConverter().toTable(VistaPagamento.model())));
 			fields.add(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento", this.getFieldConverter().toTable(VistaPagamento.model())));
-			fields.add(new CustomField("id_rr", Long.class, "id_rr", this.getFieldConverter().toTable(VistaPagamento.model())));
 			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFieldConverter().toTable(VistaPagamento.model())));
 			fields.add(new CustomField("vrs_id_tipo_versamento_dominio", Long.class, "vrs_id_tipo_versamento_dominio", this.getFieldConverter().toTable(VistaPagamento.model())));
 			fields.add(new CustomField("vrs_id_tipo_versamento", Long.class, "vrs_id_tipo_versamento", this.getFieldConverter().toTable(VistaPagamento.model())));
@@ -203,12 +202,6 @@ public class JDBCVistaPagamentoServiceSearchImpl implements IJDBCServiceSearchWi
 
 				if(idSingoloVersamentoObj instanceof Long)
 					id_singolo_versamento = (Long) idSingoloVersamentoObj;
-
-				Long idRR = null;
-				Object idRRObj = map.remove("id_rr");
-
-				if(idRRObj instanceof Long)
-					idRR = (Long) idRRObj;
 
 				Long idIncasso = null;
 				Object idIncassoObj = map.remove("id_incasso");
@@ -286,12 +279,6 @@ public class JDBCVistaPagamentoServiceSearchImpl implements IJDBCServiceSearchWi
 					it.govpay.orm.IdSingoloVersamento id_pagamento_singoloVersamento = new it.govpay.orm.IdSingoloVersamento();
 					id_pagamento_singoloVersamento.setId(id_singolo_versamento);
 					vistaPagamento.setIdSingoloVersamento(id_pagamento_singoloVersamento);
-				}
-
-				if(idRR != null) {
-					it.govpay.orm.IdRr id_pagamento_rr = new it.govpay.orm.IdRr();
-					id_pagamento_rr.setId(idRR);
-					vistaPagamento.setIdRr(id_pagamento_rr);
 				}
 
 				if(idIncasso != null) {

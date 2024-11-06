@@ -179,7 +179,10 @@ public class Rpt extends BasicModel{
 		SANP_230,
 		
 		RPTV2_RTV1,
-		RPTV1_RTV2
+		RPTV1_RTV2,
+		RPTSANP230_RTV2
+		
+		
 		;
 		
 		public static VersioneRPT toEnum(String s) {

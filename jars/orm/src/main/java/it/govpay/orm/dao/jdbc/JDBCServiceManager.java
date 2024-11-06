@@ -78,8 +78,6 @@ import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IPromemoriaServiceSearch;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRPTServiceSearch;
-import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRRServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.IRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IServiceManager;
@@ -1001,38 +999,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IRPTService getRPTService() throws ServiceException,NotImplementedException{
 		return new JDBCRPTService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RR type:RR
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RR}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RR}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRRServiceSearch getRRServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRRServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RR}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RR}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRRService getRRService() throws ServiceException,NotImplementedException{
-		return new JDBCRRService(this);
 	}
 	
 	

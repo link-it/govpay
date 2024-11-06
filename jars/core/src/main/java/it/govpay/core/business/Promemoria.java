@@ -239,6 +239,7 @@ public class Promemoria {
 		if(rpt != null) {
 			switch(rpt.getVersione()) {
 				case SANP_230:
+				case RPTSANP230_RTV2:
 					CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 					versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
 					break;

@@ -26,7 +26,6 @@ public class Costanti {
 	/* IDENTIFICATIVI */
 	public static final String CHECK_DB = Operazioni.CHECK_DB;
 	public static final String RND =  Operazioni.RND;
-	public static final String PND =  Operazioni.PND;
 	public static final String NTFY =  Operazioni.NTFY;
 	public static final String CHECK_NTFY =  Operazioni.CHECK_NTFY;
 	public static final String BATCH_TRACCIATI =  Operazioni.BATCH_TRACCIATI;
@@ -50,6 +49,9 @@ public class Costanti {
 	public static final String BATCH_CHIUSURA_RPT_SCADUTE =  Operazioni.BATCH_CHIUSURA_RPT_SCADUTE;
 	public static final String CHECK_CHIUSURA_RPT_SCADUTE =  Operazioni.CHECK_CHIUSURA_RPT_SCADUTE;
 	
+	public static final String BATCH_RECUPERO_RT = Operazioni.BATCH_RECUPERO_RT;
+	public static final String CHECK_RECUPERO_RT = Operazioni.CHECK_RECUPERO_RT;
+	
 	
 	/* LABEL */
 	public static final String SONDA_IMPOSSIBILE_ACQUISIRE_LO_STATO = "Impossibile acquisire lo stato della sonda: {0}";
@@ -61,9 +63,6 @@ public class Costanti {
 	
 	public static final String RND_NOME = "Acquisizione rendicontazioni";
 	public static final String RND_DISABILITATO = "Servizio acquisizione rendicontazioni disabilitato tramite proprieta' di sistema";
-	
-	public static final String PND_NOME = "Recupero RPT pendenti";
-	public static final String PND_DISABILITATO = "Servizio recupero RPT pendenti disabilitato tramite proprieta' di sistema";
 	
 	public static final String NTFY_NOME = "Stato spedizione notifiche";
 	public static final String NTFY_DISABILITATO = "Servizio spedizione notifiche disabilitato tramite proprieta' di sistema";
@@ -110,5 +109,9 @@ public class Costanti {
 	public static final String BATCH_CHIUSURA_RPT_SCADUTE_DISABILITATO = "Servizio chiusura RPT SANP 2.4 scadute disabilitato tramite proprieta' di sistema";
 	
 	public static final String CHECK_CHIUSURA_RPT_SCADUTE_NOME = "Numero RPT SANP 2.4 scadute da chiudere";
+	
+	public static final String BATCH_RECUPERO_RT_NOME = "Recupero RT mancanti";
+	public static final String BATCH_RECUPERO_RT_DISABILITATO = "Servizio Recupero RT mancanti disabilitato tramite proprieta' di sistema";
+	public static final String CHECK_RECUPERO_RT_NOME = "Numero RT mancanti";
 	
 }

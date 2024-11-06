@@ -251,6 +251,10 @@ public class GpContext extends ApplicationContext {
 	public String setupNodoClient(String codDominio, String azione) {
 		return this.setupNodoClient(null, codDominio, null, azione);
 	}
+	
+	public String setupNodoClient(String codStazione, String codDominio, String azione) {
+		return this.setupNodoClient(codStazione, codDominio, null, azione);
+	}
 
 	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
 		return this.setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString());

@@ -95,13 +95,6 @@ public class NotificaFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv";
 			}
 		}
-		if(field.equals(Notifica.model().ID_RR.COD_MSG_REVOCA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_msg_revoca";
-			}else{
-				return "cod_msg_revoca";
-			}
-		}
 		if(field.equals(Notifica.model().TIPO_ESITO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo_esito";
@@ -176,9 +169,6 @@ public class NotificaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Notifica.model().ID_RPT.IUV)){
 			return this.toTable(Notifica.model().ID_RPT, returnAlias);
 		}
-		if(field.equals(Notifica.model().ID_RR.COD_MSG_REVOCA)){
-			return this.toTable(Notifica.model().ID_RR, returnAlias);
-		}
 		if(field.equals(Notifica.model().TIPO_ESITO)){
 			return this.toTable(Notifica.model(), returnAlias);
 		}
@@ -221,9 +211,6 @@ public class NotificaFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Notifica.model().ID_RPT)){
 			return "rpt";
-		}
-		if(model.equals(Notifica.model().ID_RR)){
-			return "rr";
 		}
 
 

@@ -69,6 +69,10 @@ public class ThreadExecutorManager {
 			int threadSpedizioneNotificaPagamentoMaggioliPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione notifiche pagamento Maggioli [NumThread: {}]", threadSpedizioneNotificaPagamentoMaggioliPoolSize);
 			executorSpedizioneNotificaPagamentoMaggioli = Executors.newFixedThreadPool(threadSpedizioneNotificaPagamentoMaggioliPoolSize);
+			
+			int threadRecuperoRT = GovpayConfig.getInstance().getDimensionePoolThreadRecuperoRT();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di recupero RT [NumThread: {}]", threadRecuperoRT);
+			executorRecuperaRT = Executors.newFixedThreadPool(threadRecuperoRT);
 		}
 		initialized = true;
 	}

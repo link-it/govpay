@@ -39,6 +39,10 @@ public class EventoContext implements Serializable {
 	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE = "paVerifyPaymentNotice";
 	public static final String APIPAGOPA_TIPOEVENTO_PAGETPAYMENT = "paGetPayment";
+	
+	public static final String APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUR = "getOrganizationReceiptIur";
+	public static final String APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUVIUR = "getOrganizationReceiptIuvIur";
+	public static final String APIPAGOPA_TIPOEVENTO_HEALTHCHECK = "healthCheck";
 
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";

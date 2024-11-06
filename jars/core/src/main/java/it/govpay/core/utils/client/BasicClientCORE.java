@@ -183,8 +183,8 @@ public abstract class BasicClientCORE {
 	protected static Map<String, SSLSocketFactory> sslContextFactorys = new HashMap<>();
 	protected SSLSocketFactory sslContextFactory;
 
-	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione, EventoContext eventoCtx) throws ClientInitializeException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(), eventoCtx, TipoDestinatario.INTERMEDIARIO);
+	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, connettore, eventoCtx, TipoDestinatario.INTERMEDIARIO);
 		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";

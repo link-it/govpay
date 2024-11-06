@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.41.0"
+  version: "1.42.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5163,6 +5163,8 @@ components:
           $ref: '#/components/schemas/connettorePagopa'
         servizioFtp:
           $ref: '#/components/schemas/servizioFtp'
+        servizioPagoPaRecuperoRT:
+          $ref: '#/components/schemas/connettorePagopaRecuperoRT'
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
@@ -8013,10 +8015,20 @@ components:
           type: string
           description: Dati di integrazione al servizio web RPT
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
-        urlAvvisatura:
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
           type: string
-          description: Dati di integrazione al servizio web di Avvisatura Digitale
-          example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+    connettorePagopaRecuperoRT:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio web Recupero RT
+          example: https://api.platform.pagopa.it/bizevents/service/v1
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
         subscriptionKey:

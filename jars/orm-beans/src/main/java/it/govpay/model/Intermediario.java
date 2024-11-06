@@ -22,17 +22,22 @@ package it.govpay.model;
 public class Intermediario extends BasicModel{
 	private static final long serialVersionUID = 1L;
 	
+	public static final String CONNETTORE_RECUPERO_RT_SUFFIX= "_RT";
+	
 	private Long id;
 	private String codIntermediario;
 	private String denominazione;
     private Connettore connettorePdd;
+    private Connettore connettorePddRecuperoRT;
     private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
     
     private String principal;
     private String principalOriginale;
     
-    public Intermediario() {}
+    public Intermediario() {
+    	//donothing
+    }
         
 	@Override
 	public Long getId() {
@@ -66,12 +71,6 @@ public class Intermediario extends BasicModel{
 		this.denominazione = nomeSPC;
 	}
 	
-	public Connettore getConnettorePddAvvisatura() {
-		Connettore cAvvisatura = new Connettore(this.connettorePdd);
-		cAvvisatura.setUrl(cAvvisatura.getUrlServiziAvvisatura());
-		return cAvvisatura;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		Intermediario intermediario = null;
@@ -122,4 +121,11 @@ public class Intermediario extends BasicModel{
 		this.principalOriginale = principalOriginale;
 	}
 
+	public void setConnettorePddRecuperoRT(Connettore connettorePddRecuperoRT) {
+		this.connettorePddRecuperoRT = connettorePddRecuperoRT;
+	}
+
+	public Connettore getConnettorePddRecuperoRT() {
+		return connettorePddRecuperoRT;
+	}
 }

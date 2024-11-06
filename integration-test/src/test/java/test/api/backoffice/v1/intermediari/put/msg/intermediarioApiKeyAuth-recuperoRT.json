@@ -1,0 +1,19 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")',
+		"auth": {
+			"apiId": "X-GOVPAY-AUTH",
+			"apiKey": "govpay"
+		}
+	},
+	"servizioPagoPaRecuperoRT": {
+		"url": '#(ndpsym_url + "/pagopa/recuperoRT")',
+		"auth": {
+			"apiId": "X-GOVPAY-AUTH",
+			"apiKey": "govpay"
+		}
+	},
+	"abilitato": true
+}

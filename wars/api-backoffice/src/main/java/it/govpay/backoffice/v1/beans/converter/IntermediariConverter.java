@@ -27,6 +27,8 @@ import it.govpay.backoffice.v1.beans.IntermediarioPost;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 
 public class IntermediariConverter {
+	
+	private IntermediariConverter() {}
 
 	public static PutIntermediarioDTO getPutIntermediarioDTO(IntermediarioPost intermediarioPost, String idIntermediario, Authentication user) {
 		PutIntermediarioDTO putIntermediarioDTO = new PutIntermediarioDTO(user);
@@ -38,6 +40,10 @@ public class IntermediariConverter {
 		intermediario.setCodIntermediario(idIntermediario);
 		if(intermediarioPost.getServizioPagoPa() != null) {
 			intermediario.setConnettorePdd(ConnettorePagopaConverter.getConnettore(intermediarioPost.getServizioPagoPa()));
+
+		}
+		if(intermediarioPost.getServizioPagoPaRecuperoRT() != null) {
+			intermediario.setConnettorePddRecuperoRT(ConnettorePagopaRecuperoRTConverter.getConnettore(intermediarioPost.getServizioPagoPaRecuperoRT(), idIntermediario));
 
 		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
@@ -63,9 +69,14 @@ public class IntermediariConverter {
 		.idIntermediario(i.getCodIntermediario())
 		.principalPagoPa(i.getPrincipalOriginale())
 		.servizioPagoPa(ConnettorePagopaConverter.toRsModel(i.getConnettorePdd()));
+		
+		if(i.getConnettorePddRecuperoRT()!=null) {
+			rsModel.setServizioPagoPaRecuperoRT(ConnettorePagopaRecuperoRTConverter.toRsModel(i.getConnettorePddRecuperoRT()));
+		}
 
-		if(i.getConnettoreSftp()!=null)
+		if(i.getConnettoreSftp()!=null) {
 			rsModel.setServizioFtp(ConnettoreSftpConverter.toRsModel(i.getConnettoreSftp()));
+		}
 
 		return rsModel;
 	}

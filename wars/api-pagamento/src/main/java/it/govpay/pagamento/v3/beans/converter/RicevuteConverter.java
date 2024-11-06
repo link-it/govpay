@@ -146,6 +146,7 @@ public class RicevuteConverter {
 				ricevutaRpt.setXml(JaxbUtils.toByte(paGetPaymentRes));
 				break;
 			case SANP_230:
+			case RPTSANP230_RTV2:
 				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 				
 				CtSoggettoVersante soggettoVersante = ctRpt.getSoggettoVersante();
@@ -318,6 +319,7 @@ public class RicevuteConverter {
 					break;
 				case SANP_321_V2:
 				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 					
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();

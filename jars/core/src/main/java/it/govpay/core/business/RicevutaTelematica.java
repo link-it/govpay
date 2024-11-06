@@ -102,6 +102,7 @@ public class RicevutaTelematica {
 			return this._fromRptVersione240(rpt);
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 			return this._fromRptVersione321_V2(rpt);
 		}
 		

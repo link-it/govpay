@@ -39,6 +39,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
 	cod_connettore_pdd VARCHAR2(35 CHAR) NOT NULL,
+	cod_connettore_recupero_rt VARCHAR2(35 CHAR),
 	cod_connettore_ftp VARCHAR2(35 CHAR),
 	denominazione VARCHAR2(255 CHAR) NOT NULL,
 	principal VARCHAR2(4000 CHAR) NOT NULL,
@@ -856,6 +857,7 @@ CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
+CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti
@@ -1129,49 +1131,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_rr MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE rr
-(
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-	iuv VARCHAR2(35 CHAR) NOT NULL,
-	ccp VARCHAR2(35 CHAR) NOT NULL,
-	cod_msg_revoca VARCHAR2(35 CHAR) NOT NULL,
-	data_msg_revoca TIMESTAMP NOT NULL,
-	data_msg_esito TIMESTAMP,
-	stato VARCHAR2(35 CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(512 CHAR),
-	importo_totale_richiesto BINARY_DOUBLE NOT NULL,
-	cod_msg_esito VARCHAR2(35 CHAR),
-	importo_totale_revocato BINARY_DOUBLE,
-	xml_rr BLOB NOT NULL,
-	xml_er BLOB,
-	cod_transazione_rr VARCHAR2(36 CHAR),
-	cod_transazione_er VARCHAR2(36 CHAR),
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_rpt NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT pk_rr PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_rr
-BEFORE
-insert on rr
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_rr.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_notifiche MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE notifiche
@@ -1187,11 +1146,9 @@ CREATE TABLE notifiche
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER NOT NULL,
 	id_rpt NUMBER,
-	id_rr NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 );
 
@@ -1464,12 +1421,10 @@ CREATE TABLE pagamenti
 	id NUMBER NOT NULL,
 	id_rpt NUMBER,
 	id_singolo_versamento NUMBER NOT NULL,
-	id_rr NUMBER,
 	id_incasso NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
@@ -1813,7 +1768,6 @@ ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
 
 -- ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
@@ -2386,7 +2340,6 @@ SELECT
 	pagamenti.tipo AS tipo,                  
 	pagamenti.id_rpt AS id_rpt,                  
 	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
-	pagamenti.id_rr AS id_rr,                  
 	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,

@@ -33,6 +33,8 @@ import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.model.Pagamento.TipoPagamento;
 
 public class PagamentoConverter {
+	
+	private PagamentoConverter() {}
 
 	public static Pagamento toDTO(it.govpay.orm.VistaPagamento vo) {
 		Pagamento dto = new Pagamento();
@@ -57,8 +59,6 @@ public class PagamentoConverter {
 			pagamento.setIdRpt(vo.getIdRPT().getId());
 		if(vo.getIdSingoloVersamento() != null)
 			pagamento.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
-		if(vo.getIdRr() != null)
-			pagamento.setIdRr(vo.getIdRr().getId());
 
 		pagamento.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
 		pagamento.setCausaleRevoca(vo.getCausaleRevoca());

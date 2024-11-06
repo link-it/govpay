@@ -209,8 +209,7 @@ public class RptDAO extends BaseDAO{
 
 			return new ListaRptDTOResponse(count, new ArrayList<>());
 		} finally {
-			if(rptBD != null)
-				rptBD.closeConnection();
+			rptBD.closeConnection();
 		}
 	}
 
@@ -222,8 +221,7 @@ public class RptDAO extends BaseDAO{
 
 			return this.listaRpt(listaRptDTO, rptBD);
 		} finally {
-			if(rptBD != null)
-				rptBD.closeConnection();
+			rptBD.closeConnection();
 		}
 	}
 

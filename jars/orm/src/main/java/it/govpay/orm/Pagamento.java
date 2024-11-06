@@ -47,7 +47,6 @@ import java.io.Serializable;
  * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="allegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="causaleRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -83,7 +82,6 @@ import java.io.Serializable;
   	"commissioniPsp",
   	"tipoAllegato",
   	"allegato",
-  	"idRr",
   	"dataAcquisizioneRevoca",
   	"causaleRevoca",
   	"datiRevoca",
@@ -210,14 +208,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setAllegato(byte[] allegato) {
     this.allegato = allegato;
-  }
-
-  public IdRr getIdRr() {
-    return this.idRr;
-  }
-
-  public void setIdRr(IdRr idRr) {
-    this.idRr = idRr;
   }
 
   public java.util.Date getDataAcquisizioneRevoca() {
@@ -358,9 +348,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="allegato",required=false,nillable=false)
   protected byte[] allegato;
-
-  @XmlElement(name="idRr",required=false,nillable=false)
-  protected IdRr idRr;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

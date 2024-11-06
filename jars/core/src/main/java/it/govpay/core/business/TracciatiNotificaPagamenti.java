@@ -1141,6 +1141,7 @@ public class TracciatiNotificaPagamenti {
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvGovPayRpt_SANP23(rpt,configWrapper);
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvGovPayRpt_SANP321_V2(rpt,configWrapper);
 		}
 		
@@ -1176,6 +1177,7 @@ public class TracciatiNotificaPagamenti {
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvMyPivotRpt_SANP23(rpt,configWrapper);
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvMyPivotRpt_SANP321_V2(rpt,configWrapper);
 		}
 		
@@ -1196,6 +1198,7 @@ public class TracciatiNotificaPagamenti {
 			break;
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP321_V2(log, rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
 			break;
 		}

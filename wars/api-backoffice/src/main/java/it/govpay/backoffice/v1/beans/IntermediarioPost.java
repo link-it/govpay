@@ -33,6 +33,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "principalPagoPa",
 "servizioPagoPa",
 "servizioFtp",
+"servizioPagoPaRecuperoRT",
 "abilitato",
 })
 public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
@@ -48,7 +49,10 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("servizioFtp")
   private ServizioFtp servizioFtp = null;
-
+  
+  @JsonProperty("servizioPagoPaRecuperoRT")
+  private ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT = null;
+  
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
 
@@ -115,6 +119,21 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
   }
 
   /**
+   **/
+  public IntermediarioPost servizioPagoPaRecuperoRT(ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT) {
+    this.servizioPagoPaRecuperoRT = servizioPagoPaRecuperoRT;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaRecuperoRT")
+  public ConnettorePagopaRecuperoRT getServizioPagoPaRecuperoRT() {
+    return servizioPagoPaRecuperoRT;
+  }
+  public void setServizioPagoPaRecuperoRT(ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT) {
+    this.servizioPagoPaRecuperoRT = servizioPagoPaRecuperoRT;
+  }
+
+  /**
    * Indica lo stato di abilitazione
    **/
   public IntermediarioPost abilitato(Boolean abilitato) {
@@ -143,12 +162,13 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
         Objects.equals(this.principalPagoPa, intermediarioPost.principalPagoPa) &&
         Objects.equals(this.servizioPagoPa, intermediarioPost.servizioPagoPa) &&
         Objects.equals(this.servizioFtp, intermediarioPost.servizioFtp) &&
+        Objects.equals(servizioPagoPaRecuperoRT, intermediarioPost.servizioPagoPaRecuperoRT) &&
         Objects.equals(this.abilitato, intermediarioPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.denominazione, this.principalPagoPa, this.servizioPagoPa, this.servizioFtp, this.abilitato);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, servizioPagoPaRecuperoRT, abilitato);
   }
 
   public static IntermediarioPost parse(String json) throws IOException {
@@ -169,6 +189,7 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
     sb.append("    principalPagoPa: ").append(this.toIndentedString(this.principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");
     sb.append("    servizioFtp: ").append(this.toIndentedString(this.servizioFtp)).append("\n");
+    sb.append("    servizioPagoPaRecuperoRT: ").append(toIndentedString(servizioPagoPaRecuperoRT)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -192,6 +213,7 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
 		vf.getValidator("principalPagoPa", this.principalPagoPa).notNull().minLength(1).maxLength(4000);
 		vf.getValidator("servizioPagoPa", this.servizioPagoPa).notNull().validateFields();
 		vf.getValidator("servizioFtp", this.servizioFtp).validateFields();
+		vf.getValidator("servizioPagoPaRecuperoRT", this.servizioPagoPaRecuperoRT).validateFields();
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

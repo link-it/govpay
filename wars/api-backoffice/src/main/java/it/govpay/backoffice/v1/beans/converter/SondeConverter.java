@@ -29,7 +29,8 @@ import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.MailBatch;
 
 public class SondeConverter {
-
+	
+	private SondeConverter() {}
 
 	public static Sonda toRsModel(org.openspcoop2.utils.sonde.Sonda sonda, org.openspcoop2.utils.sonde.ParametriSonda parametri, it.govpay.bd.model.Configurazione configurazione) throws IOException {
 		Sonda rsModel = new Sonda(sonda.getClass());
@@ -203,8 +204,8 @@ public class SondeConverter {
 				rsModel.setStato(StatoSonda.ERROR);
 				rsModel.setDescrizioneStato(Costanti.BATCH_RICONCILIAZIONI_DISABILITATO);
 			}
-		} else if(Costanti.PND.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRPTPendenti()) {
+		} else if(Costanti.BATCH_RECUPERO_RT.equals(rsModel.getId())) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRT()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -215,7 +216,7 @@ public class SondeConverter {
 			} else {
 				// batch disabilitato
 				rsModel.setStato(StatoSonda.ERROR);
-				rsModel.setDescrizioneStato(Costanti.PND_DISABILITATO);
+				rsModel.setDescrizioneStato(Costanti.BATCH_RECUPERO_RT_DISABILITATO);
 			}
 		} else if(Costanti.RND.equals(rsModel.getId())) {
 			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()) {
@@ -275,8 +276,6 @@ public class SondeConverter {
 				return Costanti.CHECK_DB_NOME;
 			case Costanti.RND:
 				return Costanti.RND_NOME;
-			case Costanti.PND:
-				return Costanti.PND_NOME;
 			case Costanti.NTFY:
 				return Costanti.NTFY_NOME;
 			case Costanti.CHECK_NTFY:
@@ -313,6 +312,10 @@ public class SondeConverter {
 				return Costanti.BATCH_CHIUSURA_RPT_SCADUTE_NOME;
 			case Costanti.CHECK_CHIUSURA_RPT_SCADUTE:
 				return Costanti.CHECK_CHIUSURA_RPT_SCADUTE_NOME;
+			case Costanti.BATCH_RECUPERO_RT:
+				return Costanti.BATCH_RECUPERO_RT_NOME;
+			case Costanti.CHECK_RECUPERO_RT:
+				return Costanti.CHECK_RECUPERO_RT_NOME;
 			}
 		}
 		return id;

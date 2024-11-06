@@ -159,7 +159,7 @@
 						<configuration>
 							<sources>
 								<source>${basedir}/src/main/resources/xsd/comuni/MarcaDaBollo.xsd</source>
-								<source>${basedir}/src/main/resources/xsd/comuni/RR_ER_1_0_0.xsd</source>
+<!--								<source>${basedir}/src/main/resources/xsd/comuni/RR_ER_1_0_0.xsd</source>-->
 							</sources>
 						</configuration>
 					</execution>
@@ -276,8 +276,8 @@
 							<inputSpec>${project.basedir}/src/main/resources/openapi/bizEvents.yaml</inputSpec>
 							<language>java</language>
 							<configOptions>
-								<dateLibrary>joda</dateLibrary>
-								<library>jersey2</library>
+								<dateLibrary>java8</dateLibrary>
+								<library>resttemplate</library>
 								<sourceFolder>target/generated-sources/java/</sourceFolder>
 								<apiPackage>it.gov.pagopa.bizeventsservice.api</apiPackage>
 								<invokerPackage>it.gov.pagopa.bizeventsservice.impl</invokerPackage>
@@ -286,6 +286,8 @@
 							</configOptions>
 							<generateApiTests>false</generateApiTests>
 							<generateModelTests>false</generateModelTests>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
 						</configuration>
 					</execution>
 				</executions>

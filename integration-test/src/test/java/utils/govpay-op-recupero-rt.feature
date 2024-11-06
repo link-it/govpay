@@ -1,4 +1,4 @@
-Feature: Acquisizione delle rendicontazioni
+Feature: Acquisizione delle ricevute mancanti
 
 Background:
 
@@ -8,7 +8,7 @@ Background:
 Scenario: 
 
 Given url backofficeBaseurl
-And path 'operazioni', 'recuperoRptPendenti' 
+And path 'operazioni', 'recuperoRT' 
 And headers basicAutenticationHeader
 When method get
 Then assert responseStatus == 200

@@ -26,7 +26,7 @@ package it.govpay.core.utils.serialization;
  * @version $Rev$, $Date$
  * 
  */
-public class SerializationConfig extends org.openspcoop2.utils.serialization.SerializationConfig{
+public class GovPaySerializationConfig extends org.openspcoop2.utils.serialization.SerializationConfig{
 
 	private boolean failOnNumbersForEnums = false; // default
 	

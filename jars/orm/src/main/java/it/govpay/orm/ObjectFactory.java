@@ -63,13 +63,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdEr }
-     */
-    public IdEr createIdEr() {
-        return new IdEr();
-    }
-
-    /**
      * Create an instance of {@link IdOperazione }
      */
     public IdOperazione createIdOperazione() {
@@ -539,24 +532,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RR }
-     */
-    public RR createRR() {
-        return new RR();
-    }
-
-    /**
      * Create an instance of {@link IdTipoVersamentoDominio }
      */
     public IdTipoVersamentoDominio createIdTipoVersamentoDominio() {
         return new IdTipoVersamentoDominio();
-    }
-
-    /**
-     * Create an instance of {@link IdRr }
-     */
-    public IdRr createIdRr() {
-        return new IdRr();
     }
 
     /**

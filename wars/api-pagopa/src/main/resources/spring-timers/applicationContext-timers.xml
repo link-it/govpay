@@ -11,7 +11,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
 	<b:bean id="batchAcquisizioneRendicontazioni" class="it.govpay.core.utils.tasks.AcquisizioneRendicontazioni"/>
-	<b:bean id="batchRecuperoRptPendenti" class="it.govpay.core.utils.tasks.RecuperoRptPendenti"/>
 	<b:bean id="batchSpedizioneNotifiche" class="it.govpay.core.utils.tasks.SpedizioneNotifiche"/>
 	<b:bean id="batchSpedizioneNotificheCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheCheck"/>
 	<b:bean id="batchSpedizioneNotificheAppIo" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIo"/>
@@ -35,12 +34,12 @@
 	<b:bean id="batchChiusuraRptScaduteCheck" class="it.govpay.core.utils.tasks.ChiusuraRptScaduteCheck"/>
 	<b:bean id="batchChiusuraRptScadute" class="it.govpay.core.utils.tasks.ChiusuraRptScadute"/>
 	
+	<b:bean id="batchRecuperoRTCheck" class="it.govpay.core.utils.tasks.RecuperoRTCheck"/>
+	<b:bean id="batchRecuperoRT" class="it.govpay.core.utils.tasks.RecuperoRT"/>
 	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
 		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
-		<!-- Rpt pendenti tutti i giorni ogni ora -->
-        <task:scheduled ref="batchRecuperoRptPendenti" method="exec" cron="0 0 * * * ?" />
         <!-- Notifiche spedite tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
         <!-- Check Notifiche da spedire viene eseguito tutti i giorni ogni 5 secondi -->
@@ -84,6 +83,11 @@
         <task:scheduled ref="batchChiusuraRptScaduteCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Rpt scadute da chiudere viene eseguito tutti i giorni ogni 30 minuti -->
         <task:scheduled ref="batchChiusuraRptScadute" method="exec" cron="0 0/30 * * * ?" />
+        
+        <!-- Check RecuperoRT viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchRecuperoRTCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- RecuperoRT viene eseguito tutti i giorni ogni ora -->
+        <task:scheduled ref="batchChiusuraRptScadute" method="exec" cron="0 0 * * * ?" />
         
     </task:scheduled-tasks>
  

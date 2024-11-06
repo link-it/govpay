@@ -52,6 +52,7 @@ public class MessaggiPagoPARptUtils {
 	public static Object getMessaggioRPT(Rpt rpt, FormatoRicevuta formato, boolean retrocompatibilitaMessaggiPagoPAV1) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
 		switch (rpt.getVersione()) {
 		case SANP_230:
+		case RPTSANP230_RTV2:
 			return getMessaggioRPTSANP230(rpt,formato);
 		case SANP_240:
 		case RPTV1_RTV2:
@@ -154,6 +155,7 @@ public class MessaggiPagoPARptUtils {
 	public static BigDecimal getImportoRPT(Rpt rpt) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
 		switch (rpt.getVersione()) {
 		case SANP_230:
+		case RPTSANP230_RTV2:
 			CtRichiestaPagamentoTelematico ctRichiestaPagamentoTelematico = (CtRichiestaPagamentoTelematico) getMessaggioRPTSANP230(rpt,FormatoRicevuta.JSON);
 			return ctRichiestaPagamentoTelematico.getDatiVersamento().getImportoTotaleDaVersare();
 		case SANP_240:
