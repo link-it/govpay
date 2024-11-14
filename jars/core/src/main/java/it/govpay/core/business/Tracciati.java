@@ -1240,7 +1240,6 @@ public class Tracciati {
 					versamento.getDominio(configWrapper);
 					versamento.getUo(configWrapper);
 					versamento.getApplicazione(configWrapper);
-					versamento.getIuv(configWrapper);
 					operazioneCaricamento.setVersamento(versamento);
 				}
 			}catch(NotFoundException e) {

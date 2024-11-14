@@ -32,8 +32,9 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-/**	
+/** 
  * Contiene utility per effettuare la de-serializzazione di un oggetto
  *
  * @author Poli Andrea (apoli@link.it)
@@ -59,6 +60,9 @@ public class JsonJacksonDeserializer implements IDeserializer{
 			this.mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 		if(config.isFailOnNumbersForEnums())
 			this.mapper.enable(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS);
+		if(config.isEnableJSR310()) {
+			this.mapper.registerModule(new JavaTimeModule());
+		}
 
 	}
 	

@@ -9,7 +9,6 @@ DELETE FROM rendicontazioni;
 DELETE FROM pagamenti;
 DELETE FROM fr;
 DELETE FROM incassi;
-DELETE FROM iuv;
 DELETE FROM promemoria;
 DELETE FROM notifiche_app_io;
 DELETE FROM notifiche;

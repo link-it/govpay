@@ -114,7 +114,9 @@ public class CtReceiptV2Converter {
 			ctTransferPAReceiptV2.setFiscalCodePA(itGovPagopaBizeventsserviceModelResponseTransferPA.getFiscalCodePA());
 			ctTransferPAReceiptV2.setIBAN(itGovPagopaBizeventsserviceModelResponseTransferPA.getIban());
 			ctTransferPAReceiptV2.setIdTransfer(itGovPagopaBizeventsserviceModelResponseTransferPA.getIdTransfer());
-			ctTransferPAReceiptV2.setMBDAttachment(itGovPagopaBizeventsserviceModelResponseTransferPA.getMbdAttachment().getBytes());
+			if(itGovPagopaBizeventsserviceModelResponseTransferPA.getMbdAttachment() != null) {
+				ctTransferPAReceiptV2.setMBDAttachment(itGovPagopaBizeventsserviceModelResponseTransferPA.getMbdAttachment().getBytes());
+			}
 			ctTransferPAReceiptV2.setMetadata(toCtReceiptV2Metadata(itGovPagopaBizeventsserviceModelResponseTransferPA.getMetadata()));
 			ctTransferPAReceiptV2.setRemittanceInformation(itGovPagopaBizeventsserviceModelResponseTransferPA.getRemittanceInformation());
 			ctTransferPAReceiptV2.setTransferAmount(itGovPagopaBizeventsserviceModelResponseTransferPA.getTransferAmount());

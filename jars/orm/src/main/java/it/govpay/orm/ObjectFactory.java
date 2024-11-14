@@ -147,13 +147,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdSingolaRevoca }
-     */
-    public IdSingolaRevoca createIdSingolaRevoca() {
-        return new IdSingolaRevoca();
-    }
-
-    /**
      * Create an instance of {@link Batch }
      */
     public Batch createBatch() {
@@ -217,13 +210,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdIuv }
-     */
-    public IdIuv createIdIuv() {
-        return new IdIuv();
-    }
-
-    /**
      * Create an instance of {@link IdTipoVersamento }
      */
     public IdTipoVersamento createIdTipoVersamento() {
@@ -249,13 +235,6 @@ public class ObjectFactory {
      */
     public IdBatch createIdBatch() {
         return new IdBatch();
-    }
-
-    /**
-     * Create an instance of {@link IUV }
-     */
-    public IUV createIUV() {
-        return new IUV();
     }
 
     /**

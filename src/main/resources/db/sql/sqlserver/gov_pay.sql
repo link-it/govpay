@@ -899,33 +899,6 @@ CREATE TABLE promemoria
 
 
 
-CREATE TABLE iuv
-(
-	prg BIGINT NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	application_code INT NOT NULL,
-	data_generazione DATE NOT NULL,
-	tipo_iuv VARCHAR(1) NOT NULL,
-	cod_versamento_ente VARCHAR(35),
-	aux_digit INT NOT NULL DEFAULT 0,
-	-- fk/pk columns
-	id BIGINT IDENTITY,
-	id_applicazione BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_iuv PRIMARY KEY (id)
-);
-
--- index
-CREATE UNIQUE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
-CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
-
-
-
 CREATE TABLE incassi
 (
 	trn VARCHAR(35) NOT NULL,

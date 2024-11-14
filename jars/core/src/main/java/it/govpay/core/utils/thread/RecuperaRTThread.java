@@ -37,7 +37,9 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
@@ -104,6 +106,13 @@ public class RecuperaRTThread implements Runnable {
 		String iuv = this.rendicontazione.getIuv();
 		String codDominio = this.dominio.getCodDominio();
 		try {
+			SingoloVersamento singoloVersamento = this.rendicontazione.getSingoloVersamento(configWrapper);
+			if(singoloVersamento != null) {
+				Versamento versamento = singoloVersamento.getVersamento(configWrapper);
+				eventoCtx.setIdPendenza(versamento.getCodVersamentoEnte());
+				eventoCtx.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			}
+			
 			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), codDominio, EventoContext.APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUR);
 			log.info("Id Server: [{}]", operationId);
 			log.info("Recupero RT da PagoPA [CodDominio: {}, IUR: {}]", codDominio, iur);

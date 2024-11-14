@@ -52,8 +52,6 @@ import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IEventoServiceSearch;
 import it.govpay.orm.dao.IFRService;
 import it.govpay.orm.dao.IFRServiceSearch;
-import it.govpay.orm.dao.IIUVService;
-import it.govpay.orm.dao.IIUVServiceSearch;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIbanAccreditoServiceSearch;
 import it.govpay.orm.dao.IIncassoService;
@@ -743,38 +741,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IOperatoreService getOperatoreService() throws ServiceException,NotImplementedException{
 		return new JDBCOperatoreService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:IUV type:IUV
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.IUV}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.IUV}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IIUVServiceSearch getIUVServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCIUVServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.IUV}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.IUV}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IIUVService getIUVService() throws ServiceException,NotImplementedException{
-		return new JDBCIUVService(this);
 	}
 	
 	

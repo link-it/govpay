@@ -66,7 +66,7 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	
 	private Rpt rpt;
-	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaPagamentoMaggioliJPPAThread.class);
 	private IContext ctx = null;
 	private Giornale giornale;
 	private Dominio dominio;

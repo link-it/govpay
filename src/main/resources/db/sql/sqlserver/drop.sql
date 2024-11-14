@@ -3,7 +3,6 @@
 -- DROP INDEX index_batch_1 ON batch ;
 -- DROP INDEX index_fr_1 ON fr ;
 -- DROP INDEX index_incassi_1 ON incassi ;
--- DROP INDEX index_iuv_1 ON iuv ;
 -- DROP INDEX index_tipi_vers_domini_1 ON tipi_vers_domini ;
 -- DROP INDEX index_tipi_versamento_1 ON tipi_versamento ;
 -- DROP INDEX index_connettori_1 ON connettori ;
@@ -35,7 +34,6 @@
 -- DROP INDEX idx_pag_fk_rpt ON pagamenti ;
 -- DROP INDEX idx_fr_data_acq ON fr ;
 -- DROP INDEX idx_fr_cod_flusso ON fr ;
--- DROP INDEX idx_iuv_rifversamento ON iuv ;
 -- DROP INDEX idx_nai_da_spedire ON notifiche_app_io ;
 -- DROP INDEX idx_ntf_da_spedire ON notifiche ;
 -- DROP INDEX idx_rpt_ric_pend_scad ON rpt ;
@@ -89,7 +87,6 @@ DROP TABLE rendicontazioni;
 DROP TABLE pagamenti;
 DROP TABLE fr;
 DROP TABLE incassi;
-DROP TABLE iuv;
 DROP TABLE promemoria;
 DROP TABLE notifiche_app_io;
 DROP TABLE notifiche;

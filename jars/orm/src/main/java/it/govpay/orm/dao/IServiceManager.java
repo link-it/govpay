@@ -452,32 +452,6 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:IUV type:IUV
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.IUV}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.IUV}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IIUVServiceSearch getIUVServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.IUV}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.IUV}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IIUVService getIUVService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:TipoVersamento type:TipoVersamento
 	 =====================================================================================================================
 	*/

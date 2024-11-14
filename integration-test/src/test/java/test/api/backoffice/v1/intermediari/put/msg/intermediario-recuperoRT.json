@@ -5,7 +5,8 @@
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaRecuperoRT": {
-		"url": '#(ndpsym_url + "/pagopa/recuperoRT")'
+		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"subscriptionKey" : "ABC123"
 	},
 	"abilitato": true
 }

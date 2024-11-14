@@ -36,6 +36,7 @@ import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResp
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
@@ -86,7 +87,15 @@ public class RecuperaRTNodoClient extends BasicClientCORE {
 		log.debug("Recupero RT da PagoPA [CodDominio: {}, IUR: {}], Path [{}]", codDominio, iur, path);		
 		try {
 			String jsonResponse = new String(this.getJson(path, headerProperties, swaggerOperationID));
-			ctReceiptModel = ConverterUtils.parse(jsonResponse, ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse.class); 
+			
+			// configurazione custom del parsing
+			it.govpay.core.utils.serialization.GovPaySerializationConfig serializationConfig = new it.govpay.core.utils.serialization.GovPaySerializationConfig();
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+			serializationConfig.setIgnoreNullValues(true);
+			serializationConfig.setFailOnNumbersForEnums(true);
+			serializationConfig.setEnableJSR310(true);
+			
+			ctReceiptModel = ConverterUtils.parse(jsonResponse, ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse.class, serializationConfig); 
 			RecuperaRTNodoClient.logMessaggioDiagnostico(ctx, LOG_KEY_RECUPERO_RT_RECUPERO_RT_OK, codDominio, iur);
 			log.debug("Recupero RT da PagoPA [CodDominio: {}, IUR: {}] completato.", codDominio, iur);	
 		}catch(ClientException e) {

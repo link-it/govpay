@@ -809,6 +809,8 @@ SELECT
 	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
 	     
 
+-- 04/11/2024 Eliminata tabella IUV
+DROP table iuv;
 
 
 

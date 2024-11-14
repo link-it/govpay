@@ -61,11 +61,6 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codStazione" field="codStazione" usage="required"/>
   </mapping>
-  <mapping name="id-iuv" class="it.govpay.orm.IdIuv">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
-    <value name="prg" field="prg" usage="required"/>
-  </mapping>
   <mapping name="iuv" class="it.govpay.orm.IuvSearch" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="iuv" field="iuv" usage="required"/>
@@ -324,10 +319,6 @@
     <structure name="idUtenza" field="idUtenza" usage="required" map-as="_IdUtenza_Type"/>
     <value name="servizio" field="servizio" usage="required"/>
   </mapping>
-  <mapping name="id-singola-revoca" class="it.govpay.orm.IdSingolaRevoca">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="id-singola-revoca" field="idSingolaRevoca" usage="required"/>
-  </mapping>
   <mapping name="idFR" class="it.govpay.orm.IdFr" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
@@ -531,18 +522,6 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idUtenza" field="idUtenza" usage="required" map-as="_IdUtenza_Type"/>
     <value name="nome" field="nome" usage="required"/>
-  </mapping>
-  <mapping name="IUV" class="it.govpay.orm.IUV">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="prg" field="prg" usage="required"/>
-    <value name="iuv" field="iuv" usage="required"/>
-    <value name="applicationCode" field="applicationCode" usage="required"/>
-    <value name="dataGenerazione" field="dataGenerazione" usage="required"/>
-    <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
-    <value name="tipoIuv" field="tipoIuv" usage="required"/>
-    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
-    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="optional"/>
-    <value name="auxDigit" field="auxDigit" default="0" usage="required"/>
   </mapping>
   <mapping name="tipoVersamento" class="it.govpay.orm.TipoVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -19,21 +19,9 @@
  */
 package it.govpay.bd.pagamento;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
@@ -42,17 +30,11 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.converter.IuvConverter;
-import it.govpay.bd.pagamento.filters.IuvFilter;
-import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.model.exception.CodificaInesistenteException;
-import it.govpay.orm.IUV;
-import it.govpay.orm.dao.jdbc.JDBCIUVService;
-import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 
 public class IuvBD extends BasicBD {
 
@@ -222,164 +204,6 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} finally {
 			if(bd != null) bd.closeConnection();
-		}
-	}
-
-	/**
-	 * Recupera lo IUV con la chiave logi generato
-	 * @param iuv
-	 * @return
-	 * @throws ServiceException
-	 */
-	public Iuv getIuv(long idDominio, String iuv) throws ServiceException, NotFoundException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-
-			IExpression exp = this.getIuvService().newExpression();
-			exp.equals(it.govpay.orm.IUV.model().IUV, iuv);
-			IUVFieldConverter converter = new IUVFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField idDominioField = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(IUV.model()));
-
-			exp.equals(idDominioField, idDominio);
-			it.govpay.orm.IUV iuvVO = this.getIuvService().find(exp);
-
-			Iuv iuvDTO = IuvConverter.toDTO(iuvVO);
-
-			return iuvDTO;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	public Iuv getIuv(long idApplicazione, String codVersamentoEnte, TipoIUV tipo) throws ServiceException, NotFoundException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-
-			IPaginatedExpression exp = this.getIuvService().newPaginatedExpression();
-			exp.equals(it.govpay.orm.IUV.model().COD_VERSAMENTO_ENTE, codVersamentoEnte);
-			exp.equals(it.govpay.orm.IUV.model().TIPO_IUV, tipo.getCodifica());
-			IUVFieldConverter converter = new IUVFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField idDominioField = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(IUV.model()));
-			exp.equals(idDominioField, idApplicazione);
-			List<it.govpay.orm.IUV> iuvVO = this.getIuvService().findAll(exp);
-			List<Iuv> iuvs = IuvConverter.toDTOList(iuvVO);
-			if(iuvs.size() > 0)
-				return Collections.max(iuvs, new IuvComparator());
-			else 
-				throw new NotFoundException();
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	/**
-	 * Recupera lo IUV con la chiave logi generato
-	 * @param iuv
-	 * @return
-	 * @throws ServiceException
-	 */
-	public Iuv getIuv(long idIuv) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-
-			it.govpay.orm.IUV iuvVO = ((JDBCIUVService)this.getIuvService()).get(idIuv);
-			Iuv iuvDTO = IuvConverter.toDTO(iuvVO);
-
-			return iuvDTO;
-		}  catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}  catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	public IuvFilter newFilter() throws ServiceException {
-		return new IuvFilter(this.getIuvService());
-	}
-
-	public IuvFilter newFilter(boolean simpleSearch) throws ServiceException {
-		return new IuvFilter(this.getIuvService(),simpleSearch);
-	}
-
-	public long count(IuvFilter filter) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-
-			return this.getIuvService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	public List<Iuv> findAll(IuvFilter filter) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-
-			List<Iuv> iuvLst = new ArrayList<>();
-			List<it.govpay.orm.IUV> iuvVOLst = this.getIuvService().findAll(filter.toPaginatedExpression()); 
-			for(it.govpay.orm.IUV iuvVO: iuvVOLst) {
-				iuvLst.add(IuvConverter.toDTO(iuvVO));
-			}
-			return iuvLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	public class IuvComparator implements Comparator<Iuv> {
-		@Override
-		public int compare(Iuv o1, Iuv o2) {
-			return o1.getDataGenerazione().compareTo(o2.getDataGenerazione());
 		}
 	}
 }

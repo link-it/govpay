@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -135,7 +134,7 @@ public class Rendicontazioni {
 			this.setIdFlussoRendicontazione(idFlussoRendicontazione);
 			this.codDominio = codDominio;
 			this.idFlusso = idFlussoRendicontazione.getIdentificativoFlusso();
-			setErrori(new ArrayList<String>());
+			setErrori(new ArrayList<>());
 		}
 		
 		public RendicontazioneScaricata(TipoIdRendicontazione idFlussoRendicontazione, String codDominio, File file) {

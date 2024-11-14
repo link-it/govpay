@@ -9,7 +9,8 @@
 		}
 	},
 	"servizioPagoPaRecuperoRT": {
-		"url": '#(ndpsym_url + "/pagopa/recuperoRT")',
+		"url": '#(ndpsym_url + "/pagopa/rs/bizEvent")',
+		"subscriptionKey" : "ABC123",
 		"auth": {
 			"username": "usr",
 			"password": "pwd"

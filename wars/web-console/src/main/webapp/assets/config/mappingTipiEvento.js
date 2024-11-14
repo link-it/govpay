@@ -169,7 +169,8 @@
       paSendRTV2: 'Ricevuta RT da pagoPA (v2)',
       paVerifyPaymentNotice: 'Ricevuta verifica RPT da pagoPA (v2)',
       paGetPayment: 'Ricevuta attivazione RPT da pagoPA (v2)',
-      paGetPaymentV2: 'Ricevuta attivazione RPT da pagoPA (v2)'
+      paGetPaymentV2: 'Ricevuta attivazione RPT da pagoPA (v2)'	  ,
+	  getOrganizationReceiptIur: 'Richiesta RT a pagoPA'
     },
     API_PENDENZE: {
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',

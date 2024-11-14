@@ -1260,48 +1260,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_iuv MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE iuv
-(
-	prg NUMBER NOT NULL,
-	iuv VARCHAR2(35 CHAR) NOT NULL,
-	application_code NUMBER NOT NULL,
-	data_generazione DATE NOT NULL,
-	tipo_iuv VARCHAR2(1 CHAR) NOT NULL,
-	cod_versamento_ente VARCHAR2(35 CHAR),
-	aux_digit NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_applicazione NUMBER NOT NULL,
-	id_dominio NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_iuv PRIMARY KEY (id)
-);
-
--- index
-CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
-
-ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;
-
-CREATE TRIGGER trg_iuv
-BEFORE
-insert on iuv
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_iuv.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_incassi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE incassi

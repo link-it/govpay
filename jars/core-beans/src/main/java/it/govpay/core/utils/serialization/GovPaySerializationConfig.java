@@ -29,6 +29,7 @@ package it.govpay.core.utils.serialization;
 public class GovPaySerializationConfig extends org.openspcoop2.utils.serialization.SerializationConfig{
 
 	private boolean failOnNumbersForEnums = false; // default
+	private boolean enableJSR310 = false; // default
 	
 	public boolean isFailOnNumbersForEnums() {
 		return failOnNumbersForEnums;
@@ -36,4 +37,11 @@ public class GovPaySerializationConfig extends org.openspcoop2.utils.serializati
 	public void setFailOnNumbersForEnums(boolean failOnNumbersForEnums) {
 		this.failOnNumbersForEnums = failOnNumbersForEnums;
 	}
+	public boolean isEnableJSR310() {
+		return enableJSR310;
+	}
+	public void setEnableJSR310(boolean enableJSR310) {
+		this.enableJSR310 = enableJSR310;
+	}
+	
 }
