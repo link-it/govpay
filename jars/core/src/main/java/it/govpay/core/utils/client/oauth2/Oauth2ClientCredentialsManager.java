@@ -19,19 +19,9 @@
  */
 package it.govpay.core.utils.client.oauth2;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.apache.cxf.jaxrs.client.Client;
-import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.cxf.jaxrs.provider.json.JSONProvider;
 import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
@@ -39,8 +29,6 @@ import org.apache.cxf.rs.security.oauth2.grants.clientcred.ClientCredentialsGran
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
-
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
@@ -122,10 +110,5 @@ public class Oauth2ClientCredentialsManager {
 			return currentTime >= expirationTime;
 		}
 		return true; // se il token non e' presente lo considero scaduto
-	}
-
-	private static String getBasicAuthHeader(String clientId, String clientSecret) {
-		String credentials = clientId + ":" + clientSecret;
-		return java.util.Base64.getEncoder().encodeToString(credentials.getBytes());
 	}
 }

@@ -20,7 +20,6 @@
 package it.govpay.core.ec.v1.validator;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 
 import it.govpay.core.beans.EsitoOperazione;

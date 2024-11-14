@@ -25,6 +25,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class IuvUtils {
 	
+	private IuvUtils() {}
+	
 	public static boolean checkISO11640(String iuv){
 		if(iuv.length() <= 4) return false;
 		
@@ -39,7 +41,7 @@ public class IuvUtils {
 	}
 
 	public static String getCheckDigit(String reference) throws ServiceException {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String referenceUpperCase = reference.toUpperCase();
 		for (int i = 0; i < referenceUpperCase.length(); i++){
 			char c = referenceUpperCase.charAt(i);        

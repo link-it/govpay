@@ -598,7 +598,7 @@ public class TracciatiNotificaPagamenti {
 			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ZipOutputStream zos)
 			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException {
 		
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').build());
 		
 		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
 		zos.putNextEntry(tracciatoOutputEntry);
@@ -925,7 +925,7 @@ public class TracciatiNotificaPagamenti {
 		 * */
 		
 		
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';').withEscape(Character.valueOf('\0')).withQuoteMode(QuoteMode.NONE));
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').setEscape(Character.valueOf('\0')).setQuoteMode(QuoteMode.NONE).build());
 		
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
 		String progressivoS = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, "", "progressivoFile",progressivo +"", 3, true, true);

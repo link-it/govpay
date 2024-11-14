@@ -19,67 +19,42 @@
  */
 package it.govpay.core.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
-import javax.activation.DataHandler;
-
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
-import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRT;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRTRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoElementoListaRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoListaRPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
-import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.pagamento.EventiBD;
-import it.govpay.bd.pagamento.RptBD;
-import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.EventoContext.Componente;
-import it.govpay.core.beans.EventoContext.Esito;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
-import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Rpt.EsitoPagamento;
-import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.eventi.DatiPagoPA;
 
 public class RptUtils {
-
-	private static Logger log = LoggerWrapperFactory.getLogger(RptUtils.class);
+	
+	private RptUtils() {}
 
 	public static String buildUUID35() {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
+	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) {
 
 		CtEnteBeneficiario enteBeneficiario = new CtEnteBeneficiario();
 		CtIdentificativoUnivocoPersonaG idUnivocoBeneficiario = new CtIdentificativoUnivocoPersonaG();
@@ -129,8 +104,7 @@ public class RptUtils {
 			Intermediario intermediario, 
 			Stazione stazione, 
 			List<Rpt> rpts, 
-			String operationId, 
-			String codiceConvenzione) throws GovPayException, ClientException, ServiceException, UtilsException {
+			String codiceConvenzione) throws ClientException, UtilsException {
 		it.govpay.core.business.model.Risposta risposta = null;
 		NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
 		inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCodCanale());

@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
@@ -349,7 +348,7 @@ public class Rpt {
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, inviaCarrelloRPTEventoCtx);
-				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId, codiceConvenzione);
+				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, codiceConvenzione);
 
 				// ripristino la connessione
 				rptBD = new RptBD(configWrapper);

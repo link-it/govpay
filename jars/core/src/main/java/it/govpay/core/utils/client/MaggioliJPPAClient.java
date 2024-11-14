@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;

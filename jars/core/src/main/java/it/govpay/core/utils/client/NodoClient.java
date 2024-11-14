@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 
 import javax.xml.bind.JAXBElement;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
@@ -31,28 +30,19 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRT;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPTRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPTRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStorno;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStornoRisposta;
 import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
