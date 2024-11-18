@@ -47,7 +47,7 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.eventi.DatiPagoPA;
 
 public class RptUtils {
-	
+
 	private RptUtils() {}
 
 	public static String buildUUID35() {
@@ -72,22 +72,14 @@ public class RptUtils {
 		enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(anagrafica.getProvincia()));
 
 		if(!uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
-			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
-				enteBeneficiario.setCodiceUnitOperBeneficiario(uo.getAnagrafica().getCodUnivoco());
-			if(uo.getAnagrafica().getRagioneSociale() != null && uo.getAnagrafica().getRagioneSociale().trim().length()>0)
-				enteBeneficiario.setDenomUnitOperBeneficiario(uo.getAnagrafica().getRagioneSociale());
-			if(uo.getAnagrafica().getIndirizzo() != null && uo.getAnagrafica().getIndirizzo().trim().length()>0)
-				enteBeneficiario.setIndirizzoBeneficiario(uo.getAnagrafica().getIndirizzo());
-			if(uo.getAnagrafica().getCivico() != null && uo.getAnagrafica().getCivico().trim().length()>0)
-				enteBeneficiario.setCivicoBeneficiario(uo.getAnagrafica().getCivico());
-			if(uo.getAnagrafica().getCap() != null && uo.getAnagrafica().getCap().trim().length()>0)
-				enteBeneficiario.setCapBeneficiario(uo.getAnagrafica().getCap());
-			if(uo.getAnagrafica().getLocalita() != null && uo.getAnagrafica().getLocalita().trim().length()>0)
-				enteBeneficiario.setLocalitaBeneficiario(uo.getAnagrafica().getLocalita());
-			if(uo.getAnagrafica().getProvincia() != null && uo.getAnagrafica().getProvincia().trim().length()>0)
-				enteBeneficiario.setProvinciaBeneficiario(uo.getAnagrafica().getProvincia());
-			if(uo.getAnagrafica().getNazione() != null && uo.getAnagrafica().getNazione().trim().length()>0)
-				enteBeneficiario.setNazioneBeneficiario(uo.getAnagrafica().getNazione());
+			enteBeneficiario.setCodiceUnitOperBeneficiario(getNotEmpty(uo.getAnagrafica().getCodUnivoco()));
+			enteBeneficiario.setDenomUnitOperBeneficiario(getNotEmpty(uo.getAnagrafica().getRagioneSociale()));
+			enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(uo.getAnagrafica().getIndirizzo()));
+			enteBeneficiario.setCivicoBeneficiario(getNotEmpty(uo.getAnagrafica().getCivico()));
+			enteBeneficiario.setCapBeneficiario(getNotEmpty(uo.getAnagrafica().getCap()));
+			enteBeneficiario.setLocalitaBeneficiario(getNotEmpty(uo.getAnagrafica().getLocalita()));
+			enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(uo.getAnagrafica().getProvincia()));
+			enteBeneficiario.setNazioneBeneficiario(getNotEmpty(uo.getAnagrafica().getNazione()));
 		}
 		return enteBeneficiario;
 	}

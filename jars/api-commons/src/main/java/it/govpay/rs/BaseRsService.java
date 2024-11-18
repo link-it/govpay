@@ -27,9 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Path;
-//import javax.ws.rs.OPTIONS;
-//import javax.ws.rs.Path;
-//import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -87,19 +84,15 @@ public abstract class BaseRsService {
 	}
 
 	protected Response getUnauthorizedResponse(){
-		Response res =	Response.status(Response.Status.UNAUTHORIZED)
+		return Response.status(Response.Status.UNAUTHORIZED)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
-
-		return res;
 	}
 
 	protected Response getForbiddenResponse(){
-		Response res =	Response.status(Response.Status.FORBIDDEN)
+		return Response.status(Response.Status.FORBIDDEN)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
-
-		return res;
 	}
 
 	public void invalidateSession(Logger log){
@@ -136,11 +129,10 @@ public abstract class BaseRsService {
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
 			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication());
-			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
+			String baseUri = request.getRequestURI();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
 			
-//			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
 			
@@ -246,11 +238,10 @@ public abstract class BaseRsService {
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
 			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication());
-			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
+			String baseUri = request.getRequestURI();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
 			
-//			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
 			
@@ -316,22 +307,6 @@ public abstract class BaseRsService {
 
         try {
         	Class<?> c = this.getClass();
-        	// la versione V1 non implementa interfacce
-//        	Class<?> [] interfaces = c.getInterfaces();
-//        	if(interfaces==null || interfaces.length<=0) {
-//        		return null;
-//        	}
-//        	Class<?> cInterface = null;
-//        	for (int i = 0; i < interfaces.length; i++) {
-//        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
-//        			cInterface = interfaces[i];
-//        			break;
-//        		}
-//			}
-//        	if(cInterface==null) {
-//        		return null;
-//        	}
-//        	Method [] methods = cInterface.getMethods();
         	
         	String rsBasePathValue = "";
         	Path rsBasePath = c.getAnnotation(Path.class);

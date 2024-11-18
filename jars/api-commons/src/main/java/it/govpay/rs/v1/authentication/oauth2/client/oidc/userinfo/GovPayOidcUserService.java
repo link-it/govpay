@@ -71,7 +71,7 @@ public class GovPayOidcUserService extends OidcUserService {
 		essence.setCredentialsNonExpired(true);
 		essence.setEnabled(true);
 		essence.setUsername(govpayLdapOidcOauth2Details.getName());
-		essence.setPassword(AutorizzazioneUtils.PASSWORD_DEFAULT_VALUE);
+		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(govpayLdapOidcOauth2Details.getName());
 		

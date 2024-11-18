@@ -61,7 +61,7 @@ public class QuietanzaPagamentoProperties {
 
 	private Properties[] props  = null;
 
-	public QuietanzaPagamentoProperties(String govpayResourceDir)  throws ConfigException {
+	private QuietanzaPagamentoProperties(String govpayResourceDir)  throws ConfigException {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR

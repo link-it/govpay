@@ -72,8 +72,7 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(tracciatoBD != null)
-				tracciatoBD.closeConnection();
+			tracciatoBD.closeConnection();
 		}
 	}
 	
@@ -141,16 +140,21 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 						try {
 							if(resultSet != null)
 								resultSet.close(); 
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						try {
 							if(prepareStatement != null)
 								prepareStatement.close();
-						} catch (SQLException e) { }
+						} catch (SQLException e) { 
+							//donothing
+						}
 						
 						if(bd != null) {
 							try {
 								bd.setAutoCommit(true);
 							} catch (ServiceException e) {
+								//donothing
 							}
 							bd.closeConnection();
 						}

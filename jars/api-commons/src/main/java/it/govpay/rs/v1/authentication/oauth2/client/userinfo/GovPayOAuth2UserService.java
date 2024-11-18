@@ -67,7 +67,7 @@ public class GovPayOAuth2UserService extends DefaultOAuth2UserService {
 		essence.setCredentialsNonExpired(true);
 		essence.setEnabled(true);
 		essence.setUsername(govpayLdapOauth2Details.getName());
-		essence.setPassword(AutorizzazioneUtils.PASSWORD_DEFAULT_VALUE);
+		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(govpayLdapOauth2Details.getName());
 		

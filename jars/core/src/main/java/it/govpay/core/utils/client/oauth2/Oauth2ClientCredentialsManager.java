@@ -45,7 +45,7 @@ public class Oauth2ClientCredentialsManager {
 
 	private static Oauth2ClientCredentialsManager instance;
 
-	public static Oauth2ClientCredentialsManager getInstance() {
+	public static synchronized Oauth2ClientCredentialsManager getInstance() {
 		if(instance == null) {
 			init();
 		}
@@ -61,7 +61,7 @@ public class Oauth2ClientCredentialsManager {
 
 	private Map<String, ClientAccessToken> mappaToken = null;
 
-	public Oauth2ClientCredentialsManager() {
+	private Oauth2ClientCredentialsManager() {
 		this.mappaToken = new ConcurrentHashMap<>();		
 	}
 

@@ -215,8 +215,7 @@ public class PendenzeDAO extends BaseDAO{
 			versamentiBD = new it.govpay.bd.viste.VersamentiBD(configWrapper);
 			return this.listaPendenze(listaPendenzaDTO, versamentiBD);
 		}finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
 	}
 
@@ -441,15 +440,12 @@ public class PendenzeDAO extends BaseDAO{
 
 			String idA2A = leggiPendenzaDTO.getCodA2A();
 			String idPendenza = leggiPendenzaDTO.getCodPendenza();
-			response = _leggiPendenza(idA2A,idPendenza, response, versamentiBD);
+			return _leggiPendenza(idA2A,idPendenza, response, versamentiBD);
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		} finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
-
-		return response;
 	}
 
 	private LeggiPendenzaDTOResponse _leggiPendenza(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, VersamentiBD versamentiBD) throws NotFoundException, ServiceException {
@@ -513,6 +509,7 @@ public class PendenzeDAO extends BaseDAO{
 
 			return response;
 		} finally {
+			//donothing
 		}
 	}
 

@@ -70,7 +70,7 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 		essence.setCredentialsNonExpired(true);
 		essence.setEnabled(true);
 		essence.setUsername(principalClaimValue);
-		essence.setPassword(AutorizzazioneUtils.PASSWORD_DEFAULT_VALUE);
+		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(principalClaimValue);
 		

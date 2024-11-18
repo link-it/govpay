@@ -195,10 +195,12 @@ public class ApiKeyBasicAuthFilter extends OncePerRequestFilter {
 
 	protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			Authentication authResult) throws IOException {
+		//donothing
 	}
 
 	protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException {
+		//donothing
 	}
 
 	protected AuthenticationEntryPoint getAuthenticationEntryPoint() {

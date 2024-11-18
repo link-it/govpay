@@ -636,12 +636,16 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setEseguiCount(metadatiPaginazione);
 			findTipiPendenzaDominioDTO.setEseguiCountConLimit(maxRisultati);
 
-			if(associati != null && associati) {
-				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
-				if(idTipiVersamentoAutorizzati == null)
-					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-
-				findTipiPendenzaDominioDTO.setIdTipiVersamento(idTipiVersamentoAutorizzati);
+			if(associati != null) {
+				if(associati.booleanValue()) {
+					List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+					if(idTipiVersamentoAutorizzati == null)
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+	
+					findTipiPendenzaDominioDTO.setIdTipiVersamento(idTipiVersamentoAutorizzati);
+				} else {
+					// donothing
+				}
 			}
 			// INIT DAO
 

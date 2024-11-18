@@ -103,7 +103,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			}
 			break;
 		case KO:
-			if(ctReceipt.getTransferList().getTransfer().size() != 0 && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
+			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
 				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
 				return esito;
 			}
@@ -116,7 +116,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			CtTransferPA singoloVersamento = ctPaymentPA.getTransferList().getTransfer().get(i);
 			CtTransferPA singoloPagamento = null; 
-			if(ctReceipt.getTransferList().getTransfer().size() != 0) {
+			if(!ctReceipt.getTransferList().getTransfer().isEmpty()) {
 				singoloPagamento = ctReceipt.getTransferList().getTransfer().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, (i+1), esito);
 				importoTotaleCalcolato = importoTotaleCalcolato.add(singoloPagamento.getTransferAmount());
@@ -143,7 +143,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		valida(singoloVersamento.getTransferCategory(), singoloPagamento.getTransferCategory(), esito, "TransferCategory non corrisponde", false);
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
-
+			//donothing
 		} else if(singoloPagamento.getTransferAmount().compareTo(singoloVersamento.getTransferAmount()) != 0) {
 			esito.addErrore(MessageFormat.format("Importo del pagamento in posizione {0} [{1}] diverso da quanto richiesto [{2}]", pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getTransferAmount().doubleValue()), false);
 		}
@@ -275,7 +275,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					}
 				}
 
-				if(esito.validato && esito.errori.size() > 0) {
+				if(esito.validato && !esito.errori.isEmpty()) {
 					if(recupero)
 						ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
 					else 

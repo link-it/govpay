@@ -189,8 +189,6 @@ public class GovpayConfig {
 	
 	private String nomeHeaderSubscriptionKeyPagoPA;
 	
-	private boolean dismettiIUVIso11694;
-	
 	private String operazioneVerifica;
 	
 	private Integer numeroGiorniValiditaPendenza;
@@ -305,8 +303,6 @@ public class GovpayConfig {
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
 		
 		this.nomeHeaderSubscriptionKeyPagoPA = null;
-		
-		this.dismettiIUVIso11694 = false;
 		
 		this.operazioneVerifica = null;
 		
@@ -947,10 +943,6 @@ public class GovpayConfig {
 			this.autenticazioneApiKeyNomeHeaderApiIdFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiId.header.name", this.props, false, log);
 			this.autenticazioneApiKeyNomeHeaderApiKeyFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
 			
-			String dismettiIUVIso11694String = getProperty("it.govpay.dismettiIuvIso11694", this.props, false, log);
-			if(dismettiIUVIso11694String != null && Boolean.valueOf(dismettiIUVIso11694String))
-				this.dismettiIUVIso11694 = true;
-			
 			this.operazioneVerifica = getProperty("it.govpay.api.ente.verificaPendenza.operazione", this.props, false, log);
 			
 			if(this.operazioneVerifica != null) {
@@ -1479,10 +1471,6 @@ public class GovpayConfig {
 	
 	public String getNomeHeaderSubscriptionKeyPagoPA() {
 		return nomeHeaderSubscriptionKeyPagoPA;
-	}
-	
-	public boolean isDismettiIUVIso11694() {
-		return dismettiIUVIso11694;
 	}
 	
 	public String getOperazioneVerifica() {

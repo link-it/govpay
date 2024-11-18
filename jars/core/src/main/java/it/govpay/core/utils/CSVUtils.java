@@ -105,18 +105,18 @@ public class CSVUtils {
 	}
 
 	public String toJsonValue(CSVRecord myRecord, int ... positions) {
-		String collage = "";
+		StringBuilder collage = new StringBuilder("");
 
 		for(int position : positions) {
 			if(!isEmpty(myRecord, position)) {
-				collage += myRecord.get(position) + " ";
+				collage.append(myRecord.get(position)).append(" ");
 			}
 		}
 
-		if(collage.trim().isEmpty())
+		if(collage.toString().trim().isEmpty())
 			return "null";
 		else
-			return "\"" + collage.trim() +  "\"";
+			return "\"" + collage.toString().trim() +  "\"";
 	}
 
 	public String toCsv(String ...strings) throws IOException {
@@ -168,18 +168,18 @@ public class CSVUtils {
 	}
 	
 	public String getCodDominioFromIbanAccredito(CSVRecord myRecord, int ... positions) throws ServiceException, NotFoundException {
-		String collage = "";
+		StringBuilder collage = new StringBuilder("");
 
 		for(int position : positions) {
 			if(!isEmpty(myRecord, position)) {
-				collage += myRecord.get(position) + " ";
+				collage.append(myRecord.get(position)).append(" ");
 			}
 		}
 		
-		if(collage.trim().isEmpty())
+		if(collage.toString().trim().isEmpty())
 			return "null";
 		else
-			return "\"" + getCodDominioFromIbanAccredito(collage.trim()) +  "\"";
+			return "\"" + getCodDominioFromIbanAccredito(collage.toString().trim()) +  "\"";
 	}
 	public String getCodDominioFromIbanAccredito(String codIban) throws ServiceException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);

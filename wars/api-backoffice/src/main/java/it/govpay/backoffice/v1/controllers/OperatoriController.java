@@ -54,9 +54,7 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
+import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
@@ -102,7 +100,7 @@ public class OperatoriController extends BaseController {
 			PutOperatoreDTOResponse putOperatoreDTOResponse = null;
 			try {
 				putOperatoreDTOResponse = operatoriDAO.createOrUpdate(putOperatoreDTO);
-			} catch(DominioNonTrovatoException | TipoVersamentoNonTrovatoException | UnitaOperativaNonTrovataException e) {
+			} catch(OperatoreNonTrovatoException e) {
 				throw new UnprocessableEntityException(e.getDetails());
 			}
 

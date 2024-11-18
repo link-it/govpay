@@ -205,8 +205,7 @@ public class IncassiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(incassiBD != null)
-				incassiBD.closeConnection();
+			incassiBD.closeConnection();
 		}
 		return response;
 	}
@@ -224,7 +223,8 @@ public class IncassiDAO extends BaseDAO{
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
 			Operatore operatore = authenticationDetails.getOperatore();
-			boolean isApp = true, isOp = true;
+			boolean isApp = true;
+			boolean isOp = true;
 			if(applicazione == null) {
 				isApp = false;
 			} 
@@ -294,6 +294,7 @@ public class IncassiDAO extends BaseDAO{
 				try {
 					incassiBD.updateIncasso(incasso);
 				} catch (NotFoundException e) {
+					// donothing
 				}
 			}
 			// Incasso non registrato o reiterato, devo aspettare l'esecuzione del batch.
@@ -329,7 +330,8 @@ public class IncassiDAO extends BaseDAO{
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
 			Operatore operatore = authenticationDetails.getOperatore();
-			boolean isApp = true, isOp = true;
+			boolean isApp = true;
+			boolean isOp = true;
 			if(applicazione == null) {
 				isApp = false;
 			} 

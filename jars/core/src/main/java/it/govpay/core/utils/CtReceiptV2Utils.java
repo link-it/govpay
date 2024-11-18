@@ -210,7 +210,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 			Long idPagamentoPortale = null;
 			VersioneRPT versioneRPTAttesa = it.govpay.model.Rpt.VersioneRPT.SANP_321_V2;
 			try { 
-				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+				rpt = rptBD.getRpt(codDominio, iuv, null, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 
 
 				// Faccio adesso la select for update, altrimenti in caso di 
@@ -223,7 +223,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 				// infatti in caso di RT concorrente, non viene gestito bene l'errore.
 
 				try {
-					rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+					rpt = rptBD.getRpt(codDominio, iuv, null, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 				} catch (NotFoundException e) {
 					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 				}
@@ -296,7 +296,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 					}
 				}
 
-				if(esito.validato && esito.errori.size() > 0) {
+				if(esito.validato && !esito.errori.isEmpty()) {
 					if(recupero)
 						ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
 					else 
@@ -604,7 +604,6 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 	
 	public static EsitoValidazione validaSemantica(CtRichiestaPagamentoTelematico ctRpt, PaSendRTV2Request ctRt) {
 		CtDatiVersamentoRPT datiVersamento = ctRpt.getDatiVersamento();
-//		CtPaymentPA ctPaymentPA = ctRpt.getData();
 		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
@@ -671,7 +670,6 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		if(singoloPagamento.getIdTransfer() != pos) {
 			esito.addErrore(MessageFormat.format("IdTransfer non corrispondente per il pagamento in posizione [{0}]", pos), false);
 		}
-//		valida(singoloVersamento.getTransferCategory(), singoloPagamento.getTransferCategory(), esito, "TransferCategory non corrisponde", false);
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
 

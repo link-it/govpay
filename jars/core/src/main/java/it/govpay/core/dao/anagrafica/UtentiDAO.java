@@ -56,16 +56,11 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.IdUnitaOperativa;
@@ -73,6 +68,8 @@ import it.govpay.model.PatchOp;
 
 
 public class UtentiDAO extends BaseDAO{
+
+	private static final String VALORE_NULL = "_NULL_";
 
 	public UtentiDAO() {
 		super();
@@ -82,7 +79,7 @@ public class UtentiDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public LeggiProfiloDTOResponse getProfilo(Authentication authentication) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
+	public LeggiProfiloDTOResponse getProfilo(Authentication authentication) throws ServiceException {
 		LeggiProfiloDTOResponse response = new LeggiProfiloDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -96,10 +93,11 @@ public class UtentiDAO extends BaseDAO{
 				response.setDomini(findAll );
 			} else {
 				List<it.govpay.bd.model.IdUnitaOperativa> dominiUo = userDetails.getUtenza().getDominiUo(configWrapper);
-				List<Dominio> domini = new ArrayList<Dominio>();
+				List<Dominio> domini = new ArrayList<>();
 				try {
 					domini = convertIdUnitaOperativeToDomini(configWrapper, dominiUo);
 				} catch (NotFoundException e) {
+					// donothing
 				}
 
 				response.setDomini(domini);
@@ -113,12 +111,13 @@ public class UtentiDAO extends BaseDAO{
 			}
 
 		} finally {
+			// donothing
 		}
 
 		return response;
 	}
 
-	public LeggiProfiloDTOResponse patchProfilo(ProfiloPatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public LeggiProfiloDTOResponse patchProfilo(ProfiloPatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, ValidationException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 		try {
 			Authentication authentication = patchDTO.getUser();
@@ -140,15 +139,16 @@ public class UtentiDAO extends BaseDAO{
 		}catch(NotFoundException e) {
 			throw new OperatoreNonTrovatoException("Non esiste un operatore associato all'utenza autenticata.");
 		}finally {
+			// donothing
 		}
 
 	}
 
 	public static List<Dominio> convertIdUnitaOperativeToDomini(BDConfigWrapper configWrapper, List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) throws ServiceException, NotFoundException {
 		List<Dominio> domini = new ArrayList<>();
-		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
+		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
-			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : "_NULL_";
+			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : VALORE_NULL;
 
 			List<it.govpay.bd.model.IdUnitaOperativa> remove = mapUO.remove(key);
 
@@ -162,7 +162,7 @@ public class UtentiDAO extends BaseDAO{
 
 		for (String codDominio : mapUO.keySet()) {
 
-			if(!"_NULL_".equals(codDominio)) {
+			if(!VALORE_NULL.equals(codDominio)) {
 				List<UnitaOperativa> uoList = new ArrayList<>();
 				Dominio dominioCommons = AnagraficaManager.getDominio(configWrapper, codDominio);
 
@@ -183,9 +183,9 @@ public class UtentiDAO extends BaseDAO{
 	public static List<it.govpay.core.beans.commons.Dominio> convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) {
 		List<it.govpay.core.beans.commons.Dominio> domini = new ArrayList<>();
 
-		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
+		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
-			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : "_NULL_";
+			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : VALORE_NULL;
 
 			List<it.govpay.bd.model.IdUnitaOperativa> remove = mapUO.remove(key);
 
@@ -199,7 +199,7 @@ public class UtentiDAO extends BaseDAO{
 
 		for (String codDominio : mapUO.keySet()) {
 			it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
-			if(!"_NULL_".equals(codDominio)) {
+			if(!VALORE_NULL.equals(codDominio)) {
 				List<Uo> uoList = new ArrayList<>();
 
 				boolean first = true;
@@ -228,9 +228,9 @@ public class UtentiDAO extends BaseDAO{
 	}
 
 	public static it.govpay.core.beans.commons.Dominio convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo, String codDominio) {
-		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
+		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
-			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : "_NULL_";
+			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : VALORE_NULL;
 
 			List<it.govpay.bd.model.IdUnitaOperativa> remove = mapUO.remove(key);
 
@@ -242,14 +242,14 @@ public class UtentiDAO extends BaseDAO{
 			mapUO.put(key, remove);
 		}
 
-		String key = codDominio != null ? codDominio : "_NULL_";
+		String key = codDominio != null ? codDominio : VALORE_NULL;
 
 		it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 		if(mapUO.containsKey(key)) {
 			dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
-			if(!"_NULL_".equals(key)) {
+			if(!VALORE_NULL.equals(key)) {
 				List<Uo> uoList = new ArrayList<>();
 
 
@@ -276,8 +276,7 @@ public class UtentiDAO extends BaseDAO{
 		return dominioCommons;
 	}
 
-	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException, NotAuthorizedException {
-		OperatoriBD operatoriBD = null;
+	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws ServiceException, OperatoreNonTrovatoException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
@@ -287,12 +286,11 @@ public class UtentiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
 			throw new OperatoreNonTrovatoException("Operatore " + leggiOperatore.getPrincipal() + " non censito in Anagrafica");
 		} finally {
-			if(operatoriBD != null)
-				operatoriBD.closeConnection();
+			// donothing
 		}
 	}
 
-	public FindOperatoriDTOResponse findOperatori(FindOperatoriDTO listaOperatoriDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public FindOperatoriDTOResponse findOperatori(FindOperatoriDTO listaOperatoriDTO) throws ServiceException {
 		OperatoriBD operatoriBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
@@ -332,12 +330,11 @@ public class UtentiDAO extends BaseDAO{
 			return new FindOperatoriDTOResponse(count, findAll);
 
 		} finally {
-			if(operatoriBD != null)
-				operatoriBD.closeConnection();
+			operatoriBD.closeConnection();
 		}
 	}
 
-	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoVersamentoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, UnitaOperativaNonTrovataException {
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException, UnprocessableEntityException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		OperatoriBD operatoriBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putOperatoreDTO.getIdOperatore());
@@ -414,7 +411,7 @@ public class UtentiDAO extends BaseDAO{
 				String pwdTmp = putOperatoreDTO.getOperatore().getUtenza().getPassword();
 				String cryptPwd = password.cryptPw(pwdTmp);
 
-				log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]");
+				//log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]")
 				putOperatoreDTO.getOperatore().getUtenza().setPassword(cryptPwd);
 			}
 
@@ -452,7 +449,7 @@ public class UtentiDAO extends BaseDAO{
 		return operatoreDTOResponse;
 	}
 
-	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, ValidationException{
 		OperatoriBD operatoriBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 
@@ -476,14 +473,7 @@ public class UtentiDAO extends BaseDAO{
 		}catch(NotFoundException e) {
 			throw new OperatoreNonTrovatoException("Non esiste un operatore associato al principal ["+patchDTO.getIdOperatore()+"]");
 		}finally {
-			if(operatoriBD != null)
-				operatoriBD.closeConnection();
+			operatoriBD.closeConnection();
 		}
-
 	}
-
-
 }
-
-
-

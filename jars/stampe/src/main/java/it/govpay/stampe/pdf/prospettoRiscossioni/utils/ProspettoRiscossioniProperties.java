@@ -62,7 +62,7 @@ public class ProspettoRiscossioniProperties {
 
 	private Properties[] props  = null;
 
-	public ProspettoRiscossioniProperties(String govpayResourceDir) throws ConfigException {
+	private ProspettoRiscossioniProperties(String govpayResourceDir) throws ConfigException {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR

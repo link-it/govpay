@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 
 public class CSVSerializerProperties {
 	
-	private transient Logger log = null;
+	private Logger log = null;
 	
 	private static final String propertiesPath = "/csv_serializer.properties";
 
@@ -33,7 +33,7 @@ public class CSVSerializerProperties {
 	private static CSVSerializerProperties instance;
 	private Properties reader;
 	
-	public CSVSerializerProperties(Logger log) throws Exception{
+	private CSVSerializerProperties(Logger log) throws Exception{
 		this.log = log;
 		
 		this.reader = new Properties();
@@ -64,7 +64,7 @@ public class CSVSerializerProperties {
 
 	}
 
-	public static CSVSerializerProperties getInstance(org.slf4j.Logger log) throws Exception{
+	public static synchronized CSVSerializerProperties getInstance(org.slf4j.Logger log) throws Exception{
 
 		if(CSVSerializerProperties.instance==null)
 			CSVSerializerProperties.initialize(log);

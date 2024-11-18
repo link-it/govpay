@@ -61,7 +61,7 @@ public class RicevutaTelematicaProperties {
 
 	private Properties[] props  = null;
 
-	public RicevutaTelematicaProperties(String govpayResourceDir)  throws ConfigException {
+	private RicevutaTelematicaProperties(String govpayResourceDir)  throws ConfigException {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR
