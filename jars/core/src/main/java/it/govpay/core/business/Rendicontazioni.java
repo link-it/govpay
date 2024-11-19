@@ -580,7 +580,6 @@ public class Rendicontazioni {
 											ctx.getApplicationLogger().log("rendicontazioni.senzaRptVersamentoMalformato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 											log.info("Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.",	codDominio, iuv, iur, indiceDati);
 											rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
-//											continue;
 										}
 										// salto la parte di add anomalia
 										continue;

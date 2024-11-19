@@ -27,11 +27,11 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
+import it.gov.pagopa.checkout.model.CartRequest;
+import it.gov.pagopa.checkout.model.CartRequestReturnUrls;
+import it.gov.pagopa.checkout.model.PaymentNotice;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
-import it.govpay.core.beans.checkout.CartRequest;
-import it.govpay.core.beans.checkout.PaymentNotice;
-import it.govpay.core.beans.checkout.ReturnUrls;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 
 public class CheckoutUtils {
@@ -88,7 +88,7 @@ public class CheckoutUtils {
 		
 		cartRequest.setPaymentNotices(paymentNotices );
 		
-		ReturnUrls returnUrls = new ReturnUrls();
+		CartRequestReturnUrls returnUrls = new CartRequestReturnUrls();
 		
 		// aggiungo i parametri con l'esito
 		boolean hasParameter = returnUrl.contains("?");

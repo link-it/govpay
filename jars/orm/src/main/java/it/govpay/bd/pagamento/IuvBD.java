@@ -61,51 +61,49 @@ public class IuvBD extends BasicBD {
 		String iuv = null;
 		long prg = 0;
 		try {
+			if(type.equals(TipoIUV.ISO11694)) {
+				throw new ServiceException("Generazione IUV ISO11694 non supportata.");
+			}
+			
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
 			prg = this.getNextPrgIuv(dominio.getCodDominio() + prefix, type);
 
-			switch (type) {
-			case ISO11694:
-			{
-				String reference, check;
-
-				switch (dominio.getAuxDigit()) {
-				case 0: 
-					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
-					if(reference.length() > 21) 
-						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-					check = IuvUtils.getCheckDigit(reference);
-					iuv = "RF" + check + reference;
-					break;
-				case 1: 
-				case 2:
-					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
-					if(reference.length() > 21) 
-						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-					check = IuvUtils.getCheckDigit(reference);
-					iuv = "RF" + check + reference;
-					break;				
-				case 3: 
-					if(dominio.getSegregationCode() == null)
-						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
-
-					reference = prefix + String.format("%0" + (19 - prefix.length()) + "d", prg);
-					if(reference.length() > 19) 
-						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-
-					reference = String.format("%02d", dominio.getSegregationCode()) + reference;
-					check = IuvUtils.getCheckDigit(reference);
-
-					iuv = "RF" + check + reference;
-					break;
-				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
-				}
-			}
-			break;
-			case NUMERICO:
+//			switch (type) {
+//			case ISO11694:
+//			{
+//				String reference, check;
+//
+//				switch (dominio.getAuxDigit()) {
+//				case 0: 
+//				case 1: 
+//				case 2:
+//					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
+//					if(reference.length() > 21) 
+//						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+//					check = IuvUtils.getCheckDigit(reference);
+//					iuv = "RF" + check + reference;
+//					break;				
+//				case 3: 
+//					if(dominio.getSegregationCode() == null)
+//						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
+//
+//					reference = prefix + String.format("%0" + (19 - prefix.length()) + "d", prg);
+//					if(reference.length() > 19) 
+//						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+//
+//					reference = String.format("%02d", dominio.getSegregationCode()) + reference;
+//					check = IuvUtils.getCheckDigit(reference);
+//
+//					iuv = "RF" + check + reference;
+//					break;
+//				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
+//				}
+//			}
+//			break;
+//			case NUMERICO:
 			{
 
 				String check = "", reference = "";
@@ -137,9 +135,9 @@ public class IuvBD extends BasicBD {
 					break;
 				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 				}
-				break;
+//				break;
 			}
-			}
+//			}
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -171,10 +169,9 @@ public class IuvBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	private long getNextPrgIuv(String codDominio, TipoIUV type) throws ServiceException {
-		InfoStatistics infoStat = null;
+		InfoStatistics infoStat = new InfoStatistics();
 		BasicBD bd = null;
 		try {
-			infoStat = new InfoStatistics();
 			org.openspcoop2.utils.id.serial.IDSerialGenerator serialGenerator = new org.openspcoop2.utils.id.serial.IDSerialGenerator(infoStat);
 			org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter params = new org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter("GovPay");
 			params.setSizeBuffer(100);

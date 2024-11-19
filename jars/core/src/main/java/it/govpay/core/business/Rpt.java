@@ -231,9 +231,7 @@ public class Rpt {
 							log.debug("Iuv non assegnato. Generazione...");
 							
 							// Non c'e' iuv assegnato. Glielo genero io sempre di tipo numerico.
-							TipoIUV tipoIUV = it.govpay.model.Iuv.TipoIUV.NUMERICO;
-							
-							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), tipoIUV, rptBD);
+							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.NUMERICO, rptBD);
 							ccp = IuvUtils.buildCCP();
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}

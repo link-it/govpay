@@ -162,13 +162,6 @@ public void validate() throws ValidationException {
 
 		if(this.regExpIuv != null)
 			vf.getValidator("regExpIuv", this.regExpIuv).minLength(1).maxLength(1024);
-//			try {
-//				Pattern.compile(this.regExpIuv);
-//			} catch(PatternSyntaxException e) {
-//			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
-//			}
-
-
 	}
 }
 

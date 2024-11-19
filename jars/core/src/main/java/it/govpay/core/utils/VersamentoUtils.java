@@ -726,7 +726,7 @@ public class VersamentoUtils {
 			Iuv iuvBD  = new Iuv();
 			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
 			try {
-				iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo );
+				iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo);
 			}catch(UtilsException e) {
 				throw new GovPayException(e);
 			}

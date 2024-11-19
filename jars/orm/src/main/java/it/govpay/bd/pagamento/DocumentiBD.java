@@ -96,13 +96,7 @@ public class DocumentiBD extends BasicBD {
 			exp.equals(it.govpay.orm.Documento.model().COD_DOCUMENTO, codDocumento);
 			it.govpay.orm.Documento docuemnto = this.getDocumentoService().find(exp);
 			return DocumentoConverter.toDTO(docuemnto);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

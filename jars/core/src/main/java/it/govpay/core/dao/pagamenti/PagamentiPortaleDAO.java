@@ -39,6 +39,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.gov.pagopa.checkout.model.CartRequest;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
@@ -64,7 +65,6 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
-import it.govpay.core.beans.checkout.CartRequest;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;

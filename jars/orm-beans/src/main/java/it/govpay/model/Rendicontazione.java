@@ -170,8 +170,8 @@ public class Rendicontazione extends BasicModel {
 	}
 	
 	private String marshall(List<Anomalia> anomalie) {
-		if(anomalie == null || anomalie.size() == 0) return "";
-		StringBuffer sb = new StringBuffer();
+		if(anomalie == null || anomalie.isEmpty()) return "";
+		StringBuilder sb = new StringBuilder();
 		
 		for(Anomalia a : anomalie){
 			sb.append(a.codAnomalia);

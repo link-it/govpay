@@ -270,7 +270,7 @@
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<id>generate-sources-appio-client</id>
+						<id>generate-sources-recuperoRT-client</id>
 						<phase>generate-sources</phase>
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/bizEvents.yaml</inputSpec>
@@ -282,6 +282,30 @@
 								<apiPackage>it.gov.pagopa.bizeventsservice.api</apiPackage>
 								<invokerPackage>it.gov.pagopa.bizeventsservice.impl</invokerPackage>
 								<modelPackage>it.gov.pagopa.bizeventsservice.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources-checkout-client</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/checkout.yaml</inputSpec>
+							<language>java</language>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<library>resttemplate</library>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.gov.pagopa.checkout.api</apiPackage>
+								<invokerPackage>it.gov.pagopa.checkout.impl</invokerPackage>
+								<modelPackage>it.gov.pagopa.checkout.model</modelPackage>
 								<useAnnotatedBasePath>true</useAnnotatedBasePath>
 							</configOptions>
 							<generateApiTests>false</generateApiTests>
