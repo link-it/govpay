@@ -79,7 +79,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 				responseCode = (Integer)message.get(Message.RESPONSE_CODE);
 			}
 
-			this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], StatusCode ["+responseCode+"]");
+			this.log.debug("Log Evento API: [{}] Method [{}], Url [{}], StatusCode [{}]",this.giornaleEventiConfig.getApiName(), httpMethodS, url, responseCode);
 
 			if(!eventoCtx.isRegistraEvento()) return;
 			
@@ -112,7 +112,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
 		} finally {
-			//ContextThreadLocal.unset();
+			// donothing
 		}
 	}
 

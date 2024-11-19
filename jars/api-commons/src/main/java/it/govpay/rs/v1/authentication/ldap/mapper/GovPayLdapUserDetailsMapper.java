@@ -63,7 +63,7 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 	public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> authorities) {
 		String dn = ctx.getNameInNamespace();
 
-		this.logger.debug("Mapping user details from context with DN: " + dn);
+		this.logger.debug("Mapping user details from context with DN: {}", dn);
 
 		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setDn(dn);
@@ -82,8 +82,7 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 			String[] rolesForAttribute = ctx.getStringAttributes(this.roleAttributes[i]);
 
 			if (rolesForAttribute == null) {
-				this.logger.debug("Couldn't read role attribute '"
-						+ this.roleAttributes[i] + "' for user " + dn);
+				this.logger.debug("Couldn't read role attribute '{}' for user {}", this.roleAttributes[i], dn);
 				continue;
 			}
 

@@ -50,6 +50,7 @@ import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 
 
 public abstract class BaseRsService {
@@ -182,7 +183,7 @@ public abstract class BaseRsService {
 			sb.append("Query Params: [").append(this.uriInfo.getQueryParameters()).append("]");
 			sb.append("\n");
 			sb.append("Path Params: [").append(this.uriInfo.getPathParameters()).append("]");
-			this.log.debug(sb.toString());
+			this.logDebug(sb.toString());
 		}
 		return context;
 	}
@@ -299,7 +300,7 @@ public abstract class BaseRsService {
 			sb.append("Query Params: [").append(this.uriInfo.getQueryParameters()).append("]");
 			sb.append("\n");
 			sb.append("Path Params: [").append(this.uriInfo.getPathParameters()).append("]");
-			this.log.debug(sb.toString());
+			this.logDebug(sb.toString());
 		}
 	}
 	
@@ -339,5 +340,41 @@ public abstract class BaseRsService {
 
         return null;
     }
+	
+	protected void logDebugException(String msg, Exception e) {
+		LogUtils.logDebugException(this.log, msg, e);
+	}
+
+	protected void logDebug(String msg, Object ... params) {
+		LogUtils.logDebug(this.log, msg, params);
+	}
+
+	protected void logInfoException(String msg, Exception e) {
+		LogUtils.logInfoException(this.log, msg, e);
+	}
+
+	protected void logInfo(String msg, Object ... params) {
+		LogUtils.logInfo(this.log, msg, params);
+	}
+
+	protected void logWarnException(String msg, Exception e) {
+		LogUtils.logWarnException(this.log, msg, e);
+	}
+
+	protected void logWarn(String msg, Object ... params) {
+		LogUtils.logWarn(this.log, msg, params);
+	}
+
+	protected void logError(String msg) {
+		LogUtils.logError(this.log, msg);
+	}
+
+	protected void logError(String msg, Exception e) {
+		LogUtils.logError(this.log, msg, e);
+	}
+
+	protected void logTrace(String msg, Object ... params) {
+		LogUtils.logTrace(this.log, msg, params);
+	}
 }
 

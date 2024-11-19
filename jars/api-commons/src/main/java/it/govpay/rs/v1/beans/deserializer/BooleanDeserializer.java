@@ -44,6 +44,6 @@ public class BooleanDeserializer extends JsonDeserializer<Boolean> {
 			return bNode.booleanValue();
 		}
 		
-		throw new JsonParseException(jsonParser, "il field " + jsonParser.getCurrentName() + " non e' di tipo " + Boolean.class.getName() + ".");
+		throw new JsonParseException(jsonParser, "il field " + jsonParser.currentName() + " non e' di tipo " + Boolean.class.getName() + ".");
 	}
 }

@@ -102,7 +102,7 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 		String soapAction = "";
 		if(httpHeaders.get(SOAP_ACTION) != null) {
 			soapAction = httpHeaders.get(SOAP_ACTION).get(0);
-			soapAction = soapAction.replace("\"",""); //.split("#"))[1]);
+			soapAction = soapAction.replace("\"",""); //.split("#"))[1])
 		}
 		
 		HttpServletRequest servletRequest = (HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST);

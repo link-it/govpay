@@ -34,6 +34,7 @@ import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.slf4j.Logger;
 
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 
 public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authentication.preauth.filter.HeaderPreAuthFilter {
 	
@@ -101,7 +102,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 			Certificate certificate = CertificateUtils.readCertificate(config , headerValue);
 			CertificateInfo certificateInfo = certificate.getCertificate();
 			CertificatePrincipal subject = certificateInfo.getSubject();
-			log.debug("Estratto subject : [{}]", subject.toString());
+			LogUtils.logDebug(log, "Estratto subject : [{}]", subject.toString());
 			return subject.toString();
 		} catch (UtilsException e) {
 			log.error("Errore durante la decodifica del valore contenuto nell'header: " + e.getMessage(), e);
@@ -167,7 +168,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 			sb.append("\nReplace Destination ["+ (replaceDest != null ? replaceDest : "non valorizzato, verra' utilizzato il default '\\n'")+"]");
 		}
 		
-		log.debug(sb.toString());
+		LogUtils.logDebug(log, sb.toString());
 	}
 	
 	private static boolean replaceCharacters(CertificateDecodeConfig config, String certificate, StringBuilder sbNewCertificate) {

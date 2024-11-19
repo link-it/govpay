@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaCostanti;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaResponse;
@@ -52,47 +53,43 @@ public class ReCaptchaValidator {
 	
 	public ReCaptchaValidator(Hardening settings) throws ReCaptchaConfigurazioneNonValidaException {
 		this.captchaSettings = settings;
+
+		if(this.captchaSettings.getGoogleCatpcha() == null)
+			throw new ReCaptchaConfigurazioneNonValidaException("Configurazione del servizio Google Recaptcha non presente.");
+		
+		// validazione URL
+		if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getServerURL()))
+			throw new ReCaptchaConfigurazioneNonValidaException("URL servizio di verifica Google Recaptcha non presente.");
+		
 		try {
-			if(this.captchaSettings.getGoogleCatpcha() == null)
-				throw new Exception("Configurazione del servizio Google Recaptcha non presente.");
-			
-			// validazione URL
-			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getServerURL()))
-				throw new Exception("URL servizio di verifica Google Recaptcha non presente.");
-			
-			try {
-				new URL(this.captchaSettings.getGoogleCatpcha().getServerURL());
-			}catch(MalformedURLException e) {
-				throw new Exception("URL servizio di verifica Google Recaptcha non valida.");
-			}
-						
-			// validazione SiteKey
-			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSiteKey()))
-				throw new Exception("Site Key servizio di verifica Google Recaptcha non presente.");
-			
-			// validazione secretKey
-			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSecretKey()))
-				throw new Exception("Secret Key servizio di verifica Google Recaptcha non presente.");
-			
-			// validazione Connection Timeout
-			if(this.captchaSettings.getGoogleCatpcha().getConnectionTimeout() <= 0)
-				throw new Exception("ConnectionTimeout servizio di verifica Google Recaptcha deve essere > 0.");
-			
-			// validazione Read Timeout
-			if(this.captchaSettings.getGoogleCatpcha().getReadTimeout() <= 0)
-				throw new Exception("ReadTimeout servizio di verifica Google Recaptcha deve essere > 0.");
-			
-			// validazione Parameter Name
-			if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getResponseParameter()))
-				throw new Exception("Il nome del parametro da cui estrarre la Response da inviare al servizio di verifica Google Recaptcha non presente.");
-			
-			// validazione Soglia
-			if(this.captchaSettings.getGoogleCatpcha().getSoglia() <= 0 || this.captchaSettings.getGoogleCatpcha().getSoglia() > 1)
-				throw new Exception("Soglia accettazione risposta del servizio di verifica Google Recaptcha deve essere compresa tra 0 e 1.");
-			
-		} catch(Exception e) {
-			throw new ReCaptchaConfigurazioneNonValidaException(e.getMessage());
+			new URL(this.captchaSettings.getGoogleCatpcha().getServerURL());
+		}catch(MalformedURLException e) {
+			throw new ReCaptchaConfigurazioneNonValidaException("URL servizio di verifica Google Recaptcha non valida.");
 		}
+					
+		// validazione SiteKey
+		if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSiteKey()))
+			throw new ReCaptchaConfigurazioneNonValidaException("Site Key servizio di verifica Google Recaptcha non presente.");
+		
+		// validazione secretKey
+		if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getSecretKey()))
+			throw new ReCaptchaConfigurazioneNonValidaException("Secret Key servizio di verifica Google Recaptcha non presente.");
+		
+		// validazione Connection Timeout
+		if(this.captchaSettings.getGoogleCatpcha().getConnectionTimeout() <= 0)
+			throw new ReCaptchaConfigurazioneNonValidaException("ConnectionTimeout servizio di verifica Google Recaptcha deve essere > 0.");
+		
+		// validazione Read Timeout
+		if(this.captchaSettings.getGoogleCatpcha().getReadTimeout() <= 0)
+			throw new ReCaptchaConfigurazioneNonValidaException("ReadTimeout servizio di verifica Google Recaptcha deve essere > 0.");
+		
+		// validazione Parameter Name
+		if(org.apache.commons.lang3.StringUtils.isBlank(this.captchaSettings.getGoogleCatpcha().getResponseParameter()))
+			throw new ReCaptchaConfigurazioneNonValidaException("Il nome del parametro da cui estrarre la Response da inviare al servizio di verifica Google Recaptcha non presente.");
+		
+		// validazione Soglia
+		if(this.captchaSettings.getGoogleCatpcha().getSoglia() <= 0 || this.captchaSettings.getGoogleCatpcha().getSoglia() > 1)
+			throw new ReCaptchaConfigurazioneNonValidaException("Soglia accettazione risposta del servizio di verifica Google Recaptcha deve essere compresa tra 0 e 1.");
 	}
 	
 	
@@ -116,7 +113,7 @@ public class ReCaptchaValidator {
 		
 		final URI verifyUri = URI.create(sbUrl.toString());
         try {
-        	logger.debug("Richiesta validazione Captcha alla URL ["+verifyUri.toString()+"], Payload ["+payload+"]");
+        	LogUtils.logDebug(logger, "Richiesta validazione Captcha alla URL ["+verifyUri.toString()+"], Payload ["+payload+"]");
         	
         	// imposto i timeout di connessione
         	HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -130,7 +127,7 @@ public class ReCaptchaValidator {
            	if(googleResponse == null) 
            		throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: risposta null");
            	
-            logger.debug("Verifica reCaptcha completata, ricevuto messaggio dal servizio di verifica: {} ", googleResponse.toString());
+           	LogUtils.logDebug(logger, "Verifica reCaptcha completata, ricevuto messaggio dal servizio di verifica: {} ", googleResponse.toString());
             
             if (!googleResponse.isSuccess()) {
                 throw new ReCaptchaInvalidException(MessageFormat.format("Verifica reCaptcha completata con insuccesso: Errori trovati [{0}]", Arrays.toString(googleResponse.getErrorCodes())));
@@ -140,7 +137,7 @@ public class ReCaptchaValidator {
             	BigDecimal scoreRicevuto = googleResponse.getScore();
 				if(scoreRicevuto != null) {
             		double scoreRichiesto = this.captchaSettings.getGoogleCatpcha().getSoglia();
-					logger.debug(MessageFormat.format("reCaptcha validato correttamente, controllo dello score: Ricevuto[{0}], Richiesto[{1}]",	scoreRicevuto, scoreRichiesto));
+            		LogUtils.logDebug(logger, "reCaptcha validato correttamente, controllo dello score: Ricevuto[{}], Richiesto[{}]",	scoreRicevuto, scoreRichiesto);
             		if(scoreRicevuto.doubleValue() < scoreRichiesto) {
             			throw new ReCaptchaScoreNonValidoException("Verifica reCaptcha completata con insuccesso: score non sufficiente");
             		}
@@ -173,7 +170,7 @@ public class ReCaptchaValidator {
 	
     private boolean responseSanityCheck(final String response) {
     	// controllo solo che non sia vuoto
-        return StringUtils.hasLength(response); // && CaptchaCostanti.RESPONSE_PATTERN.matcher(response).matches();
+        return StringUtils.hasLength(response); // && CaptchaCostanti.RESPONSE_PATTERN.matcher(response).matches()
     }
 	
 	

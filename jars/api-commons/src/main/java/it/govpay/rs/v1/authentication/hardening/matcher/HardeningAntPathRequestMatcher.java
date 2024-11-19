@@ -55,6 +55,7 @@ import it.govpay.rs.v1.authentication.recaptcha.handler.ReCaptchaValidator;
  * @author pintori
  *
  */
+@SuppressWarnings("deprecation")
 public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
 	private static final String ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0 = "Controllo ReCaptcha terminato con esito: accesso non consentito: {0}";
 	private static final Log logger = LogFactory.getLog(HardeningAntPathRequestMatcher.class);
@@ -205,11 +206,9 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 	}
 	
 	public Hardening readSettings() {
-//		BasicBD bd = null;
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			logger.debug("Lettura della configurazione di Govpay in corso...");
-//			bd = BasicBD.newInstance(transactionId, true);
 			Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione(new BDConfigWrapper(transactionId, true));
 			Hardening setting = configurazione.getHardening();
 			logger.debug("Lettura della configurazione di Govpay completata.");
@@ -218,8 +217,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
 		}	finally {
-//			if(bd != null)
-//				bd.closeConnection();
+			// donothing
 		}
 	}
 	
@@ -295,6 +293,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			return HttpMethod.valueOf(method);
 		}
 		catch (IllegalArgumentException e) {
+			//donothing
 		}
 
 		return null;

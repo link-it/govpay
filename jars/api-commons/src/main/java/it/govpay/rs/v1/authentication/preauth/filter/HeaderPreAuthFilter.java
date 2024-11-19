@@ -45,8 +45,7 @@ public class HeaderPreAuthFilter extends org.openspcoop2.utils.service.authentic
 
 	@Override
 	protected String getPrincipalHeaderName() {
-		String headerAuth = (this.nomiHeaders != null && this.nomiHeaders.size() > 0 ) ? this.nomiHeaders.get(0) : null;  
-		return headerAuth;
+		return (this.nomiHeaders != null && !this.nomiHeaders.isEmpty()) ? this.nomiHeaders.get(0) : null;  
 	}
 	
 	@Override
@@ -55,7 +54,7 @@ public class HeaderPreAuthFilter extends org.openspcoop2.utils.service.authentic
 		Object tmp = null;
 		for (String header : nomiHeaders) {
 			String headerValue = request.getHeader(header);
-			log.debug("Letto Header: ["+header+"] Valore: ["+headerValue+"]");
+			log.debug("Letto Header: [{}] Valore: [{}]", header, headerValue);
 			
 			if(headerValue != null) {
 				tmp = headerValue;

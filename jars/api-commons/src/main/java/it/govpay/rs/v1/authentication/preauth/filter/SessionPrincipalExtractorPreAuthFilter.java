@@ -41,7 +41,7 @@ AbstractPreAuthenticatedProcessingFilter {
 		super();
 	}
 
-	// setAuthenticationDetailsSource(new WebSpherePreAuthenticatedWebAuthenticationDetailsSource());
+	// setAuthenticationDetailsSource(new WebSpherePreAuthenticatedWebAuthenticationDetailsSource())
 	/**
 	 * Return the WebSphere user name.
 	 */

@@ -66,7 +66,7 @@ AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
 	 */
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
 		log.debug("Lettura Informazioni utente dalla sessione in corso...");
-		List<String> nomiAttributi = new ArrayList<String>();
+		List<String> nomiAttributi = new ArrayList<>();
 		nomiAttributi.add(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME);
 		nomiAttributi.add(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME);
 		GovpayWebAuthenticationDetails details = new GovpayWebAuthenticationDetails(log, context, nomiAttributi, true); 

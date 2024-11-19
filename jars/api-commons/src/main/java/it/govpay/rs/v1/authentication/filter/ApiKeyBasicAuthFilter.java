@@ -26,8 +26,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.slf4j.Logger;
 import org.springframework.core.log.LogMessage;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -58,8 +56,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  */
 public class ApiKeyBasicAuthFilter extends OncePerRequestFilter {
-
-	private static Logger log = LoggerWrapperFactory.getLogger(ApiKeyBasicAuthFilter.class);
 
 	private SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
 			.getContextHolderStrategy();

@@ -48,6 +48,7 @@ public class AnonymousAuthenticationFilter extends org.springframework.security.
 			autenticazioneUtenzeAnonimeDAO.setAuthType(AUTH_TYPE_PUBLIC);
 			return autenticazioneUtenzeAnonimeDAO.loadUserDetails(USERNAME_ANONYMOUS_USER, authFromPreauth);
 		} catch (UsernameNotFoundException e) {
+			//donothing
 		}
 		return USERNAME_ANONYMOUS_USER;
 	}
@@ -61,6 +62,7 @@ public class AnonymousAuthenticationFilter extends org.springframework.security.
 			autenticazioneUtenzeAnonimeDAO.setAuthType(AUTH_TYPE_PUBLIC);
 			utenzaAnonima = autenticazioneUtenzeAnonimeDAO.loadUserDetails(USERNAME_ANONYMOUS_USER, authFromPreauth);
 		} catch (UsernameNotFoundException e) {
+			//donothing
 		}
 		
 		if(utenzaAnonima != null) {

@@ -22,6 +22,8 @@ package it.govpay.rs.v1.authentication.recaptcha.beans;
 import java.util.regex.Pattern;
 
 public class CaptchaCostanti {
+	
+	private CaptchaCostanti() {}
 
 	public static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
 	public static final String PAYLOAD_TEMPLATE = "secret=%s&response=%s&remoteip=%s";

@@ -36,7 +36,7 @@ public class Http403ForbiddenEntryPoint extends org.openspcoop2.utils.service.au
 	@Override
 	protected void addCustomHeaders(HttpServletResponse httpResponse) {
 		// Non voglio che appaia la finestra di Basic
-		//httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
+		//httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"")
 	}
 
 }
