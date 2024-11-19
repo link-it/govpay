@@ -20,7 +20,6 @@
 package it.govpay.pendenze.v2.controller;
 
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -53,10 +52,10 @@ public class AllegatiController extends BaseController {
 
 
 	public Response getAllegatoPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "getAllegatoPendenza";  
+		String methodName = "getAllegatoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -72,7 +71,7 @@ public class AllegatiController extends BaseController {
 
 			Allegato allegato = leggiAllegatoDTOResponse.getAllegato();
 
-			// filtro sull'applicazione			
+			// filtro sull'applicazione
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(leggiAllegatoDTOResponse.getApplicazione().getCodApplicazione())) {
 				throw AuthorizationManager.toNotAuthorizedException(user);
 			}
@@ -82,7 +81,7 @@ public class AllegatiController extends BaseController {
 
 			StreamingOutput contenutoStream = allegatiDAO.leggiBlobContenuto(allegato.getId());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
 
 		}catch (Exception e) {
@@ -94,5 +93,3 @@ public class AllegatiController extends BaseController {
 
 
 }
-
-

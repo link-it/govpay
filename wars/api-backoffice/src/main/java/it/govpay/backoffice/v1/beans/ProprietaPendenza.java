@@ -66,16 +66,16 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
 
   @JsonProperty("linguaSecondariaCausale")
   private String linguaSecondariaCausale = null;
-  
+
   @JsonProperty("informativaImportoAvviso")
   private String informativaImportoAvviso = null;
-  
+
   @JsonProperty("linguaSecondariaInformativaImportoAvviso")
   private String linguaSecondariaInformativaImportoAvviso = null;
-  
+
   @JsonProperty("dataScandenzaAvviso")
   private Date dataScandenzaAvviso = null;
-  
+
   /**
    **/
   public ProprietaPendenza linguaSecondaria(String linguaSecondaria) {

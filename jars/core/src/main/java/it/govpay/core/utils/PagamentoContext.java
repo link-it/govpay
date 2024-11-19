@@ -119,11 +119,9 @@ public class PagamentoContext {
 			props.put(codApplicazioneIuvKey, applicazione.getCodApplicazioneIuv());
 		}
 		
-		if(this.versamentoCtx != null) {
-			if(this.versamentoCtx.getCodificaIuv() != null) {
-				props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
-				props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
-			}
+		if(this.versamentoCtx != null && this.versamentoCtx.getCodificaIuv() != null) {
+			props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
+			props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
 		}
 		
 		Calendar now = Calendar.getInstance(); 

@@ -98,7 +98,7 @@ public class IncassiConverter {
 				break;
 			}
 		}
-		rsModel.setDescrizioneStato(i.getDescrizioneStato()); 
+		rsModel.setDescrizioneStato(i.getDescrizioneStato());
 
 		return rsModel;
 	}
@@ -131,7 +131,7 @@ public class IncassiConverter {
 				break;
 			}
 		}
-		rsModel.setDescrizioneStato(i.getDescrizioneStato()); 
+		rsModel.setDescrizioneStato(i.getDescrizioneStato());
 
 		return rsModel;
 	}

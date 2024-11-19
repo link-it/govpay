@@ -20,7 +20,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -53,7 +52,7 @@ public class TracciatiNotificaPagamentiController extends BaseController {
     public Response getTracciatoNotificaPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id, String secID) {
     	String methodName = "getTracciatoNotificaPagamenti";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 //		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try{
 			// l'accesso a questa risorsa e' libero
@@ -86,7 +85,7 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 
 			StreamingOutput zipStream = tracciatiDAO.leggiBlobTracciato(id, secID, idDomini, it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -97,5 +96,3 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 
 
 }
-
-

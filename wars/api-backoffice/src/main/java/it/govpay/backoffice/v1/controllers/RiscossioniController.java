@@ -19,7 +19,6 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -76,7 +75,7 @@ public class RiscossioniController extends BaseController {
     public Response getRiscossione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, Integer indice) {
     	String methodName = "getRiscossione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -108,7 +107,7 @@ public class RiscossioniController extends BaseController {
 			Incasso incasso = getRiscossioneDTOResponse.getPagamento().getIncasso(null);
 			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento(), singoloVersamento, versamento, rpt, incasso);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -122,7 +121,7 @@ public class RiscossioniController extends BaseController {
     public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, List<String> tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia, Boolean metadatiPaginazione, Boolean maxRisultati, String iur) {
     	String methodName = "findRiscossioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		this.setMaxRisultati(maxRisultati);
 		try{
 			// autorizzazione sulla API
@@ -215,7 +214,7 @@ public class RiscossioniController extends BaseController {
 			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(t -> RiscossioniConverter.toRsModelIndex(t)).collect(Collectors.toList()),
 					 this.getServicePath(uriInfo), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -227,5 +226,3 @@ public class RiscossioniController extends BaseController {
 
 
 }
-
-

@@ -18,7 +18,6 @@
  *
  */
 package it.govpay.backoffice.v1.controllers;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -62,7 +61,7 @@ public class PromemoriaController extends BaseController {
     	String methodName = "findPromemoria";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 			this.setMaxRisultati(maxRisultati);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
@@ -154,7 +153,7 @@ public class PromemoriaController extends BaseController {
 			ListaPromemoria response = new ListaPromemoria(results, this.getServicePath(uriInfo),
 					listaPromemoriaDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -164,5 +163,3 @@ public class PromemoriaController extends BaseController {
 		}
     }
 }
-
-

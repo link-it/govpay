@@ -48,25 +48,25 @@ public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.se
 		IContext ctx = null;
 		try{
 			ctx = ContextThreadLocal.get();
-			
+
 			if(ctx == null) {
 				GpContextFactory factory  = new GpContextFactory();
 				String user = authentication != null ? authentication.getName() : null;
 				ctx = factory.newContext(request.getRequestURI(), "profilo", "getProfilo", request.getMethod(), 1, user, Componente.API_BACKOFFICE);
 				ContextThreadLocal.set(ctx);
 			}
-			
+
 			GpContext gpContext = (GpContext) ctx.getApplicationContext();
-			
+
 			UtentiDAO utentiDAO = new UtentiDAO();
-			
+
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(authentication);
 
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
-			
+
 			gpContext.getEventoCtx().setEsito(Esito.OK);
 			gpContext.getEventoCtx().setIdTransazione(ctx.getTransactionId());
-			
+
 			return Response.status(Status.OK).entity(profilo.toJSON(null)).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 		}catch (Exception e) {
 			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);

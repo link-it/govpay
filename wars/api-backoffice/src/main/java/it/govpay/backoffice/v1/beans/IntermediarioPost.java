@@ -49,10 +49,10 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("servizioFtp")
   private ServizioFtp servizioFtp = null;
-  
+
   @JsonProperty("servizioPagoPaRecuperoRT")
   private ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
 

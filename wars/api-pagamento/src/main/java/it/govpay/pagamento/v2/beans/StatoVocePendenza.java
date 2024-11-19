@@ -31,20 +31,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Stato della voce di pagamento
  */
 public enum StatoVocePendenza {
-  
-  
-  
-  
+
+
+
+
   ESEGUITO("Eseguito"),
-  
-  
+
+
   NON_ESEGUITO("Non eseguito"),
-  
-  
+
+
   ANOMALO("Anomalo");
-  
-  
-  
+
+
+
 
   private String value;
 

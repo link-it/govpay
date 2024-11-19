@@ -57,22 +57,22 @@ public class ProprietaPendenza   {
    * causale della pendenza nella lingua secondaria da inserire nell'avviso
   **/
   private String linguaSecondariaCausale = null;
-  
+
   @Schema(description = "se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.")
  /**
-   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.  
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
   **/
   private String informativaImportoAvviso = null;
-  
+
   @Schema(description = "se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.")
  /**
-   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.  
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
   **/
   private String linguaSecondariaInformativaImportoAvviso = null;
-  
+
   @Schema(description = "se valorizzata, sostituisce la data di scadenza standard.")
  /**
-   * se valorizzata, sostituisce la data di scadenza standard.  
+   * se valorizzata, sostituisce la data di scadenza standard.
   **/
   private Date dataScandenzaAvviso = null;
  /**
@@ -229,7 +229,7 @@ public class ProprietaPendenza   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ProprietaPendenza {\n");
-    
+
     sb.append("    linguaSecondaria: ").append(toIndentedString(linguaSecondaria)).append("\n");
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");

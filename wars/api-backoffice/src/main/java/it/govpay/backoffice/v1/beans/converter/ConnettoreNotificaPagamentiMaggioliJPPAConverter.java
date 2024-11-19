@@ -136,7 +136,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 				connettore.setEmailSubject(connector.getEmailSubject());
 				connettore.setEmailAllegato(connector.getEmailAllegato());
 				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
-				
+
 				ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
 
 				connettore.setUrl(connector.getUrl());

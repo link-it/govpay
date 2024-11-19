@@ -28,26 +28,26 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets LinguaSecondaria
  */
 public enum LinguaSecondaria {
-  
-  
-  
-  
+
+
+
+
   FALSE("false"),
-  
-  
+
+
   DE("de"),
-  
-  
+
+
   EN("en"),
-  
-  
+
+
   FR("fr"),
-  
-  
+
+
   SL("sl");
-  
-  
-  
+
+
+
 
   private String value;
 

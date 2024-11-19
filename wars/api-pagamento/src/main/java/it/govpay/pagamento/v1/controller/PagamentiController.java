@@ -21,7 +21,6 @@ package it.govpay.pagamento.v1.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -35,7 +34,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -59,6 +57,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -85,21 +84,21 @@ import it.govpay.pagamento.v1.beans.converter.RptConverter;
 
 
 public class PagamentiController extends BaseController {
-	
+
 	private SerializationConfig serializationConfig;
 
      public PagamentiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-		
+
 		this.serializationConfig = new SerializationConfig();
 		this.serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
      }
 
 
     public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, String gRecaptchaResponse) {
-    	String methodName = "pagamentiPOST";  
+    	String methodName = "pagamentiPOST";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -110,26 +109,26 @@ public class PagamentiController extends BaseController {
 			String jsonRequest = baos.toString();
 			PagamentoPost pagamentiPortaleRequest= JSONSerializable.parse(jsonRequest, PagamentoPost.class);
 			pagamentiPortaleRequest.validate();
-			
-			
-			
+
+
+
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
-			
+
 			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
-			
+
 			pagamentiPortaleDTO.setHeaders(this.getHeaders(getRequest()));
 			pagamentiPortaleDTO.setPathParameters(uriInfo.getPathParameters());
 			pagamentiPortaleDTO.setQueryParameters(uriInfo.getQueryParameters());
 			pagamentiPortaleDTO.setReCaptcha(gRecaptchaResponse);
-			
-			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
-			
+
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
-						
+
 			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
 		} catch (Exception e) {
 			Response response = this.handleException(uriInfo, httpHeaders, methodName, e,transactionId);
@@ -153,37 +152,37 @@ public class PagamentiController extends BaseController {
 			this.logContext(ContextThreadLocal.get());
 		}
     }
-    
+
     public Response pagamentiIdSessionGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
-    	String methodName = "pagamentiIdSessionGET";  
+    	String methodName = "pagamentiIdSessionGET";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-			
+
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setIdSessionePsp(idSessione);
-			leggiPagamentoPortaleDTO.setRisolviLink(true); 
-			
-			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
-			
+			leggiPagamentoPortaleDTO.setRisolviLink(true);
+
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			PagamentoPortale pagamentoPortale = pagamentoPortaleDTOResponse.getPagamento();
-			
+
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
 			}
-			
+
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
-				
+
 				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
 				if(pagamentoPortale.getDataRichiesta() != null) {
 					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
@@ -197,18 +196,18 @@ public class PagamentiController extends BaseController {
 						throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
 			}
-			
+
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+				if(pagamentoPortale.getApplicazione(configWrapper) == null ||
 						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
 				}
 			}
-			
+
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
 			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
-			
+
 			List<RppIndex> rpp = new ArrayList<>();
 			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
@@ -224,8 +223,8 @@ public class PagamentiController extends BaseController {
 			}
 			response.setRpp(rpp);
 			response.setPendenze(pendenze);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -233,37 +232,37 @@ public class PagamentiController extends BaseController {
 			this.logContext(ContextThreadLocal.get());
 		}
     }
-    
+
     public Response pagamentiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
-    	String methodName = "pagamentiIdGET";  
+    	String methodName = "pagamentiIdGET";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setId(id);
-			leggiPagamentoPortaleDTO.setRisolviLink(true); 
-			
-			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
-			
+			leggiPagamentoPortaleDTO.setRisolviLink(true);
+
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			PagamentoPortale pagamentoPortale = pagamentoPortaleDTOResponse.getPagamento();
-			
+
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
 			}
-			
+
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
-				
+
 				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
 				if(pagamentoPortale.getDataRichiesta() != null) {
 					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
@@ -277,18 +276,18 @@ public class PagamentiController extends BaseController {
 						throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
 			}
-			
+
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+				if(pagamentoPortale.getApplicazione(configWrapper) == null ||
 						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
 				}
 			}
-			
+
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
 			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
-			
+
 			List<RppIndex> rpp = new ArrayList<>();
 			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
@@ -298,14 +297,14 @@ public class PagamentiController extends BaseController {
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
 					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamento().getCodVersamentoEnte()) &&
 							leggiRptDtoResponse.getVersamento().getApplicazione(configWrapper).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(configWrapper).getCodApplicazione())) {
-						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamento(),user)); 
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamento(),user));
 					}
 				}
 			}
 			response.setRpp(rpp);
 			response.setPendenze(pendenze);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -315,9 +314,9 @@ public class PagamentiController extends BaseController {
     }
 
     public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idSessionePortale, String idSessionePsp, String id, Boolean metadatiPaginazione, Boolean maxRisultati) {
-    	String methodName = "getListaPagamenti";  
+    	String methodName = "getListaPagamenti";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
@@ -325,7 +324,7 @@ public class PagamentiController extends BaseController {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			// Parametri - > DTO Input
-			
+
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setPagina(pagina);
@@ -339,7 +338,7 @@ public class PagamentiController extends BaseController {
 					case ESEGUITO_PARZIALE: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO_PARZIALE); break;
 					case NON_ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.NON_ESEGUITO); break;
 					case IN_CORSO: listaPagamentiPortaleDTO.setStato(STATO.IN_CORSO); break;
-					}				
+					}
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
 							+ "] valori possibili " + ArrayUtils.toString(StatoPagamento.values()));
@@ -353,53 +352,53 @@ public class PagamentiController extends BaseController {
 
 			if(ordinamento != null)
 				listaPagamentiPortaleDTO.setOrderBy(ordinamento);
-			
+
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa"); 
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
-				
-			
+
+
 			if(dataA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPagamentiPortaleDTO.setDataA(dataADate);
 			}
-			
+
 			listaPagamentiPortaleDTO.setEseguiCount(metadatiPaginazione);
 			listaPagamentiPortaleDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			// INIT DAO
-			
+
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
-			
+
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPagamentiPortaleDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				listaPagamentiPortaleDTO.setCfCittadino(userDetails.getIdentificativo()); 
+				listaPagamentiPortaleDTO.setCfCittadino(userDetails.getIdentificativo());
 			}
-			
+
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				listaPagamentiPortaleDTO.setCodApplicazione(userDetails.getApplicazione().getCodApplicazione()); 
+				listaPagamentiPortaleDTO.setCodApplicazione(userDetails.getApplicazione().getCodApplicazione());
 			}
 			// CHIAMATA AL DAO
-			
+
 			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			
+
 			List<it.govpay.pagamento.v1.beans.PagamentoIndex> results = new ArrayList<>();
 			for(LeggiPagamentoPortaleDTOResponse pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
 				this.log.info("get Pagamenti portale: " + pagamentoPortale.getPagamento().getIdSessione());
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale,user));
 			}
-			
+
 			Integer maxRisultatiInt = it.govpay.bd.GovpayConfig.getInstance().getMaxRisultati();
 			BigDecimal maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
-			
+
 			ListaPagamentiIndex response = new ListaPagamentiIndex(results, this.getServicePath(uriInfo),
 					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultatiBigDecimal);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -409,5 +408,3 @@ public class PagamentiController extends BaseController {
     }
 
 }
-
-

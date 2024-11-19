@@ -98,7 +98,7 @@ public class RicevuteConverter {
 		RicevutaRpt ricevutaRpt = new RicevutaRpt();
 
 		try {
-			
+
 			rsModel.setImporto(MessaggiPagoPARptUtils.getImportoRPT(rpt));
 			Object messaggioRPTRaw = MessaggiPagoPARptUtils.getMessaggioRPT(rpt, FormatoRicevuta.RAW, false);
 			ricevutaRpt.setXml((byte[]) messaggioRPTRaw);

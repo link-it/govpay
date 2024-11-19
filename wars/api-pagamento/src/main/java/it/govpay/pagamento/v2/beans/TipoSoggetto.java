@@ -31,17 +31,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * tipologia di soggetto, se persona fisica (F) o giuridica (G)
  */
 public enum TipoSoggetto {
-  
-  
-  
-  
+
+
+
+
   G("G"),
-  
-  
+
+
   F("F");
-  
-  
-  
+
+
+
 
   private String value;
 

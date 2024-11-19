@@ -50,6 +50,7 @@ public class Configurazione {
 	private static Logger log = LoggerWrapperFactory.getLogger(Configurazione.class);
 
 	public Configurazione() {
+		//donothing
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazione() throws ServiceException{

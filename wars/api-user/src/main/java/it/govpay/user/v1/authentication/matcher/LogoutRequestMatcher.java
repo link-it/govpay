@@ -35,11 +35,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /***
- * 
+ *
  * Request matcher per poter utilizzare url parametriche per il logout
  * based on {@link AntPathRequestMatcher}
- * 
- * 
+ *
+ *
  * @author pintori
  *
  */
@@ -52,7 +52,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 	private final String pattern;
 	private final HttpMethod httpMethod;
 	private final boolean caseSensitive;
-	
+
 	/**
 	 * Creates a matcher with the specific pattern which will match all HTTP methods in a
 	 * case insensitive manner.
@@ -123,10 +123,10 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 	@Override
 	public boolean matches(HttpServletRequest request) {
 		boolean matches = this.doMatches(request);
-		
+
 		return matches;
 	}
-	
+
 	public boolean doMatches(HttpServletRequest request) {
 		if (this.httpMethod != null && StringUtils.hasText(request.getMethod())
 				&& this.httpMethod != valueOf(request.getMethod())) {
@@ -154,7 +154,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 			logger.debug("Checking match of request : '" + url + "'; against '"
 					+ this.pattern + "'");
 		}
-		
+
 		return this.matcher.matches(url);
 	}
 

@@ -28,9 +28,9 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.pagamento.v3.beans.Allegato;
+import it.govpay.pagamento.v3.beans.Allegato.TipoEnum;
 import it.govpay.pagamento.v3.beans.RiscossioneVocePagata;
 import it.govpay.pagamento.v3.beans.TipoRiscossione;
-import it.govpay.pagamento.v3.beans.Allegato.TipoEnum;
 
 public class RiscossioniConverter {
 

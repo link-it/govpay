@@ -29,7 +29,7 @@ import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.MailBatch;
 
 public class SondeConverter {
-	
+
 	private SondeConverter() {}
 
 	public static Sonda toRsModel(org.openspcoop2.utils.sonde.Sonda sonda, org.openspcoop2.utils.sonde.ParametriSonda parametri, it.govpay.bd.model.Configurazione configurazione) throws IOException {

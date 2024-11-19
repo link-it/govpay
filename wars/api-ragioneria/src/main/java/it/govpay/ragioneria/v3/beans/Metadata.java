@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Metadata Custom da inserire nella ricevuta di pagamento")
 public class Metadata   {
-  
+
   @Schema(description = "")
   private List<MapEntry> mapEntries = null;
  /**
@@ -61,7 +61,7 @@ public class Metadata   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Metadata {\n");
-    
+
     sb.append("    mapEntries: ").append(toIndentedString(mapEntries)).append("\n");
     sb.append("}");
     return sb.toString();

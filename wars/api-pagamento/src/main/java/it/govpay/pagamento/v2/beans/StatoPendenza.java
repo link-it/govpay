@@ -27,29 +27,29 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta
  */
 public enum StatoPendenza {
-  
-  
-  
-  
+
+
+
+
   ESEGUITA("ESEGUITA"),
-  
-  
+
+
   NON_ESEGUITA("NON_ESEGUITA"),
-  
-  
+
+
   ESEGUITA_PARZIALE("ESEGUITA_PARZIALE"),
-  
-  
+
+
   ANNULLATA("ANNULLATA"),
-  
-  
+
+
   SCADUTA("SCADUTA"),
-  
-  
+
+
   ANOMALA("ANOMALA");
-  
-  
-  
+
+
+
 
   private String value;
 

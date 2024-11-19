@@ -19,8 +19,6 @@
  */
 package it.govpay.ragioneria.v2.controller;
 
-import java.text.MessageFormat;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -46,7 +44,7 @@ public class ProfiloController extends BaseController {
      public Response getProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
      	String methodName = "getProfilo";
  		String transactionId = ContextThreadLocal.get().getTransactionId();
- 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+ 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
  		try{
  			UtentiDAO utentiDAO = new UtentiDAO();
 
@@ -54,7 +52,7 @@ public class ProfiloController extends BaseController {
 
  			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
- 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+ 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
  			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
 
  		}catch (Exception e) {
@@ -65,5 +63,3 @@ public class ProfiloController extends BaseController {
      }
 
 }
-
-

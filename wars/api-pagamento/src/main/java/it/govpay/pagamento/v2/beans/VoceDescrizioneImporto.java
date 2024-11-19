@@ -23,25 +23,23 @@ package it.govpay.pagamento.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "voce",
 "importo",
 })
 public class VoceDescrizioneImporto extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("voce")
   private String voce = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   /**
    * voce importo
    **/
@@ -93,7 +91,7 @@ public class VoceDescrizioneImporto extends JSONSerializable implements IValidab
   }
 
   public static VoceDescrizioneImporto parse(String json) throws it.govpay.core.exceptions.IOException {
-    return (VoceDescrizioneImporto) parse(json, VoceDescrizioneImporto.class);
+    return parse(json, VoceDescrizioneImporto.class);
   }
 
   @Override
@@ -105,7 +103,7 @@ public class VoceDescrizioneImporto extends JSONSerializable implements IValidab
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VoceDescrizioneImporto {\n");
-    
+
     sb.append("    voce: ").append(toIndentedString(voce)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("}");
@@ -126,7 +124,7 @@ public class VoceDescrizioneImporto extends JSONSerializable implements IValidab
 @Override
 public void validate() throws ValidationException {
 	// TODO Auto-generated method stub
-	
+
 }
 }
 

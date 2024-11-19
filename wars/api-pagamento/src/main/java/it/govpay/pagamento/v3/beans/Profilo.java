@@ -29,31 +29,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Profilo   {
-  
+
   @Schema(required = true, description = "Nome o principal dell'utenza")
  /**
-   * Nome o principal dell'utenza  
+   * Nome o principal dell'utenza
   **/
   private String nome = null;
-  
+
   @Schema(required = true, description = "domini su cui e' abilitato ad operare")
  /**
-   * domini su cui e' abilitato ad operare  
+   * domini su cui e' abilitato ad operare
   **/
   private List<Dominio> domini = new ArrayList<>();
-  
+
   @Schema(required = true, description = "tipologie di pendenza su cui e' abilitato ad operare")
  /**
-   * tipologie di pendenza su cui e' abilitato ad operare  
+   * tipologie di pendenza su cui e' abilitato ad operare
   **/
   private List<TipoPendenza> tipiPendenza = new ArrayList<>();
-  
+
   @Schema(required = true, description = "")
   private List<Acl> acl = new ArrayList<>();
-  
+
   @Schema(description = "")
   private Soggetto anagrafica = null;
-  
+
   @Schema(description = "")
   private Object identityData = null;
  /**
@@ -188,7 +188,7 @@ public class Profilo   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");

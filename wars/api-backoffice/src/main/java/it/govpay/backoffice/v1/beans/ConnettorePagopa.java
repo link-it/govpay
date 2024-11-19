@@ -34,16 +34,16 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "subscriptionKey",
 })
 public class ConnettorePagopa extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("urlRPT")
   private String urlRPT = null;
-  
+
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   @JsonProperty("subscriptionKey")
   private String subscriptionKey = null;
-  
+
   /**
    * Dati di integrazione al servizio web RPT
    **/
@@ -122,7 +122,7 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettorePagopa {\n");
-    
+
     sb.append("    urlRPT: ").append(toIndentedString(urlRPT)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");

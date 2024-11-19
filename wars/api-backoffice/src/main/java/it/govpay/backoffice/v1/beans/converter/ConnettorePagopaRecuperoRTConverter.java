@@ -21,11 +21,11 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import it.govpay.backoffice.v1.beans.ConnettorePagopaRecuperoRT;
 import it.govpay.model.Connettore;
-import it.govpay.model.Intermediario;
 import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.Intermediario;
 
 public class ConnettorePagopaRecuperoRTConverter {
-	
+
 	private ConnettorePagopaRecuperoRTConverter() {}
 
 	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.ConnettorePagopaRecuperoRT connector, String idIntermediario) {

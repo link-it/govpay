@@ -145,7 +145,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 				break;
 			case REST:
 				connettore.setTipoConnettore(TipoConnettore.REST);
-				
+
 				ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
 
 				connettore.setUrl(connector.getUrl());

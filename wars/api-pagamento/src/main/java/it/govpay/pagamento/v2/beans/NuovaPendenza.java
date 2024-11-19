@@ -25,12 +25,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -61,69 +60,69 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dati",
 })
 public class NuovaPendenza extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("idUnitaOperativa")
   private String idUnitaOperativa = null;
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
+
   private TassonomiaAvviso tassonomiaAvvisoEnum = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private String tassonomiaAvviso = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
-  
+
   @JsonProperty("cartellaPagamento")
   private String cartellaPagamento = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("direzione")
   private String direzione = null;
-  
+
   @JsonProperty("divisione")
   private String divisione = null;
-  
+
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
-  
+
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
-  
+
   @JsonProperty("allegati")
   private List<NuovoAllegatoPendenza> allegati = null;
 
@@ -133,7 +132,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   @JsonProperty("dati")
   private Object dati = null;
 
-  
+
   /**
    * Identificativo del gestionale responsabile della pendenza
    **/
@@ -495,7 +494,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   public void setIdDebitore(String idDebitore) {
     this.idDebitore = idDebitore;
   }
-  
+
   /**
 	 * Dati applicativi allegati dal gestionale secondo un formato proprietario.
 	 **/
@@ -606,7 +605,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 		// Pendenza passata per riferimento idA2A/idPendenza
@@ -622,7 +621,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 				vf.getValidator("numeroAvviso", this.numeroAvviso).isNull();
 				vf.getValidator("dataValidita", this.dataValidita).isNull();
 				vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();
 				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 				vf.getValidator("voci", this.voci).isNull();
 				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
@@ -640,12 +639,12 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 			return;
 		}else if(this.idA2A == null && this.idDominio != null) {
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
-			
+
 			// idDominio e' chiave insieme a numeroAvviso oppure IdTipoPendenza se sono entrambe null ho errore
 			if(this.numeroAvviso == null && this.idTipoPendenza == null) {
 				throw new ValidationException("Pendenza riferita per numeroAvviso o idTipoPendenza: dati mancanti");
 			}
-			
+
 			if(this.numeroAvviso != null && this.idTipoPendenza == null) {
 				vf.getValidator("numeroAvviso", this.numeroAvviso).notNull().pattern("[0-9]{18}");
 				try {
@@ -655,7 +654,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("importo", this.importo).isNull();
 					vf.getValidator("dataValidita", this.dataValidita).isNull();
 					vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-					vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+					vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();
 					vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 					vf.getValidator("voci", this.voci).isNull();
 					vf.getValidator("idA2A", this.idA2A).isNull();
@@ -673,7 +672,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
 				}
 			}
-			
+
 			if(this.numeroAvviso == null && this.idTipoPendenza != null) {
 				validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
 				try {
@@ -686,7 +685,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("importo", this.importo).isNull();
 					vf.getValidator("dataValidita", this.dataValidita).isNull();
 					vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-					vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+					vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();
 					vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 					vf.getValidator("voci", this.voci).isNull();
 					vf.getValidator("idA2A", this.idA2A).isNull();
@@ -707,12 +706,12 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
 			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa, false);
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza, false);
-			
+
 			ValidatoreUtils.validaCausale(vf, "causale", causale);
-			
+
 			// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
 			vf.getValidator("soggettoPagatore", this.soggettoPagatore).validateFields();
-			
+
 			ValidatoreUtils.validaImporto(vf, "importo", importo);
 			ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 			ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
@@ -720,14 +719,14 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 			ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 			ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 			ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);
-			
+
 			vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
-			
+
 			validatoreId.validaIdDirezione("direzione",this.direzione, false);
 			validatoreId.validaIdDivisione("divisione",this.divisione, false);
-			
+
 			vf.getValidator("proprieta", this.proprieta).validateFields();
-			
+
 			vf.getValidator("allegati", this.allegati).validateObjects();
 		}
 	}

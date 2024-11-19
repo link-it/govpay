@@ -214,7 +214,7 @@ public class Lista   {
 			if(limit != null) {
 				if(limit > 0) {
 					this.numPagine = new BigDecimal(count == 0 ? 1L : (long) Math.ceil(count/(double)limit));
-				} 
+				}
 			} else {
 				this.numPagine = new BigDecimal(1L);
 			}
@@ -235,7 +235,7 @@ public class Lista   {
 			builder.setParameter(Costanti.PARAMETRO_PAGINA, Integer.toString(nextPagina));
 			try {
 				this.prossimiRisultati = builder.build().toString();
-			} catch (URISyntaxException e) { 
+			} catch (URISyntaxException e) {
 				//donothing
 			}
 		}

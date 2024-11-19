@@ -41,7 +41,7 @@ import it.govpay.ragioneria.v3.beans.StatoFlussoRendicontazione;
 import it.govpay.ragioneria.v3.beans.StatoRendicontazione;
 
 public class FlussiRendicontazioneConverter {
-	
+
 	private FlussiRendicontazioneConverter() {}
 
 	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, UnsupportedEncodingException {
@@ -145,7 +145,7 @@ public class FlussiRendicontazioneConverter {
 		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getStato() != null) {
 			switch (rendicontazione.getStato()) {
 			case ALTRO_INTERMEDIARIO:
@@ -159,7 +159,7 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 
@@ -189,7 +189,7 @@ public class FlussiRendicontazioneConverter {
 		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getStato() != null) {
 			switch (rendicontazione.getStato()) {
 			case ALTRO_INTERMEDIARIO:
@@ -203,7 +203,7 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());

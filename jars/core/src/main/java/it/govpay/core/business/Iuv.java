@@ -83,14 +83,6 @@ public class Iuv {
 				iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.NUMERICO, prefix);
 			} else {
 				throw new GovPayException("Generazione di IUV di tipo ISO11694 non supportata. Verificare la configurazione.", EsitoOperazione.INTERNAL);
-				
-//				// Il prefisso deve avere solo caratteri ammissibili
-//				if(prefix.matches("[a-zA-Z0-9]*"))
-//					iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, prefix);
-//				else {
-//					ctx.getApplicationLogger().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico", appContext.getPagamentoCtx().getAllIuvPropsString(applicazione));
-//					throw new GovPayException(EsitoOperazione.VER_029,prefix, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), dominio.getIuvPrefix());
-//				}
 			}
 
 			ctx.getApplicationLogger().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());

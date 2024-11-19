@@ -34,13 +34,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "value",
 })
 public class MapEntry extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("key")
   private String key = null;
-  
+
   @JsonProperty("value")
   private String value = null;
-  
+
   /**
    * chiave del metadata
    **/
@@ -92,7 +92,7 @@ public class MapEntry extends JSONSerializable implements IValidable {
   }
 
   public static MapEntry parse(String json) throws IOException {
-    return (MapEntry) parse(json, MapEntry.class);
+    return parse(json, MapEntry.class);
   }
 
   @Override
@@ -104,7 +104,7 @@ public class MapEntry extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class MapEntry {\n");
-    
+
     sb.append("    key: ").append(toIndentedString(key)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");
@@ -121,11 +121,11 @@ public class MapEntry extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		vf.getValidator("key", this.key).notNull().minLength(1).maxLength(140);
 		vf.getValidator("value", this.value).notNull().minLength(1).maxLength(140);
   }

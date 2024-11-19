@@ -24,7 +24,7 @@ import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 
 public class ConnettorePagopaConverter {
-	
+
 	private ConnettorePagopaConverter() {}
 
 	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.ConnettorePagopa connector) {

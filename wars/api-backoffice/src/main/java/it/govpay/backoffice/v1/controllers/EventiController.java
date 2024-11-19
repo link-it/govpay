@@ -19,7 +19,6 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -89,7 +88,7 @@ public class EventiController extends BaseController {
 			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi, Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA) {
 		String methodName = "findEventi";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		this.setMaxRisultati(maxRisultati);
 		try{
 			boolean autorizza = false;
@@ -299,7 +298,7 @@ public class EventiController extends BaseController {
 			ListaEventi response = new ListaEventi(results, this.getServicePath(uriInfo),
 					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
@@ -315,7 +314,7 @@ public class EventiController extends BaseController {
 	public Response getEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
 		String methodName = "getEvento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			boolean autorizza = false;
 			try {
@@ -417,7 +416,7 @@ public class EventiController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedException(user);
 
 			Evento response = EventiConverter.toRsModel(leggiEventoDTOResponse.getEvento());
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)).type(MediaType.APPLICATION_JSON),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -428,5 +427,3 @@ public class EventiController extends BaseController {
 
 
 }
-
-

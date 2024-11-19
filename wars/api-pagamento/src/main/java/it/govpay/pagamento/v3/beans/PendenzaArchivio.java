@@ -30,13 +30,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Rappresentazione di una posizione debitoria")
 public class PendenzaArchivio extends PendenzaPagata  {
-  
+
   @Schema(required = true, description = "")
   private StatoPendenza stato = null;
-  
+
   @Schema(description = "Descrizione in dettaglio dello stato della pendenza.")
  /**
-   * Descrizione in dettaglio dello stato della pendenza.  
+   * Descrizione in dettaglio dello stato della pendenza.
   **/
   private String descrizioneStato = null;
  /**

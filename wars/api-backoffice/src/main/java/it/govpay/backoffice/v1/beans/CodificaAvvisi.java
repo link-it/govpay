@@ -149,7 +149,7 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
 public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		if(this.codificaIuv != null)
-			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); //.pattern("[0-9]{1,15}");
+			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); // controllo spostato nel validatore del core.
 
 		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
 

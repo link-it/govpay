@@ -49,10 +49,10 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("servizioFtp")
   private ServizioFtp servizioFtp = null;
-  
+
   @JsonProperty("servizioPagoPaRecuperoRT")
   private ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
 
@@ -223,7 +223,7 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Intermediario {\n");
-    
+
     sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
     sb.append("    principalPagoPa: ").append(this.toIndentedString(this.principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");

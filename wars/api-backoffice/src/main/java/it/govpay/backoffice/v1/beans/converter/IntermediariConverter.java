@@ -27,7 +27,7 @@ import it.govpay.backoffice.v1.beans.IntermediarioPost;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 
 public class IntermediariConverter {
-	
+
 	private IntermediariConverter() {}
 
 	public static PutIntermediarioDTO getPutIntermediarioDTO(IntermediarioPost intermediarioPost, String idIntermediario, Authentication user) {
@@ -69,7 +69,7 @@ public class IntermediariConverter {
 		.idIntermediario(i.getCodIntermediario())
 		.principalPagoPa(i.getPrincipalOriginale())
 		.servizioPagoPa(ConnettorePagopaConverter.toRsModel(i.getConnettorePdd()));
-		
+
 		if(i.getConnettorePddRecuperoRT()!=null) {
 			rsModel.setServizioPagoPaRecuperoRT(ConnettorePagopaRecuperoRTConverter.toRsModel(i.getConnettorePddRecuperoRT()));
 		}

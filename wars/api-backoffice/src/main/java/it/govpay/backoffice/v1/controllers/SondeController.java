@@ -67,7 +67,7 @@ public class SondeController extends BaseController{
 	public Response findSonde(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
 		String methodName = "findSonde";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		BasicBD bd = null;
 		try{
 			ListaSonde response = null;
@@ -115,7 +115,7 @@ public class SondeController extends BaseController{
 			}
 
 			response = new ListaSonde(risultati, this.getServicePath(uriInfo), (long) risultati.size(), null, null, null);
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -127,7 +127,7 @@ public class SondeController extends BaseController{
 	public Response getSonda(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String id) {
 		String methodName = "getSonda";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		BasicBD bd = null;
 		try{
 
@@ -182,7 +182,7 @@ public class SondeController extends BaseController{
 			}
 
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {

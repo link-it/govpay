@@ -20,7 +20,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -58,7 +57,7 @@ public class AllegatiController extends BaseController  {
     	String methodName = "getAllegatoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -87,7 +86,7 @@ public class AllegatiController extends BaseController  {
 
 			StreamingOutput contenutoStream = allegatiDAO.leggiBlobContenuto(allegato.getId());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
 
 		}catch (Exception e) {
@@ -99,5 +98,3 @@ public class AllegatiController extends BaseController  {
 
 
 }
-
-

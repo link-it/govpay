@@ -31,13 +31,13 @@ import it.govpay.core.exceptions.IOException;
 "headerValue",
 })
 public class TipoAutenticazioneHeader extends JSONSerializable {
-  
+
   @JsonProperty("headerName")
   private String headerName = null;
-  
+
   @JsonProperty("headerValue")
   private String headerValue = null;
-  
+
   /**
    **/
   public TipoAutenticazioneHeader headerName(String headerName) {
@@ -87,7 +87,7 @@ public class TipoAutenticazioneHeader extends JSONSerializable {
   }
 
   public static TipoAutenticazioneHeader parse(String json) throws IOException {
-    return (TipoAutenticazioneHeader) parse(json, TipoAutenticazioneHeader.class);
+    return parse(json, TipoAutenticazioneHeader.class);
   }
 
   @Override
@@ -99,7 +99,7 @@ public class TipoAutenticazioneHeader extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneHeader {\n");
-    
+
     sb.append("    headerName: ").append(toIndentedString(headerName)).append("\n");
     sb.append("    headerValue: ").append(toIndentedString(headerValue)).append("\n");
     sb.append("}");

@@ -42,7 +42,7 @@ import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 
 public class FlussiRendicontazioneConverter {
-	
+
 	private FlussiRendicontazioneConverter() {}
 
 	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, ValidationException {

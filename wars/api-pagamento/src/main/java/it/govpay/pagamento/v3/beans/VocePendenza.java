@@ -57,10 +57,10 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
 
   @Schema(description = "")
   private Contabilita contabilita = null;
-  
+
   @Schema(description = "")
   private Metadata metadata = null;
-  
+
   @Schema(required = true, description = "")
   private Pendenza pendenza = null;
  /**

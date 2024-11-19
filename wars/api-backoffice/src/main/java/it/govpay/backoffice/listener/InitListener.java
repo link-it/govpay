@@ -64,7 +64,7 @@ public class InitListener implements ServletContextListener{
 		InputStream avvisiLabelPropertiesIS = InitListener.class.getResourceAsStream(LabelAvvisiProperties.PROPERTIES_FILE);
 		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay, mappingSeveritaErroriPropertiesIS, avvisiLabelPropertiesIS);
 		try {
-			log = LoggerWrapperFactory.getLogger("boot");	
+			log = LoggerWrapperFactory.getLogger("boot");
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
@@ -82,7 +82,7 @@ public class InitListener implements ServletContextListener{
 				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
 			}
 			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
-		} 
+		}
 
 		try {
 			ctx.getApplicationLogger().log();
@@ -90,7 +90,7 @@ public class InitListener implements ServletContextListener{
 			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
 		}
 
-		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo."); 
+		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
 		initialized = true;
 	}
 
@@ -107,7 +107,7 @@ public class InitListener implements ServletContextListener{
 		//		log.info("De-registrazione delle cache ...");
 		//		AnagraficaManager.unregister();
 		//		log.info("De-registrazione delle cache completato");
-				
+
 		//		log.info("Shutdown del Connection Manager ...");
 		//		try {
 		//			ConnectionManager.shutdown();

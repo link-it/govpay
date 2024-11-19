@@ -19,7 +19,6 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class EnumerazioniController extends BaseController {
     public Response findEnumerazioniComponentiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
     	String methodName = "findEnumerazioniComponentiEvento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			throw new NotAuthorizedException("Operazione non piu' disponibile");
 		}catch (Exception e) {
@@ -68,7 +67,7 @@ public class EnumerazioniController extends BaseController {
     public Response findEnumerazioniLabelTipiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
     	String methodName = "findEnumerazioniLabelTipiEvento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			throw new NotAuthorizedException("Operazione non piu' disponibile");
 		}catch (Exception e) {
@@ -83,7 +82,7 @@ public class EnumerazioniController extends BaseController {
     public Response findEnumerazioniServiziACL(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniServiziACL";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			List<String> results = new ArrayList<>();
 
@@ -91,7 +90,7 @@ public class EnumerazioniController extends BaseController {
 				results.add(serv.toString());
 			}
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -105,14 +104,14 @@ public class EnumerazioniController extends BaseController {
     public Response findEnumerazioniVersioneConnettore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniVersioneConnettore";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			List<String> results = new ArrayList<>();
 
 			for(VersioneApiEnum serv: VersioneApiEnum.values()) {
 				results.add(serv.toString());
 			}
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -137,5 +136,3 @@ public class EnumerazioniController extends BaseController {
 		return JSONUtils.getInstance().toString(newArrayNode);
 	}
 }
-
-

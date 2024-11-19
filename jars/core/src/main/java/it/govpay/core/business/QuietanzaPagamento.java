@@ -59,6 +59,7 @@ public class QuietanzaPagamento {
 	private SimpleDateFormat sdfDataOraMinuti = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public QuietanzaPagamento() {
+		//donothing
 	}
 
 	public byte[] creaPdfQuietanzaPagamento(Rendicontazione rendicontazione, Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento, Fr fr) throws ServiceException {
@@ -167,7 +168,7 @@ public class QuietanzaPagamento {
 		}
 	}
 
-	private void impostaIndirizzoSoggettoPagatore(QuietanzaPagamentoInput input, Anagrafica soggettoPagatore) throws ServiceException {
+	private void impostaIndirizzoSoggettoPagatore(QuietanzaPagamentoInput input, Anagrafica soggettoPagatore) {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getIndirizzo()) ? soggettoPagatore.getIndirizzo() : "";
 			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivico()) ? soggettoPagatore.getCivico() : "";
@@ -243,9 +244,7 @@ public class QuietanzaPagamento {
 			
 			return this.creaRPTFromRendicontazione(rendicontazione, pagamento, singoloVersamento, versamento, fr, configWrapper);
 		} finally {
-			if(versamentiBD != null) {
-				versamentiBD.closeConnection();
-			}
+			versamentiBD.closeConnection();
 		}
 	}
 }

@@ -19,7 +19,6 @@
  */
 package it.govpay.ragioneria.v1.controller;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -53,7 +52,7 @@ public class DominiController extends BaseController {
     public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
     	String methodName = "getLogo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -79,7 +78,7 @@ public class DominiController extends BaseController {
 
 			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
 			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
 			entity.header("Content-Type", mimeType);
@@ -93,5 +92,3 @@ public class DominiController extends BaseController {
     }
 
 }
-
-

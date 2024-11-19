@@ -65,11 +65,11 @@ public class StazioniConverter {
 		stazione.setApplicationCode(applicationCode);
 		stazione.setCodStazione(idStazione);
 		stazione.setPassword(stazionePost.getPassword());
-		
+
 		if(stazione.getPassword() == null) {
 			stazione.setPassword("");
 		}
-		
+
 		if(stazionePost.getVersione() != null) {
 			// valore versione non valido
 			VersioneStazione versioneStazione = VersioneStazione.fromValue(stazionePost.getVersione());
@@ -86,7 +86,7 @@ public class StazioniConverter {
 				break;
 			}
 		}
-		
+
 		stazioneDTO.setStazione(stazione);
 		stazioneDTO.setIdIntermediario(idIntermediario);
 		stazioneDTO.setIdStazione(idStazione);
@@ -98,7 +98,7 @@ public class StazioniConverter {
 		rsModel.abilitato(stazione.isAbilitato())
 		.idStazione(stazione.getCodStazione())
 		.password(stazione.getPassword());
-		
+
 		if(stazione.getPassword().equals("")) {
 			rsModel.setPassword(null);
 		}
@@ -130,11 +130,11 @@ public class StazioniConverter {
 		.idStazione(stazione.getCodStazione())
 		.domini(UriBuilderUtils.getListDomini(stazione.getCodStazione()))
 		.password(stazione.getPassword());
-		
+
 		if(stazione.getPassword().equals("")) {
 			rsModel.setPassword(null);
 		}
-		
+
 		if(stazione.getVersione() != null) {
 			switch (stazione.getVersione()) {
 			case V1:

@@ -19,7 +19,6 @@
  */
 package it.govpay.pagamento.v2.controller;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -31,7 +30,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -46,6 +44,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAcceptableException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -65,10 +64,10 @@ public class AvvisiController extends BaseController {
 
 	@SuppressWarnings("unchecked")
 	public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore, String UUID, String gRecaptchaResponse, String linguaSecondaria) {
-		String methodName = "avvisiIdDominioIuvGET";  
+		String methodName = "avvisiIdDominioIuvGET";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -103,7 +102,7 @@ public class AvvisiController extends BaseController {
 						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.EN);
 						break;
 					case FALSE:
-						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FALSE); 
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FALSE);
 						break;
 					case FR:
 						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FR);
@@ -111,7 +110,7 @@ public class AvvisiController extends BaseController {
 					case SL:
 						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.SL);
 						break;
-					}				
+					}
 				} else {
 					throw new ValidationException("Codifica inesistente per linguaSecondaria. Valore fornito [" + linguaSecondaria + "] valori possibili " + ArrayUtils.toString(LinguaSecondaria.values()));
 				}
@@ -125,11 +124,11 @@ public class AvvisiController extends BaseController {
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession(false);
 				if(session!= null) {
-					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 
 					String chiaveAvviso = idDominio+numeroAvviso;
 					if(numeroAvviso.length() == 18) {
-						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 					} else {
 						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 					}
@@ -152,7 +151,7 @@ public class AvvisiController extends BaseController {
 			if(accept.toLowerCase().contains("application/pdf")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
 				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(getAvvisoDTOResponse.getAvvisoPdf()).header("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameAvviso()+"\""),transactionId).build();
 			} else if(accept.toLowerCase().contains("application/json")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.JSON);
@@ -166,7 +165,7 @@ public class AvvisiController extends BaseController {
 					avviso.setNumeroAvviso(numeroAvviso);
 					avviso.setIdDominio(idDominio);
 				}
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(avviso.toJSON(null)),transactionId).build();
 			} else {
 				// formato non accettato
@@ -180,5 +179,3 @@ public class AvvisiController extends BaseController {
 	}
 
 }
-
-

@@ -20,7 +20,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -66,7 +65,7 @@ public class RendicontazioniController extends BaseController {
     		String idDominio, String idFlusso, String iuv, List<String> direzione, List<String> divisione, Boolean metadatiPaginazione, Boolean maxRisultati, Boolean escludiObsoleti) {
     	String methodName = "findRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		this.setMaxRisultati(maxRisultati);
 		try{
 			// autorizzazione sulla API
@@ -114,7 +113,7 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setDirezione(direzione);
 			findRendicontazioniDTO.setDivisione(divisione);
 			if(escludiObsoleti != null && escludiObsoleti.booleanValue()) {
-				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);	
+				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);
 			}
 
 			// Autorizzazione sulle uo
@@ -139,7 +138,7 @@ public class RendicontazioniController extends BaseController {
 			ListaRendicontazioni response = new ListaRendicontazioni(risultati,	this.getServicePath(uriInfo),
 					findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -151,5 +150,3 @@ public class RendicontazioniController extends BaseController {
 
 
 }
-
-

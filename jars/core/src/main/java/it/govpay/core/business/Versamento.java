@@ -630,13 +630,12 @@ public class Versamento  {
 				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A{}, CodVersamentoEnte {}] completato", codApplicazione, codVersamentoEnte);
 			} catch(Throwable e) {
 				log.error(MessageFormat.format("Errore durante l''inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}]: {2}", codApplicazione, codVersamentoEnte, e.getMessage()),e);
-				if(versamentiBD != null)
-					versamentiBD.rollback();
+				versamentiBD.rollback();
 			} finally {
+				//donothing
 			} 
 		}finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
 	}
 
@@ -680,13 +679,12 @@ public class Versamento  {
 				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A{}, CodVersamentoEnte {}] completato", codApplicazione, codVersamentoEnte);
 			} catch(Throwable e) {
 				log.error(MessageFormat.format("Errore durante l''inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}]: {2}", codApplicazione, codVersamentoEnte, e.getMessage()),e);
-				if(versamentiBD != null)
-					versamentiBD.rollback();
+				versamentiBD.rollback();
 			} finally {
+				//donothing
 			}
 		}finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
 	}
 
@@ -758,13 +756,12 @@ public class Versamento  {
 				log.debug("Inserimento promemoria avviso per il versamento [IdA2A{}, CodVersamentoEnte {}] completato", codApplicazione, codVersamentoEnte);
 			} catch(Throwable e) {
 				log.error(MessageFormat.format("Errore durante l''inserimento promemoria avviso per il versamento [IdA2A{0}, CodVersamentoEnte {1}]: {2}", codApplicazione, codVersamentoEnte, e.getMessage()),e);
-				if(versamentiBD != null)
-					versamentiBD.rollback();
+				versamentiBD.rollback();
 			} finally {
+				//donothing
 			}
 		}finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
 	}
 }

@@ -35,16 +35,16 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "subscriptionKey",
 })
 public class ConnettorePagopaRecuperoRT extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("url")
   private String url = null;
-  
+
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   @JsonProperty("subscriptionKey")
   private String subscriptionKey = null;
-  
+
   /**
    * Dati di integrazione al servizio web Recupero RT
    **/
@@ -123,7 +123,7 @@ public class ConnettorePagopaRecuperoRT extends JSONSerializable implements IVal
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettorePagopaRecuperoRT {\n");
-    
+
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");
@@ -141,7 +141,7 @@ public class ConnettorePagopaRecuperoRT extends JSONSerializable implements IVal
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

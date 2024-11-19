@@ -19,17 +19,21 @@
  */
 package it.govpay.core.business;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
+import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
@@ -54,6 +58,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.model.RicevutaTelematicaInput.ElencoVoci;
@@ -69,6 +74,7 @@ public class RicevutaTelematica {
 	private SimpleDateFormat sdfDataOraMinuti = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public RicevutaTelematica() {
+		//donothing
 	}
 
 
@@ -93,7 +99,7 @@ public class RicevutaTelematica {
 		return response;
 	}
 
-	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException, CodificaInesistenteException {
 		switch (rpt.getVersione()) {
 		case SANP_230:
 			return this._fromRpt(rpt);
@@ -109,7 +115,7 @@ public class RicevutaTelematica {
 		return this._fromRpt(rpt);
 	}
 	
-	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException, CodificaInesistenteException {
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 		input.setVersioneOggetto(rpt.getVersione().name());
 
@@ -213,7 +219,7 @@ public class RicevutaTelematica {
 		return dominio;
 	}
 
-	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, RicevutaTelematicaInput input) throws ServiceException {
+	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, RicevutaTelematicaInput input) {
 		Anagrafica anagraficaEnteCreditore = dominio.getAnagrafica();
 		if(anagraficaEnteCreditore != null) {
 			String indirizzo = StringUtils.isNotEmpty(anagraficaEnteCreditore.getIndirizzo()) ? anagraficaEnteCreditore.getIndirizzo() : "";
@@ -235,7 +241,7 @@ public class RicevutaTelematica {
 		}
 	}
 
-	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSoggettoPagatore soggettoPagatore) throws ServiceException {
+	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSoggettoPagatore soggettoPagatore) {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getIndirizzoPagatore()) ? soggettoPagatore.getIndirizzoPagatore() : "";
 			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivicoPagatore()) ? soggettoPagatore.getCivicoPagatore() : "";
@@ -260,7 +266,7 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 		input.setVersioneOggetto(rpt.getVersione().name());
 
@@ -366,7 +372,7 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSubject soggettoPagatore) throws ServiceException {
+	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSubject soggettoPagatore) {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getStreetName()) ? soggettoPagatore.getStreetName() : "";
 			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivicNumber()) ? soggettoPagatore.getCivicNumber() : "";
@@ -391,7 +397,7 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	public RicevutaTelematicaInput _fromRptVersione321_V2(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput _fromRptVersione321_V2(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException {
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 		input.setVersioneOggetto(rpt.getVersione().name());
 

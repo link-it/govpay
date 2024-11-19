@@ -32,6 +32,7 @@ public class GiornaleEventi {
 	private static Logger log = LoggerWrapperFactory.getLogger(GiornaleEventi.class	);
 	
 	public GiornaleEventi() {
+		//donothing
 	}
 
 	public void registraEvento(Evento evento) {

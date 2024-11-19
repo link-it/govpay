@@ -69,16 +69,16 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("metadata")
   private Metadata metadata = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
 
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento= null;
 
