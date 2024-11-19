@@ -33,7 +33,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
 public class FormAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	
+
 	private TimeZone timeZone = TimeZone.getDefault();
     private String timeZoneId = null;
     public String getTimeZoneId() {

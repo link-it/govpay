@@ -24,7 +24,7 @@ import org.openspcoop2.utils.crypt.Password;
 import org.slf4j.Logger;
 
 /**
- * 
+ *
  * @author pintori
  *
  */
@@ -32,7 +32,7 @@ public class GovpayPasswordEncoder implements org.springframework.security.crypt
 
 	private Password passwordManager = new Password();
 	private Logger log = LoggerWrapperFactory.getLogger(GovpayPasswordEncoder.class);
-	
+
 	@Override
 	public String encode(CharSequence rawPassword) {
 		if(rawPassword != null) {
@@ -44,12 +44,12 @@ public class GovpayPasswordEncoder implements org.springframework.security.crypt
 	@Override
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
 		// this.log.debug("Password da controllare ["+rawPassword+"] -> ["+encodedPassword+"]")
-		
+
 		if (encodedPassword == null || encodedPassword.length() == 0) {
 			this.log.warn("Empty encoded password");
 			return false;
 		}
-		
+
 		return this.passwordManager.checkPw(rawPassword.toString(), encodedPassword);
 	}
 

@@ -25,11 +25,11 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.GovpayConfig;
 
 public class GiornaleEventiConfig {
-	
+
 	private boolean abilitaGiornaleEventi;
 	private String apiName;
-	private Integer limit = AbstractLoggingInterceptor.DEFAULT_LIMIT;	
-	
+	private Integer limit = AbstractLoggingInterceptor.DEFAULT_LIMIT;
+
 	public GiornaleEventiConfig() {
 		this.abilitaGiornaleEventi = GovpayConfig.getInstance().isGiornaleEventiEnabled();
 	}
@@ -41,7 +41,7 @@ public class GiornaleEventiConfig {
 	public void setApiName(String apiName) {
 		this.apiName = apiName;
 	}
-	
+
 	public Componente getApiNameEnum() {
 		return Componente.valueOf(this.apiName);
 	}

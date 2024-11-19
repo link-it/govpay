@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -54,7 +54,7 @@ import it.govpay.core.utils.LogUtils;
 
 
 public abstract class BaseRsService {
-	
+
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
 	@Context protected HttpServletRequest request;
@@ -117,13 +117,13 @@ public abstract class BaseRsService {
 	}
 
 	public abstract int getVersione();
-	
+
 	protected IContext getContext() {
 		IContext context = ContextThreadLocal.get();
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
-			
+
 			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
@@ -133,10 +133,10 @@ public abstract class BaseRsService {
 			String baseUri = request.getRequestURI();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
-			
+
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
-			
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("Ricevuta una richiesta:");
 			sb.append("\n");
@@ -148,7 +148,7 @@ public abstract class BaseRsService {
 			sb.append("\n");
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
-				
+
 				switch(utenza.getTipoUtenza()) {
 				case CITTADINO:
 				case ANONIMO:
@@ -161,16 +161,16 @@ public abstract class BaseRsService {
 					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
 					break;
 				}
-				
+
 				sb.append("Profilo: \n");
 				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
 				sb.append("\n");
 				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
 				sb.append("\n");
 				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
-				
+
 				List<Acl> aclsProfilo = utenza.getAclsProfilo();
-				
+
 				this.printAcl(sb, aclsProfilo);
 				sb.append("\t\t]\n");
 				sb.append("\t");
@@ -200,7 +200,7 @@ public abstract class BaseRsService {
 	private void printAutorizzazioneTipiVersamento(StringBuilder sb, Utenza utenza) {
 		if(utenza.isAutorizzazioneTipiVersamentoStar())
 			sb.append("TipiPendenza: [Tutti]");
-		else 
+		else
 			sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
 	}
 
@@ -210,11 +210,11 @@ public abstract class BaseRsService {
 		else {
 			List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
 			if(dominiUo != null) {
-				List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
+				List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo);
 				sb.append("Domini: [");
 				for (Dominio dominio : domini) {
 					sb.append("\t\t");
-					
+
 					sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
 							dominio.getUo().stream().map(Uo::getCodUo).collect(Collectors.toList())
 							) : "Tutte")).append("]");
@@ -226,13 +226,13 @@ public abstract class BaseRsService {
 			}
 		}
 	}
-	
+
 	protected void buildContext() {
-		IContext context = ContextThreadLocal.get(); 
+		IContext context = ContextThreadLocal.get();
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
-			
+
 			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
@@ -242,15 +242,15 @@ public abstract class BaseRsService {
 			String baseUri = request.getRequestURI();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
-			
+
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
-			
+
 			String idSessione = null;
 			if(this.request.getSession() != null) {
 				idSessione = this.request.getSession().getId();
 			}
-			
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("Ricevuta una richiesta:");
 			sb.append("\n");
@@ -274,7 +274,7 @@ public abstract class BaseRsService {
 					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
 					break;
 				}
-				
+
 				sb.append("Profilo: \n");
 				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
 				if(idSessione != null) {
@@ -285,9 +285,9 @@ public abstract class BaseRsService {
 				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
 				sb.append("\n");
 				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
-				
+
 				List<Acl> aclsProfilo = utenza.getAclsProfilo();
-				
+
 				printAcl(sb, aclsProfilo);
 				sb.append("\t\t]\n");
 				sb.append("\t");
@@ -303,26 +303,26 @@ public abstract class BaseRsService {
 			this.logDebug(sb.toString());
 		}
 	}
-	
+
 	private String getPathFromRestMethod(String methodName) {
 
         try {
         	Class<?> c = this.getClass();
-        	
+
         	String rsBasePathValue = "";
         	Path rsBasePath = c.getAnnotation(Path.class);
         	if(rsBasePath !=null) {
         		rsBasePathValue = rsBasePath.value();
         	}
-        	
+
         	Method [] methods = c.getMethods();
         	if(methods==null || methods.length<=0) {
         		return null;
         	}
         	Method method = null;
-        	for (int i = 0; i < methods.length; i++) {
-        		if (methods[i] != null && methods[i].getName().equals(methodName) && methods[i].isAnnotationPresent(Path.class)) {
-        			method = methods[i];
+        	for (Method method2 : methods) {
+        		if (method2 != null && method2.getName().equals(methodName) && method2.isAnnotationPresent(Path.class)) {
+        			method = method2;
         			break;
         		}
 			}
@@ -340,7 +340,7 @@ public abstract class BaseRsService {
 
         return null;
     }
-	
+
 	protected void logDebugException(String msg, Exception e) {
 		LogUtils.logDebugException(this.log, msg, e);
 	}

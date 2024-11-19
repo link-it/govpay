@@ -40,8 +40,8 @@ import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 
 /**
  * Based on {@link LdapUserDetailsMapper}, aggiunge le informazioni lette dal db di GovPay a quelle ricevute dall'autenticatore Ldap.
- * 
- * 
+ *
+ *
  * @author pintori@link.it
  *
  */

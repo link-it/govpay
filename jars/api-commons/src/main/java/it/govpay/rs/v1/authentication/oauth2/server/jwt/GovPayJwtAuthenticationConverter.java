@@ -43,8 +43,8 @@ import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 /***
  * Classe basata su {@link JwtAuthenticationConverter}, riscritta perche' non si poteva fare l'override del metodo AbstractAuthenticationToken convert(Jwt jwt).
  * Estende le funzionalita' della classe originale per caricare le informazioni relative all'utenza GovPay all'interno dell'oggetto {@link AbstractAuthenticationToken}
- * 
- * 
+ *
+ *
  * @author pintori@link.it
  *
  */
@@ -53,16 +53,16 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 	private Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
 	private String principalClaimName = JwtClaimNames.SUB;
-	
+
 	private BaseAutenticazioneDAO userDetailService;
 
 	@Override
 	public final AbstractAuthenticationToken convert(Jwt jwt) {
 		Collection<GrantedAuthority> authoritiesFromSuperClass = this.jwtGrantedAuthoritiesConverter.convert(jwt);
 		String principalClaimValue = jwt.getClaimAsString(this.principalClaimName);
-		
+
 		GovPayLdapJwt govPayJwt = new GovPayLdapJwt(jwt.getTokenValue(), jwt.getIssuedAt(), jwt.getExpiresAt(), jwt.getHeaders(), jwt.getClaims());
-		
+
 		// creo un utenza ldap fittizzia per caricare le informazioni utente
 		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setAccountNonExpired(true);
@@ -73,10 +73,10 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(principalClaimValue);
-		
+
 		LdapUserDetails createUserDetails = essence.createUserDetails();
 		govPayJwt.setLdapUserDetailsImpl(createUserDetails);
-		
+
 		// leggo le informazioni sull'utenza nel formato GovPay
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
@@ -89,7 +89,7 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 			govPayJwt.setIdTransazioneAutenticazione(govpayDetails.getIdTransazioneAutenticazione());
 			govPayJwt.setTipoUtenza(govpayDetails.getTipoUtenza());
 		}
-		
+
 		return new JwtAuthenticationToken(govPayJwt, authoritiesFromSuperClass, principalClaimValue);
 	}
 

@@ -35,7 +35,7 @@ public class BasicAuthenticationEntryPoint extends org.openspcoop2.utils.service
 		if(Utilities.existsInnerException(authException, ServiceException.class)) {
 			return CodiceEccezione.ERRORE_INTERNO.toFaultResponse(authException);
 		}
-		
+
 		return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException);
 	}
 }

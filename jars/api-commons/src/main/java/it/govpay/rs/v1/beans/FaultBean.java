@@ -30,35 +30,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dettaglio",
 })
 public class FaultBean {
-  
-    
+
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
    */
   public enum CategoriaEnum {
-    
-    
-        
-            
+
+
+
+
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
-    
-    
+
+
     UNMARSHALL("UNMARSHALL"),
 
-    
+
     RICHIESTA("RICHIESTA"),
-    
-            
+
+
     OPERAZIONE("OPERAZIONE"),
-    
-            
+
+
     PAGOPA("PAGOPA"),
-    
-            
+
+
     INTERNO("INTERNO");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -82,20 +82,20 @@ public class FaultBean {
     }
   }
 
-    
-    
+
+
   @JsonProperty("categoria")
   private CategoriaEnum categoria = null;
-  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
    **/
@@ -184,7 +184,7 @@ public class FaultBean {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBean {\n");
-    
+
     sb.append("    categoria: ").append(this.toIndentedString(this.categoria)).append("\n");
     sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");

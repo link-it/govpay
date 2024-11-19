@@ -21,7 +21,6 @@ package it.govpay.rs.eventi;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.MessageFormat;
 import java.util.Base64;
 import java.util.Date;
 
@@ -71,7 +70,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		Esito esito = null;
 		try {
 			if(!this.giornaleEventiConfig.isAbilitaGiornaleEventi()) return;
-			
+
 			String apiName = this.giornaleEventiConfig.getApiName();
 			boolean logEvento = false;
 			boolean dumpEvento = false;
@@ -86,10 +85,10 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 			url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
 			httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
 			principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
-			
+
 			HttpMethod httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
 			esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
-			
+
 			this.log.debug("Log Evento API: [{}] Method [{}], Url [{}], Esito [{}]", apiName, httpMethodS, url, esito);
 
 			GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
@@ -99,9 +98,9 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 						"La configurazione per l''API [{}] non e'' corretta, salvataggio evento non eseguito.", apiName);
 				return;
 			}
-			
+
 			this.log.debug("Configurazione Giornale Eventi API: [{}]: {}", apiName, ConverterUtils.toJSON(configurazioneInterfaccia));
-			
+
 			if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
 				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
@@ -119,17 +118,17 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				Date dataIngresso = eventoCtx.getDataRichiesta();
 				Date dataUscita = new Date();
 				// lettura informazioni dalla richiesta
-				
+
 				DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-				
-			
+
+
 				dettaglioRichiesta.setPrincipal(principal);
 				dettaglioRichiesta.setUtente(eventoCtx.getUtente());
 				dettaglioRichiesta.setUrl(url);
 				dettaglioRichiesta.setMethod(httpMethodS);
 				dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
 				dettaglioRichiesta.setHeadersFromMap(eventRequest.getHeaders());
-				
+
 				// lettura informazioni dalla response
 				final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
 				DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
@@ -139,13 +138,13 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				eventoCtx.setDataRisposta(dataUscita);
 				eventoCtx.setDettaglioRichiesta(dettaglioRichiesta);
 				eventoCtx.setDettaglioRisposta(dettaglioRisposta);
-				
+
 				eventoCtx.setTransactionId(context.getTransactionId());
-				
+
 				String clusterId = GovpayConfig.getInstance().getClusterId();
 				if(clusterId == null)
 					clusterId = GovpayConfig.getInstance().getAppName();
-				
+
 				eventoCtx.setClusterId(clusterId);
 
 				if(dumpEvento) {
@@ -164,7 +163,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 						LoggingCallback callback = new LoggingCallback(this.sender, message, eventoCtx, os, this.limit);
 						message.setContent(OutputStream.class, createCacheAndWriteOutputStream(message, os, callback));
 					}
-				} 
+				}
 			}
 		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
@@ -179,8 +178,8 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 			newOut.setThreshold(this.threshold);
 		}
 		if (this.limit > 0) {
-			// make the limit for the cache greater than the limit for the truncated payload in the log event, 
-			// this is necessary for finding out that the payload was truncated 
+			// make the limit for the cache greater than the limit for the truncated payload in the log event,
+			// this is necessary for finding out that the payload was truncated
 			//(see boolean isTruncated = cos.size() > limit && limit != -1;)  in method copyPayload
 			newOut.setCacheLimit(getCacheLimitExt());
 		}
@@ -227,7 +226,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				} else {
 					event.setPayload(CONTENT_SUPPRESSED);
 				}
-				
+
 				if(event.getPayload() != null)
 					this.eventoCtx.getDettaglioRisposta().setPayload(Base64.getEncoder().encodeToString(event.getPayload().getBytes()));
 
@@ -241,7 +240,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				this.message.setContent(OutputStream.class, this.origStream);
 			} catch (Throwable e) {
 				LoggerWrapperFactory.getLogger(GiornaleEventiCollectorOutInterceptor.class).error(e.getMessage(),e);
-				throw new Fault(e); 
+				throw new Fault(e);
 			}
 		}
 

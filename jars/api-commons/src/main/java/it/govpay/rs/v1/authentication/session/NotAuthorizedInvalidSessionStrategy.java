@@ -32,7 +32,7 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
 public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrategy {
-	
+
 	private TimeZone timeZone = TimeZone.getDefault();
     private String timeZoneId = null;
     public String getTimeZoneId() {
@@ -42,7 +42,7 @@ public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrate
             this.timeZoneId = timeZoneId;
             this.timeZone = TimeZone.getTimeZone(timeZoneId);
     }
-    
+
 	private boolean createNewSession = true;
 
 	public NotAuthorizedInvalidSessionStrategy() {

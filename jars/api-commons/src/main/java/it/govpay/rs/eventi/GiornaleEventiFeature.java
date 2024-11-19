@@ -34,12 +34,12 @@ public class GiornaleEventiFeature extends AbstractFeature{
 	private GiornaleEventiOutInterceptor out;
 	private GiornaleEventiConfig giornaleEventiConfig = null;
 	private GiornaleEventiCollectorOutInterceptor outCollector;
-	
+
 	public GiornaleEventiFeature() {
 		this.out = new GiornaleEventiOutInterceptor();
 		this.outCollector = new GiornaleEventiCollectorOutInterceptor();
 	}
-	
+
 	@Override
 	protected void initializeProvider(InterceptorProvider provider, Bus bus) {
 		if(this.giornaleEventiConfig == null) {
@@ -47,13 +47,13 @@ public class GiornaleEventiFeature extends AbstractFeature{
 			this.out.setGiornaleEventiConfig(this.giornaleEventiConfig);
 			this.outCollector.setGiornaleEventiConfig(this.giornaleEventiConfig);
 		}
-		
+
 			provider.getOutInterceptors().add(this.outCollector);
 			provider.getOutFaultInterceptors().add(this.outCollector);
 			provider.getOutInterceptors().add(this.out);
 			provider.getOutFaultInterceptors().add(this.out);
 	}
-	
+
 	public GiornaleEventiConfig getGiornaleEventiConfig() {
 		return giornaleEventiConfig;
 	}

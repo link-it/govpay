@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -69,7 +69,7 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 	public void close(MessageContext messageContext) {
 		// do nothing.
 	}
-	
+
 	private boolean logToSystemOut(SOAPMessageContext smc) {
 		try {
 			Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
@@ -86,25 +86,25 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 		} catch (Exception e) {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
-		
+
 		return true;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void salvaInformazioniRichiestaIngresso(SOAPMessageContext smc, IContext context, GpContext ctx) throws ServiceException {
 		if(smc.get(MessageContext.WSDL_OPERATION) != null)
 			MDC.put(MD5Constants.OPERATION_ID, ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
 		MDC.put(MD5Constants.TRANSACTION_ID, context.getTransactionId());
 		GpContext.popolaGpContext(ctx, smc, GpContext.TIPO_SERVIZIO_NDP, 010702, this.getApiNameEnum());
-		
-		
+
+
 		Map<String, List<String>> httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_REQUEST_HEADERS);
 		String soapAction = "";
 		if(httpHeaders.get(SOAP_ACTION) != null) {
 			soapAction = httpHeaders.get(SOAP_ACTION).get(0);
 			soapAction = soapAction.replace("\"",""); //.split("#"))[1])
 		}
-		
+
 		HttpServletRequest servletRequest = (HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST);
 		ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 		ctx.getEventoCtx().setMethod(servletRequest.getMethod());
@@ -112,7 +112,7 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 		ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
 		if(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()) != null)
 			ctx.getEventoCtx().setUtente(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getIdentificativo());
-		
+
 		StringBuilder requestURL = new StringBuilder(servletRequest.getRequestURL().toString());
 		String queryString = servletRequest.getQueryString();
 
@@ -130,7 +130,7 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 			log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
 		}
 	}
-	
+
 	public Componente getApiNameEnum() {
 		return Componente.valueOf(this.apiName);
 	}

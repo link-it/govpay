@@ -32,18 +32,18 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 
 public class BooleanDeserializer extends JsonDeserializer<Boolean> {
 
-	
+
 	@Override
 	public Boolean deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		ObjectCodec oc = jsonParser.getCodec();
 		JsonNode node = oc.readTree(jsonParser);
-		
+
 		if(node instanceof BooleanNode) {
 			BooleanNode bNode = (BooleanNode) node;
-			
+
 			return bNode.booleanValue();
 		}
-		
+
 		throw new JsonParseException(jsonParser, "il field " + jsonParser.currentName() + " non e' di tipo " + Boolean.class.getName() + ".");
 	}
 }

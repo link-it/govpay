@@ -41,18 +41,18 @@ import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
-import it.govpay.model.eventi.DettaglioRisposta;
 import it.govpay.core.utils.GpContext;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Message>  {
 
 	private Logger log = LoggerWrapperFactory.getLogger(GiornaleEventiOutInterceptor.class);
 	private GiornaleEventiConfig giornaleEventiConfig = null;
-	private EventiDAO eventiDAO = null; 
+	private EventiDAO eventiDAO = null;
 
 	public GiornaleEventiOutInterceptor() {
 		super(Phase.SETUP_ENDING);
-		this.eventiDAO = new EventiDAO(); 
+		this.eventiDAO = new EventiDAO();
 	}
 
 	@Override
@@ -61,11 +61,11 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 		String httpMethodS = null;
 		try {
 			if(!this.giornaleEventiConfig.isAbilitaGiornaleEventi()) return;
-			
+
 			IContext context = ContextThreadLocal.get();
 			GpContext appContext = (GpContext) context.getApplicationContext();
 			EventoContext eventoCtx = appContext.getEventoCtx();
-			
+
 			Exchange exchange = message.getExchange();
 			Message inMessage = exchange.getInMessage();
 			final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
@@ -82,11 +82,11 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 			this.log.debug("Log Evento API: [{}] Method [{}], Url [{}], StatusCode [{}]",this.giornaleEventiConfig.getApiName(), httpMethodS, url, responseCode);
 
 			if(!eventoCtx.isRegistraEvento()) return;
-			
+
 			// informazioni gia' calcolate nell'interceptor di dump
 			if(eventoCtx.getDettaglioRisposta() == null)
 				eventoCtx.setDettaglioRisposta(new DettaglioRisposta());
-			
+
 			if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA) || this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_MAGGIOLI_JPPA)) {
 				@SuppressWarnings("unchecked")
 				Map<String, List<String>> responseHeaders = (Map<String, List<String>>)message.get(Message.PROTOCOL_HEADERS);
