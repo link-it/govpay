@@ -125,7 +125,7 @@ public class ConfigurazioniController extends BaseController {
 
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
 
-				if(lstOp != null && lstOp.size() > 0) {
+				if(lstOp != null && !lstOp.isEmpty()) {
 					for (PatchOp patchOp : lstOp) {
 						patchOp.validate();
 					}

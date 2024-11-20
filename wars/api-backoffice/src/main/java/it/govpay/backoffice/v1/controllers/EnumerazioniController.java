@@ -48,37 +48,6 @@ public class EnumerazioniController extends BaseController {
      }
 
 
-
-    public Response findEnumerazioniComponentiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-    	String methodName = "findEnumerazioniComponentiEvento";
-		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
-		try{
-			throw new NotAuthorizedException("Operazione non piu' disponibile");
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.logContext(ContextThreadLocal.get());
-		}
-    }
-
-
-
-    public Response findEnumerazioniLabelTipiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-    	String methodName = "findEnumerazioniLabelTipiEvento";
-		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
-		try{
-			throw new NotAuthorizedException("Operazione non piu' disponibile");
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.logContext(ContextThreadLocal.get());
-		}
-    }
-
-
-
     public Response findEnumerazioniServiziACL(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniServiziACL";
 		String transactionId = ContextThreadLocal.get().getTransactionId();

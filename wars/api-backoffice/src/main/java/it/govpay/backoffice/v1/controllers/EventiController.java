@@ -350,64 +350,61 @@ public class EventiController extends BaseController {
 
 				if(idA2A != null && idPendenza != null) {
 
-					if(autorizza) {
-						//check autorizzazione per la pendenza scelta
-						ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
-						listaPendenzeDTO.setIdA2A(idA2A);
-						listaPendenzeDTO.setIdPendenza(idPendenza);
+					//check autorizzazione per la pendenza scelta
+					ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
+					listaPendenzeDTO.setIdA2A(idA2A);
+					listaPendenzeDTO.setIdPendenza(idPendenza);
 
-						// Autorizzazione sulle UO
-						List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
-						if(idUnitaOperative == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-						}
-						listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
-						// autorizzazione sui tipi pendenza
-						List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
-						if(idTipiVersamento == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-						}
-						listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+					// Autorizzazione sulle UO
+					List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
+					if(idUnitaOperative == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+					}
+					listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
+					// autorizzazione sui tipi pendenza
+					List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+					if(idTipiVersamento == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+					}
+					listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
 
-						PendenzeDAO pendenzeDAO = new PendenzeDAO();
+					PendenzeDAO pendenzeDAO = new PendenzeDAO();
 
-						ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
+					ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
 
-						if(listaPendenzeDTOResponse.getTotalResults() == 0)
-							autorizzato = false;
+					if(listaPendenzeDTOResponse.getTotalResults() == 0) {
+						autorizzato = false;
 					}
 				} else if(idDominio != null && iuv != null) {
 
-					if(autorizza) {
-						ListaRptDTO listaRptDTO = new ListaRptDTO(user);
-						listaRptDTO.setIdDominio(idDominio);
-						listaRptDTO.setIuv(iuv);
+					ListaRptDTO listaRptDTO = new ListaRptDTO(user);
+					listaRptDTO.setIdDominio(idDominio);
+					listaRptDTO.setIuv(iuv);
 
-						// Autorizzazione sui domini
-						List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-						if(domini == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-						}
-						listaRptDTO.setCodDomini(domini);
+					// Autorizzazione sui domini
+					List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+					if(domini == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+					}
+					listaRptDTO.setCodDomini(domini);
 
-						RptDAO rptDAO = new RptDAO();
-						ListaRptDTOResponse listaRptDTOResponse = rptDAO.countRpt(listaRptDTO);
+					RptDAO rptDAO = new RptDAO();
+					ListaRptDTOResponse listaRptDTOResponse = rptDAO.countRpt(listaRptDTO);
 
-						if(listaRptDTOResponse.getTotalResults() == 0)
-							autorizzato = false;
+					if(listaRptDTOResponse.getTotalResults() == 0) {
+						autorizzato = false;
 					}
 				} else if(idPagamento != null) {
 
-					if(autorizza) {
 
-						ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
-						listaPagamentiPortaleDTO.setIdSessione(idPagamento);
+					ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
+					listaPagamentiPortaleDTO.setIdSessione(idPagamento);
 
-						PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
-						ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
+					PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+					ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
 
-						if(pagamentoPortaleDTOResponse.getTotalResults() == 0)
-							autorizzato = false;
+					if(pagamentoPortaleDTOResponse.getTotalResults() == 0) {
+						autorizzato = false;
 					}
 				}
 			}

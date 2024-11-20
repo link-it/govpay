@@ -54,14 +54,14 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class NotificheController extends BaseController {
 
-     public NotificheController(String nomeServizio,Logger log) {
+	public NotificheController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-     }
+	}
 
 
 
-    public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
-    	String methodName = "findNotifiche";
+	public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
+		String methodName = "findNotifiche";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.setMaxRisultati(maxRisultati);
 		try{
@@ -82,36 +82,38 @@ public class NotificheController extends BaseController {
 
 			if(stato != null) {
 				StatoNotifica statoNotifica = StatoNotifica.fromValue(stato);
-				if(statoNotifica != null)
-				switch (statoNotifica) {
-				case ANNULLATA:
-					listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.ANNULLATA);
-					break;
-				case DA_SPEDIRE:
-					listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.DA_SPEDIRE);
-					break;
-				case SPEDITA:
-					listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.SPEDITO);
-					break;
+				if(statoNotifica != null) {
+					switch (statoNotifica) {
+					case ANNULLATA:
+						listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.ANNULLATA);
+						break;
+					case DA_SPEDIRE:
+						listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.DA_SPEDIRE);
+						break;
+					case SPEDITA:
+						listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.SPEDITO);
+						break;
+					}
 				}
 			}
 
 			if(tipo != null) {
 				TipoNotifica tipoNotifica = TipoNotifica.fromValue(tipo);
-				if(tipoNotifica != null)
-				switch (tipoNotifica) {
-				case ANNULLAMENTO:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ANNULLAMENTO);
-					break;
-				case ATTIVAZIONE:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ATTIVAZIONE);
-					break;
-				case FALLIMENTO:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.FALLIMENTO);
-					break;
-				case RICEVUTA:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.RICEVUTA);
-					break;
+				if(tipoNotifica != null) {
+					switch (tipoNotifica) {
+					case ANNULLAMENTO:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ANNULLAMENTO);
+						break;
+					case ATTIVAZIONE:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ATTIVAZIONE);
+						break;
+					case FALLIMENTO:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.FALLIMENTO);
+						break;
+					case RICEVUTA:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.RICEVUTA);
+						break;
+					}
 				}
 			}
 
@@ -124,19 +126,6 @@ public class NotificheController extends BaseController {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaNotificheDTO.setDataA(dataADate);
 			}
-
-//			// Autorizzazione sui domini
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaNotificheDTO.setIdDomini(idDomini);
-//			// autorizzazione sui tipi pendenza
-//			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
-//			if(idTipiVersamento == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-//			}
-//			listaNotificheDTO.setIdTipiVersamento(idTipiVersamento);
 
 			// INIT DAO
 
@@ -164,7 +153,7 @@ public class NotificheController extends BaseController {
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
-    }
+	}
 
 
 }

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.42.0"
+  version: "1.43.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -515,21 +515,6 @@ paths:
           schema:
             type: boolean
             default: true
-        - in: query
-          name: avvisaturaDigitale
-          description: Indica se la pendenza deve essere avvisata digitalmente
-          required: false
-          schema:
-            type: boolean
-            default: false
-          deprecated: true
-        - in: query
-          name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
-          deprecated: true
       requestBody:
         content:
           text/csv:
@@ -589,21 +574,6 @@ paths:
           schema:
             type: boolean
             default: true
-        - in: query
-          name: avvisaturaDigitale
-          description: Indica se la pendenza deve essere avvisata digitalmente
-          required: false
-          schema:
-            type: boolean
-            default: false
-          deprecated: true
-        - in: query
-          name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
-          deprecated: true
       requestBody:
         content:
           text/csv:
@@ -633,138 +603,6 @@ paths:
           $ref: '#/components/responses/403'
         '415':
           $ref: '#/components/responses/415'
-        '500':
-          $ref: '#/components/responses/500'
-  '/tracciati':
-    get:
-      tags:
-        - Tracciati
-      deprecated: true
-      summary: Elenco dei tracciati
-      operationId: findTracciati
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-      responses:
-        '200':
-          description: Lista paginata dei tracciati ricercati
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/tracciato'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-  '/tracciati/{id}':
-    get:
-      tags:
-        - Tracciati
-      deprecated: true
-      summary: Dettaglio di un tracciato
-      operationId: getTracciato
-      parameters:
-        - in: path
-          name: id
-          description: identificativo di un tracciato
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Tracciato ricercato
-          content:
-            application/json:
-              schema:
-               $ref: '#/components/schemas/tracciato'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  '/tracciati/{id}/richiesta':
-    get:
-      tags:
-        - Tracciati
-      deprecated: true
-      summary: Messaggio di richiesta di un tracciato
-      operationId: getMessaggioRichiestaTracciato
-      parameters:
-        - in: path
-          name: id
-          description: identificativo di un tracciato
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Messaggio di richiesta di un tracciato
-          content:
-            application/octet-stream:
-              schema:
-               type: object
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  '/tracciati/{id}/risposta':
-    get:
-      tags:
-        - Tracciati
-      deprecated: true
-      summary: Messaggio di risposta di un tracciato
-      operationId: getMessaggioRispostaTracciato
-      parameters:
-        - in: path
-          name: id
-          description: identificativo di un tracciato
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Messaggio di risposta di un tracciato
-          content:
-            application/octet-stream:
-              schema:
-               type: object
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   '/tracciatiNotificaPagamenti/{id}':
@@ -2355,21 +2193,6 @@ paths:
           schema:
             type: boolean
             default: false
-        - in: query
-          name: avvisaturaDigitale
-          description: Indica se la pendenza deve essere avvisata digitalmente
-          required: false
-          schema:
-            type: boolean
-            default: false
-          deprecated: true
-        - in: query
-          name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
-          deprecated: true
       requestBody:
         content:
           application/json:
@@ -2494,21 +2317,6 @@ paths:
           schema:
             type: boolean
             default: false
-        - in: query
-          name: avvisaturaDigitale
-          description: Indica se la pendenza deve essere avvisata digitalmente
-          required: false
-          schema:
-            type: boolean
-            default: false
-          deprecated: true
-        - in: query
-          name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
-          deprecated: true
       requestBody:
         description: Pendenza di tipo custom
         content:
@@ -2576,21 +2384,6 @@ paths:
           schema:
             type: boolean
             default: false
-        - in: query
-          name: avvisaturaDigitale
-          description: Indica se la pendenza deve essere avvisata digitalmente
-          required: false
-          schema:
-            type: boolean
-            default: false
-          deprecated: true
-        - in: query
-          name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
-          deprecated: true
       requestBody:
         content:
           application/json:
@@ -3885,43 +3678,6 @@ paths:
                 type: array
                 items:
                   type: string
-        '500':
-          $ref: '#/components/responses/500'
-  '/enumerazioni/componentiEvento':
-    get:
-      tags:
-        - Enumerazioni
-      deprecated: true
-      summary: Lista dei componenti che possono emettere eventi in GovPay
-      operationId: findEnumerazioniComponentiEvento
-      responses:
-        '200':
-          description: Lista dei componenti che possono emettere eventi in GovPay
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/componenteEvento'
-        '500':
-          $ref: '#/components/responses/500'
-  '/enumerazioni/labelTipiEvento':
-    get:
-      tags:
-        - Enumerazioni
-      deprecated: true
-      summary: Lista di mapping tipoEvento / Label corrispondente
-      operationId: findEnumerazioniLabelTipiEvento
-      responses:
-        '200':
-          description: Lista di mapping tipoEvento / Label corrispondente
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  example: { "paaAttivaRPT" : "Attiva pagamento" }
         '500':
           $ref: '#/components/responses/500'
   '/configurazioni':
@@ -9072,13 +8828,6 @@ components:
         - ADD
         - DEL
         - NON_VALIDA
-    modalitaAvvisaturaDigitale:
-      deprecated: true
-      example: ASINCRONA
-      type: string
-      enum:
-        - ASINCRONA
-        - SINCRONA
     tracciatoPendenzeIndex:
       type: object
       required:
@@ -9223,13 +8972,6 @@ components:
           type: string
           description: Identificativo del Dominio
           example: "01234567890"
-        avvisaturaDigitale:
-          description: Indica se la pendenza deve essere avvisata digitalmente
-          type: boolean
-          default: false
-          deprecated: true
-        modalitaAvvisaturaDigitale:
-          $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
         inserimenti:
           type: array
           items:

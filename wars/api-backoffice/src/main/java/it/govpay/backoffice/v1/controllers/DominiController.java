@@ -202,7 +202,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -265,7 +265,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -320,7 +320,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -362,7 +362,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -425,7 +425,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -481,7 +481,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -522,7 +522,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -690,7 +690,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -705,7 +705,7 @@ public class DominiController extends BaseController {
 			if(tipiVersamentoAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-			if(tipiVersamentoAutorizzati.size() > 0) {
+			if(!tipiVersamentoAutorizzati.isEmpty()) {
 				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
 				}
@@ -757,7 +757,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -767,7 +767,7 @@ public class DominiController extends BaseController {
 			if(tipiVersamentoAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-			if(tipiVersamentoAutorizzati.size() > 0) {
+			if(!tipiVersamentoAutorizzati.isEmpty()) {
 				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
 				}
@@ -812,7 +812,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -883,7 +883,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -939,7 +939,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
@@ -977,7 +977,7 @@ public class DominiController extends BaseController {
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-			if(dominiAutorizzati.size() > 0) {
+			if(!dominiAutorizzati.isEmpty()) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}

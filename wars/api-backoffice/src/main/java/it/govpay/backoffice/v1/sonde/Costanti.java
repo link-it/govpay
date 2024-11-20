@@ -23,6 +23,8 @@ import it.govpay.core.business.Operazioni;
 
 public class Costanti {
 
+	private Costanti() {}
+	
 	/* IDENTIFICATIVI */
 	public static final String CHECK_DB = Operazioni.CHECK_DB;
 	public static final String RND =  Operazioni.RND;

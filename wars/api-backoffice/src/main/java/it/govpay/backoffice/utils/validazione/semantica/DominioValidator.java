@@ -43,6 +43,7 @@ public class DominioValidator implements IValidable {
 
 	@Override
 	public void validate() throws ValidationException {
+		//donothing
 	}
 
 	public void validazioneSemantica() throws UnprocessableEntityException {

@@ -49,7 +49,6 @@ import it.govpay.backoffice.v1.beans.FaultBean.CategoriaEnum;
 import it.govpay.backoffice.v1.beans.ListaOperazioniPendenza;
 import it.govpay.backoffice.v1.beans.ListaPendenze;
 import it.govpay.backoffice.v1.beans.ListaTracciatiPendenza;
-import it.govpay.backoffice.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.backoffice.v1.beans.OperazionePendenza;
 import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
@@ -396,7 +395,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso) {
 		String methodName = "addPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -449,7 +448,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso) {
 		String methodName = "addPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -502,7 +501,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, String idUnitaOperativa, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, String idUnitaOperativa, Boolean stampaAvviso) {
 		String methodName = "addPendenzaPOST";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -582,7 +581,7 @@ public class PendenzeController extends BaseController {
 				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
 			}
 
-			this.log.debug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
+			this.logDebug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
 
 
 			String fileName = null;
@@ -591,7 +590,7 @@ public class PendenzeController extends BaseController {
 				// controllo se sono in una richiesta multipart
 				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
 					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-					this.log.debug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
 
 					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
@@ -664,16 +663,16 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale, false);
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean stampaAvvisi) {
+		return addTracciatoPendenzeEngine(user, uriInfo, httpHeaders, is, idDominio, null, stampaAvvisi, false);
 	}
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale, true);
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean stampaAvvisi) {
+		return addTracciatoPendenzeEngine(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, stampaAvvisi, true);
 	}
 
-	private Response _addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
-			Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, boolean checkTipoPendenza) {
+	private Response addTracciatoPendenzeEngine(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
+			Boolean stampaAvvisi, boolean checkTipoPendenza) {
 		String methodName = "addTracciatoPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -686,7 +685,7 @@ public class PendenzeController extends BaseController {
 				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
 			}
 
-			this.log.debug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
+			this.logDebug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
 
 
 			String fileName = null;
@@ -695,7 +694,7 @@ public class PendenzeController extends BaseController {
 				// controllo se sono in una richiesta multipart
 				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
 					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-					this.log.debug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
 
 					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
