@@ -40,7 +40,7 @@ public abstract class Versionabile extends BasicModel {
 		
 		private String api;
 		private String label;
-		public static String[] labels = {"SOAP_1","SOAP_3","REST_1","REST_2"};
+		protected static String[] labels = {"SOAP_1","SOAP_3","REST_1","REST_2"};
 		
 		Versione(String api, String label){
 			this.label = label;

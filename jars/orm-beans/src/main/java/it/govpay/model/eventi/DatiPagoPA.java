@@ -32,11 +32,7 @@ public class DatiPagoPA implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	public DatiPagoPA() {
-//		this.codPsp = Rpt.codPspWISP20;
-//		this.codCanale = Rpt.codCanaleWISP20;
-//		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
-//		this.codIntermediarioPsp = Rpt.codIntermediarioPspWISP20;
-//		this.modelloPagamento = Rpt.modelloPagamentoWISP20;
+		// donothing
 	}
 	
 	private String codPsp;

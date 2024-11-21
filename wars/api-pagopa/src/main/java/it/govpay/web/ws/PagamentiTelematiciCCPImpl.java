@@ -386,7 +386,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
+				filter.setStato(Rpt.getStatiPendenti());
 				filter.setIdVersamento(versamento.getId());
 				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
 				
@@ -830,7 +830,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
+				filter.setStato(Rpt.getStatiPendenti());
 				filter.setIdVersamento(versamento.getId());
 				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
 				

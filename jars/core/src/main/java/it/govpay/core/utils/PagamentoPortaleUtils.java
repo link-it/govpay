@@ -96,7 +96,7 @@ public class PagamentoPortaleUtils {
 				Rpt rpt  = findAll.get(i);
 				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 				StatoRpt stato = rpt.getStato();
-				if(it.govpay.model.Rpt.stati_pendenti.contains(stato)) {
+				if(it.govpay.model.Rpt.getStatiPendenti().contains(stato)) {
 					log.debug("RPT corrente ["+rpt.getId()+"] e' in uno stato pendente ["+rpt.getStato()+ "], il nuovo stato del pagamento sara' 'IN_CORSO'.");
 //						rpt.getEsitoPagamento() == null) {
 					updateStato = false;
