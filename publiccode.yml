@@ -195,7 +195,7 @@ maintenance:
       phone: '+39050504639'
   contractors:
     - name: Link.it
-      until: '2023-12-31'
+      until: '2024-12-31'
       website: 'https://www.link.it'
   type: community
 name: GovPay
