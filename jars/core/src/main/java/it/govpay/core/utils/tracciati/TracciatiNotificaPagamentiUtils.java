@@ -407,7 +407,7 @@ public class TracciatiNotificaPagamentiUtils {
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		CtReceipt ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPA ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -522,7 +522,7 @@ public class TracciatiNotificaPagamentiUtils {
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		CtReceiptV2 ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPAReceiptV2 ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -1004,7 +1004,7 @@ public class TracciatiNotificaPagamentiUtils {
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		CtReceipt ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPA ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -1366,7 +1366,7 @@ public class TracciatiNotificaPagamentiUtils {
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		CtReceiptV2 ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPAReceiptV2 ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -1822,7 +1822,7 @@ public class TracciatiNotificaPagamentiUtils {
 		Versamento versamento = rpt.getVersamento();
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
 		TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		CtReceipt ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		String datiAllegati = versamento.getDatiAllegati();
@@ -1921,7 +1921,7 @@ public class TracciatiNotificaPagamentiUtils {
 		Versamento versamento = rpt.getVersamento();
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
 		TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		CtReceiptV2 ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		String datiAllegati = versamento.getDatiAllegati();

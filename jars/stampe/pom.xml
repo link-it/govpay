@@ -82,11 +82,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>net.sourceforge.dynamicreports</groupId>
 			<artifactId>dynamicreports-core</artifactId>
 			<version>${dynamicreports-core.version}</version>
@@ -107,10 +102,6 @@
 					<groupId>org.apache.commons</groupId>
    					<artifactId>commons-lang3</artifactId>
 				</exclusion>
-<!-- 				<exclusion> -->
-<!-- 					<artifactId>bcprov-jdk14</artifactId> -->
-<!-- 					<groupId>bouncycastle</groupId> -->
-<!-- 				</exclusion> -->
 			</exclusions>
 		</dependency>
 		

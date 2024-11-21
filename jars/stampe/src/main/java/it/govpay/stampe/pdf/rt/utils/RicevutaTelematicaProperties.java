@@ -34,10 +34,11 @@ import org.slf4j.Logger;
 
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.PropertyNotFoundException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.stampe.pdf.Costanti;
 
 public class RicevutaTelematicaProperties {
-	
+
 	private static final String PROPERTIES_FILE = "/ricevutaTelematica.properties";
 	public static final String DEFAULT_PROPS = "default";
 
@@ -98,11 +99,11 @@ public class RicevutaTelematicaProperties {
 							throw new ConfigException(e);
 						} 
 						this.propMap.put(DEFAULT_PROPS, props0);
-						log.info(Costanti.INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0, gpConfigFile.getAbsolutePath());
+						LogUtils.logInfo(log, Costanti.INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0, gpConfigFile.getAbsolutePath());
 					}
 				}
 			} catch (Exception e) {
-				log.warn(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0_PROPERTY_IGNORATA, e.getMessage()));
+				LogUtils.logWarn(log, MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0_PROPERTY_IGNORATA, e.getMessage()));
 			}
 
 			// carico tutti i file che definiscono configurazioni diverse di avvisi pagamento
@@ -125,13 +126,13 @@ public class RicevutaTelematicaProperties {
 						key = key.replaceAll("ricevutaTelematica.", "");
 						// la configurazione di defaut e' gia'stata caricata
 						if(!key.equals("ricevutaTelematica")) {
-							log.info(Costanti.INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0, key);
+							LogUtils.logInfo(log, Costanti.INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0, key);
 							this.propMap.put(key, p);
 						}
 					}
 			}
 		} catch (IOException e) {
-			log.error(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0, e.getMessage());
+			LogUtils.logError(log, Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0, e.getMessage());
 			throw new ConfigException(e);
 		}
 	}
@@ -146,10 +147,10 @@ public class RicevutaTelematicaProperties {
 					throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA, name));
 				else return null;
 			} else {
-				log.debug(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_CONFIGURAZIONE_0_1, name, value);
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_CONFIGURAZIONE_0_1, name, value);
 			}
 		} else {
-			log.debug(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_SISTEMA_0_1, name, value);
+			LogUtils.logDebug(log, Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_SISTEMA_0_1, name, value);
 		}
 
 		return value.trim();
@@ -159,12 +160,14 @@ public class RicevutaTelematicaProperties {
 		String value = null;
 		Properties p = this.getProperties(idprops);
 
-		try { value = getProperty(name, p, required); } catch (Exception e) { }
+		try { value = getProperty(name, p, required); } catch (PropertyNotFoundException e) {
+			// donothing
+		}
 		if(value != null && !value.trim().isEmpty()) {
 			return value;
 		}
 
-		log.debug(Costanti.DEBUG_MSG_PROPRIETA_NON_TROVATA_IN_CONFIGURAZIONE, name, idprops);
+		LogUtils.logDebug(log, Costanti.DEBUG_MSG_PROPRIETA_NON_TROVATA_IN_CONFIGURAZIONE, name, idprops);
 
 		if(required) 
 			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
@@ -183,7 +186,7 @@ public class RicevutaTelematicaProperties {
 		Properties p = this.propMap.get(id);
 
 		if(p == null) {
-			log.debug(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id);
+			LogUtils.logDebug(log, Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id);
 			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
 		}
 
@@ -197,38 +200,38 @@ public class RicevutaTelematicaProperties {
 	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws PropertyNotFoundException {
 		Properties p = null;
 		String key = null;
-	
+
 		// 1. ricerca delle properties per la chiave "codDominio -> codTributo"
 		if(StringUtils.isNotEmpty(codTributo) && StringUtils.isNotEmpty(codDominio)) {
 			key = codDominio + "." + codTributo;
 			try{
-				log.debug(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key);
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key);
 				p = this.getProperties(key);
 			}catch(Exception e){
-				log.debug(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage());
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage());
 			}
 		}
 
 		// 2 . ricerca per codDominio
-		if(StringUtils.isNotEmpty(codDominio)) {
-			if(p == null){
-				key = codDominio;
-				try{
-					log.debug(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key);
-					p = this.getProperties(key);
-				}catch(Exception e){
-					log.debug(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage());
-				}
+		if(StringUtils.isNotEmpty(codDominio) && p == null){
+			key = codDominio;
+			try{
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key);
+				p = this.getProperties(key);
+			}catch(Exception e){
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage());
 			}
 		}
 
 		// utilizzo le properties di default
-		try{
-			log.debug(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_DI_DEFAULT);
-			p = this.getProperties(null);
-		}catch(PropertyNotFoundException e){
-			log.debug(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_DI_DEFAULT_0, e.getMessage());
-			throw e;
+		if(p == null){
+			try{
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_DI_DEFAULT);
+				p = this.getProperties(null);
+			}catch(PropertyNotFoundException e){
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_DI_DEFAULT_0, e.getMessage());
+				throw e;
+			}
 		}
 
 		return p;

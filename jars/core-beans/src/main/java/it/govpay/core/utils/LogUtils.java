@@ -77,6 +77,12 @@ public class LogUtils {
 			log.error(msg, e);
 		}
 	}
+	
+	public static void logError(Logger log, String msg, Object ... params) {
+		if(log != null) {
+			log.error(msg, params);
+		}
+	}
 
 	public static void logTrace(Logger log, String msg, Object ... params) {
 		if(log != null) {

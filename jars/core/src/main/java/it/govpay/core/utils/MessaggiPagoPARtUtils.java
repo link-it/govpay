@@ -74,7 +74,7 @@ public class MessaggiPagoPARtUtils {
 	}
 	
 	private static Object getMessaggioRTSANP240(Rpt rpt, FormatoRicevuta formato, boolean retrocompatibilitaMessaggiPagoPAV1) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
-		PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		
 		if(paSendRTReq == null) return null;
 		
@@ -100,7 +100,7 @@ public class MessaggiPagoPARtUtils {
 	}
 	
 	private static Object getMessaggioRTSANP321(Rpt rpt, FormatoRicevuta formato, boolean retrocompatibilitaMessaggiPagoPAV1) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
-		PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		
 		if(paSendRTReq == null) return null;
 

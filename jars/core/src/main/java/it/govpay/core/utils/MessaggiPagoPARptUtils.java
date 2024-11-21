@@ -85,12 +85,12 @@ public class MessaggiPagoPARptUtils {
 		PaGetPaymentRes paGetPaymentRes;
 		// per lo standin il messaggio XML della richiesta potrebbe non esserci. lo ricostruisco
 		if(xmlRpt == null) {
-			PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+			PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 			Versamento versamento = rpt.getVersamento(configWrapper);
 			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentRes(paSendRTReq, rpt, versamento);
 			
 		} else {
-			paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(xmlRpt, false);
+			paGetPaymentRes = JaxbUtils.toPaGetPaymentResRPT(xmlRpt, false);
 		}
 		
 		
@@ -122,12 +122,12 @@ public class MessaggiPagoPARptUtils {
 		PaGetPaymentV2Response paGetPaymentRes;
 		// per lo standin il messaggio XML della richiesta potrebbe non esserci. lo ricostruisco
 		if(xmlRpt == null) {
-			PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+			PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 			Versamento versamento = rpt.getVersamento(configWrapper);
 			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentV2Response(paSendRTReq, rpt, versamento);
 			
 		} else {
-			paGetPaymentRes = JaxbUtils.toPaGetPaymentV2Response_RPT(xmlRpt, false);
+			paGetPaymentRes = JaxbUtils.toPaGetPaymentV2ResponseRPT(xmlRpt, false);
 		}
 		
 		

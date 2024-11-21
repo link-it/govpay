@@ -251,7 +251,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 							
 
 							try {
-								ctRpt = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+								ctRpt = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), false);
 								esito = CtReceiptV2Utils.validaSemantica(ctRpt, ctRt);
 							} catch (JAXBException | SAXException e) {
 								throw e;
@@ -270,7 +270,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 						}
 					} else {
 						try {
-							ctRptV2 = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+							ctRptV2 = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), false);
 							esito = CtReceiptV2Utils.validaSemantica(ctRptV2, ctRt);
 						} catch (JAXBException | SAXException e) {
 							throw e;

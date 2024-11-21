@@ -273,7 +273,7 @@ public class RicevutaTelematica {
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
 
-		PaSendRTReq rt = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq rt = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 
 		CtReceipt datiPagamento = rt.getReceipt();
 
@@ -404,7 +404,7 @@ public class RicevutaTelematica {
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
 
-		PaSendRTV2Request rt = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request rt = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 
 		CtReceiptV2 datiPagamento = rt.getReceipt();
 

@@ -284,13 +284,13 @@ public class RppController extends BaseController {
 						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
 					case SANP_240:
 					case RPTV2_RTV1:
-						PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+						PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 						this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
 					case SANP_321_V2:
 					case RPTV1_RTV2:
 					case RPTSANP230_RTV2:
-						PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+						PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2RequestRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 						this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTV2Request.getReceipt()),transactionId).build();
 					}
