@@ -17,11 +17,12 @@ paths:
       operationId: PostCarts
       description: create a cart
       requestBody:
+        description: New Cart related to payment requests
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CartRequest'
-        required: true
       responses:
         '302':
           description: Redirect
@@ -32,7 +33,7 @@ paths:
                 type: string
                 format: uri
         '400':
-          description: Bad request
+          description: Formally invalid input
           content:
             application/json:
               schema:
@@ -58,7 +59,7 @@ paths:
                     status: 422
                     detail: No PSP Service is available
         '500':
-          description: generic error
+          description: Internal server error
           content:
             application/json:
               schema:
@@ -89,6 +90,7 @@ components:
           description: |-
             A short, summary of the problem type. Written in english and readable
             for engineers (usually not suited for non technical stakeholders and
+
             not localized); example: Service Unavailable
         status:
           type: integer
@@ -137,13 +139,12 @@ components:
               amount: 10000
               companyName: companyName
               description: description
-              allCCP: true
             - noticeNumber: '302012387654312385'
               fiscalCode: '77777777777'
               amount: 5000
               companyName: companyName
               description: description
-              allCCP: true
+
         returnUrls:
           type: object
           required:
@@ -163,7 +164,12 @@ components:
               type: string
               format: uri
               example: https://www.comune.di.prova.it/pagopa/error.html
-
+        allCCP:
+          type: boolean
+          example: 'false'
+          description: >-
+            Flag that indicates that all transfers are associated with a postal
+            IBAN
     PaymentNotice:
       type: object
       required:
@@ -174,27 +180,31 @@ components:
         - description
       properties:
         noticeNumber:
-          description: notice number
           type: string
           minLength: 18
           maxLength: 18
+          description: notice number
         fiscalCode:
-          description: Public Administration tax code
           type: string
           minLength: 11
           maxLength: 11
+          description: Public Administration tax code
         amount:
-          description: amount ( in euro cents ) of the payment notice
           type: integer
           minimum: 1
+          description: amount (in euro cents) of the payment notice
         companyName:
+          type: string
+          maxLength: 140
           description: Public Administration company name
-          type: string
-          maxLength: 140
         description:
-          description: subject of payment
           type: string
           maxLength: 140
-        allCCP:
-          description: transfers associated with postal iban
-          type: boolean
+          description: subject of payment
+  requestBodies:
+    CartRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CartRequest'

@@ -32,7 +32,7 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse;
+import it.gov.pagopa.bizeventsservice.model.CtReceiptModelResponse;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
@@ -132,7 +132,7 @@ public class RecuperaRTThread implements Runnable {
 			
 			client = new RecuperaRTNodoClient(this.intermediario, operationId, this.giornale, eventoCtx);
 			
-			ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse ctReceiptModelResponse = client.recuperaRT(codDominio, iur, cctx.getTransactionId(), EventoContext.APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUR);
+			CtReceiptModelResponse ctReceiptModelResponse = client.recuperaRT(codDominio, iur, cctx.getTransactionId(), EventoContext.APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUR);
 			
 			// Conversione risposta
 			PaSendRTV2Request ctRt = CtReceiptV2Converter.toPaSendRTV2Request(this.intermediario.getCodIntermediario(), this.stazione.getCodStazione(), codDominio, ctReceiptModelResponse);

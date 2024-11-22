@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse;
+import it.gov.pagopa.bizeventsservice.model.CtReceiptModelResponse;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -74,9 +74,9 @@ public class RecuperaRTNodoClient extends BasicClientCORE {
 		this.operationID = operationID;
 	}
 	
-	public ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse recuperaRT(String codDominio, String iur, String xRequestId, String swaggerOperationID) throws ClientException, IOException, GovPayException {
+	public CtReceiptModelResponse recuperaRT(String codDominio, String iur, String xRequestId, String swaggerOperationID) throws ClientException, IOException, GovPayException {
 		IContext ctx = ContextThreadLocal.get();
-		ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse ctReceiptModel = null;
+		CtReceiptModelResponse ctReceiptModel = null;
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
 		if(xRequestId != null) {
@@ -95,7 +95,7 @@ public class RecuperaRTNodoClient extends BasicClientCORE {
 			serializationConfig.setFailOnNumbersForEnums(true);
 			serializationConfig.setEnableJSR310(true);
 			
-			ctReceiptModel = ConverterUtils.parse(jsonResponse, ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse.class, serializationConfig); 
+			ctReceiptModel = ConverterUtils.parse(jsonResponse, CtReceiptModelResponse.class, serializationConfig); 
 			RecuperaRTNodoClient.logMessaggioDiagnostico(ctx, LOG_KEY_RECUPERO_RT_RECUPERO_RT_OK, codDominio, iur);
 			log.debug("Recupero RT da PagoPA [CodDominio: {}, IUR: {}] completato.", codDominio, iur);	
 		}catch(ClientException e) {

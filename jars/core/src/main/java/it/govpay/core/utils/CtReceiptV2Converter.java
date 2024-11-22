@@ -21,12 +21,12 @@ package it.govpay.core.utils;
 
 import java.util.List;
 
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelMapEntry;
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse;
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponseDebtor;
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponseDebtor.EntityUniqueIdentifierTypeEnum;
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponsePayer;
-import it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponseTransferPA;
+import it.gov.pagopa.bizeventsservice.model.MapEntry;
+import it.gov.pagopa.bizeventsservice.model.CtReceiptModelResponse;
+import it.gov.pagopa.bizeventsservice.model.Debtor;
+import it.gov.pagopa.bizeventsservice.model.Debtor.EntityUniqueIdentifierTypeEnum;
+import it.gov.pagopa.bizeventsservice.model.Payer;
+import it.gov.pagopa.bizeventsservice.model.TransferPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
@@ -48,7 +48,7 @@ public class CtReceiptV2Converter {
 	
 	private CtReceiptV2Converter() {}
 	
-	public static PaSendRTV2Request toPaSendRTV2Request(String codIntermediario, String codStazione, String codDominio, ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse response) {
+	public static PaSendRTV2Request toPaSendRTV2Request(String codIntermediario, String codStazione, String codDominio, CtReceiptModelResponse response) {
 		PaSendRTV2Request paSendRTV2Request = new PaSendRTV2Request();
 		
 		paSendRTV2Request.setIdBrokerPA(codIntermediario);
@@ -60,7 +60,7 @@ public class CtReceiptV2Converter {
 		return paSendRTV2Request;
 	}
 	
-	public static CtReceiptV2 toCtReceiptV2(ItGovPagopaBizeventsserviceModelResponseCtReceiptModelResponse response) {
+	public static CtReceiptV2 toCtReceiptV2(CtReceiptModelResponse response) {
 		CtReceiptV2 ctReceiptV2 = new CtReceiptV2();
 		
 		ctReceiptV2.setApplicationDate(SimpleDateFormatUtils.toDate(response.getApplicationDate()));
@@ -99,28 +99,28 @@ public class CtReceiptV2Converter {
 		return ctReceiptV2;
 	}
 
-	private static CtTransferListPAReceiptV2 toCtTransferListPAReceiptV2(List<ItGovPagopaBizeventsserviceModelResponseTransferPA> transferList) {
+	private static CtTransferListPAReceiptV2 toCtTransferListPAReceiptV2(List<TransferPA> transferList) {
 		if(transferList == null) {
 			return null;
 		}
 		
 		CtTransferListPAReceiptV2 ctTransferListPAReceiptV2 = new CtTransferListPAReceiptV2();
 		
-		for (ItGovPagopaBizeventsserviceModelResponseTransferPA itGovPagopaBizeventsserviceModelResponseTransferPA : transferList) {
+		for (TransferPA TransferPA : transferList) {
 			
 			CtTransferPAReceiptV2 ctTransferPAReceiptV2 = new CtTransferPAReceiptV2();
 			
-			//ctTransferPAReceiptV2.setCompanyName(itGovPagopaBizeventsserviceModelResponseTransferPA.getCompanyName()) NON PRESENTE
-			ctTransferPAReceiptV2.setFiscalCodePA(itGovPagopaBizeventsserviceModelResponseTransferPA.getFiscalCodePA());
-			ctTransferPAReceiptV2.setIBAN(itGovPagopaBizeventsserviceModelResponseTransferPA.getIban());
-			ctTransferPAReceiptV2.setIdTransfer(itGovPagopaBizeventsserviceModelResponseTransferPA.getIdTransfer());
-			if(itGovPagopaBizeventsserviceModelResponseTransferPA.getMbdAttachment() != null) {
-				ctTransferPAReceiptV2.setMBDAttachment(itGovPagopaBizeventsserviceModelResponseTransferPA.getMbdAttachment().getBytes());
+			//ctTransferPAReceiptV2.setCompanyName(TransferPA.getCompanyName()) NON PRESENTE
+			ctTransferPAReceiptV2.setFiscalCodePA(TransferPA.getFiscalCodePA());
+			ctTransferPAReceiptV2.setIBAN(TransferPA.getIban());
+			ctTransferPAReceiptV2.setIdTransfer(TransferPA.getIdTransfer());
+			if(TransferPA.getMbdAttachment() != null) {
+				ctTransferPAReceiptV2.setMBDAttachment(TransferPA.getMbdAttachment().getBytes());
 			}
-			ctTransferPAReceiptV2.setMetadata(toCtReceiptV2Metadata(itGovPagopaBizeventsserviceModelResponseTransferPA.getMetadata()));
-			ctTransferPAReceiptV2.setRemittanceInformation(itGovPagopaBizeventsserviceModelResponseTransferPA.getRemittanceInformation());
-			ctTransferPAReceiptV2.setTransferAmount(itGovPagopaBizeventsserviceModelResponseTransferPA.getTransferAmount());
-			ctTransferPAReceiptV2.setTransferCategory(itGovPagopaBizeventsserviceModelResponseTransferPA.getTransferCategory());
+			ctTransferPAReceiptV2.setMetadata(toCtReceiptV2Metadata(TransferPA.getMetadata()));
+			ctTransferPAReceiptV2.setRemittanceInformation(TransferPA.getRemittanceInformation());
+			ctTransferPAReceiptV2.setTransferAmount(TransferPA.getTransferAmount());
+			ctTransferPAReceiptV2.setTransferCategory(TransferPA.getTransferCategory());
 			
 			
 			ctTransferListPAReceiptV2.getTransfer().add(ctTransferPAReceiptV2 );
@@ -130,18 +130,18 @@ public class CtReceiptV2Converter {
 		return ctTransferListPAReceiptV2;
 	}
 
-	private static CtMetadata toCtReceiptV2Metadata(List<ItGovPagopaBizeventsserviceModelMapEntry> metadata) {
+	private static CtMetadata toCtReceiptV2Metadata(List<MapEntry> metadata) {
 		if(metadata == null) {
 			return null;
 		}
 		
 		CtMetadata ctMetadata = new CtMetadata();
 		
-		for (ItGovPagopaBizeventsserviceModelMapEntry itGovPagopaBizeventsserviceModelMapEntry : metadata) {
+		for (MapEntry MapEntry : metadata) {
 			CtMapEntry ctMapEntry = new CtMapEntry();
 			
-			ctMapEntry.setKey(itGovPagopaBizeventsserviceModelMapEntry.getKey());
-			ctMapEntry.setValue(itGovPagopaBizeventsserviceModelMapEntry.getValue());
+			ctMapEntry.setKey(MapEntry.getKey());
+			ctMapEntry.setValue(MapEntry.getValue());
 			
 			ctMetadata.getMapEntry().add(ctMapEntry);
 		}
@@ -149,7 +149,7 @@ public class CtReceiptV2Converter {
 		return ctMetadata;
 	}
 
-	private static CtSubject toCtSubjectDebtor(ItGovPagopaBizeventsserviceModelResponseDebtor debtor) {
+	private static CtSubject toCtSubjectDebtor(Debtor debtor) {
 		if(debtor == null) {
 			return null;
 		}
@@ -178,7 +178,7 @@ public class CtReceiptV2Converter {
 		return ctSubject;
 	}
 	
-	private static CtSubject toCtSubjectPayer(ItGovPagopaBizeventsserviceModelResponsePayer payer) {
+	private static CtSubject toCtSubjectPayer(Payer payer) {
 		if(payer == null) {
 			return null;
 		}
@@ -195,7 +195,7 @@ public class CtReceiptV2Converter {
 		ctSubject.setStreetName(payer.getStreetName());
 		CtEntityUniqueIdentifier uniqueIdentifier = new CtEntityUniqueIdentifier();
 		if(payer.getEntityUniqueIdentifierType() != null) {
-			if(payer.getEntityUniqueIdentifierType().compareTo(it.gov.pagopa.bizeventsservice.model.ItGovPagopaBizeventsserviceModelResponsePayer.EntityUniqueIdentifierTypeEnum.F) == 0) {
+			if(payer.getEntityUniqueIdentifierType().compareTo(it.gov.pagopa.bizeventsservice.model.Payer.EntityUniqueIdentifierTypeEnum.F) == 0) {
 				uniqueIdentifier.setEntityUniqueIdentifierType(StEntityUniqueIdentifierType.F);
 			} else {
 				uniqueIdentifier.setEntityUniqueIdentifierType(StEntityUniqueIdentifierType.G);
