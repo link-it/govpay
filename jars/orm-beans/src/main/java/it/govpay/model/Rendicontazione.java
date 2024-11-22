@@ -20,6 +20,7 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Rendicontazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
 	public enum EsitoRendicontazione {
-		ESEGUITO(0), REVOCATO(3), ESEGUITO_SENZA_RPT(9);
+		ESEGUITO(0), REVOCATO(3), ESEGUITO_STANDIN(4), ESEGUITO_STANDIN_SENZA_RPT(8),  ESEGUITO_SENZA_RPT(9);
 
 		private int codifica;
 
@@ -54,7 +55,7 @@ public class Rendicontazione extends BasicModel {
 				if(p.getCodifica() == codifica)
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoRendicontazione. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoRendicontazione.values())));
 		}
 	}
 	

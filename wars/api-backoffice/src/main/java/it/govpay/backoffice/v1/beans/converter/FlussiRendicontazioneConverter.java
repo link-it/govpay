@@ -37,7 +37,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 
@@ -45,7 +44,7 @@ public class FlussiRendicontazioneConverter {
 
 	private FlussiRendicontazioneConverter() {}
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, ValidationException {
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws IOException {
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
@@ -134,7 +133,7 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, IOException, ValidationException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws IOException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 
 		Rendicontazione rendicontazione = dto.getRendicontazione();
@@ -164,7 +163,7 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione, SingoloVersamento singoloVersamento) throws ServiceException, IOException, ValidationException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione, SingoloVersamento singoloVersamento) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
