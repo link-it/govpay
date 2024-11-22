@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils.client.oauth2;
 
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -94,7 +95,7 @@ public class Oauth2ClientCredentialsManager {
 				log.debug("Acquisizione token per il client [{}]: conclusa con esito OK, ricevuto token: [{}]." , key, accessToken);
 				this.mappaToken.put(key, accessToken);
 			} catch (OAuthServiceException e) {
-				log.warn("Errore nell'acquisizione token per il client [{}]: {}" , key, e.getMessage());
+				log.warn(MessageFormat.format("Errore nell''acquisizione token per il client [{0}]: {1}" , key, e.getMessage()), e);
 				throw new ClientException("Errore nell'acquisizione del token per il client ["+key+"]",500, e.getMessage().getBytes());
 			}
 		}
