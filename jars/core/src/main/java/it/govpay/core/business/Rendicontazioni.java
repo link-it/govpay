@@ -768,14 +768,15 @@ public class Rendicontazioni {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		NodoClient chiediFlussoRendicontazioniClient = null;
 		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
-		if(dominio != null) eventoCtx.setCodDominio(dominio.getCodDominio());
+		String codDominio = dominio != null ? dominio.getCodDominio() : "-";
+		eventoCtx.setCodDominio(codDominio);
 		try {
-			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE);
-			appContext.getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
+			appContext.setupNodoClient(stazione.getCodStazione(), codDominio, EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE);
+			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussi");
 
 			NodoChiediElencoFlussiRendicontazione richiesta = new NodoChiediElencoFlussiRendicontazione();
-			if(dominio != null) richiesta.setIdentificativoDominio(dominio.getCodDominio());
+			if(dominio != null) richiesta.setIdentificativoDominio(codDominio);
 			richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
 			richiesta.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione()); 
 			richiesta.setPassword(stazione.getPassword());
@@ -785,13 +786,13 @@ public class Rendicontazioni {
 				Intermediario intermediario = stazione.getIntermediario(configWrapper);
 				popolaDatiPagoPAEvento(eventoCtx, intermediario, stazione, dominio, null);
 				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale, eventoCtx);
-				LogUtils.logDebug(log, "Richiesta elenco flussi rendicontazione per il dominio [{}] al nodo in corso...", dominio.getCodDominio());
+				LogUtils.logDebug(log, "Richiesta elenco flussi rendicontazione per il dominio [{}] al nodo in corso...", codDominio);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, intermediario.getDenominazione());
 				eventoCtx.setEsito(Esito.OK);
-				LogUtils.logDebug(log, "Richiesta elenco flussi rendicontazione per il dominio [{}] al nodo completata.", dominio.getCodDominio());
+				LogUtils.logDebug(log, "Richiesta elenco flussi rendicontazione per il dominio [{}] al nodo completata.", codDominio);
 			} catch (ClientException | UtilsException e) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				LogUtils.logError(log, MessageFormat.format("Richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", dominio.getCodDominio(), e.getMessage()), e);
+				LogUtils.logError(log, MessageFormat.format("Richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", codDominio, e.getMessage()), e);
 				ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiFail", e.getMessage());
 				if(eventoCtx != null) {
 					if(e instanceof ClientException) {
@@ -806,7 +807,7 @@ public class Rendicontazioni {
 				return flussiDaAcquisire;
 			} catch (ClientInitializeException e) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				LogUtils.logError(log, MessageFormat.format("Errore nella creazione del client per la richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", dominio.getCodDominio(), e.getMessage()), e);
+				LogUtils.logError(log, MessageFormat.format("Errore nella creazione del client per la richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", codDominio, e.getMessage()), e);
 				ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiFail", e.getMessage());
 				
 				if(eventoCtx != null) {
@@ -820,7 +821,7 @@ public class Rendicontazioni {
 
 			if(risposta.getFault() != null) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				log.warn("Richiesta elenco flussi rendicontazione per il dominio [{}] fallita: {} {}", dominio.getCodDominio(), risposta.getFault().getFaultCode(), risposta.getFault().getFaultString());
+				log.warn("Richiesta elenco flussi rendicontazione per il dominio [{}] fallita: {} {}", codDominio, risposta.getFault().getFaultCode(), risposta.getFault().getFaultString());
 				ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiKo", risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 				if(eventoCtx != null) {
 					eventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
@@ -831,13 +832,13 @@ public class Rendicontazioni {
 			} else {
 
 				if(risposta.getElencoFlussiRendicontazione() == null || risposta.getElencoFlussiRendicontazione().getTotRestituiti() == 0) {
-					LogUtils.logInfo(log, "Richiesta elenco flussi rendicontazione per il dominio [{}]: ritornata lista vuota dal psp", dominio.getCodDominio());
+					LogUtils.logInfo(log, "Richiesta elenco flussi rendicontazione per il dominio [{}]: ritornata lista vuota dal psp", codDominio);
 					ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiOk", "0");
 					return flussiDaAcquisire;
 				}
 
 				ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiOk", risposta.getElencoFlussiRendicontazione().getTotRestituiti() + "");
-				LogUtils.logInfo(log, "Richiesta elenco flussi rendicontazione per il dominio [{}]: ritornati {} flussi.", dominio.getCodDominio(), risposta.getElencoFlussiRendicontazione().getTotRestituiti());
+				LogUtils.logInfo(log, "Richiesta elenco flussi rendicontazione per il dominio [{}]: ritornati {} flussi.", codDominio, risposta.getElencoFlussiRendicontazione().getTotRestituiti());
 				
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
 					LogUtils.logDebug(log, "Ricevuto flusso rendicontazione: {}, {}", idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());

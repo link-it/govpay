@@ -150,7 +150,7 @@ public class AutorizzazioneUtils {
 		Utenza utenza = null;
 		Applicazione applicazione = null;
 		Operatore operatore = null;
-		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		TIPO_UTENZA tipoUtenza = null;
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -222,7 +222,7 @@ public class AutorizzazioneUtils {
 		Utenza utenza = null;
 		Applicazione applicazione = null;
 		Operatore operatore = null;
-		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		TIPO_UTENZA tipoUtenza = null;
 		// lettura dell'applicazione / operatore dal db, nel sistema dove si e' autenticato puo' essere passato tramite un autenticazione esterna che non prevede la lettura dell'utenza dalla base dati.
 		Utenza utenzaFromSession = userDetailFromSession.getUtenza();
 		Map<String, List<String>> headersFromSession = utenzaFromSession != null ? utenzaFromSession.getHeaders() : new HashMap<>();
