@@ -92,7 +92,7 @@ public class Iuv {
 			return iuv.getIuv();
 
 		} finally {
-			if(iuvBD != null && bd == null) {
+			if(bd == null) {
 				iuvBD.closeConnection();
 			}
 		}

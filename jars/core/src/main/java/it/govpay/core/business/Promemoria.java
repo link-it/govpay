@@ -69,6 +69,7 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.ExceptionUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
@@ -170,7 +171,7 @@ public class Promemoria {
 			this.startTls = mailserver.isStartTls();
 			
 		} catch (ServiceException | IOException e) {
-			log.error(MessageFormat.format("Errore durante l''inizializzazione del Promemoria: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore durante l''inizializzazione del Promemoria: {0}", e.getMessage()),e);
 		}
 	}
 
@@ -220,7 +221,7 @@ public class Promemoria {
 		return promemoria;
 	}
 	
-	public it.govpay.bd.model.Promemoria creaPromemoriaScadenza(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) {
+	public it.govpay.bd.model.Promemoria creaPromemoriaScadenza(Versamento versamento, Date dataAvvisatura) {
 		
 		it.govpay.bd.model.Promemoria promemoria = null;
 		Documento documento = versamento.getDocumento();
@@ -285,14 +286,14 @@ public class Promemoria {
 			byte[] templateBytes = Base64.getDecoder().decode(template.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			TrasformazioniUtils.convertFreeMarkerTemplate(nomeTrasformazione, templateBytes , dynamicMap , baos );
-			log.debug("Risultato trasformazione: {}", baos.toString());
-			log.debug("Risultato trasformazione UTF-8: {}", baos.toString(Charset.UTF_8.getValue()));
+			LogUtils.logDebug(log, "Risultato trasformazione: {}", baos.toString());
+			LogUtils.logDebug(log, "Risultato trasformazione UTF-8: {}", baos.toString(Charset.UTF_8.getValue()));
 			return baos.toString();
 		} catch (TrasformazioneException | UnprocessableEntityException e) {
-			log.error(MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
+			LogUtils.logError(log, MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
 			throw e;
 		} catch (UnsupportedEncodingException e) {
-			log.error(MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
+			LogUtils.logError(log, MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
 			throw new ServiceException(e);
 		}
 	}
@@ -868,7 +869,7 @@ public class Promemoria {
 			promemoriaBD.updateFallita(promemoria.getId(), innerException.getMessage());
 			log.debug("Salvataggio stato 'fallito' completato con successo");
 		} else {
-			log.error(errore, e);
+			LogUtils.logError(log, errore, e);
 			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
 			long tentativi = promemoria.getTentativiSpedizione() + 1;
 			Date today = new Date();
@@ -885,7 +886,7 @@ public class Promemoria {
 
 	private void gestisciThrowable(it.govpay.bd.model.Promemoria promemoria, PromemoriaBD promemoriaBD, String codApplicazione,
 			String codVersamentoEnte, Throwable t) {
-		log.error("Errore in gestione promemoria", t);
+		LogUtils.logError(log, "Errore in gestione promemoria", t);
 		try {
 			Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
 			if(innerException != null)

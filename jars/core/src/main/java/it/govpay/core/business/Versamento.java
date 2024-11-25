@@ -163,12 +163,12 @@ public class Versamento  {
 	
 					ctx.getApplicationLogger().log("versamento.aggioramentoOk", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 	
-					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") aggiornato");
+					log.info("Versamento ({}) dell'applicazione ({}) aggiornato", versamento.getCodVersamentoEnte(), applicazione.getCodApplicazione());
 				} else {
 					if(versamento.getId()==null)
 						versamento.setId(versamentoLetto.getId());
 					
-					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") aggiornato in memoria.");
+					log.info("Versamento ({}) dell'applicazione ({}) aggiornato in memoria", versamento.getCodVersamentoEnte(), applicazione.getCodApplicazione());
 				}
 			} catch (NotFoundException e) {
 				if(versamento.getNumeroAvviso()!=null) {
@@ -177,15 +177,13 @@ public class Versamento  {
 						VersamentoUtils.checkNumeroAvvisoConformeAConfigurazioneDominioEStazione(versamento, applicazione, dominio);
 					}
 					
-					
 					try {
 						// 	verifica univocita dell'avviso pagamento prima di inserire il nuovo versamento
 						it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), IuvUtils.toIuv(versamento.getNumeroAvviso()));
 
 						// due pendenze non possono avere lo stesso numero avviso
-						//if(!versamentoFromDominioNumeroAvviso.getCodVersamentoEnte().equals(versamento.getCodVersamentoEnte()))
-							throw new GovPayException(EsitoOperazione.VER_025, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), 
-									versamentoFromDominioNumeroAvviso.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromDominioNumeroAvviso.getCodVersamentoEnte(),versamento.getNumeroAvviso());
+						throw new GovPayException(EsitoOperazione.VER_025, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), 
+								versamentoFromDominioNumeroAvviso.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromDominioNumeroAvviso.getCodVersamentoEnte(),versamento.getNumeroAvviso());
 
 					}catch(NotFoundException e2) {
 						// ignore
@@ -223,12 +221,12 @@ public class Versamento  {
 				BigDecimal giorniPreavvisoAppIO = null;
 
 				if((tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato() || 
-						tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) && !(avvisatura != null && avvisatura.booleanValue()==false)) {
+						tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) && !(avvisatura != null && !avvisatura.booleanValue())) {
 					log.debug("Schedulazione invio avviso di pagamento impostata.");
 					inserisciNotificaAvviso = true;
 				}
 
-				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
+				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato()) && !(avvisatura != null && !avvisatura.booleanValue())) {
 					log.debug("Schedulazione invio scadenza avviso di pagamento impostata.");
 					inserisciNotificaPromemoriaScadenzaAppIO = true;
 					giorniPreavvisoAppIO = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavviso();
@@ -237,7 +235,7 @@ public class Versamento  {
 						giorniPreavvisoAppIO = new BigDecimal(new it.govpay.core.business.Configurazione().getConfigurazione().getAvvisaturaViaAppIo().getPromemoriaScadenza().getPreavviso());
 				}
 
-				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
+				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato()) && !(avvisatura != null && !avvisatura.booleanValue())) {
 					log.debug("Schedulazione invio scadenza avviso di pagamento impostata.");
 					inserisciNotificaPromemoriaScadenzaMail = true;
 					giorniPreavvisoMail = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavviso();
@@ -456,7 +454,7 @@ public class Versamento  {
 		}
 	}
 
-	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref, Dominio dominio) throws ServiceException, GovPayException, UtilsException, EcException {
+	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref) throws ServiceException, GovPayException, UtilsException, EcException {
 		// conversione numeroAvviso in iuv
 		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
 		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), iuv, TipologiaTipoVersamento.DOVUTO);	
@@ -596,10 +594,10 @@ public class Versamento  {
 				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A{}, CodVersamentoEnte {}]", codApplicazione, codVersamentoEnte);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
-				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato()) {
+				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato())) {
 					log.debug("Schedulazione invio avviso di scadenza pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
-					promemoria = promemoriaBD.creaPromemoriaScadenza(versamento, tipoVersamentoDominio, null);
+					promemoria = promemoriaBD.creaPromemoriaScadenza(versamento, null);
 					String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
 					if(promemoria.getDestinatarioTo() == null) {
 						msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
@@ -658,7 +656,7 @@ public class Versamento  {
 				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A{}, CodVersamentoEnte {}]", codApplicazione, codVersamentoEnte);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
-				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato()) {
+				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato())) {
 					notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.SCADENZA, configWrapper);
 				}
 
@@ -710,7 +708,7 @@ public class Versamento  {
 				log.debug("Inserimento promemoria avviso per il versamento [IdA2A{}, CodVersamentoEnte {}]", codApplicazione, codVersamentoEnte);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
-				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato()) {
+				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato())) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
 					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio, null);
@@ -723,7 +721,7 @@ public class Versamento  {
 					log.debug("Creazione promemoria avviso completata: {}", msg);
 				} 
 
-				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) {
+				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato())) {
 					log.debug("Creo notifica avvisatura tramite App IO..."); 
 					notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, configWrapper);
 					log.debug("Creazione notifica avvisatura tramite App IO completata.");

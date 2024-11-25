@@ -123,7 +123,7 @@ public class QuietanzaPagamento {
 		String descrizione = RptBuilder.buildCausaleSingoloVersamento(pagamento.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT());
 		
 		voce.setDescrizione(descrizione);
-		voce.setIdRiscossione(pagamento.getIur());
+		voce.setIdRiscossione(rendicontazione.getIur());
 		voce.setImporto(pagamento.getImportoPagato().doubleValue());
 		voce.setStato(pagamento.getImportoPagato().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
 

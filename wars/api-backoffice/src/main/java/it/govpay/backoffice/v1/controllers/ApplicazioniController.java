@@ -50,10 +50,6 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -209,11 +205,7 @@ public class ApplicazioniController extends BaseController {
 			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 
 			PutApplicazioneDTOResponse putApplicazioneDTOResponse =  null;
-			try {
-				putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putApplicazioneDTO);
-			} catch(DominioNonTrovatoException | TipoVersamentoNonTrovatoException | UnitaOperativaNonTrovataException | RuoloNonTrovatoException e) {
-				throw new UnprocessableEntityException(e.getDetails());
-			}
+			putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putApplicazioneDTO);
 
 			Status responseStatus = putApplicazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 

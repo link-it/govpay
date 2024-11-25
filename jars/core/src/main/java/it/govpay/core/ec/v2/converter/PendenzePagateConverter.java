@@ -45,6 +45,8 @@ import it.govpay.ec.v2.beans.VincoloPagamento;
 import it.govpay.ec.v2.beans.VocePendenzaPagata;
 
 public class PendenzePagateConverter {
+	
+	private PendenzePagateConverter() {}
 
 	public static PendenzaPagata toRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -156,8 +158,6 @@ public class PendenzePagateConverter {
 		}
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		rsModel.setMetadata(PendenzeConverter.toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 		
@@ -256,7 +256,6 @@ public class PendenzePagateConverter {
 		rsModel.setProvincia(soggettoVersante.getProvinciaVersante());
 		rsModel.setNazione(soggettoVersante.getNazioneVersante());
 		rsModel.setEmail(soggettoVersante.getEMailVersante());
-		//		rsModel.setCellulare(soggettoVersante.getCellulare());
 
 		return rsModel;
 	}

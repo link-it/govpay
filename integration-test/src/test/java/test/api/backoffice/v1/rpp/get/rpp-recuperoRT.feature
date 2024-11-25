@@ -99,12 +99,17 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Il simulatore non manda la ricevuta. Genero FR
 
+* call sleep(60000)
+
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+
+* call sleep(60000)
+
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
 # Sleep per attendere acquisizione FR
 
-* call sleep(30000)
+* call sleep(60000)
 
 # Esecuzione del batch di recupero RT
 
@@ -112,11 +117,11 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Sleep per attendere esecuzione batch
 
-* call sleep(30000)
+* call sleep(60000)
 
 * def dataRptEnd2 = getDateTime()
 
-* configure retry = { count: 25, interval: 10000 }
+* configure retry = { count: 25, interval: 20000 }
 
 Given url backofficeBaseurl
 And path '/rpp'
@@ -297,14 +302,17 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Il simulatore non manda la ricevuta. Genero FR
 
-* call sleep(30000)
+* call sleep(60000)
 
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+
+* call sleep(60000)
+
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
 # Sleep per attendere acquisizione FR
 
-* call sleep(30000)
+* call sleep(60000)
 
 # Esecuzione del batch di recupero RT
 
@@ -507,16 +515,19 @@ And headers basicAutenticationHeader
 When method get
 Then status 302
 
-* call sleep(10000)
-
 # Il simulatore non manda la ricevuta. Genero FR
 
+* call sleep(60000)
+
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+
+* call sleep(60000)
+
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
 # Sleep per attendere acquisizione FR
 
-* call sleep(30000)
+* call sleep(60000)
 
 # Esecuzione del batch di recupero RT
 
@@ -524,11 +535,11 @@ Then status 302
 
 # Sleep per attendere esecuzione batch
 
-* call sleep(30000)
+* call sleep(60000)
 
 * def dataRptEnd2 = getDateTime()
 
-* configure retry = { count: 25, interval: 10000 }
+* configure retry = { count: 25, interval: 20000 }
 
 Given url backofficeBaseurl
 And path '/rpp'

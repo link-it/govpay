@@ -55,6 +55,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -114,7 +115,7 @@ public class AvvisiDAO extends BaseDAO{
 					} catch (NotFoundException e) {
 						versamentiBD.insertVersamento(versamentoFromSession);
 						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
-						log.info("Versamento ({}) dell'applicazione ({}) inserito", versamentoFromSession.getCodVersamentoEnte(),versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
+						LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) inserito", versamentoFromSession.getCodVersamentoEnte(),versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
 		
 						// avvio il batch di gestione dei promemoria
 						Operazioni.setEseguiGestionePromemoria();
@@ -150,7 +151,7 @@ public class AvvisiDAO extends BaseDAO{
 					try {
 						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
 					} catch (EcException | GovPayException e1) {
-						log.info("La pendenza ricercata tramite avviso [Dominio: {}, NumeroAvviso: {}] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: {}", codDominio, iuv, e1.getMessage());
+						LogUtils.logInfo(log, "La pendenza ricercata tramite avviso [Dominio: {}, NumeroAvviso: {}] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: {}", codDominio, iuv, e1.getMessage());
 						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
 					}
 				} else {

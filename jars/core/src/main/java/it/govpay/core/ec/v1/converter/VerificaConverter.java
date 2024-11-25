@@ -48,6 +48,8 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
+	private VerificaConverter() {}
+	
 	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 		
@@ -62,7 +64,7 @@ public class VerificaConverter {
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
 		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
 		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
-		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
+		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
 		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());

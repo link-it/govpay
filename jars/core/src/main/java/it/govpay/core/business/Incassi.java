@@ -571,7 +571,7 @@ public class Incassi {
 							TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 							// Se e' prevista la spedizione della ricevuta allora procedo a spedirla
 							Promemoria promemoria = null;
-							if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato()) {
+							if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato())) {
 								log.debug("Schedulazione invio ricevuta di pagamento senza RPT in corso...");
 								it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
 								promemoria = promemoriaBD.creaPromemoriaRicevutaEseguitoSenzaRPT(versamento, versamento.getTipoVersamentoDominio(configWrapper));
@@ -579,7 +579,7 @@ public class Incassi {
 								if(promemoria.getDestinatarioTo() != null) {
 									msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
 									PromemoriaBD promemoriaBD2 = new PromemoriaBD(versamentiBD);
-									promemoriaBD2.setAtomica(false); // condivisione della connessione;
+									promemoriaBD2.setAtomica(false); // condivisione della connessione
 									promemoriaBD2.insertPromemoria(promemoria);
 									LogUtils.logDebug(log, "Inserimento promemoria ricevuta di pagamento senza RPT per la Pendenza[{}] effettuato.", versamento.getCodVersamentoEnte());
 								}
@@ -587,7 +587,7 @@ public class Incassi {
 							}
 
 							//schedulo l'invio della notifica APPIO
-							if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
+							if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato())) {
 								log.debug("Creo notifica avvisatura ricevuta di pagamento senza RPT tramite App IO..."); 
 								NotificaAppIo notificaAppIo = new NotificaAppIo(versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA_NO_RPT, configWrapper);
 								log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
@@ -867,7 +867,9 @@ public class Incassi {
 			try {
 				if(incassiBD != null)
 					incassiBD.disableSelectForUpdate();
-			} catch (ServiceException e) {}
+			} catch (ServiceException e) {
+				//donothing
+			}
 
 			if(incassiBD != null)
 				incassiBD.closeConnection();

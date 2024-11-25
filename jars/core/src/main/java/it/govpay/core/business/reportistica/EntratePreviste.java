@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -39,6 +40,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.stampe.model.ProspettoRiscossioneDominioInput;
@@ -57,6 +59,7 @@ public class EntratePreviste {
 	private SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
 
 	public EntratePreviste() {
+		//donothing
 	}
 
 	private static Logger log = LoggerWrapperFactory.getLogger(EntratePreviste.class);
@@ -67,7 +70,7 @@ public class EntratePreviste {
 			Map<String, List<EntrataPrevista>> mapDomini = new HashMap<>();
 			List<String> codDomini = new ArrayList<>();
 			
-			log.debug("Trovate " + listaEntrate.size() + " entrate previste");
+			LogUtils.logDebug(log, "Trovate " + listaEntrate.size() + " entrate previste");
 			for (EntrataPrevista entrataPrevista : listaEntrate) {
 				List<EntrataPrevista> listPerDomini = null;
 				
@@ -82,7 +85,7 @@ public class EntratePreviste {
 				mapDomini.put(entrataPrevista.getCodDominio(), listPerDomini);
 			}
 			
-			log.debug("Trovati " + mapDomini.size() + " raggruppamenti per dominio");
+			LogUtils.logDebug(log, "Trovati " + mapDomini.size() + " raggruppamenti per dominio");
 			
 			ProspettoRiscossioniInput input = new ProspettoRiscossioniInput();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -92,7 +95,7 @@ public class EntratePreviste {
 			ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();
 			for (String codDominio :codDomini) {
 				
-				log.debug("Elaboro prospetto per il dominio " + codDominio);
+				LogUtils.logDebug(log, "Elaboro prospetto per il dominio " + codDominio);
 				
 				ProspettoRiscossioneDominioInput prospRiscDominio = new ProspettoRiscossioneDominioInput();
 				if(dataA != null)
@@ -123,7 +126,7 @@ public class EntratePreviste {
 	}
 	
 	private void popolaProspettoDominio (Dominio dominio, List<EntrataPrevista> listPerDomini, ProspettoRiscossioneDominioInput prospRiscDominio) {
-		log.debug("Trovate " + listPerDomini.size() + " entrate previste per il dominio");
+		LogUtils.logDebug(log, "Trovate " + listPerDomini.size() + " entrate previste per il dominio "+ dominio.getCodDominio());
 		
 		Map<String, List<EntrataPrevista>> mapFlussi = new HashMap<>();
 		for (EntrataPrevista entrataPrevista : listPerDomini) {
@@ -138,13 +141,13 @@ public class EntratePreviste {
 			listPerFlusso.add(entrataPrevista);
 		}
 		
-		log.debug("Trovati " + mapFlussi.size() + " raggruppamenti di entrate previste per il dominio");
+		LogUtils.logDebug(log, "Trovati " + mapFlussi.size() + " raggruppamenti di entrate previste per il dominio");
 		
 		EntrataPrevista.IUVComparator iuvComparator = new EntrataPrevista(). new IUVComparator();
-		List<String> codFlussi = new ArrayList<String>(mapFlussi.keySet());
+		List<String> codFlussi = new ArrayList<>(mapFlussi.keySet());
 		if(mapFlussi.containsKey(COD_FLUSSO_NULL)) {
 			List<EntrataPrevista> listPerFlusso = mapFlussi.remove(COD_FLUSSO_NULL);
-			log.debug("Elaborazione " + listPerFlusso.size() + " entrate singole per il dominio");
+			LogUtils.logDebug(log, "Elaborazione " + listPerFlusso.size() + " entrate singole per il dominio");
 			codFlussi.remove(COD_FLUSSO_NULL);
 			Collections.sort(listPerFlusso, iuvComparator); 
 			ElencoRiscossioni elencoRiscossioni = new ElencoRiscossioni();
@@ -163,16 +166,16 @@ public class EntratePreviste {
 			}
 			prospRiscDominio.setElencoRiscossioni(elencoRiscossioni);
 		} else {
-			log.debug("Nessuna entrata singola trovata per il dominio");
+			LogUtils.logDebug(log, "Nessuna entrata singola trovata per il dominio");
 		}
 		
-		log.debug("Elaborazione " + codFlussi.size() + " entrate cumulative per il dominio");
+		LogUtils.logDebug(log, "Elaborazione " + codFlussi.size() + " entrate cumulative per il dominio");
 		Collections.sort(codFlussi);
 		
 		ElencoFlussiRiscossioni elencoFlussiRiscossioni = new ElencoFlussiRiscossioni();
 		prospRiscDominio.setElencoFlussiRiscossioni(elencoFlussiRiscossioni);
 		for (String codFlusso : codFlussi) {
-			log.debug("Elaborazione entrata cumulativa " + codFlusso);
+			LogUtils.logDebug(log, "Elaborazione entrata cumulativa " + codFlusso);
 			
 			List<EntrataPrevista> listPerFlusso = mapFlussi.get(codFlusso);
 			
@@ -214,13 +217,13 @@ public class EntratePreviste {
 				
 				riscossioneConFlusso.setElencoRiscossioni(elencoRiscossioni);
 			} else {
-				log.error("Entrata prevista mancante " + codFlusso);
+				LogUtils.logWarn(log, "Entrata prevista mancante " + codFlusso);
 			}
 		}
-		log.debug("Inserite " + elencoFlussiRiscossioni.getVoceFlussoRiscossioni().size() + " entrate cumulative per il dominio nell'elenco");
+		LogUtils.logDebug(log, "Inserite " + elencoFlussiRiscossioni.getVoceFlussoRiscossioni().size() + " entrate cumulative per il dominio nell'elenco");
 	}
 	
-	private it.govpay.bd.model.Dominio impostaAnagraficaEnteCreditore(DominiBD dominiBD, String codDominio, ProspettoRiscossioneDominioInput input) throws Exception {
+	private it.govpay.bd.model.Dominio impostaAnagraficaEnteCreditore(DominiBD dominiBD, String codDominio, ProspettoRiscossioneDominioInput input) throws NotFoundException, ServiceException {
 		it.govpay.bd.model.Dominio dominio = dominiBD.getDominio(codDominio); 
 
 		input.setEnteDenominazione(dominio.getRagioneSociale());
@@ -233,7 +236,7 @@ public class EntratePreviste {
 		return dominio;
 	}
 	
-	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, ProspettoRiscossioneDominioInput input) throws ServiceException {
+	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, ProspettoRiscossioneDominioInput input) {
 		Anagrafica anagraficaEnteCreditore = dominio.getAnagrafica();
 		if(anagraficaEnteCreditore != null) {
 			String indirizzo = StringUtils.isNotEmpty(anagraficaEnteCreditore.getIndirizzo()) ? anagraficaEnteCreditore.getIndirizzo() : "";

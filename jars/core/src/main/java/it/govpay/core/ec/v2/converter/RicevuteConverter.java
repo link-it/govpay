@@ -51,6 +51,8 @@ import it.govpay.model.Notifica;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RicevuteConverter {
+	
+	private RicevuteConverter() {}
 
 	public static Ricevuta toRsModel(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -88,11 +90,11 @@ public class RicevuteConverter {
 			switch (rpt.getVersione()) {
 			case SANP_240:
 			case RPTV1_RTV2:
-				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), false);
+				PaGetPaymentRes paGetPaymentResRPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
 				
-				rsModel.setImporto(paGetPaymentRes_RPT.getData().getPaymentAmount());
+				rsModel.setImporto(paGetPaymentResRPT.getData().getPaymentAmount());
 				break;
 			case SANP_230:
 			case RPTSANP230_RTV2:
@@ -127,10 +129,10 @@ public class RicevuteConverter {
 				switch (rpt.getVersione()) {
 				case SANP_240:
 				case RPTV2_RTV1:
-					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
+					PaSendRTReq paSendRTReqRT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
-					rsModel.setImporto(paSendRTReq_RT.getReceipt().getPaymentAmount());
+					rsModel.setImporto(paSendRTReqRT.getReceipt().getPaymentAmount());
 					break;
 				case SANP_230:
 					CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
@@ -142,6 +144,7 @@ public class RicevuteConverter {
 					break;
 				case SANP_321_V2:
 				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));

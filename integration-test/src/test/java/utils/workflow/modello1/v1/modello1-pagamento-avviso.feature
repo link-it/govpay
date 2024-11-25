@@ -28,6 +28,7 @@ Then status 201
 * def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 Given url pagamentiBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost

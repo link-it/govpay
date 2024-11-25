@@ -601,9 +601,9 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
-			//			Properties properties = new Properties();
-			//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			((SondaBatch)sonda).aggiornaStatoSonda(true,  new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell''aggiornamento della sonda OK: {}", t.getMessage());
@@ -638,7 +638,9 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 			
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), MessageFormat.format("Il batch e'' stato interrotto con errore: {0}", e.getMessage()), con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda KO: {}", t.getMessage());
@@ -672,7 +674,9 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			return sonda;
 		} catch (Throwable t) {
 			log.warn(MessageFormat.format("Errore nella lettura della sonda [{0}]: {1}", nome, t.getMessage()));

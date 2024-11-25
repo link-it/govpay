@@ -41,6 +41,7 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.Rpt.StatoRpt;
 
 public class Pagamento   {
@@ -99,7 +100,7 @@ public class Pagamento   {
 								
 							}catch(ServiceException e) {
 								rptBD.rollback();
-								logError(MessageFormat.format("Errore durante l''annullamento della RPT [idDominio:{0}][iuv:{1}][ccp:{2}]: {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e .getMessage()), e);
+								LogUtils.logError(log, MessageFormat.format("Errore durante l''annullamento della RPT [idDominio:{0}][iuv:{1}][ccp:{2}]: {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e .getMessage()), e);
 								throw e;
 							}finally {
 								rptBD.setAutoCommit(false);
@@ -114,7 +115,7 @@ public class Pagamento   {
 				}while(!rtList.isEmpty());
 			}
 		} catch (ServiceException e) {
-			logWarn("Fallito aggiornamento pendenti", e);
+			LogUtils.logWarn(log, "Fallito aggiornamento pendenti", e);
 			throw new GovPayException(EsitoOperazione.INTERNAL, e);
 		} finally {
 			if(rptBD != null) {
@@ -127,13 +128,5 @@ public class Pagamento   {
 		} else {
 			return StringUtils.join(response,"|");
 		}
-	}
-	
-	private static void logError(String msg, Exception e) {
-		log.error(msg, e);
-	}
-
-	private static void logWarn(String msg, Exception e) {
-		log.warn(msg, e);
 	}
 }

@@ -98,6 +98,7 @@ import it.govpay.core.utils.CheckoutUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
@@ -193,7 +194,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						if(!dominio.isAbilitato())
 							throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
-						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v,dominio);
+						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v);
 
 						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	
 						if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -446,13 +447,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						response.setLocation(location);
 						response.setRedirectUrl(location);
 					} catch (UnsupportedEncodingException e) {
-						this.logError("Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
+						LogUtils.logError(log, "Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					} catch (ClientException e) {
-						this.logError("Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						LogUtils.logError(log, "Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					} catch (ClientInitializeException e) {
-						this.logError("Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						LogUtils.logError(log, "Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					}
 

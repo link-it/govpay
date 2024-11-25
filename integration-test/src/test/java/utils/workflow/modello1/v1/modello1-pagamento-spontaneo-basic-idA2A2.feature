@@ -26,6 +26,7 @@ Scenario: Pagamento ad iniziativa Ente
 * set pagamentoPost.soggettoVersante = soggettoVersante 
 
 Given url pagamentoBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost

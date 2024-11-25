@@ -46,6 +46,8 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
+	private VerificaConverter() {}
+	
 	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 		
