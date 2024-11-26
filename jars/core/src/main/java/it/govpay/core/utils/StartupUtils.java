@@ -137,7 +137,7 @@ public class StartupUtils {
 				LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), mConfig);
 	
 			} catch (IOException | UtilsException | ClassNotFoundException e) {
-				log.error("Errore durante la configurazione dei diagnostici", e);
+				LogUtils.logError(log, "Errore durante la configurazione dei diagnostici", e);
 				throw new RuntimeException("Inizializzazione di "+versioneGovPay+" fallita.", e);
 			}
 
@@ -173,12 +173,12 @@ public class StartupUtils {
 			ctx.getApplicationContext().getTransaction().setOperation(opt);
 			ContextThreadLocal.set(ctx);
 		} catch (Exception e) {
-			log.error("Errore durante predisposizione del contesto: {}, {}", e.getMessage(), e);
+			LogUtils.logError(log, "Errore durante predisposizione del contesto: {}, {}", e.getMessage(), e);
 			if(ctx != null)
 				try {
 					ctx.getApplicationLogger().log();
 				} catch (UtilsException e1) {
-					log.error("Errore durante predisposizione del contesto:  {}, {}", e1.getMessage(), e1);
+					LogUtils.logError(log, "Errore durante predisposizione del contesto:  {}, {}", e1.getMessage(), e1);
 				}
 			throw new RuntimeException("Inizializzazione di "+versioneGovPay+" fallita.", e);
 		}

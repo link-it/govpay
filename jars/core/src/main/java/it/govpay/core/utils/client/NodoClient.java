@@ -58,7 +58,6 @@ public class NodoClient extends BasicClientCORE {
 	private static ObjectFactory objectFactory;
 	private boolean isAzioneInUrl;
 	private static Logger log = LoggerWrapperFactory.getLogger(NodoClient.class);
-	private String faultCode;
 	
 	public NodoClient(Intermediario intermediario, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
 		super(intermediario, TipoOperazioneNodo.NODO, intermediario.getConnettorePdd(), eventoCtx);
@@ -82,7 +81,9 @@ public class NodoClient extends BasicClientCORE {
 	public Risposta send(String azione, byte[] body) throws ClientException, UtilsException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
-			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
+			if(!urlString.endsWith("/")) {
+				urlString = urlString.concat("/");
+			}
 		} 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -105,10 +106,10 @@ public class NodoClient extends BasicClientCORE {
 			JAXBElement<?> jaxbElement = SOAPUtils.toJaxbRPT(response, null);
 			Risposta r = (Risposta) jaxbElement.getValue();
 			if(r.getFault() != null) {
-				this.faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
+				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
 				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
 				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
-				ctx.getApplicationLogger().log("ndp_client.invioRichiestaFault", this.faultCode, faultString, faultDescription);
+				ctx.getApplicationLogger().log("ndp_client.invioRichiestaFault", faultCode, faultString, faultDescription);
 			} else {
 				ctx.getApplicationLogger().log("ndp_client.invioRichiestaOk");
 			}

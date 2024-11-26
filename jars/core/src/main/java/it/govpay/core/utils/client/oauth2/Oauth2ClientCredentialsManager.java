@@ -31,6 +31,7 @@ import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 
@@ -95,7 +96,7 @@ public class Oauth2ClientCredentialsManager {
 				log.debug("Acquisizione token per il client [{}]: conclusa con esito OK, ricevuto token: [{}]." , key, accessToken);
 				this.mappaToken.put(key, accessToken);
 			} catch (OAuthServiceException e) {
-				log.warn(MessageFormat.format("Errore nell''acquisizione token per il client [{0}]: {1}" , key, e.getMessage()), e);
+				LogUtils.logWarnException(log, MessageFormat.format("Errore nell''acquisizione token per il client [{0}]: {1}" , key, e.getMessage()), e);
 				throw new ClientException("Errore nell'acquisizione del token per il client ["+key+"]",500, e.getMessage().getBytes());
 			}
 		}

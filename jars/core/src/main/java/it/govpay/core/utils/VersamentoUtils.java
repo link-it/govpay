@@ -104,6 +104,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
 
 public class VersamentoUtils {
 	
+	private VersamentoUtils() {}
+	
 	private static final String ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_HA_DATO_ESITO_PAA_PAGAMENTO_SCONOSCIUTO = "L''inoltro del versamento [Dominio: {0} TipoVersamento:{1}] all''applicazione competente [Applicazione:{2}] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO";
 	private static final String ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_HA_DATO_ESITO_PAA_PAGAMENTO_DUPLICATO = "L''inoltro del versamento [Dominio: {0} TipoVersamento:{1}] all''applicazione competente [Applicazione:{2}] ha dato esito PAA_PAGAMENTO_DUPLICATO";
 	private static final String ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_HA_DATO_ESITO_PAA_PAGAMENTO_ANNULLATO = "L''inoltro del versamento [Dominio: {0} TipoVersamento:{1}] all''applicazione competente [Applicazione:{2}] ha dato esito PAA_PAGAMENTO_ANNULLATO";
@@ -132,10 +134,6 @@ public class VersamentoUtils {
 	private static final String SOTTOTIPO_ESITO_PENDENZA_SCONOSCIUTA = "Pendenza Sconosciuta";
 	private static final String SOTTOTIPO_ESITO_PENDENZA_NON_VALIDA = "Pendenza non valida";
 	private static final String MSG_DIAGNOSTICO_VERIFICA_VALIDITA_KEY = "verifica.validita";
-
-	public static VersamentoUtils getInstance() {
-		return new VersamentoUtils();
-	}
 
 	public static final QName _VersamentoKeyCodApplicazione_QNAME = new QName("", "codApplicazione");
 	public static final QName _VersamentoKeyCodVersamentoEnte_QNAME = new QName("", "codVersamentoEnte");
@@ -273,7 +271,7 @@ public class VersamentoUtils {
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-			log.debug("Versamento non richiede pagamento [StatoVersamento:{}]. Aggiornamento non necessario.", versamento.getStatoVersamento());
+			LogUtils.logDebug(log, "Versamento non richiede pagamento [StatoVersamento:{}]. Aggiornamento non necessario.", versamento.getStatoVersamento());
 			return versamento;
 		}
 		
@@ -281,11 +279,11 @@ public class VersamentoUtils {
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
-			log.debug("Versamento scaduto il {}", versamento.getDataScadenza());
+			LogUtils.logDebug(log, "Versamento scaduto il {}", versamento.getDataScadenza());
 			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
-				log.debug("Versamento non valido dal {}", versamento.getDataValidita());
+				LogUtils.logDebug(log, "Versamento non valido dal {}", versamento.getDataValidita());
 				IContext ctx = ContextThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
@@ -314,36 +312,20 @@ public class VersamentoUtils {
 				if(versamento.getApplicazione(configWrapper).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
 					try {
-						log.debug("Aggiorno dal servizio applicativo dell'Ente: {}", versamento.getApplicazione(configWrapper));
+						LogUtils.logDebug(log, "Aggiorno dal servizio applicativo dell'Ente: {}", versamento.getApplicazione(configWrapper));
 						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, log);
-						log.debug("Aggiornamento completato");
-					} catch (ClientException e) {
-						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
-							log.error(MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
-							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
-						}
-						
-						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
-					} catch (VersamentoSconosciutoException e) {
+						LogUtils.logDebug(log, "Aggiornamento completato");
+					} catch (ClientException | VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
-							log.error(MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
+							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
 							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 						}						
 						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
-					} catch (VersamentoNonValidoException e) {
-						// Versamento non valido per errori di validazione, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
-							log.error(MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
-							throw e;
-						}
-						
-						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
-					} catch (GovPayException | UtilsException | ServiceException | IOException  e) {
+					} catch (VersamentoNonValidoException | GovPayException | UtilsException | ServiceException | IOException  e) {
 						// Versamento non aggiornato per errori interni, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
-							log.error(MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
+							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
 							throw e;
 						}
 						
@@ -351,11 +333,11 @@ public class VersamentoUtils {
 					} catch (ClientInitializeException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
-							log.error(MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
+							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
 							throw new GovPayException(e);
 						}
 						
-						log.error(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
+						LogUtils.logError(log, MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
 					} 
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
@@ -402,7 +384,7 @@ public class VersamentoUtils {
 					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_VERIFICA_OK_KEY, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 					eventoCtx.setEsito(Esito.OK);
 				} catch (GovPayException e) {
-					log.error(e.getMessage(),e);
+					LogUtils.logError(log, e.getMessage(),e);
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
 					throw e;
 				}
@@ -1003,7 +985,7 @@ public class VersamentoUtils {
 	
 	public static void validazioneInputVersamentoModello4(Logger log, String inputModello4, String validazioneDefinizione) throws GovPayException, ValidationException {
 		if(validazioneDefinizione != null) {
-			log.debug("Validazione tramite JSON Schema...");
+			LogUtils.logDebug(log, "Validazione tramite JSON Schema...");
 
 			IJsonSchemaValidator validator = null;
 
@@ -1025,17 +1007,17 @@ public class VersamentoUtils {
 				
 				validator.setSchema(validazioneBytes, config, log);
 			} catch (IllegalArgumentException e) {
-				log.error(MessageFormat.format("JSON schema non codificato correttamente: {0}", e.getMessage()), e);
+				LogUtils.logError(log, MessageFormat.format("JSON schema non codificato correttamente: {0}", e.getMessage()), e);
 				throw new GovPayException(EsitoOperazione.VAL_001, e, MessageFormat.format("non e'' stato possibile decodificare il jsonschema di validazione ({0}).", e.getMessage()));
 			} catch (org.openspcoop2.utils.json.ValidationException e) {
-				log.error(MessageFormat.format("Validazione tramite JSON Schema completata con errore: {0}", e.getMessage()), e);
+				LogUtils.logError(log, MessageFormat.format("Validazione tramite JSON Schema completata con errore: {0}", e.getMessage()), e);
 				throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
 			} 	
 			ValidationResponse validate = null;
 			try {
 				validate = validator.validate(inputModello4.getBytes());
 			} catch (org.openspcoop2.utils.json.ValidationException e) {
-				log.debug(MessageFormat.format("Validazione tramite JSON Schema completata con errore: {0}", e.getMessage()), e);
+				LogUtils.logDebug(log, MessageFormat.format("Validazione tramite JSON Schema completata con errore: {0}", e.getMessage()), e);
 				throw new GovPayException(EsitoOperazione.VAL_002, e, e.getMessage());
 			} 
 
@@ -1043,10 +1025,10 @@ public class VersamentoUtils {
 
 			switch (esito) {
 			case KO:
-				log.debug("Validazione tramite JSON Schema completata con esito KO: {}", validate.getErrors());
+				LogUtils.logDebug(log, "Validazione tramite JSON Schema completata con esito KO: {}", validate.getErrors());
 				throw new ValidationException(String.join(",", validate.getErrors()));
 			case OK:
-				log.debug("Validazione tramite JSON Schema completata con esito OK.");
+				LogUtils.logDebug(log, "Validazione tramite JSON Schema completata con esito OK.");
 				break;
 			}
 		}
@@ -1056,7 +1038,7 @@ public class VersamentoUtils {
 			String inputModello4, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers,
 			String trasformazioneDefinizione) throws GovPayException, UnprocessableEntityException {
-		log.debug("Trasformazione tramite template {}...", tipoTemplateTrasformazione);
+		LogUtils.logDebug(log, "Trasformazione tramite template {}...", tipoTemplateTrasformazione);
 		String name = "TrasformazionePendenzaModello4";
 		try {
 			if(trasformazioneDefinizione.startsWith("\""))
@@ -1067,16 +1049,16 @@ public class VersamentoUtils {
 
 			byte[] template = Base64.getDecoder().decode(trasformazioneDefinizione.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			Map<String, Object> dynamicMap = new HashMap<>();
 			String idUnitaOperativa = uo != null ? uo.getCodUo() : null;
 			TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), queryParameters, 
 					pathParameters, headers, inputModello4, dominio.getCodDominio(), codTipoVersamento, idUnitaOperativa); 
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			inputModello4 = baos.toString();
-			log.debug("Trasformazione tramite template {} completata con successo.", tipoTemplateTrasformazione);
+			LogUtils.logDebug(log, "Trasformazione tramite template {} completata con successo.", tipoTemplateTrasformazione);
 		} catch (TrasformazioneException e) {
-			log.error(MessageFormat.format("Trasformazione tramite template {0} completata con errore: {1}", tipoTemplateTrasformazione, e.getMessage()), e);
+			LogUtils.logError(log, MessageFormat.format("Trasformazione tramite template {0} completata con errore: {1}", tipoTemplateTrasformazione, e.getMessage()), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}
 		return inputModello4;
@@ -1109,7 +1091,7 @@ public class VersamentoUtils {
 			throws ServiceException, GovPayException, EcException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento chiediVersamento = null;
-		log.debug("Inoltro verso l'applicazione {}...", codApplicazione);
+		LogUtils.logDebug(log, "Inoltro verso l'applicazione {}...", codApplicazione);
 		
 		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
@@ -1128,9 +1110,7 @@ public class VersamentoUtils {
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(configWrapper).getCodApplicazione());
 			}
-		} catch (ClientException e){
-			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_E_FALLITO_CON_ERRORE_3, codDominio, codTipoVersamento, codApplicazione, e.getMessage()));
-		} catch (UtilsException e){
+		} catch (ClientException | UtilsException | VersamentoNonValidoException | GovPayException | ClientInitializeException e){
 			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_E_FALLITO_CON_ERRORE_3, codDominio, codTipoVersamento, codApplicazione, e.getMessage()));
 		} catch (VersamentoScadutoException e) {
 			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_HA_DATO_ESITO_PAA_PAGAMENTO_SCADUTO, codDominio, codTipoVersamento, codApplicazione));
@@ -1140,15 +1120,9 @@ public class VersamentoUtils {
 			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_HA_DATO_ESITO_PAA_PAGAMENTO_DUPLICATO, codDominio, codTipoVersamento, codApplicazione));
 		} catch (VersamentoSconosciutoException e) {
 			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_HA_DATO_ESITO_PAA_PAGAMENTO_SCONOSCIUTO, codDominio, codTipoVersamento, codApplicazione));
-		} catch (VersamentoNonValidoException e) { 
-			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_E_FALLITO_CON_ERRORE_3, codDominio, codTipoVersamento, codApplicazione, e.getMessage()));
-		} catch (GovPayException e){
-			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_E_FALLITO_CON_ERRORE_3, codDominio, codTipoVersamento, codApplicazione, e.getMessage()));
-		} catch (ClientInitializeException e) {
-			throw new EcException(MessageFormat.format(ERROR_MSG_INOLTRO_DEL_VERSAMENTO_DOMINIO_0_TIPO_VERSAMENTO_1_ALL_APPLICAZIONE_COMPETENTE_APPLICAZIONE_2_E_FALLITO_CON_ERRORE_3, codDominio, codTipoVersamento, codApplicazione, e.getMessage()));
-		} 
+		}
 		
-		log.debug("Inoltro verso l'applicazione {} completato con successo.", codApplicazione);
+		LogUtils.logDebug(log, "Inoltro verso l'applicazione {} completato con successo.", codApplicazione);
 		return chiediVersamento;
 	}
 	

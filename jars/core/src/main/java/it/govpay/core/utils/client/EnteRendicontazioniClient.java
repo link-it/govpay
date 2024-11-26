@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -44,7 +44,7 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 	private Dominio dominio;
 	private it.govpay.bd.model.TracciatoNotificaPagamenti tracciato;
 	
-	public EnteRendicontazioniClient(Dominio dominio, it.govpay.bd.model.TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException, ServiceException {
+	public EnteRendicontazioniClient(Dominio dominio, it.govpay.bd.model.TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
 		super(dominio, TipoConnettore.GOVPAY, TipoDestinatario.GOVPAY, connettore, eventoCtx); 
 		this.operationID = operationID;
 		this.dominio = dominio;
@@ -140,7 +140,7 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 			}
 		}
 		
-		log.debug("Spedisco il contentuto " + contenuto.toString() + " del Tracciato (Dominio: " + this.dominio.getCodDominio() + ", Identificativo" + this.tracciato.getIdentificativo() + ") alla URL ("+sb.toString()+")");
+		LogUtils.logDebug(log, "Spedisco il contentuto " + contenuto.toString() + " del Tracciato (Dominio: " + this.dominio.getCodDominio() + ", Identificativo" + this.tracciato.getIdentificativo() + ") alla URL ("+sb.toString()+")");
 		
 		String contentType = this.getContentType(contenuto);
 		

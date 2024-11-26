@@ -82,6 +82,7 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtReceiptUtils  extends NdpValidationUtils {
 
+	private static final String ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0 = "Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}";
 	private static Logger log = LoggerWrapperFactory.getLogger(CtReceiptUtils.class);
 
 	public static EsitoValidazione validaSemantica(PaGetPaymentRes ctRpt, PaSendRTReq ctRt) {
@@ -98,13 +99,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
@@ -224,8 +225,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				}
 
 				if(!acquisizioneDaCruscotto) {
-					if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt già acquisita in data {0}", rpt.getDataMsgRicevuta()), rpt.getCodDominio());
+					if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt.getCcp().equals(receiptId)) {
+						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt {0} già acquisita in data {1}", ctReceipt, rpt.getDataMsgRicevuta()), rpt.getCodDominio());
 					}
 				}
 
@@ -247,7 +248,6 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 							throw e;
 						}
 					} else {
-
 						try {
 							ctRpt = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), false);
 							esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
@@ -260,7 +260,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				if(acquisizioneDaCruscotto) {
 					// controllo esito validazione semantica
 					// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
-					//EsitoPagamento nuovoEsitoPagamento = it.govpay.model.Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
+					//EsitoPagamento nuovoEsitoPagamento = it.govpay.model.Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento())
 
 					switch (rpt.getEsitoPagamento()) {
 					case IN_CORSO:
@@ -491,14 +491,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}  catch (JAXBException | SAXException e) {
 			throw new ServiceException(e);
 		} catch (NotificaException | IOException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 
 			if(rptBD != null)
 				rptBD.rollback();
 
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 
 			if(rptBD != null)
 				rptBD.rollback();
@@ -567,13 +567,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;

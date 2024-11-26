@@ -86,6 +86,13 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtReceiptV2Utils  extends NdpValidationUtils {
 
+	private static final String ERRORE_IMPORTO_DEL_PAGAMENTO_IN_POSIZIONE_0_1_DIVERSO_DA_QUANTO_RICHIESTO_2 = "Importo del pagamento in posizione {0} [{1}] diverso da quanto richiesto [{2}]";
+	private static final String ERRORE_ID_TRANSFER_NON_CORRISPONDENTE_PER_IL_PAGAMENTO_IN_POSIZIONE_0 = "IdTransfer non corrispondente per il pagamento in posizione [{0}]";
+	private static final String ERRORE_IMPORTO_TOTALE_DEL_PAGAMENTO_0_DIVERSO_DA_QUANTO_RICHIESTO_1 = "Importo totale del pagamento [{0}] diverso da quanto richiesto [{1}]";
+	private static final String ERRORE_IMPORTO_TOTALE_PAGATO_0_DIVERSO_DA_0_PER_UN_PAGAMENTO_CON_ESITO_KO = "ImportoTotalePagato [{0}] diverso da 0 per un pagamento con esito ''KO''.";
+	private static final String ERRORE_IMPORTO_TOTALE_PAGATO_0_NON_CORRISPONDE_ALLA_SOMMA_DEI_SINGOLI_IMPORTI_PAGATI_1 = "ImportoTotalePagato [{0}] non corrisponde alla somma dei SingoliImportiPagati [{1}]";
+	private static final String ERRORE_CREDITOR_REFERENCE_ID_NON_CORRISPONDE = "CreditorReferenceId non corrisponde";
+	private static final String ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0 = "Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}";
 	private static Logger log = LoggerWrapperFactory.getLogger(CtReceiptV2Utils.class);
 
 	public static EsitoValidazione validaSemantica(PaGetPaymentRes ctRpt, PaSendRTV2Request ctRt) {
@@ -93,7 +100,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
-		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
+		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, ERRORE_CREDITOR_REFERENCE_ID_NON_CORRISPONDE, true); // Identificativo di correlazione dei due messaggi lo IUV???
 
 		validaSemantica(ctPaymentPA.getDebtor(), ctReceipt.getDebtor(), esito);
 
@@ -102,13 +109,13 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
@@ -129,12 +136,12 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 
 		BigDecimal paymentAmount = ctReceipt.getPaymentAmount();
 		if (importoTotaleCalcolato.compareTo(paymentAmount) != 0)
-			esito.addErrore(MessageFormat.format("ImportoTotalePagato [{0}] non corrisponde alla somma dei SingoliImportiPagati [{1}]", paymentAmount.doubleValue(), importoTotaleCalcolato.doubleValue()), true);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_PAGATO_0_NON_CORRISPONDE_ALLA_SOMMA_DEI_SINGOLI_IMPORTI_PAGATI_1, paymentAmount.doubleValue(), importoTotaleCalcolato.doubleValue()), true);
 		if (ctRecepitOutcome.equals(StOutcome.KO) && paymentAmount.compareTo(BigDecimal.ZERO) != 0)
-			esito.addErrore(MessageFormat.format("ImportoTotalePagato [{0}] diverso da 0 per un pagamento con esito ''KO''.", paymentAmount.doubleValue()), true);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_PAGATO_0_DIVERSO_DA_0_PER_UN_PAGAMENTO_CON_ESITO_KO, paymentAmount.doubleValue()), true);
 		BigDecimal ctPaymentPAPaymentAmount = ctPaymentPA.getPaymentAmount();
 		if (ctRecepitOutcome.equals(StOutcome.OK) && paymentAmount.compareTo(ctPaymentPAPaymentAmount) != 0)
-			esito.addErrore(MessageFormat.format("Importo totale del pagamento [{0}] diverso da quanto richiesto [{1}]", paymentAmount.doubleValue(), ctPaymentPAPaymentAmount.doubleValue()), false);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_DEL_PAGAMENTO_0_DIVERSO_DA_QUANTO_RICHIESTO_1, paymentAmount.doubleValue(), ctPaymentPAPaymentAmount.doubleValue()), false);
 
 		return esito;
 	}
@@ -142,14 +149,14 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 	private static void validaSemanticaSingoloVersamento(CtTransferPA singoloVersamento, CtTransferPAReceiptV2 singoloPagamento, int pos, EsitoValidazione esito) {
 
 		if(singoloPagamento.getIdTransfer() != singoloVersamento.getIdTransfer()) {
-			esito.addErrore(MessageFormat.format("IdTransfer non corrispondente per il pagamento in posizione [{0}]", pos), false);
+			esito.addErrore(MessageFormat.format(ERRORE_ID_TRANSFER_NON_CORRISPONDENTE_PER_IL_PAGAMENTO_IN_POSIZIONE_0, pos), false);
 		}
 		valida(singoloVersamento.getTransferCategory(), singoloPagamento.getTransferCategory(), esito, "TransferCategory non corrisponde", false);
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
 
 		} else if(singoloPagamento.getTransferAmount().compareTo(singoloVersamento.getTransferAmount()) != 0) {
-			esito.addErrore(MessageFormat.format("Importo del pagamento in posizione {0} [{1}] diverso da quanto richiesto [{2}]", pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getTransferAmount().doubleValue()), false);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_DEL_PAGAMENTO_IN_POSIZIONE_0_1_DIVERSO_DA_QUANTO_RICHIESTO_2, pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getTransferAmount().doubleValue()), false);
 		}
 	}
 
@@ -230,7 +237,9 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 
 				if(!acquisizioneDaCruscotto) {
 					if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt già acquisita in data {0}", rpt.getDataMsgRicevuta()), rpt.getCodDominio());
+						if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt.getCcp().equals(receiptId)) {
+							throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt {0} già acquisita in data {1}", ctReceipt, rpt.getDataMsgRicevuta()), rpt.getCodDominio());
+						}
 					}
 				}
 
@@ -281,7 +290,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 				if(acquisizioneDaCruscotto) {
 					// controllo esito validazione semantica
 					// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
-					//EsitoPagamento nuovoEsitoPagamento = it.govpay.model.Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
+					//EsitoPagamento nuovoEsitoPagamento = it.govpay.model.Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento())
 
 					switch (rpt.getEsitoPagamento()) {
 					case IN_CORSO:
@@ -512,14 +521,14 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		}  catch (JAXBException | SAXException e) {
 			throw new ServiceException(e);
 		} catch (NotificaException | IOException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 
 			if(rptBD != null) 
 				rptBD.rollback();
 
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 
 			if(rptBD != null)
 				rptBD.rollback();
@@ -544,7 +553,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
-		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
+		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, ERRORE_CREDITOR_REFERENCE_ID_NON_CORRISPONDE, true); // Identificativo di correlazione dei due messaggi lo IUV???
 		validaSemantica(ctPaymentPA.getDebtor(), ctReceipt.getDebtor(), esito);
 
 		StOutcome ctRecepitOutcome = ctReceipt.getOutcome(); // esito pagamento ha solo due valori OK/KO
@@ -552,13 +561,13 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
@@ -579,12 +588,12 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 
 		BigDecimal paymentAmount = ctReceipt.getPaymentAmount();
 		if (importoTotaleCalcolato.compareTo(paymentAmount) != 0)
-			esito.addErrore(MessageFormat.format("ImportoTotalePagato [{0}] non corrisponde alla somma dei SingoliImportiPagati [{1}]",	paymentAmount.doubleValue(), importoTotaleCalcolato.doubleValue()), true);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_PAGATO_0_NON_CORRISPONDE_ALLA_SOMMA_DEI_SINGOLI_IMPORTI_PAGATI_1,	paymentAmount.doubleValue(), importoTotaleCalcolato.doubleValue()), true);
 		if (ctRecepitOutcome.equals(StOutcome.KO) && paymentAmount.compareTo(BigDecimal.ZERO) != 0)
-			esito.addErrore(MessageFormat.format("ImportoTotalePagato [{0}] diverso da 0 per un pagamento con esito ''KO''.", paymentAmount.doubleValue()), true);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_PAGATO_0_DIVERSO_DA_0_PER_UN_PAGAMENTO_CON_ESITO_KO, paymentAmount.doubleValue()), true);
 		BigDecimal ctPaymentPAPaymentAmount = ctPaymentPA.getPaymentAmount();
 		if (ctRecepitOutcome.equals(StOutcome.OK) && paymentAmount.compareTo(ctPaymentPAPaymentAmount) != 0)
-			esito.addErrore(MessageFormat.format("Importo totale del pagamento [{0}] diverso da quanto richiesto [{1}]", paymentAmount.doubleValue(), ctPaymentPAPaymentAmount.doubleValue()), false);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_DEL_PAGAMENTO_0_DIVERSO_DA_QUANTO_RICHIESTO_1, paymentAmount.doubleValue(), ctPaymentPAPaymentAmount.doubleValue()), false);
 
 		return esito;
 	}
@@ -592,13 +601,13 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 	private static void validaSemanticaSingoloVersamento(CtTransferPAV2 singoloVersamento, CtTransferPAReceiptV2 singoloPagamento, int pos, EsitoValidazione esito) {
 
 		if(singoloPagamento.getIdTransfer() != singoloVersamento.getIdTransfer()) {
-			esito.addErrore(MessageFormat.format("IdTransfer non corrispondente per il pagamento in posizione [{0}]", pos), false);
+			esito.addErrore(MessageFormat.format(ERRORE_ID_TRANSFER_NON_CORRISPONDENTE_PER_IL_PAGAMENTO_IN_POSIZIONE_0, pos), false);
 		}
 		valida(singoloVersamento.getTransferCategory(), singoloPagamento.getTransferCategory(), esito, "TransferCategory non corrisponde", false);
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
 		} else if(singoloPagamento.getTransferAmount().compareTo(singoloVersamento.getTransferAmount()) != 0) {
-			esito.addErrore(MessageFormat.format("Importo del pagamento in posizione {0} [{1}] diverso da quanto richiesto [{2}]", pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getTransferAmount().doubleValue()), false);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_DEL_PAGAMENTO_IN_POSIZIONE_0_1_DIVERSO_DA_QUANTO_RICHIESTO_2, pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getTransferAmount().doubleValue()), false);
 		}
 	}
 	
@@ -607,7 +616,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		CtReceiptV2 ctReceipt = ctRt.getReceipt();
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
-		valida(datiVersamento.getIdentificativoUnivocoVersamento(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
+		valida(datiVersamento.getIdentificativoUnivocoVersamento(), ctReceipt.getCreditorReferenceId(), esito, ERRORE_CREDITOR_REFERENCE_ID_NON_CORRISPONDE, true); // Identificativo di correlazione dei due messaggi lo IUV???
 
 		validaSemantica(ctRpt.getSoggettoPagatore(), ctReceipt.getDebtor(), esito);
 
@@ -616,13 +625,13 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != datiVersamento.getDatiSingoloVersamento().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != datiVersamento.getDatiSingoloVersamento().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
@@ -643,12 +652,12 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 
 		BigDecimal paymentAmount = ctReceipt.getPaymentAmount();
 		if (importoTotaleCalcolato.compareTo(paymentAmount) != 0)
-			esito.addErrore(MessageFormat.format("ImportoTotalePagato [{0}] non corrisponde alla somma dei SingoliImportiPagati [{1}]", paymentAmount.doubleValue(), importoTotaleCalcolato.doubleValue()), true);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_PAGATO_0_NON_CORRISPONDE_ALLA_SOMMA_DEI_SINGOLI_IMPORTI_PAGATI_1, paymentAmount.doubleValue(), importoTotaleCalcolato.doubleValue()), true);
 		if (ctRecepitOutcome.equals(StOutcome.KO) && paymentAmount.compareTo(BigDecimal.ZERO) != 0)
-			esito.addErrore(MessageFormat.format("ImportoTotalePagato [{0}] diverso da 0 per un pagamento con esito ''KO''.", paymentAmount.doubleValue()), true);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_PAGATO_0_DIVERSO_DA_0_PER_UN_PAGAMENTO_CON_ESITO_KO, paymentAmount.doubleValue()), true);
 		BigDecimal ctPaymentPAPaymentAmount = datiVersamento.getImportoTotaleDaVersare();
 		if (ctRecepitOutcome.equals(StOutcome.OK) && paymentAmount.compareTo(ctPaymentPAPaymentAmount) != 0)
-			esito.addErrore(MessageFormat.format("Importo totale del pagamento [{0}] diverso da quanto richiesto [{1}]", paymentAmount.doubleValue(), ctPaymentPAPaymentAmount.doubleValue()), false);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_TOTALE_DEL_PAGAMENTO_0_DIVERSO_DA_QUANTO_RICHIESTO_1, paymentAmount.doubleValue(), ctPaymentPAPaymentAmount.doubleValue()), false);
 
 		return esito;
 	}
@@ -668,13 +677,13 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 	private static void validaSemanticaSingoloVersamento(CtDatiSingoloVersamentoRPT singoloVersamento, CtTransferPAReceiptV2 singoloPagamento, int pos, EsitoValidazione esito) {
 
 		if(singoloPagamento.getIdTransfer() != pos) {
-			esito.addErrore(MessageFormat.format("IdTransfer non corrispondente per il pagamento in posizione [{0}]", pos), false);
+			esito.addErrore(MessageFormat.format(ERRORE_ID_TRANSFER_NON_CORRISPONDENTE_PER_IL_PAGAMENTO_IN_POSIZIONE_0, pos), false);
 		}
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
 
 		} else if(singoloPagamento.getTransferAmount().compareTo(singoloVersamento.getImportoSingoloVersamento()) != 0) {
-			esito.addErrore(MessageFormat.format("Importo del pagamento in posizione {0} [{1}] diverso da quanto richiesto [{2}]", pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getImportoSingoloVersamento().doubleValue()), false);
+			esito.addErrore(MessageFormat.format(ERRORE_IMPORTO_DEL_PAGAMENTO_IN_POSIZIONE_0_1_DIVERSO_DA_QUANTO_RICHIESTO_2, pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getImportoSingoloVersamento().doubleValue()), false);
 		}
 	}
 }

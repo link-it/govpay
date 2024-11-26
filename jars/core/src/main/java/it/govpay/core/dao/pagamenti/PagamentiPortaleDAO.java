@@ -436,7 +436,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					// Esecuizione della chiamata verso PagoPA
 					try {
-						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), pagamentiPortaleDTO.getLingua(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione(), email);
+						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione(), email);
 
 						Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 						Giornale giornale = configurazione.getGiornale();

@@ -119,7 +119,7 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		public String getDiagnostico() {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for(ErroreValidazione errore : this.errori) {
 				sb.append("\n");
 				sb.append(errore.fatal ? "[Fatal] " : "[Warning] ");
@@ -181,7 +181,7 @@ public class RtUtils extends NdpValidationUtils {
 
 			CtDatiSingoloVersamentoRPT singoloVersamento = rpt.getDatiSingoloVersamento().get(i);
 			CtDatiSingoloPagamentoRT singoloPagamento = null;
-			if(rt.getDatiSingoloPagamento().size() != 0) {
+			if(!rt.getDatiSingoloPagamento().isEmpty()) {
 				singoloPagamento = rt.getDatiSingoloPagamento().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, esito);
 				importoTotaleCalcolato = importoTotaleCalcolato.add(singoloPagamento.getSingoloImportoPagato());
@@ -233,7 +233,7 @@ public class RtUtils extends NdpValidationUtils {
 				break;
 			} 
 		} catch (Throwable e) {
-			
+			//donothing
 		}
 		esito.addErrore(MessageFormat.format("CodiceEsitoPagamento [{0}] sconosciuto", codiceEsitoPagamento), true);
 		return null;
@@ -245,7 +245,7 @@ public class RtUtils extends NdpValidationUtils {
 
 	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 		
-		log.info(MessageFormat.format("Acquisizione RT Dominio[{0}], IUV[{1}], CCP [{2}] in corso", codDominio, iuv, ccp));
+		log.info("Acquisizione RT Dominio[{}], IUV[{}], CCP [{}] in corso", codDominio, iuv, ccp);
 		RptBD rptBD = null; 
 		try {
 			IContext ctx = ContextThreadLocal.get();
@@ -317,14 +317,14 @@ public class RtUtils extends NdpValidationUtils {
 				try {
 					ctRt = JaxbUtils.toRT(rtByte, true);
 				} catch (Exception e) {
-					log.warn("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
+					LogUtils.logWarn(log, "Errore durante la validazione sintattica della Ricevuta Telematica.", e);
 					if(e.getCause() != null)
 						throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), codDominio);
 					else
 						throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), codDominio);
 				}
 			} catch (NdpException e) {
-				log.warn(MessageFormat.format("Rt rifiutata: {0}", e.getDescrizione()));
+				LogUtils.logWarn(log, MessageFormat.format("Rt rifiutata: {0}", e.getDescrizione()));
 				if(!acquisizioneDaCruscotto) {
 					rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 					rpt.setDescrizioneStato(e.getDescrizione());
@@ -383,12 +383,8 @@ public class RtUtils extends NdpValidationUtils {
 						}
 						throw new NdpException(FaultPa.PAA_RT_DUPLICATA, MessageFormat.format("RT già acquisita in data {0}", rpt.getDataMsgRicevuta()), rpt.getCodDominio());
 					}
-				} catch (ServiceException e) {
-					log.warn("Errore nella gestione di una RT gia' acquisita", e);
-				} catch (JAXBException e) {
-					log.warn("Errore nella gestione di una RT gia' acquisita", e);
-				} catch (SAXException e) {
-					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (ServiceException | JAXBException | SAXException e) {
+					LogUtils.logWarn(log, "Errore nella gestione di una RT gia' acquisita", e);
 				}
 			}
 			
@@ -397,7 +393,7 @@ public class RtUtils extends NdpValidationUtils {
 				
 				
 				// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
-				//EsitoPagamento nuovoEsitoPagamento = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
+				//EsitoPagamento nuovoEsitoPagamento = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento())
 				
 				switch (rpt.getEsitoPagamento()) {
 				case IN_CORSO:
@@ -412,7 +408,7 @@ public class RtUtils extends NdpValidationUtils {
 				}
 			}
 			
-			if(esito.validato && esito.errori.size() > 0) {
+			if(esito.validato && !esito.errori.isEmpty()) {
 				if(recupero)
 					ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
 				else 
@@ -440,7 +436,7 @@ public class RtUtils extends NdpValidationUtils {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), codDominio);
 			}
 			
-			log.info(MessageFormat.format("Acquisizione RT per un importo di {0}", paymentAmount));
+			log.info("Acquisizione RT per un importo di {}", paymentAmount);
 			
 			if(recupero) {
 				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", receiptId));
@@ -482,13 +478,12 @@ public class RtUtils extends NdpValidationUtils {
 			
 			boolean irregolare = false;
 			String irregolarita = null; 
-			//String pagamentiNote = "";
 			
 			String iuvPagamento = rpt.getIuv();
 			BigDecimal totalePagato = BigDecimal.ZERO;
 			Date dataPagamento = new Date();
 			
-			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
+			List<Pagamento> pagamenti = new ArrayList<>();
 			
 			for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 				CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
@@ -500,8 +495,6 @@ public class RtUtils extends NdpValidationUtils {
 				// Se non e' stato completato un pagamento, non faccio niente.
 				if(transferAmount.compareTo(BigDecimal.ZERO) == 0)
 					continue;
-				
-				//pagamentiNote += "[" +(indice+1) + "/" + ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione() + "/" + ctDatiSingoloPagamentoRT.getSingoloImportoPagato() + "]";
 				
 				SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
 
@@ -558,13 +551,13 @@ public class RtUtils extends NdpValidationUtils {
 						if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.ESEGUITO)) {
 							irregolarita = "Acquisito pagamento duplicato";
 							anomalie.add(irregolarita);
-							log.warn(irregolarita);
+							LogUtils.logWarn(log, irregolarita);
 						}
 						
 						if(singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) != 0) {
 							irregolarita = "L'importo pagato non corrisponde all'importo dovuto.";
 							anomalie.add(irregolarita);
-							log.warn(irregolarita);
+							LogUtils.logWarn(log, irregolarita);
 						}
 						if(recupero)
 							ctx.getApplicationLogger().log("pagamento.recuperoRtAcquisizionePagamentoAnomalo", iur, StringUtils.join(anomalie,"\n"));
@@ -609,22 +602,20 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			
 			ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
-			log.info(MessageFormat.format("RT Dominio[{0}], IUV[{1}], CCP [{2}] acquisita con successo.", codDominio, iuv, ccp));
+			log.info("RT Dominio[{}], IUV[{}], CCP [{}] acquisita con successo.", codDominio, iuv, ccp);
 			
 			return rpt;
-		}  catch (JAXBException e) {
-			throw new ServiceException(e);
-		} catch (SAXException e) {
+		}  catch (JAXBException | SAXException e) {
 			throw new ServiceException(e);
 		} catch (NotificaException | CodificaInesistenteException | IOException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 			
 			if(rptBD != null) 
 				rptBD.rollback();
 			
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 			
 			if(rptBD != null)
 				rptBD.rollback();
@@ -685,7 +676,7 @@ public class RtUtils extends NdpValidationUtils {
 	
 	public static void schedulazionePromemoriaENotificaAppIO(RptBD rptBD, BDConfigWrapper configWrapper, Rpt rpt, Long idPagamentoPortale,
 			Versamento versamento, VersamentiBD versamentiBD, String iuvPagamento, BigDecimal totalePagato,
-			Date dataPagamento, boolean updateAnomalo) throws ServiceException, GovPayException, NotificaException {
+			Date dataPagamento, boolean updateAnomalo) throws ServiceException, NotificaException {
 		switch (versamento.getStatoVersamento()) {
 		case PARZIALMENTE_ESEGUITO:
 		case ESEGUITO:
@@ -696,7 +687,7 @@ public class RtUtils extends NdpValidationUtils {
 			// schedulo l'invio del promemoria ricevuta
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 			Promemoria promemoria = null;
-			if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato()) {
+			if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato())) {
 				log.debug("Schedulazione invio ricevuta di pagamento in corso...");
 				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
 				try {
@@ -707,16 +698,16 @@ public class RtUtils extends NdpValidationUtils {
 						PromemoriaBD promemoriaBD2 = new PromemoriaBD(rptBD);
 						promemoriaBD2.setAtomica(false); // condivisione della connessione;
 						promemoriaBD2.insertPromemoria(promemoria);
-						log.debug(MessageFormat.format("Inserimento promemoria Pendenza[{0}] effettuato.", versamento.getCodVersamentoEnte()));
+						log.debug("Inserimento promemoria Pendenza[{}] effettuato.", versamento.getCodVersamentoEnte());
 					}
-					log.debug("Creazione promemoria completata: "+msg);
+					log.debug("Creazione promemoria completata: {}",msg);
 				} catch (JAXBException | SAXException e) {
-					log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
+					LogUtils.logError(log, "Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
 				}
 			}
 			
 			//schedulo l'invio della notifica APPIO
-			if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
+			if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato())) {
 				log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
 				NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
 				log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
@@ -732,7 +723,6 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		// Aggiornamento dello stato del pagamento portale associato all'RPT
-//	Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 		if(idPagamentoPortale != null) {
 			PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 		}
@@ -801,7 +791,6 @@ public class RtUtils extends NdpValidationUtils {
 		
 		try {
 			// cerco una eventuale rendicontazione per gli estremi del pagamento, in stato anomala ma non collegata a nessun pagamento
-//			rendicontazioniBD.enableSelectForUpdate();
 
 			Rendicontazione rendicontazioneAnomala = rendicontazioniBD.getRendicontazione(pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur(), pagamento.getIndiceDati(), StatoRendicontazione.ANOMALA, true);
 			
@@ -819,7 +808,7 @@ public class RtUtils extends NdpValidationUtils {
 		} catch (NotFoundException e) {
 			// se non esiste una rendicontazione in stato anomala con i riferimenti del pagamento  non faccio niente.
 		} finally {
-//			rendicontazioniBD.disableSelectForUpdate();
+//			donothing
 		}
 	}
 	

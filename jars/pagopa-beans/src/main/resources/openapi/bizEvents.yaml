@@ -4,7 +4,7 @@
     "title": "Biz-Events Service",
     "description": "Microservice for exposing REST APIs about payment receipts.",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.1.57"
+    "version": "0.1.67"
   },
   "servers": [
     {

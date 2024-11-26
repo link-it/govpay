@@ -32,6 +32,8 @@ import javax.ws.rs.core.UriBuilder;
  */
 public class UriBuilderUtils {
 	
+	private UriBuilderUtils() {}
+	
 	public static String getFromOperazioni(String idOperazione) {
 		return getListOperazioni().path(idOperazione).build().toString();
 	}
