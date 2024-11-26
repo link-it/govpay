@@ -31,6 +31,7 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -109,7 +110,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 			PutEventoDTO putEventoDTO = new PutEventoDTO(context.getAuthentication());
 			putEventoDTO.setEvento(eventoCtx);
 			this.eventiDAO.inserisciEvento(putEventoDTO);
-		} catch (Throwable e) {
+		} catch (ServiceException e) {
 			this.log.error(e.getMessage(),e);
 		} finally {
 			// donothing

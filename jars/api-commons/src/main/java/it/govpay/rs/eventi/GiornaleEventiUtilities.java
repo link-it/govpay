@@ -36,9 +36,6 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
-import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.client.HttpMethod;
 import it.govpay.core.utils.eventi.EventiUtils;
 import it.govpay.model.configurazione.GdeEvento;
@@ -49,7 +46,7 @@ public class GiornaleEventiUtilities {
 
 	private GiornaleEventiUtilities() {}
 
-	public static GdeInterfaccia getConfigurazioneGiornaleEventi (IContext context, ConfigurazioneDAO configurazioneDAO, GiornaleEventiConfig giornaleEventiConfig) throws ConfigurazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ServiceException, it.govpay.core.exceptions.IOException {
+	public static GdeInterfaccia getConfigurazioneGiornaleEventi (IContext context, ConfigurazioneDAO configurazioneDAO, GiornaleEventiConfig giornaleEventiConfig) throws ServiceException, it.govpay.core.exceptions.IOException {
 		LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(context.getAuthentication());
 		LeggiConfigurazioneDTOResponse configurazione = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
 		Giornale giornale = configurazione.getConfigurazione().getGiornale();

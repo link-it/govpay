@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.43.0"
+  version: "1.44.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -23,6 +23,8 @@ tags:
     description: Pagamenti gestiti dalla piattaforma
   - name: Pendenze
     description: Pagamenti in attesa e spontanei
+  - name: Ricevute
+    description: Gestione delle ricevute telematiche pagoPA
   - name: Riconciliazioni
     description: Movimenti in tesoreria riconciliati
   - name: Rendicontazioni
@@ -2906,6 +2908,43 @@ paths:
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/ricevute':
+    post:
+      tags:
+        - Ricevute
+      summary: Acquisizione di una RT in formato xml
+      operationId: addRicevuta
+      requestBody:
+        content:
+          text/xml:
+            schema:
+              type: object
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+        description: RT in formato XML
+        required: true
+      responses:
+        '201':
+          description: RT acquisita con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rppIndex'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '415':
+          $ref: '#/components/responses/415'
         '500':
           $ref: '#/components/responses/500'
   '/riscossioni':
