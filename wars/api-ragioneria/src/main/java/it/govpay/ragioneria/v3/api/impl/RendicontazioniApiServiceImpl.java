@@ -124,7 +124,6 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			if(escludiObsoleti != null && escludiObsoleti.booleanValue()) {
 				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);
 			}
-//			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
 			findRendicontazioniDTO.setCodFlusso(idFlusso);

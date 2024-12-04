@@ -76,6 +76,7 @@
     <b:bean id="quadrature" class="it.govpay.backoffice.v1.Quadrature"/>
     <b:bean id="rendicontazioni" class="it.govpay.backoffice.v1.Rendicontazioni"/>
    	<b:bean id="reportistiche" class="it.govpay.backoffice.v1.Reportistiche"/>
+   	<b:bean id="ricevute" class="it.govpay.backoffice.v1.Ricevute"/>
    	<b:bean id="riscossioni" class="it.govpay.backoffice.v1.Riscossioni"/>
    	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
    	<b:bean id="ruoli" class="it.govpay.backoffice.v1.Ruoli"/>
@@ -113,6 +114,7 @@
 			   	<ref bean="quadrature" />
 			   	<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -160,6 +162,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -206,6 +209,7 @@
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -253,6 +257,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -300,6 +305,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -347,6 +353,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -394,6 +401,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -441,6 +449,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -510,6 +519,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
@@ -558,6 +568,7 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />

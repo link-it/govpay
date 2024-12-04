@@ -29,6 +29,7 @@
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',
       addPendenzaCustom: 'Ricevuta nuova pendenza dall\'Ente',
       addPendenzaPOST: 'Ricevuta nuova pendenza dall\'Ente',
+	  addRicevuta: 'Acquisita ricevuta telematica',
       addRiconciliazione: 'Riconciliazione pagamenti',
       addRuolo: 'Configura ruolo',
       addStazione: 'Configura stazione',

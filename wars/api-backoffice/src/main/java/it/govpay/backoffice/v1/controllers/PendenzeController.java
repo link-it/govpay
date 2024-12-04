@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.mail.BodyPart;
+import javax.mail.MessagingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -1145,7 +1146,7 @@ public class PendenzeController extends BaseController {
 
 	}
 
-	private String getBodyPartFileName (BodyPart bodyPart) throws Exception{
+	public static String getBodyPartFileName (BodyPart bodyPart) throws MessagingException {
 		String partName =  null;
 		String[] headers = bodyPart.getHeader(BaseController.PARAMETRO_CONTENT_DISPOSITION);
 		if(headers != null && headers.length > 0){

@@ -32,37 +32,61 @@ public class LogUtils {
 	
 	public static void logDebugException(Logger log, String msg, Exception e) {
 		if(log != null) {
-			log.debug(msg, e);
+			if(e != null) {
+				log.debug(msg, e);
+			} else {
+				log.debug(msg);
+			}
 		}
 	}
 
 	public static void logDebug(Logger log, String msg, Object ... params) {
 		if(log != null) {
-			log.debug(msg, params);
+			if(params != null && params.length > 0) {
+				log.debug(msg, params);
+			} else {
+				log.debug(msg);
+			}
 		}
 	}
 
 	public static void logInfoException(Logger log, String msg, Exception e) {
 		if(log != null) {
-			log.info(msg, e);
+			if(e != null) {
+				log.info(msg, e);
+			} else {
+				log.info(msg);
+			}
 		}
 	}
 
 	public static void logInfo(Logger log, String msg, Object ... params) {
 		if(log != null) {
-			log.info(msg, params);
+			if(params != null && params.length > 0) {
+				log.info(msg, params);
+			} else {
+				log.info(msg);
+			}
 		}
 	}
 
 	public static void logWarnException(Logger log, String msg, Exception e) {
 		if(log != null) {
-			log.warn(msg, e);
+			if(e != null) {
+				log.warn(msg, e);
+			} else {
+				log.warn(msg);
+			}
 		}
 	}
 
 	public static void logWarn(Logger log, String msg, Object ... params) {
 		if(log != null) {
-			log.warn(msg, params);
+			if(params != null && params.length > 0) {
+				log.warn(msg, params);
+			} else {
+				log.warn(msg);
+			}
 		}
 	}
 	
@@ -74,19 +98,31 @@ public class LogUtils {
 
 	public static void logError(Logger log, String msg, Exception e) {
 		if(log != null) {
-			log.error(msg, e);
+			if(e != null) {
+				log.error(msg, e);
+			} else {
+				log.error(msg);
+			}
 		}
 	}
 	
 	public static void logError(Logger log, String msg, Object ... params) {
 		if(log != null) {
-			log.error(msg, params);
+			if(params != null && params.length > 0) {
+				log.error(msg, params);
+			} else {
+				log.error(msg);
+			}
 		}
 	}
 
 	public static void logTrace(Logger log, String msg, Object ... params) {
 		if(log != null) {
-			log.trace(msg, params);
+			if(params != null && params.length > 0) {
+				log.trace(msg, params);
+			} else {
+				log.trace(msg);
+			}
 		}
 	}
 

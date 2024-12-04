@@ -100,10 +100,6 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 
 			RichiestaIncassoDTO richiestaIncassoDTO = RiconciliazioniConverter.toRichiestaIncassoDTO(incasso, idDominio, id, user);
 
-//			if(idFlussoCaseInsensitive != null) {
-//				richiestaIncassoDTO.setRicercaIdFlussoCaseInsensitive(idFlussoCaseInsensitive);
-//			}
-
 			IncassiDAO incassiDAO = new IncassiDAO();
 
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.addRiconciliazione(richiestaIncassoDTO);
@@ -225,24 +221,6 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
 
-//			List<TipoPagamento> tipoEnum = new ArrayList<>();
-//			if(riscossioniTipo == null || riscossioniTipo.isEmpty()) { // valori di default
-//				tipoEnum.add(TipoPagamento.ENTRATA);
-//				tipoEnum.add(TipoPagamento.MBT);
-//			}
-
-//			if(riscossioniTipo!=null) {
-//				for (String tipoS : riscossioniTipo) {
-//					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
-//					if(tipoRiscossione != null) {
-//						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
-//					} else {
-//						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + riscossioniTipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
-//					}
-//				}
-//			}
-
-//			leggiIncassoDTO.setTipoRiscossioni(tipoEnum);
 			leggiIncassoDTO.setTipoRiscossioni(null);
 
 			IncassiDAO incassiDAO = new IncassiDAO();

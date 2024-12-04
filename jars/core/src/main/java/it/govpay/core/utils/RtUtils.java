@@ -20,13 +20,21 @@
 
 package it.govpay.core.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -834,4 +842,50 @@ public class RtUtils extends NdpValidationUtils {
 		
 		if(!causaleAttesa.equals(causaleRicevuta)) esito.addErrore(MessageFormat.format("{0} [Atteso:\"{1}\" Ricevuto:\"{2}\"]", errore, causaleAttesa, causaleRicevuta), fatal);
 	}
+
+	/***
+	 * Controlla se l'array ricevuto e' un byte64, in tal caso esegue la decodifica e restituisce l'array decodificato
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public static byte[] decodeOrOriginal(byte[] data) {
+        try {
+            return Base64.getDecoder().decode(data);
+        } catch (IllegalArgumentException e) {
+            return data;
+        }
+    }
+	
+	/***
+	 * Controlla se l'array contiene una busta soap, in tal caso sbusta il contenuto.
+	 * 
+	 * @param data
+	 * @return
+	 */
+    public static byte[] extractSoapMessage(byte[] data) {
+        try {
+            // Creiamo un InputStream a partire dal byte[]
+            InputStream dataStream = new ByteArrayInputStream(data);
+            
+            // Creiamo una MessageFactory per elaborare il messaggio SOAP
+            MessageFactory messageFactory = MessageFactory.newInstance();
+            
+            // Proviamo a creare un messaggio SOAP dal flusso di input
+            SOAPMessage soapMessage = messageFactory.createMessage(null, dataStream);
+            
+            // Controlliamo se il messaggio contiene l'elemento Envelope
+            SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
+            if (envelope != null) {
+                // Se il messaggio è valido, sbustiamo il contenuto del Body
+                SOAPBody body = soapMessage.getSOAPBody();
+                // Restituiamo il contenuto del corpo come stringa
+                return body.getTextContent().getBytes();
+            }
+        } catch (SOAPException | java.io.IOException e) {
+            // Se c'è un errore durante la creazione del messaggio SOAP, significa che non è un SOAP valido
+            return data;
+        }
+        return data;
+    }
 }

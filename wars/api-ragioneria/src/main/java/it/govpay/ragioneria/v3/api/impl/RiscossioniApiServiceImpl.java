@@ -99,8 +99,6 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			findRiscossioniDTO.setIdDominio(idDominio);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
 			findRiscossioniDTO.setPagina(pagina);
-//			findRiscossioniDTO.setIdA2A(idA2A);
-//			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setIur(iur);
 			findRiscossioniDTO.setOrderBy(ordinamento);
 			if(stato != null) {
