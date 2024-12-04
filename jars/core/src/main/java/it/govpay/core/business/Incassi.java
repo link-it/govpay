@@ -277,7 +277,7 @@ public class Incassi {
 					// Verifica importo pagato con l'incassato
 					if(fr.getImportoTotalePagamenti().doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
 						ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di rendicontazione [{0}] non corrisponde all''importo del riversamento [{1}]", richiestaIncasso.getImporto(), fr.getImportoTotalePagamenti().doubleValue()));
+						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di rendicontazione [{0}] non corrisponde all''importo del riversamento [{1}]", fr.getImportoTotalePagamenti().doubleValue(), richiestaIncasso.getImporto()));
 					}
 					LogUtils.logDebug(log, "Validazione riconciliazione per riversamento cumulativo [Dominio:{}, IdFlusso: {}] completata con successo.",	richiestaIncasso.getCodDominio(), idf);
 				} catch (NotFoundException nfe) {
