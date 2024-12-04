@@ -42,7 +42,7 @@ public class NdpValidationUtils {
 
 	public static void validaSemantica(CtSoggettoVersante rpt, CtSoggettoVersante rt, EsitoValidazione esito) {
 		if(rpt == null && rt == null) return;
-		if(rpt == null || rt == null) { esito.addErrore("SoggettoVersante non corriponde", false);  return; }
+		if(rpt == null || rt == null) { esito.addErrore("SoggettoVersante non corrisponde", false);  return; }
 
 		valida(rpt.getAnagraficaVersante(),rt.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", false);
 		valida(rpt.getCapVersante(),rt.getCapVersante(), esito, "CapVersante non corrisponde", false);

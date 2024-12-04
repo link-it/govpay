@@ -233,11 +233,11 @@ public class Incassi {
 					// Controllo se il pagamento e' stato gia' riconciliato
 					if(pagamento.getIdIncasso() != null) {
 						Incasso incasso = incassiBD.getIncasso(pagamento.getIdIncasso());
-						throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, MessageFormat.format("Il pagamento [Dominio:{0} Iuv:{1} Iur:{2}] risuta gia'' riconciliato [Sct:{3} Trn: {4}].", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur(), incasso.getSct(), incasso.getTrn()));
+						throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, MessageFormat.format("Il pagamento [Dominio:{0} Iuv:{1} Iur:{2}] risulta gia'' riconciliato [Sct:{3} Trn: {4}].", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur(), incasso.getSct(), incasso.getTrn()));
 					}
 
 					if(richiestaIncasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("La richiesta di riconciliazione presenta un importo [{0}] non corripondente a quello riscosso [{1}]", richiestaIncasso.getImporto(), pagamento.getImportoPagato().doubleValue()));
+						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("La richiesta di riconciliazione presenta un importo [{0}] non corrispondente a quello riscosso [{1}]", richiestaIncasso.getImporto(), pagamento.getImportoPagato().doubleValue()));
 
 					LogUtils.logDebug(log, "Validazione riconciliazione per riversamento Singolo [Dominio:{}, Iuv: {}] completata con successo.",	richiestaIncasso.getCodDominio(), iuv);
 				} catch (NotFoundException nfe) {
@@ -265,7 +265,7 @@ public class Incassi {
 					// Controllo se il flusso e' stato gia' riconciliato
 					if(fr.getIdIncasso() != null) {
 						Incasso incasso = incassiBD.getIncasso(fr.getIdIncasso());
-						throw new IncassiException(FaultType.FLUSSO_GIA_INCASSATO, MessageFormat.format("Il flusso [IdFlusso:{0}] risuta gia'' riconciliato [Sct:{1} Trn:{2}].", idf, incasso.getSct(), incasso.getTrn()));
+						throw new IncassiException(FaultType.FLUSSO_GIA_INCASSATO, MessageFormat.format("Il flusso [IdFlusso:{0}] risulta gia'' riconciliato [Sct:{1} Trn:{2}].", idf, incasso.getSct(), incasso.getTrn()));
 					}
 
 
@@ -277,7 +277,7 @@ public class Incassi {
 					// Verifica importo pagato con l'incassato
 					if(fr.getImportoTotalePagamenti().doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
 						ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di redicontazione [{0}] non corriponde all''importo del riversamento [{1}]", richiestaIncasso.getImporto(), fr.getImportoTotalePagamenti().doubleValue()));
+						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di rendicontazione [{0}] non corrisponde all''importo del riversamento [{1}]", richiestaIncasso.getImporto(), fr.getImportoTotalePagamenti().doubleValue()));
 					}
 					LogUtils.logDebug(log, "Validazione riconciliazione per riversamento cumulativo [Dominio:{}, IdFlusso: {}] completata con successo.",	richiestaIncasso.getCodDominio(), idf);
 				} catch (NotFoundException nfe) {
@@ -447,7 +447,7 @@ public class Incassi {
 				it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(incasso.getCodDominio(), iuv);
 
 				if(incasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-					throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("La richiesta di riconciliazione presenta un importo [{0}] non corripondente a quello riscosso [{1}]", incasso.getImporto(), pagamento.getImportoPagato().doubleValue()));
+					throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("La richiesta di riconciliazione presenta un importo [{0}] non corrispondente a quello riscosso [{1}]", incasso.getImporto(), pagamento.getImportoPagato().doubleValue()));
 
 				pagamenti.add(pagamento);
 				LogUtils.logDebug(log, "Ricerca riconciliazione per riversamento Singolo [Dominio:{}, Iuv: {}] completata.", codDomino, iuv);
@@ -479,7 +479,7 @@ public class Incassi {
 				// Verifica importo pagato con l'incassato
 				if(fr.getImportoTotalePagamenti().doubleValue() != incasso.getImporto().doubleValue()) {
 					ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", incasso.getImporto().doubleValue() + "");
-					throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di redicontazione [{0}] non corriponde all''importo del riversamento [{1}]",	incasso.getImporto(), fr.getImportoTotalePagamenti().doubleValue()));
+					throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di rendicontazione [{0}] non corrisponde all''importo del riversamento [{1}]", fr.getImportoTotalePagamenti().doubleValue(), incasso.getImporto()));
 				}
 
 				Versamento versamentoBusiness = new Versamento();
@@ -603,7 +603,7 @@ public class Incassi {
 					} else {
 						// Verifica che l'importo rendicontato corrisponda al pagato
 						if(rendicontazione.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-							throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("La rendicontazione [Dominio:{0} Iuv:{1} Iur:{2} Indice:{3}] presenta un importo [{4}] non corripondente a quello riscosso [{5}]", fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati(), rendicontazione.getImporto(), pagamento.getImportoPagato().doubleValue()));
+							throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("La rendicontazione [Dominio:{0} Iuv:{1} Iur:{2} Indice:{3}] presenta un importo [{4}] non corrispondente a quello riscosso [{5}]", fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati(), rendicontazione.getImporto(), pagamento.getImportoPagato().doubleValue()));
 					}
 
 					//Aggiorno la FK della rendicontazione
@@ -622,7 +622,7 @@ public class Incassi {
 		for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 			if(Stato.INCASSATO.equals(pagamento.getStato())) {
 				ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
-				throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, MessageFormat.format("Uno dei pagamenti [Dominio:{0} Iuv:{1} Iur:{2}] risuta gia'' riconciliato.", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur()));
+				throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, MessageFormat.format("Uno dei pagamenti [Dominio:{0} Iuv:{1} Iur:{2}] risulta gia'' riconciliato.", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur()));
 			}
 		}
 
