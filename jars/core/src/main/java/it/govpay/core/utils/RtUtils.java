@@ -849,10 +849,13 @@ public class RtUtils extends NdpValidationUtils {
 	 * @param data
 	 * @return
 	 */
-	public static byte[] decodeOrOriginal(byte[] data) {
+	public static byte[] decodeOrOriginal(Logger log, byte[] data) {
         try {
-            return Base64.getDecoder().decode(data);
+            byte[] decode = Base64.getDecoder().decode(data);
+            LogUtils.logTrace(log, "Il messaggio contenente un base64 e' stato decodificato");
+			return decode;
         } catch (IllegalArgumentException e) {
+        	LogUtils.logTrace(log, "Il messaggio non contiene un base64");
             return data;
         }
     }
@@ -863,7 +866,7 @@ public class RtUtils extends NdpValidationUtils {
 	 * @param data
 	 * @return
 	 */
-    public static byte[] extractSoapMessage(byte[] data) {
+    public static byte[] extractSoapMessage(Logger log, byte[] data) {
         try {
             // Creiamo un InputStream a partire dal byte[]
             InputStream dataStream = new ByteArrayInputStream(data);
@@ -880,12 +883,15 @@ public class RtUtils extends NdpValidationUtils {
                 // Se il messaggio è valido, sbustiamo il contenuto del Body
                 SOAPBody body = soapMessage.getSOAPBody();
                 // Restituiamo il contenuto del corpo come stringa
+                LogUtils.logTrace(log, "Il messaggio contiene una busta SOAP");
                 return body.getTextContent().getBytes();
             }
         } catch (SOAPException | java.io.IOException e) {
             // Se c'è un errore durante la creazione del messaggio SOAP, significa che non è un SOAP valido
+        	LogUtils.logTrace(log, "Il messaggio non contiene una busta SOAP valida");
             return data;
         }
+        LogUtils.logTrace(log, "Il messaggio non contiene una busta SOAP");
         return data;
     }
 }

@@ -83,6 +83,10 @@ import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RppController extends BaseController {
 
+	private static final String CHARSET_UTF_8 = "UTF-8";
+	private static final String HEADER_ACCEPT = "Accept";
+	private static final String CONTENT_TYPE_APPLICATION_PDF = "application/pdf";
+
 	public RppController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
 	}
@@ -242,7 +246,7 @@ public class RppController extends BaseController {
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,CHARSET_UTF_8) : ccp;
 			leggiRptDTO.setCcp(ccp);
 
 			// controllo che il dominio sia autorizzato
@@ -299,7 +303,7 @@ public class RppController extends BaseController {
 			PatchRptDTO patchRptDTO = new PatchRptDTO(user);
 			patchRptDTO.setIdDominio(idDominio);
 			patchRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,CHARSET_UTF_8) : ccp;
 			patchRptDTO.setCcp(ccp);
 
 			String jsonRequest = baos.toString();
@@ -324,9 +328,6 @@ public class RppController extends BaseController {
 				}
 			} catch (IOException e) {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
-				//				PatchOp op = PatchOp.parse(jsonRequest);
-				//				op.validate();
-				//				lstOp.add(op);
 			}
 
 			patchRptDTO.setOp(PatchOpConverter.toModel(lstOp));
@@ -360,8 +361,8 @@ public class RppController extends BaseController {
 
 		try{
 			String accept = MediaType.APPLICATION_JSON;
-			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			if(httpHeaders.getRequestHeaders().containsKey(HEADER_ACCEPT)) {
+				accept = httpHeaders.getRequestHeaders().get(HEADER_ACCEPT).get(0).toLowerCase();
 			}
 
 			// autorizzazione sulla API
@@ -373,7 +374,7 @@ public class RppController extends BaseController {
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,CHARSET_UTF_8) : ccp;
 			leggiRptDTO.setCcp(ccp);
 
 			// controllo che il dominio sia autorizzato
@@ -428,8 +429,8 @@ public class RppController extends BaseController {
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		String accept = MediaType.APPLICATION_JSON;
-		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+		if(httpHeaders.getRequestHeaders().containsKey(HEADER_ACCEPT)) {
+			accept = httpHeaders.getRequestHeaders().get(HEADER_ACCEPT).get(0).toLowerCase();
 		}
 
 		try{
@@ -442,7 +443,7 @@ public class RppController extends BaseController {
 			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
 			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
 			leggiPagamentoPortaleDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,CHARSET_UTF_8) : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
 
 			// controllo che il dominio sia autorizzato
@@ -460,9 +461,9 @@ public class RppController extends BaseController {
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
 				mediaType = MediaType.APPLICATION_OCTET_STREAM;
-			} else if(accept.toLowerCase().contains("application/pdf")) {
+			} else if(accept.toLowerCase().contains(CONTENT_TYPE_APPLICATION_PDF)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
-				mediaType = "application/pdf";
+				mediaType = CONTENT_TYPE_APPLICATION_PDF;
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 				mediaType = MediaType.APPLICATION_JSON;
@@ -488,7 +489,7 @@ public class RppController extends BaseController {
 			String rtPdfEntryName = null;
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				messaggioRT = new String(ricevutaDTOResponse.getRpt().getXmlRt());
-			} else if(accept.toLowerCase().contains("application/pdf")) {
+			} else if(accept.toLowerCase().contains(CONTENT_TYPE_APPLICATION_PDF)) {
 				messaggioRT = ricevutaDTOResponse.getPdf();
 				rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
@@ -499,7 +500,7 @@ public class RppController extends BaseController {
 
 			ResponseBuilder entity = Response.status(Status.OK).type(mediaType).entity(messaggioRT);
 
-			if(accept.toLowerCase().contains("application/pdf")) {
+			if(accept.toLowerCase().contains(CONTENT_TYPE_APPLICATION_PDF)) {
 				entity.header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"");
 			}
 

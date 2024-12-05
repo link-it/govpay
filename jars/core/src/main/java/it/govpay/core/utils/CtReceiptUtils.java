@@ -224,10 +224,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 				}
 
-				if(!acquisizioneDaCruscotto) {
-					if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt.getCcp().equals(receiptId)) {
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt {0} già acquisita in data {1}", ctReceipt, rpt.getDataMsgRicevuta()), rpt.getCodDominio());
-					}
+				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt.getCcp().equals(receiptId)) {
+					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt {0} già acquisita in data {1}", ctReceipt, rpt.getDataMsgRicevuta()), rpt.getCodDominio());
 				}
 
 				PaGetPaymentRes ctRpt = null; 
@@ -257,22 +255,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					}
 				}
 
-				if(acquisizioneDaCruscotto) {
-					// controllo esito validazione semantica
-					// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
-					//EsitoPagamento nuovoEsitoPagamento = it.govpay.model.Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento())
-
-					switch (rpt.getEsitoPagamento()) {
-					case IN_CORSO:
-					case PAGAMENTO_NON_ESEGUITO:
-					case DECORRENZA_TERMINI:
-					case RIFIUTATO:
-						break;
-					case DECORRENZA_TERMINI_PARZIALE:
-					case PAGAMENTO_ESEGUITO:
-					case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("Aggiornamento di CtReceipt in pagamenti con esito {0} non supportata.",	rpt.getEsitoPagamento()), rpt.getCodDominio());
-					}
+				// se e' gia' presente una ricevuta devo inserire una nuova transazione
+				if(rpt.getXmlRt() != null) {
+					// devo fare un insert e non un'update
+					update = false;
 				}
 
 				if(esito.validato && !esito.errori.isEmpty()) {
@@ -293,7 +279,15 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					rpt.setXmlRt(JaxbUtils.toByte(ctRt));
 
 					try {
-						rptBD.updateRpt(rpt.getId(), rpt);
+						if(update) {
+							rptBD.updateRpt(rpt.getId(), rpt);
+						} else {
+							// inserisco il ccp per le ricerche
+							rpt.setCcp(receiptId);
+							rpt.setCodMsgRicevuta(receiptId);
+							rpt.setDataMsgRicevuta(new Date());
+							rptBD.insertRpt(rpt);
+						}
 						rptBD.commit();
 					}catch (ServiceException e1) {
 						rptBD.rollback();

@@ -464,10 +464,10 @@ public class RptDAO extends BaseDAO{
 		try {
 			rptBD = new RptBD(configWrapper); 
 			// 1 decodifica messaggio ingresso
-			byte[] rtNonDecodificata = RtUtils.decodeOrOriginal(postRicevutaDTO.getContenuto());
+			byte[] rtNonDecodificata = RtUtils.decodeOrOriginal(log, postRicevutaDTO.getContenuto());
 			
 			// 2. controllo se ho ricevuto una busta soap, in tal caso sbusto il messaggio
-			rtNonDecodificata = RtUtils.extractSoapMessage(rtNonDecodificata);
+			rtNonDecodificata = RtUtils.extractSoapMessage(log, rtNonDecodificata);
 			
 			// 2 chiamare procedura corretta in sequenza partendo da V2.2, V2, SANP 2.3.0
 			Rpt	rpt = null;
@@ -483,14 +483,14 @@ public class RptDAO extends BaseDAO{
 				// ricarico l'RPT
 				rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 			} catch (JAXBException | SAXException e) {
-				LogUtils.logWarn(log, "Ricevuta non in formato V2.2, verra' provata la decodifica per la versione V2", e);
+				LogUtils.logWarnException(log, "Ricevuta non in formato V2.2, verra' provata la decodifica per la versione V2",e);
 				if(e.getCause() != null) {
 					ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), null);
 				} else {
 					ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), null);
 				}
 			} catch (ServiceException | UtilsException | GovPayException e) {
-				NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, null, e.getMessage(), e);
+				NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
 				String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
 				LogUtils.logError(log, faultDescription,e);
 				throw new UnprocessableEntityException("RT non valida: " + faultDescription);
@@ -514,14 +514,14 @@ public class RptDAO extends BaseDAO{
 					// ricarico l'RPT
 					rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 				} catch (JAXBException | SAXException e) {
-					LogUtils.logWarn(log, "Ricevuta non in formato V2, verra' provata la decodifica per la versione SANP 2.3.0", e);
+					LogUtils.logWarnException(log, "Ricevuta non in formato V2, verra' provata la decodifica per la versione SANP 2.3.0",e);
 					if(e.getCause() != null) {
 						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), null);
 					} else {
 						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), null);
 					}
 				} catch (ServiceException | UtilsException | GovPayException e) {
-					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, null, e.getMessage(), e);
+					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
 					String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
 					LogUtils.logError(log, faultDescription,e);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
@@ -545,14 +545,14 @@ public class RptDAO extends BaseDAO{
 					// ricarico l'RPT
 					rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 				} catch (JAXBException | SAXException e) {
-					LogUtils.logWarn(log, "Ricevuta non in formato SANP 2.3.0", e);
+					LogUtils.logWarnException(log, "Ricevuta non in formato SANP 2.3.0", e);
 					if(e.getCause() != null) {
 						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), null);
 					} else {
 						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), null);
 					}
 				} catch (ServiceException | UtilsException | GovPayException e) {
-					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, null, e.getMessage(), e);
+					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
 					String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
 					LogUtils.logError(log, faultDescription,e);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
@@ -569,7 +569,7 @@ public class RptDAO extends BaseDAO{
 					throw new UnprocessableEntityException("La ricevuta di pagamento caricata non e' in un formato valido");
 				} else {
 					String faultDescription = ndpException.getDescrizione() == null ? "<Nessuna descrizione>" : ndpException.getDescrizione(); 
-					LogUtils.logError(log, faultDescription,ndpException);
+					LogUtils.logError(log, faultDescription, ndpException);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 				}
 			}
