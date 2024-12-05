@@ -71,7 +71,7 @@
 		<spring.security.version>5.8.15</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>2.4.1</spring.ldap.version>
+		<spring.ldap.version>2.4.4</spring.ldap.version>
 		
 		<!-- nimbus-jose-jwt version -->
 		<nimbus-jose-jwt.version>9.39.3</nimbus-jose-jwt.version>
