@@ -20,7 +20,11 @@
 package it.govpay.rs.v1.authentication.oauth2.server.jwt;
 
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,11 +60,33 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 	
 	private BaseAutenticazioneDAO userDetailService;
 
+	private Logger logger = LoggerWrapperFactory.getLogger(GovPayJwtAuthenticationConverter.class);
+
 	@Override
 	public final AbstractAuthenticationToken convert(Jwt jwt) {
 		Collection<GrantedAuthority> authoritiesFromSuperClass = this.jwtGrantedAuthoritiesConverter.convert(jwt);
-		String principalClaimValue = jwt.getClaimAsString(this.principalClaimName);
+
+
+		logger.debug("Ricerca principal all'interno dei claim {}", this.principalClaimName);
+
+		Set<Entry<String,Object>> entrySet = jwt.getClaims().entrySet();
+		logger.trace("Claims disponibili: ");
+		for (Entry<String, Object> entry : entrySet) {
+			logger.trace("{}: {}", entry.getKey(), entry.getValue());
+		}
+
+		String[] split = this.principalClaimName.split(",");
+
+		String principalClaimValue = null;
+		for (String claimName : split) {
+			principalClaimValue = jwt.getClaimAsString(claimName);
+			if(principalClaimValue != null) {
+				break;
+			}
+		}
 		
+		logger.debug("Trovato principal {}", principalClaimValue);
+
 		GovPayLdapJwt govPayJwt = new GovPayLdapJwt(jwt.getTokenValue(), jwt.getIssuedAt(), jwt.getExpiresAt(), jwt.getHeaders(), jwt.getClaims());
 		
 		// creo un utenza ldap fittizzia per caricare le informazioni utente

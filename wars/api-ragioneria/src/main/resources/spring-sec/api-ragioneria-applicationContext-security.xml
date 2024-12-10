@@ -261,6 +261,52 @@
         </http>
         API_KEY_END -->
         
+        <!-- OAUTH2_START
+        
+        <b:bean id="oauth2AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.oauth2.server.entrypoint.BearerTokenAuthenticationEntryPoint" />
+        
+        <b:bean id="logoutSuccessHandlerOAuth2" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        
+        <b:bean id="userDetailServiceUtenzeOAuth2" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_RAGIONERIA" />
+        	<b:property name="authType" value="OAUTH2" />
+        </b:bean>
+        
+        <b:bean id="govpayJwtAuthenticationConverter" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtAuthenticationConverter">
+        	<b:property name="userDetailService" ref="userDetailServiceUtenzeOAuth2"/>
+        	<b:property name="principalClaimName" value="NOME_CLAIM_PRINCIPAL" />
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/oauth2/v2/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/oauth2/v2/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+	       		<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
+	       			<jwt jwk-set-uri="JWK_SET_URI" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       		</oauth2-resource-server>
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/oauth2/v3/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/oauth2/v3/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+	       		<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
+	       			<jwt jwk-set-uri="JWK_SET_URI" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       		</oauth2-resource-server>
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        OAUTH2_END -->
+        
         <!-- DEFAULT_SSL_START
         <b:bean id="x509AuthenticationEntryPointDefault" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
        
