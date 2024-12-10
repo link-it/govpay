@@ -1,13 +1,13 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.6.x/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.6.x)
-[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.6.x)](https://govpay.readthedocs.io/it/latest/?badge=3.6.x)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/3.6.x/LICENSE)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.8.x/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/3.8.x/)
+[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.8.x)](https://govpay.readthedocs.io/it/latest/?badge=3.8.x)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/3.8.x/LICENSE)
 
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
 ## Documentazione
 
-- [Read the docs](https://govpay.readthedocs.io/it/latest/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/3.6.x/))
+- [Read the docs](https://govpay.readthedocs.io/it/latest/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/3.8.x/))
 
 ## Contatti
 
@@ -50,7 +50,7 @@ quale si rimanda per una descrizione piu' estesa.
 * Codifica dati per analisi pagamenti: possibilità di codificare ogni tipologia di tributo / incasso al fine di analizzare le tipologie di entrate e la relativa diffusione
 * Fascicolo del cittadino: possibilità per il cittadino, dopo essersi autenticato, di visionare tutte le posizioni debitorie a proprio carico
 * Interoperabilità con contabilità: servizi REST per l'integrazione dei software di contabilità presente nell'Ente per il caricamento/interrogazione delle posizioni e delle relative imputazioni contabili se presenti
-* Interoperabilità con gestionali: servizi REST per l'integrazione dei software gestionali presenti nell'Ente Creditore	
+* Interoperabilità con gestionali: servizi REST per l'integrazione dei software gestionali presenti nell'Ente Creditore
 * Integrabilità con altri front-end: la piattaforma di pagamento può essere configurata per utilizzare front-end non nativi
 
 ### Servizi a valore aggiunto non individuati dal quadro sinottico
@@ -58,7 +58,7 @@ quale si rimanda per una descrizione piu' estesa.
 * Alimentazione APA via CSV: possibilità di alimentare l'archivio dei pagamenti in attesa tramite tracciati CSV dalla struttura configurabile
 * Servizio di notifica email: oltre alla possibilità di notificare gli avvisi di pagamento via email, la piattaforma consente di configurare la notifica delle ricevute di pagamento e dei promemoria di scadenza
 * Pagamenti spontanei: supporto alla gestione di pagamenti spontanei
-* Integrazione nativa ad applicativi terzi, come MyPIVOT, SECIM ed altri
+* Integrazione nativa ad applicativi terzi, come Maggioli, APKappa, SECIM ed altri
 
 ## Licenza
 
@@ -79,4 +79,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-
