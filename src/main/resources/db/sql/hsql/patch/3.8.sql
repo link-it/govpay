@@ -818,3 +818,11 @@ DROP table iuv;
 DROP sequence seq_iuv;
 
 
+-- 12/12/2024 Correzione stato pendenze riconciliate che contengono voci di tipo MBT o di altro intermediario
+UPDATE versamenti SET stato_pagamento = 'INCASSATO' WHERE id NOT IN ( SELECT DISTINCT v.id
+      FROM versamenti v
+      JOIN singoli_versamenti sv ON v.id = sv.id_versamento
+      JOIN pagamenti p ON sv.id = p.id_singolo_versamento
+      WHERE p.tipo = 'ENTRATA' AND p.stato = 'PAGATO') AND stato_pagamento != 'INCASSATO' AND stato_versamento='ESEGUITO';
+
+
