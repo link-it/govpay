@@ -30,7 +30,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -91,7 +90,7 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 	}
 
 	@SuppressWarnings("unchecked")
-	private void salvaInformazioniRichiestaIngresso(SOAPMessageContext smc, IContext context, GpContext ctx) throws ServiceException {
+	private void salvaInformazioniRichiestaIngresso(SOAPMessageContext smc, IContext context, GpContext ctx) {
 		if(smc.get(MessageContext.WSDL_OPERATION) != null)
 			MDC.put(MD5Constants.OPERATION_ID, ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
 		MDC.put(MD5Constants.TRANSACTION_ID, context.getTransactionId());

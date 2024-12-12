@@ -49,7 +49,6 @@ import org.slf4j.Logger;
 
 import it.govpay.orm.IdPagamento;
 import it.govpay.orm.VistaVersamentoNonRendicontato;
-import it.govpay.orm.VistaVersamentoNonRendicontato;
 import it.govpay.orm.dao.jdbc.converter.VistaVersamentoNonRendicontatoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VistaVersamentoNonRendicontatoFetch;
 

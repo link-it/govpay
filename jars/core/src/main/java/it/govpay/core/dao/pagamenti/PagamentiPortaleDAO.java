@@ -90,7 +90,6 @@ import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.GovPayException.FaultBean;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
@@ -353,7 +352,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						} else {
 							try {
 								sbNomeVersamenti.append(versamentoModel.getCausaleVersamento().getSimple());
-							} catch (UnsupportedEncodingException e) {}						
+							} catch (UnsupportedEncodingException e) {
+								//donothing
+							}						
 						}
 						if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
 							int numeroAltre = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() -1;
@@ -641,7 +642,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 	}
 
-	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, ValidationException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 		PagamentiPortaleBD pagamentiPortaleBD = null;
@@ -931,10 +932,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			response.setDettaglioEsito(e.getMessage());
 			switch (e.getCodEsito()) {
 			case INTERNAL:
-				log.error("[" + e.getCodEsito() + "] " + e.getMessage() + (e.getCausa() != null ? "\n" + e.getCausa() : ""), this);
+				log.error("[" + e.getCodEsito() + "] " + e.getMessage() + (e.getCausa() != null ? "\n" + e.getCausa() : ""), e);
 				break;
 			default:
-				log.warn("[" + e.getCodEsito() + "] " + e.getMessage() +  (e.getCausa() != null ? "\n" + e.getCausa() : ""));
+				LogUtils.logWarn(log, "[" + e.getCodEsito() + "] " + e.getMessage() +  (e.getCausa() != null ? "\n" + e.getCausa() : ""));
 				break;
 			}
 

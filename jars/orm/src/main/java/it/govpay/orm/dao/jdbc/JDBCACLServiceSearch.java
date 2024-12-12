@@ -19,16 +19,25 @@
  */
 package it.govpay.orm.dao.jdbc;
 
+import java.sql.Connection;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
 import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdAcl;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -37,24 +46,16 @@ import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
-import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.dao.jdbc.JDBCLimitedServiceManager;
+import it.govpay.core.exceptions.ParametroErratoException;
+import it.govpay.core.exceptions.ParametroObbligatorioException;
 import it.govpay.orm.ACL;
+import it.govpay.orm.IdAcl;
+import it.govpay.orm.constants.Costanti;
 import it.govpay.orm.dao.IDBACLServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for the backend objects of type {@link it.govpay.orm.ACL} 
@@ -72,6 +73,8 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 	protected Logger log = null;
 	protected IJDBCServiceSearchWithId<ACL, IdAcl, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
+	private String modelClassName = ACL.class.getName();
+	private String idModelClassName = IdAcl.class.getName();
 	public JDBCACLServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
@@ -107,7 +110,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(obj==null){
-				throw new Exception("Parameter (type:"+ACL.class.getName()+") 'obj' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, Costanti.PARAMETER_OBJ);
 			}
 			
 			// ISQLQueryObject
@@ -118,9 +121,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			return this.serviceSearch.convertToId(this.jdbcProperties,this.log,connection,sqlQueryObject,obj);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("ConvertToId not completed: "+e.getMessage(),e);
@@ -140,7 +141,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdAcl.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			
 			// ISQLQueryObject
@@ -151,13 +152,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,id,null);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Get not completed: "+e.getMessage(),e);
@@ -176,10 +171,10 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdAcl.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw new ParametroObbligatorioException(org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName(), Costanti.PARAMETER_ID_MAPPING_RESOLUTION_BEHAVIOUR);
 			}
 			
 			// ISQLQueryObject
@@ -190,13 +185,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,id,idMappingResolutionBehaviour);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Get (idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
@@ -216,7 +205,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdAcl.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 
 			// ISQLQueryObject
@@ -227,11 +216,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject,id);
 	
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(MultipleResultException | ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Exists not completed: "+e.getMessage(),e);
@@ -251,13 +236,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -267,9 +252,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			return this.serviceSearch.findAllIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,null);
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("FindAllIds not completed: "+e.getMessage(),e);
@@ -289,16 +272,16 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw new ParametroObbligatorioException(org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName(), Costanti.PARAMETER_ID_MAPPING_RESOLUTION_BEHAVIOUR);
 			}
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -308,9 +291,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			return this.serviceSearch.findAllIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,idMappingResolutionBehaviour);
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("FindAllIds not completed: "+e.getMessage(),e);
@@ -330,13 +311,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -346,9 +327,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,null);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
@@ -368,16 +347,16 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw new ParametroObbligatorioException(org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName(), Costanti.PARAMETER_ID_MAPPING_RESOLUTION_BEHAVIOUR);
 			}
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -387,9 +366,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,idMappingResolutionBehaviour);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
@@ -409,13 +386,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName()));
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -425,13 +402,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,null);			
 
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
@@ -451,16 +422,16 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw new ParametroObbligatorioException(org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName(), Costanti.PARAMETER_ID_MAPPING_RESOLUTION_BEHAVIOUR);
 			}
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName()));
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -470,13 +441,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,idMappingResolutionBehaviour);			
 
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
@@ -496,13 +461,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName()));
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 			
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -512,9 +477,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.count(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Count not completed: "+e.getMessage(),e);
@@ -534,7 +497,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdAcl.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			
 			// ISQLQueryObject
@@ -545,11 +508,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject,id);	
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("InUse not completed: "+e.getMessage(),e);
@@ -569,13 +528,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION);
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(paginatedExpression.getClass().getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -585,11 +544,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
@@ -609,13 +564,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION);
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(paginatedExpression.getClass().getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -625,11 +580,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,distinct,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
@@ -649,13 +600,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION);
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(paginatedExpression.getClass().getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -665,11 +616,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
@@ -688,13 +635,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION);
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(paginatedExpression.getClass().getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -704,11 +651,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,distinct,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
@@ -728,13 +671,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName()));
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -744,11 +687,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
@@ -768,13 +707,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName()));
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -784,11 +723,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
@@ -808,13 +743,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName())); 
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -824,11 +759,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
@@ -848,13 +779,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION);
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(paginatedExpression.getClass().getName(), Costanti.PARAMETER_PAGINATED_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName())); 
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -864,11 +795,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
@@ -888,7 +815,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(unionExpression==null){
-				throw new Exception("Parameter (type:"+UnionExpression.class.getName()+") 'unionExpression' is null");
+				throw new ParametroObbligatorioException(UnionExpression.class.getName(), Costanti.PARAMETER_UNION_EXPRESSION);
 			}
 			
 			// ISQLQueryObject
@@ -923,7 +850,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(unionExpression==null){
-				throw new Exception("Parameter (type:"+UnionExpression.class.getName()+") 'unionExpression' is null");
+				throw new ParametroObbligatorioException(UnionExpression.class.getName(), Costanti.PARAMETER_UNION_EXPRESSION);
 			}
 			
 			// ISQLQueryObject
@@ -934,11 +861,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.unionCount(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("UnionCount not completed: "+e.getMessage(),e);
@@ -988,10 +911,10 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdAcl.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+ACL.class.getName()+") 'obj' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, Costanti.PARAMETER_OBJ);
 			}
 			
 			// ISQLQueryObject
@@ -1002,11 +925,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,id,obj);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds(IdObject) not completed: "+e.getMessage(),e);
@@ -1024,10 +943,10 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+IdAcl.class.getName()+") 'tableId' is lessEquals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+ACL.class.getName()+") 'obj' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, Costanti.PARAMETER_OBJ);
 			}
 			
 			// ISQLQueryObject
@@ -1038,11 +957,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,obj);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds(tableId) not completed: "+e.getMessage(),e);
@@ -1061,7 +976,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			
 			// ISQLQueryObject
@@ -1072,13 +987,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,null);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId) not completed: "+e.getMessage(),e);
@@ -1098,10 +1007,10 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw new ParametroObbligatorioException(org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName(), Costanti.PARAMETER_ID_MAPPING_RESOLUTION_BEHAVIOUR);
 			}
 			
 			// ISQLQueryObject
@@ -1112,13 +1021,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,idMappingResolutionBehaviour);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId,idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
@@ -1138,7 +1041,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 
 			// ISQLQueryObject
@@ -1149,11 +1052,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);			
 	
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(MultipleResultException | ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("Exists(tableId) not completed: "+e.getMessage(),e);
@@ -1173,13 +1072,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IPaginatedExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCPaginatedExpression.class.getName()));
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			this.log.debug("sql = {}", jdbcPaginatedExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -1189,9 +1088,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			return this.serviceSearch.findAllTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression);
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("findAllTableIds not completed: "+e.getMessage(),e);
@@ -1211,13 +1108,13 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0, JDBCExpression.class.getName())); 
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -1227,13 +1124,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);			
 
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | MultipleResultException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("findTableId not completed: "+e.getMessage(),e);
@@ -1253,7 +1144,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			
 			// ISQLQueryObject
@@ -1264,11 +1155,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);		
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("InUse(tableId) not completed: "+e.getMessage(),e);
@@ -1289,7 +1176,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			
 			// ISQLQueryObject
@@ -1300,11 +1187,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.findId(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,throwNotFound);		
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("findId(tableId,throwNotFound) not completed: "+e.getMessage(),e);
@@ -1325,7 +1208,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			
 			// ISQLQueryObject
@@ -1336,11 +1219,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,id,throwNotFound);		
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("findId(tableId,throwNotFound) not completed: "+e.getMessage(),e);
@@ -1369,8 +1248,8 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		try{
 			
 			// check parameters
-			if(returnClassTypes==null || returnClassTypes.size()<=0){
-				throw new Exception("Parameter 'returnClassTypes' is less equals 0");
+			if(returnClassTypes==null || returnClassTypes.isEmpty()){
+				throw new ParametroObbligatorioException("", Costanti.PARAMETER_RETURN_CLASS_TYPES, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			
 			// ISQLQueryObject
@@ -1381,11 +1260,7 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 
 			return this.serviceSearch.nativeQuery(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,returnClassTypes,param);		
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			this.log.error(e.getMessage(),e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);

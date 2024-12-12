@@ -46,7 +46,6 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;

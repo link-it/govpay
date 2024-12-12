@@ -21,11 +21,6 @@ package it.govpay.rs;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.transport.http.AbstractCORSFilter;
 import org.openspcoop2.utils.transport.http.CORSFilterConfiguration;
@@ -62,22 +57,22 @@ import it.govpay.core.utils.GovpayConfig;
  */
 public class OriginFilter extends AbstractCORSFilter {
 
-	private static CORSFilterConfiguration CORS_FILTER_CONFIGURATION;
+	private static CORSFilterConfiguration corsFilterConfiguration;
 	private static synchronized void initCORSFilterConfiguration() throws IOException {
-		if(CORS_FILTER_CONFIGURATION==null) {
+		if(corsFilterConfiguration==null) {
 			try {
-				CORS_FILTER_CONFIGURATION = new CORSFilterConfiguration();
-				CORS_FILTER_CONFIGURATION.init(GovpayConfig.getInstance().getCORSProperties());
+				corsFilterConfiguration = new CORSFilterConfiguration();
+				corsFilterConfiguration.init(GovpayConfig.getInstance().getCORSProperties());
 			}catch(Exception e) {
 				throw new IOException(e.getMessage(),e);
 			}
 		}
 	}
 	private static CORSFilterConfiguration getCORSFilterConfiguration() throws IOException {
-		if(CORS_FILTER_CONFIGURATION==null) {
+		if(corsFilterConfiguration==null) {
 			initCORSFilterConfiguration();
 		}
-		return CORS_FILTER_CONFIGURATION;
+		return corsFilterConfiguration;
 	}
 
 	@Override
@@ -89,10 +84,4 @@ public class OriginFilter extends AbstractCORSFilter {
 	protected Logger getLog() {
 		return LoggerWrapperFactory.getLogger(OriginFilter.class);
 	}
-
-	@Override
-		public void doFilter(ServletRequest servletReq, ServletResponse servletRes, FilterChain chain)
-				throws IOException, ServletException {
-			super.doFilter(servletReq, servletRes, chain);
-		}
 }

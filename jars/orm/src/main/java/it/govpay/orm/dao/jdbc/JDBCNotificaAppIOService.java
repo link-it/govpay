@@ -19,28 +19,29 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdNotifica;
+import java.sql.Connection;
+import java.text.MessageFormat;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.core.exceptions.ParametroErratoException;
+import it.govpay.core.exceptions.ParametroObbligatorioException;
+import it.govpay.orm.IdNotifica;
 import it.govpay.orm.NotificaAppIO;
+import it.govpay.orm.constants.Costanti;
 import it.govpay.orm.dao.IDBNotificaAppIOService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.NotificaAppIO} 
@@ -55,10 +56,13 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 
 	private IJDBCServiceCRUDWithId<NotificaAppIO, IdNotifica, JDBCServiceManager> serviceCRUD = null;
+	private String modelName = Costanti.MODEL_NOTIFICA_APP_IO;
+	private String modelClassName = NotificaAppIO.class.getName();
+	private String idModelClassName = IdNotifica.class.getName();
+	
 	public JDBCNotificaAppIOService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCNotificaAppIOService.class.getName()+ " initialized");
-		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("notificaAppIO");
+		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD(this.modelName);
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
@@ -98,7 +102,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(notificaAppIO==null){
-				throw new Exception("Parameter (type:"+NotificaAppIO.class.getName()+") 'notificaAppIO' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
 			}
 			
 			// validate
@@ -120,13 +124,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 		
 			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,notificaAppIO,idMappingResolutionBehaviour);			
 
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -138,17 +136,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -192,10 +196,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(notificaAppIO==null){
-				throw new Exception("Parameter (type:"+NotificaAppIO.class.getName()+") 'notificaAppIO' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdNotifica.class.getName()+") 'oldId' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_OLD_ID);
 			}
 
 			// validate
@@ -217,16 +221,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,notificaAppIO,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException | ValidationException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -238,17 +233,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -292,10 +293,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(notificaAppIO==null){
-				throw new Exception("Parameter (type:"+NotificaAppIO.class.getName()+") 'notificaAppIO' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, this.modelName); 
 			}
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0); 
 			}
 
 			// validate
@@ -317,16 +318,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,notificaAppIO,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException | ValidationException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -338,17 +330,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -367,10 +365,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdNotifica.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
 			}
 
 			// ISQLQueryObject
@@ -387,13 +385,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateFields);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -405,17 +397,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -434,13 +432,13 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdNotifica.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			if(condition==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_CONDITION);
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
 			}
 
 			// ISQLQueryObject
@@ -457,13 +455,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,condition,updateFields);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -475,17 +467,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -504,10 +502,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdNotifica.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 			if(updateModels==null){
-				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
+				throw new ParametroObbligatorioException(UpdateModel.class.getName(), Costanti.PARAMETER_UPDATE_MODELS);
 			}
 
 			// ISQLQueryObject
@@ -524,13 +522,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateModels);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -542,17 +534,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -571,10 +569,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
 			}
 
 			// ISQLQueryObject
@@ -591,13 +589,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,updateFields);	
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -609,17 +601,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -638,13 +636,13 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			if(condition==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_CONDITION);
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
 			}
 
 			// ISQLQueryObject
@@ -661,13 +659,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,condition,updateFields);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -679,17 +671,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -708,10 +706,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 			if(updateModels==null){
-				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
+				throw new ParametroObbligatorioException(UpdateModel.class.getName(), Costanti.PARAMETER_UPDATE_MODELS);
 			}
 
 			// ISQLQueryObject
@@ -728,13 +726,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,updateModels);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotFoundException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -746,17 +738,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -800,10 +798,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(notificaAppIO==null){
-				throw new Exception("Parameter (type:"+NotificaAppIO.class.getName()+") 'notificaAppIO' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdNotifica.class.getName()+") 'oldId' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_OLD_ID);
 			}
 
 			// validate
@@ -825,13 +823,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,notificaAppIO,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -843,17 +835,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -897,10 +895,10 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(notificaAppIO==null){
-				throw new Exception("Parameter (type:"+NotificaAppIO.class.getName()+") 'notificaAppIO' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
 			}
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 
 			// validate
@@ -922,13 +920,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,notificaAppIO,idMappingResolutionBehaviour);
 
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -940,17 +932,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -969,7 +967,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(notificaAppIO==null){
-				throw new Exception("Parameter (type:"+NotificaAppIO.class.getName()+") 'notificaAppIO' is null");
+				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
 			}
 
 			// ISQLQueryObject
@@ -986,10 +984,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,notificaAppIO);	
 
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -1001,17 +996,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -1031,7 +1032,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdNotifica.class.getName()+") 'id' is null");
+				throw new ParametroObbligatorioException(this.idModelClassName, Costanti.PARAMETER_ID);
 			}
 
 			// ISQLQueryObject
@@ -1048,10 +1049,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,id);			
 
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -1063,17 +1061,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -1104,10 +1108,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			return this.serviceCRUD.deleteAll(this.jdbcProperties,this.log,connection,sqlQueryObject);	
 
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -1119,17 +1120,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -1148,13 +1155,13 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0,JDBCExpression.class.getName())); 
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.log.debug("sql = {}", jdbcExpression.toSql());
 		
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -1170,10 +1177,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			return this.serviceCRUD.deleteAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);
 	
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -1185,17 +1189,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -1216,7 +1226,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
 			}
 		
 			// ISQLQueryObject
@@ -1233,10 +1243,7 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 
 			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);
 	
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
@@ -1248,17 +1255,23 @@ public class JDBCNotificaAppIOService extends JDBCNotificaAppIOServiceSearch  im
 					try{
 						if(connection!=null)
 							connection.rollback();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}else{
 					try{
 						if(connection!=null)
 							connection.commit();
-					}catch(Exception eIgnore){}
+					}catch(Exception eIgnore){
+						 //donothing
+					}
 				}
 				try{
 					if(connection!=null)
 						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
+				}catch(Exception eIgnore){
+					 //donothing
+				}
 			}
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);

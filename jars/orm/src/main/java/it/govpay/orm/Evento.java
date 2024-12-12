@@ -106,20 +106,23 @@ import java.io.Serializable;
 
 public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
   public Evento() {
+	  //donothing
   }
 
   public Long getId() {
-    if(this.id!=null)
+    if(this.id!=null) {
 		return this.id;
-	else
-		return new Long(-1);
+    } else {
+		return Long.valueOf(-1);
+    }
   }
 
   public void setId(Long id) {
-    if(id!=null)
+    if(id!=null) {
 		this.id=id;
-	else
-		this.id=new Long(-1);
+    } else {
+		this.id=Long.valueOf(-1);
+    }
   }
 
   public java.lang.String getComponente() {

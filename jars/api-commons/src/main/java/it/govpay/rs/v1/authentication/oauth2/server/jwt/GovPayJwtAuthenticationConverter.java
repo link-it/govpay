@@ -20,11 +20,9 @@
 package it.govpay.rs.v1.authentication.oauth2.server.jwt;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.jfree.util.Log;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 import org.springframework.core.convert.converter.Converter;
@@ -44,7 +42,6 @@ import it.govpay.core.autorizzazione.beans.GovPayLdapJwt;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
-import it.govpay.core.utils.LogUtils;
 
 
 /***

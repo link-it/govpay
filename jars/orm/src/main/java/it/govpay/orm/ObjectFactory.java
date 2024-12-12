@@ -53,6 +53,7 @@ public class ObjectFactory {
      * 
      */
     public ObjectFactory() {
+    	// donothing
     }
 
     /**
@@ -91,13 +92,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdTabellaControparti }
-     */
-    public IdTabellaControparti createIdTabellaControparti() {
-        return new IdTabellaControparti();
-    }
-
-    /**
      * Create an instance of {@link Evento }
      */
     public Evento createEvento() {
@@ -123,13 +117,6 @@ public class ObjectFactory {
      */
     public TipoVersamentoDominio createTipoVersamentoDominio() {
         return new TipoVersamentoDominio();
-    }
-
-    /**
-     * Create an instance of {@link IdMessaggio }
-     */
-    public IdMessaggio createIdMessaggio() {
-        return new IdMessaggio();
     }
 
     /**
@@ -441,13 +428,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdCarrello }
-     */
-    public IdCarrello createIdCarrello() {
-        return new IdCarrello();
-    }
-
-    /**
      * Create an instance of {@link Documento }
      */
     public Documento createDocumento() {
@@ -641,13 +621,6 @@ public class ObjectFactory {
      */
     public Versamento createVersamento() {
         return new Versamento();
-    }
-
-    /**
-     * Create an instance of {@link IdSingolaRendicontazione }
-     */
-    public IdSingolaRendicontazione createIdSingolaRendicontazione() {
-        return new IdSingolaRendicontazione();
     }
 
     /**
