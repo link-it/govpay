@@ -54,6 +54,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -68,11 +69,11 @@ import it.govpay.ragioneria.v2.beans.FaultBean.CategoriaEnum;
  */
 public abstract class BaseController {
 
-	public final static String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
-	public final static String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
-	public final static String SUFFIX_CONTENT_DISPOSITION = "\"";
-	public final static String PREFIX_FILENAME = "filename=\"";
-	public final static String SUFFIX_FILENAME = "\"";
+	public static final String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
+	public static final String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
+	public static final String SUFFIX_CONTENT_DISPOSITION = "\"";
+	public static final String PREFIX_FILENAME = "filename=\"";
+	public static final String SUFFIX_FILENAME = "\"";
 
 	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean";
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
@@ -181,7 +182,7 @@ public abstract class BaseController {
 			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
 		}
 
-		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
+		this.logError("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
@@ -199,7 +200,7 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(IOException ex) {
-			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.logError(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
@@ -214,10 +215,10 @@ public abstract class BaseController {
 
 		String sottotipoEsito = respKo.getCodice();
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
-			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
+			this.logInfo("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
 			sottotipoEsito = CategoriaEnum.AUTORIZZAZIONE.name();
 		} else {
-			this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+			this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		}
 
 		String respJson = this.getRespJson(respKo);
@@ -231,12 +232,12 @@ public abstract class BaseController {
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
 		switch (e.getStatusCode()) {
-		case 200: 
+		case 200:
 		case 422: // richieste che non passano la validazione semantica
-			this.log.info("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
+			this.logInfo("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
 			break;
 		default:
-			this.log.error("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
+			this.logError("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
 			break;
 		}
 		FaultBean respKo = new FaultBean();
@@ -246,7 +247,7 @@ public abstract class BaseController {
 			respKo.setCodice(e.getFaultBean().getFaultCode());
 			respKo.setDescrizione(e.getFaultBean().getFaultString());
 			respKo.setDettaglio(e.getFaultBean().getDescription());
-			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500;
+			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500
 		} else {
 			respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
 			respKo.setCodice(e.getCodEsitoV3());
@@ -265,7 +266,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
-		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
@@ -284,7 +285,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
-		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		this.logWarn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice("SINTASSI");
@@ -300,7 +301,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
-		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		this.logWarn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice("SINTASSI");
@@ -316,7 +317,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
-		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
+		this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
 
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
@@ -334,7 +335,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
-		this.log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
+		this.logError("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
 		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
 		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
@@ -345,11 +346,7 @@ public abstract class BaseController {
 
 	protected void logContext(IContext ctx) {
 		if(ctx != null) {
-//			try {
-//				ctx.getApplicationLogger().log();
-//			} catch (UtilsException e) {
-//				 this.log.error("Errore durante la chiusura dell'operazione: "+e.getMessage(),e);
-//			}
+			// donothing
 		}
 	}
 
@@ -396,5 +393,41 @@ public abstract class BaseController {
 		ctx.getEventoCtx().setException(exception);
 
 		return responseBuilder;
+	}
+
+	protected void logDebugException(String msg, Exception e) {
+		LogUtils.logDebugException(this.log, msg, e);
+	}
+
+	protected void logDebug(String msg, Object ... params) {
+		LogUtils.logDebug(this.log, msg, params);
+	}
+
+	protected void logInfoException(String msg, Exception e) {
+		LogUtils.logInfoException(this.log, msg, e);
+	}
+
+	protected void logInfo(String msg, Object ... params) {
+		LogUtils.logInfo(this.log, msg, params);
+	}
+
+	protected void logWarnException(String msg, Exception e) {
+		LogUtils.logWarnException(this.log, msg, e);
+	}
+
+	protected void logWarn(String msg, Object ... params) {
+		LogUtils.logWarn(this.log, msg, params);
+	}
+
+	protected void logError(String msg) {
+		LogUtils.logError(this.log, msg);
+	}
+
+	protected void logError(String msg, Exception e) {
+		LogUtils.logError(this.log, msg, e);
+	}
+
+	protected void logTrace(String msg, Object ... params) {
+		LogUtils.logTrace(this.log, msg, params);
 	}
 }

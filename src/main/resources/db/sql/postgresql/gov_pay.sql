@@ -21,6 +21,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL,
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
+	cod_connettore_recupero_rt VARCHAR(35),
 	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	principal VARCHAR(4000) NOT NULL,
@@ -829,38 +830,6 @@ ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_
 
 
 
-CREATE SEQUENCE seq_rr start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE rr
-(
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	ccp VARCHAR(35) NOT NULL,
-	cod_msg_revoca VARCHAR(35) NOT NULL,
-	data_msg_revoca TIMESTAMP NOT NULL,
-	data_msg_esito TIMESTAMP,
-	stato VARCHAR(35) NOT NULL,
-	descrizione_stato VARCHAR(512),
-	importo_totale_richiesto DOUBLE PRECISION NOT NULL,
-	cod_msg_esito VARCHAR(35),
-	importo_totale_revocato DOUBLE PRECISION,
-	xml_rr BYTEA NOT NULL,
-	xml_er BYTEA,
-	cod_transazione_rr VARCHAR(36),
-	cod_transazione_er VARCHAR(36),
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_rr') NOT NULL,
-	id_rpt BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT pk_rr PRIMARY KEY (id)
-);
-
-
-
-
 CREATE SEQUENCE seq_notifiche start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE notifiche
@@ -876,11 +845,9 @@ CREATE TABLE notifiche
 	id BIGINT DEFAULT nextval('seq_notifiche') NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	id_rpt BIGINT,
-	id_rr BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 );
 
@@ -953,34 +920,6 @@ CREATE TABLE promemoria
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
 
-
-
-
-CREATE SEQUENCE seq_iuv start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE iuv
-(
-	prg BIGINT NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	application_code INT NOT NULL,
-	data_generazione DATE NOT NULL,
-	tipo_iuv VARCHAR(1) NOT NULL,
-	cod_versamento_ente VARCHAR(35),
-	aux_digit INT NOT NULL DEFAULT 0,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_iuv') NOT NULL,
-	id_applicazione BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_iuv PRIMARY KEY (id)
-);
-
--- index
-CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
 
 
 
@@ -1081,12 +1020,10 @@ CREATE TABLE pagamenti
 	id BIGINT DEFAULT nextval('seq_pagamenti') NOT NULL,
 	id_rpt BIGINT,
 	id_singolo_versamento BIGINT,
-	id_rr BIGINT,
 	id_incasso BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
@@ -1338,7 +1275,6 @@ ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
 
 ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
@@ -1973,8 +1909,7 @@ SELECT
 	pagamenti.stato AS stato,                  
 	pagamenti.tipo AS tipo,                  
 	pagamenti.id_rpt AS id_rpt,                  
-	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
-	pagamenti.id_rr AS id_rr,                  
+	pagamenti.id_singolo_versamento AS id_singolo_versamento,                                   
 	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,

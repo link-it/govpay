@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils.trasformazioni;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.openspcoop2.utils.regexp.RegExpException;
@@ -26,9 +27,13 @@ import org.openspcoop2.utils.regexp.RegExpNotFoundException;
 import org.openspcoop2.utils.regexp.RegularExpressionEngine;
 import org.slf4j.Logger;
 
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class URLRegExpExtractor {
+
+	private static final String ERROR_MSG_ESTRAZIONE_0_FALLITA_1 = "Estrazione ''{0}'' fallita: {1}";
+	private static final String DEBUG_MSG_ESTRAZIONE_0_NON_HA_TROVATO_RISULTATI_1 = "Estrazione ''{0}'' non ha trovato risultati: {1}";
 
 	private Logger log;
 
@@ -50,13 +55,13 @@ public class URLRegExpExtractor {
 			valore = RegularExpressionEngine.getStringMatchPattern(this.url, pattern);
 		}
 		catch(RegExpNotFoundException e){
-			this.log.debug("Estrazione '"+pattern+"' non ha trovato risultati: "+e.getMessage(),e);
+			LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_ESTRAZIONE_0_NON_HA_TROVATO_RISULTATI_1, pattern, e.getMessage()),e);
 		}
 		catch(RegExpException e){
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
 		catch(Exception e){
-			throw new TrasformazioneException("Estrazione '"+pattern+"' fallita: "+e.getMessage(),e);
+			throw new TrasformazioneException(MessageFormat.format(ERROR_MSG_ESTRAZIONE_0_FALLITA_1, pattern, e.getMessage()),e);
 		}
 		return valore;
 	}
@@ -67,13 +72,13 @@ public class URLRegExpExtractor {
 			valore = RegularExpressionEngine.getAllStringMatchPattern(this.url, pattern);
 		}
 		catch(RegExpNotFoundException e){
-			this.log.debug("Estrazione '"+pattern+"' non ha trovato risultati: "+e.getMessage(),e);
+			LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_ESTRAZIONE_0_NON_HA_TROVATO_RISULTATI_1, pattern, e.getMessage()),e);
 		}
 		catch(RegExpException e){
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
 		catch(Exception e){
-			throw new TrasformazioneException("Estrazione '"+pattern+"' fallita: "+e.getMessage(),e);
+			throw new TrasformazioneException(MessageFormat.format(ERROR_MSG_ESTRAZIONE_0_FALLITA_1, pattern, e.getMessage()),e);
 		}
 		return valore;
 	}
@@ -91,13 +96,13 @@ public class URLRegExpExtractor {
 			valore = RegularExpressionEngine.getStringFindPattern(this.url, pattern);
 		}
 		catch(RegExpNotFoundException e){
-			this.log.debug("Estrazione '"+pattern+"' non ha trovato risultati: "+e.getMessage(),e);
+			LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_ESTRAZIONE_0_NON_HA_TROVATO_RISULTATI_1, pattern, e.getMessage()),e);
 		}
 		catch(RegExpException e){
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
 		catch(Exception e){
-			throw new TrasformazioneException("Estrazione '"+pattern+"' fallita: "+e.getMessage(),e);
+			throw new TrasformazioneException(MessageFormat.format(ERROR_MSG_ESTRAZIONE_0_FALLITA_1, pattern, e.getMessage()),e);
 		}
 		return valore;
 	}
@@ -108,13 +113,13 @@ public class URLRegExpExtractor {
 			valore = RegularExpressionEngine.getAllStringFindPattern(this.url, pattern);
 		}
 		catch(RegExpNotFoundException e){
-			this.log.debug("Estrazione '"+pattern+"' non ha trovato risultati: "+e.getMessage(),e);
+			LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_ESTRAZIONE_0_NON_HA_TROVATO_RISULTATI_1, pattern, e.getMessage()),e);
 		}
 		catch(RegExpException e){
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
 		catch(Exception e){
-			throw new TrasformazioneException("Estrazione '"+pattern+"' fallita: "+e.getMessage(),e);
+			throw new TrasformazioneException(MessageFormat.format(ERROR_MSG_ESTRAZIONE_0_FALLITA_1, pattern, e.getMessage()),e);
 		}
 		return valore;
 	}

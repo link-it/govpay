@@ -20,7 +20,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +63,7 @@ public class ConfigurazioniController extends BaseController {
     public Response getConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
     	String methodName = "getConfigurazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
@@ -75,7 +74,7 @@ public class ConfigurazioniController extends BaseController {
 			LeggiConfigurazioneDTOResponse configurazioneDTOResponse = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
 
 			Configurazione response = ConfigurazioniConverter.toRsModel(configurazioneDTOResponse.getConfigurazione());
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).header(this.transactionIdHeaderName, transactionId).build();
 
 		}catch (Exception e) {
@@ -91,7 +90,7 @@ public class ConfigurazioniController extends BaseController {
 	public Response aggiornaConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
     	String methodName = "aggiornaConfigurazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -126,7 +125,7 @@ public class ConfigurazioniController extends BaseController {
 
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
 
-				if(lstOp != null && lstOp.size() > 0) {
+				if(lstOp != null && !lstOp.isEmpty()) {
 					for (PatchOp patchOp : lstOp) {
 						patchOp.validate();
 					}
@@ -141,7 +140,7 @@ public class ConfigurazioniController extends BaseController {
 			LeggiConfigurazioneDTOResponse leggiConfigurazioneDTOResponse = configurazioneDAO.patchConfigurazione(patchConfigurazioneDTO);
 			Configurazione response = ConfigurazioniConverter.toRsModel(leggiConfigurazioneDTOResponse.getConfigurazione());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).header(this.transactionIdHeaderName, transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -155,7 +154,7 @@ public class ConfigurazioniController extends BaseController {
     public Response addConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
     	String methodName = "addConfigurazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -175,7 +174,7 @@ public class ConfigurazioniController extends BaseController {
 			PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = configurazioneDAO.salvaConfigurazione(putConfigurazioneDTO);
 			Status responseStatus = putConfigurazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -184,5 +183,3 @@ public class ConfigurazioniController extends BaseController {
 		}
     }
 }
-
-

@@ -47,15 +47,9 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CryptoUtils;
@@ -72,7 +66,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		super(useCacheData);
 	}
 
-	public FindApplicazioniDTOResponse findApplicazioni(FindApplicazioniDTO listaApplicazioniDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public FindApplicazioniDTOResponse findApplicazioni(FindApplicazioniDTO listaApplicazioniDTO) throws ServiceException {
 		ApplicazioniBD applicazioniBD = null;
 		try {
 			applicazioniBD = new ApplicazioniBD(ContextThreadLocal.get().getTransactionId(), useCacheData);
@@ -114,19 +108,20 @@ public class ApplicazioniDAO extends BaseDAO {
 		}
 	}
 
-	public GetApplicazioneDTOResponse getApplicazione(GetApplicazioneDTO getApplicazioneDTO) throws NotAuthorizedException, ApplicazioneNonTrovataException, ServiceException, NotAuthenticatedException {
+	public GetApplicazioneDTOResponse getApplicazione(GetApplicazioneDTO getApplicazioneDTO) throws ApplicazioneNonTrovataException, ServiceException {
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 			return new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(configWrapper, getApplicazioneDTO.getCodApplicazione()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
 		} finally {
+			//donothing
 		}
 	}
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, RuoloNonTrovatoException, UtilsException {  
+	ApplicazioneNonTrovataException, UnprocessableEntityException, UtilsException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putApplicazioneDTO.getIdOperatore());
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
@@ -194,7 +189,7 @@ public class ApplicazioniDAO extends BaseDAO {
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiVersamento(idTipiVersamento);
 			}
 			
-			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().size() > 0) {
+			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && !putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().isEmpty()) {
 				AclBD aclBD = new AclBD(applicazioniBD);
 				
 				aclBD.setAtomica(false); // gestione esplicita della connessione
@@ -218,7 +213,7 @@ public class ApplicazioniDAO extends BaseDAO {
 				String pwdTmp = putApplicazioneDTO.getApplicazione().getUtenza().getPassword();
 				String cryptPwd = CryptoUtils.cryptPw(pwdTmp);
 				
-				CryptoUtils.logDebug("Cifratura Password [{}] > [{}]", pwdTmp, cryptPwd);
+//				CryptoUtils.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]") 
 				putApplicazioneDTO.getApplicazione().getUtenza().setPassword(cryptPwd);
 			}
 
@@ -270,7 +265,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		return applicazioneDTOResponse;
 	}
 
-	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UtilsException{
+	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, ValidationException, UtilsException{
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 		try {
@@ -297,8 +292,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		}catch(NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Non esiste un'applicazione associata all'ID ["+patchDTO.getCodApplicazione()+"]");
 		}finally {
-			if(applicazioniBD != null) 
-				applicazioniBD.closeConnection();
+			applicazioniBD.closeConnection();
 		}
 
 	}

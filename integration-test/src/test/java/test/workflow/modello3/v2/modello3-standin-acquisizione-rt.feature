@@ -167,7 +167,54 @@ When method get
 Then status 200
 And match response /paSendRTReq/receipt/receiptId == ccpDet
 
-# verifica dei messaggi
+# Il simulatore non manda la ricevuta. Genero FR
+
+* call sleep(1000)
+* def dataInizioFR = getDateTime()
+* call sleep(1000)
+
+* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+
+* def idflusso_dom1_1 = response.response.rendicontazioni[0].identificativoFlusso
+
+* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(1000)
+* def dataFineFR = getDateTime()
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'flussiRendicontazione'
+And headers gpAdminBasicAutenticationHeader
+And param dataDa = dataInizioFR
+And param dataA = dataFineFR
+And param idFlusso = idflusso_dom1_1
+When method get
+Then status 200
+And match response ==
+"""
+{
+	numRisultati: 1,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[1]'
+}
+""" 
+
+* def idFlusso = response.risultati[0].idFlusso
+* def dataFlusso = response.risultati[0].dataFlusso
+
+Given url backofficeBaseurl
+And path 'flussiRendicontazione', idFlusso, dataFlusso 
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response.idFlusso == idFlusso 
+And match response.dataFlusso == dataFlusso
+And match response.rendicontazioni[0].esito == 4
+And match response.rendicontazioni[0].iuv == iuvDet
 
 
 Scenario: Pagamento eseguito dovuto precaricato con verifica, RT con importo diverso
@@ -249,3 +296,56 @@ Then assert responseStatus == 200
 * match response.rpp == '#[1]'
 * match response.rpp[0].stato == 'RT_ACCETTATA_PA'
 * match response.rpp[0].rt == '#notnull'
+
+* def idDominioDet = response.rpp[0].rt.fiscalCode
+* def iuvDet = response.rpp[0].rpt.creditorReferenceId
+* def ccpDet = response.rpp[0].rt.receiptId
+
+# Il simulatore non manda la ricevuta. Genero FR
+
+* call sleep(1000)
+* def dataInizioFR = getDateTime()
+* call sleep(1000)
+
+* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+
+* def idflusso_dom1_1 = response.response.rendicontazioni[0].identificativoFlusso
+
+* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(1000)
+* def dataFineFR = getDateTime()
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'flussiRendicontazione'
+And headers gpAdminBasicAutenticationHeader
+And param dataDa = dataInizioFR
+And param dataA = dataFineFR
+And param idFlusso = idflusso_dom1_1
+When method get
+Then status 200
+And match response ==
+"""
+{
+	numRisultati: 1,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[1]'
+}
+""" 
+
+* def idFlusso = response.risultati[0].idFlusso
+* def dataFlusso = response.risultati[0].dataFlusso
+
+Given url backofficeBaseurl
+And path 'flussiRendicontazione', idFlusso, dataFlusso 
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response.idFlusso == idFlusso 
+And match response.dataFlusso == dataFlusso
+And match response.rendicontazioni[0].esito == 0
+And match response.rendicontazioni[0].iuv == iuvDet

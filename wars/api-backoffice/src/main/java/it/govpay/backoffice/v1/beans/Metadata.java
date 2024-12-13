@@ -37,10 +37,10 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "mapEntries",
 })
 public class Metadata extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("mapEntries")
   private List<MapEntry> mapEntries = null;
-  
+
   /**
    **/
   public Metadata mapEntries(List<MapEntry> mapEntries) {
@@ -74,7 +74,7 @@ public class Metadata extends JSONSerializable implements IValidable {
   }
 
   public static Metadata parse(String json) throws IOException {
-    return (Metadata) parse(json, Metadata.class);
+    return parse(json, Metadata.class);
   }
 
   @Override
@@ -86,7 +86,7 @@ public class Metadata extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Metadata {\n");
-    
+
     sb.append("    mapEntries: ").append(toIndentedString(mapEntries)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -102,11 +102,11 @@ public class Metadata extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		vf.getValidator("mapEntries", this.mapEntries).notNull().minItems(1).maxItems(15).validateObjects();
   }
 }

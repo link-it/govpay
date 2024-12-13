@@ -244,4 +244,11 @@ public class SimpleDateFormatUtils {
         LocalTime time = LocalTime.of(c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), c.get(Calendar.MILLISECOND));
 		return LocalDateTime.of(date, time);
 	}
+	
+	public static Date toDate(LocalDate dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		return Date.from(dateToConvert.atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant());
+	}
 }

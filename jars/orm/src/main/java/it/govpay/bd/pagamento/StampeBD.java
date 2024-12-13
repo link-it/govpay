@@ -66,11 +66,11 @@ public class StampeBD extends BasicBD{
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public StampaFilter newFilter() throws ServiceException {
+	public StampaFilter newFilter() {
 		return new StampaFilter(this.getStampaService());
 	}
 
-	public StampaFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public StampaFilter newFilter(boolean simpleSearch) {
 		return new StampaFilter(this.getStampaService(),simpleSearch);
 	}
 	
@@ -97,7 +97,7 @@ public class StampeBD extends BasicBD{
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.DATA_CREAZIONE));
@@ -123,8 +123,7 @@ public class StampeBD extends BasicBD{
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -187,12 +186,6 @@ public class StampeBD extends BasicBD{
 			
 			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			
-//			IdStampa idStampa = new IdStampa();
-//			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
-//			IdVersamento idVersamentoObj = new IdVersamento();
-//			idVersamentoObj.setId(idVersamento);
-//			idStampa.setIdVersamento(idVersamentoObj);
-			
 			IExpression exp = this.getStampaService().newExpression();
 			exp.equals(it.govpay.orm.Stampa.model().TIPO, Stampa.TIPO.AVVISO.toString());
 			exp.and();
@@ -200,13 +193,7 @@ public class StampeBD extends BasicBD{
 			
 			it.govpay.orm.Stampa stampaVO = this.getStampaService().find(exp);
 			return StampaConverter.toDTO(stampaVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException |ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -221,12 +208,6 @@ public class StampeBD extends BasicBD{
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-//			IdStampa idStampa = new IdStampa();
-//			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
-//			IdDocumento idDocumentoObj = new IdDocumento();
-//			idDocumentoObj.setId(idDocumento);
-//			idStampa.setIdDocumento(idDocumentoObj);
-			
 			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			
 			IExpression exp = this.getStampaService().newExpression();
@@ -236,13 +217,7 @@ public class StampeBD extends BasicBD{
 			
 			it.govpay.orm.Stampa stampaVO = this.getStampaService().find(exp);
 			return StampaConverter.toDTO(stampaVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -251,7 +226,7 @@ public class StampeBD extends BasicBD{
 		}
 	}
 	
-	public void cancellaAvviso(long idVersamento) throws ServiceException, NotFoundException {
+	public void cancellaAvviso(long idVersamento) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -273,7 +248,7 @@ public class StampeBD extends BasicBD{
 		}
 	}
 	
-	public void cancellaAvvisoDocumento(long idDocumento) throws ServiceException, NotFoundException {
+	public void cancellaAvvisoDocumento(long idDocumento) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -343,9 +318,7 @@ public class StampeBD extends BasicBD{
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Stampa.model().PDF, stampa.getPdf()));
 			
 			this.getStampaService().updateFields(idStampa, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

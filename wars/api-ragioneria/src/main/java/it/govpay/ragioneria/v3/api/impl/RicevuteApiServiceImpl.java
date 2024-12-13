@@ -20,7 +20,6 @@
 package it.govpay.ragioneria.v3.api.impl;
 
 import java.net.URLDecoder;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,24 +28,16 @@ import java.util.List;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -84,7 +75,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
     	Authentication user = this.getUser();
         String methodName = "findRicevute";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -144,7 +135,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			}
 			response.setRisultati(results);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -165,7 +156,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
         Authentication user = this.getUser();
         String methodName = "getRicevuta";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -173,13 +164,13 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			// autorizzazione sul dominio
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 			if(domini == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 			}
-			
+
 			// se non ho autorizzazione star controllo che il dominio sia tra quelli autorizzati
 			if(!domini.isEmpty()) {
 				if(!domini.contains(idDominio)) {
@@ -207,4 +198,3 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 		}
     }
 }
-

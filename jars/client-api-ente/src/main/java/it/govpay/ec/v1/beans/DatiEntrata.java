@@ -25,8 +25,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-//import io.swagger.v3.oas.annotations.media.Schema;
-
 public class DatiEntrata  {
   
   // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
@@ -83,7 +81,6 @@ public class DatiEntrata  {
  /**
    * Tipologia di Bollo digitale  
   **/
-//  private TipoBolloEnum tipoBollo = null;
   private String tipoBollo = null;
   
   // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Digest in base64 del documento informatico associato alla marca da bollo")
@@ -234,25 +231,6 @@ public class DatiEntrata  {
    * Tipologia di Bollo digitale
    * @return tipoBollo
   **/
-//  @JsonProperty("tipoBollo")
-//  @NotNull
-//  @Valid
-//  public String getTipoBollo() {
-//    if (tipoBollo == null) {
-//      return null;
-//    }
-//    return tipoBollo.getValue();
-//  }
-//
-//  public void setTipoBollo(TipoBolloEnum tipoBollo) {
-//    this.tipoBollo = tipoBollo;
-//  }
-
-//  public DatiEntrata tipoBollo(TipoBolloEnum tipoBollo) {
-//    this.tipoBollo = tipoBollo;
-//    return this;
-//  }
-  
 	public DatiEntrata tipoBollo(String tipoBollo) {
 		this.tipoBollo = tipoBollo;
 		return this;

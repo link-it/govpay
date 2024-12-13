@@ -94,6 +94,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.VersamentoUtils;
@@ -215,8 +216,7 @@ public class PendenzeDAO extends BaseDAO{
 			versamentiBD = new it.govpay.bd.viste.VersamentiBD(configWrapper);
 			return this.listaPendenze(listaPendenzaDTO, versamentiBD);
 		}finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
 	}
 
@@ -441,18 +441,15 @@ public class PendenzeDAO extends BaseDAO{
 
 			String idA2A = leggiPendenzaDTO.getCodA2A();
 			String idPendenza = leggiPendenzaDTO.getCodPendenza();
-			response = _leggiPendenza(idA2A,idPendenza, response, versamentiBD);
+			return leggiPendenzaEngine(idA2A,idPendenza, response, versamentiBD);
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		} finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
+			versamentiBD.closeConnection();
 		}
-
-		return response;
 	}
 
-	private LeggiPendenzaDTOResponse _leggiPendenza(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, VersamentiBD versamentiBD) throws NotFoundException, ServiceException {
+	private LeggiPendenzaDTOResponse leggiPendenzaEngine(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, VersamentiBD versamentiBD) throws NotFoundException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, idA2A).getId(), idPendenza);
@@ -513,6 +510,7 @@ public class PendenzeDAO extends BaseDAO{
 
 			return response;
 		} finally {
+			//donothing
 		}
 	}
 
@@ -553,7 +551,7 @@ public class PendenzeDAO extends BaseDAO{
 					} catch (NotFoundException e) {
 						versamentiBD.insertVersamento(versamentoFromSession);
 						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
-						log.info("Versamento ({}) dell'applicazione ({}) inserito", versamentoFromSession.getCodVersamentoEnte(), versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
+						LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) inserito", versamentoFromSession.getCodVersamentoEnte(), versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
 
 						// avvio il batch di gestione dei promemoria
 						Operazioni.setEseguiGestionePromemoria();
@@ -591,7 +589,7 @@ public class PendenzeDAO extends BaseDAO{
 					try {
 						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
 					} catch (EcException | GovPayException e1) {
-						log.info("La pendenza ricercata tramite avviso [Dominio: {}, NumeroAvviso: {}] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: {}", codDominio, iuv, e1.getMessage());
+						LogUtils.logInfo(log, "La pendenza ricercata tramite avviso [Dominio: {}, NumeroAvviso: {}] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: {}", codDominio, iuv, e1.getMessage());
 						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
 					}
 				} else {
@@ -780,7 +778,7 @@ public class PendenzeDAO extends BaseDAO{
 			versamentiBD.setAtomica(false);
 
 			// restituisco il versamento
-			response = this._leggiPendenza(idA2A, idPendenza, response, versamentiBD);
+			response = this.leggiPendenzaEngine(idA2A, idPendenza, response, versamentiBD);
 
 			return response;
 

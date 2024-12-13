@@ -78,6 +78,8 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.StTipoVersamento;
 
 public class MaggioliJPPAUtils {
+	
+	private MaggioliJPPAUtils() {}
 
 	// root element elemento di input
 	public static final String INVIA_ESITO_PAGAMENTO_RICHIESTA_ROOT_ELEMENT_NAME = "InviaEsitoPagamentoRichiesta"; 
@@ -257,6 +259,7 @@ public class MaggioliJPPAUtils {
 		break;
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 		{
 			popolaRicevutaDaRPT32(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}
@@ -428,7 +431,7 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaRicevutaDaRPT24(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTReq paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
@@ -520,7 +523,7 @@ public class MaggioliJPPAUtils {
 	}
 	
 	private static void popolaRicevutaDaRPT32(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTV2Request paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);

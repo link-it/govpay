@@ -19,7 +19,6 @@
  */
 package it.govpay.ragioneria.v3.api.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -78,7 +77,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
     	Authentication user = this.getUser();
     	String methodName = "findFlussiRendicontazione";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -118,14 +117,13 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 					}
 				}
 			}
-			
+
 			// Autorizzazione sui domini
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			findRendicontazioniDTO.setCodDomini(dominiAutorizzati);
 			if(escludiObsoleti != null && escludiObsoleti.booleanValue()) {
-				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);	
+				findRendicontazioniDTO.setFrObsoleto(!escludiObsoleti);
 			}
-//			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
 			findRendicontazioniDTO.setCodFlusso(idFlusso);
@@ -137,10 +135,10 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
 			// CHIAMATA AL DAO
-			
+
 			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = dominiAutorizzati != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
 					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
 
 			List<FlussoRendicontazioneIndex> collect = new ArrayList<>();
@@ -151,7 +149,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 
 			FlussiRendicontazione response = new FlussiRendicontazione(uriInfo.getRequestUri(), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(collect);
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
@@ -181,7 +179,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
     	Authentication user = this.getUser();
     	String methodName = "getFlussoRendicontazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -218,11 +216,11 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
-				this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
 			} else {
 				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr(), leggiRendicontazioneDTOResponse.getRendicontazioni());
-				this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(response).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}
 
@@ -234,4 +232,3 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
     }
 
 }
-

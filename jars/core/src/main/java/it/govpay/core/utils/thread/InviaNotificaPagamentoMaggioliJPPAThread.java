@@ -49,6 +49,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.MaggioliJPPAClient;
 import it.govpay.core.utils.client.MaggioliJPPAClient.Azione;
@@ -66,7 +67,7 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	
 	private Rpt rpt;
-	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaPagamentoMaggioliJPPAThread.class);
 	private IContext ctx = null;
 	private Giornale giornale;
 	private Dominio dominio;
@@ -108,8 +109,8 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 		EventoContext eventoCtx = new EventoContext(Componente.API_MAGGIOLI_JPPA);
 		try {
 			String operationId = appContext.setupInvioNotificaPagamentiMaggioliJPPAClient(Azione.maggioliInviaEsitoPagamento.toString(), connettoreMaggioliJPPA.getUrl());
-			log.info("Id Server: [" + operationId + "]");
-			log.info("Spedizione Notifica Pagamento Maggioli [RPT: " + rptKey + "]");
+			LogUtils.logInfo(log, "Id Server: [" + operationId + "]");
+			LogUtils.logInfo(log, "Spedizione Notifica Pagamento Maggioli [RPT: " + rptKey + "]");
 
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
@@ -147,7 +148,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 				inviaEsitoPagamentoRichiesta.setEsitoPagamento("ESEGUITO_PARZIALMENTE");
 				break;
 			default:
-				log.warn("RPT in stato "+this.rpt.getEsitoPagamento()+" non valido per la spedizione");
+				LogUtils.logWarn(log, "RPT in stato "+this.rpt.getEsitoPagamento()+" non valido per la spedizione");
 				
 				this.esito = StEsito.ERROR.toString();
 				this.descrizioneEsito = "RPT in stato "+ this.rpt.getEsitoPagamento()+" non valido per la spedizione";
@@ -161,13 +162,12 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 					InviaEsitoPagamentoRichiesta.class, null, inviaEsitoPagamentoRichiesta);
 			
 			String xmlDettaglioRichiesta = MaggioliJPPAUtils.getBodyAsString(false, jaxbElement, null);
-//			richiestaStandard.setXmlDettaglioRichiesta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRichiesta +  MaggioliJPPAUtils.CDATA_TOKEN_END);
 			richiestaStandard.setXmlDettaglioRichiesta( xmlDettaglioRichiesta );
 			CtRispostaStandard rispostaStandard = client.maggioliJPPAInviaEsitoPagamentoRichiesta(richiestaStandard);
 
 			this.esito = rispostaStandard.getEsito().toString();
 
-			log.info("Notifica Pagamento Maggioli inviata correttamente");
+			LogUtils.logInfo(log, "Notifica Pagamento Maggioli inviata correttamente");
 			ctx.getApplicationLogger().log("jppapdp.invioNotificaPagamentoOk");
 			eventoCtx.setEsito(Esito.OK);
 

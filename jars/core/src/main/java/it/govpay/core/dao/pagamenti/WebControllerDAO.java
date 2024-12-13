@@ -41,6 +41,7 @@ import it.govpay.core.utils.UrlUtils;
 
 public class WebControllerDAO extends BaseDAO{
 
+	private static final String ESITO = "esito";
 	public static final String OK = "OK";
 
 	public WebControllerDAO() {
@@ -68,14 +69,14 @@ public class WebControllerDAO extends BaseDAO{
 			
 			switch (pagamentoPortale.getCodiceStato()) {
 			case PAGAMENTO_FALLITO:
-				urlRitorno = UrlUtils.addParameter(urlRitorno, "esito","FAIL");
+				urlRitorno = UrlUtils.addParameter(urlRitorno, ESITO,"FAIL");
 				aggiornaPagamentiPortaleDTOResponse.setLocation(urlRitorno);
 				break;
 			case PAGAMENTO_ESEGUITO:
 			case PAGAMENTO_IN_ATTESA_DI_ESITO:
 			case PAGAMENTO_NON_ESEGUITO:
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-				urlRitorno = UrlUtils.addParameter(urlRitorno, "esito",pagamentoPortale.getPspEsito());
+				urlRitorno = UrlUtils.addParameter(urlRitorno, ESITO,pagamentoPortale.getPspEsito());
 				aggiornaPagamentiPortaleDTOResponse.setLocation(urlRitorno);
 				break;
 			case PAGAMENTO_IN_CORSO_AL_PSP:
@@ -83,8 +84,7 @@ public class WebControllerDAO extends BaseDAO{
 				break;
 			}
 		}finally {
-			if(pagamentiPortaleBD != null)
-				pagamentiPortaleBD.closeConnection();
+			pagamentiPortaleBD.closeConnection();
 		}
 
 		return aggiornaPagamentiPortaleDTOResponse;
@@ -120,14 +120,13 @@ public class WebControllerDAO extends BaseDAO{
 			
 			if(urlRitorno != null) {
 				urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
-				urlRitorno = UrlUtils.addParameter(urlRitorno , "esito",redirectDaPspDTO.getEsito());
+				urlRitorno = UrlUtils.addParameter(urlRitorno , ESITO,redirectDaPspDTO.getEsito());
 				redirectDaPspDTOResponse.setLocation(urlRitorno);
 			} else {
 				throw new GovPayException("Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + pagamentoPortale.getIdSessione(), EsitoOperazione.PAG_013, pagamentoPortale.getIdSessione());
 			}
 		}finally {
-			if(pagamentiPortaleBD != null)
-				pagamentiPortaleBD.closeConnection();
+			pagamentiPortaleBD.closeConnection();
 		}
 
 		return redirectDaPspDTOResponse;

@@ -19,7 +19,6 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -89,7 +88,7 @@ public class EventiController extends BaseController {
 			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi, Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA) {
 		String methodName = "findEventi";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		this.setMaxRisultati(maxRisultati);
 		try{
 			boolean autorizza = false;
@@ -299,7 +298,7 @@ public class EventiController extends BaseController {
 			ListaEventi response = new ListaEventi(results, this.getServicePath(uriInfo),
 					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
@@ -315,7 +314,7 @@ public class EventiController extends BaseController {
 	public Response getEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
 		String methodName = "getEvento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			boolean autorizza = false;
 			try {
@@ -351,64 +350,61 @@ public class EventiController extends BaseController {
 
 				if(idA2A != null && idPendenza != null) {
 
-					if(autorizza) {
-						//check autorizzazione per la pendenza scelta
-						ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
-						listaPendenzeDTO.setIdA2A(idA2A);
-						listaPendenzeDTO.setIdPendenza(idPendenza);
+					//check autorizzazione per la pendenza scelta
+					ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
+					listaPendenzeDTO.setIdA2A(idA2A);
+					listaPendenzeDTO.setIdPendenza(idPendenza);
 
-						// Autorizzazione sulle UO
-						List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
-						if(idUnitaOperative == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-						}
-						listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
-						// autorizzazione sui tipi pendenza
-						List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
-						if(idTipiVersamento == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-						}
-						listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+					// Autorizzazione sulle UO
+					List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
+					if(idUnitaOperative == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+					}
+					listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
+					// autorizzazione sui tipi pendenza
+					List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+					if(idTipiVersamento == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+					}
+					listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
 
-						PendenzeDAO pendenzeDAO = new PendenzeDAO();
+					PendenzeDAO pendenzeDAO = new PendenzeDAO();
 
-						ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
+					ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
 
-						if(listaPendenzeDTOResponse.getTotalResults() == 0)
-							autorizzato = false;
+					if(listaPendenzeDTOResponse.getTotalResults() == 0) {
+						autorizzato = false;
 					}
 				} else if(idDominio != null && iuv != null) {
 
-					if(autorizza) {
-						ListaRptDTO listaRptDTO = new ListaRptDTO(user);
-						listaRptDTO.setIdDominio(idDominio);
-						listaRptDTO.setIuv(iuv);
+					ListaRptDTO listaRptDTO = new ListaRptDTO(user);
+					listaRptDTO.setIdDominio(idDominio);
+					listaRptDTO.setIuv(iuv);
 
-						// Autorizzazione sui domini
-						List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-						if(domini == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-						}
-						listaRptDTO.setCodDomini(domini);
+					// Autorizzazione sui domini
+					List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+					if(domini == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+					}
+					listaRptDTO.setCodDomini(domini);
 
-						RptDAO rptDAO = new RptDAO();
-						ListaRptDTOResponse listaRptDTOResponse = rptDAO.countRpt(listaRptDTO);
+					RptDAO rptDAO = new RptDAO();
+					ListaRptDTOResponse listaRptDTOResponse = rptDAO.countRpt(listaRptDTO);
 
-						if(listaRptDTOResponse.getTotalResults() == 0)
-							autorizzato = false;
+					if(listaRptDTOResponse.getTotalResults() == 0) {
+						autorizzato = false;
 					}
 				} else if(idPagamento != null) {
 
-					if(autorizza) {
 
-						ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
-						listaPagamentiPortaleDTO.setIdSessione(idPagamento);
+					ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
+					listaPagamentiPortaleDTO.setIdSessione(idPagamento);
 
-						PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
-						ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
+					PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+					ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
 
-						if(pagamentoPortaleDTOResponse.getTotalResults() == 0)
-							autorizzato = false;
+					if(pagamentoPortaleDTOResponse.getTotalResults() == 0) {
+						autorizzato = false;
 					}
 				}
 			}
@@ -417,7 +413,7 @@ public class EventiController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedException(user);
 
 			Evento response = EventiConverter.toRsModel(leggiEventoDTOResponse.getEvento());
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)).type(MediaType.APPLICATION_JSON),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -428,5 +424,3 @@ public class EventiController extends BaseController {
 
 
 }
-
-

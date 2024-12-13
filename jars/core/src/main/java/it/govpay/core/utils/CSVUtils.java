@@ -67,7 +67,7 @@ public class CSVUtils {
 		InputStreamReader isr = new InputStreamReader(in);
 		BufferedReader br = new BufferedReader(isr);
 
-		List<byte[]> lst = new ArrayList<byte[]>(); 
+		List<byte[]> lst = new ArrayList<>(); 
 
 		while(br.ready()) {
 			String readLine = br.readLine();
@@ -84,39 +84,39 @@ public class CSVUtils {
 
 
 	public CSVRecord getCSVRecord(String csvEntry) throws IOException {
-		log.trace("Parsing del record CSV: [" + csvEntry + "] [Delimiter: " + csvFormat.getDelimiter() +" Escape:"+csvFormat.getEscapeCharacter()+"]");
+		log.trace("Parsing del record CSV: [{}] [Delimiter: {} Escape:{}]", csvEntry, csvFormat.getDelimiterString(), csvFormat.getEscapeCharacter());
 		CSVParser p = CSVParser.parse(csvEntry, csvFormat);
 		CSVRecord r = p.getRecords().get(0);
 		if(log.isTraceEnabled()) {
 			log.trace("Parsing completed:" );
 			for(int i=0; i < r.size(); i++) {
-				log.trace(i + ": [" + r.get(i) + "]");
+				log.trace("{}: [{}]", i , r.get(i));
 			}
 		}
 		return r ;
 	}
 
-	public boolean isEmpty(CSVRecord record, int position) {
+	public boolean isEmpty(CSVRecord myRecord, int position) {
 		try {
-			return record.get(position).isEmpty(); 
+			return myRecord.get(position).isEmpty(); 
 		} catch (Throwable t) {
 			return true;
 		}
 	}
 
-	public String toJsonValue(CSVRecord record, int ... positions) {
-		String collage = "";
+	public String toJsonValue(CSVRecord myRecord, int ... positions) {
+		StringBuilder collage = new StringBuilder("");
 
 		for(int position : positions) {
-			if(!isEmpty(record, position)) {
-				collage += record.get(position) + " ";
+			if(!isEmpty(myRecord, position)) {
+				collage.append(myRecord.get(position)).append(" ");
 			}
 		}
 
-		if(collage.trim().isEmpty())
+		if(collage.toString().trim().isEmpty())
 			return "null";
 		else
-			return "\"" + collage.trim() +  "\"";
+			return "\"" + collage.toString().trim() +  "\"";
 	}
 
 	public String toCsv(String ...strings) throws IOException {
@@ -126,8 +126,7 @@ public class CSVUtils {
 		printer.flush();
 		printer.close();
 		
-		String string = writer.toString();
-		return string;
+		return writer.toString();
 	}
 
 	public static long countLines(byte[] tracciato) throws IOException {
@@ -136,19 +135,14 @@ public class CSVUtils {
 				BufferedReader br = new BufferedReader(isr);
 				){
 			return br.lines().count();
-			
-//			int lines = 0;
-//			while (br.readLine() != null) {
-//				lines++;
-//			}
-//			return lines;
 		} finally {
+			// donothing
 		}
 	}
 
-	public boolean isOperazioneAnnullamento(CSVRecord record, int position) {
+	public boolean isOperazioneAnnullamento(CSVRecord myRecord, int position) {
 		try {
-			String importoS = record.get(position);
+			String importoS = myRecord.get(position);
 			
 			if(!importoS.isEmpty()) {
 				double parseDouble = Double.parseDouble(importoS);
@@ -161,32 +155,31 @@ public class CSVUtils {
 		}
 	}
 	
-	public String getCodDocumento(CSVRecord record, int position) {
+	public String getCodDocumento(CSVRecord myRecord, int position) {
 		try {
-			String codDocumento = record.get(position);
-			return codDocumento; 
+			return myRecord.get(position);
 		} catch (Throwable t) {
 			return null;
 		}
 	}
 	
 	public String getDelimiter() {
-		return String.valueOf(this.csvFormat.getDelimiter());
+		return this.csvFormat.getDelimiterString();
 	}
 	
-	public String getCodDominioFromIbanAccredito(CSVRecord record, int ... positions) throws ServiceException, NotFoundException {
-		String collage = "";
+	public String getCodDominioFromIbanAccredito(CSVRecord myRecord, int ... positions) throws ServiceException, NotFoundException {
+		StringBuilder collage = new StringBuilder("");
 
 		for(int position : positions) {
-			if(!isEmpty(record, position)) {
-				collage += record.get(position) + " ";
+			if(!isEmpty(myRecord, position)) {
+				collage.append(myRecord.get(position)).append(" ");
 			}
 		}
 		
-		if(collage.trim().isEmpty())
+		if(collage.toString().trim().isEmpty())
 			return "null";
 		else
-			return "\"" + getCodDominioFromIbanAccredito(collage.trim()) +  "\"";
+			return "\"" + getCodDominioFromIbanAccredito(collage.toString().trim()) +  "\"";
 	}
 	public String getCodDominioFromIbanAccredito(String codIban) throws ServiceException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);

@@ -136,8 +136,8 @@
       ENABLED: ${it.govpay.backoffice.gui.sezioneRiscossioni.enabled}  // abilita la sezione riscossioni
     },
 	MANUTENZIONE: {
-	  RECUPERO_PAGAMENTI: {
-	    ENABLED: ${it.govpay.backoffice.gui.sezioneManutenzione.recuperaPagamenti.enabled} // abilita la funzione di recupero pagamenti
+	  RECUPERO_RT: {
+	    ENABLED: ${it.govpay.backoffice.gui.sezioneManutenzione.recuperaRT.enabled} // abilita la funzione di recupero ricevute
 	  }
 	}
   };

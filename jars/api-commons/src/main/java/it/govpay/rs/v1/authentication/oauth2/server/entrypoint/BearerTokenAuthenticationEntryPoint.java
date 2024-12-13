@@ -44,7 +44,7 @@ import it.govpay.service.authentication.entrypoint.jaxrs.AbstractBasicAuthentica
 /**
  * Un {@link AuthenticationEntryPoint} estende l'implementazione {@link org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint}
  * per includere una risposta nel formato GovPay nei casi non gestiti dalla procedura originale.
- * 
+ *
  * @author Giuliano Pintori
  */
 public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -58,7 +58,7 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
             this.timeZoneId = timeZoneId;
             this.timeZone = TimeZone.getTimeZone(timeZoneId);
     }
-	
+
 	private String realmName;
 
 	/**
@@ -93,19 +93,19 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
 				}
 				status = ((BearerTokenError) error).getHttpStatus();
 			}
-			
+
 			String wwwAuthenticate = computeWWWAuthenticateHeaderValue(parameters);
 			response.addHeader(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
 			response.setStatus(status.value());
 			return;
 		}
-		
+
 		// altre eccezioni
 		if(Utilities.existsInnerException(authException, ServiceException.class)) {
 			AbstractBasicAuthenticationEntryPoint.fillResponse(response, CodiceEccezione.ERRORE_INTERNO.toFaultResponse(authException), this.timeZone);
 			return;
 		}
-		
+
 		AbstractBasicAuthenticationEntryPoint.fillResponse(response, CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException), this.timeZone);
 	}
 

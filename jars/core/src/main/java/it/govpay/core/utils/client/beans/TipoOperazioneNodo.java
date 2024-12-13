@@ -20,5 +20,5 @@
 package it.govpay.core.utils.client.beans;
 
 public enum TipoOperazioneNodo {
-	AVVISATURA, NODO;
+	RECUPERO_RT, NODO;
 }

@@ -14,6 +14,7 @@ Background:
 * def intermediarioApiKeyAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioApiKeyAuth.json')
 * def intermediarioOauth2ClientCredentialsAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioOauth2ClientCredentialsAuth.json')
 
+
 Scenario: Configurazione intermediario senza autenticazione verso pagoPA
 
 Given url backofficeBaseurl

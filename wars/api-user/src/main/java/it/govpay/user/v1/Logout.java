@@ -48,8 +48,8 @@ public class Logout extends BaseRsServiceV1{
 
     @GET
     @Path("/{urlID}")
-    
-    
+
+
     public Response logout(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("urlID") String urlID){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.logout(this.getUser(), uriInfo, httpHeaders,  urlID);
@@ -57,8 +57,8 @@ public class Logout extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
-    
+
+
     public Response logoutSenzaRedirect(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.logout(this.getUser(), uriInfo, httpHeaders, null);

@@ -34,7 +34,6 @@ import it.govpay.core.dao.anagrafica.dto.PostAclDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.AclNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class AclDAO extends BaseDAO{
 
@@ -50,16 +49,16 @@ public class AclDAO extends BaseDAO{
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForceRuolo(true);
 		listaAclDTO.setRuolo(ruolo);
-		return this._listaAcl(listaAclDTO);
+		return this.listaAclEngine(listaAclDTO);
 	}
 
 	public ListaAclDTOResponse leggiAclRuoloRegistrateSistema() throws ServiceException {
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForceRuolo(true);
-		return this._listaAcl(listaAclDTO);
+		return this.listaAclEngine(listaAclDTO);
 	}
 
-	private ListaAclDTOResponse _listaAcl(ListaAclDTO listaAclDTO) throws ServiceException {
+	private ListaAclDTOResponse listaAclEngine(ListaAclDTO listaAclDTO) throws ServiceException {
 		AclBD aclBD = null;
 		try {
 			aclBD = new AclBD(ContextThreadLocal.get().getTransactionId(), useCacheData);
@@ -95,7 +94,7 @@ public class AclDAO extends BaseDAO{
 	public ListaAclDTOResponse leggiAclPrincipalRegistrateSistema() throws ServiceException {
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForcePrincipal(true);
-		return this._listaAcl(listaAclDTO);
+		return this.listaAclEngine(listaAclDTO);
 	}
 
 	/**
@@ -103,7 +102,7 @@ public class AclDAO extends BaseDAO{
 	 * @return
 	 * @throws NotAuthenticatedException 
 	 */
-	public PostAclDTOResponse create(PostAclDTO postAclDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException { 
+	public PostAclDTOResponse create(PostAclDTO postAclDTO) throws ServiceException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, postAclDTO.getIdOperatore());
 		AclBD aclBD = null;
 		try {
@@ -124,9 +123,7 @@ public class AclDAO extends BaseDAO{
 			leggiAclDTOResponse.setCreated(true);
 			return leggiAclDTOResponse;
 		} finally {
-			if(aclBD != null) {
-				aclBD.closeConnection();
-			}
+			aclBD.closeConnection();
 		}
 	}
 
@@ -134,7 +131,7 @@ public class AclDAO extends BaseDAO{
 	 * @param deleteAclDTO
 	 * @throws NotAuthenticatedException 
 	 */
-	public void deleteAcl(DeleteAclDTO deleteAclDTO) throws NotAuthorizedException, AclNonTrovatoException, ServiceException, NotAuthenticatedException { 
+	public void deleteAcl(DeleteAclDTO deleteAclDTO) throws AclNonTrovatoException, ServiceException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, deleteAclDTO.getIdOperatore());
 		AclBD aclBD = null;
 		try {
@@ -143,10 +140,7 @@ public class AclDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new AclNonTrovatoException(e.getMessage());
 		} finally {
-			if(aclBD != null) {
-				aclBD.closeConnection();
-			}
+			aclBD.closeConnection();
 		}
 	}
-
 }

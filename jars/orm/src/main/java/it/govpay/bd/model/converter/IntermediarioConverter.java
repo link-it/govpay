@@ -75,6 +75,10 @@ public class IntermediarioConverter {
 		}
 		vo.setPrincipalOriginale(dto.getPrincipalOriginale());
 		
+		if(dto.getConnettorePddRecuperoRT()!= null) {
+			vo.setCodConnettoreRecuperoRT(dto.getConnettorePddRecuperoRT().getIdConnettore());
+		}
+		
 		return vo;
 	}
 

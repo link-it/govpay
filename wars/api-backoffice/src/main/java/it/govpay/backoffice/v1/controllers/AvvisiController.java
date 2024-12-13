@@ -19,7 +19,6 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 import jakarta.ws.rs.core.HttpHeaders;
@@ -57,7 +56,7 @@ public class AvvisiController extends BaseController {
     public Response getAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String linguaSecondaria) {
     	String methodName = "getAvviso";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -92,7 +91,7 @@ public class AvvisiController extends BaseController {
 					throw new ValidationException("Codifica inesistente per linguaSecondaria. Valore fornito [" + linguaSecondaria + "] valori possibili " + ArrayUtils.toString(LinguaSecondaria.values()));
 				}
 			}
-			
+
 			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
@@ -107,13 +106,13 @@ public class AvvisiController extends BaseController {
 			if(accept.toLowerCase().contains("application/pdf")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
 				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(getAvvisoDTOResponse.getAvvisoPdf()).header("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameAvviso()+"\""),transactionId).build();
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				getAvvisoDTO.setFormato(FormatoAvviso.JSON);
 				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
 				Avviso avviso = PendenzeConverter.toAvvisoRsModel(getAvvisoDTOResponse.getVersamento(), getAvvisoDTOResponse.getDominio(), getAvvisoDTOResponse.getBarCode(), getAvvisoDTOResponse.getQrCode());
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(avviso.toJSON(null)),transactionId).build();
 			} else {
 				// formato non accettato
@@ -126,4 +125,3 @@ public class AvvisiController extends BaseController {
 		}
     }
 }
-

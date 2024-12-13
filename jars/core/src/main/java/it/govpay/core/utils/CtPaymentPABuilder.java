@@ -99,7 +99,7 @@ public class CtPaymentPABuilder {
 	public static final String CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY = "TIPOLOGIABILANCIO";
 	public static final String CONTABILITA_QUOTA_ENTRY_KEY = "CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT";
 
-	public Rpt buildCtPaymentPA (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
+	public Rpt buildCtPaymentPA (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
 
 		return this.buildCtPaymentPA(requestBody,
 				null,
@@ -123,7 +123,7 @@ public class CtPaymentPABuilder {
 			TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento,
 			String autenticazione, 
-			String redirect) throws ServiceException, IOException {
+			String redirect) throws ServiceException {
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
@@ -359,7 +359,7 @@ public class CtPaymentPABuilder {
 
 			List<QuotaContabilita> quote = dto.getQuote();
 
-			if(quote != null && quote.size() > 0) {
+			if(quote != null && !quote.isEmpty()) {
 				ctMetadata = new CtMetadata();
 
 				if(quote.size() == 1) {

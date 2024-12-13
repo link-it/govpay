@@ -83,6 +83,13 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_pdd";
 			}
 		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_RECUPERO_RT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_recupero_rt";
+			}else{
+				return "cod_connettore_recupero_rt";
+			}
+		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_connettore_ftp";
@@ -135,6 +142,9 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_PDD)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_RECUPERO_RT)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){

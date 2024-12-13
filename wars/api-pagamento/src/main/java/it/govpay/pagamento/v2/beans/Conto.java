@@ -21,11 +21,10 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
@@ -38,13 +37,13 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "bic",
 })
 public class Conto extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("iban")
   private String iban = null;
-  
+
   @JsonProperty("bic")
   private String bic = null;
-  
+
   /**
    **/
   public Conto iban(String iban) {
@@ -106,7 +105,7 @@ public class Conto extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Conto {\n");
-    
+
     sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
     sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
     sb.append("}");
@@ -123,16 +122,16 @@ public class Conto extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 public void validate() throws ValidationException {
-	  
+
 	  ValidatoreIdentificativi vf = new ValidatoreIdentificativi();
 	  vf.validaIdIbanAccredito("iban", this.iban);
 	  if(this.bic != null)
 		  vf.validaBicAccredito("bic", this.bic);
   }
-  
+
 }
 
 

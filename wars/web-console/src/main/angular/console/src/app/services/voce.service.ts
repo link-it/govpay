@@ -259,9 +259,9 @@ export class Voce {
   public static SCADENZA: string = 'Scadenza';
   public static SCT: string = 'SCT';
   public static SECRET_CODE: string = 'Codice di segregazione';
-  public static SERVIZIO_AVVISATURA: string = 'Servizio avvisatura';
   public static SOLO_ESEGUITI: string = 'Notifica solo eseguiti';
   public static SERVIZIO_RPT: string = 'Servizio RPT';
+  public static SERVIZIO_RECUPERO_RT: string = 'Servizio recupero RT';
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';

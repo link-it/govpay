@@ -63,7 +63,6 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.TIPO = new Field("tipo",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRPT",it.govpay.orm.IdRpt.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"VistaPagamento",VistaPagamento.class));
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID = new Field("vrsId",long.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new Field("vrsCodVersamentoEnte",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -107,7 +106,6 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRPT",it.govpay.orm.IdRpt.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"VistaPagamento",VistaPagamento.class));
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new ComplexField(father,"vrsCodVersamentoEnte",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -168,8 +166,6 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 	public it.govpay.orm.model.IdRptModel ID_RPT = null;
 	 
 	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
-	 
-	public it.govpay.orm.model.IdRrModel ID_RR = null;
 	 
 	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
 	 

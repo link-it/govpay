@@ -47,10 +47,10 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
 
   @JsonProperty("timeToLive")
   private BigDecimal timeToLive = null;
-  
+
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   /**
    * Indica lo stato di abilitazione
    **/
@@ -147,7 +147,7 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AppIOBatch {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("    timeToLive: ").append(toIndentedString(timeToLive)).append("\n");

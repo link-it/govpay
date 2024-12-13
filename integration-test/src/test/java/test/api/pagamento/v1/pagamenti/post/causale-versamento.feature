@@ -31,6 +31,6 @@ When method get
 Then status 200	
 
 * def iuv = response.rpp[0].rpt.datiVersamento.identificativoUnivocoVersamento
-* def causale = "/RFS/" + iuv.substring(0,4) + " " + iuv.substring(4,8) + " "+ iuv.substring(8,12) + " " + iuv.substring(12,16) + " " + iuv.substring(16,20) + " " + iuv.substring(20,24) + " " + iuv.substring(24,25) + "/99.99/TXT/Diritti e segreteria"
+* def causale = "/RFB/" + iuv + "/99.99/TXT/Diritti e segreteria"
 
 * match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].causaleVersamento == causale

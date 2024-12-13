@@ -129,7 +129,7 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
   **/
   @JsonProperty("provinciaResidenza")
   @NotNull
- @Pattern(regexp="[A-Z]{2,2}")  public String getProvinciaResidenza() {
+ @Pattern(regexp="[A-Z]{2}")  public String getProvinciaResidenza() {
     return provinciaResidenza;
   }
 

@@ -387,7 +387,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
+				filter.setStato(Rpt.getStatiPendenti());
 				filter.setIdVersamento(versamento.getId());
 				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
 				
@@ -831,7 +831,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
+				filter.setStato(Rpt.getStatiPendenti());
 				filter.setIdVersamento(versamento.getId());
 				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
 				
@@ -1683,7 +1683,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			response.setOutcome(StOutcome.OK);
 
-			PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), true);
+			PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), true);
 			response.setData(paGetPaymentRes_RPT.getData()); 
 			
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
@@ -2348,7 +2348,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			response.setOutcome(StOutcome.OK);
 
-			PaGetPaymentV2Response paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), true);
+			PaGetPaymentV2Response paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), true);
 			response.setData(paGetPaymentRes_RPT.getData()); 
 			
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");

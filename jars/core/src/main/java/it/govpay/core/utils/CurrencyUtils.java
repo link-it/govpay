@@ -98,7 +98,7 @@ public class CurrencyUtils {
 		
 	}
 
-	public String getCurrencyAsStringWithStringFormatConVirgole(Double value, Locale locale)  throws Exception{
+	public String getCurrencyAsStringWithStringFormatConVirgole(Double value, Locale locale) {
 		if(value == null)
 			return "";
 		
@@ -117,7 +117,7 @@ public class CurrencyUtils {
 		}
 	}
 
-	public String getCurrencyAsStringWithStringFormatSenzaVirgole(Double value, Locale locale) throws Exception{
+	public String getCurrencyAsStringWithStringFormatSenzaVirgole(Double value, Locale locale) {
 		if(value == null)
 			return "";
 
@@ -176,24 +176,24 @@ public class CurrencyUtils {
 		Logger log = LoggerWrapperFactory.getLogger(CurrencyUtils.class);
 		CurrencyUtils currencyUtils = CurrencyUtils.newInstance(log,Locale.ITALIAN);
 
-		System.out.println("=======D1=======");
-		System.out.println("D1 C1: "+ currencyUtils.getCurrencyAsString(d1));
-		System.out.println("D1 C2: "+ currencyUtils.getCurrencyAsStringWithStringFormat(d1,null,true));
-		System.out.println("=======D1=======");
+		LogUtils.logDebug(log, "=======D1=======");
+		LogUtils.logDebug(log, "D1 C1: "+ currencyUtils.getCurrencyAsString(d1));
+		LogUtils.logDebug(log, "D1 C2: "+ currencyUtils.getCurrencyAsStringWithStringFormat(d1,null,true));
+		LogUtils.logDebug(log, "=======D1=======");
 
-		System.out.println("=======D2=======");
-		System.out.println("D2 C1: "+ currencyUtils.getCurrencyAsString(d2));
-		System.out.println("D2 C2: "+ currencyUtils.getCurrencyAsStringWithStringFormat(d2,null,true));
-		System.out.println("=======D2=======");
+		LogUtils.logDebug(log, "=======D2=======");
+		LogUtils.logDebug(log, "D2 C1: "+ currencyUtils.getCurrencyAsString(d2));
+		LogUtils.logDebug(log, "D2 C2: "+ currencyUtils.getCurrencyAsStringWithStringFormat(d2,null,true));
+		LogUtils.logDebug(log, "=======D2=======");
 
-		System.out.println("=======D3=======");
-		System.out.println("D3 C1: "+ currencyUtils.getCurrencyAsString(d3));
-		System.out.println("D3 C2: "+ currencyUtils.getCurrencyAsStringWithStringFormat(d3,null,false));
-		System.out.println("=======D3=======");
+		LogUtils.logDebug(log, "=======D3=======");
+		LogUtils.logDebug(log, "D3 C1: "+ currencyUtils.getCurrencyAsString(d3));
+		LogUtils.logDebug(log, "D3 C2: "+ currencyUtils.getCurrencyAsStringWithStringFormat(d3,null,false));
+		LogUtils.logDebug(log, "=======D3=======");
 
-		System.out.println("=======D4=======");
-		System.out.println("D4 C1: "+ currencyUtils.getCurrencyAsString(d4));
-		System.out.println("D4 C2: "+ currencyUtils.getCurrencyAsString(d4,true));
-		System.out.println("=======D4=======");
+		LogUtils.logDebug(log, "=======D4=======");
+		LogUtils.logDebug(log, "D4 C1: "+ currencyUtils.getCurrencyAsString(d4));
+		LogUtils.logDebug(log, "D4 C2: "+ currencyUtils.getCurrencyAsString(d4,true));
+		LogUtils.logDebug(log, "=======D4=======");
 	}
 }

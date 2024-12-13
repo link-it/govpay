@@ -61,7 +61,6 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v2.controller.BaseController;
 import it.govpay.pagamento.v3.api.PendenzeApi;
 import it.govpay.pagamento.v3.beans.PendenzaArchivio;
 import it.govpay.pagamento.v3.beans.PosizioneDebitoria;
@@ -89,13 +88,14 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 	 * Fornisce la lista delle pendenze filtrata ed ordinata.
 	 *
 	 */
+	@Override
 	public Response findPendenze(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, String iuv, String idA2A, String idPendenza, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		this.buildContext();
 		Authentication user = this.getUser();
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		String methodName = "findPendenze"; 
+		String methodName = "findPendenze";
 		try{
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
@@ -125,7 +125,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
 					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
 					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
-					}				
+					}
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
 							+ "] valori possibili " + ArrayUtils.toString(StatoPendenza.values()));
@@ -175,17 +175,17 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzeDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				listaPendenzeDTO.setCfCittadino(userDetails.getIdentificativo()); 
+				listaPendenzeDTO.setCfCittadino(userDetails.getIdentificativo());
 			}
 
 			listaPendenzeDTO.setEseguiCount(metadatiPaginazione);
 			listaPendenzeDTO.setEseguiCountConLimit(maxRisultati);
 
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 
 			// CHIAMATA AL DAO
 
-			ListaPendenzeDTOResponse listaPendenzeDTOResponse = null; 
+			ListaPendenzeDTOResponse listaPendenzeDTOResponse = null;
 			if(AutorizzazioneUtils.getAuthenticationDetails(user).getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				listaPendenzeDTOResponse = pendenzeDAO.listaPendenzeSmartOrder((ListaPendenzeSmartOrderDTO) listaPendenzeDTO);
 			} else {
@@ -203,7 +203,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			PosizioneDebitoria response = new PosizioneDebitoria(this.getServicePath(uriInfo),	listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(results);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
@@ -219,12 +219,13 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 	 * Fornisce l&#x27;allegato di una pendenza
 	 *
 	 */
+	@Override
 	public Response getAllegatoPendenza(Long id) {
 		this.buildContext();
 		Authentication user = this.getUser();
 		String methodName = "getAllegatoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -259,7 +260,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 
 			StreamingOutput contenutoStream = allegatiDAO.leggiBlobContenuto(allegato.getId());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
 
 		}catch (Exception e) {
@@ -275,12 +276,13 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 	 * Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
 	 *
 	 */
+	@Override
 	public Response getPendenza(String idA2A, String idPendenza) {
 		this.buildContext();
 		Authentication user = this.getUser();
-		String methodName = "getPendenza";  
+		String methodName = "getPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
@@ -298,7 +300,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
 
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
@@ -319,7 +321,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 
 			PendenzaArchivio pendenza = PendenzeConverter.toPendenzaArchivioRsModel(ricevutaDTOResponse,user);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -329,4 +331,3 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 	}
 
 }
-

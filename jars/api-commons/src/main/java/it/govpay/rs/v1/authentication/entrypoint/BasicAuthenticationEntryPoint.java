@@ -35,7 +35,7 @@ public class BasicAuthenticationEntryPoint extends it.govpay.service.authenticat
 		if(Utilities.existsInnerException(authException, ServiceException.class)) {
 			return CodiceEccezione.ERRORE_INTERNO.toFaultResponse(authException);
 		}
-		
+
 		return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException);
 	}
 }

@@ -100,7 +100,7 @@ public class EventiConverter {
 
 		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
 		rsModel.setSeverita(evento.getSeverita() != null ? evento.getSeverita().intValue() : null);
-		
+
 		rsModel.setClusterId(evento.getClusterId());
 		rsModel.setTransactionId(evento.getTransactionId());
 

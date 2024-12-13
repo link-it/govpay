@@ -32,8 +32,6 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTracciato",
 "idDominio",
-"avvisaturaDigitale",
-"modalitaAvvisaturaDigitale",
 "inserimenti",
 "annullamenti",
 })
@@ -44,13 +42,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
   @JsonProperty("idDominio")
   private String idDominio = null;
-
-  @JsonProperty("avvisaturaDigitale")
-  private Boolean avvisaturaDigitale = false;
-
-  @JsonProperty("modalitaAvvisaturaDigitale")
-  private ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = null;
-
+  
   @JsonProperty("inserimenti")
   private List<NuovaPendenzaTracciato> inserimenti = null;
 
@@ -87,37 +79,6 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
-  }
-
-  /**
-   * Indica se la pendenza deve essere avvisata digitalmente
-   **/
-  public TracciatoPendenzePost avvisaturaDigitale(Boolean avvisaturaDigitale) {
-    this.avvisaturaDigitale = avvisaturaDigitale;
-    return this;
-  }
-
-  @JsonProperty("avvisaturaDigitale")
-  public Boolean getAvvisaturaDigitale() {
-    return avvisaturaDigitale;
-  }
-  public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
-    this.avvisaturaDigitale = avvisaturaDigitale;
-  }
-
-  /**
-   **/
-  public TracciatoPendenzePost modalitaAvvisaturaDigitale(ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-    this.modalitaAvvisaturaDigitale = modalitaAvvisaturaDigitale;
-    return this;
-  }
-
-  @JsonProperty("modalitaAvvisaturaDigitale")
-  public ModalitaAvvisaturaDigitale getModalitaAvvisaturaDigitale() {
-    return modalitaAvvisaturaDigitale;
-  }
-  public void setModalitaAvvisaturaDigitale(ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-    this.modalitaAvvisaturaDigitale = modalitaAvvisaturaDigitale;
   }
 
   /**
@@ -159,17 +120,15 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
       return false;
     }
     TracciatoPendenzePost tracciatoPendenzePost = (TracciatoPendenzePost) o;
-    return Objects.equals(this.idTracciato, tracciatoPendenzePost.idTracciato) &&
-        Objects.equals(this.idDominio, tracciatoPendenzePost.idDominio) &&
-        Objects.equals(avvisaturaDigitale, tracciatoPendenzePost.avvisaturaDigitale) &&
-        Objects.equals(modalitaAvvisaturaDigitale, tracciatoPendenzePost.modalitaAvvisaturaDigitale) &&
-        Objects.equals(this.inserimenti, tracciatoPendenzePost.inserimenti) &&
-        Objects.equals(this.annullamenti, tracciatoPendenzePost.annullamenti);
+    return Objects.equals(idTracciato, tracciatoPendenzePost.idTracciato) &&
+        Objects.equals(idDominio, tracciatoPendenzePost.idDominio) &&
+        Objects.equals(inserimenti, tracciatoPendenzePost.inserimenti) &&
+        Objects.equals(annullamenti, tracciatoPendenzePost.annullamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idTracciato, this.idDominio, avvisaturaDigitale, modalitaAvvisaturaDigitale, this.inserimenti, this.annullamenti);
+    return Objects.hash(idTracciato, idDominio, inserimenti, annullamenti);
   }
 
   public static TracciatoPendenzePost parse(String json) throws IOException {
@@ -188,8 +147,6 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
     sb.append("    idTracciato: ").append(this.toIndentedString(this.idTracciato)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    avvisaturaDigitale: ").append(toIndentedString(avvisaturaDigitale)).append("\n");
-    sb.append("    modalitaAvvisaturaDigitale: ").append(toIndentedString(modalitaAvvisaturaDigitale)).append("\n");
     sb.append("    inserimenti: ").append(this.toIndentedString(this.inserimenti)).append("\n");
     sb.append("    annullamenti: ").append(this.toIndentedString(this.annullamenti)).append("\n");
     sb.append("}");

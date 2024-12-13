@@ -36,7 +36,7 @@ public abstract class AbstractOperazioneRequest {
 	private String codDominio;
 	private String codTipoVersamento;
 
-	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione) {
+	protected AbstractOperazioneRequest(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
 

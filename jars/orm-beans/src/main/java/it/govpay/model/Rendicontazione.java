@@ -21,6 +21,7 @@ package it.govpay.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Rendicontazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
 	public enum EsitoRendicontazione {
-		ESEGUITO(0), REVOCATO(3), ESEGUITO_SENZA_RPT(9);
+		ESEGUITO(0), REVOCATO(3), ESEGUITO_STANDIN(4), ESEGUITO_STANDIN_SENZA_RPT(8),  ESEGUITO_SENZA_RPT(9);
 
 		private int codifica;
 
@@ -55,7 +56,7 @@ public class Rendicontazione extends BasicModel {
 				if(p.getCodifica() == codifica.intValue())
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoRendicontazione. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoRendicontazione.values())));
 		}
 	}
 	
@@ -171,8 +172,8 @@ public class Rendicontazione extends BasicModel {
 	}
 	
 	private String marshall(List<Anomalia> anomalie) {
-		if(anomalie == null || anomalie.size() == 0) return "";
-		StringBuffer sb = new StringBuffer();
+		if(anomalie == null || anomalie.isEmpty()) return "";
+		StringBuilder sb = new StringBuilder();
 		
 		for(Anomalia a : anomalie){
 			sb.append(a.codAnomalia);

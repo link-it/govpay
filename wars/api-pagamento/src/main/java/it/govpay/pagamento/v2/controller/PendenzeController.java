@@ -20,7 +20,6 @@
 package it.govpay.pagamento.v2.controller;
 
 import java.io.ByteArrayOutputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,7 +36,6 @@ import jakarta.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -59,6 +57,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPendenzeSmartOrderDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -86,9 +85,9 @@ public class PendenzeController extends BaseController {
 
 
     public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, String idA2A, String idPendenza) {
-    	String methodName = "addPendenza";  
+    	String methodName = "addPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
@@ -103,12 +102,12 @@ public class PendenzeController extends BaseController {
 				validatoreId.validaIdApplicazione("idA2A", idA2A);
 			if(idPendenza != null)
 				validatoreId.validaIdPendenza("idPendenza", idPendenza);
-			
+
 			// se viene definito uno dei due parametri idA2A e idPendenza devono esserlo entrambi
 			if((idA2A != null && idPendenza == null) || (idA2A == null && idPendenza != null)) {
 				throw new UnprocessableEntityException("Per effettuare l'aggiornamento della pendenza sono obbligatori entrambi i paramentri 'idA2A' e 'idPendenza'.");
 			}
-			
+
 			// controllo che i parametri passati siano abilitati per l'utenza che prova a fare l'aggiornamento
 			boolean usaDB = true;
 			boolean isUpdate = false;
@@ -121,9 +120,9 @@ public class PendenzeController extends BaseController {
 						 log.debug("Aggiornamento della pendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] lettura della lista identificativi pendenze dalla sessione con id ["+session.getId()+"]");
 						 @SuppressWarnings("unchecked")
 						 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
-						 
+
 						 log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
-						 
+
 						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
 							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
 						 }
@@ -134,7 +133,7 @@ public class PendenzeController extends BaseController {
 					 isUpdate = true;
 				}
 			}
-			
+
 
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
@@ -142,10 +141,10 @@ public class PendenzeController extends BaseController {
 			}
 
 			// salvo il json ricevuto
-			IOUtils.copy(is, baos);	
+			IOUtils.copy(is, baos);
 			String jsonRequest = baos.toString();
 
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setInserimentoDB(usaDB);
@@ -162,9 +161,9 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdateCustom(putVersamentoDTO);
 
 			PendenzaCreata pc = PendenzeConverter.toRsPendenzaCreataModel(createOrUpdate.getDominio(), createOrUpdate.getVersamento(), createOrUpdate.getUo(), createOrUpdate.getPdf(), user);
-			
+
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
-			
+
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession();
 				if(session != null) {
@@ -172,59 +171,59 @@ public class PendenzeController extends BaseController {
 					@SuppressWarnings("unchecked")
 					Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 					log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
-					
+
 					if(listaIdentificativi == null)
 						listaIdentificativi = new HashMap<>();
-					
+
 //					if(!listaIdentificativi.containsKey((pc.getIdA2A()+pc.getIdPendenza())))
 					// inserisco sempre nella mappa sia in caso di insert che di update
 					String chiavePendenza = pc.getIdA2A()+pc.getIdPendenza();
 					listaIdentificativi.put(chiavePendenza, createOrUpdate.getVersamento());
-					
+
 					// in questo caso forzo lo stato a OK perche' il check sul db da sempre esito negativo
 					if(isUpdate) {
 						responseStatus =  Status.OK;
 					}
-					
+
 					log.debug("Id Pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] aggiunto alla lista identificativi.");
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
 					log.debug("Lista identificativi pendenze salvata nella sessione con id ["+session.getId()+"]");
-					
+
 					// salvo anche gli identificativi avviso per eventuali letture dell'avviso
 					if(pc.getNumeroAvviso() != null) {
 						@SuppressWarnings("unchecked")
 						Map<String, String> listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 						if(listaAvvisi == null)
 							listaAvvisi = new HashMap<>();
-						
+
 						String chiaveAvviso = createOrUpdate.getDominio().getCodDominio() + pc.getNumeroAvviso();
 						listaAvvisi.put(chiaveAvviso, chiavePendenza);
-						
+
 						log.debug("Avviso [idDominio:"+createOrUpdate.getDominio().getCodDominio()+", numero: "+pc.getNumeroAvviso()+"] aggiunto alla lista avvisi.");
 						session.setAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE, listaAvvisi);
 					}
-					
-					// salvo anche gli iuv avviso 
+
+					// salvo anche gli iuv avviso
 					if(createOrUpdate.getVersamento().getIuvVersamento() != null) {
-						
+
 						@SuppressWarnings("unchecked")
 						Map<String, String> listaIuv = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 						if(listaIuv == null)
 							listaIuv = new HashMap<>();
-						
+
 						String chiaveIuv = createOrUpdate.getDominio().getCodDominio() + createOrUpdate.getVersamento().getIuvVersamento();
 						listaIuv.put(chiaveIuv, chiavePendenza);
-						
+
 						log.debug("Iuv [idDominio:"+createOrUpdate.getDominio().getCodDominio()+", iuv: "+ createOrUpdate.getVersamento().getIuvVersamento()+"] aggiunto alla lista avvisi.");
 						session.setAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE, listaIuv);
 					}
-					
+
 				} else {
 					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione non effettuato, perche' la sessione e' null");
 				}
 			}
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -237,34 +236,34 @@ public class PendenzeController extends BaseController {
 
 
     public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
-		String methodName = "getByIda2aIdPendenza";  
+		String methodName = "getByIda2aIdPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			validatoreId.validaIdPendenza("idPendenza", idPendenza);
-			
+
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-			
+
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
-			
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-			
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
+
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
-			
+
  			Dominio dominio = ricevutaDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
 			UnitaOperativa unitaOperativa = ricevutaDTOResponse.getUnitaOperativa();
-			
+
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
@@ -275,9 +274,9 @@ public class PendenzeController extends BaseController {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), "la pendenza non appartiene al cittadino chiamante.");
 				}
 			}
-			
+
 			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse,user);
-			
+
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -285,10 +284,10 @@ public class PendenzeController extends BaseController {
 			this.logContext(ContextThreadLocal.get());
 		}
     }
-    
+
     public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String transactionId = ContextThreadLocal.get().getTransactionId();
-		String methodName = "pendenzeGET"; 
+		String methodName = "pendenzeGET";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// autorizzazione sulla API
@@ -296,18 +295,18 @@ public class PendenzeController extends BaseController {
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
-			
+
 			ListaPendenzeDTO listaPendenzeDTO = null;
-			
+
 			// solo l'utente cittadino deve visualizzare l'ordinamento smart
 			if(AutorizzazioneUtils.getAuthenticationDetails(user).getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				listaPendenzeDTO = new ListaPendenzeSmartOrderDTO(user);
 			} else {
 				listaPendenzeDTO = new ListaPendenzeDTO(user);
 			}
-			
+
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
 			if(stato != null) {
@@ -320,44 +319,44 @@ public class PendenzeController extends BaseController {
 					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
 					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
 					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
-					}				
+					}
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
 							+ "] valori possibili " + ArrayUtils.toString(StatoPendenza.values()));
 				}
 			}
-			
+
 			if(idDominio != null)
 				listaPendenzeDTO.setIdDominio(idDominio);
 			if(idA2A != null)
 				listaPendenzeDTO.setIdA2A(idA2A);
 			if(idDebitore != null)
 				listaPendenzeDTO.setIdDebitore(idDebitore);
-			
+
 			if(idPagamento != null)
 				listaPendenzeDTO.setIdPagamento(idPagamento);
-			
+
 			if(ordinamento != null)
 				listaPendenzeDTO.setOrderBy(ordinamento);
-			
+
 			if(dataDa!=null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
-				
-			
+
+
 			if(dataA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPendenzeDTO.setDataA(dataADate);
 			}
-			
+
 			// Autorizzazione sulle UO
 			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
 			if(uoAutorizzate == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
 			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
-			
+
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -367,40 +366,40 @@ public class PendenzeController extends BaseController {
 			listaPendenzeDTO.setDirezione(direzione);
 			listaPendenzeDTO.setDivisione(divisione);
 			listaPendenzeDTO.setMostraSpontaneiNonPagati(mostraSpontaneiNonPagati);
-			
+
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzeDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				listaPendenzeDTO.setCfCittadino(userDetails.getIdentificativo()); 
+				listaPendenzeDTO.setCfCittadino(userDetails.getIdentificativo());
 			}
-			
+
 			listaPendenzeDTO.setEseguiCount(metadatiPaginazione);
 			listaPendenzeDTO.setEseguiCountConLimit(maxRisultati);
-			
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-			
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
+
 			// CHIAMATA AL DAO
-			
-			ListaPendenzeDTOResponse listaPendenzeDTOResponse = null; 
+
+			ListaPendenzeDTOResponse listaPendenzeDTOResponse = null;
 			if(AutorizzazioneUtils.getAuthenticationDetails(user).getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				listaPendenzeDTOResponse = pendenzeDAO.listaPendenzeSmartOrder((ListaPendenzeSmartOrderDTO) listaPendenzeDTO);
 			} else {
 				listaPendenzeDTOResponse = pendenzeDAO.listaPendenze(listaPendenzeDTO);
 			}
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			
+
 			List<it.govpay.pagamento.v2.beans.PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
 				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento(),user);
 				results.add(rsModel);
 			}
-			
+
 			ListaPendenzeIndex response = new ListaPendenzeIndex(results, this.getServicePath(uriInfo),
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -411,14 +410,14 @@ public class PendenzeController extends BaseController {
 
     @SuppressWarnings("unchecked")
     public Response getPendenzaByAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
-    	String methodName = "getPendenzaByAvviso";  
+    	String methodName = "getPendenzaByAvviso";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
@@ -427,7 +426,7 @@ public class PendenzeController extends BaseController {
 			leggiPendenzaDTO.setIdDominio(idDominio);
 			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
 			leggiPendenzaDTO.setVerificaAvviso(true);
-			
+
 			// il versamento riferito dall'avviso potrebbe non essere ancora stato inserito nel db ma essere in sessione
 			Map<String, Versamento> listaIdentificativi = null;
 			Map<String, String> listaAvvisi = null;
@@ -436,11 +435,11 @@ public class PendenzeController extends BaseController {
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession(false);
 				if(session!= null) {
-					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 
 					String chiaveAvviso = idDominio+numeroAvviso;
 					if(numeroAvviso.length() == 18) {
-						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 					} else {
 						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 					}
@@ -458,17 +457,17 @@ public class PendenzeController extends BaseController {
 			}
 			leggiPendenzaDTO.setVersamentoFromSession(versamentoFromSession);
 
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenzaByRiferimentoAvviso(leggiPendenzaDTO);
 
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(leggiPendenzaDTOResponse.getVersamento().getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione());
-			
+
 			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
 			UnitaOperativa unitaOperativa = leggiPendenzaDTOResponse.getUnitaOperativa();
-			
+
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
@@ -479,10 +478,10 @@ public class PendenzeController extends BaseController {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), "la pendenza non appartiene al cittadino chiamante.");
 				}
 			}
-			
+
 			Pendenza pendenza =  PendenzeConverter.toRsModel(leggiPendenzaDTOResponse,user);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -493,5 +492,3 @@ public class PendenzeController extends BaseController {
 
 
 }
-
-

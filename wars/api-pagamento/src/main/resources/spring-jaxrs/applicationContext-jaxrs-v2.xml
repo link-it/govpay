@@ -269,6 +269,31 @@
     </jaxrs:server>
     <!-- API_KEY_END -->
     
+    <!-- OAUTH2_START  -->
+    <jaxrs:server id="apiPagamentoOauth2V2" address="/oauth2/v2/">
+        <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
+			   	<ref bean="avvisiV2" />
+			   	<ref bean="dominiV2" />
+			   	<ref bean="pagamentiV2" />
+			   	<ref bean="pendenzeV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="rppV2" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV2" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- OAUTH2_END -->
+    
     	<!-- DEFAULT_START  -->
     <jaxrs:server id="apiPagamentoV2DEFAULT" address="/v2/">
         <jaxrs:serviceBeans>

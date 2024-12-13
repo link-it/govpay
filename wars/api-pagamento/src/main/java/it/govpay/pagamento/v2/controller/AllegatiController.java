@@ -20,7 +20,6 @@
 package it.govpay.pagamento.v2.controller;
 
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 import jakarta.ws.rs.core.HttpHeaders;
@@ -58,28 +57,28 @@ public class AllegatiController extends BaseController {
 
 
 	public Response getAllegatoPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "getAllegatoPendenza";  
+		String methodName = "getAllegatoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		
+
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
+
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-			
+
 			AllegatiDAO allegatiDAO = new AllegatiDAO();
-			
+
 			LeggiAllegatoDTO leggiAllegatoDTO = new LeggiAllegatoDTO(user);
 			leggiAllegatoDTO.setId(id);
 			leggiAllegatoDTO.setIncludiRawContenuto(false);
-			
+
 			LeggiAllegatoDTOResponse leggiAllegatoDTOResponse = allegatiDAO.leggiAllegato(leggiAllegatoDTO);
-			
+
 			Dominio dominio = leggiAllegatoDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = leggiAllegatoDTOResponse.getTipoVersamento();
 			UnitaOperativa unitaOperativa = leggiAllegatoDTOResponse.getUnitaOperativa();
 			Allegato allegato = leggiAllegatoDTOResponse.getAllegato();
-			
+
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(user, dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
@@ -90,15 +89,15 @@ public class AllegatiController extends BaseController {
 					throw AuthorizationManager.toNotAuthorizedException(user, "la pendenza non appartiene al cittadino chiamante.");
 				}
 			}
-			
+
 			String allegatoFileName = allegato.getNome();
 			String mediaType = allegato.getTipo() != null? allegato.getTipo() : MediaType.APPLICATION_OCTET_STREAM;
 
 			StreamingOutput contenutoStream = allegatiDAO.leggiBlobContenuto(allegato.getId());
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
-		
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -108,5 +107,3 @@ public class AllegatiController extends BaseController {
 
 
 }
-
-

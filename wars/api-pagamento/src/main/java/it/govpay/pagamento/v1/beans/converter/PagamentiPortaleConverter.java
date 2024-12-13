@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.UtenzaCittadino;
@@ -37,6 +36,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -71,7 +71,7 @@ public class PagamentiPortaleConverter {
 		json.setId(dtoResponse.getId());
 		json.setLocation(dtoResponse.getId().equals("0") ? "" : UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
 		json.setRedirect(dtoResponse.getRedirectUrl());
-		json.setIdSession(dtoResponse.getIdSessione()); 
+		json.setIdSession(dtoResponse.getIdSessione());
 
 		return json;
 	}
@@ -84,7 +84,7 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
-		else 
+		else
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.N_A.toString());
 
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
@@ -109,7 +109,7 @@ public class PagamentiPortaleConverter {
 
 			int i =0;
 			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
-				
+
 				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
@@ -224,11 +224,11 @@ public class PagamentiPortaleConverter {
 			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
 		//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-		//		versamento.setAnomalie(pendenza.getAnomalie()); 
+		//		versamento.setAnomalie(pendenza.getAnomalie());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-		
+
 		// tipo versamento e' deciso dall'api che lo carica.
 		versamento.setTipo(TipologiaTipoVersamento.SPONTANEO);
 
@@ -327,7 +327,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		rsModel.setImporto(pagamentoPortale.getImporto()); 
+		rsModel.setImporto(pagamentoPortale.getImporto());
 
 		return rsModel;
 	}
@@ -365,7 +365,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
-		rsModel.setImporto(pagamentoPortale.getImporto()); 
+		rsModel.setImporto(pagamentoPortale.getImporto());
 
 		return rsModel;
 
@@ -388,10 +388,10 @@ public class PagamentiPortaleConverter {
 			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
 					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 			versante.setAnagrafica(nomeCognome);
-			
+
 			if(versante.getEmail() == null && cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL) != null)
 				versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
-			
+
 			versante.setTipo(TipoEnum.F);
 			versante.setCap(null);
 			versante.setCellulare(null);

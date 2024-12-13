@@ -35,7 +35,6 @@ public class Notifica extends BasicModel {
 	private Long id;
 	private long idApplicazione;
 	private Long idRpt;
-	private Long idRr;
 	private TipoNotifica tipo;
 	private Date dataCreazione;
 	private StatoSpedizione stato;
@@ -98,12 +97,6 @@ public class Notifica extends BasicModel {
 	}
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
-	}
-	public Long getIdRr() {
-		return this.idRr;
-	}
-	public void setIdRr(Long idRr) {
-		this.idRr = idRr;	
 	}
 	public Date getDataProssimaSpedizione() {
 		return this.dataProssimaSpedizione;

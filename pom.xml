@@ -71,6 +71,9 @@
 		
 		<!-- nimbus-jose-jwt version -->
 		<nimbus-jose-jwt.version>9.39.3</nimbus-jose-jwt.version>
+		
+		<!-- joda time -->
+		<joda-time.version>2.10</joda-time.version>
 
 		<!-- Commons -->
 		<commons-jcs-core.version>3.2.1</commons-jcs-core.version>
@@ -212,7 +215,7 @@
         
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
-		<owasp.plugin.version>10.0.3</owasp.plugin.version>
+		<owasp.plugin.version>11.1.1</owasp.plugin.version>
 		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnAnyVulnerability>false</owasp.plugin.failBuildOnAnyVulnerability>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
@@ -1061,6 +1064,12 @@
 			<!-- Jackson -->
 			<dependency>
 				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
 				<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
@@ -1092,6 +1101,12 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
 				<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-joda</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			
@@ -1155,11 +1170,59 @@
                 <version>${spring.version}</version>
             </dependency>
             
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-jcl</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
             <!-- Spring Security -->
             <dependency>
             	<groupId>org.springframework.security</groupId>
             	<artifactId>spring-security-web</artifactId>
             	<version>${spring.security.version}</version>
+            	<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <dependency>
@@ -1194,12 +1257,36 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
       	    	<version>${spring.security.version}</version>
+      	    	<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-ldap</artifactId>
                 <version>${spring.security.version}</version>
+                <exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
             
             <!-- Spring Security OAuth2 -->
@@ -1212,6 +1299,10 @@
 						<groupId>com.nimbusds</groupId>						
 						<artifactId>nimbus-jose-jwt</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			
@@ -1219,12 +1310,24 @@
 			    <groupId>org.springframework.security</groupId>
 			    <artifactId>spring-security-oauth2-client</artifactId>
 			    <version>${spring.security.version}</version>
+			    <exclusions>
+		    		<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+			    </exclusions>
 			</dependency>
 			
 			<dependency>
 			    <groupId>org.springframework.security</groupId>
 			    <artifactId>spring-security-oauth2-resource-server</artifactId>
 			    <version>${spring.security.version}</version>
+			     <exclusions>
+		    		<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+			    </exclusions>	
 			</dependency>
             
             <!-- Spring Security Ldap Plugin -->
@@ -1232,6 +1335,16 @@
     	        <groupId>org.springframework.ldap</groupId>
 	            <artifactId>spring-ldap-core</artifactId>
            		<version>${spring.ldap.version}</version>
+           		<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
         	</dependency>
         	
         	<!-- nimbus jose jwt-->
@@ -1239,6 +1352,12 @@
 				<groupId>com.nimbusds</groupId>						
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>${nimbus-jose-jwt.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.version}</version>
 			</dependency>
 			
 			<!-- webjar-swagger ui -->
@@ -1530,8 +1649,6 @@
 	            <artifactId>spotbugs-maven-plugin</artifactId>
 	            <version>4.8.6.0</version>
 	            <configuration>
-<!--	                <includeFilterFile>spotbugs-security-include.xml</includeFilterFile>-->
-<!--	                <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>-->
 	                <plugins>
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>

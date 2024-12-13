@@ -36,7 +36,6 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import it.govpay.backoffice.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.backoffice.v1.controllers.PendenzeController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -108,36 +107,36 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/tracciati/{idDominio}")
     @Consumes({ "text/csv", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @QueryParam("stampaAvvisi") Boolean stampaAvvisi, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @QueryParam("stampaAvvisi") Boolean stampaAvvisi){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, stampaAvvisi);
     }
 
     @POST
     @Path("/tracciati/{idDominio}/{idTipoPendenza}")
     @Consumes({ "text/csv", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("stampaAvvisi") Boolean stampaAvvisi, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("stampaAvvisi") Boolean stampaAvvisi){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, idTipoPendenza, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, idTipoPendenza, stampaAvvisi);
     }
 
     @PUT
     @Path("/{idA2A}/{idPendenza}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso){
         this.buildContext();
-        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso);
     }
 
     @POST
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso){
         this.buildContext();
-        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders, is, stampaAvviso);
     }
 
     @GET
@@ -177,10 +176,10 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/{idDominio}/{idTipoPendenza}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idUnitaOperativa") String idUnitaOperativa, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idUnitaOperativa") String idUnitaOperativa, @QueryParam("stampaAvviso") Boolean stampaAvviso){
         this.buildContext();
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, idUnitaOperativa, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, idUnitaOperativa, stampaAvviso);
     }
 
     @GET

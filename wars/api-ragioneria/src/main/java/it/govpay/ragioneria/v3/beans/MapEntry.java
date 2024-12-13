@@ -27,16 +27,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class MapEntry   {
-  
+
   @Schema(required = true, description = "chiave del metadata")
  /**
-   * chiave del metadata  
+   * chiave del metadata
   **/
   private String key = null;
-  
+
   @Schema(required = true, description = "valore del metadata")
  /**
-   * valore del metadata  
+   * valore del metadata
   **/
   private String value = null;
  /**
@@ -82,7 +82,7 @@ public class MapEntry   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class MapEntry {\n");
-    
+
     sb.append("    key: ").append(toIndentedString(key)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");

@@ -163,8 +163,7 @@ public class UtenzaPatchUtils {
 			
 			utenzaBD.updateUtenza(utenza);
 		}finally {
-			if(utenzaBD != null)
-				utenzaBD.closeConnection();
+			utenzaBD.closeConnection();
 		}
 
 	}
@@ -226,8 +225,7 @@ public class UtenzaPatchUtils {
 			
 			utenzaBD.updateUtenza(utenza);
 		}finally {
-			if(utenzaBD != null)
-				utenzaBD.closeConnection();
+			utenzaBD.closeConnection();
 		}
 
 		utenza.setTipiVersamento(null);
@@ -339,8 +337,7 @@ public class UtenzaPatchUtils {
 			
 			utenzaBD.updateUtenza(utenza);
 		}finally {
-			if(utenzaBD != null)
-				utenzaBD.closeConnection();
+			utenzaBD.closeConnection();
 		}
 
 		utenza.setDominiUo(null);
@@ -377,17 +374,13 @@ public class UtenzaPatchUtils {
 				else
 					aclBD.updateAcl(acl);
 				break;
-	//		case REPLACE:
-	//			aclBD.updateAcl(acl);
-	//			break;
 			case DELETE: 
 				aclBD.deleteAcl(acl);
 				break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
 		}finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 	}
 
@@ -432,8 +425,7 @@ public class UtenzaPatchUtils {
 			}
 			
 		}finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 	}
 

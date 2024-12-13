@@ -128,8 +128,8 @@
       ENABLED: true  // abilita la sezione riscossioni
     },
 	MANUTENZIONE: {
-	  RECUPERO_PAGAMENTI: {
-	    ENABLED: true // abilita la funzione di recupero pagamenti
+	  RECUPERO_RT: {
+	    ENABLED: true // abilita la funzione di recupero ricevute da pagopa
 	  }
 	}
   };

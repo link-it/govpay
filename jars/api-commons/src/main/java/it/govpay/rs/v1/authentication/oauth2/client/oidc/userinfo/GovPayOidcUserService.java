@@ -40,30 +40,30 @@ import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 
 /**
  * La classe estende le funzionalita' della classe {@link OidcUserService} per caricare le informazioni relative all'utenza GovPay all'interno dell'oggetto {@link OidcUser}
- * 
+ *
  * @author pintori@link.it
  *
  */
 public class GovPayOidcUserService extends OidcUserService {
 
 	private BaseAutenticazioneDAO userDetailService;
-	
+
 	@Override
 	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
 		OidcUser loadUserFromSuperClass = super.loadUser(userRequest);
 		Collection<? extends GrantedAuthority> authoritiesFromSuperClass = loadUserFromSuperClass.getAuthorities();
 		OidcUserInfo userInfoFromSuperClass = loadUserFromSuperClass.getUserInfo();
-		
+
 		ProviderDetails providerDetails = userRequest.getClientRegistration().getProviderDetails();
 		String userNameAttributeName = providerDetails.getUserInfoEndpoint().getUserNameAttributeName();
 		GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details = null;
-		
+
 		if (StringUtils.hasText(userNameAttributeName)) {
 			govpayLdapOidcOauth2Details = new GovpayLdapOidcOauth2Details(authoritiesFromSuperClass, userRequest.getIdToken(), userInfoFromSuperClass, userNameAttributeName);
 		} else {
 			govpayLdapOidcOauth2Details = new GovpayLdapOidcOauth2Details(authoritiesFromSuperClass, userRequest.getIdToken(), userInfoFromSuperClass);
 		}
-	
+
 		// creo un utenza ldap fittizzia per caricare le informazioni utente
 		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setAccountNonExpired(true);
@@ -71,13 +71,13 @@ public class GovPayOidcUserService extends OidcUserService {
 		essence.setCredentialsNonExpired(true);
 		essence.setEnabled(true);
 		essence.setUsername(govpayLdapOidcOauth2Details.getName());
-		essence.setPassword(AutorizzazioneUtils.PASSWORD_DEFAULT_VALUE);
+		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(govpayLdapOidcOauth2Details.getName());
-		
+
 		LdapUserDetails createUserDetails = essence.createUserDetails();
 		govpayLdapOidcOauth2Details.setLdapUserDetailsImpl(createUserDetails);
-		
+
 		// leggo le informazioni sull'utenza nel formato GovPay
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
@@ -90,7 +90,7 @@ public class GovPayOidcUserService extends OidcUserService {
 			govpayLdapOidcOauth2Details.setIdTransazioneAutenticazione(govpayDetails.getIdTransazioneAutenticazione());
 			govpayLdapOidcOauth2Details.setTipoUtenza(govpayDetails.getTipoUtenza());
 		}
-		
+
 		return govpayLdapOidcOauth2Details;
 	}
 

@@ -29,7 +29,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.pagamento.FrBD;
@@ -102,8 +101,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			return new ListaFrDTOResponse(count, resList);
 		}finally {
-			if(rendicontazioniBD != null)
-				rendicontazioniBD.closeConnection();
+			rendicontazioniBD.closeConnection();
 		}
 	}
 
@@ -129,8 +127,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			} catch (NotFoundException e) {
 				throw new RendicontazioneNonTrovataException(e.getMessage(), e);
 			} finally {
-				if(frBD != null)
-					frBD.closeConnection();
+				frBD.closeConnection();
 			}
 		} else {
 			RendicontazioniBD rendicontazioniBD = null;
@@ -167,8 +164,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			} catch (NotFoundException e) {
 				throw new RendicontazioneNonTrovataException(e.getMessage(), e);
 			} finally {
-				if(rendicontazioniBD != null)
-					rendicontazioniBD.closeConnection();
+				rendicontazioniBD.closeConnection();
 			}
 		}
 		return response;
@@ -193,8 +189,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			long count = rendicontazioniBD.count(filter);
 			response.setAuthorized(count > 0);
 		} finally {
-			if(rendicontazioniBD != null)
-				rendicontazioniBD.closeConnection();
+			rendicontazioniBD.closeConnection();
 		}
 		return response;
 	}
@@ -259,8 +254,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			return new ListaRendicontazioniDTOResponse(count, resList);
 		}finally {
-			if(rendicontazioniBD != null)
-				rendicontazioniBD.closeConnection();
+			rendicontazioniBD.closeConnection();
 		}
 	}
 
@@ -323,18 +317,17 @@ public class RendicontazioniDAO extends BaseDAO{
 				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.findAll(filter);
 
 				for (it.govpay.bd.viste.model.Rendicontazione rendicontazione : findAll) {
-					resList.add(this.popolateRendicontazione(rendicontazione, rendicontazioniBD, configWrapper));
+					resList.add(this.popolateRendicontazione(rendicontazione, configWrapper));
 				}
 			} 
 
 			return new ListaRendicontazioniDTOResponse(count, resList);
 		}finally {
-			if(rendicontazioniBD != null)
-				rendicontazioniBD.closeConnection();
+			rendicontazioniBD.closeConnection();
 		}
 	}
 
-	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException {
+	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BDConfigWrapper configWrapper) throws ServiceException {
 
 		if(rendicontazione.getVersamento() != null) {
 			rendicontazione.getVersamento().getApplicazione(configWrapper);

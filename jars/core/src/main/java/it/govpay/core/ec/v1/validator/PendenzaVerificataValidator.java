@@ -90,7 +90,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 			if(this.pendenzaVerificata.getVoci() == null || this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci non deve essere vuoto.");
 
-			if(this.pendenzaVerificata.getVoci().size() < 1)
+			if(this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci deve avere almeno 1 elemento.");
 
 			if(this.pendenzaVerificata.getVoci().size() > 5)
@@ -192,7 +192,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
-		if(allegati != null && allegati.size() >0 ) {
+		if(allegati != null && !allegati.isEmpty() ) {
 			for(NuovoAllegatoPendenza allegato: allegati) {
 				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
 				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);

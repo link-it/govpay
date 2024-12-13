@@ -28,7 +28,7 @@ import it.govpay.rs.v1.exception.CodiceEccezione;
 
 public class DefaultAuthenticationFailureHandler extends org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultAuthenticationFailureHandler {
 
-	
+
 	@Override
 	public Response getPayload(AuthenticationException authException, HttpServletResponse httpResponse) {
 		return CodiceEccezione.AUTORIZZAZIONE.toFaultResponse(authException);

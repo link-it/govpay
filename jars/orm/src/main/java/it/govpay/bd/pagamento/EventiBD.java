@@ -97,11 +97,7 @@ public class EventiBD extends BasicBD {
 			
 			it.govpay.orm.Evento vo = ((JDBCEventoServiceSearch)this.getEventoService()).get(id);
 			return EventoConverter.toDTO(vo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | MultipleResultException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -129,7 +125,7 @@ public class EventiBD extends BasicBD {
 		return dto;
 	}
 
-	public EventiFilter newFilter() throws ServiceException {
+	public EventiFilter newFilter() {
 		if(this.vista == null)
 			return new EventiFilter(this.getEventoService(), this.vista);
 
@@ -340,9 +336,7 @@ public class EventiBD extends BasicBD {
 				eventoLst.add(EventoConverter.toDTO(eventoVO));
 			}
 			return eventoLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -386,8 +380,6 @@ public class EventiBD extends BasicBD {
 			fields.add(it.govpay.orm.Evento.model().DETTAGLIO_ESITO);
 			fields.add(it.govpay.orm.Evento.model().ESITO);
 			fields.add(it.govpay.orm.Evento.model().INTERVALLO);
-			//			fields.add(it.govpay.orm.Evento.model().PARAMETRI_RICHIESTA);
-			//			fields.add(it.govpay.orm.Evento.model().PARAMETRI_RISPOSTA);
 			fields.add(it.govpay.orm.Evento.model().RUOLO);
 			fields.add(it.govpay.orm.Evento.model().SOTTOTIPO_ESITO);
 			fields.add(it.govpay.orm.Evento.model().SOTTOTIPO_EVENTO);
@@ -402,7 +394,7 @@ public class EventiBD extends BasicBD {
 			fields.add(it.govpay.orm.Evento.model().CLUSTER_ID);
 			fields.add(it.govpay.orm.Evento.model().TRANSACTION_ID);
 
-			List<Map<String, Object>> select = new ArrayList<Map<String,Object>>();
+			List<Map<String, Object>> select = new ArrayList<>();
 
 			if(this.vista == null) {
 				select = this.getEventoService().select(filter.toPaginatedExpression(), fields.toArray(new IField[fields.size()]));
@@ -427,9 +419,7 @@ public class EventiBD extends BasicBD {
 			return eventoLst;
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
-		} catch (NotImplementedException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

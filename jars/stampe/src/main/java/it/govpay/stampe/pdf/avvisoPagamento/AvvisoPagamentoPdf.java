@@ -151,7 +151,7 @@ public class AvvisoPagamentoPdf {
 		}
 	}
 	
-	public static AvvisoPagamentoPdf getInstance() {
+	public static synchronized AvvisoPagamentoPdf getInstance() {
 		if(instance == null)
 			init();
 
@@ -163,7 +163,7 @@ public class AvvisoPagamentoPdf {
 			instance = new AvvisoPagamentoPdf();
 	}
 
-	public AvvisoPagamentoPdf() {
+	private AvvisoPagamentoPdf() {
 		//donothing
 	}
 

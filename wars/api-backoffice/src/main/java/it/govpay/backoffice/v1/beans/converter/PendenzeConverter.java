@@ -82,7 +82,7 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class PendenzeConverter {
-	
+
 	private PendenzeConverter(){}
 
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, ValidationException, it.govpay.core.exceptions.IOException {
@@ -209,7 +209,7 @@ public class PendenzeConverter {
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 
 		rsModel.setAllegati(toAllegatiRsModel(allegati));
-		
+
 		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
 		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
 
@@ -327,7 +327,7 @@ public class PendenzeConverter {
 		rsModel.setUUID(versamento.getIdSessione());
 
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
-		
+
 		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
 		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
 
@@ -364,7 +364,7 @@ public class PendenzeConverter {
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			}
-			
+
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
@@ -398,7 +398,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
-		
+
 		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
@@ -429,7 +429,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
-		
+
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
@@ -445,11 +445,11 @@ public class PendenzeConverter {
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			}
-			
+
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
-		
+
 		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
@@ -480,7 +480,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
-		
+
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
@@ -496,11 +496,11 @@ public class PendenzeConverter {
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			}
-			
+
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
-		
+
 		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
@@ -656,7 +656,7 @@ public class PendenzeConverter {
 		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
-		
+
 		return versamento;
 	}
 
@@ -817,14 +817,14 @@ public class PendenzeConverter {
 				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
 			}
 		}
-		
+
 		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
 		// in questo caso impostiamo i valori di default per gli identificativi
 		if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
 			anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
 		}
 		if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
-			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
+			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
 		}
 
 		return anagraficaCommons;
@@ -969,23 +969,23 @@ public class PendenzeConverter {
 
 		return allegatiDTO;
 	}
-	
+
 	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
 		it.govpay.core.beans.tracciati.Metadata dto = null;
 		if(metadata != null) {
 			dto = new it.govpay.core.beans.tracciati.Metadata();
-			
+
 			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
 				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
-				
+
 				for (MapEntry mapEntry : metadata.getMapEntries()) {
 					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
 					mapEntryDto.setKey(mapEntry.getKey());
 					mapEntryDto.setValue(mapEntry.getValue());
-				
+
 					mapEntriesDto.add(mapEntryDto);
 				}
-				
+
 				dto.setMapEntries(mapEntriesDto);
 			}
 		}
@@ -1000,15 +1000,15 @@ public class PendenzeConverter {
 
 			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
 				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
-				
+
 				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
 					MapEntry mapEntryRsModel = new MapEntry();
 					mapEntryRsModel.setKey(mapEntry.getKey());
 					mapEntryRsModel.setValue(mapEntry.getValue());
-				
+
 					mapEntriesRsModel.add(mapEntryRsModel);
 				}
-				
+
 				rsModel.setMapEntries(mapEntriesRsModel);
 			}
 		}

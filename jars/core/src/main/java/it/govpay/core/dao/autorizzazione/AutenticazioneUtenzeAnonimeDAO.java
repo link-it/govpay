@@ -52,20 +52,17 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 	@Override
 	public UserDetails loadUserDetails(Authentication token) throws UsernameNotFoundException {
 		String username = (String) token.getPrincipal();
-		UserDetails user = this.loadUserDetails(username, token.getAuthorities());
-		return user;
+		return this.loadUserDetails(username, token.getAuthorities());
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserDetails user = this.loadUserDetails(username, null);
-		return user;
+		return this.loadUserDetails(username, null);
 	}
 
 	@Override
 	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
-		UserDetails user = this._loadUserDetailsFromLdapUserDetail(username, userDetail.getAuthorities(), userDetail);
-		return user;
+		return this._loadUserDetailsFromLdapUserDetail(username, userDetail.getAuthorities(), userDetail);
 	}
 
 	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) {
@@ -80,6 +77,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
 		}	finally {
+			// donothing
 		}
 	}
 	
@@ -97,6 +95,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
 		}	finally {
+			// donothing
 		}
 	}
 	

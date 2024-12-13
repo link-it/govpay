@@ -74,10 +74,10 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("metadata")
   private Metadata metadata = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
 
@@ -107,7 +107,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
-  
+
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -459,7 +459,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		vf.getValidator("contabilita", this.contabilita).validateFields();
 		vf.getValidator("metadata", this.metadata).validateFields();
-		
+
 		if(this.idDominio != null) {
 			vi.validaIdDominio("idDominio", this.idDominio);
 		}

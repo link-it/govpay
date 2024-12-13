@@ -49,7 +49,7 @@ public class InfoController extends BaseController {
 	public Response getInfo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "getInfo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			InfoGovPay info = new InfoGovPay();
 			info.setAmbiente(GovpayConfig.getInstance().getAmbienteDeploy());
@@ -57,7 +57,7 @@ public class InfoController extends BaseController {
 			info.setBuild(this.govpayBuildNumber);
 			info.setVersione(this.govpayVersione);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(info.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -83,5 +83,3 @@ public class InfoController extends BaseController {
 	}
 
 }
-
-

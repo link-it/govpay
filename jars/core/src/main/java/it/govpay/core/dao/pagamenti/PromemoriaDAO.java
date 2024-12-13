@@ -81,8 +81,7 @@ public class PromemoriaDAO extends BaseDAO{
 				return new ListaPromemoriaDTOResponse(count, new ArrayList<>());
 			}
 		}finally {
-			if(promemoriaBD != null)
-				promemoriaBD.closeConnection();
+			promemoriaBD.closeConnection();
 		}
 	}
 }

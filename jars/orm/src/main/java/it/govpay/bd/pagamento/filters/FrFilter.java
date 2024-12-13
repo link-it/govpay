@@ -267,7 +267,6 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				//newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				IExpression newExpressionUO = this.newExpression();
 				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
 				
@@ -276,16 +275,6 @@ public class FrFilter extends AbstractFilter {
 						IExpression newExpressionSingolaUO = this.newExpression();
 						
 						newExpressionSingolaUO.equals(FR.model().COD_DOMINIO, idUnita.getCodDominio());
-
-						// eliminati filtri per UO, l'utenza e' abilitata sugli enti creditori 
-//						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-//						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
-						
-//						if(idUnita.getIdUnita() != null ) {
-//							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-//							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
-//						}
-						
 						listExpressionSingolaUO.add(newExpressionSingolaUO);
 					}
 				}

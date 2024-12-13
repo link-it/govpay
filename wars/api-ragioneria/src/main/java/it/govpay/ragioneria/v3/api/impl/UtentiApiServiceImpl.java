@@ -29,7 +29,6 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.ragioneria.v2.controller.BaseController;
 import it.govpay.ragioneria.v3.api.UtentiApi;
 import it.govpay.ragioneria.v3.beans.Profilo;
 import it.govpay.ragioneria.v3.beans.converter.ProfiloConverter;
@@ -57,7 +56,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl  implements UtentiA
 		Authentication user = this.getUser();
 		String methodName = "getProfilo";
  		String transactionId = ContextThreadLocal.get().getTransactionId();
- 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+ 		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
  		try{
  			UtentiDAO utentiDAO = new UtentiDAO();
 
@@ -65,7 +64,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl  implements UtentiA
 
  			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
- 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+ 			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
  			return this.handleResponseOk(Response.status(Status.OK).entity(profilo),transactionId).build();
 
  		}catch (Exception e) {
@@ -76,4 +75,3 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl  implements UtentiA
 	}
 
 }
-

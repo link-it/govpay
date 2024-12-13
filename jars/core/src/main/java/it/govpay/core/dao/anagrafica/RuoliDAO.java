@@ -42,7 +42,6 @@ import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.PatchOp;
 import it.govpay.orm.ACL;
@@ -57,7 +56,7 @@ public class RuoliDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public LeggiRuoloDTOResponse leggiRuoli(LeggiRuoloDTO leggiRuoliDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiRuoloDTOResponse leggiRuoli(LeggiRuoloDTO leggiRuoliDTO) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		AclBD aclBD = null;
 		LeggiRuoloDTOResponse response = null;
@@ -75,13 +74,12 @@ public class RuoliDAO extends BaseDAO{
 			response = new LeggiRuoloDTOResponse(count, lst);
 			
 		} finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 		return response;
 	}
 
-	public ListaRuoliDTOResponse listaRuoli(ListaRuoliDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public ListaRuoliDTOResponse listaRuoli(ListaRuoliDTO listaRuoliDTO) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		AclBD aclBD = null;
 
@@ -113,13 +111,12 @@ public class RuoliDAO extends BaseDAO{
 			return new ListaRuoliDTOResponse(count, resList);
 			
 		} finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 
 	}
 
-	public PutRuoloDTOResponse createOrUpdate(PutRuoloDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public PutRuoloDTOResponse createOrUpdate(PutRuoloDTO listaRuoliDTO) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, listaRuoliDTO.getIdOperatore());
 		PutRuoloDTOResponse response = new PutRuoloDTOResponse();
 		AclBD aclBD = null;
@@ -158,13 +155,12 @@ public class RuoliDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 
 	}
 	
-	public PatchRuoloDTOResponse patch(PatchRuoloDTO patchDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public PatchRuoloDTOResponse patch(PatchRuoloDTO patchDTO) throws ServiceException, NotAuthorizedException {
 		PatchRuoloDTOResponse patchRuoloDTOResponse = new PatchRuoloDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		AclBD aclBD = null;

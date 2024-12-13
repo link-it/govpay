@@ -38,7 +38,8 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		IMPOSTA_BOLLO("01", "Imposta di bollo");
 		
 		private static final String[] VALORI_POSSIBILI = { "Imposta di bollo" };
-		private String codificaPagoPA, codificaJson;
+		private String codificaPagoPA;
+		private String codificaJson;
 		TipoBollo(String codificaPagoPA, String codificaJson) {
 			this.codificaPagoPA = codificaPagoPA;
 			this.codificaJson = codificaJson;
@@ -197,6 +198,16 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	@Override
 	public int compareTo(SingoloVersamento sv) {
 		return this.indiceDati.compareTo(sv.getIndiceDati());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public Long getIdIbanAppoggio() {

@@ -71,8 +71,8 @@ public class CaptchaResponse extends JSONSerializable{
 		}
 		for(ErrorCode error : errors) {
 			switch(error) {
-			case InvalidResponse:
-			case MissingResponse:
+			case INVALID_RESPONSE:
+			case MISSING_RESPONSE:
 				return true;
 			default:
 				return false;
@@ -81,26 +81,26 @@ public class CaptchaResponse extends JSONSerializable{
 		return false;
 	}
 
-	static enum ErrorCode {
-		MissingSecret,     InvalidSecret,
-		MissingResponse,   InvalidResponse,
-		BadRequest,		TimeoutOrDuplicate;
+	enum ErrorCode {
+	    MISSING_SECRET,     INVALID_SECRET,
+	    MISSING_RESPONSE,   INVALID_RESPONSE,
+	    BAD_REQUEST,        TIMEOUT_OR_DUPLICATE;
 
-		private static Map<String, ErrorCode> errorsMap = new HashMap<>(4);
+	    private static Map<String, ErrorCode> errorsMap = new HashMap<>(4);
 
-		static {
-			errorsMap.put("missing-input-secret",   MissingSecret);
-			errorsMap.put("invalid-input-secret",   InvalidSecret);
-			errorsMap.put("missing-input-response", MissingResponse);
-			errorsMap.put("invalid-input-response", InvalidResponse);
-			errorsMap.put("bad-request", BadRequest);
-			errorsMap.put("timeout-or-duplicate", TimeoutOrDuplicate);
-		}
+	    static {
+	        errorsMap.put("missing-input-secret",   MISSING_SECRET);
+	        errorsMap.put("invalid-input-secret",   INVALID_SECRET);
+	        errorsMap.put("missing-input-response", MISSING_RESPONSE);
+	        errorsMap.put("invalid-input-response", INVALID_RESPONSE);
+	        errorsMap.put("bad-request", BAD_REQUEST);
+	        errorsMap.put("timeout-or-duplicate", TIMEOUT_OR_DUPLICATE);
+	    }
 
-		@JsonCreator
-		public static ErrorCode forValue(String value) {
-			return errorsMap.get(value.toLowerCase());
-		}
+	    @JsonCreator
+	    public static ErrorCode forValue(String value) {
+	        return errorsMap.get(value.toLowerCase());
+	    }
 	}
 
 	public boolean isSuccess() {

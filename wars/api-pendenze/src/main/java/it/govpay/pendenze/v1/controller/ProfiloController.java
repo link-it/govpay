@@ -44,19 +44,19 @@ public class ProfiloController extends BaseController {
 
 
     public Response profiloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
-    	String methodName = "profiloGET";  
+    	String methodName = "profiloGET";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			UtentiDAO utentiDAO = new UtentiDAO();
-			
+
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(user);
 
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -66,5 +66,3 @@ public class ProfiloController extends BaseController {
 
 
 }
-
-

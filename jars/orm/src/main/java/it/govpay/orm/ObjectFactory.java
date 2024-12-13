@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -28,18 +28,18 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the it.govpay.orm package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the it.govpay.orm package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
  * and classes representing the binding of schema
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
+ *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
@@ -52,7 +52,7 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: it.govpay.orm
-     * 
+     *
      */
     public ObjectFactory() {
         // Create a new ObjectFactory
@@ -63,13 +63,6 @@ public class ObjectFactory {
      */
     public IdAllegato createIdAllegato() {
         return new IdAllegato();
-    }
-
-    /**
-     * Create an instance of {@link IdRr }
-     */
-    public IdRr createIdRr() {
-        return new IdRr();
     }
 
     /**
@@ -213,13 +206,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdCarrello }
-     */
-    public IdCarrello createIdCarrello() {
-        return new IdCarrello();
-    }
-
-    /**
      * Create an instance of {@link IdDominio }
      */
     public IdDominio createIdDominio() {
@@ -238,13 +224,6 @@ public class ObjectFactory {
      */
     public TracciatoNotificaPagamenti createTracciatoNotificaPagamenti() {
         return new TracciatoNotificaPagamenti();
-    }
-
-    /**
-     * Create an instance of {@link IdIuv }
-     */
-    public IdIuv createIdIuv() {
-        return new IdIuv();
     }
 
     /**
@@ -304,13 +283,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdTabellaControparti }
-     */
-    public IdTabellaControparti createIdTabellaControparti() {
-        return new IdTabellaControparti();
-    }
-
-    /**
      * Create an instance of {@link VersamentoIncasso }
      */
     public VersamentoIncasso createVersamentoIncasso() {
@@ -360,13 +332,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdSingolaRendicontazione }
-     */
-    public IdSingolaRendicontazione createIdSingolaRendicontazione() {
-        return new IdSingolaRendicontazione();
-    }
-
-    /**
      * Create an instance of {@link Audit }
      */
     public Audit createAudit() {
@@ -381,24 +346,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RR }
-     */
-    public RR createRR() {
-        return new RR();
-    }
-
-    /**
      * Create an instance of {@link IdPagamentoPortale }
      */
     public IdPagamentoPortale createIdPagamentoPortale() {
         return new IdPagamentoPortale();
-    }
-
-    /**
-     * Create an instance of {@link IdSingolaRevoca }
-     */
-    public IdSingolaRevoca createIdSingolaRevoca() {
-        return new IdSingolaRevoca();
     }
 
     /**
@@ -472,13 +423,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdMessaggio }
-     */
-    public IdMessaggio createIdMessaggio() {
-        return new IdMessaggio();
-    }
-
-    /**
      * Create an instance of {@link IdEvento }
      */
     public IdEvento createIdEvento() {
@@ -504,13 +448,6 @@ public class ObjectFactory {
      */
     public IdUtenza createIdUtenza() {
         return new IdUtenza();
-    }
-
-    /**
-     * Create an instance of {@link IdEr }
-     */
-    public IdEr createIdEr() {
-        return new IdEr();
     }
 
     /**
@@ -581,13 +518,6 @@ public class ObjectFactory {
      */
     public Operazione createOperazione() {
         return new Operazione();
-    }
-
-    /**
-     * Create an instance of {@link IUV }
-     */
-    public IUV createIUV() {
-        return new IUV();
     }
 
     /**

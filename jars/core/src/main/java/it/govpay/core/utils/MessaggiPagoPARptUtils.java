@@ -52,6 +52,7 @@ public class MessaggiPagoPARptUtils {
 	public static Object getMessaggioRPT(Rpt rpt, FormatoRicevuta formato, boolean retrocompatibilitaMessaggiPagoPAV1) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
 		switch (rpt.getVersione()) {
 		case SANP_230:
+		case RPTSANP230_RTV2:
 			return getMessaggioRPTSANP230(rpt,formato);
 		case SANP_240:
 		case RPTV1_RTV2:
@@ -84,12 +85,12 @@ public class MessaggiPagoPARptUtils {
 		PaGetPaymentRes paGetPaymentRes;
 		// per lo standin il messaggio XML della richiesta potrebbe non esserci. lo ricostruisco
 		if(xmlRpt == null) {
-			PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+			PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 			Versamento versamento = rpt.getVersamento(configWrapper);
 			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentRes(paSendRTReq, rpt, versamento);
 			
 		} else {
-			paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(xmlRpt, false);
+			paGetPaymentRes = JaxbUtils.toPaGetPaymentResRPT(xmlRpt, false);
 		}
 		
 		
@@ -121,12 +122,12 @@ public class MessaggiPagoPARptUtils {
 		PaGetPaymentV2Response paGetPaymentRes;
 		// per lo standin il messaggio XML della richiesta potrebbe non esserci. lo ricostruisco
 		if(xmlRpt == null) {
-			PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+			PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 			Versamento versamento = rpt.getVersamento(configWrapper);
 			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentV2Response(paSendRTReq, rpt, versamento);
 			
 		} else {
-			paGetPaymentRes = JaxbUtils.toPaGetPaymentV2Response_RPT(xmlRpt, false);
+			paGetPaymentRes = JaxbUtils.toPaGetPaymentV2ResponseRPT(xmlRpt, false);
 		}
 		
 		
@@ -154,6 +155,7 @@ public class MessaggiPagoPARptUtils {
 	public static BigDecimal getImportoRPT(Rpt rpt) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
 		switch (rpt.getVersione()) {
 		case SANP_230:
+		case RPTSANP230_RTV2:
 			CtRichiestaPagamentoTelematico ctRichiestaPagamentoTelematico = (CtRichiestaPagamentoTelematico) getMessaggioRPTSANP230(rpt,FormatoRicevuta.JSON);
 			return ctRichiestaPagamentoTelematico.getDatiVersamento().getImportoTotaleDaVersare();
 		case SANP_240:

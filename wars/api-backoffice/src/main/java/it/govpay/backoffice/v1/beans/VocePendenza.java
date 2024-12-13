@@ -70,10 +70,10 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("metadata")
   private Metadata metadata = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
 

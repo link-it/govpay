@@ -20,6 +20,8 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -50,6 +52,9 @@ import it.govpay.orm.model.RendicontazioneModel;
 
 public class RendicontazioniBD extends BasicBD {
 
+	private static final String CF_ID_SINGOLO_VERSAMENTO = "id_singolo_versamento";
+	private static final String CF_ID_PAGAMENTO = "id_pagamento";
+
 	public RendicontazioniBD(BasicBD basicBD) {
 		super(basicBD);
 	}
@@ -66,11 +71,11 @@ public class RendicontazioniBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
-	public RendicontazioneFilter newFilter() throws ServiceException {
+	public RendicontazioneFilter newFilter() {
 		return new RendicontazioneFilter(this.getRendicontazioneService());
 	}
 	
-	public RendicontazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public RendicontazioneFilter newFilter(boolean simpleSearch) {
 		return new RendicontazioneFilter(this.getRendicontazioneService(),simpleSearch);
 	}
 
@@ -105,9 +110,7 @@ public class RendicontazioniBD extends BasicBD {
 			idRendicontazione.setIdRendicontazione(dto.getId());
 			this.getRendicontazioneService().update(idRendicontazione, vo);
 			dto.setId(vo.getId());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -127,9 +130,7 @@ public class RendicontazioniBD extends BasicBD {
 					.getRendicontazioneService().findAll(
 							filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -139,10 +140,10 @@ public class RendicontazioniBD extends BasicBD {
 	}
 	
 	public long count(RendicontazioneFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(RendicontazioneFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(RendicontazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -160,7 +161,7 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(RendicontazioneFilter filter) throws ServiceException {
+	private long countConLimitEngine(RendicontazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -183,7 +184,7 @@ public class RendicontazioniBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
@@ -211,8 +212,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -238,13 +238,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			it.govpay.orm.Rendicontazione rendicontazione = ((JDBCRendicontazioneServiceSearch)this.getRendicontazioneService()).get(id);
 			return RendicontazioneConverter.toDTO(rendicontazione);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | NotFoundException | MultipleResultException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -262,16 +256,10 @@ public class RendicontazioniBD extends BasicBD {
 			IPaginatedExpression exp = this.getRendicontazioneService()
 					.newPaginatedExpression();
 			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
-			exp.equals(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento",fieldConverter.toTable(it.govpay.orm.Rendicontazione.model())),	idSingoloVersamento);
+			exp.equals(new CustomField(CF_ID_SINGOLO_VERSAMENTO, Long.class, CF_ID_SINGOLO_VERSAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model())),	idSingoloVersamento);
 			List<it.govpay.orm.Rendicontazione> singoliPagamenti = this.getRendicontazioneService().findAll(exp);
 			return RendicontazioneConverter.toDTO(singoliPagamenti);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -299,7 +287,7 @@ public class RendicontazioniBD extends BasicBD {
 			exp.equals(model.INDICE_DATI, indiceDati);
 			exp.equals(model.STATO, stato.toString());
 			
-			CustomField cf = new  CustomField("id_pagamento", Long.class, "id_pagamento",fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
+			CustomField cf = new  CustomField(CF_ID_PAGAMENTO, Long.class, CF_ID_PAGAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
 			if(pagamentoNull) {
 				exp.isNull(cf);
 			} else {
@@ -308,11 +296,47 @@ public class RendicontazioniBD extends BasicBD {
 			
 			it.govpay.orm.Rendicontazione rendicontazione = this.getRendicontazioneService().find(exp);
 			return RendicontazioneConverter.toDTO(rendicontazione);
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
-		} catch (MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<Rendicontazione> getRendicontazioniSenzaPagamento(String codDominio, Integer numeroMassimoGiorniSogliaRicerca) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			// -- Rendicontazioni di cui recuperare la RT
+			// select * from rendicontazioni where id_singolo_versamento is not null and id_pagamento is null and data > now() - interval '8 weeks' order by data desc
+			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
+			RendicontazioneModel model = it.govpay.orm.Rendicontazione.model();
+			
+			IPaginatedExpression exp = this.getRendicontazioneService().newPaginatedExpression();
+			exp.equals(model.ID_FR.COD_DOMINIO, codDominio);
+			
+			CustomField cfIdSV = new  CustomField(CF_ID_SINGOLO_VERSAMENTO, Long.class, CF_ID_SINGOLO_VERSAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
+			exp.isNotNull(cfIdSV);
+			
+			CustomField cfIdPag = new  CustomField(CF_ID_PAGAMENTO, Long.class, CF_ID_PAGAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
+			exp.isNull(cfIdPag);
+			
+			// filtro temporale sui giorni
+			Date now = new Date();
+			Calendar c = Calendar.getInstance();
+			c.setTime(now);
+			c.add(Calendar.DATE, - numeroMassimoGiorniSogliaRicerca);
+			
+			exp.and();
+			exp.greaterThan(model.DATA, c.getTime());
+			
+			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst = this.getRendicontazioneService().findAll(exp);
+			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

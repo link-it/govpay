@@ -61,79 +61,79 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "idPendenza",
 })
 public class NuovaPendenzaTracciato extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("idUnitaOperativa")
   private String idUnitaOperativa = null;
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
-  
+
   @JsonProperty("cartellaPagamento")
   private String cartellaPagamento = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
-  
+
   @JsonProperty("direzione")
   private String direzione = null;
-  
+
   @JsonProperty("divisione")
   private String divisione = null;
-  
+
   @JsonProperty("documento")
   private Documento documento = null;
-  
+
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
-  
+
   @JsonProperty("voci")
-  private List<NuovaVocePendenza> voci = new ArrayList<NuovaVocePendenza>();
-  
+  private List<NuovaVocePendenza> voci = new ArrayList<>();
+
   @JsonProperty("allegati")
   private List<NuovoAllegatoPendenza> allegati = null;
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   /**
    * Identificativo del dominio creditore
    **/
@@ -553,7 +553,7 @@ public class NuovaPendenzaTracciato extends JSONSerializable implements IValidab
   }
 
   public static NuovaPendenzaTracciato parse(String json) throws IOException {
-    return (NuovaPendenzaTracciato) parse(json, NuovaPendenzaTracciato.class);
+    return parse(json, NuovaPendenzaTracciato.class);
   }
 
   @Override
@@ -565,7 +565,7 @@ public class NuovaPendenzaTracciato extends JSONSerializable implements IValidab
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovaPendenzaTracciato {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
@@ -604,7 +604,7 @@ public class NuovaPendenzaTracciato extends JSONSerializable implements IValidab
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws it.govpay.core.exceptions.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

@@ -46,17 +46,22 @@ public class Html5RoutingFilter implements Filter {
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String queryString = httpRequest.getQueryString();
         if (!path.contains(".")) {
-        	 // Se la richiesta non contiene un'estensione, reindirizza al percorso HTML5 compatibile con l'app Angular
-            String redirectPath = httpRequest.getContextPath() + "/#" + path;
-            if (queryString != null && !queryString.isEmpty()) {
-                redirectPath += "?" + queryString; // Aggiungi la query string al percorso di reindirizzamento
-            }
+        	String redirectPath = getRedirectPath(httpRequest, path, queryString);
             httpResponse.sendRedirect(redirectPath);
         } else {
             // Altrimenti, continua il normale flusso di richiesta
             chain.doFilter(request, response);
         }
     }
+
+	private String getRedirectPath(HttpServletRequest httpRequest, String path, String queryString) {
+		// Se la richiesta non contiene un'estensione, reindirizza al percorso HTML5 compatibile con l'app Angular
+		String redirectPath = httpRequest.getContextPath() + "/#" + path;
+		if (queryString != null && !queryString.isEmpty()) {
+		    redirectPath += "?" + queryString; // Aggiungi la query string al percorso di reindirizzamento
+		}
+		return redirectPath;
+	}
 
     @Override
     public void destroy() {

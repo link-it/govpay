@@ -39,10 +39,10 @@ public class StazioneIndex extends JSONSerializable {
 
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("versione")
   private VersioneStazione versione = null;
-  
+
   @JsonProperty("idStazione")
   private String idStazione = null;
 
@@ -162,7 +162,7 @@ public class StazioneIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazioneIndex {\n");
-    
+
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
