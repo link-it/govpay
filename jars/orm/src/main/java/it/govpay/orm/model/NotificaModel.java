@@ -45,7 +45,6 @@ public class NotificaModel extends AbstractModel<Notifica> {
 	
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Notifica",Notifica.class));
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRpt",it.govpay.orm.IdRpt.class,"Notifica",Notifica.class));
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"Notifica",Notifica.class));
 		this.TIPO_ESITO = new Field("tipoEsito",java.lang.String.class,"Notifica",Notifica.class);
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Notifica",Notifica.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Notifica",Notifica.class);
@@ -62,7 +61,6 @@ public class NotificaModel extends AbstractModel<Notifica> {
 	
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Notifica",Notifica.class));
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRpt",it.govpay.orm.IdRpt.class,"Notifica",Notifica.class));
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"Notifica",Notifica.class));
 		this.TIPO_ESITO = new ComplexField(father,"tipoEsito",java.lang.String.class,"Notifica",Notifica.class);
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Notifica",Notifica.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Notifica",Notifica.class);
@@ -78,8 +76,6 @@ public class NotificaModel extends AbstractModel<Notifica> {
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public it.govpay.orm.model.IdRptModel ID_RPT = null;
-	 
-	public it.govpay.orm.model.IdRrModel ID_RR = null;
 	 
 	public IField TIPO_ESITO = null;
 	 

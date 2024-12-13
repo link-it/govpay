@@ -30,12 +30,12 @@ import it.govpay.rs.v1.beans.FaultBean.CategoriaEnum;
 
 /***
  * CodiceEccezione
- *  
+ *
  * @author pintori
  *
  */
 public class CodiceEccezione {
-	
+
 	public static final CodiceEccezione RICHIESTA_NON_VALIDA = new CodiceEccezione(400, CategoriaEnum.RICHIESTA, "Richiesta non correttamente formata");
 	public static final CodiceEccezione AUTENTICAZIONE = new CodiceEccezione(401, CategoriaEnum.AUTORIZZAZIONE, "Autenticazione richiesta.");
 	public static final CodiceEccezione AUTORIZZAZIONE = new CodiceEccezione(403, CategoriaEnum.AUTORIZZAZIONE, "Richiesta non autorizzata.");
@@ -111,7 +111,7 @@ public class CodiceEccezione {
 		FaultBean faultBean = this.toFaultBean(e);
 		return setFaultBeanAsEntity(Response.status(this.code), faultBean).type(MediaType.APPLICATION_JSON);
 	}
-	
+
 	public ResponseBuilder setFaultBeanAsEntity(ResponseBuilder rb, FaultBean faultBean) {
 		return rb.entity(faultBean);
 	}

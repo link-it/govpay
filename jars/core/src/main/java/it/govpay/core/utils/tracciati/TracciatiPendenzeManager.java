@@ -27,6 +27,8 @@ import java.util.Set;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
+import it.govpay.core.utils.LogUtils;
+
 public class TracciatiPendenzeManager {
 
 	private Set<String> listaPendenze = null;
@@ -42,20 +44,20 @@ public class TracciatiPendenzeManager {
 	}
 	
 	public synchronized void addPendenza(String nomeThread, String idA2A, String idPendenza) {
-//		log.debug(nomeThread + " ADD Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
+		LogUtils.logTrace(log, nomeThread + " ADD Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
 		this.listaPendenze.add(idA2A + "@" + idPendenza);
 	}
 	
 	public synchronized boolean checkPendenza(String nomeThread, String idA2A, String idPendenza) {
-//		log.debug(nomeThread + " CHECK Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
+		LogUtils.logTrace(log, nomeThread + " CHECK Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
 		return this.listaPendenze.contains(idA2A + "@" + idPendenza);
 	}
 	
 	public synchronized boolean getDocumento(String nomeThread, String idA2A, String codDocumento) {
-		log.debug(nomeThread + ": acquisizione lock sul documento ["+codDocumento+"]");
+		LogUtils.logDebug(log, nomeThread + ": acquisizione lock sul documento ["+codDocumento+"]");
 		
 		while(this.listaDocumenti.contains(idA2A + "@" + codDocumento)) {
-			log.debug(nomeThread + ": Documento gia' in uso in un altro thread ["+codDocumento+"], wait");
+			LogUtils.logDebug(log, nomeThread + ": Documento gia' in uso in un altro thread ["+codDocumento+"], wait");
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -65,13 +67,13 @@ public class TracciatiPendenzeManager {
 			}
 		}
 		
-		log.debug(nomeThread + " acquisizione lock sul documento ["+codDocumento+"], ok");
+		LogUtils.logDebug(log, nomeThread + " acquisizione lock sul documento ["+codDocumento+"], ok");
 		this.listaDocumenti.add(idA2A + "@" + codDocumento);
 		return true;
 	}
 	
 	public synchronized void releaseDocumento(String nomeThread, String idA2A, String codDocumento) {
-		log.debug(nomeThread + " rilascio documento ["+codDocumento+"]");
+		LogUtils.logDebug(log, nomeThread + " rilascio documento ["+codDocumento+"]");
 		this.listaDocumenti.remove((idA2A + "@" + codDocumento));
 		notifyAll();
 	}

@@ -43,22 +43,22 @@ import it.govpay.user.v1.authentication.matcher.LogoutRequestMatcher.SubpathMatc
 /**
  * Implementa il gestore del logout effettuato con successo fornendo la funzionalita' di redirect alla url indicata dall'eventuale URL-ID passato come parametro
  * Se non viene passato il parametro URL-ID allora la procedura si conclude con un 200OK
- * 
+ *
  * @author pintori
  *
  */
 public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(RedirectLogoutSuccessHandler.class);
-	
+
 	private final String pattern;
 	private final boolean caseSensitive;
 	private final Matcher matcher;
-	
+
 	public RedirectLogoutSuccessHandler(String pattern) {
 		this(pattern, true);
 	}
-	
+
 	public RedirectLogoutSuccessHandler(String pattern, boolean caseSensitive) {
 		Assert.hasText(pattern, "Pattern cannot be null or empty");
 		this.caseSensitive = caseSensitive;
@@ -83,7 +83,7 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 
 		this.pattern = pattern;
 	}
-	
+
 	public boolean doMatches(HttpServletRequest request) {
 		if (this.pattern.equals(LogoutRequestMatcher.MATCH_ALL)) {
 			log.debug("Request '" + LogoutRequestMatcher.getRequestPath(request)	+ "' matched by universal pattern '/**'");
@@ -93,14 +93,14 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 		String url = LogoutRequestMatcher.getRequestPath(request);
 
 		log.debug("Checking match of request : '" + url + "'; against '" + this.pattern + "'");
-		
+
 		return this.matcher.matches(url);
 	}
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-		
-		log.debug("Esecuzione del logout in corso..."); 
+
+		log.debug("Esecuzione del logout in corso...");
 		String url = LogoutRequestMatcher.getRequestPath(request);
 		log.debug("Url invocata ["+url+"]");
 		String urlID = null;
@@ -115,7 +115,7 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 					if(!tokensPattern[i].equals("**")) {
 						continue;
 					}
-				
+
 					if(i < tokensPath.length) {
 						tokenTrovato = tokensPath[i];
 					}
@@ -125,18 +125,18 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 				urlID = url.substring(url.indexOf(tokenTrovato));
 			}
 		}
-		
+
 		log.debug("urlID ["+urlID+"]");
-		
+
 		if(StringUtils.isBlank(urlID)) {
 			response.setStatus(HttpServletResponse.SC_OK);
-			log.debug("Esecuzione del logout completata con status 200 OK."); 
+			log.debug("Esecuzione del logout completata con status 200 OK.");
 		} else {
-			
+
 			Properties props = GovpayConfig.getInstance().getApiUserLogoutRedirectURLs();
-			
+
 			String redirectURL = props.getProperty(urlID);
-			
+
 			if(StringUtils.isBlank(redirectURL)) {
 				response.setStatus(HttpServletResponse.SC_OK);
 				log.debug("Esecuzione del logout completata con status 200 OK.");

@@ -44,6 +44,7 @@ import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
 public class RiscossioniDAO extends BaseDAO{
 
 	public RiscossioniDAO() {
+		super();
 	}
 
 	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException {
@@ -102,8 +103,7 @@ public class RiscossioniDAO extends BaseDAO{
 
 			return new ListaRiscossioniDTOResponse(count, resList);
 		}finally {
-			if(pagamentiBD != null)
-				pagamentiBD.closeConnection();
+			pagamentiBD.closeConnection();
 		}
 	}
 
@@ -130,8 +130,7 @@ public class RiscossioniDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e.getMessage(), e);
 		} finally {
-			if(pagamentiBD != null)
-				pagamentiBD.closeConnection();
+			pagamentiBD.closeConnection();
 		}
 		return response;
 	}

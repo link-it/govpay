@@ -36,7 +36,7 @@ public class Http403ForbiddenEntryPoint extends it.govpay.service.authentication
 	@Override
 	protected void addCustomHeaders(HttpServletResponse httpResponse) {
 		// Non voglio che appaia la finestra di Basic
-		//httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
+		//httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"")
 	}
 
 }

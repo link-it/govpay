@@ -747,4 +747,82 @@ CREATE VIEW v_vrs_non_rnd AS
 ALTER TABLE rpt ALTER COLUMN xml_rpt NULL;
 
 
+-- 04/11/2024 Aggiunto connettore recupero RT
+ALTER TABLE intermediari ADD cod_connettore_recupero_rt VARCHAR(35);
+
+
+-- 04/11/2024 Eliminata tabella RR
+DROP VIEW v_pagamenti;
+
+ALTER TABLE notifiche DROP CONSTRAINT fk_ntf_id_rr;
+ALTER TABLE notifiche DROP COLUMN id_rr;
+
+ALTER TABLE pagamenti DROP COLUMN id_rr;
+
+-- DROP INDEX index_rr_1;
+DROP TABLE rr_init_seq;
+DROP TABLE rr;
+DROP SEQUENCE seq_rr;
+
+DELETE FROM sonde WHERE nome = 'update-pnd';
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('recupero-rt', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-recupero-rt', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+CREATE VIEW v_pagamenti AS
+SELECT 
+	pagamenti.id AS id,
+	pagamenti.cod_dominio AS cod_dominio,             
+	pagamenti.iuv AS iuv,                     
+	pagamenti.indice_dati AS indice_dati,             
+	pagamenti.importo_pagato AS importo_pagato,          
+	pagamenti.data_acquisizione AS data_acquisizione,       
+	pagamenti.iur AS iur,                     
+	pagamenti.data_pagamento AS data_pagamento,          
+	pagamenti.commissioni_psp AS commissioni_psp,         
+	pagamenti.tipo_allegato AS tipo_allegato,           
+	pagamenti.allegato AS allegato,                
+	pagamenti.data_acquisizione_revoca AS data_acquisizione_revoca,
+	pagamenti.causale_revoca AS causale_revoca,          
+	pagamenti.dati_revoca AS dati_revoca,             
+	pagamenti.importo_revocato AS importo_revocato,        
+	pagamenti.esito_revoca AS esito_revoca,            
+	pagamenti.dati_esito_revoca AS dati_esito_revoca,       
+	pagamenti.stato AS stato,                  
+	pagamenti.tipo AS tipo,                  
+	pagamenti.id_rpt AS id_rpt,                  
+	pagamenti.id_singolo_versamento AS id_singolo_versamento,                                   
+	pagamenti.id_incasso AS id_incasso,       
+	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
+	versamenti.tassonomia AS vrs_tassonomia,
+	versamenti.divisione AS vrs_divisione,
+	versamenti.direzione AS vrs_direzione,
+	versamenti.id_tipo_versamento AS vrs_id_tipo_versamento,
+	versamenti.id_tipo_versamento_dominio AS vrs_id_tipo_versamento_dominio,
+	versamenti.id_dominio AS vrs_id_dominio,
+	versamenti.id_uo AS vrs_id_uo,
+	versamenti.id_applicazione AS vrs_id_applicazione,
+	versamenti.id AS vrs_id,  
+	versamenti.id_documento as vrs_id_documento,  
+	singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
+	rpt.iuv AS rpt_iuv,
+	rpt.ccp AS rpt_ccp,
+	incassi.trn AS rnc_trn
+	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
+	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
+	     
+
+-- 04/11/2024 Eliminata tabella IUV
+DROP TABLE iuv_init_seq;
+DROP table iuv;
+DROP sequence seq_iuv;
+
+
+-- 12/12/2024 Correzione stato pendenze riconciliate che contengono voci di tipo MBT o di altro intermediario
+UPDATE versamenti SET stato_pagamento = 'INCASSATO' WHERE id NOT IN ( SELECT DISTINCT v.id
+      FROM versamenti v
+      JOIN singoli_versamenti sv ON v.id = sv.id_versamento
+      JOIN pagamenti p ON sv.id = p.id_singolo_versamento
+      WHERE p.tipo = 'ENTRATA' AND p.stato = 'PAGATO') AND stato_pagamento != 'INCASSATO' AND stato_versamento='ESEGUITO';
+
 

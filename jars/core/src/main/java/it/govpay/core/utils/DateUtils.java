@@ -41,6 +41,8 @@ import org.slf4j.Logger;
  */
 public class DateUtils {
 	
+	private DateUtils() {}
+	
 	public static final String CONTROLLO_SCADENZA = "scadenza";
 	public static final String CONTROLLO_VALIDITA = "validita'";
 
@@ -56,7 +58,7 @@ public class DateUtils {
 		Date oggi = cal.getTime();
 		
 		boolean esito = daVerificare.before(oggi);
-		log.debug("Controllo " +tipoControllo + ": data da verificare ["+daVerificare+"] is before oggi ["+oggi+"]: " + esito + ".");
+		LogUtils.logDebug(log, "Controllo " +tipoControllo + ": data da verificare ["+daVerificare+"] is before oggi ["+oggi+"]: " + esito + ".");
 		return esito;
 
 	}
@@ -78,6 +80,12 @@ public class DateUtils {
 		if (date == null)
 			return null;
 		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+	}
+	
+	public static LocalDateTime toLocalDateTime(LocalDate date) {
+	    if (date == null) 
+	        return null;
+	    return date.atStartOfDay();
 	}
 
 	public static LocalDateTime toOffsetDateTime(Calendar c) {

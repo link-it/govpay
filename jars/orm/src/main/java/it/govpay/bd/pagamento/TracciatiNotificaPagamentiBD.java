@@ -604,16 +604,16 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		switch (connettore.getTipoConnettore()) {
 		case EMAIL:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliEmail());
 			break;
 		case FILE_SYSTEM:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliFileSystem());
 			break;
 		case WEB_SERVICE:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliWS());
 			break;
 		case REST:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliREST());
 			break;
 		}
 		
@@ -631,16 +631,16 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		switch (connettore.getTipoConnettore()) {
 		case EMAIL:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliEmail());
 			break;
 		case FILE_SYSTEM:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliFileSystem());
 			break;
 		case WEB_SERVICE:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliWS());
 			break;
 		case REST:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliREST());
 			break;
 		}
 		
@@ -865,7 +865,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
+		filter.setStati(TracciatoNotificaPagamenti.getStatiNonTerminaliREST());
 		
 		return this.count(filter);
 	}

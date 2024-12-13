@@ -32,35 +32,35 @@ import it.govpay.core.exceptions.IOException;
 "dettaglio",
 })
 public class FaultBean extends JSONSerializable {
-  
-    
+
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno
    */
   public enum CategoriaEnum {
-    
-    
-        
-            
+
+
+
+
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
-    
-            
+
+
     RICHIESTA("RICHIESTA"),
-    
-            
+
+
     OPERAZIONE("OPERAZIONE"),
-    
-            
+
+
     PAGOPA("PAGOPA"),
-    
-            
+
+
     EC("EC"),
-    
-            
+
+
     INTERNO("INTERNO");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -84,20 +84,20 @@ public class FaultBean extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("categoria")
   private CategoriaEnum categoria = null;
-  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno
    **/
@@ -195,7 +195,7 @@ public class FaultBean extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBean {\n");
-    
+
     sb.append("    categoria: ").append(toIndentedString(categoria)).append("\n");
     sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

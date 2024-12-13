@@ -53,6 +53,7 @@ public class MessaggiPagoPARtUtils {
 			return getMessaggioRTSANP240(rpt, formato, retrocompatibilitaMessaggiPagoPAV1);
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 			return getMessaggioRTSANP321(rpt, formato, retrocompatibilitaMessaggiPagoPAV1);
 		}
 		
@@ -73,7 +74,7 @@ public class MessaggiPagoPARtUtils {
 	}
 	
 	private static Object getMessaggioRTSANP240(Rpt rpt, FormatoRicevuta formato, boolean retrocompatibilitaMessaggiPagoPAV1) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
-		PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		
 		if(paSendRTReq == null) return null;
 		
@@ -99,7 +100,7 @@ public class MessaggiPagoPARtUtils {
 	}
 	
 	private static Object getMessaggioRTSANP321(Rpt rpt, FormatoRicevuta formato, boolean retrocompatibilitaMessaggiPagoPAV1) throws CodificaInesistenteException, JAXBException, SAXException, ServiceException {
-		PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		
 		if(paSendRTReq == null) return null;
 
@@ -137,6 +138,7 @@ public class MessaggiPagoPARtUtils {
 			return ctReceipt != null ? ctReceipt.getPaymentAmount() : null;
 		case SANP_321_V2:
 		case RPTV2_RTV1:
+		case RPTSANP230_RTV2:
 			CtReceiptV2 ctReceiptV2 = (CtReceiptV2) getMessaggioRTSANP321(rpt, FormatoRicevuta.JSON, false);
 			return ctReceiptV2 != null ? ctReceiptV2.getPaymentAmount() : null;
 		}

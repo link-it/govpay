@@ -162,7 +162,7 @@ public class PendenzeConverter {
 		if(versamento != null)
 			rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA())); 
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 
 		// Definisce i dati di un bollo telematico
@@ -259,10 +259,10 @@ public class PendenzeConverter {
 		Versamento versamento = rpt.getVersamento(configWrapper);
 		return toPendenzaPagataRsModel(rpt, versamento);
 	}
-	
+
 	public static PendenzaPagata toPendenzaPagataRsModel(Versamento versamento, List<it.govpay.bd.model.Rpt> listRpts) throws ServiceException, IOException, UnsupportedEncodingException {
 		it.govpay.bd.model.Rpt rpt = null;
-		
+
 		// Le RPT sono ordinate per data attivazione desc.
 		// Seleziono la prima RT in ordine temporale con esito positivo
 		if(listRpts != null && listRpts.size() > 0) {
@@ -273,10 +273,10 @@ public class PendenzeConverter {
 				}
 			}
 		}
-		
+
 		return toPendenzaPagataRsModel(rpt , versamento);
 	}
-	
+
 	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
@@ -433,7 +433,7 @@ public class PendenzeConverter {
 
 		return rsModel;
 	}
-	
+
 	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
 		Metadata rsModel = null;
 		if(metadata != null) {
@@ -441,15 +441,15 @@ public class PendenzeConverter {
 
 			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
 				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
-				
+
 				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
 					MapEntry mapEntryRsModel = new MapEntry();
 					mapEntryRsModel.setKey(mapEntry.getKey());
 					mapEntryRsModel.setValue(mapEntry.getValue());
-				
+
 					mapEntriesRsModel.add(mapEntryRsModel);
 				}
-				
+
 				rsModel.setMapEntries(mapEntriesRsModel);
 			}
 		}

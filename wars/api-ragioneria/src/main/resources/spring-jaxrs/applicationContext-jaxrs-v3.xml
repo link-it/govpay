@@ -180,6 +180,30 @@
     </jaxrs:server>
     <!-- API_KEY_END -->
     
+    <!-- OAUTH2_START -->
+    <jaxrs:server id="apiRagioneriaOauth2V3" address="/oauth2/v3/">
+        <jaxrs:serviceBeans>
+        		<ref bean="allegatiV3" />
+        		<ref bean="flussiRendicontazioneV3" />
+			   	<ref bean="riconciliazioniV3" />
+			   	<ref bean="profiloV3" />
+			   	<ref bean="riscossioniV3" />
+			   	<ref bean="ricevuteV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- OAUTH2_END -->
+    
         <!-- DEFAULT_START -->
     <jaxrs:server id="apiRagioneriaDEFAULTV3" address="/v3/">
         <jaxrs:serviceBeans>

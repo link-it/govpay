@@ -26,11 +26,11 @@ public class EntrateConverter {
 
 	public static TipoEntrata toTipoEntrataRsModel(it.govpay.model.TipoTributo tributo) {
 		TipoEntrata rsModel = new TipoEntrata();
-		
+
 		rsModel.codiceContabilita(tributo.getCodContabilitaDefault())
 		.descrizione(tributo.getDescrizione())
 		.idEntrata(tributo.getCodTributo());
-		
+
 		if(tributo.getTipoContabilitaDefault() != null) {
 			switch (tributo.getTipoContabilitaDefault()) {
 			case ALTRO:

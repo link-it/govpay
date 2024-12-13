@@ -129,7 +129,7 @@ public class ConnettoriConverter {
 		.clientSecret(connettore.getOauth2ClientCredentialsClientSecret())
 		.scope(connettore.getOauth2ClientCredentialsScope())
 		.urlTokenEndpoint(connettore.getOauth2ClientCredentialsUrlTokenEndpoint());
-		
+
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
 			case CLIENT:

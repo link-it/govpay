@@ -49,7 +49,6 @@ import it.govpay.orm.dao.IDBDocumentoService;
 import it.govpay.orm.dao.IDBDominioService;
 import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.dao.IDBFRService;
-import it.govpay.orm.dao.IDBIUVService;
 import it.govpay.orm.dao.IDBIbanAccreditoService;
 import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
@@ -62,7 +61,6 @@ import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPromemoriaService;
 import it.govpay.orm.dao.IDBRPTService;
-import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStampaService;
@@ -89,7 +87,6 @@ import it.govpay.orm.dao.IDocumentoService;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIntermediarioService;
@@ -102,7 +99,6 @@ import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
-import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStampaService;
@@ -131,7 +127,6 @@ import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class BasicBD {
 	
-	private JDBCServiceManager serviceManager;
 	private JDBCServiceManagerProperties jdbcProperties;
 	
 	private IIntermediarioService intermediarioService;
@@ -155,10 +150,8 @@ public class BasicBD {
 	private IPagamentoPortaleService pagamentoPortaleService;
 	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
 	private IRPTService rptService;
-	private IRRService rrService;
 	private INotificaService notificaService;
 	private INotificaAppIOService notificaAppIOService;
-	private IIUVService iuvService;
 	private IFRService frService;
 	private IIncassoService incassoService;
 	private IPagamentoService pagamentoService;
@@ -207,11 +200,11 @@ public class BasicBD {
 		this(idTransaction, true);
 	}
 	
-	public static BasicBD newInstance(String idTransaction) throws ServiceException {
+	public static BasicBD newInstance(String idTransaction) {
 		return new BasicBD(idTransaction, true);
 	}
 	
-	public static BasicBD newInstance(String idTransaction, boolean useCache) throws ServiceException {
+	public static BasicBD newInstance(String idTransaction, boolean useCache) {
 		return new BasicBD(idTransaction, useCache);
 	}
 	
@@ -226,11 +219,11 @@ public class BasicBD {
 		this.useCache = useCache;
 		this.isSelectForUpdate = false;
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
-		if(log == null)
+		if(log == null) {
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
+		}
 		this.isAtomica = true;
 		this.idOperatore = idOperatore;
-//		this.setupConnection(idTransaction, this.idModulo);
 	}
 	
 	public void setupConnection(String idTransaction) throws ServiceException {
@@ -245,59 +238,57 @@ public class BasicBD {
 		}
 		if(this.isClosed) {
 			this.connection = ConnectionManager.getConnection(idTransaction, idModulo);
-			this.serviceManager = new JDBCServiceManager(this.connection, ConnectionManager.getJDBCServiceManagerProperties(), log);
-			this.jdbcProperties = this.serviceManager.getJdbcProperties();
+			JDBCServiceManager serviceManager = new JDBCServiceManager(this.connection, ConnectionManager.getJDBCServiceManagerProperties(), log);
+			this.jdbcProperties = serviceManager.getJdbcProperties();
 			
 			try {
-				this.intermediarioService = this.serviceManager.getIntermediarioService();
-				this.stazioneService = this.serviceManager.getStazioneService();
-				this.dominioService = this.serviceManager.getDominioService();
-				this.ibanAccreditoService = this.serviceManager.getIbanAccreditoService();
-				this.tipoTributoService = this.serviceManager.getTipoTributoService();
-				this.tributoService = this.serviceManager.getTributoService();
-				this.utenzaService = this.serviceManager.getUtenzaService();
-				this.utenzaDominioService = this.serviceManager.getUtenzaDominioService();
-				this.utenzaTipoVersamentoService = this.serviceManager.getUtenzaTipoVersamentoService();
-				this.applicazioneService = this.serviceManager.getApplicazioneService();
-				this.uoService = this.serviceManager.getUoService();
-				this.operatoreService = this.serviceManager.getOperatoreService();
-				this.connettoreService = this.serviceManager.getConnettoreService();
-				this.aclService = this.serviceManager.getACLService();
-				this.tipoVersamentoService = this.serviceManager.getTipoVersamentoService();
-				this.tipoVersamentoDominioService = this.serviceManager.getTipoVersamentoDominioService();
-				this.versamentoService = this.serviceManager.getVersamentoService();
-				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
-				this.pagamentoPortaleService = this.serviceManager.getPagamentoPortaleService();
-				this.pagamentoPortaleVersamentoService = this.serviceManager.getPagamentoPortaleVersamentoService();
-				this.rptService = this.serviceManager.getRPTService();
-				this.rrService = this.serviceManager.getRRService();
-				this.notificaService = this.serviceManager.getNotificaService();
-				this.notificaAppIOService = this.serviceManager.getNotificaAppIOService();
-				this.iuvService = this.serviceManager.getIUVService();
-				this.frService = this.serviceManager.getFRService();
-				this.incassoService = this.serviceManager.getIncassoService();
-				this.pagamentoService = this.serviceManager.getPagamentoService();
-				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
-				this.eventoService = this.serviceManager.getEventoService();
-				this.vistaEventiVersamentoService = this.serviceManager.getVistaEventiVersamentoServiceSearch();
-				this.batchService = this.serviceManager.getBatchService();
-				this.tracciatoService = this.serviceManager.getTracciatoService();
-				this.operazioneService = this.serviceManager.getOperazioneService();
-				this.auditService = this.serviceManager.getAuditService();
-				this.versamentoIncassoServiceSearch = this.serviceManager.getVersamentoIncassoServiceSearch();
-				this.vistaRiscossioniServiceSearch = this.serviceManager.getVistaRiscossioniServiceSearch();
-				this.stampaService = this.serviceManager.getStampaService();
-				this.configurazioneService = this.serviceManager.getConfigurazioneService();
-				this.promemoriaService = this.serviceManager.getPromemoriaService();
-				this.vistaPagamentoPortaleServiceSearch = this.serviceManager.getVistaPagamentoPortaleServiceSearch();
-				this.vistaRendicontazioneServiceSearch = this.serviceManager.getVistaRendicontazioneServiceSearch();
-				this.vistaRptVersamentoServiceSearch = this.serviceManager.getVistaRptVersamentoServiceSearch();
-				this.documentoService = this.serviceManager.getDocumentoService();
-				this.tracciatoNotificaPagamentiService = this.serviceManager.getTracciatoNotificaPagamentiService();
-				this.vistaPagamentoServiceSearch =this.serviceManager.getVistaPagamentoServiceSearch();
-				this.vistaVersamentoServiceSearch = this.serviceManager.getVistaVersamentoServiceSearch();
-				this.vistaVersamentoNonRendicontatoServiceSearch = this.serviceManager.getVistaVersamentoNonRendicontatoServiceSearch();
-				this.allegatoService = this.serviceManager.getAllegatoService();
+				this.intermediarioService = serviceManager.getIntermediarioService();
+				this.stazioneService = serviceManager.getStazioneService();
+				this.dominioService = serviceManager.getDominioService();
+				this.ibanAccreditoService = serviceManager.getIbanAccreditoService();
+				this.tipoTributoService = serviceManager.getTipoTributoService();
+				this.tributoService = serviceManager.getTributoService();
+				this.utenzaService = serviceManager.getUtenzaService();
+				this.utenzaDominioService = serviceManager.getUtenzaDominioService();
+				this.utenzaTipoVersamentoService = serviceManager.getUtenzaTipoVersamentoService();
+				this.applicazioneService = serviceManager.getApplicazioneService();
+				this.uoService = serviceManager.getUoService();
+				this.operatoreService = serviceManager.getOperatoreService();
+				this.connettoreService = serviceManager.getConnettoreService();
+				this.aclService = serviceManager.getACLService();
+				this.tipoVersamentoService = serviceManager.getTipoVersamentoService();
+				this.tipoVersamentoDominioService = serviceManager.getTipoVersamentoDominioService();
+				this.versamentoService = serviceManager.getVersamentoService();
+				this.singoloVersamentoService = serviceManager.getSingoloVersamentoService();
+				this.pagamentoPortaleService = serviceManager.getPagamentoPortaleService();
+				this.pagamentoPortaleVersamentoService = serviceManager.getPagamentoPortaleVersamentoService();
+				this.rptService = serviceManager.getRPTService();
+				this.notificaService = serviceManager.getNotificaService();
+				this.notificaAppIOService = serviceManager.getNotificaAppIOService();
+				this.frService = serviceManager.getFRService();
+				this.incassoService = serviceManager.getIncassoService();
+				this.pagamentoService = serviceManager.getPagamentoService();
+				this.rendicontazioneService = serviceManager.getRendicontazioneService();
+				this.eventoService = serviceManager.getEventoService();
+				this.vistaEventiVersamentoService = serviceManager.getVistaEventiVersamentoServiceSearch();
+				this.batchService = serviceManager.getBatchService();
+				this.tracciatoService = serviceManager.getTracciatoService();
+				this.operazioneService = serviceManager.getOperazioneService();
+				this.auditService = serviceManager.getAuditService();
+				this.versamentoIncassoServiceSearch = serviceManager.getVersamentoIncassoServiceSearch();
+				this.vistaRiscossioniServiceSearch = serviceManager.getVistaRiscossioniServiceSearch();
+				this.stampaService = serviceManager.getStampaService();
+				this.configurazioneService = serviceManager.getConfigurazioneService();
+				this.promemoriaService = serviceManager.getPromemoriaService();
+				this.vistaPagamentoPortaleServiceSearch = serviceManager.getVistaPagamentoPortaleServiceSearch();
+				this.vistaRendicontazioneServiceSearch = serviceManager.getVistaRendicontazioneServiceSearch();
+				this.vistaRptVersamentoServiceSearch = serviceManager.getVistaRptVersamentoServiceSearch();
+				this.documentoService = serviceManager.getDocumentoService();
+				this.tracciatoNotificaPagamentiService = serviceManager.getTracciatoNotificaPagamentiService();
+				this.vistaPagamentoServiceSearch =serviceManager.getVistaPagamentoServiceSearch();
+				this.vistaVersamentoServiceSearch = serviceManager.getVistaVersamentoServiceSearch();
+				this.vistaVersamentoNonRendicontatoServiceSearch = serviceManager.getVistaVersamentoNonRendicontatoServiceSearch();
+				this.allegatoService = serviceManager.getAllegatoService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -333,10 +324,8 @@ public class BasicBD {
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
 			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
-			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
 			((IDBNotificaAppIOService)this.notificaAppIOService).enableSelectForUpdate();
-			((IDBIUVService)this.iuvService).enableSelectForUpdate();
 			((IDBFRService)this.frService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
@@ -393,10 +382,8 @@ public class BasicBD {
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
 			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
-			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
 			((IDBNotificaAppIOService)this.notificaAppIOService).disableSelectForUpdate();
-			((IDBIUVService)this.iuvService).disableSelectForUpdate();
 			((IDBFRService)this.frService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
@@ -582,13 +569,6 @@ public class BasicBD {
 		return this.rptService;
 	}
 	
-	public IRRService getRrService() {
-		if(this.father != null) {
-			return this.father.getRrService();
-		}
-		return this.rrService;
-	}
-	
 	public INotificaService getNotificaService() {
 		if(this.father != null) {
 			return this.father.getNotificaService();
@@ -601,13 +581,6 @@ public class BasicBD {
 			return this.father.getNotificaAppIOService();
 		}
 		return this.notificaAppIOService;
-	}
-	
-	public IIUVService getIuvService() {
-		if(this.father != null) {
-			return this.father.getIuvService();
-		}
-		return this.iuvService;
 	}
 	
 	public IFRService getFrService() {
@@ -929,16 +902,10 @@ public class BasicBD {
 	}
 
 	public boolean isAtomica() {
-//		if(this.father != null) {
-//			return this.father.isAtomica();
-//		}
 		return isAtomica;
 	}
 
 	public void setAtomica(boolean isAtomica) {
-//		if(this.father != null) {
-//			this.father.setAtomica(isAtomica);
-//		}
 		this.isAtomica = isAtomica;
 	}
 	

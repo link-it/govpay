@@ -29,6 +29,7 @@
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',
       addPendenzaCustom: 'Ricevuta nuova pendenza dall\'Ente',
       addPendenzaPOST: 'Ricevuta nuova pendenza dall\'Ente',
+	  addRicevuta: 'Acquisita ricevuta telematica',
       addRiconciliazione: 'Riconciliazione pagamenti',
       addRuolo: 'Configura ruolo',
       addStazione: 'Configura stazione',
@@ -169,7 +170,8 @@
       paSendRTV2: 'Ricevuta RT da pagoPA (v2)',
       paVerifyPaymentNotice: 'Ricevuta verifica RPT da pagoPA (v2)',
       paGetPayment: 'Ricevuta attivazione RPT da pagoPA (v2)',
-      paGetPaymentV2: 'Ricevuta attivazione RPT da pagoPA (v2)'
+      paGetPaymentV2: 'Ricevuta attivazione RPT da pagoPA (v2)'	  ,
+	  getOrganizationReceiptIur: 'Richiesta RT a pagoPA'
     },
     API_PENDENZE: {
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',

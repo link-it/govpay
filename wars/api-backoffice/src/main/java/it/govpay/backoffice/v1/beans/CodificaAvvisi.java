@@ -149,7 +149,7 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
 public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		if(this.codificaIuv != null)
-			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); //.pattern("[0-9]{1,15}");
+			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); // controllo spostato nel validatore del core.
 
 		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
 
@@ -162,13 +162,6 @@ public void validate() throws ValidationException {
 
 		if(this.regExpIuv != null)
 			vf.getValidator("regExpIuv", this.regExpIuv).minLength(1).maxLength(1024);
-//			try {
-//				Pattern.compile(this.regExpIuv);
-//			} catch(PatternSyntaxException e) {
-//			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
-//			}
-
-
 	}
 }
 

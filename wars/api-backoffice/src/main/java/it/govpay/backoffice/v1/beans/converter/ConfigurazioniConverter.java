@@ -52,12 +52,12 @@ import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import it.govpay.model.PatchOp;
 import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.PatchOp;
 import it.govpay.model.configurazione.KeyStore;
 
 public class ConfigurazioniConverter {
-	
+
 	private ConfigurazioniConverter() {}
 
 	public static final String PATH_GIORNALE_EVENTI = ConfigurazioneDAO.PATH_GIORNALE_EVENTI;
@@ -567,11 +567,11 @@ public class ConfigurazioniConverter {
 		it.govpay.model.configurazione.AppIOBatch dto = new it.govpay.model.configurazione.AppIOBatch();
 
 		ConnettoriConverter.setAutenticazione(dto, appIoBatch.getAuth());
-		
+
 		dto.setAbilitato(appIoBatch.getAbilitato());
 		dto.setUrl(appIoBatch.getUrl());
 		dto.setTimeToLive(appIoBatch.getTimeToLive());
-		
+
 
 		return dto;
 	}
@@ -582,7 +582,7 @@ public class ConfigurazioniConverter {
 		rsModel.setAbilitato(batchSpedizioneAppIo.isAbilitato());
 		rsModel.setUrl(batchSpedizioneAppIo.getUrl());
 		rsModel.setTimeToLive(batchSpedizioneAppIo.getTimeToLive());
-		
+
 		if(batchSpedizioneAppIo.getTipoAutenticazione()!=null && !batchSpedizioneAppIo.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(batchSpedizioneAppIo));
 

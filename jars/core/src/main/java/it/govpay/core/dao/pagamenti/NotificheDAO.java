@@ -85,8 +85,7 @@ public class NotificheDAO extends BaseDAO{
 				return new ListaNotificheDTOResponse(count, new ArrayList<>());
 			}
 		}finally {
-			if(notificheBD != null)
-				notificheBD.closeConnection();
+			notificheBD.closeConnection();
 		}
 	}
 	

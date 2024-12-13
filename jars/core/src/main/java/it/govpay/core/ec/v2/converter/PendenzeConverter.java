@@ -38,7 +38,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.AllegatiDAO;
 import it.govpay.core.dao.pagamenti.exception.AllegatoNonTrovatoException;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 import it.govpay.ec.v2.beans.AllegatoPendenza;
 import it.govpay.ec.v2.beans.Documento;
 import it.govpay.ec.v2.beans.LinguaSecondaria;
@@ -55,6 +54,8 @@ import it.govpay.ec.v2.beans.VoceDescrizioneImporto;
 import it.govpay.ec.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -136,7 +137,7 @@ public class PendenzeConverter {
 		return null;
 	}
 
-	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException, UnsupportedEncodingException {
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		return toRsModelVocePendenza(singoloVersamento, indice, singoloVersamento.getVersamento(configWrapper));
 	}
@@ -155,8 +156,6 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
@@ -224,7 +223,6 @@ public class PendenzeConverter {
 		rsModel.setProvincia(soggettoVersante.getProvinciaVersante());
 		rsModel.setNazione(soggettoVersante.getNazioneVersante());
 		rsModel.setEmail(soggettoVersante.getEMailVersante());
-		//		rsModel.setCellulare(soggettoVersante.getCellulare());
 
 		return rsModel;
 	}
@@ -235,7 +233,7 @@ public class PendenzeConverter {
 			rsModel = new ProprietaPendenza();
 			
 			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<VoceDescrizioneImporto>();
+				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<>();
 				for (it.govpay.core.beans.tracciati.VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
 					VoceDescrizioneImporto voce = new VoceDescrizioneImporto();
 					
@@ -283,7 +281,7 @@ public class PendenzeConverter {
 	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) throws ServiceException { 
 		List<AllegatoPendenza> rsModel = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 			
 			AllegatiDAO allegatiDAO = new AllegatiDAO();

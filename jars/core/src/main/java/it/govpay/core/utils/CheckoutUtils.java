@@ -27,18 +27,18 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
+import it.gov.pagopa.checkout.model.CartRequest;
+import it.gov.pagopa.checkout.model.CartRequestReturnUrls;
+import it.gov.pagopa.checkout.model.PaymentNotice;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
-import it.govpay.core.beans.checkout.CartRequest;
-import it.govpay.core.beans.checkout.PaymentNotice;
-import it.govpay.core.beans.checkout.ReturnUrls;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 
 public class CheckoutUtils {
 	
 	private CheckoutUtils() {}
 	
-	public static CartRequest createCartRequest(Logger log, BDConfigWrapper configWrapper, String returnUrl, String lang, List<Versamento> versamenti, String codiceConvenzione, String email) throws ServiceException, UnsupportedEncodingException{
+	public static CartRequest createCartRequest(Logger log, BDConfigWrapper configWrapper,  String returnUrl, List<Versamento> versamenti, String codiceConvenzione, String email) throws ServiceException, UnsupportedEncodingException{
 		CartRequest cartRequest = new CartRequest();
 		
 		log.debug("=== Richiesta Modello 1 SANP 3.2.1 ===");
@@ -88,7 +88,7 @@ public class CheckoutUtils {
 		
 		cartRequest.setPaymentNotices(paymentNotices );
 		
-		ReturnUrls returnUrls = new ReturnUrls();
+		CartRequestReturnUrls returnUrls = new CartRequestReturnUrls();
 		
 		// aggiungo i parametri con l'esito
 		boolean hasParameter = returnUrl.contains("?");

@@ -46,7 +46,7 @@ AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
 	public static final String SPID_HEADER_DATE_OF_BIRTH = "dateOfBirth";
 	public static final String SPID_HEADER_GENDER = "gender";
 	public static final String SPID_HEADER_COMPANY_NAME = "companyName";
-	public static final String SPID_HEADER_REGISTERED_OFFICE = "registeredOffice";	
+	public static final String SPID_HEADER_REGISTERED_OFFICE = "registeredOffice";
 	public static final String SPID_HEADER_FISCAL_NUMBER = "fiscalNumber";
 	public static final String SPID_HEADER_IVA_CODE = "ivaCode";
 	public static final String SPID_HEADER_ID_CARD = "idCard";
@@ -64,12 +64,13 @@ AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
 	 * @return the {@code WebAuthenticationDetails} containing information about the
 	 * current request
 	 */
+	@Override
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
 		log.debug("Lettura Informazioni utente dalla sessione in corso...");
-		List<String> nomiAttributi = new ArrayList<String>();
+		List<String> nomiAttributi = new ArrayList<>();
 		nomiAttributi.add(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME);
 		nomiAttributi.add(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME);
-		GovpayWebAuthenticationDetails details = new GovpayWebAuthenticationDetails(log, context, nomiAttributi, true); 
+		GovpayWebAuthenticationDetails details = new GovpayWebAuthenticationDetails(log, context, nomiAttributi, true);
 		log.debug("Lettura Informazioni utente dalla sessione completata.");
 		return details;
 	}

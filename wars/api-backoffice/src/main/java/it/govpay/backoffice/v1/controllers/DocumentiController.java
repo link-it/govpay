@@ -20,7 +20,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class DocumentiController extends BaseController {
     	String methodName = "getAvvisiDocumento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
 			// autorizzazione sulla API
@@ -108,7 +107,7 @@ public class DocumentiController extends BaseController {
 			}
 
 			getAvvisoDTO.setNumeriAvviso(numeriAvviso);
-			
+
 			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
@@ -127,7 +126,7 @@ public class DocumentiController extends BaseController {
 //				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(getAvvisoDTOResponse.getVersamento().getCodVersamentoEnte());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(getAvvisoDTOResponse.getApplicazione().getCodApplicazione());
 
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(getAvvisoDTOResponse.getDocumentoPdf()).header("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameDocumento()+"\""),transactionId).build();
 			} else {
 				// formato non accettato
@@ -142,5 +141,3 @@ public class DocumentiController extends BaseController {
 
 
 }
-
-

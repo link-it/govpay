@@ -83,6 +83,7 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtReceiptUtils  extends NdpValidationUtils {
 
+	private static final String ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0 = "Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}";
 	private static Logger log = LoggerWrapperFactory.getLogger(CtReceiptUtils.class);
 
 	public static EsitoValidazione validaSemantica(PaGetPaymentRes ctRpt, PaSendRTReq ctRt) {
@@ -99,13 +100,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
-			if(ctReceipt.getTransferList().getTransfer().size() != 0 && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
@@ -117,7 +118,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			CtTransferPA singoloVersamento = ctPaymentPA.getTransferList().getTransfer().get(i);
 			CtTransferPA singoloPagamento = null; 
-			if(ctReceipt.getTransferList().getTransfer().size() != 0) {
+			if(!ctReceipt.getTransferList().getTransfer().isEmpty()) {
 				singoloPagamento = ctReceipt.getTransferList().getTransfer().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, (i+1), esito);
 				importoTotaleCalcolato = importoTotaleCalcolato.add(singoloPagamento.getTransferAmount());
@@ -144,7 +145,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		valida(singoloVersamento.getTransferCategory(), singoloPagamento.getTransferCategory(), esito, "TransferCategory non corrisponde", false);
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
-
+			//donothing
 		} else if(singoloPagamento.getTransferAmount().compareTo(singoloVersamento.getTransferAmount()) != 0) {
 			esito.addErrore(MessageFormat.format("Importo del pagamento in posizione {0} [{1}] diverso da quanto richiesto [{2}]", pos, singoloPagamento.getTransferAmount().doubleValue(), singoloVersamento.getTransferAmount().doubleValue()), false);
 		}
@@ -224,10 +225,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 				}
 
-				if(!acquisizioneDaCruscotto) {
-					if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt già acquisita in data {0}", rpt.getDataMsgRicevuta()), rpt.getCodDominio());
-					}
+				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt.getCcp().equals(receiptId)) {
+					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("CtReceipt {0} già acquisita in data {1}", ctReceipt, rpt.getDataMsgRicevuta()), rpt.getCodDominio());
 				}
 
 				PaGetPaymentRes ctRpt = null; 
@@ -242,15 +241,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 						rpt.setVersione(VersioneRPT.RPTV2_RTV1);
 
 						try {
-							ctRptV2 = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+							ctRptV2 = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), false);
 							esito = CtReceiptUtils.validaSemantica(ctRptV2, ctRt);
 						} catch (JAXBException | SAXException e) {
 							throw e;
 						}
 					} else {
-
 						try {
-							ctRpt = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+							ctRpt = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), false);
 							esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
 						} catch (JAXBException | SAXException e) {
 							throw e;
@@ -258,25 +256,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					}
 				}
 
-				if(acquisizioneDaCruscotto) {
-					// controllo esito validazione semantica
-					// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
-					//EsitoPagamento nuovoEsitoPagamento = it.govpay.model.Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
-
-					switch (rpt.getEsitoPagamento()) {
-					case IN_CORSO:
-					case PAGAMENTO_NON_ESEGUITO:
-					case DECORRENZA_TERMINI:
-					case RIFIUTATO:
-						break;
-					case DECORRENZA_TERMINI_PARZIALE:
-					case PAGAMENTO_ESEGUITO:
-					case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("Aggiornamento di CtReceipt in pagamenti con esito {0} non supportata.",	rpt.getEsitoPagamento()), rpt.getCodDominio());
-					}
+				// se e' gia' presente una ricevuta devo inserire una nuova transazione
+				if(rpt.getXmlRt() != null) {
+					// devo fare un insert e non un'update
+					update = false;
 				}
 
-				if(esito.validato && esito.errori.size() > 0) {
+				if(esito.validato && !esito.errori.isEmpty()) {
 					if(recupero)
 						ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
 					else 
@@ -294,7 +280,15 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					rpt.setXmlRt(JaxbUtils.toByte(ctRt));
 
 					try {
-						rptBD.updateRpt(rpt.getId(), rpt);
+						if(update) {
+							rptBD.updateRpt(rpt.getId(), rpt);
+						} else {
+							// inserisco il ccp per le ricerche
+							rpt.setCcp(receiptId);
+							rpt.setCodMsgRicevuta(receiptId);
+							rpt.setDataMsgRicevuta(new Date());
+							rptBD.insertRpt(rpt);
+						}
 						rptBD.commit();
 					}catch (ServiceException e1) {
 						rptBD.rollback();
@@ -492,14 +486,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}  catch (JAXBException | SAXException e) {
 			throw new ServiceException(e);
 		} catch (NotificaException | IOException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 
 			if(rptBD != null)
 				rptBD.rollback();
 
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			log.error(MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
+			LogUtils.logError(log, MessageFormat.format("Errore acquisizione RT: {0}", e.getMessage()),e);
 
 			if(rptBD != null)
 				rptBD.rollback();
@@ -568,13 +562,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		switch (ctRecepitOutcome) {
 		case OK:
 			if(ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;
 		case KO:
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty() && ctReceipt.getTransferList().getTransfer().size() != ctPaymentPA.getTransferList().getTransfer().size()) {
-				esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
+				esito.addErrore(MessageFormat.format(ERRORE_NUMERO_DI_PAGAMENTI_DIVERSO_DAL_NUMERO_DI_VERSAMENTI_PER_UNA_RICEVUTA_DI_TIPO_0, name), true);
 				return esito;
 			}
 			break;

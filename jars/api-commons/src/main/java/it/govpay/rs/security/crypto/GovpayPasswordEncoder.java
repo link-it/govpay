@@ -26,14 +26,14 @@ import org.slf4j.Logger;
 import it.govpay.core.utils.CryptoUtils;
 
 /**
- * 
+ *
  * @author pintori
  *
  */
 public class GovpayPasswordEncoder implements org.springframework.security.crypto.password.PasswordEncoder{
 
 	private Logger log = LoggerWrapperFactory.getLogger(GovpayPasswordEncoder.class);
-	
+
 	@Override
 	public String encode(CharSequence rawPassword) {
 		if(rawPassword != null) {

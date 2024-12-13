@@ -29,7 +29,7 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 
 public class SessionPrincipalExtractorPreAuthFilter extends
 AbstractPreAuthenticatedProcessingFilter {
-	
+
 	public static final String SESSION_PRINCIPAL_ATTRIBUTE_NAME = AuthorizationManager.SESSION_PRINCIPAL_ATTRIBUTE_NAME;
 	public static final String SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME = AuthorizationManager.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME;
 
@@ -41,14 +41,15 @@ AbstractPreAuthenticatedProcessingFilter {
 		super();
 	}
 
-	// setAuthenticationDetailsSource(new WebSpherePreAuthenticatedWebAuthenticationDetailsSource());
+	// setAuthenticationDetailsSource(new WebSpherePreAuthenticatedWebAuthenticationDetailsSource())
 	/**
 	 * Return the WebSphere user name.
 	 */
+	@Override
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest httpRequest) {
 		if(httpRequest.getSession(false) != null) {
 			HttpSession session = httpRequest.getSession(false);
-			
+
 			Object principal = session.getAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME);
 			if (logger.isDebugEnabled()) {
 				logger.debug("PreAuthenticated Govpay session principal: " + principal);
@@ -63,6 +64,7 @@ AbstractPreAuthenticatedProcessingFilter {
 	 * For J2EE container-based authentication there is no generic way to retrieve the
 	 * credentials, as such this method returns a fixed dummy value.
 	 */
+	@Override
 	protected Object getPreAuthenticatedCredentials(HttpServletRequest httpRequest) {
 		return "N/A";
 	}

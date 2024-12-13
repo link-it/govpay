@@ -48,6 +48,8 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AuthorizationManager {
 	
+	private AuthorizationManager() {}
+	
 	public static final String SESSION_PRINCIPAL_ATTRIBUTE_NAME = "GP_PRINCIPAL";
 	public static final String SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME = "GP_PRINCIPAL_OBJECT";
 
@@ -205,10 +207,7 @@ public class AuthorizationManager {
 			return false;
 
 		// controllo abilitazione
-		if(!utenza.isAbilitato())
-			return false;
-
-		return true;
+		return utenza.isAbilitato();
 	}
 	
 
@@ -252,7 +251,7 @@ public class AuthorizationManager {
 
 		if(authorized) {
 			if(codDominio != null) {
-				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				authorized = isDominioAuthorized(utenza, codDominio);
 			}
 
 			if(codTipoVersamento != null) {
@@ -399,15 +398,15 @@ public class AuthorizationManager {
 
 		if(authorized) {
 			if(codDominio != null) {
-				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				authorized = isDominioAuthorized(utenza, codDominio);
 				
 				if(authorized && codUO != null) {
-					authorized = authorized && isUOAuthorized(utenza, codDominio, codUO);
+					authorized = isUOAuthorized(utenza, codDominio, codUO);
 				}
 			}
 
 			if(authorized && codTipoVersamento != null) {
-				authorized = authorized && isTipoVersamentoAuthorized(utenza, codTipoVersamento);
+				authorized = isTipoVersamentoAuthorized(utenza, codTipoVersamento);
 			}
 		}
 

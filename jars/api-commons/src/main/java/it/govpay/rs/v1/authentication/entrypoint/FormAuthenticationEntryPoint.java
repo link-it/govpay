@@ -33,7 +33,7 @@ import it.govpay.rs.v1.exception.CodiceEccezione;
 import it.govpay.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 
 public class FormAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	
+
 	private TimeZone timeZone = TimeZone.getDefault();
     private String timeZoneId = null;
     public String getTimeZoneId() {

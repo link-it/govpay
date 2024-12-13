@@ -43,7 +43,7 @@ public class NotAuthorizedSessionInformationExpiredStrategy implements SessionIn
             this.timeZoneId = timeZoneId;
             this.timeZone = TimeZone.getTimeZone(timeZoneId);
     }
-    
+
 	@Override
 	public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
 		HttpServletResponse response = event.getResponse();

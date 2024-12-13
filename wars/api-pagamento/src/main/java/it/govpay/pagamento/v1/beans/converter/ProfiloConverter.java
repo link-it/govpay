@@ -38,7 +38,7 @@ public class ProfiloConverter {
 	 */
 	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) {
 		Profilo profilo = new Profilo();
-		
+
 		Utenza user = leggiProfilo.getUtente();
 //		if(user.getAcls()!=null) {
 //			List<Acl> aclLst = new ArrayList<>();
@@ -63,7 +63,7 @@ public class ProfiloConverter {
 //			}
 //			profilo.setTipiPendenza(tipiPendenzaLst);
 //		}
-		
+
 		switch(user.getTipoUtenza()) {
 		case ANONIMO:
 			break;
@@ -85,13 +85,13 @@ public class ProfiloConverter {
 		default:
 			break;
 		}
-		
+
 		return profilo;
 	}
 
 	private static Soggetto popolaAnagraficaCittadino(UtenzaCittadino cittadino) {
 		Soggetto anagrafica = new Soggetto();
-		
+
 		anagrafica.setIdentificativo(cittadino.getCodIdentificativo());
 		String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
 				+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
@@ -99,7 +99,7 @@ public class ProfiloConverter {
 		anagrafica.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
 		anagrafica.setCellulare(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_MOBILE_PHONE));
 		anagrafica.setIndirizzo(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_ADDRESS));
-		
+
 		return anagrafica;
 	}
 }

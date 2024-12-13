@@ -176,15 +176,15 @@ public class PendenzaIndex extends JSONSerializable {
 
   @JsonProperty("UUID")
   private String UUID = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataUltimaModificaAca")
   private Date dataUltimaModificaAca = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataUltimaComunicazioneAca")
   private Date dataUltimaComunicazioneAca = null;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
 

@@ -19,9 +19,7 @@
  */
 package it.govpay.core.utils.client.oauth2;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,8 +38,7 @@ import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 
@@ -57,7 +54,7 @@ public class Oauth2ClientCredentialsManager {
 
 	private static Oauth2ClientCredentialsManager instance;
 
-	public static Oauth2ClientCredentialsManager getInstance() {
+	public static synchronized Oauth2ClientCredentialsManager getInstance() {
 		if(instance == null) {
 			init();
 		}
@@ -73,7 +70,7 @@ public class Oauth2ClientCredentialsManager {
 
 	private Map<String, ClientAccessToken> mappaToken = null;
 
-	public Oauth2ClientCredentialsManager() {
+	private Oauth2ClientCredentialsManager() {
 		this.mappaToken = new ConcurrentHashMap<>();		
 	}
 
@@ -106,7 +103,7 @@ public class Oauth2ClientCredentialsManager {
 				log.debug("Acquisizione token per il client [{}]: conclusa con esito OK, ricevuto token: [{}]." , key, accessToken);
 				this.mappaToken.put(key, accessToken);
 			} catch (OAuthServiceException e) {
-				log.warn("Errore nell'acquisizione token per il client [{}]: {}" , key, e.getMessage());
+				LogUtils.logWarnException(log, MessageFormat.format("Errore nell''acquisizione token per il client [{0}]: {1}" , key, e.getMessage()), e);
 				throw new ClientException("Errore nell'acquisizione del token per il client ["+key+"]",500, e.getMessage().getBytes());
 			}
 		}
@@ -122,10 +119,5 @@ public class Oauth2ClientCredentialsManager {
 			return currentTime >= expirationTime;
 		}
 		return true; // se il token non e' presente lo considero scaduto
-	}
-
-	private static String getBasicAuthHeader(String clientId, String clientSecret) {
-		String credentials = clientId + ":" + clientSecret;
-		return java.util.Base64.getEncoder().encodeToString(credentials.getBytes());
 	}
 }

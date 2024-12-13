@@ -394,7 +394,6 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 					if(dominioProfiloPost.getIdDominio() == null)
 						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
 
-//					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
 				} else {

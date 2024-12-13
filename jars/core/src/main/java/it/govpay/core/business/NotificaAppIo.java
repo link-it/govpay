@@ -30,6 +30,7 @@ import it.govpay.bd.pagamento.NotificheAppIoBD;
 public class NotificaAppIo {
 	
 	public NotificaAppIo( ) {
+		//donothing
 	}
 
 	public List<it.govpay.bd.model.NotificaAppIo> findNotificheDaSpedire(Integer offset, Integer limit) throws ServiceException{

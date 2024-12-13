@@ -19,7 +19,6 @@
  */
 package it.govpay.core.utils.service.context;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.ILogger;
 import org.openspcoop2.utils.logger.LoggerFactory;
@@ -40,16 +39,10 @@ public class GpContextFactory extends ContextFactory implements IContextFactory 
 
 		ILogger logger = LoggerFactory.newLogger();
 
-		GpContext context;
-		try {
-			context = GpContext.newContext();
-			context.getEventoCtx().setComponente(this.getApiNameEnum());
-			logger.initLogger(context);
-			Context context2 = new Context(logger, this.isLoggerPrefixEnabled());
-			return context2;
-		} catch (ServiceException e) {
-			throw new UtilsException(e);
-		}
+		GpContext context = GpContext.newContext();
+		context.getEventoCtx().setComponente(this.getApiNameEnum());
+		logger.initLogger(context);
+		return new Context(logger, this.isLoggerPrefixEnabled());
 	}
 
 	public Context newBatchContext() throws UtilsException {
@@ -65,14 +58,9 @@ public class GpContextFactory extends ContextFactory implements IContextFactory 
 
 		ILogger logger = LoggerFactory.newLogger();
 
-		GpContext context;
-		try {
-			context = new GpContext(requestUri, nomeServizio, nomeOperazione, httpMethod, versioneServizio, user,componente);
-			logger.initLogger(context);
-			return new Context(logger, this.isLoggerPrefixEnabled());
-		} catch (ServiceException e) {
-			throw new UtilsException(e);
-		}
+		GpContext context = new GpContext(requestUri, nomeServizio, nomeOperazione, httpMethod, versioneServizio, user,componente);
+		logger.initLogger(context);
+		return new Context(logger, this.isLoggerPrefixEnabled());
 	}
 
 	public Componente getApiNameEnum() {

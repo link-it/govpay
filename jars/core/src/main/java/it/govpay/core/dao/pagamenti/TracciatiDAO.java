@@ -103,8 +103,7 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(tracciatoBD != null)
-				tracciatoBD.closeConnection();
+			tracciatoBD.closeConnection();
 		}
 	}
 
@@ -156,8 +155,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			return new ListaTracciatiDTOResponse(count, resList);
 		} finally {
-			if(tracciatoBD != null)
-				tracciatoBD.closeConnection();
+			tracciatoBD.closeConnection();
 		}
 	}
 
@@ -245,8 +243,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			return new ListaOperazioniTracciatoDTOResponse(count, resList);
 		} finally {
-			if(operazioniBD != null)
-				operazioniBD.closeConnection();
+			operazioniBD.closeConnection();
 		}
 	}
 
@@ -299,11 +296,15 @@ public class TracciatiDAO extends BaseDAO{
 						try {
 							if(resultSet != null)
 								resultSet.close(); 
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						try {
 							if(prepareStatement != null)
 								prepareStatement.close();
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						
 						if(bd != null)
 							bd.closeConnection();
@@ -373,16 +374,21 @@ public class TracciatiDAO extends BaseDAO{
 						try {
 							if(resultSet != null)
 								resultSet.close(); 
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						try {
 							if(prepareStatement != null)
 								prepareStatement.close();
-						} catch (SQLException e) { }
+						} catch (SQLException e) { 
+							//donothing
+						}
 						
 						if(bd != null) {
 							try {
 								bd.setAutoCommit(true);
 							} catch (ServiceException e) {
+								//donothing
 							}
 							bd.closeConnection();
 						}

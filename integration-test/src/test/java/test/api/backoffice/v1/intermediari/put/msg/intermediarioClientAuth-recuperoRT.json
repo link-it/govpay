@@ -1,0 +1,34 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")',
+		"auth": {
+			"tipo": "Client",
+			"ksLocation": "/tmp/keystore.jks",
+			"ksPassword": "kspwd",
+			"tsLocation": "/tmp/truststore.jks",
+			"tsPassword": "tspwd",
+			"tsType": "JKS",
+			"sslType": "TLSv1.2",
+			"ksType": "JKS",
+			"ksPKeyPasswd": "ksPKeyPasswd"
+		}
+	},
+	"servizioPagoPaRecuperoRT": {
+		"url": '#(ndpsym_url + "/pagopa/rs/bizEvent")',
+		"subscriptionKey" : "ABC123",
+		"auth": {
+			"tipo": "Client",
+			"ksLocation": "/tmp/keystore.jks",
+			"ksPassword": "kspwd",
+			"tsLocation": "/tmp/truststore.jks",
+			"tsPassword": "tspwd",
+			"tsType": "JKS",
+			"sslType": "TLSv1.2",
+			"ksType": "JKS",
+			"ksPKeyPasswd": "ksPKeyPasswd"
+		}
+	},
+	"abilitato": true
+}

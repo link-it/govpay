@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -34,9 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(LoggerSetupHandler.class);
-	
+
     @Override
 	public Set<QName> getHeaders() {
         return null;
@@ -63,7 +63,7 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (outboundProperty.booleanValue()) {
-        	try { 
+        	try {
         		smc.getMessage().setProperty("X-GP-CMDID", MDC.get(MD5Constants.OPERATION_ID));
         	} catch (SOAPException e) {
         		log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");

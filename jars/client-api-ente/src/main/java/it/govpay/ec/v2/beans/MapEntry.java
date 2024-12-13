@@ -25,16 +25,17 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class MapEntry   {
   
-  @Schema(required = true, description = "chiave del metadata")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "chiave del metadata")
  /**
    * chiave del metadata  
   **/
   private String key = null;
   
-  @Schema(required = true, description = "valore del metadata")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "valore del metadata")
  /**
    * valore del metadata  
   **/

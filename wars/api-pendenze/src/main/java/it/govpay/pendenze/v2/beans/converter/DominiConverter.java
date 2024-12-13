@@ -24,11 +24,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.pendenze.v2.beans.Dominio;
 
 public class DominiConverter {
-	
+
 	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
 		Dominio rsModel = new Dominio();
 //		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
-		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 //		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 //		rsModel.setCivico(dominio.getAnagrafica().getCivico());
@@ -44,7 +44,7 @@ public class DominiConverter {
 //		if(dominio.getLogo() != null) {
 //			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 //		}
-		
+
 		return rsModel;
 	}
 }

@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -30,9 +30,9 @@ import java.io.Serializable;
 
 
 /** <p>Java class for VistaRendicontazione complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="VistaRendicontazione"&gt;
  * 		&lt;sequence&gt;
@@ -151,16 +151,16 @@ import java.io.Serializable;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * @version $Rev$, $Date$
- * 
+ *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VistaRendicontazione", 
+@XmlType(name = "VistaRendicontazione",
   propOrder = {
   	"frCodPsp",
   	"frCodDominio",

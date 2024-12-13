@@ -35,7 +35,6 @@ public class Utenza extends BasicModel {
 	protected String principal;
 	protected String principalOriginale;
 	protected boolean abilitato;
-//	protected List<Long> idDomini;
 	protected List<Long> idTipiVersamento;
 	protected boolean checkSubject;
 	protected boolean autorizzazioneDominiStar;
@@ -46,7 +45,7 @@ public class Utenza extends BasicModel {
 	
 	public void removeIdDominiUo(Long idDominio) {
 		if(this.idDominiUo != null && !this.idDominiUo.isEmpty()) {
-			List<IdUnitaOperativa>  toRemove = new ArrayList<IdUnitaOperativa>();
+			List<IdUnitaOperativa>  toRemove = new ArrayList<>();
 			for (IdUnitaOperativa idUnitaOperativa : idDominiUo) {
 				if(idUnitaOperativa.getIdDominio() != null && idUnitaOperativa.getIdDominio().longValue() == idDominio.longValue()) {
 					toRemove.add(idUnitaOperativa);
@@ -60,7 +59,7 @@ public class Utenza extends BasicModel {
 	
 	public void removeIdDominiUo(Long idDominio, Long idUo) {
 		if(this.idDominiUo != null && !this.idDominiUo.isEmpty()) {
-			List<IdUnitaOperativa>  toRemove = new ArrayList<IdUnitaOperativa>();
+			List<IdUnitaOperativa>  toRemove = new ArrayList<>();
 			for (IdUnitaOperativa idUnitaOperativa : idDominiUo) {
 				if(idUnitaOperativa.getIdDominio() != null && idUnitaOperativa.getIdDominio().longValue() == idDominio.longValue() && 
 						( (idUo == null && idUnitaOperativa.getIdUnita() == null) || (idUo != null && idUnitaOperativa.getIdUnita() != null && idUnitaOperativa.getIdUnita().longValue() == idUo.longValue()) )

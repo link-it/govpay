@@ -26,8 +26,6 @@ import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-//import io.swagger.v3.oas.annotations.media.Schema;
-
 public class VocePendenza extends DatiEntrata {
   
   // @Schema(example = "1", description = "indice di voce all'interno della pendenza")

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -35,15 +34,14 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO.GROUP_BY;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTOResponse;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class StatisticaRiscossioniDAO extends BaseDAO{
 
 	public StatisticaRiscossioniDAO() {
+		//donothing
 	}
 
-	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
+	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException {
 		StatisticaRiscossioniBD statisticaRiscossioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -54,7 +52,7 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 			filter.setLimit(listaRiscossioniDTO.getLimit());
 			filter.setFiltro(listaRiscossioniDTO.getFiltro());
 
-			List<IField> gruppiDaFare = new ArrayList<IField>();
+			List<IField> gruppiDaFare = new ArrayList<>();
 
 			for (GROUP_BY gruppo : listaRiscossioniDTO.getGroupBy()) {
 				switch (gruppo) {
@@ -84,7 +82,7 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 
 			long count = statisticaRiscossioniBD.count(filter, gruppiDaFare);
 
-			List<StatisticaRiscossione> findAll = new ArrayList<StatisticaRiscossione>();
+			List<StatisticaRiscossione> findAll = new ArrayList<>();
 
 			if(count > 0) {
 				findAll = statisticaRiscossioniBD.statisticaNumeroPagamenti(filter, gruppiDaFare);

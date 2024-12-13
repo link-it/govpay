@@ -29,7 +29,13 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.xml.sax.SAXException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -50,6 +56,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PostRicevutaDTO;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -57,12 +64,17 @@ import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.CtReceiptUtils;
+import it.govpay.core.utils.CtReceiptV2Utils;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.eventi.DatiPagoPA;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
+import jakarta.xml.bind.JAXBException;
 
 public class RptDAO extends BaseDAO{
 	
@@ -209,8 +221,7 @@ public class RptDAO extends BaseDAO{
 
 			return new ListaRptDTOResponse(count, new ArrayList<>());
 		} finally {
-			if(rptBD != null)
-				rptBD.closeConnection();
+			rptBD.closeConnection();
 		}
 	}
 
@@ -222,8 +233,7 @@ public class RptDAO extends BaseDAO{
 
 			return this.listaRpt(listaRptDTO, rptBD);
 		} finally {
-			if(rptBD != null)
-				rptBD.closeConnection();
+			rptBD.closeConnection();
 		}
 	}
 
@@ -417,6 +427,153 @@ public class RptDAO extends BaseDAO{
 			// ricarico l'RPT
 			rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
+			response.setRpt(rpt);
+			response.setVersamento(rpt.getVersamento());
+			response.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper)); 
+			response.setDominio(rpt.getVersamento().getDominio(configWrapper));
+			response.setUnitaOperativa(rpt.getVersamento().getUo(configWrapper));
+			rpt.getVersamento().getTipoVersamentoDominio(configWrapper);
+			response.setTipoVersamento(rpt.getVersamento().getTipoVersamento(configWrapper));
+			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento().getSingoliVersamenti();
+			response.setLstSingoliVersamenti(singoliVersamenti);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				singoloVersamento.getCodContabilita(configWrapper);
+				singoloVersamento.getIbanAccredito(configWrapper);
+				singoloVersamento.getTipoContabilita(configWrapper);
+				singoloVersamento.getTributo(configWrapper);
+			}
+		} catch (NotFoundException e) {
+			throw new RicevutaNonTrovataException(e.getMessage(), e);
+		} finally {
+			if(rptBD != null)
+				rptBD.closeConnection();
+		}
+		return response;
+	}
+
+	public LeggiRptDTOResponse addRicevuta(PostRicevutaDTO postRicevutaDTO) throws ServiceException, RicevutaNonTrovataException, UnprocessableEntityException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, postRicevutaDTO.getIdOperatore());
+		LeggiRptDTOResponse response = new LeggiRptDTOResponse();
+
+		RptBD rptBD = null;
+		NdpException ndpException = null;
+		try {
+			rptBD = new RptBD(configWrapper); 
+			// 1 decodifica messaggio ingresso
+			byte[] rtNonDecodificata = RtUtils.decodeOrOriginal(log, postRicevutaDTO.getContenuto());
+			
+			// 2. controllo se ho ricevuto una busta soap, in tal caso sbusto il messaggio
+			rtNonDecodificata = RtUtils.extractSoapMessage(log, rtNonDecodificata);
+			
+			// 2 chiamare procedura corretta in sequenza partendo da V2.2, V2, SANP 2.3.0
+			Rpt	rpt = null;
+			try {
+				PaSendRTV2Request paSendRTV2RequestRT = JaxbUtils.toPaSendRTV2RequestRT(rtNonDecodificata, true);
+				CtReceiptV2 receipt = paSendRTV2RequestRT.getReceipt();
+				String idDominio = receipt.getFiscalCode();
+				String iuv = receipt.getCreditorReferenceId();
+				String ccp = receipt.getReceiptId();
+				
+				CtReceiptV2Utils.acquisisciRT(idDominio, iuv, paSendRTV2RequestRT, false, true);
+				
+				// ricarico l'RPT
+				rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
+			} catch (JAXBException | SAXException e) {
+				LogUtils.logWarnException(log, "Ricevuta non in formato V2.2, verra' provata la decodifica per la versione V2",e);
+				if(e.getCause() != null) {
+					ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), null);
+				} else {
+					ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), null);
+				}
+			} catch (ServiceException | UtilsException | GovPayException e) {
+				NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
+				String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+				LogUtils.logError(log, faultDescription,e);
+				throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+			} catch (NdpException e) {
+				String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+				LogUtils.logError(log, faultDescription,e);
+				throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+			}
+			
+			// provo con versione V2
+			if(rpt == null) {
+				try {
+					PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rtNonDecodificata, true);
+					CtReceipt receipt = paSendRTReq.getReceipt();
+					String idDominio = receipt.getFiscalCode();
+					String iuv = receipt.getCreditorReferenceId();
+					String ccp = receipt.getReceiptId();
+					
+					CtReceiptUtils.acquisisciRT(idDominio, iuv, paSendRTReq, false, true);
+					
+					// ricarico l'RPT
+					rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
+				} catch (JAXBException | SAXException e) {
+					LogUtils.logWarnException(log, "Ricevuta non in formato V2, verra' provata la decodifica per la versione SANP 2.3.0",e);
+					if(e.getCause() != null) {
+						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), null);
+					} else {
+						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), null);
+					}
+				} catch (ServiceException | UtilsException | GovPayException e) {
+					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
+					String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+					LogUtils.logError(log, faultDescription,e);
+					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+				} catch (NdpException e) {
+					String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+					LogUtils.logError(log, faultDescription,e);
+					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+				}
+			}
+			
+			// provo con versione SANP2.3.0
+			if(rpt == null) {
+				try {
+					CtRicevutaTelematica ctRicevutaTelematica = JaxbUtils.toRT(rtNonDecodificata, true);
+					String idDominio = ctRicevutaTelematica.getEnteBeneficiario().getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco();
+					String iuv = ctRicevutaTelematica.getDatiPagamento().getIdentificativoUnivocoVersamento();
+					String ccp = ctRicevutaTelematica.getDatiPagamento().getCodiceContestoPagamento();
+					
+					RtUtils.acquisisciRT(idDominio, iuv, ccp, rtNonDecodificata, false, true);
+					
+					// ricarico l'RPT
+					rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
+				} catch (JAXBException | SAXException e) {
+					LogUtils.logWarnException(log, "Ricevuta non in formato SANP 2.3.0", e);
+					if(e.getCause() != null) {
+						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), null);
+					} else {
+						ndpException = new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), null);
+					}
+				} catch (ServiceException | UtilsException | GovPayException e) {
+					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
+					String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+					LogUtils.logError(log, faultDescription,e);
+					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+				} catch (NdpException e) {
+					String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+					LogUtils.logError(log, faultDescription,e);
+					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+				}
+			}
+			
+			if(rpt == null) { // la procedura e' fallita lancio errore
+				if(ndpException == null) {
+					LogUtils.logError(log, "La ricevuta di pagamento caricata non e' in un formato valido");
+					throw new UnprocessableEntityException("La ricevuta di pagamento caricata non e' in un formato valido");
+				} else {
+					String faultDescription = ndpException.getDescrizione() == null ? "<Nessuna descrizione>" : ndpException.getDescrizione(); 
+					LogUtils.logError(log, faultDescription, ndpException);
+					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
+				}
+			}
+
+			// valorizzo la response
 			if(rpt.getPagamentoPortale() != null) {
 				rpt.getPagamentoPortale().getApplicazione(configWrapper);
 			}

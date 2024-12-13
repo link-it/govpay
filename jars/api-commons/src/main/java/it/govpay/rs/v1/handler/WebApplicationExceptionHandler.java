@@ -27,13 +27,13 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class WebApplicationExceptionHandler implements ExceptionMapper<WebApplicationException> 
+public class WebApplicationExceptionHandler implements ExceptionMapper<WebApplicationException>
 {
 	private boolean excludeFaultBean;
 
 	@Override
-	public Response toResponse(WebApplicationException e) 
-	{ 
+	public Response toResponse(WebApplicationException e)
+	{
 		if(this.excludeFaultBean) {
 			ResponseBuilder responseBuilder = Response.status(e.getResponse().getStatus());
 			if(e.getResponse().getHeaders()!=null) {

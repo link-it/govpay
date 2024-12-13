@@ -179,7 +179,7 @@ public class RptBuilder {
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRpt.setDataOraMessaggioRichiesta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
-		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione.toString()));
+		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione));
 		ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante));
 		ctRpt.setSoggettoPagatore(RptBuilder.buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
 		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
@@ -250,7 +250,7 @@ public class RptBuilder {
 		return soggettoDebitore;
 	}
 
-	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
+	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) {
 
 		CtEnteBeneficiario enteBeneficiario = new CtEnteBeneficiario();
 		CtIdentificativoUnivocoPersonaG idUnivocoBeneficiario = new CtIdentificativoUnivocoPersonaG();

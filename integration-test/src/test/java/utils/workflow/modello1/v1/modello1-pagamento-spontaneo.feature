@@ -19,6 +19,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 
 Given url pagamentoBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost

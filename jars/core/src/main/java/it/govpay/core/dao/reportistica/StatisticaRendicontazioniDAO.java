@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -35,8 +34,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.reportistica.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.reportistica.dto.ListaRendicontazioniDTO.GROUP_BY;
 import it.govpay.core.dao.reportistica.dto.ListaRendicontazioniDTOResponse;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class StatisticaRendicontazioniDAO extends BaseDAO{
 

@@ -59,7 +59,7 @@ public interface PendenzeApi  {
     @Path("/pendenze")
     @Produces({ "application/json" })
     @Operation(summary = "Elenco delle pendenze", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Elenco delle pendenze che rispettano i filtri di ricerca", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PosizioneDebitoria.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
@@ -77,7 +77,7 @@ public interface PendenzeApi  {
     @Path("/allegati/{id}")
     @Produces({ "*/*", "application/json" })
     @Operation(summary = "Allegato di una pendenza", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Contenuto dell'allegato", content = @Content(mediaType = "*/*", schema = @Schema(implementation = File.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
@@ -95,7 +95,7 @@ public interface PendenzeApi  {
     @Path("/pendenze/{idA2A}/{idPendenza}")
     @Produces({ "application/json" })
     @Operation(summary = "Dettaglio di una pendenza per identificativo", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Informazioni dettagliate della pendenza", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PendenzaArchivio.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

@@ -20,11 +20,9 @@
 package it.govpay.user.v1.controller;
 
 import java.net.URI;
-import java.text.MessageFormat;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -47,38 +45,36 @@ public class LogoutController extends BaseController {
 
 
 	public Response logout(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String urlID) {
-		String methodName = "logout";  
+		String methodName = "logout";
 		String transactionId = this.context.getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			if(this.request.getSession() != null) {
 				HttpSession session = this.request.getSession();
 				session.invalidate();
 			}
-			
+
 			if(urlID == null) {
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.ok(),transactionId).build();
 			} else {
 				Properties props = GovpayConfig.getInstance().getApiUserLogoutRedirectURLs();
-				
+
 				String redirectURL = props.getProperty(urlID);
-				
+
 				if(StringUtils.isBlank(redirectURL)) {
-					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+					this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 					return this.handleResponseOk(Response.ok(),transactionId).build();
 				} else {
 					MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(false);
 					UriBuilder target = UriBuilder.fromUri(new URI(redirectURL));
-					
-					Iterator<Entry<String, List<String>>> iterator = queryParameters.entrySet().iterator();
-					while(iterator.hasNext()) {
-						Entry<String, List<String>> next = iterator.next();
+
+					for (Entry<String, List<String>> next : queryParameters.entrySet()) {
 						this.log.debug("Aggiungo queryParam " + next.getKey() + ": " + next.getValue());
 						target = target.queryParam(next.getKey(), next.getValue().get(0));
 					}
 					redirectURL = target.build().toString();
-					this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");	
+					this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");
 					return this.handleResponseOk(Response.seeOther(new URI(redirectURL)),transactionId).build();
 				}
 			}
@@ -90,5 +86,3 @@ public class LogoutController extends BaseController {
 	}
 
 }
-
-

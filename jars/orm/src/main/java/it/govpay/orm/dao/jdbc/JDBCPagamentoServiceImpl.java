@@ -23,29 +23,25 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdPagamento;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
 
 import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-
+import it.govpay.orm.IdPagamento;
 import it.govpay.orm.Pagamento;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCPagamentoServiceImpl
@@ -106,22 +102,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			}
 		}
 
-		// Object _rr
-		Long id_rr = null;
-		it.govpay.orm.IdRr idLogic_rr = null;
-		idLogic_rr = pagamento.getIdRr();
-		if(idLogic_rr!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rr = ((JDBCRRServiceSearch)(this.getServiceManager().getRRServiceSearch())).findTableId(idLogic_rr, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rr = idLogic_rr.getId();
-				if(id_rr==null || id_rr<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 		// Object _incasso
 		Long id_incasso = null;
@@ -163,7 +143,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 		sqlQueryObjectInsert.addInsertField("id_singolo_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_rr","?");
 		sqlQueryObjectInsert.addInsertField("id_incasso","?");
 
 		// Insert pagamento
@@ -189,7 +168,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getTipo(),Pagamento.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_singoloVersamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rr,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class)
 		);
 		pagamento.setId(id);
@@ -272,22 +250,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			}
 		}
 
-		// Object _pagamento_rr
-		Long id_pagamento_rr = null;
-		it.govpay.orm.IdRr idLogic_pagamento_rr = null;
-		idLogic_pagamento_rr = pagamento.getIdRr();
-		if(idLogic_pagamento_rr!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_pagamento_rr = ((JDBCRRServiceSearch)(this.getServiceManager().getRRServiceSearch())).findTableId(idLogic_pagamento_rr, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_pagamento_rr = idLogic_pagamento_rr.getId();
-				if(id_pagamento_rr==null || id_pagamento_rr<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 		// Object _pagamento_incasso
 		Long id_pagamento_incasso = null;
@@ -355,9 +317,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_singolo_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_rr","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_incasso","?");
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -365,9 +324,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_pagamento.add(new JDBCObject(id_pagamento_singoloVersamento, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_pagamento.add(new JDBCObject(id_pagamento_rr, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_pagamento.add(new JDBCObject(id_pagamento_incasso, Long.class));

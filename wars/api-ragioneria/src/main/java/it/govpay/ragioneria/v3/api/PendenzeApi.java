@@ -72,7 +72,7 @@ public interface PendenzeApi  {
     @Path("/pendenze/byAvviso/{idDominio}/{numeroAvviso}")
     @Produces({ "application/json" })
     @Operation(summary = "Dettaglio di una pendenza per riferimento avviso", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Informazioni dettagliate della pendenza", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pendenza.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

@@ -20,6 +20,7 @@
 package it.govpay.core.dao.pagamenti;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.PreparedStatement;
@@ -34,6 +35,7 @@ import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.jdbc.BlobJDBCAdapter;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
@@ -81,12 +83,11 @@ public class AllegatiDAO  extends BaseDAO {
 		} catch (NotFoundException e) {
 			throw new AllegatoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			if(allegatoBD != null)
-				allegatoBD.closeConnection();
+			allegatoBD.closeConnection();
 		}
 	}
 
-	public StreamingOutput leggiBlobContenuto(Long idAllegato) throws ServiceException, AllegatoNonTrovatoException{
+	public StreamingOutput leggiBlobContenuto(Long idAllegato) throws ServiceException{
 
 		try {
 			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -121,16 +122,7 @@ public class AllegatiDAO  extends BaseDAO {
 						prepareStatement.setLong(1, idAllegato);
 
 						resultSet = prepareStatement.executeQuery();
-						if(resultSet.next()){
-							InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
-							if(isRead != null) {
-								IOUtils.copy(isRead, output);
-							} else {
-								output.write("".getBytes());
-							}
-						} else {
-							throw new AllegatoNonTrovatoException("Allegato ["+idAllegato+"] non trovato.");
-						}
+						scriviOutputStream(idAllegato, jdbcAdapter, columnName, output, resultSet);
 
 						bd.commit();
 					} catch(Exception e) {
@@ -138,28 +130,53 @@ public class AllegatiDAO  extends BaseDAO {
 						log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
 						throw new WebApplicationException("Errore durante la lettura del contenuto dell'allegato.");
 					} finally {
-						try {
-							if(resultSet != null)
-								resultSet.close(); 
-						} catch (SQLException e) { }
-						try {
-							if(prepareStatement != null)
-								prepareStatement.close();
-						} catch (SQLException e) { }
+						chiusuraRisorse(prepareStatement, resultSet, bd);
+					}
+				}
 
-						if(bd != null) {
-							try {
-								bd.setAutoCommit(true);
-							} catch (ServiceException e) {
-							}
-							bd.closeConnection();
+				private void chiusuraRisorse(PreparedStatement prepareStatement, ResultSet resultSet, BasicBD bd) {
+					try {
+						if(resultSet != null)
+							resultSet.close(); 
+					} catch (SQLException e) {
+						//donothing
+					}
+					try {
+						if(prepareStatement != null)
+							prepareStatement.close();
+					} catch (SQLException e) { 
+						//donothing
+					}
+
+					if(bd != null) {
+						try {
+							bd.setAutoCommit(true);
+						} catch (ServiceException e) {
+							//donothing
 						}
+						bd.closeConnection();
+					}
+				}
+
+				private void scriviOutputStream(Long idAllegato, BlobJDBCAdapter jdbcAdapter, String columnName,
+						OutputStream output, ResultSet resultSet)
+						throws SQLException, UtilsException, IOException, AllegatoNonTrovatoException {
+					if(resultSet.next()){
+						InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+						if(isRead != null) {
+							IOUtils.copy(isRead, output);
+						} else {
+							output.write("".getBytes());
+						}
+					} else {
+						throw new AllegatoNonTrovatoException("Allegato ["+idAllegato+"] non trovato.");
 					}
 				}
 			};
 		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
+			//donothing
 		}
 	}
 
@@ -183,7 +200,6 @@ public class AllegatiDAO  extends BaseDAO {
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			PreparedStatement prepareStatement = null;
 			ResultSet resultSet = null;
 			BasicBD bd = null;
 			try {
@@ -193,23 +209,23 @@ public class AllegatiDAO  extends BaseDAO {
 
 				bd.setAutoCommit(false);
 
-				prepareStatement = bd.getConnection().prepareStatement(sql);
-				prepareStatement.setLong(1, idAllegato);
-
-				resultSet = prepareStatement.executeQuery();
-				if(resultSet.next()){
-					InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
-					if(isRead != null) {
-						IOUtils.copy(isRead, baos);
+				try (PreparedStatement prepareStatement =bd.getConnection().prepareStatement(sql);){
+					prepareStatement.setLong(1, idAllegato);
+	
+					resultSet = prepareStatement.executeQuery();
+					if(resultSet.next()){
+						InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+						if(isRead != null) {
+							IOUtils.copy(isRead, baos);
+						} else {
+							baos.write("".getBytes());
+						}
 					} else {
-						baos.write("".getBytes());
+						throw new AllegatoNonTrovatoException("Allegato ["+idAllegato+"] non trovato.");
 					}
-				} else {
-					throw new AllegatoNonTrovatoException("Allegato ["+idAllegato+"] non trovato.");
 				}
-
 				bd.commit();
-			} catch(Exception e) {
+			} catch(ServiceException | SQLException | IOException | UtilsException e) {
 				if(bd != null && !bd.isAutoCommit()) {
 					bd.rollback();
 				}
@@ -219,16 +235,15 @@ public class AllegatiDAO  extends BaseDAO {
 				try {
 					if(resultSet != null)
 						resultSet.close(); 
-				} catch (SQLException e) { }
-				try {
-					if(prepareStatement != null)
-						prepareStatement.close();
-				} catch (SQLException e) { }
+				} catch (SQLException e) { 
+					//donothing
+				}
 
 				if(bd != null) {
 					try {
 						bd.setAutoCommit(true);
 					} catch (ServiceException e) {
+						//donothing
 					}
 					bd.closeConnection();
 				}
@@ -238,6 +253,7 @@ public class AllegatiDAO  extends BaseDAO {
 		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
+			//donothing
 		}
 	}
 }

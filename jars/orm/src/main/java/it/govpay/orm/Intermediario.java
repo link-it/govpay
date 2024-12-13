@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -30,35 +30,37 @@ import java.io.Serializable;
 
 
 /** <p>Java class for Intermediario complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="Intermediario"&gt;
- * 		&lt;sequence&gt;
- * 			&lt;element name="codIntermediario" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
- * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
- * 		&lt;/sequence&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="Intermediario">
+ * 		&lt;sequence>
+ * 			&lt;element name="codIntermediario" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreRecuperoRT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 		&lt;/sequence>
+ * &lt;/complexType>
  * </pre>
- * 
+ *
  * @version $Rev$, $Date$
- * 
+ *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Intermediario", 
+@XmlType(name = "Intermediario",
   propOrder = {
   	"codIntermediario",
   	"codConnettorePdd",
+  	"codConnettoreRecuperoRT",
   	"codConnettoreFtp",
   	"denominazione",
   	"principal",
@@ -88,6 +90,14 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
 
   public void setCodConnettorePdd(java.lang.String codConnettorePdd) {
     this.codConnettorePdd = codConnettorePdd;
+  }
+
+  public java.lang.String getCodConnettoreRecuperoRT() {
+    return this.codConnettoreRecuperoRT;
+  }
+
+  public void setCodConnettoreRecuperoRT(java.lang.String codConnettoreRecuperoRT) {
+    this.codConnettoreRecuperoRT = codConnettoreRecuperoRT;
   }
 
   public java.lang.String getCodConnettoreFtp() {
@@ -157,6 +167,10 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettorePdd",required=true,nillable=false)
   protected java.lang.String codConnettorePdd;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreRecuperoRT",required=false,nillable=false)
+  protected java.lang.String codConnettoreRecuperoRT;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreFtp",required=false,nillable=false)

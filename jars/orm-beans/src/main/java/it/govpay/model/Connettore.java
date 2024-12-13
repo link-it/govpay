@@ -34,11 +34,11 @@ public class Connettore extends Versionabile {
 	public static final String P_SSLTYPE_NAME = "SSLTYPE";
 	public static final String P_HTTPUSER_NAME = "HTTPUSER";
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
-	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per il servizio RPT
-	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
+	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per i servizi verso PagoPA
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
+    public static final String P_SUBSCRIPTION_KEY_RECUPERO_RT_VALUE = "SUBSCRIPTION_KEY_RECUPERO_RT_VALUE";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME = "HTTP_HEADER_AUTH_HEADER_VALUE";
 	
@@ -76,7 +76,6 @@ public class Connettore extends Versionabile {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
-	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
 	private String subscriptionKeyValue;
 	private String httpHeaderName;
@@ -108,7 +107,6 @@ public class Connettore extends Versionabile {
 		this.tipoAutenticazione = src.tipoAutenticazione;
 		this.tipoSsl = src.tipoSsl;
 		this.url = src.url;
-		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
 		this.httpHeaderName = src.httpHeaderName;
 		this.httpHeaderValue = src.httpHeaderValue;
 		this.apiKey = src.apiKey;
@@ -211,12 +209,6 @@ public class Connettore extends Versionabile {
 	}
 	public Tipo getTipo() {
 		return Tipo.valueOf(super.getVersione().getApi());
-	}
-	public String getUrlServiziAvvisatura() {
-		return urlServiziAvvisatura;
-	}
-	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
-		this.urlServiziAvvisatura = urlServiziAvvisatura;
 	}
 	public String getSubscriptionKeyValue() {
 		return subscriptionKeyValue;

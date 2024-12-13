@@ -144,9 +144,9 @@ public class ConnettoreNotificaPagamentiConverter {
 				break;
 			case WEBSERVICE:
 				connettore.setTipoConnettore(TipoConnettore.WEB_SERVICE);
-				
+
 				ConnettoriConverter.setAutenticazione(connettore, connector.getWebServiceAuth());
-				
+
 				connettore.setUrl(connector.getWebServiceUrl());
 				break;
 			}

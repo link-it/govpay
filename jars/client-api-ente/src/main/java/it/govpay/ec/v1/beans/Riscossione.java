@@ -29,8 +29,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-//import io.swagger.v3.oas.annotations.media.Schema;
-
 public class Riscossione  {
   
   // @Schema(example = "1.23456789E+9", requiredMode = RequiredMode.REQUIRED, description = "Identificativo ente creditore")

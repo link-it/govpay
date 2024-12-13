@@ -31,6 +31,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
@@ -50,6 +51,7 @@ public class Configurazione {
 	private static Logger log = LoggerWrapperFactory.getLogger(Configurazione.class);
 
 	public Configurazione() {
+		//donothing
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazione() throws ServiceException{
@@ -62,7 +64,7 @@ public class Configurazione {
 			configurazione = AnagraficaManager.getConfigurazione(configWrapper);
 			this.validaConfigurazione(configurazione);
 		}catch(IOException | NotFoundException e) {
-			log.error(MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
+			LogUtils.logError(log, MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
 			throw new ServiceException(e);
 		}
 
@@ -159,13 +161,11 @@ public class Configurazione {
 	}
 
 	public AvvisaturaViaMail getAvvisaturaViaMailDefault() {
-		AvvisaturaViaMail avvisaturaMail = new AvvisaturaViaMail();
-		return avvisaturaMail;
+		return new AvvisaturaViaMail();
 	}
 
 	public AvvisaturaViaAppIo getAvvisaturaViaAppIoDefault() {
-		AvvisaturaViaAppIo avvisaturaAppIo = new AvvisaturaViaAppIo();
-		return avvisaturaAppIo;
+		return new AvvisaturaViaAppIo();
 	}
 
 	public MailBatch getBatchSpedizioneEmailDefault() {
@@ -195,8 +195,7 @@ public class Configurazione {
 	}
 
 	public TracciatoCsv getTracciatoCsvDefault() {
-		TracciatoCsv tracciato = new TracciatoCsv();
-		return tracciato;
+		return new TracciatoCsv();
 	}
 
 	public Giornale getGiornaleDefault() {

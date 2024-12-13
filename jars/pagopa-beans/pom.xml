@@ -53,6 +53,58 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- dipendenze per generazione da openapi-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-extension-providers</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.brsanthu</groupId>
+			<artifactId>migbase64</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+       		<artifactId>swagger-jaxrs2</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -113,7 +165,6 @@
 						<configuration>
 							<sources>
 								<source>${basedir}/src/main/resources/xsd/comuni/MarcaDaBollo.xsd</source>
-								<source>${basedir}/src/main/resources/xsd/comuni/RR_ER_1_0_0.xsd</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -127,42 +178,6 @@
 								<source>${basedir}/src/main/resources/xsd/comuni/FlussoRiversamento_1_0_4.xsd</source>
 							</sources>
 							<packageName>it.gov.digitpa.schemas._2011.pagamenti.riversamento</packageName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>xjc2</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/ec/QuadraturePA_1_0_6.xsd</source>
-							</sources>
-							<packageName>it.gov.digitpa.schemas._2011.pagamenti.quadrature</packageName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>xjc3</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/ec/TabellaDelleControparti_1_0_8.xsd</source>
-							</sources>
-							<packageName>it.gov.digitpa.schemas._2011.pagamenti.controparti</packageName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>xjc4</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/ec/InformativaContoAccredito_1_2_1.xsd</source>
-							</sources>
-							<packageName>it.gov.digitpa.schemas._2011.pagamenti.informativa</packageName>
 						</configuration>
 					</execution>
 				</executions>
@@ -224,6 +239,64 @@
 						<goals>
 							<goal>wsdl2java</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources-recuperoRT-client</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/bizEvents.yaml</inputSpec>
+							<language>java</language>
+							<configOptions>
+								<jakarta>true</jakarta>
+								<dateLibrary>java8-localdatetime</dateLibrary>
+								<library>resttemplate</library>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.gov.pagopa.bizeventsservice.api</apiPackage>
+								<invokerPackage>it.gov.pagopa.bizeventsservice.impl</invokerPackage>
+								<modelPackage>it.gov.pagopa.bizeventsservice.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources-checkout-client</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/checkout.yaml</inputSpec>
+							<language>java</language>
+							<configOptions>
+								<jakarta>true</jakarta>
+								<dateLibrary>java8-localdatetime</dateLibrary>
+								<library>resttemplate</library>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.gov.pagopa.checkout.api</apiPackage>
+								<invokerPackage>it.gov.pagopa.checkout.impl</invokerPackage>
+								<modelPackage>it.gov.pagopa.checkout.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

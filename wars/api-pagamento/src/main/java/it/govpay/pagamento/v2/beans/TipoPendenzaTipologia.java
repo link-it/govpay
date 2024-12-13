@@ -28,17 +28,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets tipoPendenzaTipologia
  */
 public enum TipoPendenzaTipologia {
-  
-  
-  
-  
+
+
+
+
   SPONTANEO("spontaneo"),
-  
-  
+
+
   DOVUTO("dovuto");
-  
-  
-  
+
+
+
 
   private String value;
 

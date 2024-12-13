@@ -46,6 +46,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public Stazione() {
+		//donothing
 	}
 
 	@Override

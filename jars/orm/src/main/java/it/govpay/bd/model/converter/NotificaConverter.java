@@ -27,7 +27,6 @@ import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdRpt;
-import it.govpay.orm.IdRr;
 
 public class NotificaConverter {
 	
@@ -47,11 +46,6 @@ public class NotificaConverter {
 			IdRpt idRpt = new IdRpt();
 			idRpt.setId(dto.getIdRpt());
 			vo.setIdRpt(idRpt);
-		}
-		if(dto.getIdRr() != null) {
-			IdRr idRr = new IdRr();
-			idRr.setId(dto.getIdRr());
-			vo.setIdRr(idRr);
 		}
 		vo.setStato(dto.getStato().toString());
 		vo.setTentativiSpedizione(dto.getTentativiSpedizione());
@@ -76,8 +70,6 @@ public class NotificaConverter {
 		dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		if(vo.getIdRpt() != null)
 			dto.setIdRpt(vo.getIdRpt().getId());
-		if(vo.getIdRr() != null)
-			dto.setIdRr(vo.getIdRr().getId());
 		dto.setStato(StatoSpedizione.valueOf(vo.getStato()));
 		dto.setTentativiSpedizione(vo.getTentativiSpedizione());
 		dto.setTipo(TipoNotifica.valueOf(vo.getTipoEsito()));

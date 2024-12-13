@@ -12,13 +12,14 @@ import { SslConfigComponent } from '../../../ssl-config/ssl-config.component';
 })
 export class IntermediarioViewComponent  implements IFormComponent, OnInit, AfterViewInit {
   @ViewChild('sslConfig') sslConfig: SslConfigComponent;
+  @ViewChild('sslConfig') sslConfigRecuperoRT: SslConfigComponent;
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
   voce = Voce;
   protected _us = UtilService;
-  // protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
+  protected _isSubscriptionKeyRecuperoRTRequired: boolean = false;
 
   constructor() { }
 
@@ -29,9 +30,9 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     // Connettore SOAP: servizioPagoPa
     this.fGroup.addControl('principalPagoPa_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('urlRPT_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('urlAvvisatura_ctrl', new FormControl(''));
-    // this.fGroup.addControl('versioneApi_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('subscriptionKey_ctrl', new FormControl('', []));
+	this.fGroup.addControl('urlRecuperoRT_ctrl', new FormControl('', []));
+    this.fGroup.addControl('subscriptionKeyRecuperoRT_ctrl', new FormControl('', []));
   }
 
   ngAfterViewInit() {
@@ -45,9 +46,14 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
         if (this.json.servizioPagoPa) {
           const _rpt = this.json.servizioPagoPa;
           this.fGroup.controls['urlRPT_ctrl'].setValue(_rpt.urlRPT?_rpt.urlRPT:'');
-          this.fGroup.controls['urlAvvisatura_ctrl'].setValue(_rpt.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE?_rpt.urlAvvisatura:'');
-          // this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.servizioPagoPa.versioneApi);
           this.fGroup.controls['subscriptionKey_ctrl'].setValue(_rpt.subscriptionKey);
+        }
+		if (this.json.servizioPagoPaRecuperoRT) {
+          const _recuperoRT = this.json.servizioPagoPaRecuperoRT;
+          this.fGroup.controls['urlRecuperoRT_ctrl'].setValue(_recuperoRT.url?_recuperoRT.url:'');
+          this.fGroup.controls['subscriptionKeyRecuperoRT_ctrl'].setValue(_recuperoRT.subscriptionKey);
+		  this._isSubscriptionKeyRecuperoRTRequired = _recuperoRT.url?true:false;
+		  this.fGroup.controls['subscriptionKeyRecuperoRT_ctrl'].setValidators(_recuperoRT.url?[Validators.required]:[]);
         }
       }
     });
@@ -67,14 +73,31 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     _json.servizioPagoPa = {
       auth: null,
       urlRPT: _info['urlRPT_ctrl'],
-      urlAvvisatura: _info['urlAvvisatura_ctrl']?_info['urlAvvisatura_ctrl']:null,
-      // versioneApi: _info['versioneApi_ctrl'],
       subscriptionKey: _info['subscriptionKey_ctrl']?_info['subscriptionKey_ctrl']:null
     };
     _json.servizioPagoPa['auth'] = this.sslConfig.mapToJson();
     if(_json.servizioPagoPa.auth == null) { delete _json.servizioPagoPa.auth; }
-    if(_json.servizioPagoPa.urlAvvisatura == null) { delete _json.servizioPagoPa.urlAvvisatura; }
-
+	
+	_json.servizioPagoPaRecuperoRT = {
+      auth: null,
+      url: _info['urlRecuperoRT_ctrl'],
+      subscriptionKey: _info['subscriptionKeyRecuperoRT_ctrl']?_info['subscriptionKeyRecuperoRT_ctrl']:null
+    };
+    _json.servizioPagoPaRecuperoRT['auth'] = this.sslConfigRecuperoRT.mapToJson();
+    if(_json.servizioPagoPaRecuperoRT.auth == null) { delete _json.servizioPagoPaRecuperoRT.auth; }
     return _json;
   }
+  
+  protected _onRecuperoRTUrlChange(trigger: any, targets: string) {
+      targets.split('|').forEach((_target, _ti) => {
+        const _tc = this.fGroup.controls[_target];
+        _tc.clearValidators();
+		this._isSubscriptionKeyRecuperoRTRequired = false;
+        if(trigger.value.trim() !== '') {
+          _tc.setValidators((_ti==0)?Validators.required:null);
+		  this._isSubscriptionKeyRecuperoRTRequired = true;
+        } 
+        _tc.updateValueAndValidity();
+      });
+    }
 }

@@ -136,7 +136,7 @@ public class Tracciato extends BasicModel {
 	
 	public enum TIPO_TRACCIATO { PENDENZA }
 	
-	public enum FORMATO_TRACCIATO { CSV, JSON, XML};
+	public enum FORMATO_TRACCIATO { CSV, JSON, XML}
 	
 	private TIPO_TRACCIATO tipo;
 	private STATO_ELABORAZIONE stato;

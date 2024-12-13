@@ -39,7 +39,7 @@ import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 
 /**
  * La classe estende le funzionalita' della classe {@link DefaultOAuth2UserService} per caricare le informazioni relative all'utenza GovPay all'interno dell'oggetto {@link OAuth2User}
- * 
+ *
  * @author pintori@link.it
  *
  */
@@ -67,13 +67,13 @@ public class GovPayOAuth2UserService extends DefaultOAuth2UserService {
 		essence.setCredentialsNonExpired(true);
 		essence.setEnabled(true);
 		essence.setUsername(govpayLdapOauth2Details.getName());
-		essence.setPassword(AutorizzazioneUtils.PASSWORD_DEFAULT_VALUE);
+		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(govpayLdapOauth2Details.getName());
-		
+
 		LdapUserDetails createUserDetails = essence.createUserDetails();
 		govpayLdapOauth2Details.setLdapUserDetailsImpl(createUserDetails);
-		
+
 		// leggo le informazioni sull'utenza nel formato GovPay
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
@@ -86,7 +86,7 @@ public class GovPayOAuth2UserService extends DefaultOAuth2UserService {
 			govpayLdapOauth2Details.setIdTransazioneAutenticazione(govpayDetails.getIdTransazioneAutenticazione());
 			govpayLdapOauth2Details.setTipoUtenza(govpayDetails.getTipoUtenza());
 		}
-		
+
 		return govpayLdapOauth2Details;
 	}
 

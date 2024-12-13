@@ -449,7 +449,7 @@ export class UtilService {
   //Operazioni
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
-  public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
+  public static URL_RECUPERO_RT : string = '/recuperoRT';
   public static URL_RESET_CACHE: string = '/resetCacheAnagrafica';
   //Reportistiche
   public static URL_REPORTISTICHE: string = '/reportistiche';
@@ -500,7 +500,7 @@ export class UtilService {
 
   public static TXT_MAN_NOTIFICHE: string = 'Spedisci notifiche';
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
-  public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
+  public static TXT_MAN_RICEVUTE: string = 'Recupera ricevute';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
   public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
 

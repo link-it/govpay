@@ -25,6 +25,8 @@ import it.govpay.core.exceptions.GovPayException.FaultBean;
 
 public class FaultBeanUtils {
 
+	private FaultBeanUtils() {}
+	
 	public static FaultBean toFaultBean(gov.telematici.pagamenti.ws.rpt.FaultBean faultBean) {
 		if(faultBean == null) return null;
 		

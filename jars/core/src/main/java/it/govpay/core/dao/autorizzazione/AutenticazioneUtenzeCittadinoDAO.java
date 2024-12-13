@@ -55,29 +55,26 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		
 		if(this.leggiUtenzaDaSessione) {
 			Map<String, Object> attributeValues = new HashMap<>();
-			if(token.getDetails() != null && token.getDetails() instanceof GovpayWebAuthenticationDetails) {
+			if(token.getDetails() instanceof GovpayWebAuthenticationDetails) {
 				attributeValues = ((GovpayWebAuthenticationDetails) token.getDetails()).getAttributesValues();
 			}
-			UserDetails user = this._loadUserDetailsFromSession(username, token.getAuthorities(),attributeValues );
-			return user;
+			return this.loadUserDetailsFromSessionEngine(username, token.getAuthorities(),attributeValues );
 		} else {
 			Map<String, List<String>> headerValues = new HashMap<>();
-			if(token.getDetails() != null && token.getDetails() instanceof GovpayWebAuthenticationDetails) {
+			if(token.getDetails() instanceof GovpayWebAuthenticationDetails) {
 				headerValues = ((GovpayWebAuthenticationDetails) token.getDetails()).getHeaderValues();
 			}
-			UserDetails user = this._loadUserDetails(username, token.getAuthorities(),headerValues);
-			return user;
+			return this.loadUserDetailsEngine(username, token.getAuthorities(),headerValues);
 		}
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserDetails user = this._loadUserDetails(username, null,null);
-		return user;
+		return this.loadUserDetailsEngine(username, null,null);
 	}
 
 
-	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) {
+	private UserDetails loadUserDetailsEngine(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) {
 		if(headerValues == null) {
 			headerValues = new HashMap<>();
 		}
@@ -93,10 +90,11 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
+			// donothing
 		}
 	}
 	
-	private UserDetails _loadUserDetailsFromSession(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, Object> attributeValues) {
+	private UserDetails loadUserDetailsFromSessionEngine(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, Object> attributeValues) {
 		if(attributeValues == null) {
 			attributeValues = new HashMap<>();
 		}
@@ -116,6 +114,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
+			// donothing
 		}
 	}
 }

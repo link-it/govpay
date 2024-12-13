@@ -87,9 +87,7 @@ public class AllegatiBD extends BasicBD {
 			
 			it.govpay.orm.Allegato vo = ((JDBCAllegatoServiceSearch)this.getAllegatoService()).get(id);
 			return AllegatoConverter.toDTO(vo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -175,11 +173,7 @@ public class AllegatiBD extends BasicBD {
 				
 				prepareStatement.executeUpdate();
 				
-			} catch (SQLException e) {
-				throw new ServiceException(e);
-			} catch (SQLQueryObjectException e) {
-				throw new ServiceException(e);
-			} catch (ExpressionException e) {
+			} catch (SQLException | SQLQueryObjectException | ExpressionException e) {
 				throw new ServiceException(e);
 			} finally {
 				try {
@@ -445,7 +439,6 @@ public class AllegatiBD extends BasicBD {
 
 			eseguiRicerca(model, allegatoFetch, idMappingResolutionBehaviour, lstAllegatoVO, fields, pagExpr);
 
-			//			List<it.govpay.orm.Allegato> lstAllegatoVO = this.getAllegatoService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Allegato allegatoVO: lstAllegatoVO) {
 				lst.add(AllegatoConverter.toDTO(allegatoVO));
 			}
@@ -468,9 +461,6 @@ public class AllegatiBD extends BasicBD {
 		fields.add(model.TIPO);
 		fields.add(model.DATA_CREAZIONE);
 		fields.add(model.DESCRIZIONE);
-//		if(includiRawContenuto) {
-//			fields.add(model.RAW_CONTENUTO);
-//		}
 		fields.add(new CustomField("id_versamento", Long.class, "id_versamento", converter.toTable(model)));
 		return fields;
 	}
