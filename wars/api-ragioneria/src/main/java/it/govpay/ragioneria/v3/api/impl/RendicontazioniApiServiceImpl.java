@@ -149,7 +149,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 				collect.add(FlussiRendicontazioneConverter.toRsIndexModel(res.getFr()));
 			}
 
-			FlussiRendicontazione response = new FlussiRendicontazione(uriInfo.getRequestUri(), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			FlussiRendicontazione response = new FlussiRendicontazione(this.getServicePathConURIAssoluta(uriInfo, httpHeaders), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(collect);
 			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 

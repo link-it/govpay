@@ -206,7 +206,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			}
 
 			FlussiRendicontazione response = new FlussiRendicontazione(collect,
-					uriInfo.getRequestUri(), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					this.getServicePathConURIAssoluta(uriInfo, httpHeaders), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();

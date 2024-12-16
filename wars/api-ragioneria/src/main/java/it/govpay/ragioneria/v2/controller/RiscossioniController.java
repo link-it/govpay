@@ -210,7 +210,7 @@ public class RiscossioniController extends BaseController {
 
 
 			Riscossioni response = new Riscossioni(lst,
-					uriInfo.getRequestUri(), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					this.getServicePathConURIAssoluta(uriInfo, httpHeaders), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

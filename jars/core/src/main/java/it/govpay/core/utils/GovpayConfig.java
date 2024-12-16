@@ -212,6 +212,8 @@ public class GovpayConfig {
 	
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 	
+	private Properties risorseCustomBaseURLProperties;
+	
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -328,6 +330,8 @@ public class GovpayConfig {
 		this.batchSpedizioneNotifiche = false;
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
+		
+		this.risorseCustomBaseURLProperties = new Properties();
 		
 		try {
 
@@ -1036,6 +1040,9 @@ public class GovpayConfig {
 				}
 			}
 			
+			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
+			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
+			
 		} catch (PropertyNotFoundException e) {
 			log.error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
@@ -1561,4 +1568,7 @@ public class GovpayConfig {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
 	
+	public Properties getRisorseCustomBaseURLProperties() {
+		return risorseCustomBaseURLProperties;
+	}
 }
