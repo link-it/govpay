@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StazioneConverter {
+	
+	private StazioneConverter() {}
 
 	public static List<Stazione> toDTOList(List<it.govpay.orm.Stazione> stazioneLst) {
 		List<Stazione> lstDTO = new ArrayList<>();

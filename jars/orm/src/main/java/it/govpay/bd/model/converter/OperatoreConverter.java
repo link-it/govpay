@@ -28,6 +28,7 @@ import it.govpay.orm.IdUtenza;
 
 public class OperatoreConverter {
 
+	private OperatoreConverter() {}
 
 	public static Operatore toDTO(it.govpay.orm.Operatore vo) {
 		Operatore dto = new Operatore();

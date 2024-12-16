@@ -26,6 +26,8 @@ import java.util.List;
 import it.govpay.model.TipoVersamento;
 
 public class TipoVersamentoConverter {
+	
+	private TipoVersamentoConverter() {}
 
 	public static List<TipoVersamento> toDTOList(List<it.govpay.orm.TipoVersamento> lstVO) {
 		List<TipoVersamento> lst = new ArrayList<>();

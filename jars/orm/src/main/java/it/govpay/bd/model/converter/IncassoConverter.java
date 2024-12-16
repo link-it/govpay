@@ -27,6 +27,8 @@ import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;
 
 public class IncassoConverter {
+	
+	private IncassoConverter() {}
 
 	public static Incasso toDTO(it.govpay.orm.Incasso vo) {
 			Incasso dto = new Incasso();

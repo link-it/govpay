@@ -68,7 +68,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public StatisticaRendicontazioniFilter newFilter() throws ServiceException {
+	public StatisticaRendicontazioniFilter newFilter() {
 		return new StatisticaRendicontazioniFilter(this.getRendicontazioneService());
 	}
 	
@@ -227,7 +227,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-
+				//donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

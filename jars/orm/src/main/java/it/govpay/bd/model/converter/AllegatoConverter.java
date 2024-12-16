@@ -23,11 +23,12 @@ import it.govpay.bd.model.Allegato;
 import it.govpay.orm.IdVersamento;
 
 public class AllegatoConverter {
+	
+	private AllegatoConverter(){}
 
 	public static Allegato toDTO(it.govpay.orm.Allegato vo) {
 		Allegato dto = new Allegato();
 		dto.setId(vo.getId());
-//		dto.setAuthorizationToken(vo.getAuthorizationToken());
 		dto.setDataCreazione(vo.getDataCreazione());
 		dto.setNome(vo.getNome());
 		dto.setTipo(vo.getTipo());

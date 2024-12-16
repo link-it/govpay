@@ -28,6 +28,8 @@ import it.govpay.orm.IdDominio;
 import it.govpay.orm.TipoVersamento;
 
 public class TipoVersamentoDominioConverter {
+	
+	private TipoVersamentoDominioConverter() {}
 
 	public static List<TipoVersamentoDominio> toDTOList(List<it.govpay.orm.TipoVersamentoDominio> lstVO) {
 		List<TipoVersamentoDominio> lst = new ArrayList<>();

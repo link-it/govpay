@@ -29,6 +29,8 @@ import it.govpay.orm.ACL;
 import it.govpay.orm.IdUtenza;
 
 public class AclConverter {
+	
+	private AclConverter() {}
 
 	public static Acl toDTO(ACL vo) throws CodificaInesistenteException {
 		Acl dto = new Acl();

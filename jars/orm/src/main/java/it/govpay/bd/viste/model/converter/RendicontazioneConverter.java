@@ -47,6 +47,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
 
 
 public class RendicontazioneConverter {
+	
+	private RendicontazioneConverter() {}
 
 	public static Rendicontazione toDTO(it.govpay.orm.VistaRendicontazione vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		Rendicontazione dto = new Rendicontazione();
@@ -67,7 +69,6 @@ public class RendicontazioneConverter {
 		fr.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getFrImportoTotalePagamenti()));
 		fr.setIur(vo.getFrIur());
 		fr.setNumeroPagamenti(vo.getFrNumeroPagamenti());
-		//		fr.setXml(vo.getFrXml()); // no blob
 		if(vo.getFrIdIncasso() != null)
 			fr.setIdIncasso(vo.getFrIdIncasso().getId());
 		fr.setRagioneSocialeDominio(vo.getFrRagioneSocialeDominio());
@@ -198,15 +199,6 @@ public class RendicontazioneConverter {
 				versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 			versamento.setIuvPagamento(vo.getVrsIuvPagamento());
 	
-			versamento.setDataPagamento(vo.getVrsDataPagamento());
-			if(vo.getVrsImportoPagato() != null)
-				versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato()));
-			if(vo.getVrsImportoIncassato() != null)
-				versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-			if(vo.getVrsStatoPagamento() != null)
-				versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-			versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-			
 			if(vo.getVrsIdDocumento() != null)
 				versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
 			if(vo.getVrsCodRata() != null) {
@@ -220,12 +212,8 @@ public class RendicontazioneConverter {
 					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 					versamento.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-//					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-//					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 					versamento.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-//					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-//					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else {
 					versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 				}

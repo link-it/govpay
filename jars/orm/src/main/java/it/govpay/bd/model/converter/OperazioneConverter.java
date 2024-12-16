@@ -31,7 +31,8 @@ import it.govpay.orm.IdTracciato;
 import it.govpay.orm.IdVersamento;
 
 public class OperazioneConverter {
-
+	
+	private OperazioneConverter() {}
 
 	public static List<Operazione> toDTOList(List<it.govpay.orm.Operazione> anagraficaLst) {
 		List<Operazione> lstDTO = new ArrayList<>();

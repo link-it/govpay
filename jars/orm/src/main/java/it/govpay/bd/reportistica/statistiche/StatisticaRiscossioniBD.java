@@ -65,7 +65,7 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public StatisticaRiscossioniFilter newFilter() throws ServiceException {
+	public StatisticaRiscossioniFilter newFilter() {
 		return new StatisticaRiscossioniFilter(this.getPagamentoService());
 	}
 	
@@ -187,17 +187,10 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 						}
 					}
 					
-//					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO))) {
-//						Object tipoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO));
-//						if(tipoObj instanceof String) {
-//							entry.setTipo(TipoPagamento.valueOf((String) tipoObj));
-//						}
-//					}
-					
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-
+				//donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

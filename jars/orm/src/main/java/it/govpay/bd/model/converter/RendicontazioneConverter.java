@@ -32,6 +32,8 @@ import it.govpay.orm.IdPagamento;
 import it.govpay.orm.IdSingoloVersamento;
 
 public class RendicontazioneConverter {
+	
+	private RendicontazioneConverter() {}
 
 	public static Rendicontazione toDTO(it.govpay.orm.Rendicontazione vo) throws CodificaInesistenteException {
 		Rendicontazione dto = new Rendicontazione();

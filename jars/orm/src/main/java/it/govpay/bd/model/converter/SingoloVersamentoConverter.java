@@ -34,6 +34,8 @@ import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdVersamento;
 
 public class SingoloVersamentoConverter {
+	
+	private SingoloVersamentoConverter() {}
 
 	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws CodificaInesistenteException {
 		List<SingoloVersamento> lstDTO = new ArrayList<>();

@@ -35,6 +35,8 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class VersamentoConverter {
+	
+	private VersamentoConverter() {}
 
 	public static List<Versamento> toDTOList(List<it.govpay.orm.VistaVersamento> versamenti) throws CodificaInesistenteException, UnsupportedEncodingException {
 		List<Versamento> lstDTO = new ArrayList<>();
@@ -131,15 +133,6 @@ public class VersamentoConverter {
 			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 		dto.setIuvPagamento(vo.getIuvPagamento());
 
-		dto.setDataPagamento(vo.getDataPagamento());
-		if(vo.getImportoPagato() != null)
-			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		if(vo.getImportoIncassato() != null)
-			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
-		if(vo.getStatoPagamento() != null)
-			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
-		dto.setIuvPagamento(vo.getIuvPagamento());
-
 		if(vo.getIdDocumento() != null) {
 			Documento documento = new Documento();
 			documento.setId(vo.getIdDocumento().getId());
@@ -162,12 +155,8 @@ public class VersamentoConverter {
 				dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
 			}

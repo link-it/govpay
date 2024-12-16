@@ -31,6 +31,8 @@ import it.govpay.model.Versionabile.Versione;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreNotificaPagamentiConverter {
+	
+	private ConnettoreNotificaPagamentiConverter() {}
 
 	public static ConnettoreNotificaPagamenti toConnettoreNotificaPagamentiDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException {
 		ConnettoreNotificaPagamenti dto = new ConnettoreNotificaPagamenti();

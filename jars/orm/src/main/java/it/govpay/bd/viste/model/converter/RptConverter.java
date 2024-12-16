@@ -41,6 +41,8 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RptConverter {
+	
+	private RptConverter() {}
 
 	public static Rpt toDTO(it.govpay.orm.VistaRptVersamento vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		Rpt dto = new Rpt();
@@ -178,15 +180,6 @@ public class RptConverter {
 		if(vo.getVrsStatoPagamento() != null)
 			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-
-		versamento.setDataPagamento(vo.getVrsDataPagamento());
-		if(vo.getVrsImportoPagato() != null)
-			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato()));
-		if(vo.getVrsImportoIncassato() != null)
-			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-		if(vo.getVrsStatoPagamento() != null)
-			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
 		
 		if(vo.getVrsIdDocumento() != null)
 			versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
@@ -201,12 +194,8 @@ public class RptConverter {
 				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				versamento.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				versamento.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 			}

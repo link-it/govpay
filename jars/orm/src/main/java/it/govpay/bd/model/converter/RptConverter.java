@@ -35,6 +35,8 @@ import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
+	
+	private RptConverter() {}
 
 	public static List<Rpt> toDTOList(List<it.govpay.orm.RPT> applicazioneLst) throws CodificaInesistenteException {
 		List<Rpt> lstDTO = new ArrayList<>();

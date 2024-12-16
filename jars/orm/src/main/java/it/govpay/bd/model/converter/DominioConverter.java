@@ -30,16 +30,8 @@ import it.govpay.orm.IdStazione;
 
 public class DominioConverter {
 
-//	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BDConfigWrapper configWrapper) throws ServiceException {
-//		List<Dominio> lstDTO = new ArrayList<>();
-//		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
-//			for(it.govpay.orm.Dominio anagrafica: anagraficaLst){
-//				lstDTO.add(toDTO(anagrafica, configWrapper));
-//			}
-//		}
-//		return lstDTO;
-//	}
-
+	private DominioConverter() {}
+	
 	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
 			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, 
 			ConnettoreNotificaPagamenti connettoreHyperSicAPKappa, ConnettoreNotificaPagamenti connettoreMaggioliJPPA) throws ServiceException {

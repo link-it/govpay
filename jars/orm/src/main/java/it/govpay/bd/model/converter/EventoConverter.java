@@ -30,6 +30,8 @@ import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdTracciato;
 
 public class EventoConverter {
+	
+	private EventoConverter() {}
 
 	public static it.govpay.orm.Evento toVO(Evento dto) {
 		it.govpay.orm.Evento vo = new it.govpay.orm.Evento();

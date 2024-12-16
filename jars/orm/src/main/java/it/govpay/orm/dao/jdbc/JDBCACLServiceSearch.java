@@ -38,6 +38,7 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -82,6 +83,72 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("acl");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+	}
+	
+	protected void logError(Exception e) {
+		if(e!=null && this.log!=null) {
+			this.log.error(e.getMessage(),e);
+		}
+	}
+	protected void logDebug(Exception e) {
+		if(e!=null && this.log!=null) {
+			this.log.debug(e.getMessage(),e);
+		}
+	}
+	protected void logJDBCExpression(JDBCExpression jdbcExpression) throws ExpressionException{
+		if(this.log!=null) {
+			String msgDebug = "sql = "+jdbcExpression.toSql();
+			this.log.debug(msgDebug);
+		}
+	}
+	protected void logJDBCPaginatedExpression(JDBCPaginatedExpression jdbcPaginatedExpression) throws ExpressionException{
+		if(this.log!=null) {
+			String msgDebug = "sql = "+jdbcPaginatedExpression.toSql();
+			this.log.debug(msgDebug);
+		}
+	}
+	
+	private static final String PARAMETER_TYPE_PREFIX = "Parameter (type:";
+		
+	private ServiceException newServiceExceptionParameterObjIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+ACL.class.getName()+") 'obj' is null");
+	}
+	protected ServiceException newServiceExceptionParameterIdIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IdAcl.class.getName()+") 'id' is null");
+	}
+	private ServiceException newServiceExceptionParameterIdMappingResolutionBehaviourIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+	}
+
+	protected ServiceException newServiceExceptionParameterExpressionWrongType(IExpression expression){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+	}
+	protected ServiceException newServiceExceptionParameterExpressionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IExpression.class.getName()+") 'expression' is null");
+	}
+	
+	private ServiceException newServiceExceptionParameterPaginatedExpressionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IPaginatedExpression.class.getName()+") 'expression' is null");
+	}
+	private ServiceException newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+	}
+	private ServiceException newServiceExceptionParameterPaginatedExpressionWrongType(IPaginatedExpression expression){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+	}
+	private ServiceException newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(IPaginatedExpression paginatedExpression){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+	}
+	
+	private ServiceException newServiceExceptionParameterUnionExpressionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UnionExpression.class.getName()+") 'unionExpression' is null");
+	}
+	
+	private ServiceException newServiceExceptionParameterWithTypeTableIdLessEqualsZero(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IdAcl.class.getName()+") 'tableId' is lessEquals 0");
+	}
+	private ServiceException newServiceExceptionParameterTableIdLessEqualsZero(){
+		return new ServiceException("Parameter 'tableId' is less equals 0");
 	}
 	
 	@Override

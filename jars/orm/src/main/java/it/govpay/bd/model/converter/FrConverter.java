@@ -28,6 +28,8 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.orm.IdIncasso;
 
 public class FrConverter {
+	
+	private FrConverter() {}
 
 	public static List<Fr> toDTOList(List<it.govpay.orm.FR> lst) {
 		List<Fr> lstDTO = new ArrayList<>();

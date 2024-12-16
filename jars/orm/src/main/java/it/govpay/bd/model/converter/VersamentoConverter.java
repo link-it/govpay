@@ -42,6 +42,8 @@ import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.IdUo;
 
 public class VersamentoConverter {
+	
+	private VersamentoConverter() {}
 
 	public static List<Versamento> toDTOList(List<it.govpay.orm.Versamento> versamenti) throws UnsupportedEncodingException, CodificaInesistenteException {
 		List<Versamento> lstDTO = new ArrayList<>();
@@ -109,7 +111,7 @@ public class VersamentoConverter {
 		dto.setCodBundlekey(vo.getCodBundlekey()); 
 		dto.setDatiAllegati(vo.getDatiAllegati());
 		if(vo.getIncasso() != null) {
-			dto.setIncasso(vo.getIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+			dto.setIncasso(vo.getIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE));
 		}
 		dto.setAnomalie(vo.getAnomalie());
 
@@ -138,15 +140,6 @@ public class VersamentoConverter {
 			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 		dto.setIuvPagamento(vo.getIuvPagamento());
 
-		dto.setDataPagamento(vo.getDataPagamento());
-		if(vo.getImportoPagato() != null)
-			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		if(vo.getImportoIncassato() != null)
-			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
-		if(vo.getStatoPagamento() != null)
-			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
-		dto.setIuvPagamento(vo.getIuvPagamento());
-
 		if(vo.getIdDocumento() != null)
 			dto.setIdDocumento(vo.getIdDocumento().getId());
 		if(vo.getCodRata() != null) {
@@ -160,12 +153,8 @@ public class VersamentoConverter {
 				dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
 			}
@@ -259,7 +248,7 @@ public class VersamentoConverter {
 		vo.setDatiAllegati(dto.getDatiAllegati());
 
 		if(dto.getIncasso()!=null) {
-			vo.setIncasso(dto.getIncasso() ? it.govpay.model.Versamento.INCASSO_TRUE : it.govpay.model.Versamento.INCASSO_FALSE);
+			vo.setIncasso(Boolean.TRUE.equals(dto.getIncasso()) ? it.govpay.model.Versamento.INCASSO_TRUE : it.govpay.model.Versamento.INCASSO_FALSE);
 		}
 		vo.setAnomalie(dto.getAnomalie());
 

@@ -27,6 +27,8 @@ import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
 
 public class DocumentoConverter {
+	
+	private DocumentoConverter() {}
 
 	public static List<Documento> toDTOList(List<it.govpay.orm.Documento> anagraficaLst) {
 		List<Documento> lstDTO = new ArrayList<>();
