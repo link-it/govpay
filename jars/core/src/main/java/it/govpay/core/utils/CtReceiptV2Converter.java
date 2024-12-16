@@ -54,7 +54,6 @@ public class CtReceiptV2Converter {
 		paSendRTV2Request.setIdBrokerPA(codIntermediario);
 		paSendRTV2Request.setIdStation(codStazione);
 		paSendRTV2Request.setIdPA(codDominio);
-		paSendRTV2Request.setStandin(false);
 		paSendRTV2Request.setReceipt(toCtReceiptV2(response));
 		
 		return paSendRTV2Request;
@@ -63,6 +62,7 @@ public class CtReceiptV2Converter {
 	public static CtReceiptV2 toCtReceiptV2(CtReceiptModelResponse response) {
 		CtReceiptV2 ctReceiptV2 = new CtReceiptV2();
 		
+		ctReceiptV2.setStandIn(false);
 		ctReceiptV2.setApplicationDate(SimpleDateFormatUtils.toDate(response.getApplicationDate()));
 		ctReceiptV2.setChannelDescription(response.getChannelDescription());
 		ctReceiptV2.setCompanyName(response.getCompanyName());
