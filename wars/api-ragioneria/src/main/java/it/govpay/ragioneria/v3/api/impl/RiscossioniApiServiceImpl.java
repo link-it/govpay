@@ -174,7 +174,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			}
 
 
-			Riscossioni response = new Riscossioni(uriInfo.getRequestUri(), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			Riscossioni response = new Riscossioni(this.getServicePathConURIAssoluta(uriInfo, httpHeaders), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(lst);
 
 			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);

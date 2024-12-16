@@ -210,6 +210,8 @@ public class GovpayConfig {
 	
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 	
+	private Properties risorseCustomBaseURLProperties;
+	
 	
 	private Integer numeroGiorniRendicontazioniSenzaPagamento;
 	
@@ -327,6 +329,7 @@ public class GovpayConfig {
 		
 		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 		
+		this.risorseCustomBaseURLProperties = new Properties();
 
 		// Recupero il property all'interno dell'EAR
 		this.props = new Properties[2];
@@ -751,6 +754,9 @@ public class GovpayConfig {
 			}
 			
 			this.numeroGiorniRendicontazioniSenzaPagamento = getIntegerProperty(log, "it.govpay.batch.recuperoRT.limiteTemporaleRecupero", this.props, false, 15);
+			
+			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
+			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
 			
 		} catch (PropertyNotFoundException | InvalidPropertyException e) {
 			LogUtils.logError(log, MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
@@ -1278,5 +1284,9 @@ public class GovpayConfig {
 	
 	public Integer getNumeroGiorniRendicontazioniSenzaPagamento() {
 		return numeroGiorniRendicontazioniSenzaPagamento;
+	}
+
+	public Properties getRisorseCustomBaseURLProperties() {
+		return risorseCustomBaseURLProperties;
 	}
 }

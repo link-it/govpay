@@ -55,6 +55,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -135,6 +136,10 @@ public abstract class BaseController {
 		} else {
 			return new URI(baseUri);
 		}
+	}
+	
+	public URI getServicePathConURIAssoluta(UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
+		return UriBuilderUtils.getServicePathConURIAssoluta(log, uriInfo, httpHeaders);
 	}
 
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {
