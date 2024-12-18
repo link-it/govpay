@@ -583,7 +583,7 @@ public class Rpt {
 				}
 
 				try {
-					rptBD.updateRpt(rpt.getId(), rpt);
+					rptBD.updateRpt(rpt);
 					if(oldPagamentoPortale != null) {
 						ppbd.updatePagamento(oldPagamentoPortale, false, true); // aggiorna versamenti = false, autocommit gestito esternamente true
 					}

@@ -52,6 +52,7 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.exception.CodificaInesistenteException;
+import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;
 import it.govpay.orm.dao.jdbc.JDBCRPTServiceSearch;
@@ -310,6 +311,24 @@ public class RptBD extends BasicBD {
 			((JDBCRPTService)this.getRptService()).updateFields(rpt.getId(), lstUpdateFields.toArray(new UpdateField[]{}));
 			this.emitAudit(rpt);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public void updateRpt(Rpt rpt) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			it.govpay.orm.RPT vo = RptConverter.toVO(rpt);
+			IdRpt idRpt = this.getRptService().convertToId(vo);
+			this.getRptService().update(idRpt, vo);
+		} catch (NotFoundException | NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
