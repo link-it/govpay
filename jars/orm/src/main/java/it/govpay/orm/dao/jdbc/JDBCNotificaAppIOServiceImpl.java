@@ -158,8 +158,9 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
 		);
-		
 		notificaAppIO.setId(id);
+
+		
 	}
 
 	@Override
@@ -432,6 +433,9 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}

@@ -52,7 +52,6 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.exception.CodificaInesistenteException;
-import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;
 import it.govpay.orm.dao.jdbc.JDBCRPTServiceSearch;
@@ -101,13 +100,7 @@ public class RptBD extends BasicBD {
 			popolaRpt(deep, rpt);
 			
 			return rpt;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | MultipleResultException | NotFoundException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -153,15 +146,7 @@ public class RptBD extends BasicBD {
 			exp.equals(RPT.model().COD_MSG_RICHIESTA, codMsgRichiesta);
 			RPT rptVO = this.getRptService().find(exp);
 			return RptConverter.toDTO(rptVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -195,7 +180,7 @@ public class RptBD extends BasicBD {
 			pagExpr.addOrder(RPT.model().DATA_MSG_RICHIESTA, SortOrder.DESC);
 			List<Object> select = this.getRptService().select(pagExpr , cf);
 			
-			if(select != null && select.size() > 0) {
+			if(select != null && !select.isEmpty()) {
 				Object idObj = select.get(0); // prendo l'ultimo id
 				if(idObj instanceof Long) {
 					Long id = (Long) idObj;
@@ -204,11 +189,7 @@ public class RptBD extends BasicBD {
 			} 
 
 			throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"], ModelloPagamento: ["+modelloPagamento+"], Versione: ["+versione+"] corrisponde ai parametri indicati.");
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -237,15 +218,7 @@ public class RptBD extends BasicBD {
 			popolaRpt(deep, dto);
 			
 			return dto;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -344,26 +317,6 @@ public class RptBD extends BasicBD {
 			}
 		}
 	}
-	
-	public void updateRpt(Long id, Rpt rpt) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-			
-			it.govpay.orm.RPT vo = RptConverter.toVO(rpt);
-			IdRpt idRpt = this.getRptService().convertToId(vo);
-			this.getRptService().update(idRpt, vo);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
 
 	public List<Rpt> getRptPendenti(List<String> codDomini, Integer numeroMassimoGiorniRPTPendenti) throws ServiceException {
 		try {
@@ -394,13 +347,7 @@ public class RptBD extends BasicBD {
 			
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -458,13 +405,7 @@ public class RptBD extends BasicBD {
 			}
 			
 			return rptLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -510,11 +451,7 @@ public class RptBD extends BasicBD {
 			NonNegativeNumber count = this.getRptService().count(exp);
 			
 			return count!= null ? count.longValue() : 0l;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -523,19 +460,19 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-	public RptFilter newFilter() throws ServiceException {
+	public RptFilter newFilter() {
 		return new RptFilter(this.getRptService());
 	}
 	
-	public RptFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public RptFilter newFilter(boolean simpleSearch) {
 		return new RptFilter(this.getRptService(),simpleSearch);
 	}
 	
 	public long count(RptFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(RptFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(RptFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -553,7 +490,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(RptFilter filter) throws ServiceException {
+	private long countConLimitEngine(RptFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -576,7 +513,7 @@ public class RptBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
@@ -603,8 +540,7 @@ public class RptBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -632,9 +568,7 @@ public class RptBD extends BasicBD {
 				rptLst.add(RptConverter.toDTO(rptVO));
 			}
 			return rptLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -656,15 +590,7 @@ public class RptBD extends BasicBD {
 			
 			RPT vo = this.getRptService().find(exp);
 			return RptConverter.toDTO(vo);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | MultipleResultException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -703,19 +629,15 @@ public class RptBD extends BasicBD {
 				
 				try {
 					popolaRpt(true, rpt);
-				}catch (NotFoundException e) {} // pagamentoportale puo' non esserci
+				}catch (NotFoundException e) {
+					//donothing
+				} // pagamentoportale puo' non esserci
 				
 				rptLst.add(rpt);
 			}
 			
 			return rptLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -747,11 +669,7 @@ public class RptBD extends BasicBD {
 			NonNegativeNumber count = this.getRptService().count(exp);
 			
 			return count.longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -764,16 +682,16 @@ public class RptBD extends BasicBD {
 	public long updateIdTracciatoMyPivotRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato, List<String> listaTipiPendenza) throws ServiceException{
 		String nomeColonnaIDTracciatoDaAggiornare = "id_tracciato_mypivot";
 		
-		return _updateIdTracciatoRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza, nomeColonnaIDTracciatoDaAggiornare);
+		return updateIdTracciatoRtDominioEngine(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza, nomeColonnaIDTracciatoDaAggiornare);
 	}
 	
 	public long updateIdTracciatoSecimRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato, List<String> listaTipiPendenza) throws ServiceException{
 		String nomeColonnaIDTracciatoDaAggiornare = "id_tracciato_secim";
 		
-		return _updateIdTracciatoRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza, nomeColonnaIDTracciatoDaAggiornare);
+		return updateIdTracciatoRtDominioEngine(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza, nomeColonnaIDTracciatoDaAggiornare);
 	}
 
-	private long _updateIdTracciatoRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato,
+	private long updateIdTracciatoRtDominioEngine(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato,
 			List<String> listaTipiPendenza, String nomeColonnaIDTracciatoDaAggiornare) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
@@ -786,13 +704,11 @@ public class RptBD extends BasicBD {
 			RPTFieldConverter converter = new RPTFieldConverter(this.getJdbcProperties().getDatabase());
 			RPTModel model = it.govpay.orm.RPT.model();
 			
-			List<Object> lst = new ArrayList<Object>();
-//			java.util.List<JDBCObject> lstObjects_rpt = new java.util.ArrayList<>();
+			List<Object> lst = new ArrayList<>();
 			
 			sqlQueryObjectUpdate.addUpdateTable(converter.toTable(model.IUV));
 			sqlQueryObjectUpdate.addUpdateField(nomeColonnaIDTracciatoDaAggiornare, "?");
 			lst.add(idTracciato);
-//			lstObjects_rpt.add(new JDBCObject(idTracciato, Long.class));
 			sqlQueryObjectUpdate.setANDLogicOperator(true);
 			
 			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
@@ -832,8 +748,7 @@ public class RptBD extends BasicBD {
 			
 			String sql = sqlQueryObjectUpdate.createSQLUpdate();
 			Object[] parameters = lst.toArray(new Object[lst.size()]);
-			int count = ((JDBCRPTService) this.getRptService()).nativeUpdate(sql, parameters);
-			return count;
+			return ((JDBCRPTService) this.getRptService()).nativeUpdate(sql, parameters);
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

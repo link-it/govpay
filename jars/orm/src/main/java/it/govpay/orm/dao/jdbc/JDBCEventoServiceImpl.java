@@ -439,10 +439,10 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		
 		Long longId = null;
 		if(evento.getId()==null){
-			throw new Exception("Parameter "+evento.getClass().getName()+".id is null");
+			throw new ServiceException("Parameter "+evento.getClass().getName()+".id is null");
 		}
 		if(evento.getId()<=0){
-			throw new Exception("Parameter "+evento.getClass().getName()+".id is less equals 0");
+			throw new ServiceException("Parameter "+evento.getClass().getName()+".id is less equals 0");
 		}
 		longId = evento.getId();
 		
@@ -452,6 +452,9 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}

@@ -475,6 +475,9 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
@@ -540,11 +543,10 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	}
 	
 	
-	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException,Exception{
+	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException,Exception{
 
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlQueryObject,
 				sql,param);
-
+	
 	}
 }

@@ -227,7 +227,6 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getStato(), PagamentoPortale.model().STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().CODICE_STATO,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodiceStato(), PagamentoPortale.model().CODICE_STATO.getFieldType()));
-		log.debug("update tableId ["+tableId+"], VOid ["+pagamentoPortale.getId()+"]: imposto i valori: Stato ["+pagamentoPortale.getStato()+"], CodiceStato ["+pagamentoPortale.getCodiceStato()+"]");
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getDescrizioneStato(), PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,false), "?");
@@ -391,6 +390,9 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}

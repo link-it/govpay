@@ -20,7 +20,6 @@
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
-import java.text.MessageFormat;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -35,10 +34,7 @@ import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import it.govpay.core.exceptions.ParametroErratoException;
-import it.govpay.core.exceptions.ParametroObbligatorioException;
 import it.govpay.orm.UtenzaTipoVersamento;
-import it.govpay.orm.constants.Costanti;
 import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.utils.ProjectInfo;
 
@@ -55,15 +51,67 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 
 	private IJDBCServiceCRUDWithoutId<UtenzaTipoVersamento, JDBCServiceManager> serviceCRUD = null;
-	private String modelName = Costanti.MODEL_UTENZA_TIPO_VERSAMENTO;
-	private String modelClassName = UtenzaTipoVersamento.class.getName();
-	
 	public JDBCUtenzaTipoVersamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD(this.modelName);
+		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenzaTipoVersamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
+	private static final String PARAMETER_TYPE_PREFIX = "Parameter (type:";
+	private ServiceException newServiceExceptionParameterIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UtenzaTipoVersamento.class.getName()+") 'utenzaTipoVersamento' is null");
+	}
+	private ServiceException newServiceExceptionParameterIsLessEqualsZero(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+long.class.getName()+") 'tableId' is less equals 0");
+	}
+	private ServiceException newServiceExceptionParameterUpdateFieldsIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UpdateField.class.getName()+") 'updateFields' is null");
+	}
+	private ServiceException newServiceExceptionParameterConditionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IExpression.class.getName()+") 'condition' is null");
+	}
+	private ServiceException newServiceExceptionParameterUpdateModelsIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UpdateModel.class.getName()+") 'updateModels' is null");
+	}
+	
+	private ServiceException newServiceExceptionUpdateFieldsNotCompleted(Exception e){
+		return new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+	}
+	
+	
+	private void releaseResources(boolean rollback, Connection connection, boolean oldValueAutoCommit) throws ServiceException {
+		if(this.jdbcProperties.isAutomaticTransactionManagement()){
+			manageTransaction(rollback, connection);
+			try{
+				if(connection!=null)
+					connection.setAutoCommit(oldValueAutoCommit);
+			}catch(Exception eIgnore){
+				// ignore
+			}
+		}
+		if(connection!=null){
+			this.jdbcServiceManager.closeConnection(connection);
+		}
+	}
+	private void manageTransaction(boolean rollback, Connection connection) {
+		if(rollback){
+			try{
+				if(connection!=null)
+					connection.rollback();
+			}catch(Exception eIgnore){
+				// ignore
+			}
+		}else{
+			try{
+				if(connection!=null)
+					connection.commit();
+			}catch(Exception eIgnore){
+				// ignore
+			}
+		}
+	}
+	
+	
 	
 	@Override
 	public void create(UtenzaTipoVersamento utenzaTipoVersamento) throws ServiceException, NotImplementedException {
@@ -100,7 +148,7 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			
 			// validate
@@ -124,37 +172,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -194,7 +217,7 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 
 			// validate
@@ -216,39 +239,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoVersamento,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException | ValidationException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -288,10 +289,10 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName); 
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(tableId<=0){
-				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0); 
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 
 			// validate
@@ -313,39 +314,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenzaTipoVersamento,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException | ValidationException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -360,10 +339,10 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(updateFields==null){
-				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -380,39 +359,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoVersamento,updateFields);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -427,13 +384,13 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(condition==null){
-				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_CONDITION);
+				throw this.newServiceExceptionParameterConditionIsNull();
 			}
 			if(updateFields==null){
-				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -450,39 +407,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoVersamento,condition,updateFields);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -497,10 +432,10 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(updateModels==null){
-				throw new ParametroObbligatorioException(UpdateModel.class.getName(), Costanti.PARAMETER_UPDATE_MODELS);
+				throw this.newServiceExceptionParameterUpdateModelsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -517,39 +452,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoVersamento,updateModels);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -564,10 +477,10 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(tableId<=0){
-				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 			if(updateFields==null){
-				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -584,39 +497,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,updateFields);	
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -631,13 +522,13 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(tableId<=0){
-				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 			if(condition==null){
-				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_CONDITION);
+				throw this.newServiceExceptionParameterConditionIsNull();
 			}
 			if(updateFields==null){
-				throw new ParametroObbligatorioException(UpdateField.class.getName(), Costanti.PARAMETER_UPDATE_FIELDS);
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -654,39 +545,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,condition,updateFields);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -701,10 +570,10 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(tableId<=0){
-				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 			if(updateModels==null){
-				throw new ParametroObbligatorioException(UpdateModel.class.getName(), Costanti.PARAMETER_UPDATE_MODELS);
+				throw this.newServiceExceptionParameterUpdateModelsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -721,39 +590,17 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,updateModels);
 			
-		}catch(ServiceException | NotFoundException | NotImplementedException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
+		}catch(NotFoundException e){
+			rollback = true;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -793,7 +640,7 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 
 			// validate
@@ -817,37 +664,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -887,10 +709,10 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(tableId<=0){
-				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 
 			// validate
@@ -914,37 +736,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -959,7 +756,7 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(utenzaTipoVersamento==null){
-				throw new ParametroObbligatorioException(this.modelClassName, this.modelName);
+				throw this.newServiceExceptionParameterIsNull();
 			}
 
 			// ISQLQueryObject
@@ -978,37 +775,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
@@ -1039,37 +811,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
@@ -1084,13 +831,13 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(expression==null){
-				throw new ParametroObbligatorioException(IExpression.class.getName(), Costanti.PARAMETER_EXPRESSION);
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new ParametroErratoException(expression.getClass().getName(), Costanti.PARAMETER_EXPRESSION, MessageFormat.format(Costanti.HAS_WRONG_TYPE_EXPECT_0,JDBCExpression.class.getName())); 
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = {}", jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 		
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -1108,37 +855,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 	
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
@@ -1155,7 +877,7 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 			
 			// check parameters
 			if(tableId<=0){
-				throw new ParametroObbligatorioException(long.class.getName(), Costanti.PARAMETER_TABLE_ID, Costanti.ERROR_MSG_IS_LESS_EQUALS_0);
+				throw new ServiceException("Parameter 'tableId' is less equals 0");
 			}
 		
 			// ISQLQueryObject
@@ -1174,37 +896,12 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 	
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){
-						 //donothing
-					}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){
-					 //donothing
-				}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}

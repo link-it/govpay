@@ -56,6 +56,10 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
@@ -311,10 +315,10 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 		
 		Long longId = null;
 		if(vistaEventiVersamento.getId()==null){
-			throw new Exception("Parameter "+vistaEventiVersamento.getClass().getName()+".id is null");
+			throw new ServiceException("Parameter "+vistaEventiVersamento.getClass().getName()+".id is null");
 		}
 		if(vistaEventiVersamento.getId()<=0){
-			throw new Exception("Parameter "+vistaEventiVersamento.getClass().getName()+".id is less equals 0");
+			throw new ServiceException("Parameter "+vistaEventiVersamento.getClass().getName()+".id is less equals 0");
 		}
 		longId = vistaEventiVersamento.getId();
 		
@@ -324,6 +328,9 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}

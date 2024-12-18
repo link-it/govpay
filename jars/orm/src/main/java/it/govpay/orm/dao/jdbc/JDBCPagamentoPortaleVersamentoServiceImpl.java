@@ -311,10 +311,10 @@ public class JDBCPagamentoPortaleVersamentoServiceImpl extends JDBCPagamentoPort
 		
 		Long longId = null;
 		if(pagamentoPortaleVersamento.getId()==null){
-			throw new Exception("Parameter "+pagamentoPortaleVersamento.getClass().getName()+".id is null");
+			throw new ServiceException("Parameter "+pagamentoPortaleVersamento.getClass().getName()+".id is null");
 		}
 		if(pagamentoPortaleVersamento.getId()<=0){
-			throw new Exception("Parameter "+pagamentoPortaleVersamento.getClass().getName()+".id is less equals 0");
+			throw new ServiceException("Parameter "+pagamentoPortaleVersamento.getClass().getName()+".id is less equals 0");
 		}
 		longId = pagamentoPortaleVersamento.getId();
 		
@@ -324,6 +324,9 @@ public class JDBCPagamentoPortaleVersamentoServiceImpl extends JDBCPagamentoPort
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}

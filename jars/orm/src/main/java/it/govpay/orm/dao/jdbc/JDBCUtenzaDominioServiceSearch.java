@@ -37,6 +37,7 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -77,6 +78,63 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 	
+	protected void logError(Exception e) {
+		if(e!=null && this.log!=null) {
+			this.log.error(e.getMessage(),e);
+		}
+	}
+	protected void logDebug(Exception e) {
+		if(e!=null && this.log!=null) {
+			this.log.debug(e.getMessage(),e);
+		}
+	}
+	protected void logJDBCExpression(JDBCExpression jdbcExpression) throws ExpressionException{
+		if(this.log!=null) {
+			String msgDebug = "sql = "+jdbcExpression.toSql();
+			this.log.debug(msgDebug);
+		}
+	}
+	protected void logJDBCPaginatedExpression(JDBCPaginatedExpression jdbcPaginatedExpression) throws ExpressionException{
+		if(this.log!=null) {
+			String msgDebug = "sql = "+jdbcPaginatedExpression.toSql();
+			this.log.debug(msgDebug);
+		}
+	}
+	
+	private static final String PARAMETER_TYPE_PREFIX = "Parameter (type:";
+		
+	private ServiceException newServiceExceptionParameterIdMappingResolutionBehaviourIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+	}
+
+	protected ServiceException newServiceExceptionParameterExpressionWrongType(IExpression expression){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+	}
+	protected ServiceException newServiceExceptionParameterExpressionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IExpression.class.getName()+") 'expression' is null");
+	}
+	
+	private ServiceException newServiceExceptionParameterPaginatedExpressionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IPaginatedExpression.class.getName()+") 'expression' is null");
+	}
+	private ServiceException newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+	}
+	private ServiceException newServiceExceptionParameterPaginatedExpressionWrongType(IPaginatedExpression expression){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+	}
+	private ServiceException newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(IPaginatedExpression paginatedExpression){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+	}
+	
+	private ServiceException newServiceExceptionParameterUnionExpressionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UnionExpression.class.getName()+") 'unionExpression' is null");
+	}
+	
+	private ServiceException newServiceExceptionParameterTableIdLessEqualsZero(){
+		return new ServiceException("Parameter 'tableId' is less equals 0");
+	}
+	
 	@Override
 	public void validate(UtenzaDominio utenzaDominio) throws ServiceException,
 			ValidationException, NotImplementedException {
@@ -107,13 +165,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongType(expression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -123,12 +181,10 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,null);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -145,16 +201,16 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw this.newServiceExceptionParameterIdMappingResolutionBehaviourIsNull();
 			}
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongType(expression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -164,12 +220,10 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,idMappingResolutionBehaviour);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -186,13 +240,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -202,16 +256,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,null);			
 
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | MultipleResultException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -228,16 +278,16 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw this.newServiceExceptionParameterIdMappingResolutionBehaviourIsNull();
 			}
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -247,16 +297,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,idMappingResolutionBehaviour);			
 
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | MultipleResultException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -273,13 +319,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 			
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -289,12 +335,10 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.count(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Count not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Count not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -312,13 +356,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated();
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(paginatedExpression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -328,14 +372,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Select 'field' not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -352,13 +394,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated();
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(paginatedExpression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -368,14 +410,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,distinct,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Select 'distinct:"+distinct+"' field not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -392,13 +432,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated();
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(paginatedExpression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -408,14 +448,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -431,13 +469,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated();
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(paginatedExpression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -447,14 +485,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,distinct,field);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Select distinct:"+distinct+" not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -471,13 +507,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -487,14 +523,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -511,13 +545,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -527,14 +561,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -551,13 +583,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -567,14 +599,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -591,13 +621,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(paginatedExpression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNullErrorParameterPaginated();
 			}
 			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongTypeErrorParameterPaginated(paginatedExpression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -607,14 +637,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,functionField);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -631,7 +659,7 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(unionExpression==null){
-				throw new Exception("Parameter (type:"+UnionExpression.class.getName()+") 'unionExpression' is null");
+				throw this.newServiceExceptionParameterUnionExpressionIsNull();
 			}
 			
 			// ISQLQueryObject
@@ -642,14 +670,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.union(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Union not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Union not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -666,7 +692,7 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(unionExpression==null){
-				throw new Exception("Parameter (type:"+UnionExpression.class.getName()+") 'unionExpression' is null");
+				throw this.newServiceExceptionParameterUnionExpressionIsNull();
 			}
 			
 			// ISQLQueryObject
@@ -677,14 +703,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.unionCount(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("UnionCount not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("UnionCount not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -733,7 +757,7 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterTableIdLessEqualsZero();
 			}
 			
 			// ISQLQueryObject
@@ -744,16 +768,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 		
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,null);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | MultipleResultException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Get(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -770,10 +790,10 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterTableIdLessEqualsZero();
 			}
 			if(idMappingResolutionBehaviour==null){
-				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+				throw this.newServiceExceptionParameterIdMappingResolutionBehaviourIsNull();
 			}
 			
 			// ISQLQueryObject
@@ -784,16 +804,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 		
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,idMappingResolutionBehaviour);
 		
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | MultipleResultException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId,idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Get(tableId,idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -810,7 +826,7 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterTableIdLessEqualsZero();
 			}
 
 			// ISQLQueryObject
@@ -821,14 +837,10 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);			
 	
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(MultipleResultException | ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("Exists(tableId) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Exists(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -845,13 +857,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCPaginatedExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+				throw this.newServiceExceptionParameterPaginatedExpressionWrongType(expression);
 			}
 			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
-			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+			logJDBCPaginatedExpression(jdbcPaginatedExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -861,12 +873,10 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			return this.serviceSearch.findAllTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression);
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("findAllTableIds not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("findAllTableIds not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -883,13 +893,13 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterPaginatedExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -899,16 +909,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);			
 
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | MultipleResultException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(MultipleResultException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("findTableId not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("findTableId not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -925,7 +931,7 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterTableIdLessEqualsZero();
 			}
 			
 			// ISQLQueryObject
@@ -936,14 +942,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);		
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("InUse(tableId) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("InUse(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -971,8 +975,8 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 		try{
 			
 			// check parameters
-			if(returnClassTypes==null || returnClassTypes.size()<=0){
-				throw new Exception("Parameter 'returnClassTypes' is less equals 0");
+			if(returnClassTypes==null || returnClassTypes.isEmpty()){
+				throw new ServiceException("Parameter 'returnClassTypes' is less equals 0");
 			}
 			
 			// ISQLQueryObject
@@ -983,14 +987,12 @@ public class JDBCUtenzaDominioServiceSearch implements IDBUtenzaDominioServiceSe
 
 			return this.serviceSearch.nativeQuery(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,returnClassTypes,param);		
 	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException | NotImplementedException e){
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
