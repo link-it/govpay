@@ -21,27 +21,25 @@
 
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdUo;
+import java.sql.Connection;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
+import it.govpay.orm.IdUo;
 import it.govpay.orm.Uo;
 import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.Uo} 
@@ -58,8 +56,6 @@ public class JDBCUoService extends JDBCUoServiceSearch  implements IDBUoService 
 	private IJDBCServiceCRUDWithId<Uo, IdUo, JDBCServiceManager> serviceCRUD = null;
 	public JDBCUoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		String msgInit = JDBCUoService.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("uo");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

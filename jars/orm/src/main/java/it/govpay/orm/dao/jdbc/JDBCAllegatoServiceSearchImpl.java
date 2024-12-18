@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -53,7 +53,7 @@ import it.govpay.orm.IdAllegato;
 import it.govpay.orm.dao.jdbc.converter.AllegatoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.AllegatoFetch;
 
-/**     
+/**
  * JDBCAllegatoServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -67,14 +67,14 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 	public AllegatoFieldConverter getAllegatoFieldConverter() {
 		if(this._allegatoFieldConverter==null){
 			this._allegatoFieldConverter = new AllegatoFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
-		}		
+		}
 		return this._allegatoFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
 		return this.getAllegatoFieldConverter();
 	}
-	
+
 	private AllegatoFetch allegatoFetch = new AllegatoFetch();
 	public AllegatoFetch getAllegatoFetch() {
 		return this.allegatoFetch;
@@ -83,51 +83,51 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 	public IJDBCFetch getFetch() {
 		return getAllegatoFetch();
 	}
-	
-	
+
+
 	private JDBCServiceManager jdbcServiceManager = null;
 
 	@Override
 	public void setServiceManager(JDBCServiceManager serviceManager) throws ServiceException{
 		this.jdbcServiceManager = serviceManager;
 	}
-	
+
 	@Override
 	public JDBCServiceManager getServiceManager() throws ServiceException{
 		return this.jdbcServiceManager;
 	}
-	
+
 
 	@Override
 	public IdAllegato convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Allegato allegato) throws NotImplementedException, ServiceException, Exception{
-	
+
 		IdAllegato idAllegato = new IdAllegato();
 		idAllegato.setId(allegato.getId());
 		idAllegato.setIdAllegato(allegato.getId());
 		return idAllegato;
 	}
-	
+
 	@Override
 	public Allegato get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAllegato id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 		Long id_allegato = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdAllegato(jdbcProperties, log, connection, sqlQueryObject, id, true));
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_allegato,idMappingResolutionBehaviour);
-		
-		
+
+
 	}
-	
+
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAllegato id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
 		Long id_allegato = this.findIdAllegato(jdbcProperties, log, connection, sqlQueryObject, id, false);
 		return id_allegato != null && id_allegato > 0;
-		
+
 	}
-	
+
 	@Override
 	public List<IdAllegato> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
 		List<IdAllegato> list = new ArrayList<IdAllegato>();
-		
+
 		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getAllegatoFieldConverter().toTable(Allegato.model())));
@@ -138,16 +138,16 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Allegato) this.getAllegatoFetch().fetch(jdbcProperties.getDatabase(), Allegato.model(), map)));
 			}
 		} catch(NotFoundException e) {}
-		
+
         return list;
-		
+
 	}
-	
+
 	@Override
 	public List<Allegato> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
         List<Allegato> list = new ArrayList<Allegato>();
-        
+
         try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getAllegatoFieldConverter().toTable(Allegato.model())));
@@ -157,14 +157,14 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 //			fields.add(Allegato.model().RAW_CONTENUTO);
 			fields.add(Allegato.model().TIPO);
 			fields.add(Allegato.model().DESCRIZIONE);
-			
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Object idVersamentoObj = map.remove("id_versamento");
 
 				Allegato allegato = (Allegato)this.getAllegatoFetch().fetch(jdbcProperties.getDatabase(), Allegato.model(), map);
-				
+
 				if(idVersamentoObj instanceof Long) {
 
 					Long idVersamento = (Long) idVersamentoObj;
@@ -172,17 +172,17 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 					id_allegato_versamento.setId(idVersamento);
 					allegato.setIdVersamento(id_allegato_versamento);
 				}
-				
+
 				list.add(allegato);
 			}
 		} catch(NotFoundException e) {}
 
-        return list;     
-		
+        return list;
+
 	}
-	
+
 	@Override
-	public Allegato find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public Allegato find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour)
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
         long id = this.findTableId(jdbcProperties, log, connection, sqlQueryObject, expression);
@@ -191,17 +191,17 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
         }else{
         	throw new NotFoundException("Entry with id["+id+"] not found");
         }
-		
+
 	}
-	
+
 	@Override
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getAllegatoFieldConverter(), Allegato.model());
-		
+
 		sqlQueryObject.addSelectCountField(this.getAllegatoFieldConverter().toTable(Allegato.model())+".id","tot",true);
-		
+
 		_join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
@@ -210,36 +210,36 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 
 	@Override
 	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAllegato id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
-		
+
 		Long id_allegato = this.findIdAllegato(jdbcProperties, log, connection, sqlQueryObject, id, true);
         return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_allegato);
-		
+
 	}
 
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 								paginatedExpression, false, field);
 	}
-	
+
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, boolean distinct, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		List<Map<String,Object>> map = 
+		List<Map<String,Object>> map =
 			this.select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, distinct, new IField[]{field});
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectSingleObject(map);
 	}
-	
+
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 								paginatedExpression, false, field);
 	}
-	
+
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, boolean distinct, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,paginatedExpression,field);
@@ -250,20 +250,20 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 												this.getAllegatoFieldConverter(), field);
 
 			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
-			
+
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
 		}
 	}
 
 	@Override
-	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCExpression expression, FunctionField functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		Map<String,Object> map = 
+		Map<String,Object> map =
 			this.aggregate(jdbcProperties, log, connection, sqlQueryObject, expression, new FunctionField[]{functionField});
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectAggregateObject(map,functionField);
 	}
-	
+
 	@Override
 	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 													JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {													
@@ -278,9 +278,9 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 	}
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		
+
 		if(expression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
@@ -292,12 +292,12 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
 	}
-	
+
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		
+
 		if(paginatedExpression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
@@ -309,20 +309,20 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
 	}
-	
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		
+
 		List<Object> listaQuery = new ArrayList<Object>();
 		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getAllegatoFieldConverter(), Allegato.model(), 
         						listaQuery,listaParams);
-		
+
 		_join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.select(jdbcProperties, log, connection,
@@ -336,17 +336,17 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			throw new NotFoundException("Not Found");
 		}
 	}
-	
+
 	@Override
-	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
-		
+	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getAllegatoFieldConverter(), Allegato.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
-		
+
 		if(unionExpression!=null){
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
@@ -363,19 +363,19 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		}
 		else{
 			throw new NotFoundException("Not Found");
-		}								
+		}
 	}
-	
+
 	@Override
-	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
-		
+	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getAllegatoFieldConverter(), Allegato.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
-		
+
 		if(unionExpression!=null){
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
@@ -397,7 +397,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 
 
 
-	// -- ConstructorExpression	
+	// -- ConstructorExpression
 
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
@@ -417,7 +417,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	@Override
 	public JDBCExpression toExpression(JDBCPaginatedExpression paginatedExpression, Logger log) throws NotImplementedException, ServiceException {
 		try{
@@ -435,9 +435,9 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			throw new ServiceException(e);
 		}
 	}
-	
-	
-	
+
+
+
 	// -- DB
 
 	@Override
@@ -445,7 +445,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
-	
+
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Allegato obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
@@ -456,36 +456,36 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdVersamento()!=null && 
+		if(obj.getIdVersamento()!=null &&
 				imgSaved.getIdVersamento()!=null){
 			obj.getIdVersamento().setId(imgSaved.getIdVersamento().getId());
-			if(obj.getIdVersamento().getIdApplicazione()!=null && 
+			if(obj.getIdVersamento().getIdApplicazione()!=null &&
 					imgSaved.getIdVersamento().getIdApplicazione()!=null){
 				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
 			}
-			if(obj.getIdVersamento().getIdUo()!=null && 
+			if(obj.getIdVersamento().getIdUo()!=null &&
 					imgSaved.getIdVersamento().getIdUo()!=null){
 				obj.getIdVersamento().getIdUo().setId(imgSaved.getIdVersamento().getIdUo().getId());
-				if(obj.getIdVersamento().getIdUo().getIdDominio()!=null && 
+				if(obj.getIdVersamento().getIdUo().getIdDominio()!=null &&
 						imgSaved.getIdVersamento().getIdUo().getIdDominio()!=null){
 					obj.getIdVersamento().getIdUo().getIdDominio().setId(imgSaved.getIdVersamento().getIdUo().getIdDominio().getId());
 				}
 			}
-			if(obj.getIdVersamento().getIdTipoVersamento()!=null && 
+			if(obj.getIdVersamento().getIdTipoVersamento()!=null &&
 					imgSaved.getIdVersamento().getIdTipoVersamento()!=null){
 				obj.getIdVersamento().getIdTipoVersamento().setId(imgSaved.getIdVersamento().getIdTipoVersamento().getId());
 			}
 		}
 
 	}
-	
+
 	@Override
 	public Allegato get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
-	
+
 	private Allegato _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
+
 		IModel<?> model = Allegato.model();
 		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model));
 
@@ -494,7 +494,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		expression.equals(idField, tableId);
 		List<Allegato> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
-		if(lst.size() <=0)
+		if(lst.isEmpty())
 			throw new NotFoundException("Id ["+tableId+"]");
 
 		if(lst.size() > 1)
@@ -502,19 +502,19 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 
 
 		return lst.get(0);
-	
-	} 
-	
+
+	}
+
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._exists(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-	
+
 	private boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-				
+
 		boolean existsAllegato = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
@@ -529,35 +529,35 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		existsAllegato = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
-		
+
         return existsAllegato;
-	
+
 	}
-	
+
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+
 		if(expression.inUseModel(Allegato.model().ID_VERSAMENTO,false)){
 			String tableName1 = this.getFieldConverter().toAliasTable(Allegato.model());
 			String tableName2 = this.getFieldConverter().toAliasTable(Allegato.model().ID_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(Allegato.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
-			
+
 			if(!expression.inUseModel(Allegato.model().ID_VERSAMENTO,false)){
 				String tableName1 = this.getFieldConverter().toAliasTable(Allegato.model());
 				String tableName2 = this.getFieldConverter().toAliasTable(Allegato.model().ID_VERSAMENTO);
 				sqlQueryObject.addFromTable(tableName2);
 				sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 			}
-			
+
 			String tableName1 = this.getFieldConverter().toAliasTable(Allegato.model().ID_VERSAMENTO);
 			String tableName2 = this.getFieldConverter().toAliasTable(Allegato.model().ID_VERSAMENTO.ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
-        
+
 	}
-	
+
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAllegato id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
@@ -565,11 +565,11 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		rootTableIdValues.add(longId);
         return rootTableIdValues;
 	}
-	
+
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
-	
+
 		AllegatoFieldConverter converter = this.getAllegatoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<String, List<IField>>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
 		// Allegato.model()
@@ -608,12 +608,12 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 				new CustomField("id", Long.class, "id", converter.toTable(Allegato.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
 			));
 
-        return mapTableToPKColumn;		
+        return mapTableToPKColumn;
 	}
-	
+
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
-		
+
 		List<Long> list = new ArrayList<Long>();
 
 		sqlQueryObject.setSelectDistinct(true);
@@ -623,7 +623,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getAllegatoFieldConverter(), Allegato.model());
-		
+
 		_join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
@@ -633,12 +633,12 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		}
 
         return list;
-		
+
 	}
-	
+
 	@Override
 	public long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException, Exception {
-	
+
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
 		sqlQueryObject.addSelectField(this.getAllegatoFieldConverter().toTable(Allegato.model())+".id");
@@ -646,7 +646,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getAllegatoFieldConverter(), Allegato.model());
-		
+
 		_join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
@@ -657,7 +657,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		else{
 			throw new NotFoundException("Not Found");
 		}
-		
+
 	}
 
 	@Override
@@ -673,12 +673,12 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
         return inUse;
 
 	}
-	
+
 	@Override
 	public IdAllegato findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -691,7 +691,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _allegato
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_allegato = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_allegato = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_allegato = new ArrayList<Class<?>>();
@@ -711,40 +711,40 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			id_allegato.setId((Long) listaFieldId_allegato.get(0));
 			id_allegato.setIdAllegato((Long) listaFieldId_allegato.get(0));
 		}
-		
+
 		return id_allegato;
-		
+
 	}
 
 	@Override
 	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAllegato id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
-	
+
 		return this.findIdAllegato(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
-			
+
 	}
-	
+
 	@Override
-	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 											String sql,List<Class<?>> returnClassTypes,Object ... param) throws ServiceException,NotFoundException,NotImplementedException,Exception{
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeQuery(jdbcProperties, log, connection, sqlQueryObject,
 																							sql,returnClassTypes,param);
-														
+
 	}
-	
+
 	protected Long findIdAllegato(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAllegato id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null)
 			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
-		
+
 		if(sqlQueryObject == null)
 			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
-		
+
 		if(jdbcProperties == null)
 			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -757,7 +757,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _allegato
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_allegato = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_allegato = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getId(),Long.class)
 		};
 		Long id_allegato = null;
@@ -774,7 +774,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 				throw new NotFoundException("Not Found");
 			}
 		}
-		
+
 		return id_allegato;
 	}
 }

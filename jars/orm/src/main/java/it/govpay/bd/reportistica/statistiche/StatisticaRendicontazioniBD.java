@@ -227,7 +227,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-				// donothing
+				//donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -53,7 +53,7 @@ import it.govpay.orm.IdUtenza;
 import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.ACLFetch;
 
-/**     
+/**
  * JDBCACLServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -67,14 +67,14 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	public ACLFieldConverter getACLFieldConverter() {
 		if(this._aclFieldConverter==null){
 			this._aclFieldConverter = new ACLFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
-		}		
+		}
 		return this._aclFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
 		return this.getACLFieldConverter();
 	}
-	
+
 	private ACLFetch aclFetch = new ACLFetch();
 	public ACLFetch getACLFetch() {
 		return this.aclFetch;
@@ -83,48 +83,48 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	public IJDBCFetch getFetch() {
 		return this.getACLFetch();
 	}
-	
-	
+
+
 	private JDBCServiceManager jdbcServiceManager = null;
 
 	@Override
 	public void setServiceManager(JDBCServiceManager serviceManager) throws ServiceException{
 		this.jdbcServiceManager = serviceManager;
 	}
-	
+
 	@Override
 	public JDBCServiceManager getServiceManager() throws ServiceException{
 		return this.jdbcServiceManager;
 	}
-	
+
 
 	@Override
 	public IdAcl convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, ACL acl) throws NotImplementedException, ServiceException, Exception{
-	
+
 		IdAcl idACL = new IdAcl();
 		idACL.setRuolo(acl.getRuolo());
 		idACL.setIdUtenza(acl.getIdUtenza());
 		idACL.setServizio(acl.getServizio());
-	
+
 		return idACL;
 	}
-	
+
 	@Override
 	public ACL get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 		Long id_acl = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdACL(jdbcProperties, log, connection, sqlQueryObject, id, true));
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_acl,idMappingResolutionBehaviour);
-		
-		
+
+
 	}
-	
+
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
 		Long id_acl = this.findIdACL(jdbcProperties, log, connection, sqlQueryObject, id, false);
 		return id_acl != null && id_acl > 0;
-		
+
 	}
-	
+
 	@Override
 	public List<IdAcl> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
@@ -140,36 +140,36 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
 			for(Map<String, Object> map: returnMap) {
 				ACL acl = (ACL)this.getFetch().fetch(jdbcProperties.getDatabase(), ACL.model(), map);
-				
+
 				Object idUtenzaObj = map.remove("id_utenza");
 				Long idUtenza = null;
 				if(idUtenzaObj instanceof Long) {
 					idUtenza = (Long) idUtenzaObj;
 				}
-				
+
 				if(idUtenza != null) {
 					it.govpay.orm.IdUtenza id_acl_utenza = new it.govpay.orm.IdUtenza();
 					id_acl_utenza.setId(idUtenza);
 					acl.setIdUtenza(id_acl_utenza);
 				}
-				
+
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, acl));
 			}
 		} catch(NotFoundException e) {}
 
         return list;
-		
+
 	}
-	
+
 	@Override
 	public List<ACL> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 		 // default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-        
+
         List<ACL> list = new ArrayList<>();
-        
+
         try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model())));
@@ -177,12 +177,12 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			fields.add(ACL.model().SERVIZIO);
 			fields.add(ACL.model().DIRITTI);
 			fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getFieldConverter().toTable(ACL.model())));
-	        
+
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				
+
 				Object idUtenzaObj = map.remove("id_utenza");
 				Long idUtenza = null;
 				if(idUtenzaObj instanceof Long) {
@@ -190,7 +190,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				}
 
 				ACL acl = (ACL)this.getFetch().fetch(jdbcProperties.getDatabase(), ACL.model(), map);
-				
+
 				if(idUtenza != null) {
 					it.govpay.orm.IdUtenza id_acl_utenza = null;
 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
@@ -201,41 +201,41 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 					id_acl_utenza.setId(idUtenza);
 					acl.setIdUtenza(id_acl_utenza);
 				}
-				
+
 				list.add(acl);
 			}
 		} catch(NotFoundException e) {}
 
-        return list;   
-		
+        return list;
+
 	}
-	
+
 	@Override
-	public ACL find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public ACL find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour)
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
-		
+
 		List<ACL> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
-		if(lst.size() <=0)
+		if(lst.isEmpty())
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
 
 		if(lst.size() > 1)
 			throw new MultipleResultException("I criteri indicati individuano piu' entry.");
 
 		return lst.get(0);
-		
+
 	}
-	
+
 	@Override
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getACLFieldConverter(), ACL.model());
-		
+
 		sqlQueryObject.addSelectCountField(this.getACLFieldConverter().toTable(ACL.model())+".id","tot");
-		
+
 		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
@@ -244,36 +244,36 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
 	@Override
 	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
-		
+
 		Long id_acl = this.findIdACL(jdbcProperties, log, connection, sqlQueryObject, id, true);
         return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_acl);
-		
+
 	}
 
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 								paginatedExpression, false, field);
 	}
-	
+
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, boolean distinct, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		List<Map<String,Object>> map = 
+		List<Map<String,Object>> map =
 			this.select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, distinct, new IField[]{field});
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectSingleObject(map);
 	}
-	
+
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 								paginatedExpression, false, field);
 	}
-	
+
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, boolean distinct, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,paginatedExpression,field);
@@ -284,20 +284,20 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 												this.getACLFieldConverter(), field);
 
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
-			
+
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
 		}
 	}
 
 	@Override
-	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCExpression expression, FunctionField functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		Map<String,Object> map = 
+		Map<String,Object> map =
 			this.aggregate(jdbcProperties, log, connection, sqlQueryObject, expression, new FunctionField[]{functionField});
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectAggregateObject(map,functionField);
 	}
-	
+
 	@Override
 	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 													JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {													
@@ -312,9 +312,9 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	}
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		
+
 		if(expression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
@@ -326,12 +326,12 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
 	}
-	
+
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 													JDBCPaginatedExpression paginatedExpression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		
+
 		if(paginatedExpression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
@@ -343,20 +343,20 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
 	}
-	
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		
+
 		List<Object> listaQuery = new ArrayList<>();
 		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getACLFieldConverter(), ACL.model(), 
         						listaQuery,listaParams);
-		
+
 		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.select(jdbcProperties, log, connection,
@@ -370,17 +370,17 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			throw new NotFoundException("Not Found");
 		}
 	}
-	
+
 	@Override
-	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
-		
+	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getACLFieldConverter(), ACL.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
-		
+
 		if(unionExpression!=null){
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
@@ -397,19 +397,19 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		}
 		else{
 			throw new NotFoundException("Not Found");
-		}								
+		}
 	}
-	
+
 	@Override
-	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
-		
+	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getACLFieldConverter(), ACL.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
-		
+
 		if(unionExpression!=null){
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
@@ -431,7 +431,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
 
 
-	// -- ConstructorExpression	
+	// -- ConstructorExpression
 
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
@@ -451,7 +451,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	@Override
 	public JDBCExpression toExpression(JDBCPaginatedExpression paginatedExpression, Logger log) throws NotImplementedException, ServiceException {
 		try{
@@ -469,9 +469,9 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			throw new ServiceException(e);
 		}
 	}
-	
-	
-	
+
+
+
 	// -- DB
 
 	@Override
@@ -479,7 +479,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
-	
+
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, ACL obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
@@ -496,41 +496,41 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		}
 
 	}
-	
+
 	@Override
 	public ACL get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
-	
+
 	private ACL _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-		
+
 		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model()));
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
-		
+
 		expression.equals(idField, tableId);
 		List<ACL> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
-		
-		if(lst.size() <=0)
+
+		if(lst.isEmpty())
 			throw new NotFoundException("Id ["+tableId+"]");
-				
+
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
-		
+
 
 		return lst.get(0);
-	
-	} 
-	
+
+	}
+
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._exists(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-	
+
 	private boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-				
+
 		boolean existsACL = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
@@ -545,11 +545,11 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		existsACL = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
-		
+
         return existsACL;
-	
+
 	}
-	
+
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 		if(expression.inUseModel(ACL.model().ID_UTENZA,false)){
 			String tableName1 = this.getFieldConverter().toAliasTable(ACL.model());
@@ -557,18 +557,18 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
 		}
 	}
-	
+
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdACL(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
-        
+
         return rootTableIdValues;
 	}
-	
+
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
-	
+
 		ACLFieldConverter converter = this.getACLFieldConverter();
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
@@ -581,12 +581,12 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				new CustomField("id", Long.class, "id", converter.toTable(ACL.model()))
 			));
 
-        return mapTableToPKColumn;		
+        return mapTableToPKColumn;
 	}
-	
+
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
-		
+
 		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
@@ -596,7 +596,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getACLFieldConverter(), ACL.model());
-		
+
 		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
@@ -606,12 +606,12 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		}
 
         return list;
-		
+
 	}
-	
+
 	@Override
 	public long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException, Exception {
-	
+
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
 		sqlQueryObject.addSelectField(this.getACLFieldConverter().toTable(ACL.model())+".id");
@@ -619,7 +619,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getACLFieldConverter(), ACL.model());
-		
+
 		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
@@ -630,7 +630,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		else{
 			throw new NotFoundException("Not Found");
 		}
-		
+
 	}
 
 	@Override
@@ -642,16 +642,16 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-		
+
         return inUse;
 
 	}
-	
+
 	@Override
 	public IdAcl findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -662,11 +662,11 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		sqlQueryObjectGet.addSelectField("id_utenza");
 		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false));
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		
+
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _acl
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_acl = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_acl = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_acl = new ArrayList<>();
@@ -686,49 +686,49 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			id_acl = new it.govpay.orm.IdAcl();
 			if(listaFieldId_acl.get(0) != null)
 				id_acl.setRuolo((String)listaFieldId_acl.get(0));
-			
+
 			if(listaFieldId_acl.get(1) != null) {
 				IdUtenza idUtenza = new IdUtenza();
 				idUtenza.setId((Long)listaFieldId_acl.get(1));
 				id_acl.setIdUtenza(idUtenza );
 			}
-			
+
 			id_acl.setServizio((String)listaFieldId_acl.get(2));
 		}
-		
+
 		return id_acl;
-		
+
 	}
 
 	@Override
 	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
-	
+
 		return this.findIdACL(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
-			
+
 	}
-	
+
 	@Override
-	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 											String sql,List<Class<?>> returnClassTypes,Object ... param) throws ServiceException,NotFoundException,NotImplementedException,Exception{
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeQuery(jdbcProperties, log, connection, sqlQueryObject,
 																							sql,returnClassTypes,param);
-														
+
 	}
-	
+
 	protected Long findIdACL(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null)
 			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
-		
+
 		if(sqlQueryObject == null)
 			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
-		
+
 		if(jdbcProperties == null)
 			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -746,13 +746,13 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE,true)+"=?");
 			}
 		}
-		
+
 		sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,true)+"=?");
 
 		List<JDBCObject> lst = new ArrayList<>();
 		if(id.getRuolo()!=null)
 			lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getRuolo(),ACL.model().RUOLO.getFieldType()));
-		
+
 		if(id.getIdUtenza()!=null) {
 			if(id.getIdUtenza().getId() != null) {
 				lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdUtenza().getId(),Long.class));
@@ -760,7 +760,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdUtenza().getPrincipalOriginale(),ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE.getFieldType()));
 			}
 		}
-		
+
 		lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getServizio(),ACL.model().SERVIZIO.getFieldType()));
 
 		// Recupero _acl
@@ -778,7 +778,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				throw new NotFoundException("Not Found");
 			}
 		}
-		
+
 		return id_acl;
 	}
 }

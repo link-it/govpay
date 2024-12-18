@@ -217,7 +217,7 @@ public class ProprietaPendenza extends JSONSerializable {
   }
 
   public static ProprietaPendenza parse(String json) throws IOException { 
-    return (ProprietaPendenza) parse(json, ProprietaPendenza.class);
+    return parse(json, ProprietaPendenza.class);
   }
 
   @Override

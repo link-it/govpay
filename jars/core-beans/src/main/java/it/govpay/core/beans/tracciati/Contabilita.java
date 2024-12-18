@@ -89,7 +89,7 @@ public class Contabilita extends JSONSerializable{
   }
 
   public static Contabilita parse(String json) throws IOException {
-    return (Contabilita) parse(json, Contabilita.class);
+    return parse(json, Contabilita.class);
   }
 
   @Override

@@ -22,8 +22,7 @@
 
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdApplicazione;
+import java.sql.Connection;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -37,10 +36,9 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
 import it.govpay.orm.Applicazione;
+import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
@@ -59,8 +57,6 @@ public class JDBCApplicazioneService extends JDBCApplicazioneServiceSearch  impl
 	private IJDBCServiceCRUDWithId<Applicazione, IdApplicazione, JDBCServiceManager> serviceCRUD = null;
 	public JDBCApplicazioneService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		String msgInit = JDBCApplicazioneService.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("applicazione");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

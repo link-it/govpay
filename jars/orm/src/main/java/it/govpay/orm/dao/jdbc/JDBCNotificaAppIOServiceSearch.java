@@ -76,8 +76,6 @@ public class JDBCNotificaAppIOServiceSearch implements IDBNotificaAppIOServiceSe
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		String msgInit = JDBCNotificaAppIOServiceSearch.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("notificaAppIO");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();

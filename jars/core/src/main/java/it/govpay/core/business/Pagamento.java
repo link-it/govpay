@@ -90,7 +90,7 @@ public class Pagamento   {
 									oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
 									oldPagamentoPortale.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
 								}
-								rptBD.updateRpt(rpt.getId(), rpt);
+								rptBD.updateRpt(rpt);
 								if(oldPagamentoPortale != null) {
 									ppbd.updatePagamento(oldPagamentoPortale, false, true);
 								}

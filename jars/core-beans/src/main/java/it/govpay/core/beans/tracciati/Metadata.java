@@ -71,7 +71,7 @@ public class Metadata extends JSONSerializable {
   }
 
   public static Metadata parse(String json) throws IOException {
-    return (Metadata) parse(json, Metadata.class);
+    return parse(json, Metadata.class);
   }
 
   @Override

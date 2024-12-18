@@ -21,7 +21,7 @@ package it.govpay.core.exceptions;
 
 public abstract class BaseExceptionV1 extends BaseException {
 
-	transient private static final long serialVersionUID = 1L;
+	private static final transient long serialVersionUID = 1L;
 
 	public enum CategoriaEnum {
 		AUTORIZZAZIONE("AUTORIZZAZIONE"),

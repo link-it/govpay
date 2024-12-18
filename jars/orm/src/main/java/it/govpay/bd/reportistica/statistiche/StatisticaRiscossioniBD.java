@@ -190,7 +190,7 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
-				// donothing
+				//donothing
 			}
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {

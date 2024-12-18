@@ -21,8 +21,7 @@
 
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdAcl;
+import java.sql.Connection;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -36,6 +35,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
 import it.govpay.orm.ACL;
+import it.govpay.orm.IdAcl;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.utils.ProjectInfo;
 
@@ -58,8 +58,6 @@ public class JDBCACLService extends JDBCACLServiceSearch  implements IDBACLServi
 	private IJDBCServiceCRUDWithId<ACL, IdAcl, JDBCServiceManager> serviceCRUD = null;
 	public JDBCACLService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		String msgInit = JDBCACLService.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("acl");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

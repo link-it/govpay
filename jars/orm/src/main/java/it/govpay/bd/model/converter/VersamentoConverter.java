@@ -111,7 +111,7 @@ public class VersamentoConverter {
 		dto.setCodBundlekey(vo.getCodBundlekey()); 
 		dto.setDatiAllegati(vo.getDatiAllegati());
 		if(vo.getIncasso() != null) {
-			dto.setIncasso(vo.getIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+			dto.setIncasso(vo.getIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE));
 		}
 		dto.setAnomalie(vo.getAnomalie());
 
@@ -246,7 +246,7 @@ public class VersamentoConverter {
 		vo.setDatiAllegati(dto.getDatiAllegati());
 
 		if(dto.getIncasso()!=null) {
-			vo.setIncasso(dto.getIncasso() ? it.govpay.model.Versamento.INCASSO_TRUE : it.govpay.model.Versamento.INCASSO_FALSE);
+			vo.setIncasso(Boolean.TRUE.equals(dto.getIncasso()) ? it.govpay.model.Versamento.INCASSO_TRUE : it.govpay.model.Versamento.INCASSO_FALSE);
 		}
 		vo.setAnomalie(dto.getAnomalie());
 

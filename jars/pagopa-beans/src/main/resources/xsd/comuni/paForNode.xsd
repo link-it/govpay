@@ -143,6 +143,7 @@
 			<xsd:element name="IBAN" type="tns:stIBAN" />
 			<xsd:element name="remittanceInformation" type="common:stText140" />
 			<xsd:element name="transferCategory" type="common:stText140" />
+			<xsd:element name="metadata" type="common:ctMetadata" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -225,6 +226,7 @@
 			<xsd:element name="applicationDate" type="common:stISODate" minOccurs="0" />
 			<xsd:element name="transferDate" type="common:stISODate" minOccurs="0" />
 			<xsd:element name="metadata" type="common:ctMetadata" minOccurs="0" />
+			<xsd:element name="standIn" type="xsd:boolean" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -263,6 +265,7 @@
 			<xsd:element name="applicationDate" type="common:stISODate" minOccurs="0" />
 			<xsd:element name="transferDate" type="common:stISODate" minOccurs="0" />
 			<xsd:element name="metadata" type="common:ctMetadata" minOccurs="0" />
+			<xsd:element name="standIn" type="xsd:boolean" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -319,7 +322,6 @@
 			<xsd:element name="idBrokerPA" type="common:stText35" />
 			<xsd:element name="idStation" type="common:stText35" />
 			<xsd:element name="receipt" type="tns:ctReceipt" />
-			<xsd:element name="standin" type="xsd:boolean" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -360,7 +362,7 @@
 			<xsd:element name="idTransfer" type="tns:stIdTransfer" />
 			<xsd:element name="transferAmount" type="tns:stAmountNotZero" />
 			<xsd:element name="fiscalCodePA" type="common:stFiscalCodePA" />
-			<xsd:element name="companyName" type="common:stText140" />
+			<xsd:element name="companyName" type="common:stText140"  minOccurs="0"/>
 			<xsd:choice>
 				<xsd:element name="IBAN" type="tns:stIBAN" />
 				<xsd:element name="richiestaMarcaDaBollo" type="common:ctRichiestaMarcaDaBollo" />
@@ -444,7 +446,6 @@
 			<xsd:element name="idBrokerPA" type="common:stText35" />
 			<xsd:element name="idStation" type="common:stText35" />
 			<xsd:element name="receipt" type="tns:ctReceiptV2" />
-			<xsd:element name="standin" type="xsd:boolean" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 

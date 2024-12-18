@@ -22,7 +22,7 @@
 
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
+import java.sql.Connection;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -38,8 +38,6 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import it.govpay.orm.Evento;
 import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
@@ -58,8 +56,6 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	private IJDBCServiceCRUDWithoutId<Evento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCEventoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		String msgInit = JDBCEventoService.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("evento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
