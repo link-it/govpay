@@ -27,20 +27,20 @@ import java.sql.Connection;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import it.govpay.orm.Dominio;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.IDBDominioService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.Dominio} 
