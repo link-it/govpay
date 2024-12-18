@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 
-/**     
+/**
  * JDBCRPTServiceImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -54,16 +54,16 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	@Override
 	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, RPT rpt, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
+
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
-				
+
 
 		// Object _versamento
 		Long id_versamento = null;
@@ -183,7 +183,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		);
 		rpt.setId(id);
 
-		
+
 	}
 
 	@Override
@@ -207,25 +207,25 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, RPT rpt, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
+
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObjectInsert.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
-		
-		boolean setIdMappingResolutionBehaviour = 
+
+		boolean setIdMappingResolutionBehaviour =
 			(idMappingResolutionBehaviour==null) ||
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
-			
+
 
 		// Object _rpt_versamento
 		Long id_rpt_versamento = null;
@@ -354,109 +354,109 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 
 		if(isUpdate_rpt) {
 			// Update rpt
-			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
+			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(),
 				lstObjects_rpt.toArray(new JDBCObject[]{}));
 		}
 
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRPTFieldConverter().toTable(RPT.model()), 
-				this._getMapTableToPKColumn(), 
+
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getRPTFieldConverter().toTable(RPT.model()),
+				this._getMapTableToPKColumn(),
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getRPTFieldConverter(), this, null, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRPTFieldConverter().toTable(RPT.model()), 
-				this._getMapTableToPKColumn(), 
+
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getRPTFieldConverter().toTable(RPT.model()),
+				this._getMapTableToPKColumn(),
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getRPTFieldConverter(), this, condition, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRPTFieldConverter().toTable(RPT.model()), 
-				this._getMapTableToPKColumn(), 
+
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getRPTFieldConverter().toTable(RPT.model()),
+				this._getMapTableToPKColumn(),
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getRPTFieldConverter(), this, updateModels);
-	}	
-	
+	}
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRPTFieldConverter().toTable(RPT.model()), 
-				this._getMapTableToPKColumn(), 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getRPTFieldConverter().toTable(RPT.model()),
+				this._getMapTableToPKColumn(),
 				ids,
 				this.getRPTFieldConverter(), this, null, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRPTFieldConverter().toTable(RPT.model()), 
-				this._getMapTableToPKColumn(), 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getRPTFieldConverter().toTable(RPT.model()),
+				this._getMapTableToPKColumn(),
 				ids,
 				this.getRPTFieldConverter(), this, condition, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRPTFieldConverter().toTable(RPT.model()), 
-				this._getMapTableToPKColumn(), 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getRPTFieldConverter().toTable(RPT.model()),
+				this._getMapTableToPKColumn(),
 				ids,
 				this.getRPTFieldConverter(), this, updateModels);
 	}
-	
+
 	@Override
 	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt oldId, RPT rpt, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
-	
+
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, oldId)) {
 			this.update(jdbcProperties, log, connection, sqlQueryObject, oldId, rpt,idMappingResolutionBehaviour);
 		} else {
 			this.create(jdbcProperties, log, connection, sqlQueryObject, rpt,idMappingResolutionBehaviour);
 		}
-		
+
 	}
-	
+
 	@Override
 	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, RPT rpt, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, tableId)) {
 			this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, rpt,idMappingResolutionBehaviour);
 		} else {
 			this.create(jdbcProperties, log, connection, sqlQueryObject, rpt,idMappingResolutionBehaviour);
 		}
 	}
-	
+
 	@Override
 	public void delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, RPT rpt) throws NotImplementedException,ServiceException,Exception {
-		
-		
+
+
 		Long longId = null;
 		if( (rpt.getId()!=null) && (rpt.getId()>0) ){
 			longId = rpt.getId();
@@ -467,26 +467,26 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			if(longId == null){
 				return; // entry not exists
 			}
-		}		
-		
+		}
+
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, longId);
-		
+
 	}
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
-	
+
 		if(id==null){
 			throw new ServiceException("Id is null");
 		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
+
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObject.newSQLQueryObject();
-		
+
 
 		// Object rpt
 		sqlQueryObjectDelete.setANDLogicOperator(true);
@@ -495,7 +495,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectDelete.addWhereCondition("id=?");
 
 		// Delete rpt
-		jdbcUtilities.execute(sqlQueryObjectDelete.createSQLDelete(), jdbcProperties.isShowSql(), 
+		jdbcUtilities.execute(sqlQueryObjectDelete.createSQLDelete(), jdbcProperties.isShowSql(),
 			new JDBCObject(id,Long.class));
 
 	}
@@ -510,12 +510,12 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			return;
 		}
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, id);
-		
+
 	}
-	
+
 	@Override
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotImplementedException,ServiceException,Exception {
-		
+
 		return this.deleteAll(jdbcProperties, log, connection, sqlQueryObject, new JDBCExpression(this.getRPTFieldConverter()));
 
 	}
@@ -524,13 +524,13 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 
 		java.util.List<Long> lst = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, new JDBCPaginatedExpression(expression));
-		
+
 		for(Long id : lst) {
 			this._delete(jdbcProperties, log, connection, sqlQueryObject, id);
 		}
-		
+
 		return new NonNegativeNumber(lst.size());
-	
+
 	}
 
 
@@ -541,12 +541,12 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-	
+
 	@Override
 	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
-	
+
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
 																							sql,param);
-	
+
 	}
 }

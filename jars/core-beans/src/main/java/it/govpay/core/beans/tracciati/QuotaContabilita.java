@@ -237,7 +237,7 @@ public class QuotaContabilita extends JSONSerializable{
   }
 
   public static QuotaContabilita parse(String json) throws IOException {
-    return (QuotaContabilita) parse(json, QuotaContabilita.class);
+    return parse(json, QuotaContabilita.class);
   }
 
   @Override

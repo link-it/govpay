@@ -290,7 +290,7 @@ public class GovPayException extends Exception {
 	public String getMessageV3() {
 		switch (this.codEsito) {
 		case NDP_000: 
-			if(super.getCause() != null && super.getCause() instanceof ClientException)
+			if(super.getCause() instanceof ClientException)
 				return super.getCause().getMessage();
 			else 
 				return super.getMessage();

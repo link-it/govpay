@@ -197,13 +197,6 @@ public class RendicontazioneConverter {
 				versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 			versamento.setIuvPagamento(vo.getVrsIuvPagamento());
 	
-			versamento.setDataPagamento(vo.getVrsDataPagamento());
-			versamento.setImportoPagato(vo.getVrsImportoPagato());
-			versamento.setImportoIncassato(vo.getVrsImportoIncassato());
-			if(vo.getVrsStatoPagamento() != null)
-				versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-			versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-			
 			if(vo.getVrsIdDocumento() != null)
 				versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
 			if(vo.getVrsCodRata() != null) {

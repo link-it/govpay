@@ -69,6 +69,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -84,8 +85,8 @@ public class BaseApiServiceImpl {
 	public static final String SUFFIX_FILENAME = "\"";
 
 	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean";
-	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
-	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
+	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {} completata.";
+	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {} in corso...";
 
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
 
@@ -430,6 +431,10 @@ public class BaseApiServiceImpl {
 		} else {
 			return new URI(baseUri);
 		}
+	}
+	
+	public URI getServicePathConURIAssoluta(UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
+		return UriBuilderUtils.getServicePathConURIAssoluta(log, uriInfo, httpHeaders);
 	}
 
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {

@@ -76,8 +76,6 @@ public class JDBCVistaVersamentoServiceSearch implements IDBVistaVersamentoServi
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		String msgInit = JDBCVistaVersamentoServiceSearch.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("vistaVersamento");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();

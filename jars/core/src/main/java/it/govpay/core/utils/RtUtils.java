@@ -339,7 +339,7 @@ public class RtUtils extends NdpValidationUtils {
 					rpt.setDescrizioneStato(e.getDescrizione());
 					rpt.setXmlRt(rtByte);
 					try {
-						rptBD.updateRpt(rpt.getId(), rpt);
+						rptBD.updateRpt(rpt);
 						rptBD.commit();
 					}catch (ServiceException e1) {
 						rptBD.rollback();
@@ -382,7 +382,7 @@ public class RtUtils extends NdpValidationUtils {
 						rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
 						rpt.setDescrizioneStato(null);
 						try {
-							rptBD.updateRpt(rpt.getId(), rpt);
+							rptBD.updateRpt(rpt);
 							rptBD.commit();
 						}catch (ServiceException e1) {
 							rptBD.rollback();
@@ -435,7 +435,7 @@ public class RtUtils extends NdpValidationUtils {
 				rpt.setXmlRt(rtByte);
 				
 				try {
-					rptBD.updateRpt(rpt.getId(), rpt);
+					rptBD.updateRpt(rpt);
 					rptBD.commit();
 				}catch (ServiceException e1) {
 					rptBD.rollback();
@@ -472,7 +472,7 @@ public class RtUtils extends NdpValidationUtils {
 			rpt.setDenominazioneAttestante(pspCompanyName);
 		
 			// Aggiorno l'RPT con i dati dell'RT
-			rptBD.updateRpt(rpt.getId(), rpt);
+			rptBD.updateRpt(rpt);
 			
 			Versamento versamento = rpt.getVersamento(rptBD);
 			

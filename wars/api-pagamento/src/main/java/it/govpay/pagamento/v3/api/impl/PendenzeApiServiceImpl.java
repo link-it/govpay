@@ -19,7 +19,6 @@
  */
 package it.govpay.pagamento.v3.api.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -203,7 +202,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			PosizioneDebitoria response = new PosizioneDebitoria(this.getServicePath(uriInfo),	listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(results);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
@@ -321,7 +320,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 
 			PendenzaArchivio pendenza = PendenzeConverter.toPendenzaArchivioRsModel(ricevutaDTOResponse,user);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

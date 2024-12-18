@@ -212,9 +212,9 @@ public class GovpayConfig {
 	
 	private boolean controlloPasswordBackwardCompatibilityMD5;
 	
-	
 	private Integer numeroGiorniRendicontazioniSenzaPagamento;
-	
+
+	private Properties risorseCustomBaseURLProperties;
 	
 	public GovpayConfig(InputStream is) throws IOException {
 		// Default values:
@@ -330,6 +330,8 @@ public class GovpayConfig {
 		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 		
 		this.controlloPasswordBackwardCompatibilityMD5 = false;
+
+		this.risorseCustomBaseURLProperties = new Properties();
 
 		// Recupero il property all'interno dell'EAR
 		this.props = new Properties[2];
@@ -857,6 +859,9 @@ public class GovpayConfig {
 				this.controlloPasswordBackwardCompatibilityMD5 = true;
 			
 			this.numeroGiorniRendicontazioniSenzaPagamento = getIntegerProperty(log, "it.govpay.batch.recuperoRT.limiteTemporaleRecupero", this.props, false, 15);
+			
+			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
+			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
 			
 		} catch (PropertyNotFoundException | InvalidPropertyException e) {
 			LogUtils.logError(log, MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
@@ -1388,5 +1393,9 @@ public class GovpayConfig {
 	
 	public boolean isControlloPasswordBackwardCompatibilityMD5() {
 		return controlloPasswordBackwardCompatibilityMD5;
+	}
+
+	public Properties getRisorseCustomBaseURLProperties() {
+		return risorseCustomBaseURLProperties;
 	}
 }

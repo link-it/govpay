@@ -55,6 +55,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -69,15 +70,15 @@ import it.govpay.ragioneria.v2.beans.FaultBean.CategoriaEnum;
  */
 public abstract class BaseController {
 
-	public static final String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
-	public static final String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
-	public static final String SUFFIX_CONTENT_DISPOSITION = "\"";
-	public static final String PREFIX_FILENAME = "filename=\"";
-	public static final String SUFFIX_FILENAME = "\"";
+	public static final String PARAMETRO_CONTENT_DISPOSITION = Costanti.PARAMETRO_CONTENT_DISPOSITION;
+	public static final String PREFIX_CONTENT_DISPOSITION = Costanti.PREFIX_CONTENT_DISPOSITION;
+	public static final String SUFFIX_CONTENT_DISPOSITION = Costanti.SUFFIX_CONTENT_DISPOSITION;
+	public static final String PREFIX_FILENAME = Costanti.PREFIX_FILENAME;
+	public static final String SUFFIX_FILENAME = Costanti.SUFFIX_FILENAME;
 
-	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean";
-	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
-	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
+	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = Costanti.ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
+	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = Costanti.LOG_MSG_ESECUZIONE_METODO_COMPLETATA;
+	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = Costanti.LOG_MSG_ESECUZIONE_METODO_IN_CORSO;
 	protected Logger log;
 	protected String nomeServizio;
 	protected HttpServletRequest request;
@@ -135,6 +136,10 @@ public abstract class BaseController {
 		} else {
 			return new URI(baseUri);
 		}
+	}
+	
+	public URI getServicePathConURIAssoluta(UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
+		return UriBuilderUtils.getServicePathConURIAssoluta(log, uriInfo, httpHeaders);
 	}
 
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {

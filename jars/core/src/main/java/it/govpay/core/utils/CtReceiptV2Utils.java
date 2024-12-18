@@ -309,7 +309,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 					
 					try {
 						if(update) {
-							rptBD.updateRpt(rpt.getId(), rpt);
+							rptBD.updateRpt(rpt);
 						} else {
 							// inserisco il ccp per le ricerche
 							rpt.setCcp(receiptId);
@@ -369,7 +369,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 
 			if(update) {
 				// Aggiorno l'RPT con i dati dell'RT
-				rptBD.updateRpt(rpt.getId(), rpt);
+				rptBD.updateRpt(rpt);
 			} else {
 				rptBD.insertRpt(rpt);
 			}

@@ -366,8 +366,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   public String getCodiceContabilita() {
     return this.codiceContabilita;
   }
-  public void setCodiceContabilita(String CodiceContabilita) {
-    this.codiceContabilita = CodiceContabilita;
+  public void setCodiceContabilita(String codiceContabilita) {
+    this.codiceContabilita = codiceContabilita;
   }
 
   public VocePendenza ibanAccredito(String ibanAccredito) {

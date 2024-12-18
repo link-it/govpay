@@ -56,8 +56,6 @@ public class JDBCVistaEventiVersamentoService extends JDBCVistaEventiVersamentoS
 	
 	public JDBCVistaEventiVersamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		String msgInit = JDBCVistaEventiVersamentoService.class.getName()+ " initialized";
-		this.log.debug(msgInit);
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("vistaEventiVersamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
@@ -901,7 +899,7 @@ public class JDBCVistaEventiVersamentoService extends JDBCVistaEventiVersamentoS
 	
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
 			this.logError(e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
