@@ -89,7 +89,7 @@ public class MapEntry extends JSONSerializable {
   }
 
   public static MapEntry parse(String json) throws IOException {
-    return (MapEntry) parse(json, MapEntry.class);
+    return parse(json, MapEntry.class);
   }
 
   @Override

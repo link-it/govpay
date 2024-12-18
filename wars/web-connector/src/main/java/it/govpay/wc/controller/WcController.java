@@ -44,7 +44,7 @@ public class WcController  extends BaseController {
 	public Response getPsp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
 		String methodName = "getPsp";  
 		String transactionId = this.context.getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			if(StringUtils.isBlank(idSession)) {
 				throw new ValidationException("Parametro 'idSession' obbligatorio.");
@@ -61,7 +61,7 @@ public class WcController  extends BaseController {
 			
 			RedirectDaPspDTOResponse redirectDaPspDTOResponse = webControllerDAO.gestisciRedirectPsp(redirectDaPspDTO);
 			
-			this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectDaPspDTOResponse.getLocation() +"].");	
+			this.logInfo("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectDaPspDTOResponse.getLocation() +"].");	
 			return this.handleResponseOk(Response.seeOther(new URI(redirectDaPspDTOResponse.getLocation())),transactionId).build();
 			
 		}catch (Exception e) {

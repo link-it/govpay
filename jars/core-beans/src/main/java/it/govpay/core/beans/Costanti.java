@@ -20,6 +20,8 @@
 package it.govpay.core.beans;
 
 public class Costanti {
+	
+	private Costanti () {}
 
 	public static final String PARAMETRO_PAGINA = "pagina";
 	public static final String PARAMETRO_RISULTATI_PER_PAGINA = "risultatiPerPagina";
@@ -27,6 +29,16 @@ public class Costanti {
 	
 	public static final Integer NUMERO_MASSIMO_RISULTATI_PER_PAGINA = 500;
 	
+	public static final String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
+	public static final String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
+	public static final String SUFFIX_CONTENT_DISPOSITION = "\"";
+	public static final String PREFIX_FILENAME = "filename=\"";
+	public static final String SUFFIX_FILENAME = "\"";
+
+	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
+	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {} completata.";
+	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {} in corso...";
+	public static final String LOG_MSG_ESECUZIONE_OPERAZIONE_COMPLETATA = "Esecuzione {} completata: Stato {}, Descrizione: {}";
 	
 	public static final String HEADER_NAME_OUTPUT_TRANSACTION_ID = "X-Govpay-IdTransazione";
 	

@@ -84,6 +84,7 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaNotificaPagamentoMaggioliJPPAThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -194,7 +195,7 @@ public class TracciatiNotificaPagamenti {
 				log.debug("Elaborazione Tracciato {} per il Dominio [{}], nessun tracciato trovato in base dati, proseguo con la ricerca delle entries da inserire.", this.tipoTracciato, codDominio);
 			}
 		} catch(Throwable e) {
-			log.error("Errore durante il controllo intervallo elaborazione per i tracciati "+this.tipoTracciato+" per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			LogUtils.logError(log,"Errore durante il controllo intervallo elaborazione per i tracciati "+this.tipoTracciato+" per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			return;
 		} finally {
 			if(tracciatiNotificaPagamentiBD != null) {
@@ -212,7 +213,7 @@ public class TracciatiNotificaPagamenti {
 
 			log.debug("Elaborazione Tracciato {} per il Dominio [{}], ricerca tracciati in stato non terminale, trovati [{}] tracciati in sospeso", this.tipoTracciato, codDominio, countTracciatiInStatoNonTerminalePerDominio);
 		} catch(Throwable e) {
-			log.error("Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			LogUtils.logError(log,"Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			return;
 		} finally {
 			if(tracciatiNotificaPagamentiBD != null) {
@@ -368,7 +369,7 @@ public class TracciatiNotificaPagamenti {
 								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
-								log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+								LogUtils.logError(log,MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 								throw new ServiceException(e);
 							}
 							break;
@@ -377,7 +378,7 @@ public class TracciatiNotificaPagamenti {
 								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
-								log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+								LogUtils.logError(log,MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 								throw new ServiceException(e);
 							}
 							break;
@@ -386,7 +387,7 @@ public class TracciatiNotificaPagamenti {
 								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
-								log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+								LogUtils.logError(log,MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 								throw new ServiceException(e);
 							}
 							break;
@@ -395,7 +396,7 @@ public class TracciatiNotificaPagamenti {
 								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
-								log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+								LogUtils.logError(log,MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 								throw new ServiceException(e);
 							}
 							break;
@@ -411,7 +412,7 @@ public class TracciatiNotificaPagamenti {
 
 								underlyingConnection = (Connection) invoke;
 							} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-								log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+								LogUtils.logError(log,"Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 								throw new ServiceException(e);
 							}
 
@@ -434,7 +435,7 @@ public class TracciatiNotificaPagamenti {
 
 								oututStreamDestinazione = obj.getOutputStream();
 							} catch (SQLException e) {
-								log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
+								LogUtils.logError(log,"Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
 								throw new ServiceException(e);
 							}
 							break;
@@ -497,11 +498,11 @@ public class TracciatiNotificaPagamenti {
 
 							if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.commit();
 						} catch (java.io.IOException e) { // gestione errori scrittura zip
-							log.error(e.getMessage(), e);
+							LogUtils.logError(log,e.getMessage(), e);
 							throw e;
 						} 
 					} catch(Throwable e) {
-						log.error("Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
+						LogUtils.logError(log,"Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
 						if(!tracciatiNotificaPagamentiBD.isAutoCommit())  tracciatiNotificaPagamentiBD.rollback();	
 					} finally {
 						if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.setAutoCommit(true);
@@ -510,7 +511,7 @@ public class TracciatiNotificaPagamenti {
 					log.info("Elaborazione Tracciato {} per il Dominio [{}] completata non sono state trovate entries da inserire nel tracciato.", this.tipoTracciato, codDominio);
 				}
 			} catch(Throwable e) {
-				log.error("Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
+				LogUtils.logError(log,"Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
 			} finally {
 				if(tracciatiNotificaPagamentiBD != null) {
 					tracciatiNotificaPagamentiBD.closeConnection();
@@ -1091,7 +1092,6 @@ public class TracciatiNotificaPagamenti {
 	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, ISerializer serializer) throws org.openspcoop2.utils.serialization.IOException { 
-		String metadati = "{}";
 		
 		Map<String, Object> json  = new HashMap<>();
 		
@@ -1115,9 +1115,7 @@ public class TracciatiNotificaPagamenti {
 			json.put("tipiPendenza", StringUtils.join(listaTipiPendenza, ","));
 		}
 		
-		metadati = serializer.getObject(json);
-		
-		return metadati;
+		return serializer.getObject(json);
 	}
 	
 	private List<List<String>> creaLineaCsvGovPay(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
@@ -1147,7 +1145,7 @@ public class TracciatiNotificaPagamenti {
 			// lista tracciati da spedire
 			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString(), connettore);
 		} catch(Throwable e) {
-			log.error("Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			LogUtils.logError(log,"Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			throw new ServiceException(e);
 		} finally {
 			if(tracciatiNotificaPagamentiBD != null) {
@@ -1221,7 +1219,7 @@ public class TracciatiNotificaPagamenti {
 		String codiceServizio = null;
 		String descrizioneServizio = null;
 		Contabilita contabilita = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(StringUtils.isNotEmpty(contabilitaString)) {
 			contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
@@ -1229,7 +1227,7 @@ public class TracciatiNotificaPagamenti {
 			if(proprietaCustomObj != null) {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+					if(StringUtils.isNotEmpty(proprietaCustom)) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta
 						if(parse.containsKey("codiceServizio")) {
@@ -1416,7 +1414,7 @@ public class TracciatiNotificaPagamenti {
 		String codiceServizio = null;
 		String descrizioneServizio = null;
 		Contabilita contabilita = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(StringUtils.isNotEmpty(contabilitaString)) {
 			contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
@@ -1424,7 +1422,7 @@ public class TracciatiNotificaPagamenti {
 			if(proprietaCustomObj != null) {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+					if(StringUtils.isNotEmpty(proprietaCustom)) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta
 						if(parse.containsKey("codiceServizio")) {
@@ -1641,7 +1639,7 @@ public class TracciatiNotificaPagamenti {
 								sender.setCommit(true);
 								synchronized (this) {
 									if(sender.getException() != null) {
-										log.error("Si e' verificato un errore durante l'invio della notifica per il {}: {}", sender.getNomeThread(), sender.getException().getMessage());
+										LogUtils.logError(log,"Si e' verificato un errore durante l'invio della notifica per il {}: {}", sender.getNomeThread(), sender.getException().getMessage());
 										throw sender.getException();
 									}
 
