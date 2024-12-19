@@ -20,7 +20,6 @@
 package it.govpay.wc.controller;
 
 import java.net.URI;
-import java.text.MessageFormat;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -44,7 +43,7 @@ public class WcController  extends BaseController {
 	public Response getPsp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
 		String methodName = "getPsp";  
 		String transactionId = this.context.getTransactionId();
-		this.logDebug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName); 
 		try{
 			if(StringUtils.isBlank(idSession)) {
 				throw new ValidationException("Parametro 'idSession' obbligatorio.");
