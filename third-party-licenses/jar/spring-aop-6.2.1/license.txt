@@ -202,15 +202,9 @@
 
 =======================================================================
 
-<<<<<<<< HEAD:third-party-licenses/jar/spring-jcl-6.1.12/license.txt
-SPRING FRAMEWORK 6.1.12 SUBCOMPONENTS:
+SPRING FRAMEWORK 6.2.1 SUBCOMPONENTS:
 
-Spring Framework 6.1.12 includes a number of subcomponents
-========
-SPRING FRAMEWORK 5.3.39 SUBCOMPONENTS:
-
-Spring Framework 5.3.39 includes a number of subcomponents
->>>>>>>> 3.8.x:third-party-licenses/jar/spring-jcl-5.3.39/license.txt
+Spring Framework 6.2.1 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -269,10 +263,10 @@ JavaPoet 1.13.0 is licensed under the Apache License, version 2.0, the text of
 which is included above.
 
 
->>> Objenesis 3.2 (org.objenesis:objenesis:3.2):
+>>> Objenesis 3.4 (org.objenesis:objenesis:3.4):
 
 Per the LICENSE file in the Objenesis ZIP distribution downloaded from
-http://objenesis.org/download.html, Objenesis 3.2 is licensed under the
+http://objenesis.org/download.html, Objenesis 3.4 is licensed under the
 Apache License, version 2.0, the text of which is included above.
 
 Per the NOTICE file in the Objenesis ZIP distribution downloaded from
