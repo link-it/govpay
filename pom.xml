@@ -118,13 +118,13 @@
 		<jersey.version>3.1.7</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>6.1.12</spring.version>
+		<spring.version>6.2.1</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>6.3.3</spring.security.version>
+		<spring.security.version>6.4.2</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>3.2.4</spring.ldap.version>
+		<spring.ldap.version>3.2.10</spring.ldap.version>
 		
 		<!-- nimbus-jose-jwt version -->
 		<nimbus-jose-jwt.version>9.39.3</nimbus-jose-jwt.version>
@@ -1155,12 +1155,6 @@
 			
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
-				<artifactId>jackson-datatype-joda</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-jsr310</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency> 
@@ -1401,12 +1395,6 @@
 				<groupId>com.nimbusds</groupId>						
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>${nimbus-jose-jwt.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>${joda-time.version}</version>
 			</dependency>
 			
 			<!-- webjar-swagger ui -->
