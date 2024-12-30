@@ -744,8 +744,8 @@ CREATE VIEW v_vrs_non_rnd AS
   WHERE rendicontazioni.id IS NULL;
 
 
--- 20/02/2024 Funzionalita' StandIN: campo Xml RPT opzionale
-ALTER TABLE rpt MODIFY (xml_rpt BLOB NULL);
+-- 20/02/2024 Funzionalita' StandIN: campo Xml RPT opzionale (non indicare il tipo BLOB perche' Oracle non supporta l'operazione)
+ALTER TABLE rpt MODIFY xml_rpt NULL;
 
 
 -- 04/11/2024 Aggiunto connettore recupero RT
