@@ -111,6 +111,7 @@
 			<hidden property="TABLESPACE" value="openspcoop2" />
 			<hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver" />
 			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<hidden property="antinstaller_modulo_postgres" value="NONE" />
 		</conditional>
 		<validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta" />
 		<validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+" />
