@@ -20,12 +20,12 @@
 	<page name="informazioniente" type="input" displayText="Informazioni Preliminari">
 		<comment displayText="" />
 		<hidden property="antinstaller_log_level" value="INFO" />
-		<!--
-		<select defaultValue="wildfly26" property="antinstaller_as" displayText="Application Server">
-			<option value="wildfly18" text="WildFly 18" />
-			<option value="wildfly26" text="WildFly 26" />
+		
+		<select defaultValue="wildfly28" property="antinstaller_as" displayText="Application Server">
+			<option value="wildfly28" text="WildFly 28" />
+			<option value="tomcat10" text="Tomcat 10" />
 		</select>
-		-->
+		
 		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
 			<option value="postgresql" text="PostgreSQL" />
 			<option value="mysql" text="MySQL" />
@@ -87,7 +87,7 @@
 		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
 	</page>
 
-	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}=postgresql">
+	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}==wildfly28)">
 		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
 		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
 			<hidden property="porta-db" value="5432" />
@@ -102,6 +102,20 @@
 		<comment displayText="" />
 		<validated property="antinstaller_modulo_postgres" displayText="Nome modulo driver postgresql" regex=".+" />
 		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL" />
+	</page>
+	
+	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}!=wildfly28)">
+		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
+		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
+			<hidden property="porta-db" value="5432" />
+			<hidden property="TABLESPACE" value="openspcoop2" />
+			<hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+		</conditional>
+		<validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta" />
+		<validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
 	</page>
 
 	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true">

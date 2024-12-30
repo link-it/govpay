@@ -61,7 +61,7 @@
 				<api-ragioneria-tomcat-war-name>govpay-api-ragioneria</api-ragioneria-tomcat-war-name>
 				<api-user-tomcat-war-name>govpay-api-user</api-user-tomcat-war-name>
 				<web-connector-tomcat-war-name>govpay-web-connector</web-connector-tomcat-war-name>
-				<web-console-tomcat-war-name>govpay-cnsole</web-console-tomcat-war-name>
+				<web-console-tomcat-war-name>govpay-console</web-console-tomcat-war-name>
 				
 				<!-- versioni jar -->
 				<angus-mail.version>2.0.3</angus-mail.version>
