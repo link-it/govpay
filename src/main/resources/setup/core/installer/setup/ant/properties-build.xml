@@ -49,4 +49,32 @@
          <param name="value" value="other" />
       </antcall>
    </target>
+	
+	<target name="govpay_war_properties_tomcat">
+	      <unzip src="${file}" dest="${file}.tmp" />
+	      <foreach target="filler" param="file">
+	         <fileset dir="${file}.tmp">
+	            <include name="**/*.yaml" />
+	            <include name="**/*.html" />
+	            <include name="**/web.xml" />
+	         </fileset>
+	      </foreach>
+		
+		<antcall target="govpay_properties_settings">
+			<param name="file" value="${file}.tmp/WEB-INF/classes/govpay.properties"/>
+		</antcall>
+		<antcall target="govpay_logger_properties_settings">
+			<param name="file" value="${file}.tmp/WEB-INF/classes/log4j2.xml"/>
+		</antcall>
+		
+		<antcall target="dos2unix">
+			<param name="dir" value="${file}.tmp/WEB-INF/classes"/>
+			<param name="file" value="*.properties"/>
+		</antcall>
+		
+		
+	      <delete file="${file}" />
+	      <zip destfile="${file}" basedir="${file}.tmp" />
+	      <delete dir="${file}.tmp" />
+	   </target>
 </project>

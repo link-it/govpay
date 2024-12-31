@@ -48,7 +48,24 @@
 
 	
 	<target name="init_setup" depends="installer_clean,installer_init">
-		<unzip src="${archivi}/govpay.ear" dest="${tmp_dir}/govpay"/>
+		<if>
+        	<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+			<then>
+				<unzip src="${archivi}/govpay.ear" dest="${tmp_dir}/govpay" />
+			</then>
+        </if>
+		
+		<if>
+        	<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+			<then>
+				<copy todir="${tmp_dir}/govpay">
+					<fileset dir="${archivi}">
+				    	<include name="*.war"/>
+			        </fileset>
+		        </copy>
+			</then>
+        </if>
+		
 	</target>
 		
 	<target name="setup_properties">
@@ -92,8 +109,6 @@
                           } else {
                             project.setUserProperty('dipendenza_modulo_postgres', '');
                           }
-
-
 		 </script>
 
 
@@ -106,28 +121,60 @@
 
 		
 		<!-- GovPay EAR -->
-
-		<foreach target="govpay_war_properties" param="file" >
-		   <fileset dir="${tmp_dir}/govpay/"> 
-		     <include name="**/*.war"/>
-		   </fileset>
-		</foreach>
-
-
-		<antcall target="govpay_properties_settings">
-			<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
-		</antcall>
-		<antcall target="govpay_logger_properties_settings">
-			<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
-		</antcall>
-		<antcall target="govpay_jboss_deployment_structure">
-			<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>
-		</antcall>
-
-		<antcall target="dos2unix">
-			<param name="dir" value="${tmp_dir}/govpay/properties"/>
-			<param name="file" value="*.properties"/>
-		</antcall>
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+			<then>
+				<foreach target="govpay_war_properties" param="file" >
+				   <fileset dir="${tmp_dir}/govpay/"> 
+				     <include name="**/*.war"/>
+				   </fileset>
+				</foreach>
+		
+		
+				<antcall target="govpay_properties_settings">
+					<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
+				</antcall>
+				<antcall target="govpay_logger_properties_settings">
+					<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
+				</antcall>
+				<antcall target="govpay_jboss_deployment_structure">
+					<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>
+				</antcall>
+		
+				<antcall target="dos2unix">
+					<param name="dir" value="${tmp_dir}/govpay/properties"/>
+					<param name="file" value="*.properties"/>
+				</antcall>
+			</then>
+		</if>
+		
+		<!-- Tomcat -->
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+			<then>
+				<foreach target="govpay_war_properties_tomcat" param="file" >
+				   <fileset dir="${tmp_dir}/govpay/"> 
+				     <include name="**/*.war"/>
+				   </fileset>
+				</foreach>
+		
+		
+<!--				<antcall target="govpay_properties_settings">-->
+<!--					<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>-->
+<!--				</antcall>-->
+<!--				<antcall target="govpay_logger_properties_settings">-->
+<!--					<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>-->
+<!--				</antcall>-->
+<!--				<antcall target="govpay_jboss_deployment_structure">-->
+<!--					<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>-->
+<!--				</antcall>-->
+		
+<!--				<antcall target="dos2unix">-->
+<!--					<param name="dir" value="${tmp_dir}/govpay/properties"/>-->
+<!--					<param name="file" value="*.properties"/>-->
+<!--				</antcall>-->
+			</then>
+		</if>
 
 	</target>
 		
@@ -166,20 +213,54 @@
 	<target name="setup_finished">
 		<delete dir="${dist}"/>
 
-                <if>
-                  <equals arg1="${antinstaller_springsec_ext}" arg2="true" />
-		  <then>
-                	<mkdir dir="${dist}/cfg" />
-	                <foreach target="extract_war_spring" param="file" >
-        	           <fileset dir="${tmp_dir}/govpay/">
-                	     <include name="**/api-*.war"/>
-	                   </fileset>
-        	        </foreach>
-		  </then>
-                </if>
+          <if>
+          	<equals arg1="${antinstaller_springsec_ext}" arg2="true" />
+		  	<then>
+            	<mkdir dir="${dist}/cfg" />
+	            
+		  		<if>
+					<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+					<then>
+				  		<foreach target="extract_war_spring" param="file" >
+		        	    	<fileset dir="${tmp_dir}/govpay/">
+		                		<include name="**/api-*.war"/>
+			                </fileset>
+		        	    </foreach>
+		  			</then>
+		  		</if>
+		  		
+		  		<if>
+					<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+					<then>
+				  		<foreach target="extract_war_spring" param="file" >
+		        	    	<fileset dir="${tmp_dir}/govpay/">
+		                		<include name="govpay-api-*.war"/>
+			                </fileset>
+		        	    </foreach>
+		  			</then>
+		  		</if>
+		  	</then>
+          </if>
 
 		<mkdir dir="${dist}/archivi" />
-		<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+			<then>
+				<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
+  			</then>
+  		</if>
+		
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+			<then>
+				<copy todir="${dist}/archivi">
+					<fileset dir="${tmp_dir}/govpay"> 
+						<include name="*.war" />
+					</fileset>
+				</copy>
+  			</then>
+  		</if>
+		
 		<mkdir dir="${dist}/datasource" />
 		<copy file="${tmp_dir}/govpay-ds.xml" todir="${dist}/datasource" />
 		<mkdir dir="${dist}/sql" />
