@@ -38,6 +38,7 @@ Then status 201
 """
 
 Given url pagamentiBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And request pagamentoPost
 When method post
@@ -48,6 +49,7 @@ And match response == { id: '#notnull', location: '#notnull', redirect: '#notnul
 * def idSessionAnonimo = response.idSession
 
 Given url pagamentiBaseurl
+And configure cookies = null
 And path '/pagamenti/byIdSession/', response.idSession
 When method get
 Then status 200
