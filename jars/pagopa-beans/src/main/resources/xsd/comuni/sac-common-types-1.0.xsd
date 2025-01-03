@@ -110,7 +110,7 @@
 
 	<xsd:complexType name="ctMetadata">
 		<xsd:sequence>
-			<xsd:element name="mapEntry" type="ctMapEntry" minOccurs="1" maxOccurs="10"></xsd:element>
+			<xsd:element name="mapEntry" type="ctMapEntry" minOccurs="1" maxOccurs="15"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

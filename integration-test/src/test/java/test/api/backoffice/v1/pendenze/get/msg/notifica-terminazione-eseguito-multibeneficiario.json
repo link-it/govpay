@@ -106,6 +106,7 @@
          "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
          "applicationDate":"#ignore",
          "transferDate":"#notnull",
+         "standIn": "#null",
          "metadata":null
    },
 	"riscossioni":[

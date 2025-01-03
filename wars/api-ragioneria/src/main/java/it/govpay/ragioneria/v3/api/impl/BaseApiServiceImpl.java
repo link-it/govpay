@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2024 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -68,6 +68,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -442,6 +443,10 @@ public class BaseApiServiceImpl {
 		} else {
 			return new URI(baseUri);
 		}
+	}
+	
+	public URI getServicePathConURIAssoluta(UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
+		return UriBuilderUtils.getServicePathConURIAssoluta(log, uriInfo, httpHeaders);
 	}
 
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {
