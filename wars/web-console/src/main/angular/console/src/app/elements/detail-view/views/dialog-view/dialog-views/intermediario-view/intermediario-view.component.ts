@@ -78,13 +78,15 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     _json.servizioPagoPa['auth'] = this.sslConfig.mapToJson();
     if(_json.servizioPagoPa.auth == null) { delete _json.servizioPagoPa.auth; }
 	
-	_json.servizioPagoPaRecuperoRT = {
-      auth: null,
-      url: _info['urlRecuperoRT_ctrl'],
-      subscriptionKey: _info['subscriptionKeyRecuperoRT_ctrl']?_info['subscriptionKeyRecuperoRT_ctrl']:null
-    };
-    _json.servizioPagoPaRecuperoRT['auth'] = this.sslConfigRecuperoRT.mapToJson();
-    if(_json.servizioPagoPaRecuperoRT.auth == null) { delete _json.servizioPagoPaRecuperoRT.auth; }
+	if(_info['urlRecuperoRT_ctrl'] != null && _info['urlRecuperoRT_ctrl'] != ''){
+		_json.servizioPagoPaRecuperoRT = {
+	      auth: null,
+	      url: _info['urlRecuperoRT_ctrl'],
+	      subscriptionKey: _info['subscriptionKeyRecuperoRT_ctrl']?_info['subscriptionKeyRecuperoRT_ctrl']:null
+	    };
+	    _json.servizioPagoPaRecuperoRT['auth'] = this.sslConfigRecuperoRT.mapToJson();
+	    if(_json.servizioPagoPaRecuperoRT.auth == null) { delete _json.servizioPagoPaRecuperoRT.auth; }
+	}
     return _json;
   }
   
