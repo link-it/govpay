@@ -21,10 +21,7 @@
 		<comment displayText="" />
 		<hidden property="antinstaller_log_level" value="INFO" />
 		
-		<select defaultValue="wildfly28" property="antinstaller_as" displayText="Application Server">
-			<option value="wildfly28" text="WildFly 28" />
-			<option value="tomcat10" text="Tomcat 10" />
-		</select>
+		<hidden property="antinstaller_as" value="APPLICATION_SERVER" />
 		
 		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
 			<option value="postgresql" text="PostgreSQL" />

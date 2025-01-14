@@ -56,7 +56,7 @@
         </if>
 		
 		<if>
-        	<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+        	<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 			<then>
 				<copy todir="${tmp_dir}/govpay">
 					<fileset dir="${archivi}">
@@ -74,43 +74,38 @@
 		  $${antinstaller_log_folder}    => ${antinstaller_log_folder}
 		 </echo>
 
-		 <script language="javascript">
-			  var sep = project.getProperty('file.separator');
-			  var workf = project.getProperty('antinstaller_work_folder');
-			  if (workf.endsWith(sep) ) {
-			        workf= workf.substring(0,workf.length() - 1);
-			  }
-			  project.setUserProperty('antinstaller_work_folder_noendsep', workf);
+  <!-- Rimuovi lo slash finale con propertyregex (ant-contrib) -->
+    <propertyregex
+        property="antinstaller_work_folder_noendsep"
+        input="${antinstaller_work_folder}"
+        replace=""
+        regexp="[\\/]+$"
+    />
+    <propertyregex
+        property="antinstaller_log_folder_noendsep"
+        input="${antinstaller_log_folder}"
+        replace=""
+        regexp="[\\/]+$"
+    />
 
-			  var logf = project.getProperty('antinstaller_log_folder');
-			  if (logf.endsWith(sep) ) {
-			        logf= logf.substring(0,logf.length() - 1);
-			  }
-			  project.setUserProperty('antinstaller_log_folder_noendsep', logf);
+    <!-- Se protocollo=https => autenticazione=ssl, altrimenti=basic -->
+    <condition property="autenticazione" value="ssl" else="basic">
+        <equals arg1="${protocollo}" arg2="https"/>
+    </condition>
 
-			  /* impostazioni URL statiche */
-			  // project.setUserProperty('protocollo', 'https');
-			  if (project.getUserProperty('protocollo') === 'https') {
-				project.setUserProperty('autenticazione', 'ssl');
-			  } else {
+    <!-- springsec_location = file:... se antinstaller_springsec_ext=true, altrimenti /WEB-INF -->
+    <condition property="springsec_location" 
+               value="file:${antinstaller_work_folder_noendsep}"
+               else="/WEB-INF">
+        <equals arg1="${antinstaller_springsec_ext}" arg2="true"/>
+    </condition>
 
-				project.setUserProperty('autenticazione', 'basic');
-			  }
-		         	
-			  if (project.getUserProperty('antinstaller_springsec_ext')==='true') {
-	                    project.setUserProperty('springsec_location', 'file:'+workf);
-        		  } else {
-	                    project.setUserProperty('springsec_location', '/WEB-INF');
-        		  }
-
-
-                          if (project.getUserProperty('antinstaller_modulo_postgres')) {
-                            project.setUserProperty('dipendenza_modulo_postgres', '&lt;dependencies&gt;&lt;module name=&quot;'+antinstaller_modulo_postgres+'&quot; /&gt;&lt;/dependencies&gt;');
-                          } else {
-                            project.setUserProperty('dipendenza_modulo_postgres', '');
-                          }
-		 </script>
-
+    <!-- dipendenza_modulo_postgres = snippet XML se esiste antinstaller_modulo_postgres, altrimenti vuoto -->
+    <condition property="dipendenza_modulo_postgres"
+               value="&lt;dependencies&gt;&lt;module name='${antinstaller_modulo_postgres}'/&gt;&lt;/dependencies&gt;"
+               else="">
+        <isset property="antinstaller_modulo_postgres"/>
+    </condition>
 
 		 <echo>
 		  $${antinstaller_work_folder_noendsep}    => ${antinstaller_work_folder_noendsep}
@@ -150,7 +145,7 @@
 		
 		<!-- Tomcat -->
 		<if>
-			<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+			<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 			<then>
 				<foreach target="govpay_war_properties_tomcat" param="file" >
 				   <fileset dir="${tmp_dir}/govpay/"> 
@@ -230,7 +225,7 @@
 		  		</if>
 		  		
 		  		<if>
-					<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+					<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 					<then>
 				  		<foreach target="extract_war_spring" param="file" >
 		        	    	<fileset dir="${tmp_dir}/govpay/">
@@ -251,7 +246,7 @@
   		</if>
 		
 		<if>
-			<equals arg1="${antinstaller_as}" arg2="tomcat10" />
+			<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 			<then>
 				<copy todir="${dist}/archivi">
 					<fileset dir="${tmp_dir}/govpay"> 

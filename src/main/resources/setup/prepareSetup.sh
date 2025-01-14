@@ -39,6 +39,17 @@ cp -r core core.template
 #find core.template/installer/setup/antinstall-config.xml -type f -exec perl -pi -e "s#PRODUCT_VERSION#${VERSION}#g" {} \;
 perl -pi -e "s#PRODUCT_VERSION#${VERSION}#g" core.template/installer/setup/antinstall-config.xml
 
+if [ "$AS" = "ear" ]; then
+    # Se AS è 'ear', valorizza la variabilie APPLICATION_SERVER come wildfly28
+    perl -pi -e "s#APPLICATION_SERVER#wildfly28#g" core.template/installer/setup/antinstall-config.xml
+elif [ "$AS" = "tomcat" ]; then
+    # Se AS è 'tomcat', valorizza la variabilie APPLICATION_SERVER come tomcat11
+    perl -pi -e "s#APPLICATION_SERVER#tomcat11#g" core.template/installer/setup/antinstall-config.xml
+else
+    echo "Parametro AS non valido. Valori accettati: ear | tomcat"
+    exit 8
+fi
+
 # Prepare SQL
 echo "Prepare sql script ..."
 mkdir -p core.template/installer/sql/
