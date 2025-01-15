@@ -57,6 +57,7 @@
 	            <include name="**/*.yaml" />
 	            <include name="**/*.html" />
 	            <include name="**/web.xml" />
+	         	<include name="**/Config.js" />
 	         </fileset>
 	      </foreach>
 		

@@ -37,6 +37,10 @@
 				
 				<filter token="GOVPAY_SPRING_SEC_FOLDER" value="${springsec_location}" />
 				<filter token="WILFLY_MODULE_DEPENDENCY" value="${dipendenza_modulo_postgres}" />
+        			
+        			<filter token="GOVPAY_BACKEND_GUI_BASE_PATH" value="${antinstaller_govpay_backend_gui_base_path}" />
+        			<filter token="GOVPAY_BACKEND_API_FORM_BASE_URL" value="${antinstaller_govpay_backend_api_form_base_url}" />
+        			<filter token="GOVPAY_BACKEND_API_PUBLIC_BASE_URL" value="${antinstaller_govpay_backend_api_public_base_url}" />
 
 		        </filterset>
 		</copy>

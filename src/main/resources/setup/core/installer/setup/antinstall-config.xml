@@ -25,6 +25,10 @@
 		
 		<hidden property="antinstaller_jndi_name" value="JNDI_NAME" />
 		
+		<hidden property="antinstaller_govpay_backend_gui_base_path" value="/govpay/backend/gui/backoffice/" />
+		<hidden property="antinstaller_govpay_backend_api_form_base_url" value="/govpay/backend/api/backoffice/rs/form/v1" />
+		<hidden property="antinstaller_govpay_backend_api_public_base_url" value="/govpay/backend/api/backoffice/public" />
+		
 		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
 			<option value="postgresql" text="PostgreSQL" />
 			<option value="mysql" text="MySQL" />
