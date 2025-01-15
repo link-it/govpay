@@ -50,6 +50,17 @@ else
     exit 8
 fi
 
+if [ "$AS" = "ear" ]; then
+    # Se AS è 'ear', valorizza la variabilie JNDI_NAME come govpay
+    perl -pi -e "s#JNDI_NAME#govpay#g" core.template/installer/setup/antinstall-config.xml
+elif [ "$AS" = "tomcat" ]; then
+    # Se AS è 'tomcat', valorizza la variabilie JNDI_NAME come java:comp/env/it.govpay.datasource
+    perl -pi -e "s#JNDI_NAME#java:comp/env/it.govpay.datasource#g" core.template/installer/setup/antinstall-config.xml
+else
+    echo "Parametro AS non valido. Valori accettati: ear | tomcat"
+    exit 8
+fi
+
 # Prepare SQL
 echo "Prepare sql script ..."
 mkdir -p core.template/installer/sql/

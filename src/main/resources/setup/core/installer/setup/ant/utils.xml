@@ -20,7 +20,7 @@
         		        <filter token="GOVPAY_URL_VERIFICA" value="${antinstaller_pddcheck}"/>
                 		<filter token="GOVPAY_TIPO_DATABASE" value="${antinstaller_tipo_database}"/>
 		                <filter token="GOVPAY_LOG_SHOWSQL" value="false"/>
-        		        <filter token="GOVPAY_DATASOURCE" value="govpay"/>
+        		        <filter token="GOVPAY_DATASOURCE" value="${antinstaller_jndi_name}"/>
                 		<filter token="GOVPAY_JMX_AS" value="${antinstaller_as}"/>
 
                                 <filter token="GOVPAY_AUTENTICAZIONE" value="${autenticazione}"/>
