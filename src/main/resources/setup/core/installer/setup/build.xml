@@ -13,6 +13,12 @@
               <pathelement location="${lib}/ant/ant-contrib-1.0b3.jar"/>
           </classpath>
 	</taskdef>
+       <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+          <classpath>
+              <pathelement location="${lib}/ant/groovy-3.0.23.jar"/>
+              <pathelement location="${lib}/ant/groovy-ant-3.0.23.jar"/>
+          </classpath>
+        </taskdef>
 	
 	<import file="./ant/properties-build.xml" />
 	<import file="./ant/ds-build.xml" />
@@ -58,30 +64,32 @@
 		 </echo>
 
   <!-- Rimuovi lo slash finale con propertyregex (ant-contrib) -->
-    <propertyregex
-        property="antinstaller_work_folder_noendsep"
-        input="${antinstaller_work_folder}"
-        replace=""
-        regexp="[\\/]+$"
-    />
-    <propertyregex
-        property="antinstaller_log_folder_noendsep"
-        input="${antinstaller_log_folder}"
-        replace=""
-        regexp="[\\/]+$"
-    />
+<groovy>
+        def confpath = properties['antinstaller_work_folder']
+        if (confpath.endsWith(System.getProperty('file.separator'))) {
+            confpath = confpath.substring(0, confpath.length() - 1)
+        }
+        project.setUserProperty('antinstaller_work_folder_noendsep', confpath)
+
+        def logpath = properties['antinstaller_log_folder']
+        if (logpath.endsWith(System.getProperty('file.separator'))) {
+            logpath = logpath.substring(0, logpath.length() - 1)
+        }
+        project.setUserProperty('antinstaller_log_folder_noendsep', logpath)
+
+       def ext = properties['antinstaller_springsec_ext']
+       if (ext) {
+          project.setUserProperty('springsec_location','file:'+confpath)
+       } else {
+          project.setUserProperty('springsec_location','/WEB-INF')
+       }      
+</groovy>
 
     <!-- Se protocollo=https => autenticazione=ssl, altrimenti=basic -->
     <condition property="autenticazione" value="ssl" else="basic">
         <equals arg1="${protocollo}" arg2="https"/>
     </condition>
 
-    <!-- springsec_location = file:... se antinstaller_springsec_ext=true, altrimenti /WEB-INF -->
-    <condition property="springsec_location" 
-               value="file:${antinstaller_work_folder_noendsep}"
-               else="/WEB-INF">
-        <equals arg1="${antinstaller_springsec_ext}" arg2="true"/>
-    </condition>
 
     <!-- dipendenza_modulo_postgres = snippet XML se esiste antinstaller_modulo_postgres, altrimenti vuoto -->
     <condition property="dipendenza_modulo_postgres"
@@ -95,6 +103,7 @@
 		  $${antinstaller_log_folder_noendsep}    => ${antinstaller_log_folder_noendsep}
 		  $${protocollo}    => ${protocollo}
 		  $${autenticazione}    => ${autenticazione}
+		  $${springsec_location}    => ${springsec_location}
 		 </echo>
 
 		

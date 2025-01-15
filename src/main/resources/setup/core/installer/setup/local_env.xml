@@ -9,7 +9,7 @@
     <property name="antinstaller_dbusername" value="govpay" />
     <property name="antinstaller_principal" value="gpadmin" />
     <property name="antinstaller_ragione_sociale" value="Amministratore GovPay" />
-    <property name="antinstaller_as" value="wildfly11" />
+    <property name="antinstaller_as" value="wildfly28" />
     <property name="porta-db" value="5432" />
     <property name="antinstaller_tipo_database" value="postgresql" />
     <property name="antinstaller_dbport" value="5432" />
