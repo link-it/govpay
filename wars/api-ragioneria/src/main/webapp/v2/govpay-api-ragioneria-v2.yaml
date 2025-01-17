@@ -382,6 +382,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int32
             minimum: 1
             maximum: 5
       responses:
@@ -605,6 +606,7 @@ components:
       required: false
       schema:
         type: integer
+        format: int32
         default: 25
         maximum: 200
     statoFlussoRendicontazione:
@@ -665,12 +667,12 @@ components:
     '400BadRequest':
       description: Richiesta non correttamente formata
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/FaultBean'
           example:
             categoria: RICHIESTA
-            codice: 00001
+            codice: '00001'
             descrizione: Messaggio di richiesta non valido
             dettaglio: Codice Avviso non conforme alle specifiche pagoPA
     '401NotAuthenticated':
@@ -682,7 +684,7 @@ components:
     '500ServiceUnavailable':
       description: Servizio non disponibile
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/FaultBean'
           example:
@@ -752,7 +754,7 @@ components:
         idDominio:
           type: string
           description: Codice fiscale
-          example: 01234567890
+          example: '012345678901'
           minLength: 1
           maxLength: 35          
         ragioneSociale:
@@ -835,7 +837,7 @@ components:
           type: string
           format: date-time
           description: Data di emissione del flusso
-          example: '2020-12-31 10:27:27.903'
+          example: '2020-12-31 10:27:27.903Z'
         trn:
           type: string
           description: Identificativo dell'operazione di riversamento assegnato dal psp debitore
@@ -844,7 +846,7 @@ components:
           type: string
           format: date-time
           description: Data dell'operazione di riversamento fondi
-          example: '2020-12-31 10:27:27.903'        
+          example: '2020-12-31 10:27:27.903Z'        
         idPsp:
           type: string
           description: Identificativo dell'istituto mittente
@@ -858,7 +860,8 @@ components:
           description: Identificativo dominio destinatario
           example: '01234567890' 
         numeroPagamenti:
-          type: number
+          type: integer
+          format: int32
           description: numero di pagamenti oggetto della rendicontazione
           example: 3
         importoTotale:
@@ -882,21 +885,21 @@ components:
       type: object
       properties:
         numRisultati:
-          type: number
-          format: integer
-          example: '100'
+          type: integer
+          format: int32
+          example: 100
         numPagine:
-          type: number
-          format: integer
-          example: '4'
+          type: integer
+          format: int32
+          example: 4
         risultatiPerPagina:
-          type: number
-          format: integer
-          example: '25'
+          type: integer
+          format: int32
+          example: 25
         pagina:
-          type: number
-          format: integer
-          example: '1'
+          type: integer
+          format: int32
+          example: 1
         prossimiRisultati:
           type: string
           format: integer
@@ -910,6 +913,7 @@ components:
           properties:
             importo:
               type: number
+              format: double
               example: 100.01
             dataValuta:
               type: string
@@ -961,6 +965,7 @@ components:
       minimum: 0    
     Pagina:
       type: integer
+      format: int32
       default: 1
     Pendenza:
       type: object
@@ -981,7 +986,7 @@ components:
         idDominio:
           type: string
           description: Identificativo del dominio creditore
-          example: 1234567890
+          example: '12345678901'
         idUnitaOperativa:
           type: string
           description: Identificativo dell'unita' operativa
@@ -1011,7 +1016,8 @@ components:
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
         annoRiferimento:
-          type: number
+          type: integer
+          format: int32
           description: Anno di riferimento della pendenza
           example: 2020
         cartellaPagamento:
@@ -1083,11 +1089,13 @@ components:
           description: Codice del capitolo
           maxLength: 64
         annoEsercizio:
-          type: number
+          type: integer
+          format: int32
           description: Anno di esercizio
           example: 2020
         importo:
           type: number
+          format: double
           description: Importo della voce di contabilita'
           example: 10.01
         accertamento:
@@ -1136,15 +1144,18 @@ components:
           description: Identificativo univoco di riscossione
           example: '1234acdc'
         indice:
-          type: number
+          type: integer
+          format: int32
           description: Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
           example: 1          
         importo:
           type: number
+          format: double
           description: Importo rendicontato. 
           example: 10.01
         esito:
-          type: number
+          type: integer
+          format: int32
           description: >
             Codice di esito dell'operazione rendicontata
              * 0 = Pagamento eseguito
@@ -1184,7 +1195,7 @@ components:
             idDominio:
               type: string
               description: Identificativo ente creditore
-              example: 01234567890
+              example: '012345678901'
             idRiconciliazione:
               type: string
               description: Identificativo della riconciliazione assegnato da GovPay
@@ -1303,7 +1314,8 @@ components:
           description: Identificativo univoco di riscossione.
           example: '1234acdc'
         indice:
-          type: number
+          type: integer
+          format: int32
           description: indice posizionale della voce pendenza riscossa
           example: 1
         stato:
@@ -1312,6 +1324,7 @@ components:
           $ref: '#/components/schemas/TipoRiscossione'
         importo:
           type: number
+          format: double
           description: >-
             Importo riscosso. 
           example: 10.01
@@ -1345,7 +1358,7 @@ components:
         data:
           type: string
           format: date-time
-          example: '2018-12-31T12:53:49'
+          example: '2018-12-31T12:53:49Z'
         codice:
           type: string
           example: '0013'
@@ -1388,7 +1401,7 @@ components:
           maxLength: 16
         cap:
           type: string
-          example: 00000
+          example: '00000'
           minLength: 1
           maxLength: 16
         localita:
@@ -1411,7 +1424,7 @@ components:
           pattern: "[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*"
         cellulare:
           type: string
-          example: +39 000 1234567    
+          example: '+39 000-1234567'    
           pattern: "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}" 
     StatoFlussoRendicontazione:
       description: Stato del flusso di rendicontazione
@@ -1495,7 +1508,7 @@ components:
         - Giornale degli Eventi
         - Configurazione e manutenzione
       example:
-        Pendenze e Pagamenti             
+        Pendenze            
     TipoSoggetto:
       description: >-
         tipologia di soggetto, se persona fisica (F) o giuridica
@@ -1512,7 +1525,8 @@ components:
         - pendenza
       properties:
         indice:
-          type: number
+          type: integer
+          format: int32
           description: indice di voce all'interno della pendenza
           example: 1
         idVocePendenza:
@@ -1521,6 +1535,7 @@ components:
           example: abcdef12345_1   
         importo:
           type: number
+          format: double
           description: Importo della voce
           example: 10.01
         descrizione:
@@ -1544,4 +1559,3 @@ components:
           $ref: '#/components/schemas/Pendenza'
         dominio:
           $ref: '#/components/schemas/Dominio'
-            

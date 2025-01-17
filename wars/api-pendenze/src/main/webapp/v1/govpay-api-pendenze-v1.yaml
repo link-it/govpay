@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   version: "1.4.0"
   title: GovPay - API Pendenze
+  description: 'GovPay - API Pendenze V1 sono deprecate'
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -27,6 +28,7 @@ paths:
       operationId: findPendenze
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -148,6 +150,7 @@ paths:
         avente un identificativo _idVocePendenza_ assegnato dal gestionale come
         riferimento interno. 
       operationId: addPendenza
+      deprecated: true
       parameters:
         - in: path
           name: idA2A
@@ -234,6 +237,7 @@ paths:
         - Pendenze
       summary: Aggiornamento di una pendenza
       operationId: updatePendenza      
+      deprecated: true
       parameters:
         - in: path
           name: idA2A
@@ -276,6 +280,7 @@ paths:
       operationId: getPendenza        
       summary: Dettaglio di una pendenza per identificativo
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      deprecated: true
       parameters:
         - in: path
           name: idA2A
@@ -311,6 +316,7 @@ paths:
       summary: Lista delle richieste di pagamento pendenza
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -431,6 +437,7 @@ paths:
       summary: Dettaglio di una richiesta di pagamento pendenza
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -471,6 +478,7 @@ paths:
       summary: Acquisizione della richiesta di pagamento pagopa
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -516,6 +524,7 @@ paths:
       summary: Acquisizione della ricevuta di pagamento
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -566,6 +575,7 @@ paths:
       summary: Elenco delle acl associate all'utenza chiamante
       tags:
         - Utenti
+      deprecated: true
       responses:
         '200':
           description: Elenco dei ruoli associati all'utenza chiamante
