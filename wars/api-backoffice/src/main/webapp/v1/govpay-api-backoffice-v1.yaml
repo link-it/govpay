@@ -352,6 +352,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: Tracciato ricercato
@@ -380,6 +381,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: Tracciato di richiesta
@@ -411,6 +413,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: Esito elaborazione del tracciato ricercato
@@ -442,6 +445,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: Zip contenente i pdf degli avvisi del tracciato
@@ -470,6 +474,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
         - $ref: '#/components/parameters/metadatiPaginazione'
@@ -1796,7 +1801,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -1937,7 +1942,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -1983,8 +1988,9 @@ paths:
       summary: Modifica puntuale di una parte del profilo utente
       operationId: updateProfilo
       requestBody:
+        required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -2150,7 +2156,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -2476,8 +2482,9 @@ paths:
             type: string
             pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       requestBody:
+        required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -2668,7 +2675,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -3040,6 +3047,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int32
             minimum: 1
             maximum: 5
       responses:
@@ -3664,7 +3672,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -3764,8 +3772,9 @@ paths:
       summary: Modifica puntuale di una parte della configurazione
       operationId: aggiornaConfigurazioni
       requestBody:
+        required: true
         content:
-          application/json:
+          application/json-patch+json:
             schema:
               type: array
               items:
@@ -4437,7 +4446,7 @@ components:
     '400':
       description: Richiesta non correttamente formata
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/faultBean'
           example:
@@ -4455,7 +4464,7 @@ components:
     '422':
       description: Richiesta non processabile
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/faultBean'
           example:
@@ -4465,7 +4474,7 @@ components:
     '500':
       description: Servizio non disponibile
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/faultBean'
           example:
@@ -4475,7 +4484,7 @@ components:
     '502':
       description: Rilevato errore con la piattaforma PagoPA
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/faultBean'
           example:
@@ -4526,7 +4535,8 @@ components:
           description: URL del servizio di IO
           example: 'http://api.io.it/...'
         timeToLive:
-          type: number
+          type: integer
+          format: int64
           description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
           example: 10000
         auth:
@@ -4589,7 +4599,8 @@ components:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
         preavviso:
-          type: number
+          type: integer
+          format: int32
           minimum: 0
           description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
     templatePromemoriaAvvisoBase:
@@ -4666,7 +4677,8 @@ components:
           description: host del servizio di posta
           example: 'smtp.entecreditore.it'
         port:
-          type: number
+          type: integer
+          format: int64
           description: port del servizio di posta
           example: 25
         username:
@@ -4686,11 +4698,13 @@ components:
           description: indirizzo mittente del promemoria
           example: 'pagopa@entecreditore.it'
         readTimeout:
-          type: number
+          type: integer
+          format: int64
           description: Read timeout (in millisecondi)
           example: 120000
         connectionTimeout:
-          type: number
+          type: integer
+          format: int64
           description: Connection Timeout (in millisecondi)
           example: 10000
         sslConfig:
@@ -4783,6 +4797,7 @@ components:
           example: 'abc01234fgh567...'
         soglia:
           type: number
+          format: double
           description: Soglia di accettazione della risposta di validazione
           example: 0.7
           minimum: 0.1
@@ -4797,12 +4812,14 @@ components:
           description: Indica se autorizzare la richiesta in caso di errore di raggiungibilita' del server
           example: true
         connectionTimeout:
-          type: number
+          type: integer
+          format: int64
           description: Valore di ConnectionTimeout da impostare nella connessione con il server
           example: 5000
           minimum: 1
         readTimeout:
-          type: number
+          type: integer
+          format: int64
           description: Valore di ReadTimeout da impostare nella connessione con il server
           example: 5000
           minimum: 1
@@ -4932,7 +4949,7 @@ components:
         idIntermediario:
           type: string
           description: Identificativo dell'intermediario
-          example: 9999999999
+          example: '9999999999'
         denominazione:
           type: string
           description: Ragione sociale dell'intermediario PagoPA
@@ -5008,7 +5025,7 @@ components:
             idIntermediario:
               type: string
               description: Identificativo dell'intermediario
-              example: 9999999999
+              example: '9999999999'
         - $ref: '#/components/schemas/intermediarioPost'
         - type: object
           required:
@@ -5028,7 +5045,7 @@ components:
           type: string
           description: >-
                   Password per la stazione, non necessaria nel modello unico. Resta obbligatoria per la versione = V1.
-          example: 123456
+          example: '123456'
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
@@ -5097,7 +5114,7 @@ components:
         cap:
           type: string
           description: Codice avviamento postale del beneficiario
-          example: 00000
+          example: '00000'
         localita:
           type: string
           description: Località del beneficiario
@@ -5121,11 +5138,11 @@ components:
         tel:
           type: string
           description: Numero di telefono dell'help desk del beneficiario
-          example: 021234567890
+          example: '021234567890'
         fax:
           type: string
           description: Numero di fax dell'help desk del beneficiario
-          example: 021234567890
+          example: '021234567890'
         web:
           type: string
           description: Url del sito web
@@ -5133,11 +5150,11 @@ components:
         gln:
           type: string
           description: Global location number del beneficiario
-          example: 0011223344556
+          example: '0011223344556'
         cbill:
           type: string
           description: codice cbill del beneficiario
-          example: 12345
+          example: '12345'
         iuvPrefix:
           type: string
           description: >- 
@@ -5156,11 +5173,11 @@ components:
         auxDigit:
           type: string
           description: Valore della prima cifra dei Numero Avviso generati da GovPay
-          example: 0
+          example: '0'
         segregationCode:
           type: string
           description: Codice di segregazione utilizzato in caso di beneficiario pluri-intermediato (auxDigit = 3)
-          example: 88
+          example: '88'
         logo:
           type: string
           description: Base64 del logo del beneficiario
@@ -5168,7 +5185,7 @@ components:
         abilitato:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
-          example: 'true'
+          example: true
         autStampaPosteItaliane:
           type: string
           description: numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
@@ -5203,7 +5220,7 @@ components:
             idDominio:
               type: string
               description: Codice fiscale del beneficiario
-              example: 01234567890
+              example: '012345678901'
         - $ref: '#/components/schemas/dominioPost'
         - type: object
           required:
@@ -5237,7 +5254,7 @@ components:
         idDominio:
           type: string
           description: Codice fiscale del beneficiario
-          example: 01234567890
+          example: '012345678901'
         ragioneSociale:
           type: string
           description: Ragione sociale del beneficiario
@@ -5254,16 +5271,16 @@ components:
         idDominio:
           type: string
           description: Codice fiscale del beneficiario
-          example: 01234567890
+          example: '012345678901'
         unitaOperative:
           type: array
           items:
             type: string
             description: Identificativi delle unita operative
           example:
-            - EC
-            - 01234567891
-            - 01234567892
+            - 'EC'
+            - '01234567891'
+            - '01234567892'
     dominio:
       type: object
       allOf:
@@ -5274,7 +5291,7 @@ components:
             idDominio:
               type: string
               description: Codice fiscale del beneficiario
-              example: 01234567890
+              example: '01234567890'
         - $ref: '#/components/schemas/dominioPost'
         - type: object
           properties:
@@ -5352,7 +5369,7 @@ components:
         password:
           type: string
           description: password per l'autenticazione HTTP-Basic
-          example: password123456
+          example: 'Password123456!'
           pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$'
         codificaAvvisi:
           $ref: '#/components/schemas/codificaAvvisi'
@@ -5366,16 +5383,16 @@ components:
               - type: string
                 description: identificativo del dominio autorizzato
                 example:
-                  1234567890
+                  '1234567890'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
           items:
             type: string
-            example:
-              - IMU
-              - TARI
-              - TASI
+          example:
+            - IMU
+            - TARI
+            - TASI
         apiPagamenti:
           type: boolean
           description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Pagamento"
@@ -5401,9 +5418,9 @@ components:
           description: lista dei ruoli attivi sull'applicazione
           items:
             type: string
-            example:
-              - Operatore
-              - Amministratore
+          example:
+            - Operatore
+            - Amministratore
         servizioIntegrazione:
           $ref: '#/components/schemas/connector'
         abilitato:
@@ -5504,7 +5521,7 @@ components:
         password:
           type: string
           description: password per l'autenticazione HTTP-Basic
-          example: password123456
+          example: Password123456!
           pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$'
         domini:
           type: array
@@ -5516,16 +5533,16 @@ components:
               - type: string
                 description: identificativo del dominio autorizzato
                 example:
-                  1234567890
+                  '12345678901'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
           items:
             type: string
-            example:
-              - IMU
-              - TARI
-              - TASI
+          example:
+            - IMU
+            - TARI
+            - TASI
         acl:
           type: array
           description: lista delle acl attive sull'operatore
@@ -5536,13 +5553,13 @@ components:
           description: lista dei ruoli attivi sull'operatore
           items:
             type: string
-            example:
-              - Operatore
-              - Amministratore
+          example:
+            - Operatore
+            - Amministratore
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
-          example: 'true'
+          example: true
     operatoreIndex:
       type: object
       required:
@@ -5561,7 +5578,7 @@ components:
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
-          example: 'true'
+          example: true
     operatore:
       type: object
       required:
@@ -5605,7 +5622,7 @@ components:
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
-          example: 'true'
+          example: true
     unitaOperativaPost:
       type: object
       required:
@@ -5626,7 +5643,7 @@ components:
         cap:
           type: string
           description: Codice avviamento postale dell'unita
-          example: 99999
+          example: '99999'
         localita:
           type: string
           description: Località dell'unita
@@ -5650,11 +5667,11 @@ components:
         tel:
           type: string
           description: Numero di telefono dell'help desk del beneficiario
-          example: 021234567890
+          example: '021234567890'
         fax:
           type: string
           description: Numero di fax dell'help desk del beneficiario
-          example: 021234567890
+          example: '021234567890'
         web:
           type: string
           description: Url del sito web
@@ -5677,7 +5694,7 @@ components:
             idUnita:
               type: string
               description: Codice fiscale dell'unita
-              example: 01234567890
+              example: '012345678901'
         - $ref: '#/components/schemas/unitaOperativaPost'
     unitaOperativaIndex:
       type: object
@@ -5688,7 +5705,7 @@ components:
         idUnita:
           type: string
           description: Codice fiscale dell'unita
-          example: 01234567890
+          example: '012345678901'
         ragioneSociale:
           type: string
           description: Ragione sociale dell'unita
@@ -5755,7 +5772,7 @@ components:
         codiceContabilita:
           description: Codifica del capitolo di bilancio
           type: string
-          example: 3321
+          example: '3321'
     tipoEntrata:
       type: object
       allOf:
@@ -5783,7 +5800,7 @@ components:
         codiceContabilita:
           description: Codifica del capitolo di bilancio
           type: string
-          example: 3321
+          example: '3321'
         abilitato:
           type: boolean
           description: Indicazione l'entrata e' abilitata
@@ -5836,7 +5853,7 @@ components:
         codificaIUV:
           type: string
           description: Cifra identificativa negli IUV
-          example: 01
+          example: '01'
           pattern: "[0-9]{1,3}"
         pagaTerzi:
           type: boolean
@@ -5943,7 +5960,8 @@ components:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
         preavviso:
-          type: number
+          type: integer
+          format: int32
           minimum: 0
           description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
     tipoPendenzaAvvisaturaPromemoriaAvvisoBase:
@@ -6089,7 +6107,7 @@ components:
         codificaIUV:
           type: string
           description: Cifra identificativa negli IUV
-          example: 01
+          example: '01'
           pattern: "[0-9]{1,3}"
         pagaTerzi:
           type: boolean
@@ -6148,7 +6166,7 @@ components:
         dataRichiestaPagamento:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di richiesta del pagamento
         idSessionePortale:
           type: string
@@ -6160,6 +6178,7 @@ components:
           description: Identificativo del pagamento assegnato dal psp utilizzato
         importo:
           type: number
+          format: double
           description: >-
             Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
         stato:
@@ -6244,7 +6263,7 @@ components:
         dataRichiestaPagamento:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di richiesta del pagamento
         idSessionePortale:
           type: string
@@ -6256,6 +6275,7 @@ components:
           description: Identificativo del pagamento assegnato dal psp utilizzato
         importo:
           type: number
+          format: double
           description: >-
             Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
         modello:
@@ -6365,7 +6385,8 @@ components:
         - rata
       properties:
         rata:
-          type: number
+          type: integer
+          format: int32
           description: Rata del documento
           example: 1
           minimum: 1
@@ -6396,7 +6417,8 @@ components:
         - giorni
       properties:
         giorni:
-          type: number
+          type: integer
+          format: int32
           description: numero di giorni vincolo per il pagamento
           example: 5
           minimum: 1
@@ -6420,12 +6442,13 @@ components:
           $ref: '#/components/schemas/soggetto'
         importo:
           type: number
+          format: double
           description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
           example: 10.01
         numeroAvviso:
           type: string
           description: Numero avviso, assegnato se pagabile da psp
-          example: 001000000000012345
+          example: '001000000000012345'
         dataCaricamento:
           type: string
           format: date
@@ -6442,7 +6465,8 @@ components:
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
         annoRiferimento:
-          type: number
+          type: integer
+          format: int32
           description: Anno di riferimento della pendenza
           example: 2020
         cartellaPagamento:
@@ -6490,7 +6514,7 @@ components:
             idDominio:
               type: string
               description: Identificativo del dominio creditore
-              example: 1234567890
+              example: '12345678901'
             idUnitaOperativa:
               type: string
               description: Identificativo dell'unita' operativa
@@ -6561,7 +6585,7 @@ components:
             iuvAvviso:
               type: string
               description: Iuv avviso, assegnato se pagabile da psp
-              example: 000000000012345
+              example: '000000000012345'
             dataUltimoAggiornamento:
               type: string
               format: date
@@ -6574,16 +6598,18 @@ components:
               example: '2018-12-31'
             importoPagato:
               type: number
+              format: double
               description: Importo Pagato.
               example: 10.01
             importoIncassato:
               type: number
+              format: double
               description: Importo Incassato.
               example: 10.01
             iuvPagamento:
               type: string
               description: Iuv dell'ultimo pagamento eseguito con successo
-              example: 000000000012345
+              example: '000000000012345'
             anomalo:
               type: boolean
               description: indicazione se sono presenti eventuali anomalie
@@ -6599,12 +6625,12 @@ components:
               type: string
               format: date-time
               description: Data di ultimo aggiornamento dei dati da inviare ad ACA
-              example: '2018-12-31'
+              example: '2018-12-31 12:00:00Z'
             dataUltimaComunicazioneAca:
               type: string
               format: date-time
               description: Data ultima comunicazione verso il servizio ACA
-              example: '2018-12-31'
+              example: '2018-12-31 12:00:00Z'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6653,7 +6679,7 @@ components:
             iuvAvviso:
               type: string
               description: Iuv avviso, assegnato se pagabile da psp
-              example: 000000000012345
+              example: '000000000012345'
             dataUltimoAggiornamento:
               type: string
               format: date
@@ -6666,16 +6692,18 @@ components:
               example: '2018-12-31'
             importoPagato:
               type: number
+              format: double
               description: Importo Pagato.
               example: 10.01
             importoIncassato:
               type: number
+              format: double
               description: Importo Incassato.
               example: 10.01
             iuvPagamento:
               type: string
               description: Iuv dell'ultimo pagamento eseguito con successo
-              example: 000000000012345
+              example: '000000000012345'
             anomalo:
               type: boolean
               description: indicazione se sono presenti eventuali anomalie
@@ -6691,12 +6719,12 @@ components:
               type: string
               format: date-time
               description: Data di ultimo aggiornamento dei dati da inviare ad ACA
-              example: '2018-12-31'
+              example: '2018-12-31 12:00:00Z'
             dataUltimaComunicazioneAca:
               type: string
               format: date-time
               description: Data ultima comunicazione verso il servizio ACA
-              example: '2018-12-31'
+              example: '2018-12-31 12:00:00Z'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6731,7 +6759,8 @@ components:
         - stato
       properties:
         indice:
-          type: number
+          type: integer
+          format: int32
           description: indice di voce all'interno della pendenza
           example: 1
         idVocePendenza:
@@ -6740,6 +6769,7 @@ components:
           example: abcdef12345_1
         importo:
           type: number
+          format: double
           description: Importo della voce
           example: 10.01
         descrizione:
@@ -6802,7 +6832,7 @@ components:
                 codiceContabilita:
                   description: Codifica del capitolo di bilancio
                   type: string
-                  example: 3321
+                  example: '3321'
             - description: Definisce i dati di un bollo telematico
               type: object
               required:
@@ -6857,7 +6887,7 @@ components:
               codiceContabilita:
                 description: Codifica del capitolo di bilancio
                 type: string
-                example: 3321
+                example: '3321'
           - description: Definisce i dati di un bollo telematico
             type: object
             required:
@@ -6912,7 +6942,7 @@ components:
               codiceContabilita:
                 description: Codifica del capitolo di bilancio
                 type: string
-                example: 3321
+                example: '3321'
           - description: Definisce i dati di un bollo telematico
             type: object
             required:
@@ -6939,7 +6969,7 @@ components:
             idDominio:
               type: string
               description: Identificativo del dominio creditore
-              example: 1234567890
+              example: '12345678901'
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
@@ -6970,7 +7000,7 @@ components:
                 codiceContabilita:
                   description: Codifica del capitolo di bilancio
                   type: string
-                  example: 3321
+                  example: '3321'
             - description: Definisce i dati di un bollo telematico
               type: object
               required:
@@ -7011,11 +7041,13 @@ components:
           description: Codice del capitolo
           maxLength: 64
         annoEsercizio:
-          type: number
+          type: integer
+          format: int32
           description: Anno di esercizio
           example: 2020
         importo:
           type: number
+          format: double
           description: Importo della voce di contabilita'
           example: 10.01
         accertamento:
@@ -7062,15 +7094,15 @@ components:
         idDominio:
           type: string
           description: Identificativo del creditore dell'avviso
-          example: 01234567890
+          example: '01234567890'
         idUnitaOperativa:
           type: string
           description: Identificativo dell'unita' operativa dell'avviso
-          example: 01234567891
+          example: '01234567891'
         numeroAvviso:
           type: string
           description: Numero identificativo dell'avviso di pagamento
-          example: 00100000000000012
+          example: '00100000000000012'
         pdf:
           type: string
           format: base64
@@ -7158,7 +7190,7 @@ components:
         idDominio:
           type: string
           description: Identificativo ente creditore
-          example: 01234567890
+          example: '01234567890'
         iuv:
           type: string
           description: Identificativo univoco di versamento
@@ -7168,7 +7200,8 @@ components:
           description: Identificativo univoco di riscossione.
           example: '1234acdc'
         indice:
-          type: number
+          type: integer
+          format: int32
           description: indice posizionale della voce pendenza riscossa
           example: 1
         pendenza:
@@ -7191,6 +7224,7 @@ components:
           $ref: '#/components/schemas/tipoRiscossione'
         importo:
           type: number
+          format: double
           description: >-
             Importo riscosso.
           example: 10.01
@@ -7201,6 +7235,7 @@ components:
           example: '2020-12-31'
         commissioni:
           type: number
+          format: double
           description: Importo delle commissioni applicate al pagamento dal PSP
           example: 1.5
         allegato:
@@ -7225,7 +7260,7 @@ components:
         idDominio:
           type: string
           description: Identificativo ente creditore
-          example: 01234567890
+          example: '01234567890'
         iuv:
           type: string
           description: Identificativo univoco di versamento
@@ -7235,7 +7270,8 @@ components:
           description: Identificativo univoco di riscossione.
           example: '1234acdc'
         indice:
-          type: number
+          type: integer
+          format: int32
           description: indice posizionale della voce pendenza riscossa
           example: 1
         pendenza:
@@ -7254,6 +7290,7 @@ components:
           $ref: '#/components/schemas/tipoRiscossione'
         importo:
           type: number
+          format: double
           description: >-
             Importo riscosso.
           example: 10.01
@@ -7264,6 +7301,7 @@ components:
           example: '2020-12-31'
         commissioni:
           type: number
+          format: double
           description: Importo delle commissioni applicate al pagamento dal PSP
           example: 1.5
         allegato:
@@ -7346,7 +7384,7 @@ components:
           type: string
           format: date-time
           description: Data di emissione del flusso
-          example: '2020-12-31 10:27:27.903'
+          example: '2020-12-31 10:27:27.903Z'
         trn:
           type: string
           description: Identificativo dell'operazione di riversamento assegnato dal psp debitore
@@ -7355,7 +7393,7 @@ components:
           type: string
           format: date-time
           description: Data dell'operazione di riversamento fondi
-          example: '2020-12-31 10:27:27.903'
+          example: '2020-12-31 10:27:27.903Z'
         idPsp:
           type: string
           description: Identificativo del psp che ha emesso la rendicontazione
@@ -7377,7 +7415,8 @@ components:
           description: Nome del Dominio destinatario del flusso
           example: 'Ente Creditore'
         numeroPagamenti:
-          type: number
+          type: integer
+          format: int64
           description: numero di pagamenti oggetto della rendicontazione
         importoTotale:
           type: number
@@ -7423,19 +7462,24 @@ components:
           description: Identificativo univoco di riscossione
           example: '1234acdc'
         indice:
-          type: number
+          type: integer
+          format: int32
           description: Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
           example: 1
         importo:
           type: number
+          format: double
           description: Importo rendicontato.
           example: 10.01
         esito:
-          type: number
+          type: integer
+          format: int32
           description: >
             Codice di esito dell'operazione rendicontata
              * 0 = Pagamento eseguito
              * 3 = Pagamento revocato
+             * 4 = Pagamento eseguito tramite Standin
+             * 8 = Pagamento eseguito tramite Standin in assenza di RPT
              * 9 = Pagamento eseguito in assenza di RPT
           example: 0
         data:
@@ -7490,6 +7534,7 @@ components:
         properties:
           importo:
             type: number
+            format: double
             example: 100.01
           dataValuta:
             type: string
@@ -7556,12 +7601,13 @@ components:
             description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
           importo:
             type: number
+            format: double
             example: 100.01
           data:
             type: string
             format: date-time
             description: Data incasso
-            example: '2020-12-31 12:34'
+            example: '2020-12-31 12:34:00Z'
           dataValuta:
             type: string
             format: date
@@ -7624,12 +7670,13 @@ components:
               description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
             importo:
               type: number
+              format: double
               example: 100.01
             data:
               type: string
               format: date-time
               description: Data incasso
-              example: '2020-12-31 12:34'
+              example: '2020-12-31 12:34:00Z'
             dataValuta:
               type: string
               format: date
@@ -7888,8 +7935,8 @@ components:
                 example:
                   SEGRETERIA
         intervalloCreazioneTracciato:
-          type: number
-          format: integer
+          type: integer
+          format: int32
           example: 24
           description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiMyPivot:
@@ -7946,8 +7993,8 @@ components:
                 example:
                   SEGRETERIA
         intervalloCreazioneTracciato:
-          type: number
-          format: integer
+          type: integer
+          format: int32
           example: 24
           description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiSecim:
@@ -8007,8 +8054,8 @@ components:
                 example:
                   SEGRETERIA
         intervalloCreazioneTracciato:
-          type: number
-          format: integer
+          type: integer
+          format: int32
           example: 24
           description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiHyperSicAPKappa:
@@ -8061,8 +8108,8 @@ components:
                 example:
                   SEGRETERIA
         intervalloCreazioneTracciato:
-          type: number
-          format: integer
+          type: integer
+          format: int32
           example: 24
           description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiGovPay:
@@ -8130,8 +8177,8 @@ components:
           items:
             $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
         intervalloCreazioneTracciato:
-          type: number
-          format: integer
+          type: integer
+          format: int32
           example: 24
           description: intervallo di creazione del tracciato in ore
     contenutoNotificaPagamentiGovpay:
@@ -8236,7 +8283,7 @@ components:
           example: 10/A
         cap:
           type: string
-          example: 0
+          example: '00000'
         localita:
           type: string
           example: Roma
@@ -8251,7 +8298,7 @@ components:
           example: mario.rossi@host.eu
         cellulare:
           type: string
-          example: 0039000123456789
+          example: '0039000123456789'
     esitoRpt:
       example: ESEGUITO
       type: string
@@ -8346,28 +8393,28 @@ components:
       type: object
       properties:
         numRisultati:
-          type: number
-          format: integer
-          example: '100'
+          type: integer
+          format: int32
+          example: 100
         numPagine:
-          type: number
-          format: integer
-          example: '4'
+          type: integer
+          format: int32
+          example: 4
         risultatiPerPagina:
-          type: number
-          format: integer
-          example: '25'
+          type: integer
+          format: int32
+          example: 25
         pagina:
-          type: number
-          format: integer
-          example: '1'
+          type: integer
+          format: int32
+          example: 1
         prossimiRisultati:
           type: string
           example: '/risorsa?pagina=2'
         maxRisultati:
-          type: number
-          format: integer
-          example: '100'
+          type: integer
+          format: int32
+          example: 100
     aclPost:
       type: object
       required:
@@ -8408,7 +8455,8 @@ components:
         - dataCaricamento
       properties:
         id:
-          type: number
+          type: integer
+          format: int64
           description:
             Identificativo numerico del tracciato
           example:
@@ -8441,12 +8489,12 @@ components:
           type: string
           format: date-time
           description: Data di caricamento del tracciato
-          example: '2018-12-31T12:50:00'
+          example: '2018-12-31T12:50:00Z'
         dataCompletamento:
           type: string
           format: date-time
           description: Data di completamento del caricamento del tracciato
-          example: '2018-12-31T12:50:00'
+          example: '2018-12-31T12:50:00Z'
         beanDati:
           type: object
           description: Dati applicativi del tracciato
@@ -8513,7 +8561,7 @@ components:
         idDominio:
           type: string
           description: Identificativo ente creditore
-          example: 01234567890
+          example: '01234567890'
         iuv:
           type: string
           description: Identificativo univoco di versamento
@@ -8606,7 +8654,8 @@ components:
           description: identificativo del flusso di rendicontazione
           example: 2017-11-21GovPAYPsp1-10:27:27.903
         idTracciato:
-          type: number
+          type: integer
+          format: int64
           description: Identificativo numerico del tracciato
           example:
             123456
@@ -8665,6 +8714,7 @@ components:
             - Annullato
         importo:
           type: number
+          format: double
           description: >-
             Importo della pendenza. Deve corrispondere alla somma delle singole
             voci.
@@ -8672,11 +8722,11 @@ components:
         idDominio:
           type: string
           description: Identificativo del creditore dell'avviso
-          example: 01234567890
+          example: '01234567890'
         numeroAvviso:
           type: string
           description: 'Identificativo univoco versamento, assegnato se pagabile da psp'
-          example: 123456789012345
+          example: '123456789012345'
         dataValidita:
           type: string
           format: date
@@ -8731,7 +8781,8 @@ components:
             - esito
           properties:
             stato:
-              type: number
+              type: integer
+              format: int32
               enum:
                 - 0
                 - 1
@@ -8812,6 +8863,7 @@ components:
       properties:
         percentuale:
           type: number
+          format: double
           description: Percentuale di avanzamento
         descrizione:
           type: string
@@ -8841,7 +8893,7 @@ components:
         value:
           type: object
           description: valore del'oggetto dell'operazione
-          example: "01234567890"
+          example: {"01234567890"}
     statoTracciatoPendenza:
       example: ESEGUITO
       type: string
@@ -8875,7 +8927,8 @@ components:
         - stato
       properties:
         id:
-          type: number
+          type: integer
+          format: int64
           description:
             Identificativo numerico del tracciato
           example:
@@ -8889,7 +8942,7 @@ components:
         dataOraCaricamento:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di caricamento del tracciato
         stato:
           $ref: '#/components/schemas/statoTracciatoPendenza'
@@ -8900,27 +8953,33 @@ components:
           example:
             Errore di validazione
         numeroOperazioniTotali:
-          type: number
+          type: integer
+          format: int64
           description: Numero totale di operazioni previste
           example: 100
         numeroOperazioniEseguite:
-          type: number
+          type: integer
+          format: int64
           description: Numero totale di operazioni eseguite con successo
           example: 100
         numeroOperazioniFallite:
-          type: number
+          type: integer
+          format: int64
           description: Numero totale di operazioni fallite
           example: 0
         numeroAvvisiTotali:
-          type: number
+          type: integer
+          format: int64
           description: Numero totale di stampe previste
           example: 100
         numeroAvvisiStampati:
-          type: number
+          type: integer
+          format: int64
           description: Numero totale di stampe eseguite con successo
           example: 100
         numeroAvvisiFalliti:
-          type: number
+          type: integer
+          format: int64
           description: Numero totale di stampe non eseguite a causa di errori
           example: 0
         operatoreMittente:
@@ -8930,7 +8989,7 @@ components:
         dataOraUltimoAggiornamento:
           type: string
           format: date-time
-          example: '2018-12-31T12:01'
+          example: '2018-12-31T12:01:00Z'
           description: Data ultimo aggiornamento stato elaborazione del tracciato
         stampaAvvisi:
           type: boolean
@@ -8988,7 +9047,8 @@ components:
           description: Numero Avviso generato
           example: "1528380303573122"
         numero:
-          type: number
+          type: integer
+          format: int64
           description: Progressivo Operazione
           example: 1
         richiesta:
@@ -9091,7 +9151,8 @@ components:
           description: Descrizione Esito Operazione
           example: "Operazione Completata con successo"
         numero:
-          type: number
+          type: integer
+          format: int64
           description: Progressivo Operazione
           example: 1
         dati:
@@ -9151,7 +9212,8 @@ components:
           example: '2018-12-31'
           description: Data dell'operazione di riversamento fondi
         numeroPagamenti:
-          type: number
+          type: integer
+          format: int64
           description: numero di pagamenti oggetto della rendicontazione
         importoTotale:
           type: number
@@ -9160,6 +9222,7 @@ components:
           example: 100.01
         importoPagato:
           type: number
+          format: double
           description: Importo Pagato.
           example: 10.01
         dataPagamento:
@@ -9172,7 +9235,8 @@ components:
           description: Identificativo della voce di pedenza nel gestionale proprietario
           example: abcdef12345_1
         indice:
-          type: number
+          type: integer
+          format: int32
           description: indice di voce all'interno della pendenza
           example: 1
         idPendenza:
@@ -9196,7 +9260,8 @@ components:
           description: Codice fiscale o partita iva del soggetto
           example: RSSMRA30A01H501I
         anno:
-          type: number
+          type: integer
+          format: int32
           description: Anno di riferimento della pendenza
           example: 2019
     statoNotifica:
@@ -9247,7 +9312,7 @@ components:
         dataCreazione:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di creazione della notifica
         stato:
           $ref: '#/components/schemas/statoNotifica'
@@ -9258,15 +9323,16 @@ components:
         dataUltimoAggiornamento:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data ultimo aggiornamento della notifica
         dataProssimaSpedizione:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di prossima spedizione della notifica
         numeroTentativi:
-          type: number
+          type: integer
+          format: int32
           description: Numero di tentativi di spedizione della notifica
           example: 1
         idA2A:
@@ -9285,7 +9351,7 @@ components:
         dataCreazione:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di creazione del promemoria
         stato:
           $ref: '#/components/schemas/statoPromemoria'
@@ -9296,15 +9362,16 @@ components:
         dataUltimoAggiornamento:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data ultimo aggiornamento del promemoria
         dataProssimaSpedizione:
           type: string
           format: date-time
-          example: '2018-12-31T12:00'
+          example: '2018-12-31T12:00:00Z'
           description: Data di prossima spedizione del promemoria
         numeroTentativi:
-          type: number
+          type: integer
+          format: int32
           description: Numero di tentativi di spedizione del promemoria
           example: 1
     raggruppamentoStatistica:
@@ -9319,7 +9386,7 @@ components:
         - TASSONOMIA
         - APPLICAZIONE
     raggruppamentoStatisticaRendicontazione:
-      example: ID_FLUSSO
+      example: FLUSSO_RENDICONTAZIONE
       type: string
       enum:
         - FLUSSO_RENDICONTAZIONE
@@ -9332,11 +9399,13 @@ components:
         - importo
       properties:
         numeroPagamenti:
-          type: number
+          type: integer
+          format: int64
           description: Numero di pagamenti corrispondenti ai parametri impostati
           example: 1
         importo:
           type: number
+          format: double
           description: Importo Totale corrispondente ai parametri impostati
           example: 10.01
         dettaglio:
@@ -9370,11 +9439,13 @@ components:
         - importo
       properties:
         numeroRendicontazioni:
-          type: number
+          type: integer
+          format: int64
           description: Numero di rendicontazioni corrispondenti ai parametri impostati
           example: 1
         importo:
           type: number
+          format: double
           description: Importo Totale corrispondente ai parametri impostati
           example: 10.01
         dettaglio:
@@ -9448,9 +9519,9 @@ components:
         mapEntries:
           type: array
           items: 
-            minItems: 1
-            maxItems: 5
             $ref: '#/components/schemas/MapEntry'
+          minItems: 1
+          maxItems: 5
     ModelloPagamento:
       type: string
       description: Modello di pagamento
@@ -9470,7 +9541,7 @@ components:
             idDominio:
               type: string
               description: Identificativo del dominio creditore
-              example: 1234567890
+              example: '12345678901'
             idUnitaOperativa:
               type: string
               description: Identificativo dell'unita' operativa
@@ -9492,12 +9563,13 @@ components:
                 $ref: '#/components/schemas/soggetto'
             importo:
                 type: number
+                format: double
                 description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
                 example: 10.01
             numeroAvviso:
                 type: string
                 description: Numero avviso, assegnato se pagabile da psp
-                example: 001000000000012345
+                example: '001000000000012345'
             dataCaricamento:
                 type: string
                 format: date
@@ -9514,7 +9586,8 @@ components:
                 description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
                 example: '2020-12-31'
             annoRiferimento:
-                type: number
+                type: integer
+                format: int32
                 description: Anno di riferimento della pendenza
                 example: 2020
             cartellaPagamento:
@@ -9588,6 +9661,7 @@ components:
           description: contenuto del file
     Pagina:
       type: integer
+      format: int32
       default: 1
       minimum: 1
     ProprietaPendenza:
@@ -9626,6 +9700,7 @@ components:
           description: se valorizzata, sostituisce la data di scadenza standard.
     RisultatiPerPagina:
       type: integer
+      format: int32
       default: 25
       minimum: 0
       maximum: 200
@@ -9652,6 +9727,7 @@ components:
           example: canone annuo
         importo: 
           type: number
+          format: double
           description: importo
           example: 10.01
           
