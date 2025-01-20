@@ -71,6 +71,9 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs.xml</contextConfigLocation>
+			</properties>
             <build>
                 <plugins>
                     <plugin>
@@ -84,6 +87,25 @@
                                     <goal>war</goal>
                                 </goals>
                                 <configuration>
+                                	<webResources>
+                                        <webResource>
+                                            <directory>src/main/webapp</directory>
+                                            <filtering>true</filtering>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/</directory>
+                                            <filtering>true</filtering>
+                                            <include>web.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-jaxrs</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-jaxrs.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                    </webResources>
+                                    <webXml>src/main/resources/web.xml</webXml>
 									<failOnMissingWebXml>false</failOnMissingWebXml>
                                     <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
                                     <archive>
@@ -110,6 +132,7 @@
             </activation>
             <properties>
 				<tomcat-war-name>${web-connector-tomcat-war-name}</tomcat-war-name>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs.xml,/WEB-INF/applicationContext-timers.xml</contextConfigLocation>
 			</properties>
             <build>
             	<finalName>${tomcat-war-name}</finalName>
@@ -126,13 +149,36 @@
                                 </goals>	
                                 <configuration>
                                 	<webResources>
-                                		<webResource>
+                                        <webResource>
+                                            <directory>src/main/webapp</directory>
+                                            <filtering>true</filtering>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/</directory>
+                                            <filtering>true</filtering>
+                                            <include>web.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-jaxrs</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-jaxrs.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-timers</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-timers.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
                                             <directory>${rel-to-parent}/ear/src/main/application/properties</directory>
                                             <filtering>true</filtering>
                                             <include>*.*</include>
                                             <targetPath>WEB-INF/classes</targetPath>
                                         </webResource>
-                                	</webResources>
+                                    </webResources>
+                                    <webXml>src/main/resources/web.xml</webXml>
 									<failOnMissingWebXml>false</failOnMissingWebXml>
                                     <archive>
                                     	<manifest>

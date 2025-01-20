@@ -5,7 +5,7 @@
     
     <context-param>
     	<param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext-*.xml</param-value>
+        <param-value>@contextConfigLocation@</param-value>
     </context-param>
     
     <listener>
@@ -38,23 +38,5 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-
-<!-- 	<security-constraint> -->
-<!-- 		<web-resource-collection> -->
-<!-- 			<web-resource-name>Protetto</web-resource-name> -->
-<!-- 			<url-pattern>/ecsp/*</url-pattern> -->
-<!-- 		</web-resource-collection> -->
-<!-- 		<auth-constraint> -->
-<!-- 			<role-name>*</role-name> -->
-<!-- 		</auth-constraint> -->
-<!-- 	</security-constraint> -->
-		
-<!-- 	<security-role> -->
-<!-- 		<role-name>*</role-name> -->
-<!-- 	</security-role> -->
-
-<!-- 	<login-config> -->
-<!-- 		<auth-method>BASIC</auth-method> -->
-<!-- 	</login-config>  -->
 
 </web-app>

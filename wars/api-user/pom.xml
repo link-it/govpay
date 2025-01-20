@@ -123,6 +123,9 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,${spring.sec_config_folder}/api-user-applicationContext-security.xml</contextConfigLocation>
+			</properties>
             <build>
                 <plugins>
                     <plugin>
@@ -187,6 +190,7 @@
             </activation>
             <properties>
 				<tomcat-war-name>${api-user-tomcat-war-name}</tomcat-war-name>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,${spring.sec_config_folder}/api-user-applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</contextConfigLocation>
 			</properties>
             <build>
             	<finalName>${tomcat-war-name}</finalName>
@@ -223,6 +227,12 @@
                                             <directory>src/main/resources/spring-sec</directory>
                                             <filtering>true</filtering>
                                             <include>*-applicationContext-security.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-timers</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-timers.xml</include>
                                             <targetPath>WEB-INF</targetPath>
                                         </webResource>
                                         <webResource>

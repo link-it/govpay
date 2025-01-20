@@ -90,6 +90,9 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxws.xml,${spring.sec_config_folder}/api-jppapdp-applicationContext-security.xml</contextConfigLocation>
+			</properties>
             <build>
                 <plugins>
                     <plugin>
@@ -146,6 +149,7 @@
             </activation>
             <properties>
 				<tomcat-war-name>${api-jppapdp-tomcat-war-name}</tomcat-war-name>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxws.xml,${spring.sec_config_folder}/api-jppapdp-applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</contextConfigLocation>
 			</properties>
             <build>
             	<finalName>${tomcat-war-name}</finalName>
@@ -178,6 +182,12 @@
                                             <directory>src/main/resources/spring-jaxws</directory>
                                             <filtering>true</filtering>
                                             <include>applicationContext-jaxws.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-timers</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-timers.xml</include>
                                             <targetPath>WEB-INF</targetPath>
                                         </webResource>
                                         <webResource>

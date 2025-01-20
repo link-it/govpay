@@ -111,6 +111,9 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,/WEB-INF/applicationContext-jaxrs-v2.xml,/WEB-INF/applicationContext-jaxrs-v3.xml,${spring.sec_config_folder}/api-pagamento-applicationContext-security.xml</contextConfigLocation>
+			</properties>
             <build>
                 <plugins>
                     <plugin>
@@ -175,6 +178,7 @@
             </activation>
             <properties>
 				<tomcat-war-name>${api-pagamento-tomcat-war-name}</tomcat-war-name>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,/WEB-INF/applicationContext-jaxrs-v2.xml,/WEB-INF/applicationContext-jaxrs-v3.xml,${spring.sec_config_folder}/api-pagamento-applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</contextConfigLocation>
 			</properties>
             <build>
             	<finalName>${tomcat-war-name}</finalName>
@@ -213,6 +217,12 @@
 											<include>*-applicationContext-security.xml</include>
 											<targetPath>WEB-INF</targetPath>
 										</webResource>
+										<webResource>
+                                            <directory>src/main/resources/spring-timers</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-timers.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
 										<webResource>
                                             <directory>${rel-to-parent}/ear/src/main/application/properties</directory>
                                             <filtering>true</filtering>
