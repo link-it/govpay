@@ -35,7 +35,7 @@ import java.util.TimeZone;
 import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.jcs.engine.control.CompositeCacheManager;
+import org.apache.commons.jcs3.engine.control.CompositeCacheManager;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.LoggerFactory;
