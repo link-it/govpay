@@ -3,8 +3,8 @@
 Realizzazione
 -------------
 
-In questo scenario il cittadino debitore utilizza il portale di pagamento dell'ente creditore 
-per consultare la propria posizione debitoria, precedentemente alimentata dai sistemi gestionali delle pendenze, 
+In questo scenario il cittadino debitore utilizza il portale di pagamento dell'ente creditore
+per consultare la propria posizione debitoria, precedentemente alimentata dai sistemi gestionali delle pendenze,
 predisporre un carrello di dovuti e procedere al suo pagamento.
 
 La realizzazione di questo scenario prevede le seguenti tre fasi:
@@ -19,7 +19,7 @@ La realizzazione di questo scenario prevede le seguenti tre fasi:
 Caricamento della Pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
-invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.7.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml&nocors>`_.
+invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.8.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml&nocors>`_.
 
 Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 
@@ -30,7 +30,7 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
     Authorization: Basic aWRBMkEtZGVtbzpwYXNzd29yZA==
     Content-type: application/json
     Accept: application/json
-    
+
     {
       "idTipoPendenza": "SANZIONE",
       "idDominio": "01234567890",
@@ -64,9 +64,9 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
       ]
     }
 
-.. code-block:: json    
-   :caption: Risposta    
-    
+.. code-block:: json
+   :caption: Risposta
+
     HTTP 201 CREATED
     {
       "idDominio": "01234567890"
@@ -76,27 +76,27 @@ Consultazione della Posizione Debitoria
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il cittadino, tramite il portale messo a disposizione dall'ente, deve individuare le
-pendenze di cui è debitore per avviarne il pagamento. A tale scopo GovPay espone le API di 
-`Pagamento <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.7.x/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml&nocors>`_
-che consentono di reperire la posizione debitoria di un cittadino 
-ed avviarne il pagamento utilizzando 
+pendenze di cui è debitore per avviarne il pagamento. A tale scopo GovPay espone le API di
+`Pagamento <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.8.x/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml&nocors>`_
+che consentono di reperire la posizione debitoria di un cittadino
+ed avviarne il pagamento utilizzando
 
 La prima operazione utilizzata è `GET /pendenze` applicando un filtro per codice fiscale
 e stato delle pendenze, ricevendo in risposta la posizione debitoria del cittadino.
 
 .. code-block:: json
    :caption: Richiesta
-   
+
     GET /govpay/frontend/api/pagamento/rs/basic/v2/pendenze?idDebitore=RSSMRA30A01H501I&stato=NON_ESEGUITA
-    Accept: application/json" 
+    Accept: application/json"
     Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
-    
-.. code-block:: json    
+
+.. code-block:: json
    :caption: Risposta
-   
+
     HTTP 200 OK
     Content-type: application/json
-        
+
     {
       "numRisultati": 1,
       "numPagine": 1,
@@ -148,8 +148,8 @@ Esecuzione del pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il portale, tramite le informazioni fornite da GovPay o presenti in archivi propri,
-consente al cittadino di predisporre un carrello di pagamenti dovuti. 
-Una volta terminato, il portale avvia il pagamento 
+consente al cittadino di predisporre un carrello di pagamenti dovuti.
+Una volta terminato, il portale avvia il pagamento
 
 .. code-block:: json
    :caption: Richiesta
@@ -158,7 +158,7 @@ Una volta terminato, il portale avvia il pagamento
     Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
     Accept: application/json
     Content-type: application/json"
-        
+
     {
       "pendenze": [
         {
@@ -167,13 +167,13 @@ Una volta terminato, il portale avvia il pagamento
         }
       ]
     }
-    
+
 .. code-block:: json
-   :caption: Risposta    
-   
+   :caption: Risposta
+
     HTTP 201 CREATED
     Content-type: application/json
-    
+
     {
       "id": "1d16d7b741024c6a8a3e3596957482b8",
       "location": "/pagamenti/1d16d7b741024c6a8a3e3596957482b8",
@@ -181,14 +181,14 @@ Una volta terminato, il portale avvia il pagamento
       "idSession": "18cb852db0f041068b0063d8d580380c"
     }
 
-La URL indicata dal campo `redirect` dovrà essere utilizzata dal portale per far proseguire l'utente 
-nel pagamento, come previsto dal modello pagoPA. 
+La URL indicata dal campo `redirect` dovrà essere utilizzata dal portale per far proseguire l'utente
+nel pagamento, come previsto dal modello pagoPA.
 
 Visualizzazione Esito del Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Al termine delle operazioni di pagamento su pagoPA, l'utente viene rediretto al portale dell'ente 
-alla URL fornita a pagoPA in sede di configurazione della Stazione, con il parametro `idSession` 
+Al termine delle operazioni di pagamento su pagoPA, l'utente viene rediretto al portale dell'ente
+alla URL fornita a pagoPA in sede di configurazione della Stazione, con il parametro `idSession`
 nella queryString. Questo parameto può essere utilizzato per interrogare GovPay sull'esito del pagamento
 nell'operazione `GET /pagamenti/byIdSession/{idSession}`:
 
@@ -198,13 +198,13 @@ nell'operazione `GET /pagamenti/byIdSession/{idSession}`:
     GET /govpay/frontend/api/pagamento/rs/basic/v2/pagamenti/byIdSession/18cb852db0f041068b0063d8d580380c
     Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
     Accept: application/json
-    
+
 .. code-block:: json
    :caption: Risposta
-       
+
     HTTP 200 OK
     Content-type: application/json
-    
+
     {
       "autenticazioneSoggetto": "N/A",
       "id": "1d16d7b741024c6a8a3e3596957482b8",
@@ -237,5 +237,4 @@ Nella risposta ottenuta l'esito del pagamento è rappresentato dal campo `stato`
 
 - RIFIUTATO
 
-In aggiunta si ottiene la lista delle coppie RPT ed RT scambiate con pagoPA e la lista delle pendenze oggetto del pagamento. 
-
+In aggiunta si ottiene la lista delle coppie RPT ed RT scambiate con pagoPA e la lista delle pendenze oggetto del pagamento.
