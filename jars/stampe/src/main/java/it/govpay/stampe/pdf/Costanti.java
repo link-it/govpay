@@ -38,7 +38,7 @@ public class Costanti {
 	public static final String INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0 = "Individuata configurazione prioritaria: {}";
 	public static final String ERROR_MSG_IL_PATH_PASSATO_COME_PARAMTERO_0_NON_ESISTE_O_NON_E_UN_FOLDER = "Il path passato come paramtero ({0}) non esiste o non e'' un folder.";
 	public static final String DEBUG_MSG_CARICATA_CONFIGURAZIONE_PROSPETTO_RISCOSSIONI_CON_CHIAVE_0 = "Caricata configurazione prospetto riscossioni con chiave {}";
-	public static final String INFO_MSG_CARICATA_CONFIGURAZIONE_QUIETANZA_DI_PAGAMENTO_CON_CHIAVE_0 = "Caricata configurazione quietanza di pagamento con chiave {0}";
-	public static final String INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0 = "Caricata configurazione ricevuta telematica con chiave {0}";
+	public static final String INFO_MSG_CARICATA_CONFIGURAZIONE_QUIETANZA_DI_PAGAMENTO_CON_CHIAVE_0 = "Caricata configurazione quietanza di pagamento con chiave {}";
+	public static final String INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0 = "Caricata configurazione ricevuta telematica con chiave {}";
 	
 }

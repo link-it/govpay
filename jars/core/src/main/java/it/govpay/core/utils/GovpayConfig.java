@@ -351,6 +351,7 @@ public class GovpayConfig {
 				File log4j2ConfigFile = null;
 				if(StringUtils.isNotBlank(warName)) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + warName + "-"+ LOG4J2_XML_FILE_NAME);
+					LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j specifica per il war {}: {}", warName , log4j2ConfigFile.toURI());
 				}
 				
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
@@ -892,8 +893,16 @@ public class GovpayConfig {
 				if(!resourceDirFile.isDirectory())
 					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 
-				File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
-
+				File log4j2ConfigFile = null;
+				if(this.log4j2Config != null) {
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifica configurazione log4j: {}", this.log4j2Config);
+					log4j2ConfigFile = new File(this.log4j2Config);
+				}
+				
+				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
+					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+				}
+				
 				if(log4j2ConfigFile.exists()) {
 					this.log4j2Config = log4j2ConfigFile.toURI();
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j: {}", this.log4j2Config);
