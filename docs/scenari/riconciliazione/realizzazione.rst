@@ -3,7 +3,7 @@
 Realizzazione
 -------------
 
-In questo scenario il Sistema di Gestione Contabile dell'ente creditore riconcilia i movimenti di accredito, presenti nel Giornale di Cassa fornito dalla banca tesoriera, con i singoli pagamenti effettuati su pagoPA. L'applicativo di contabilità effettua l'operazione di riconciliazione utilizzando l' `API Riconciliazione <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml&nocors>`_.
+In questo scenario il Sistema di Gestione Contabile dell'ente creditore riconcilia i movimenti di accredito, presenti nel Giornale di Cassa fornito dalla banca tesoriera, con i singoli pagamenti effettuati su pagoPA. L'applicativo di contabilità effettua l'operazione di riconciliazione utilizzando l' `API Riconciliazione <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.8.x/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml&nocors>`_.
 
 Riconciliazione Entrate
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +48,7 @@ Il messaggio di richiesta prevede che vengano forniti i riferimenti al movimento
        "sct":"SCT0123456789",
        "idDominio":"12345678901",
        "idRiconciliazione":"2023-03-08GovPAYPsp1-15442458845",
-       "causale":"/PUR/LGPE-RIVERSAMENTO/URI/2023-03-08GovPAYPsp1-15442458845"   
+       "causale":"/PUR/LGPE-RIVERSAMENTO/URI/2023-03-08GovPAYPsp1-15442458845"
        "riscossioni":[
           {
              "dominio":{
@@ -81,7 +81,7 @@ Il messaggio di richiesta prevede che vengano forniti i riferimenti al movimento
              },
              "riconciliazione":"/riconciliazioni/12345678901/2024-03-08GovPAYPsp1-15442458845"
           }
-       ]    
+       ]
     }
 
 La risposta all'operazione invocata presenta un messaggio con la riconciliazione del movimento fornito in input con l'elenco delle riscossioni corrispondenti. Con queste informazioni il Gestionale dell'ente creditore è in grado di effettuare la chiusura contabile di ogni pendenza di pagamento.
