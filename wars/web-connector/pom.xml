@@ -89,10 +89,6 @@
                                 <configuration>
                                 	<webResources>
                                         <webResource>
-                                            <directory>src/main/webapp</directory>
-                                            <filtering>true</filtering>
-                                        </webResource>
-                                        <webResource>
                                             <directory>src/main/resources/</directory>
                                             <filtering>true</filtering>
                                             <include>web.xml</include>
@@ -149,10 +145,6 @@
                                 </goals>	
                                 <configuration>
                                 	<webResources>
-                                        <webResource>
-                                            <directory>src/main/webapp</directory>
-                                            <filtering>true</filtering>
-                                        </webResource>
                                         <webResource>
                                             <directory>src/main/resources/</directory>
                                             <filtering>true</filtering>
