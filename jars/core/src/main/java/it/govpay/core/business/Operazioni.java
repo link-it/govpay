@@ -353,7 +353,7 @@ public class Operazioni{
 						List<InviaNotificaThread> threads = new ArrayList<>();
 						List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 
-						log.info("Trovate [{}] notifiche da spedire per l''applicazione [{}]", notifiche.size(), codApplicazione);
+						log.info("Trovate [{}] notifiche da spedire per l'applicazione [{}]", notifiche.size(), codApplicazione);
 
 						if(!notifiche.isEmpty()) {
 							for(Notifica notifica: notifiche) {
