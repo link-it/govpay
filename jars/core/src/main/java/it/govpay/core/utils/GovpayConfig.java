@@ -66,8 +66,8 @@ public class GovpayConfig {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance(InputStream is) throws IOException {
-		instance = new GovpayConfig(is);
+	public static GovpayConfig newInstance(InputStream is, String warName) throws IOException {
+		instance = new GovpayConfig(is, warName);
 		return instance;
 	}
 
@@ -216,7 +216,7 @@ public class GovpayConfig {
 	private Integer numeroGiorniRendicontazioniSenzaPagamento;
 	
 	
-	public GovpayConfig(InputStream is) throws IOException {
+	public GovpayConfig(InputStream is, String warName) throws IOException {
 		// Default values:
 		this.dimensionePoolThreadNotifica = 10;
 		this.dimensionePoolThreadNotificaAppIo = 10;
@@ -346,7 +346,14 @@ public class GovpayConfig {
 				if(!resourceDirFile.isDirectory())
 					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 
-				File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+				File log4j2ConfigFile = null;
+				if(StringUtils.isNotBlank(warName)) {
+					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + warName + "-"+ LOG4J2_XML_FILE_NAME);
+				}
+				
+				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
+					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+				}
 
 				if(log4j2ConfigFile.exists()) {
 					this.log4j2Config = log4j2ConfigFile.toURI();
@@ -360,13 +367,21 @@ public class GovpayConfig {
 		}
 	}
 
-	public void readProperties() throws ConfigException {
+	public void readProperties(String warName) throws ConfigException {
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 		try {
 			Properties props0 = null;
 			this.props[0] = props0;
+			
+			File gpConfigFile = null;
+			if(StringUtils.isNotBlank(warName)) {
+				gpConfigFile = new File(this.resourceDir + File.separatorChar + warName + ".properties");
+			}
+			
+			if(gpConfigFile == null || !gpConfigFile.exists()) {
+				gpConfigFile = new File(this.resourceDir + File.separatorChar + PROPERTIES_FILE_NAME);
+			}
 
-			File gpConfigFile = new File(this.resourceDir + File.separatorChar + PROPERTIES_FILE_NAME);
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
 				

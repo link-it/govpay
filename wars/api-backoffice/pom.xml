@@ -86,6 +86,12 @@
 							<targetPath>WEB-INF</targetPath>
 						</webResource>
 						<webResource>
+							<directory>src/main/resources/spring-timers</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-timers.xml</include>
+							<targetPath>WEB-INF</targetPath>
+						</webResource>
+						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
 							<include>*-applicationContext-security.xml</include>
