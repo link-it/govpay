@@ -35,7 +35,6 @@ import java.util.TimeZone;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.jcs.engine.control.CompositeCacheManager;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.LoggerFactory;
@@ -239,12 +238,6 @@ public class StartupUtils {
 				 // Restore interrupted state...
 			    Thread.currentThread().interrupt();
 			}
-			
-			// Arresto di JCS e dei thread associati
-	        CompositeCacheManager cacheManager = CompositeCacheManager.getInstance();
-	        if (cacheManager != null) {
-	            cacheManager.shutDown();
-	        }
 			
 			log.info("Shutdown del Connection Manager ...");
 			try {
