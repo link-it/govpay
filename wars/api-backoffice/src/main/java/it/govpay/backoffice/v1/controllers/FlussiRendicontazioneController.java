@@ -103,6 +103,7 @@ public class FlussiRendicontazioneController extends BaseController {
 				findRendicontazioniDTO.setIncassato(incassato);
 			}
 			findRendicontazioniDTO.setCodFlusso(idFlusso);
+			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
 			if(stato != null) {
 				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
 
