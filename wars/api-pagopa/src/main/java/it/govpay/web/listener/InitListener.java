@@ -46,7 +46,7 @@ public class InitListener implements ServletContextListener {
 
 	private static Logger log = null;
 	private static boolean initialized = false;
-	private String warName = "GovPay";
+	private String warName = "GovPay-API-PagoPA";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_OPT;
 	private String dominioAnagraficaManager = "it.govpay.cache.anagrafica.core";
 
