@@ -86,7 +86,7 @@ public class StartupUtils {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				IOUtils.copy(govpayPropertiesIS, baos);
 				gpConfig = GovpayConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()), externalFileName);
-				it.govpay.bd.GovpayConfig.newInstance4GovPay(new ByteArrayInputStream(baos.toByteArray()));
+				it.govpay.bd.GovpayConfig.newInstance4GovPay(new ByteArrayInputStream(baos.toByteArray()), externalFileName);
 			} catch (IOException | ConfigException e) {
 				throw new StartupException(MessageFormat.format(MSG_ERRORE_INIZIALIZZAZIONE_DI_GOVPAY_FALLITA, versioneGovPay, e.getMessage()), e);
 			}
