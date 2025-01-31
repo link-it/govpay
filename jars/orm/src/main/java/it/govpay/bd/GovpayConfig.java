@@ -49,17 +49,6 @@ public class GovpayConfig {
 		return instance;
 	}
 
-//	public static GovpayConfig newInstance4GovPayConsole(InputStream propertyFile) throws ConfigException {
-//		instance = new GovpayConfig(propertyFile, "/govpayConsole.properties", "it.govpay.console.resource.path", true);
-//
-//		return instance;
-//	}
-//
-//	public static GovpayConfig newInstance(InputStream propertyFile, String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws ConfigException {
-//		instance = new GovpayConfig(propertyFile, propertiesFileName, propertyResourcePathName, dataonly);
-//		return instance;
-//	}
-
 	private String databaseType;
 	private boolean databaseShowSql;
 	private String dataSourceJNDIName;
@@ -113,19 +102,6 @@ public class GovpayConfig {
 				LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione prioritaria: {}", gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
 			}
-			
-//
-//			File gpConfigFile = new File(this.resourceDir + propertyFileName);
-//			if(gpConfigFile.exists()) {
-//				props0 = new Properties();
-//				try(InputStream isExt = new FileInputStream(gpConfigFile)) {
-//					props0.load(isExt);
-//				} catch (IOException e) {
-//					throw new ConfigException(e);
-//				} 
-//				log.info(MessageFormat.format("Individuata configurazione prioritaria: {0}", gpConfigFile.getAbsolutePath()));
-//				this.props[0] = props0;
-//			}
 
 			this.databaseType = this.getProperty("it.govpay.orm.databaseType", this.props, true);
 			switch (this.databaseType) {
