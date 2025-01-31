@@ -351,11 +351,12 @@ public class GovpayConfig {
 				File log4j2ConfigFile = null;
 				if(StringUtils.isNotBlank(warName)) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + warName + "-"+ LOG4J2_XML_FILE_NAME);
-					LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j specifica per il war {}: {}", warName , log4j2ConfigFile.toURI());
+					LoggerWrapperFactory.getLogger("boot").info("Ricerco configurazione log4j specifica per il war {} nel file: {}", warName , log4j2ConfigFile.toURI());
 				}
 				
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+					LoggerWrapperFactory.getLogger("boot").info("Configurazione log4j specifica per il war {} non presente, ricerco configurazione unica esterna nel file: {}", warName , log4j2ConfigFile.toURI());
 				}
 
 				if(log4j2ConfigFile.exists()) {
@@ -796,12 +797,13 @@ public class GovpayConfig {
 
 				File log4j2ConfigFile = null;
 				if(this.log4j2Config != null) {
-					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifica configurazione log4j: {}", this.log4j2Config);
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifico esistenza configurazione log4j: {}", this.log4j2Config);
 					log4j2ConfigFile = new File(this.log4j2Config);
 				}
 				
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifica esistenza configurazione log4j: {}, file non presente.", this.log4j2Config);
 				}
 				
 				if(log4j2ConfigFile.exists()) {

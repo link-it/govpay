@@ -21,12 +21,12 @@ package it.govpay.bd;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
@@ -35,27 +35,30 @@ import it.govpay.core.exceptions.PropertyNotFoundException;
 
 public class GovpayConfig {
 
+	public static final String PROPERTIES_FILE_NAME = "govpay.properties";
+	public static final String PROPERTIES_FILE = "/" + PROPERTIES_FILE_NAME;
+	
 	private static GovpayConfig instance;
 
 	public static GovpayConfig getInstance() {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance4GovPay(InputStream propertyFile) throws ConfigException {
-		instance = new GovpayConfig(propertyFile, "/govpay.properties", "it.govpay.resource.path", false);
+	public static GovpayConfig newInstance4GovPay(InputStream propertyFile, String warName) throws ConfigException {
+		instance = new GovpayConfig(propertyFile, warName);
 		return instance;
 	}
 
-	public static GovpayConfig newInstance4GovPayConsole(InputStream propertyFile) throws ConfigException {
-		instance = new GovpayConfig(propertyFile, "/govpayConsole.properties", "it.govpay.console.resource.path", true);
-
-		return instance;
-	}
-
-	public static GovpayConfig newInstance(InputStream propertyFile, String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws ConfigException {
-		instance = new GovpayConfig(propertyFile, propertiesFileName, propertyResourcePathName, dataonly);
-		return instance;
-	}
+//	public static GovpayConfig newInstance4GovPayConsole(InputStream propertyFile) throws ConfigException {
+//		instance = new GovpayConfig(propertyFile, "/govpayConsole.properties", "it.govpay.console.resource.path", true);
+//
+//		return instance;
+//	}
+//
+//	public static GovpayConfig newInstance(InputStream propertyFile, String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws ConfigException {
+//		instance = new GovpayConfig(propertyFile, propertiesFileName, propertyResourcePathName, dataonly);
+//		return instance;
+//	}
 
 	private String databaseType;
 	private boolean databaseShowSql;
@@ -65,9 +68,7 @@ public class GovpayConfig {
 	private String resourceDir;
 	private Integer maxRisultati;
 
-	public GovpayConfig(InputStream propertyFile, String propertyFileName, String resourcePathProperty, boolean dataonly) throws ConfigException {
-
-		Logger log = LoggerWrapperFactory.getLogger("boot");
+	public GovpayConfig(InputStream propertyFile, String warName) throws ConfigException {
 		try {
 			this.props = new Properties[2];
 			Properties props1 = new Properties();
@@ -78,13 +79,12 @@ public class GovpayConfig {
 			// Se e' configurata, la uso come prioritaria
 
 			try {
-				if(resourcePathProperty != null)
-					this.resourceDir = this.getProperty(resourcePathProperty, props1, false, true);
+				this.resourceDir = this.getProperty("it.govpay.resource.path", props1, false, true);
 
 				if(this.resourceDir != null) {
 					File resourceDirFile = new File(this.resourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
+						throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 				}
 			} catch (Exception e) {
 				LoggerWrapperFactory.getLogger("boot").warn(MessageFormat.format("Errore di inizializzazione: {0}. Property ignorata.", e.getMessage()));
@@ -92,20 +92,40 @@ public class GovpayConfig {
 
 			Properties props0 = null;
 			this.props[0] = props0;
+			
+			File gpConfigFile = null;
+			if(StringUtils.isNotBlank(warName)) {
+				gpConfigFile = new File(this.resourceDir + File.separatorChar + warName + ".properties");
+			}
+			
+			if(gpConfigFile == null || !gpConfigFile.exists()) {
+				gpConfigFile = new File(this.resourceDir + File.separatorChar + PROPERTIES_FILE_NAME);
+			}
 
-			File gpConfigFile = new File(this.resourceDir + propertyFileName);
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
-				try(InputStream isExt = new FileInputStream(gpConfigFile)) {
-					props0.load(isExt);
-				} catch (FileNotFoundException e) {
-					throw new ConfigException(e);
+				
+				try(InputStream is = new FileInputStream(gpConfigFile)) {
+					props0.load(is);
 				} catch (IOException e) {
 					throw new ConfigException(e);
 				} 
-				log.info(MessageFormat.format("Individuata configurazione prioritaria: {0}", gpConfigFile.getAbsolutePath()));
+				LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione prioritaria: {}", gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
 			}
+			
+//
+//			File gpConfigFile = new File(this.resourceDir + propertyFileName);
+//			if(gpConfigFile.exists()) {
+//				props0 = new Properties();
+//				try(InputStream isExt = new FileInputStream(gpConfigFile)) {
+//					props0.load(isExt);
+//				} catch (IOException e) {
+//					throw new ConfigException(e);
+//				} 
+//				log.info(MessageFormat.format("Individuata configurazione prioritaria: {0}", gpConfigFile.getAbsolutePath()));
+//				this.props[0] = props0;
+//			}
 
 			this.databaseType = this.getProperty("it.govpay.orm.databaseType", this.props, true);
 			switch (this.databaseType) {
@@ -116,7 +136,7 @@ public class GovpayConfig {
 			case "hsql":
 				break;
 			default:
-				LoggerWrapperFactory.getLogger("boot").warn(MessageFormat.format("Database [{0}] non supportato. Database validi: postgresql, oracle, mysql, sqlserver, hsql.", this.databaseType));
+				LoggerWrapperFactory.getLogger("boot").warn("Database [{}] non supportato. Database validi: postgresql, oracle, mysql, sqlserver, hsql.", this.databaseType);
 				break;
 			}
 			String databaseShowSqlString = this.getProperty("it.govpay.orm.showSql", this.props, true);
@@ -132,14 +152,10 @@ public class GovpayConfig {
 					this.maxRisultati = 10000;
 				}
 			}
-		} catch (PropertyNotFoundException e) {
-			LoggerWrapperFactory.getLogger("boot").error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
-			throw new ConfigException(e);
-		} catch (IOException e) {
+		} catch (PropertyNotFoundException | IOException e) {
 			LoggerWrapperFactory.getLogger("boot").error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
 		}
-		if(dataonly) return;
 	}
 
 	private String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig) throws PropertyNotFoundException {
@@ -167,10 +183,10 @@ public class GovpayConfig {
 					throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 				else return null;
 			} else {
-				log.info(MessageFormat.format("Letta proprieta di configurazione {0}{1}: {2}", logString, name, value));
+				log.info("Letta proprieta di configurazione {}{}: {}", logString, name, value);
 			}
 		} else {
-			log.info(MessageFormat.format("Letta proprieta di sistema {0}: {1}", name, value));
+			log.info("Letta proprieta di sistema {}: {}", name, value);
 		}
 
 		return value.trim();
@@ -181,13 +197,15 @@ public class GovpayConfig {
 
 		String value = null;
 		for(int i=0; i<props.length; i++) {
-			try { value = this.getProperty(name, props[i], required, i==1); } catch (PropertyNotFoundException e) { }
+			try { value = this.getProperty(name, props[i], required, i==1); } catch (PropertyNotFoundException e) {
+				//donothing
+			}
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}
 		}
 
-		if(log != null) log.info(MessageFormat.format("Proprieta {0} non trovata", name));
+		if(log != null) log.info("Proprieta {} non trovata", name);
 
 		if(required) 
 			throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
