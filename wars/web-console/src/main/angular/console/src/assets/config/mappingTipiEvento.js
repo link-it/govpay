@@ -171,7 +171,15 @@
       paVerifyPaymentNotice: 'Ricevuta verifica RPT da pagoPA (v2)',
       paGetPayment: 'Ricevuta attivazione RPT da pagoPA (v2)',
       paGetPaymentV2: 'Ricevuta attivazione RPT da pagoPA (v2)',
-	  getOrganizationReceiptIur: 'Richiesta RT a pagoPA'
+	  getOrganizationReceiptIur: 'Richiesta RT a pagoPA',
+	  getOrganizationDebtPositions: 'Richiesto elenco posizioni debitorie a pagoPA',
+	  createPosition: 'Inviata posizione debitoria a pagoPA',
+	  getOrganizationDebtPositionByIUPD: 'Richiesta posizione debitoria a pagoPA',
+	  updatePosition: 'Aggiornata posizione debitoria su pagoPA',
+	  deletePosition: 'Eliminata posizione debitoria da pagoPA',
+	  publishPosition: 'Pubblicata posizione debitoria su pagoPA',
+	  invalidatePosition: 'Invalidata posizione debitoria su pagoPA',
+	  healthCheck: 'Health check pagoPA'
     },
     API_PENDENZE: {
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',

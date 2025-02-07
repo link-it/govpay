@@ -43,6 +43,15 @@ public class EventoContext implements Serializable {
 	public static final String APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUR = "getOrganizationReceiptIur";
 	public static final String APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUVIUR = "getOrganizationReceiptIuvIur";
 	public static final String APIPAGOPA_TIPOEVENTO_HEALTHCHECK = "healthCheck";
+	
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_GETORGANIZATIONDEBTPOSITIONS = "getOrganizationDebtPositions";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_CREATEPOSITION = "createPosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_GETORGANIZATIONDEBTPOSITIONBYIUPD = "getOrganizationDebtPositionByIUPD";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_UPDATEPOSITION = "updatePosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_DELETEPOSITION = "deletePosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_PUBLISHPOSITION = "publishPosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_INVALIDATEPOSITION = "invalidatePosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_HEALTHCHECK = "healthCheck";
 
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";
