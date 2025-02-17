@@ -18,6 +18,10 @@
 			<id>java-1.8</id>
 			<properties>
 				<javaVersion>1.8</javaVersion>
+				
+				<!-- cxf -->
+				<cxf.version>3.5.9</cxf.version>
+				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 			</properties>
 		</profile>
 		<profile>
@@ -27,6 +31,10 @@
 			<id>java-11</id>
 			<properties>
 				<javaVersion>11</javaVersion>
+				<!-- cxf -->
+				<cxf.version>3.6.5</cxf.version>
+				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
+				<jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
 			</properties>
 		</profile>
 	</profiles>
@@ -52,11 +60,6 @@
 		<swagger.parser.v3.version>2.1.22</swagger.parser.v3.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<guava.version>33.2.1-jre</guava.version>
-		
-		<!-- cxf -->
-		<cxf.version>3.6.5</cxf.version>
-		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
-		<jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
 		
 		<!-- jackson -->
 		<jackson.version>2.17.1</jackson.version>
@@ -870,12 +873,6 @@
 				</exclusions>
 	        </dependency>
 	        
-	        <dependency>
-			    <groupId>jakarta.xml.soap</groupId>
-			    <artifactId>jakarta.xml.soap-api</artifactId>
-			    <version>${jakarta.xml.soap-api.version}</version>
-			</dependency>
-
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-service-description</artifactId>
