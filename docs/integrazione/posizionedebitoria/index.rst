@@ -4,8 +4,11 @@
    In questa sezione viene descritto il processo di gestione di una posizione debitoria 
    tramite le API GovPay.
 
+Gestione di una posizione debitoria
+===================================
+
 Caricamento di una posizione debitoria
-======================================
+--------------------------------------
 
 Il caricamento di una posizione debitoria su GovPay si realizza tramite tramite chiamata alle API Pendenze:
 
@@ -62,7 +65,7 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 
 
 Download avviso di pagamento
-============================
+----------------------------
 
 L’avviso di pagamento può essere scaricato anche in una fase successiva alla creazione con la seguente chiamata:
 
@@ -89,7 +92,7 @@ Il seguente esempio mostra l'invocazione della **GET /avvisi/{idDominio}/{numero
 
 
 Consultazione dello stato di una pendenza
-=========================================
+-----------------------------------------
 
 È possibile consultare lo stato di una pendenza ed eventuali ricevute di pagamento tramite la seguente risorsa:
 
@@ -247,7 +250,7 @@ Di seguito un esempio di chiamata in ambiente di simulazione:
 	}
 
 Stampa della ricevuta di pagamento
-==================================
+----------------------------------
 
 La piattaforma consente la stampa in versione analogica della ricevuta di pagamento tramite servizio REST:
 
