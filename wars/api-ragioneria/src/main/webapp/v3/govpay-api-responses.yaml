@@ -24,6 +24,8 @@ components:
       description: Richiesta non autorizzata
     '404NotFound':
       description: Risorsa inesistente
+    '406NotAcceptable':
+      description: Formato della risorsa richiesto inesistente
     '500ServiceUnavailable':
       description: Servizio non disponibile
       content:
