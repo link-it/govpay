@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -34,10 +35,14 @@ import org.springframework.security.core.Authentication;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RptDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
+import it.govpay.core.exceptions.NotAcceptableException;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -70,7 +75,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
      *
      */
     @Override
-	public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv) {
+	public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String numeroAvviso) {
     	this.buildContext();
     	Authentication user = this.getUser();
         String methodName = "findRicevute";
@@ -91,13 +96,18 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			listaRptDTO.setEseguiCount(metadatiPaginazione);
 			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
-
 			listaRptDTO.setEsitoPagamento(null);
+			
+			// 2025/02/24 - Leggo solo RPP che hanno la ricevuta
+			listaRptDTO.setRicevute(true);
 
 			if(idDominio != null)
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)
 				listaRptDTO.setIuv(iuv);
+			if(numeroAvviso != null) {
+				listaRptDTO.setIuv(IuvUtils.toIuv(numeroAvviso));
+			}
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
 
@@ -147,7 +157,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
     /**
      * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
      *
-     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo.
+     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
      *
      */
     @Override
@@ -158,6 +168,10 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
+		String accept = "";
+		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+		}
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -172,25 +186,37 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			}
 
 			// se non ho autorizzazione star controllo che il dominio sia tra quelli autorizzati
-			if(!domini.isEmpty()) {
-				if(!domini.contains(idDominio)) {
-					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
-				}
+			if(!domini.isEmpty() && !domini.contains(idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
 			}
 
-			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			LeggiRicevutaDTO leggiRptDTO = new LeggiRicevutaDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
 			idRicevuta = idRicevuta.contains("%") ? URLDecoder.decode(idRicevuta,"UTF-8") : idRicevuta;
 			leggiRptDTO.setCcp(idRicevuta);
 
 			RptDAO ricevuteDAO = new RptDAO();
+			
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = null;
+			if(accept.toLowerCase().contains("application/pdf")) {
+				leggiRptDTO.setFormato(FormatoRicevuta.PDF);
+				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
+				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ idRicevuta + ".pdf";
+				byte[] b = ricevutaDTOResponse.getPdf(); 
+				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
+				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
+			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				leggiRptDTO.setFormato(FormatoRicevuta.JSON);
+				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
+				Ricevuta response =  RicevuteConverter.toRsModel(ricevutaDTOResponse.getRpt());
+				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName); 
+				return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
+			} else {
+				// formato non accettato
+				throw new NotAcceptableException("Avviso di pagamento non disponibile nel formato indicato nell'header Accept, ricevuto: '"+accept+"', consentiti: {'application/pdf','application/json'}");
 
-			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
-
-			Ricevuta response =  RicevuteConverter.toRsModel(leggiRptDTOResponse.getRpt());
-
-			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
+			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

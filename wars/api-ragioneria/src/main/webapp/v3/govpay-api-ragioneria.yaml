@@ -223,6 +223,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/iuv'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/idRicevuta'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/numeroAvviso'
       responses:
         '200':
           description: Lista delle ricevute di pagamento
@@ -231,13 +232,13 @@ paths:
               schema:
                 $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevute'
         '400':
-          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
         '401':
           $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
         '403':
           $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
         '500':
-          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'        
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
   '/ricevute/{idDominio}/{iuv}/{idRicevuta}':
     get:
       operationId: getRicevuta
@@ -261,13 +262,22 @@ paths:
                 Pagamento standard: 
                   $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
                 Marca da bollo: 
-                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'              
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+                example: stampa della ricevuta
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
         '401':
           $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
         '403':
           $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
+        '406':
+          $ref: 'govpay-api-responses.yaml#/components/responses/406NotAcceptable'
         '500':
           $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'             
   '/riconciliazioni':

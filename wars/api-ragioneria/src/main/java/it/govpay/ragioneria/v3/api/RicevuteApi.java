@@ -55,13 +55,13 @@ public interface RicevuteApi  {
     @Path("/ricevute")
     @Produces({ "application/json" })
     @Operation(summary = "Ricerca delle ricevute di pagamento", tags={ "Ricevute" })
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista dei flussi rendicontazione", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevute.class))),
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Lista delle ricevute di pagamento", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevute.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
         @ApiResponse(responseCode = "500", description = "Servizio non disponibile", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))) })
-    public Response findRicevute(@QueryParam("pagina") @DefaultValue("1") Integer pagina, @QueryParam("risultatiPerPagina") @Max(200) @DefaultValue("25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("idDominio") @Pattern(regexp="(^([0-9]){11}$)") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("metadatiPaginazione") @DefaultValue("true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue("true") Boolean maxRisultati, @QueryParam("iuv") @Pattern(regexp="(^([0-9A-Za-z]){1,35}$)") String iuv);
+    public Response findRicevute(@QueryParam("pagina") @DefaultValue("1") Integer pagina, @QueryParam("risultatiPerPagina") @Max(200) @DefaultValue("25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("idDominio") @Pattern(regexp="(^([0-9]){11}$)") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("metadatiPaginazione") @DefaultValue("true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue("true") Boolean maxRisultati, @QueryParam("iuv") @Pattern(regexp="(^([0-9A-Za-z]){1,35}$)") String iuv, @QueryParam("numeroAvviso") String numeroAvviso);
 
     /**
      * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
@@ -71,13 +71,15 @@ public interface RicevuteApi  {
      */
     @GET
     @Path("/ricevute/{idDominio}/{iuv}/{idRicevuta}")
-    @Produces({ "application/json" })
+    @Produces({ "application/json", "application/pdf" })
     @Operation(summary = "Acquisizione di una ricevuta di avvenuto pagamento pagoPA", tags={ "Ricevute" })
-    @ApiResponses(value = {
+    @ApiResponses(value = { 
         @ApiResponse(responseCode = "201", description = "ricevuta di pagamento acquisita", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevuta.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
+        @ApiResponse(responseCode = "404", description = "Risorsa inesistente"),
+        @ApiResponse(responseCode = "406", description = "Formato della risorsa richiesto inesistente"),
         @ApiResponse(responseCode = "500", description = "Servizio non disponibile", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))) })
     public Response getRicevuta(@PathParam("idDominio") @Pattern(regexp="(^([0-9]){11}$)") String idDominio, @PathParam("iuv") @Pattern(regexp="(^([0-9A-Za-z]){1,35}$)") String iuv, @PathParam("idRicevuta") @Pattern(regexp="(^([0-9A-Za-z]){1,35}$)") String idRicevuta);
 }
