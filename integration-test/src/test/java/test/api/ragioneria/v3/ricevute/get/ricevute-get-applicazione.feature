@@ -117,5 +117,6 @@ And match response ==
 Given url ragioneriaBaseurl
 And path '/ricevute', rpt.dominio.idDominio, rpt.iuv, rpt.idRicevuta
 And headers idA2ABasicAutenticationHeader
+And header Accept = 'application/json'
 When method get
 Then status 200
