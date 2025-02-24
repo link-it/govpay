@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   version: "2.16.0"
   title: GovPay - API Pagamento
+  description: 'GovPay - API Pagamento V2 sono deprecate'
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -206,6 +207,7 @@ paths:
       summary: Elenco delle pendenze
       operationId: findPendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
@@ -245,6 +247,7 @@ paths:
       summary: Dettaglio di una pendenza per identificativo
       operationId: getPendenza
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      deprecated: true
       parameters:
         - in: path
           name: idA2A
@@ -282,6 +285,7 @@ paths:
       summary: Caricamento della pendenza di tipo spontaneo
       operationId: addPendenza
       description: Operazione di caricamento della pendenza di tipo spontaneo
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -342,6 +346,7 @@ paths:
     get:
       summary: Lista delle richieste di pagamento pendenza
       operationId: findRpp
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -382,6 +387,7 @@ paths:
     get:
       summary: Dettaglio di una richiesta di pagamento pendenza
       operationId: getRpp
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -423,6 +429,7 @@ paths:
     get:
       summary: Acquisizione della richiesta di pagamento pagopa
       operationId: getRpt
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -469,6 +476,7 @@ paths:
     get:
       operationId: getRt
       summary: Acquisizione della ricevuta di pagamento
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -523,6 +531,7 @@ paths:
       summary: Dettaglio di una pendenza per riferimento avviso
       operationId: getPendenzaByAvviso
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -560,6 +569,7 @@ paths:
       summary: Avviso di pagamento
       operationId: getAvviso
       description: Fornisce un avviso di pagamento o la pendenza ad esso associata
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -601,7 +611,8 @@ paths:
     get:
       summary: Allegato di una pendenza
       operationId: getAllegatoPendenza
-      description:      Fornisce l'allegato di una pendenza
+      description: Fornisce l'allegato di una pendenza
+      deprecated: true
       tags:
         - Pendenze
       parameters:
@@ -634,6 +645,7 @@ paths:
       tags:
         - Anagrafica
       operationId: findDomini
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
@@ -652,6 +664,7 @@ paths:
       tags:
         - Anagrafica
       operationId: findTipiPendenzaDominio
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -673,6 +686,7 @@ paths:
       tags:
         - Anagrafica
       operationId: findUnitaOperative
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -698,6 +712,7 @@ paths:
       tags:
         - Anagrafica
       operationId: getProfilo
+      deprecated: true
       responses:
         '200':
           description: Autorizzazioni dell'utenza chiamante
@@ -713,6 +728,7 @@ paths:
     get:
       summary: Logout
       operationId: logout
+      deprecated: true
       tags:
         - Anagrafica
       responses:
