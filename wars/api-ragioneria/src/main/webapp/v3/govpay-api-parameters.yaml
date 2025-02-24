@@ -133,7 +133,7 @@ components:
       description: Identificativo del gestionale ente
       required: false
       schema:
-        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'   
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'
     idDominio:
       name: idDominio
       in: query
@@ -215,7 +215,13 @@ components:
         type: boolean
         default: true
       example: true
-   
+    numeroAvviso:
+      name: numeroAvviso
+      in: query
+      description: "Numero identificativo dell'avviso pagoPA"
+      required: false
+      schema: 
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/NumeroAvviso'
     ordinamento:
       name: ordinamento
       in: query
