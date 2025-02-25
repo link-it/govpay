@@ -25,6 +25,9 @@
                         <activation>
                                 <activeByDefault>true</activeByDefault>
                         </activation>
+                        <properties>
+                        	<jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
+                        </properties>
 
                         <dependencies>
                                 <dependency>
@@ -57,6 +60,12 @@
                                                 </exclusion>
                                         </exclusions>
                                 </dependency>
+                                
+                                <dependency>
+								    <groupId>jakarta.xml.soap</groupId>
+								    <artifactId>jakarta.xml.soap-api</artifactId>
+								    <version>${jakarta.xml.soap-api.version}</version>
+								</dependency>
                         </dependencies>
                 </profile>
         </profiles>
@@ -136,7 +145,7 @@
 	        <groupId>org.apache.cxf</groupId>
 	        <artifactId>cxf-rt-rs-security-oauth2</artifactId>
 	    </dependency>
-
+	    
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
