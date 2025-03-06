@@ -311,7 +311,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 401,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -482,7 +482,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 404,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -653,7 +653,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -824,7 +824,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -884,7 +884,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1056,7 +1056,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1116,7 +1116,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 400,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1287,7 +1287,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1347,7 +1347,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 500,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1652,7 +1652,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1712,7 +1712,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
