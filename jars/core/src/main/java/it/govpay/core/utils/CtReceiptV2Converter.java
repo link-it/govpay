@@ -24,7 +24,6 @@ import java.util.List;
 import it.gov.pagopa.bizeventsservice.model.MapEntry;
 import it.gov.pagopa.bizeventsservice.model.CtReceiptModelResponse;
 import it.gov.pagopa.bizeventsservice.model.Debtor;
-import it.gov.pagopa.bizeventsservice.model.Debtor.EntityUniqueIdentifierTypeEnum;
 import it.gov.pagopa.bizeventsservice.model.Payer;
 import it.gov.pagopa.bizeventsservice.model.TransferPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
@@ -85,7 +84,7 @@ public class CtReceiptV2Converter {
 		}
 		ctReceiptV2.setPayer(toCtSubjectPayer(response.getPayer()));
 		ctReceiptV2.setPaymentAmount(response.getPaymentAmount());
-		ctReceiptV2.setPaymentDateTime(DateUtils.toLocalDateTime(response.getPaymentDateTime()));
+		ctReceiptV2.setPaymentDateTime(response.getPaymentDateTimeFormatted());
 		ctReceiptV2.setPaymentMethod(response.getPaymentMethod());
 		// ctReceiptV2.setPaymentNote(response.getpaymentNote()) NON PRESENTE
 		ctReceiptV2.setPrimaryCiIncurredFee(response.getPrimaryCiIncurredFee());
@@ -166,7 +165,7 @@ public class CtReceiptV2Converter {
 		ctSubject.setStreetName(debtor.getStreetName());
 		CtEntityUniqueIdentifier uniqueIdentifier = new CtEntityUniqueIdentifier();
 		if(debtor.getEntityUniqueIdentifierType() != null) {
-			if(debtor.getEntityUniqueIdentifierType().compareTo(EntityUniqueIdentifierTypeEnum.F) == 0) {
+			if(debtor.getEntityUniqueIdentifierType().equals(StEntityUniqueIdentifierType.F.toString())) {
 				uniqueIdentifier.setEntityUniqueIdentifierType(StEntityUniqueIdentifierType.F);
 			} else {
 				uniqueIdentifier.setEntityUniqueIdentifierType(StEntityUniqueIdentifierType.G);
@@ -195,7 +194,7 @@ public class CtReceiptV2Converter {
 		ctSubject.setStreetName(payer.getStreetName());
 		CtEntityUniqueIdentifier uniqueIdentifier = new CtEntityUniqueIdentifier();
 		if(payer.getEntityUniqueIdentifierType() != null) {
-			if(payer.getEntityUniqueIdentifierType().compareTo(it.gov.pagopa.bizeventsservice.model.Payer.EntityUniqueIdentifierTypeEnum.F) == 0) {
+			if(payer.getEntityUniqueIdentifierType().equals(StEntityUniqueIdentifierType.F.toString())) {
 				uniqueIdentifier.setEntityUniqueIdentifierType(StEntityUniqueIdentifierType.F);
 			} else {
 				uniqueIdentifier.setEntityUniqueIdentifierType(StEntityUniqueIdentifierType.G);

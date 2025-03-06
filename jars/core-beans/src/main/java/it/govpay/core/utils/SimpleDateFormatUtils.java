@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -250,5 +251,12 @@ public class SimpleDateFormatUtils {
 			return null;
 		
 		return Date.from(dateToConvert.atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant());
+	}
+	
+	public static Date toDate(OffsetDateTime dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		return Date.from(dateToConvert.toInstant());
 	}
 }
