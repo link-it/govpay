@@ -820,6 +820,10 @@ DROP sequence seq_iuv;
 
 
 -- 12/12/2024 Correzione stato pendenze riconciliate che contengono voci di tipo MBT o di altro intermediario
+-- Creazione degli indici per ottimizzare la query
+CREATE INDEX idx_versamenti_stati ON versamenti(stato_versamento, stato_pagamento);
+CREATE INDEX idx_pagamenti_tipo_stato_id ON pagamenti(tipo, stato, id_singolo_versamento);
+
 UPDATE versamenti v
 SET v.stato_pagamento = 'INCASSATO'
 WHERE v.id NOT IN (
@@ -832,5 +836,8 @@ WHERE v.id NOT IN (
 AND v.stato_pagamento != 'INCASSATO' 
 AND v.stato_versamento = 'ESEGUITO';
 
+-- Eliminazione degli indici dopo l'UPDATE
+DROP INDEX idx_versamenti_stati;
+DROP INDEX idx_pagamenti_tipo_stato_id;
 
 
