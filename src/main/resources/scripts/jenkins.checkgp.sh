@@ -11,7 +11,7 @@ do
                 break;
         fi
         sleep 1
-        /usr/bin/curl --noproxy 127.0.0.1 -w "\n\nRETURNCODE:%{http_code}" http://127.0.0.1:8080/govpay/backend/api/backoffice/ >/tmp/sonda.log 2>&1
+        /usr/bin/curl --noproxy 127.0.0.1 -w "\n\nRETURNCODE:%{http_code}" http://127.0.0.1:8080/govpay-api-backoffice/ >/tmp/sonda.log 2>&1
         PS=`grep "RETURNCODE:200" /tmp/sonda.log|wc -l`
 done
 

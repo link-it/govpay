@@ -51,31 +51,6 @@
         
         <!-- BASIC_GOVPAY_PROVIDER_END -->
         
-        <!-- BASIC_WILDFLY_PROVIDER_START
-        
-        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
-			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
-		</b:bean>
-		
-        <authentication-manager id="authenticationManager">
-     			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
-        </authentication-manager>
-        
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/basic/**">
-                <csrf disabled="true"/>
-                <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
-                <intercept-url pattern="/**" access="denyAll" />
-                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
-                <headers>
-                        <content-type-options disabled="true"/>
-                        <frame-options disabled="true"/>
-                        <xss-protection disabled="true"/>
-                </headers>
-        </http>
-        
-        BASIC_WILDFLY_PROVIDER_END -->
-        
-        
         <!-- BASIC_LDAP_PROVIDER_START
         
         <ldap-server id="defaultLdapServer" url="LDAP-SERVER-URL" manager-dn="MANAGER-DN" manager-password="MANAGER-PWD"/>
@@ -605,31 +580,6 @@
         </http>
         
         DEFAULT_BASIC_GOVPAY_PROVIDER_END -->
-        
-        <!-- DEFAULT_BASIC_WILDFLY_PROVIDER_START
-        
-        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
-			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
-		</b:bean>
-		
-        <authentication-manager id="authenticationManager">
-     			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
-        </authentication-manager>
-        
-		<http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/**">
-				<csrf disabled="true"/>
-                <intercept-url pattern="/rs/**" access="isFullyAuthenticated()" />
-                <intercept-url pattern="/**" access="denyAll" />
-                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
-                <headers>
-                        <content-type-options disabled="true"/>
-                        <frame-options disabled="true"/>
-                        <xss-protection disabled="true"/>
-                </headers>
-        </http>
-        
-        DEFAULT_BASIC_WILDFLY_PROVIDER_END -->
-        
         
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>

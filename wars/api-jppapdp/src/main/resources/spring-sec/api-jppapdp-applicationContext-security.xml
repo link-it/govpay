@@ -52,6 +52,45 @@
       	
       	 BASIC_END -->
       	 
+      	 <!-- BASIC_TOMCAT_START 
+        
+        <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+        
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        	<b:property name="apiName" value="API_MAGGIOLI_JPPA" />
+        	<b:property name="authType" value="BASIC" />
+        </b:bean>
+        
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.TomcatApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+        
+        <authentication-manager id="authenticationManager">
+                <authentication-provider ref="wildflyApplicationAuthenticationProvider">
+                </authentication-provider>
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**" request-matcher="regex">
+
+                <csrf disabled="true"/>
+
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
+                
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+      	
+      	 BASIC_TOMCAT_END -->
+      	 
      	 <!-- LDAP_START 
       	 
       	<ldap-server id="defaultLdapServer" url="LDAP-SERVER-URL" manager-dn="MANAGER-DN" manager-password="MANAGER-PWD"/>

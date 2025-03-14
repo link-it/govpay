@@ -13,7 +13,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template_tomcat -P govpay-tomcat -DnvdApiKey=$NVD_API_KEY'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -35,7 +35,7 @@ pipeline {
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
-        sh 'sudo systemctl start wildfly-26.1.3.Final@standalone'
+        sh 'sudo systemctl start tomcat_govpay'
 	sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }

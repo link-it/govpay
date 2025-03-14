@@ -192,7 +192,7 @@
 		
 		<!-- Json Path -->
 		<json-path.version>2.9.0</json-path.version>
-		<json-smart.version>2.5.1</json-smart.version>
+		<json-smart.version>2.5.2</json-smart.version>
 		<accessors-smart.version>2.5.1</accessors-smart.version>
 		
 		<!-- Base64 java8 migration class. -->
