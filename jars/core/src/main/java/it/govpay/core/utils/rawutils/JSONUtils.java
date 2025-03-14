@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.openspcoop2.utils.SemaphoreLock;
 import org.openspcoop2.utils.json.AbstractUtils;
 import org.slf4j.Logger;
 
@@ -96,24 +97,24 @@ public class JSONUtils extends AbstractUtils {
 		}
 	}
 	private static void initMapper()  {
-		semaphore.acquireThrowRuntime("initMapper");
+		SemaphoreLock lock = semaphore.acquireThrowRuntime("initMapper");
 		try {
 			if(internalMapper==null){
 				initSyncMapper();
 			}
 		}finally {
-			semaphore.release("initMapper");
+			semaphore.release(lock, "initMapper");
 		}
 	}
 	public static void setMapperTimeZone(TimeZone timeZone) {
 		if(internalMapper==null){
 			initMapper();
 		}
-		semaphore.acquireThrowRuntime("setMapperTimeZone");
+		SemaphoreLock lock = semaphore.acquireThrowRuntime("setMapperTimeZone");
 		try {
 			internalMapper.setTimeZone(timeZone);
 		}finally {
-			semaphore.release("setMapperTimeZone");
+			semaphore.release(lock, "setMapperTimeZone");
 		}
 	}
 	
@@ -121,11 +122,11 @@ public class JSONUtils extends AbstractUtils {
 		if(internalMapper==null){
 			initMapper();
 		}
-		semaphore.acquireThrowRuntime("registerJavaTimeModule");
+		SemaphoreLock lock = semaphore.acquireThrowRuntime("registerJavaTimeModule");
 		try {
 			internalMapper.registerModule(new JavaTimeModule());
 		}finally {
-			semaphore.release("registerJavaTimeModule");
+			semaphore.release(lock, "registerJavaTimeModule");
 		}
 	}
 	
