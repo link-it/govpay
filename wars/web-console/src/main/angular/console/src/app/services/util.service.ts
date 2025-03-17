@@ -446,6 +446,7 @@ export class UtilService {
   public static URL_IBAN_ACCREDITI: string = '/contiAccredito';
   public static URL_RUOLI: string = '/ruoli';
   public static URL_RICEVUTE: string = '/rpp';
+  public static URL_CARICA_RICEVUTE: string = '/ricevute';
   //Operazioni
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
@@ -504,7 +505,6 @@ export class UtilService {
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
   public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
 
-
   //Types
   //Component view ref
   public static DASHBOARD: string = 'dashboard';
@@ -532,6 +532,7 @@ export class UtilService {
   public static TRACCIATO: string = 'tracciato';
   public static OPERAZIONI_TRACCIATO: string = 'operazioni';
   public static VERIFICATO: string = 'verificato';
+  public static RICEVUTA: string = 'ricevuta';
 
   //Item view ref
   public static STANDARD: string = '';
@@ -579,7 +580,6 @@ export class UtilService {
   public static IBAN_ACCREDITO: string = 'iban_accredito';
   public static PENDENZA: string = 'pendenza';
   public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
-  public static RICEVUTA: string = 'ricevuta';
   public static REPORT_PROSPETTO_RISCOSSIONI: string = 'report_prospetto_riscossioni';
   public static NO_TYPE: string = '-';
   //Json schema generators
@@ -960,8 +960,8 @@ export class UtilService {
   onError(error: any, customMessage?: string) {
     let _msg = 'Warning: status ' + error.status;
     try {
-		let _error = this.blobToJson(error.error);	
-		
+		let _error = this.blobToJson(error.error);
+
       switch(error.status) {
         case 401:
           UtilService.cleanUser();
@@ -982,8 +982,8 @@ export class UtilService {
         case 404:
           _msg = 'Servizio non disponibile.';
           break;
-      case 422:
-		  if(!_error) {
+        case 422:
+          if(!_error) {
             _msg = 'Operazione non disponibile.';
           } else {
             _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
@@ -1010,26 +1010,26 @@ export class UtilService {
     }
     this.alert(_msg);
   }
-  
+
   blobToJson(_blob : any): any {
 	if(_blob instanceof Blob){
 		let contentType = _blob.type;
-		
-	    const url = URL.createObjectURL(_blob);
-	    let xmlRequest = new XMLHttpRequest();
-	    xmlRequest.open('GET', url, false);
-	    xmlRequest.send();
-	    URL.revokeObjectURL(url);
-	    let _res = xmlRequest.responseText;
-	    
-	    if(contentType === 'application/json' || contentType === 'application/problem+json') {
+
+      const url = URL.createObjectURL(_blob);
+      let xmlRequest = new XMLHttpRequest();
+      xmlRequest.open('GET', url, false);
+      xmlRequest.send();
+      URL.revokeObjectURL(url);
+      let _res = xmlRequest.responseText;
+
+    if(contentType === 'application/json' || contentType === 'application/problem+json') {
 			return JSON.parse(_res);
 		}
-	    return _res;
+    return _res;
     }
-    
+
     return _blob;
-   }
+  }
 
   /**
    *
@@ -2087,7 +2087,7 @@ export class UtilService {
     }
     return result;
   }
-  
+
   public static navToIuv(numeroAvviso: any) {
       try {
           if (numeroAvviso == null) {
@@ -2330,7 +2330,7 @@ export class UtilService {
       quoteCount : _quoteCount
     };
   }
-  
+
   isPendenzaMBT(_json: any) : boolean{
 	return _json.voci.some((voce: any) => voce.provinciaResidenza && voce.provinciaResidenza != null);
   }
