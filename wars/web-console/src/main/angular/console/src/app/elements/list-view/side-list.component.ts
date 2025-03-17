@@ -31,7 +31,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Input('enable-multi-fab-actions') multiFabAction: boolean = false;
   @Input('is-loading-progress') _isLoading: boolean = false;
   @Input('has-form-view') _hasFormView: boolean = true;
+
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
+  @Output('refresh-search') refreshSearch: EventEmitter<boolean> = new EventEmitter();
 
   protected rsc: any;
   protected _isLoadingMeta: boolean = false;
@@ -340,6 +342,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         };
         _component = this.ls.componentRefByName(UtilService.TIPI_PENDENZE);
         break;
+      case UtilService.URL_RICEVUTE:
+        _mb.info = {
+          dialogTitle: 'Carica ricevuta',
+          templateName: UtilService.RICEVUTA
+        };
+        _component = this.ls.componentRefByName(UtilService.RICEVUTE);
+        break;
       default:
         return null;
     }
@@ -502,6 +511,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_INCASSI:
         _fabAction.single = UtilService.USER_ACL.hasRendiIncassi;
         break;
+      case UtilService.URL_RICEVUTE:
+        _fabAction.single = UtilService.USER_ACL.hasPagamentiePendenze;
+        break;
       default:
     }
 
@@ -515,6 +527,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         case UtilService.ENTRATA:
         case UtilService.INCASSO:
         case UtilService.TRACCIATO:
+        case UtilService.RICEVUTA:
           UtilService.dialogBehavior.next(_mb);
           break;
         default:
@@ -839,6 +852,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           _component.instance._componentData = _mappedElement;
           this._livClick(_component.instance);
         break;
+        case UtilService.RICEVUTA:
+          this.refreshSearch.emit(true);
+        break
         default:
           this.getList();
       }
