@@ -2,8 +2,8 @@
 
 # Verifica se il parametro AS è stato passato come argomento, altrimenti usa un valore predefinito
 if [ -z "$1" ]; then
-  echo "Parametro AS non fornito, valori disponibili [ear|tomcat]. Utilizzo valore predefinito 'ear'"
-  AS="ear"  # Imposta un valore di default
+  echo "Parametro AS non fornito, valori disponibili [ear|tomcat]. Utilizzo valore predefinito 'tomcat'"
+  AS="tomcat"  # Imposta un valore di default
 else
   AS="$1"  # Imposta il valore passato come argomento
 fi

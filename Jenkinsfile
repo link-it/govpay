@@ -13,7 +13,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template_tomcat -P govpay-tomcat -DnvdApiKey=$NVD_API_KEY'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {

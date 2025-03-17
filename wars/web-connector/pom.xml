@@ -68,9 +68,6 @@
 	<profiles>
         <profile>
             <id>govpay-ear</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
 				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs.xml</contextConfigLocation>
 			</properties>
@@ -124,7 +121,7 @@
         <profile>
             <id>govpay-tomcat</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
 				<tomcat-war-name>${web-connector-tomcat-war-name}</tomcat-war-name>

@@ -108,9 +108,6 @@
 	<profiles>
         <profile>
             <id>govpay-ear</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
 				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,/WEB-INF/applicationContext-jaxrs-v2.xml,/WEB-INF/applicationContext-jaxrs-v3.xml,${spring.sec_config_folder}/api-pagamento-applicationContext-security.xml</contextConfigLocation>
 			</properties>
@@ -174,7 +171,7 @@
         <profile>
             <id>govpay-tomcat</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
 				<tomcat-war-name>${api-pagamento-tomcat-war-name}</tomcat-war-name>

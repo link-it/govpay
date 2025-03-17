@@ -7,13 +7,8 @@
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
-	
-
 	<profiles>
 		<profile>
-			<activation>
-           			<activeByDefault>true</activeByDefault>
-        		</activation>
 			<id>govpay-ear</id>
 			<properties>
 				<javaVersion>21</javaVersion>
@@ -49,6 +44,9 @@
 			</build>
 		</profile>
 		<profile>
+			<activation>
+           		<activeByDefault>true</activeByDefault>
+        	</activation>
 			<id>govpay-tomcat</id>
 			<properties>
 				<javaVersion>21</javaVersion>
