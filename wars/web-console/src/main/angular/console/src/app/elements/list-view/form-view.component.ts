@@ -83,6 +83,10 @@ export class FormViewComponent implements OnInit, AfterViewInit {
     this.onFormSubmit.emit({ value: _formValues })
   }
 
+  refreshSearch() {
+    this.onSubmit(this.basicForm);
+  }
+
   resetForm() {
     this.basicForm.reset();
   }
