@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 
 import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
@@ -338,7 +339,45 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
   }
 
   refresh(mb: ModalBehavior) {}
-  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {}
+
+  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    let headers;
+    let _service = UtilService.URL_CARICA_RICEVUTE;
+
+    let _data;
+    try {
+      if (mb.info.viewModel) {
+        if (mb.info.viewModel.json) {
+          _data = mb.info.viewModel.json;
+        } else {
+          headers = new HttpHeaders();
+          headers = headers.set('X-GOVPAY-FILENAME', mb.info.viewModel.nome);
+          _data = new FormData();
+          _data.append('file', mb.info.viewModel.file);
+        }
+        if(mb.info.viewModel.mimeType === 'text/csv') {
+          _service += '/' + mb.info.viewModel.idDominio;
+          if(mb.info.viewModel.idTipoPendenza) {
+            _service += '/' +mb.info.viewModel.idTipoPendenza;
+          }
+        }
+
+        this.gps.saveData(_service, _data, null, UtilService.METHODS.POST, false, headers).subscribe(
+          () => {
+            this.gps.updateSpinner(false);
+            responseService.next(true);
+          },
+          (error) => {
+            this.gps.updateSpinner(false);
+            this.us.onError(error);
+          });
+      } else {
+        this.us.alert('Impossibile eseguire l\'operazione richiesta, dati non disponibili.');
+      }
+    } catch(e) {
+      console.warn(e);
+    }
+  }
 
   esclusioneNotifiche() { }
 

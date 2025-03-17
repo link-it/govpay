@@ -3,7 +3,6 @@ import { LinkService } from '../../services/link.service';
 import { UtilService } from '../../services/util.service';
 import { SideListComponent } from './side-list.component';
 import { FormViewComponent } from './form-view.component';
-import { query } from '@angular/core/src/render3/instructions';
 
 @Component({
   selector: 'link-list-view',
@@ -35,13 +34,13 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
 
   protected _formSubmit(event) {
     if(this.sideList) {
-	  let _rsc = this.ls.getRouterStateConfig();
-	  let fixNAV_IUV = false;
-	  if (_rsc.data.type === UtilService.GIORNALE_EVENTI) {
-	          fixNAV_IUV = true;
-	        }
+      let _rsc = this.ls.getRouterStateConfig();
+      let fixNAV_IUV = false;
+      if (_rsc.data.type === UtilService.GIORNALE_EVENTI) {
+        fixNAV_IUV = true;
+      }
       let _query:string = this._formQuery(event, fixNAV_IUV);
-      
+
       if (_rsc.data.type === UtilService.RICEVUTE) {
         _query += '&esito=ESEGUITO';
       }
@@ -51,6 +50,10 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
     }
   }
 
+  _refreshSearch(event) {
+    this.formView.refreshSearch();
+  }
+
   protected _formQuery(event, fixNAV_IUV): string {
     if(this.sideList) {
       let _keys: string[] = (event.value)?Object.keys(event.value):[];
@@ -58,12 +61,12 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
       _keys.forEach(function(key) {
         if(this.us.hasValue(event.value[key])) {
           let _key = key.replace('_ctrl','');
-		  if(_key === 'iuv' && fixNAV_IUV) {
-			let searchIUVVal = UtilService.navToIuv(event.value[key]);
-			_values.push(`${_key}=${searchIUVVal}`);			
-		  } else {
-			_values.push(`${_key}=${event.value[key]}`);
-		  }
+          if(_key === 'iuv' && fixNAV_IUV) {
+            let searchIUVVal = UtilService.navToIuv(event.value[key]);
+            _values.push(`${_key}=${searchIUVVal}`);
+          } else {
+            _values.push(`${_key}=${event.value[key]}`);
+          }
         }
       }, this);
       return _values.join('&');
