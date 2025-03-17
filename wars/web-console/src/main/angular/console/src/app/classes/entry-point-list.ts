@@ -65,6 +65,7 @@ import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-v
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
 import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
 import { ConnettoreMaggioliComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-maggioli/connettore-maggioli.component';
+import { RicevutaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ricevuta-view/ricevuta-view.component';
 
 export class EntryPointList {
 
@@ -129,7 +130,8 @@ export class EntryPointList {
     ConnettoreSecimComponent,
     ConnettoreGovpayComponent,
     ConnettoreHypersicComponent,
-    ConnettoreMaggioliComponent
+    ConnettoreMaggioliComponent,
+    RicevutaViewComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -320,6 +322,9 @@ export class EntryPointList {
       case UtilService.LABEL:
         _type = LabelViewComponent;
         break;
+      case UtilService.RICEVUTA:
+        _type = RicevutaViewComponent;
+        break;
       //Default Item view ref
       default:
         _type = StandardViewComponent;
@@ -457,9 +462,6 @@ export class EntryPointList {
       case 'SchedaPendenzaViewComponent':
         _name = UtilService.SCHEDA_PENDENZA;
         break;
-      case 'RicevutaViewComponent':
-        _name = UtilService.RICEVUTE;
-        break;
       case 'PendenzaViewComponent':
         _name = UtilService.PENDENZA;
         break;
@@ -514,6 +516,9 @@ export class EntryPointList {
         break;
       case 'BooleanViewComponent':
         _name = UtilService.SLIDE_TOGGLE;
+        break;
+      case 'RicevutaViewComponent':
+        _name = UtilService.RICEVUTA;
         break;
       //Default Item view ref
       default:
