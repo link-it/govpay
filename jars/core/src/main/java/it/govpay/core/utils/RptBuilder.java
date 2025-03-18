@@ -178,14 +178,14 @@ public class RptBuilder {
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
-		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
+		ctRpt.setDataOraMessaggioRichiesta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione));
 		ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante));
 		ctRpt.setSoggettoPagatore(RptBuilder.buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
 		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
-		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
+		datiVersamento.setDataEsecuzionePagamento(DateUtils.toLocalDate(rpt.getDataMsgRichiesta()));
 		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(tipoVersamento.getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());

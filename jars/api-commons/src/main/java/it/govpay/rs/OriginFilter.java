@@ -21,6 +21,11 @@ package it.govpay.rs;
 
 import java.io.IOException;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.transport.http.AbstractCORSFilter;
 import org.openspcoop2.utils.transport.http.CORSFilterConfiguration;

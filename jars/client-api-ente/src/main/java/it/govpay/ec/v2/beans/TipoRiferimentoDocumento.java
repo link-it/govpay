@@ -21,7 +21,7 @@ package it.govpay.ec.v2.beans;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.DecimalMin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

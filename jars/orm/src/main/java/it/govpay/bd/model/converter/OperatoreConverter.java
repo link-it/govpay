@@ -45,7 +45,7 @@ public class OperatoreConverter {
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setId(dto.getIdUtenza());
 		try {
-			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.subject));
+			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.SUBJECT));
 		} catch (UtilsException e) {
 			idUtenza.setPrincipal(dto.getPrincipal());
 		}

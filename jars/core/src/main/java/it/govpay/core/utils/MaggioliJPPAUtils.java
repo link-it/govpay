@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -307,7 +307,7 @@ public class MaggioliJPPAUtils {
 		popolaIstitutoAttestanteRT23(ricevutaTelematica, rt);
 		popoloaParametriPSP(ricevutaTelematica, rpt);
 		ricevutaTelematica.setRicevutaXML(new String(rpt.getXmlRt()));
-		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(rt.getRiferimentoDataRichiesta()));
+		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(DateUtils.toJavaDate(rt.getRiferimentoDataRichiesta())));
 		ricevutaTelematica.setRiferimentoMessaggioRichiesta(rt.getRiferimentoMessaggioRichiesta());
 		popolaSoggettoPagatoreRT23(ricevutaTelematica, rt);
 		popolaSoggettoVersanteRT23(ricevutaTelematica, rt);

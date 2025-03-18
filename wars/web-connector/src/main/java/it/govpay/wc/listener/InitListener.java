@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -67,7 +67,7 @@ public class InitListener implements ServletContextListener{
 		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay, mappingSeveritaErroriPropertiesIS, avvisiLabelPropertiesIS);
 
 		try {
-			log = LoggerWrapperFactory.getLogger("boot");	
+			log = LoggerWrapperFactory.getLogger("boot");
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
 		} catch (StartupException e) {
 			log.error("Inizializzazione fallita", e);
@@ -85,7 +85,7 @@ public class InitListener implements ServletContextListener{
 				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
 			}
 			throw new StartupException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
-		} 
+		}
 
 		try {
 			ctx.getApplicationLogger().log();
@@ -93,7 +93,7 @@ public class InitListener implements ServletContextListener{
 			log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
 		}
 
-		LogUtils.logInfo(log, "Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo."); 
+		LogUtils.logInfo(log, "Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
 		initialized = true;
 	}
 
@@ -104,7 +104,7 @@ public class InitListener implements ServletContextListener{
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
 		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
 		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
-		
+
 		StartupUtils.stopServices(log, warName, InitConstants.GOVPAY_VERSION, commit, dominioAnagraficaManager);
 	}
 }

@@ -620,7 +620,6 @@ components:
           example: '1'
         prossimiRisultati:
           type: string
-          format: integer
           example: '/risorsa?pagina=2'    
     soggetto:
       description: dati anagrafici di un versante o pagatore.

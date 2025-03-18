@@ -20,9 +20,9 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -149,15 +149,15 @@ public class OperatoriBD extends BasicBD {
 
 			IExpression expr = this.getOperatoreService().newExpression();
 
-			Hashtable<String,List<String>> hashSubject = null;
+			Map<String, List<String>> hashSubject = null;
 			try {
-				hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
+				hashSubject = CertificateUtils.getPrincipalIntoMap(principal,PrincipalType.SUBJECT);
 			}catch(UtilsException e) {
 				throw new NotFoundException("Utenza " + principal + " non autorizzata");
 			}
-			Enumeration<String> keys = hashSubject.keys(); 
-			while(keys.hasMoreElements()){
-				String key = keys.nextElement();
+			Iterator<String> keys = hashSubject.keySet().iterator(); 
+			while(keys.hasNext()){
+				String key = keys.next();
 				List<String> listValues = hashSubject.get(key);
 				for (String value : listValues) {
 					expr.like(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);

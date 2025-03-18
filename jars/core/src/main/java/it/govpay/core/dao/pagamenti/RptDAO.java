@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
@@ -76,6 +74,7 @@ import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
+import jakarta.xml.bind.JAXBException;
 
 public class RptDAO extends BaseDAO{
 	

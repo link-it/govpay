@@ -32,7 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.crypt.Password;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -51,6 +51,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.CryptoUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -100,7 +101,7 @@ public class UtenzaPatchUtils {
 	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA = "autodeterminazione";
 
 	
-	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException {
+	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException, UtilsException {
 
 		if(PATH_ACL.equals(op.getPath())) {
 			patchACL(op, utenza, configWrapper);
@@ -117,7 +118,7 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 	
-	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException {
+	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException, UtilsException {
 		if(PATH_PASSWORD.equals(op.getPath())) {
 			patchPassword(op, utenza, false, configWrapper);
 		} else {
@@ -128,7 +129,7 @@ public class UtenzaPatchUtils {
 	}
 
 	private static void patchPassword(PatchOp op, Utenza utenza, boolean consentiPasswordNull, BDConfigWrapper configWrapper)
-			throws ValidationException, ServiceException, NotFoundException {
+			throws ValidationException, ServiceException, NotFoundException, UtilsException {
 		
 		String nuovaPassword = null;
 		// se ricevo un value null effettuo il reset
@@ -146,8 +147,7 @@ public class UtenzaPatchUtils {
 			validatoreId.validaPassword("password", nuovaPasswordToCrypt);
 			
 			// cifratura dalla nuova password 
-			Password password = new Password();
-			nuovaPassword = password.cryptPw(nuovaPasswordToCrypt);
+			nuovaPassword = CryptoUtils.cryptPw(nuovaPasswordToCrypt);
 		} else {
 			if(!consentiPasswordNull)
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));

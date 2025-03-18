@@ -181,7 +181,7 @@ public class CtPaymentPABuilder {
 		// https://github.com/pagopa/pagopa-api/issues/194
 
 		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-		ctRpt.setDueDate(calcolaDueDate(versamento));
+		ctRpt.setDueDate(DateUtils.toLocalDate(calcolaDueDate(versamento)));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
 		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false

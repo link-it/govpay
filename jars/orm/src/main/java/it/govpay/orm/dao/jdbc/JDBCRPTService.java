@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -954,8 +956,8 @@ public class JDBCRPTService extends JDBCRPTServiceSearch  implements IDBRPTServi
 	
 	}
 	
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException, NotImplementedException, NotFoundException{
-		
+	@Override
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException, NotImplementedException {
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
 		boolean rollback = false;
@@ -978,15 +980,12 @@ public class JDBCRPTService extends JDBCRPTServiceSearch  implements IDBRPTServi
 				connection.setAutoCommit(false);
 			}
 
-			return ((JDBCRPTServiceImpl)this.serviceCRUD).nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);		
+			return this.serviceCRUD.nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);
 	
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
 			this.logError(e); throw e;
-		}catch(NotFoundException e){
-			rollback = true;
-			this.logDebug(e); throw e;
-		} catch(Exception e){
+		}catch(Exception e){
 			rollback = true;
 			this.logError(e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
 		}finally{

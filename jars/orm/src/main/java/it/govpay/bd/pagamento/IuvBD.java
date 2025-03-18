@@ -98,13 +98,13 @@ public class IuvBD extends BasicBD {
 					throw new ServiceException(MessageFormat.format(SUPERATO_IL_NUMERO_MASSIMO_DI_IUV_GENERABILI_DOMINIO_0_PREFISSO_1, dominio.getCodDominio(), prefix) );
 				if(dominio.getSegregationCode() == null)
 					throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
-				check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
+				check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode().intValue()); 
 				iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
 				break;
 			default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 			}
 		} finally {
-			if(this.isAtomica()) {
+			if(this.isAtomica()) {	
 				this.closeConnection();
 			}
 		}

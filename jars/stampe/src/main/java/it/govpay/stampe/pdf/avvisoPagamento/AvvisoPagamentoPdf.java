@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
@@ -60,7 +60,6 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class AvvisoPagamentoPdf {
 
 	private static final String LOG_MSG_AVVISO_PAGAMENTO_INPUT = "AvvisoPagamentoInput: {}";
-	private static final String PROPERY_NAME_COM_SUN_XML_BIND_XML_DECLARATION = "com.sun.xml.bind.xmlDeclaration";
 	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
 	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
 	private static AvvisoPagamentoPdf instance = null;
@@ -204,7 +203,7 @@ public class AvvisoPagamentoPdf {
 			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty(PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY, PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty(PROPERY_NAME_COM_SUN_XML_BIND_XML_DECLARATION, Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -253,7 +252,7 @@ public class AvvisoPagamentoPdf {
 			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty(PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY, PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty(PROPERY_NAME_COM_SUN_XML_BIND_XML_DECLARATION, Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -299,7 +298,7 @@ public class AvvisoPagamentoPdf {
                     PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty(PROPERY_NAME_COM_SUN_XML_BIND_XML_DECLARATION, Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<>(new QName("", AvvisoPagamentoCostanti.VIOLAZIONE_CDS_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -355,7 +354,7 @@ public class AvvisoPagamentoPdf {
                     PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContextV2.createMarshaller();
-			jaxbMarshaller.setProperty(PROPERY_NAME_COM_SUN_XML_BIND_XML_DECLARATION, Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<it.govpay.stampe.model.v2.AvvisoPagamentoInput> jaxbElement = new JAXBElement<>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), it.govpay.stampe.model.v2.AvvisoPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);

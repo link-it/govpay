@@ -14,48 +14,6 @@
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Stampe</name>
 
-        <profiles>
-                <profile>
-                        <id>java-11</id>
-                        <activation>
-                                <activeByDefault>true</activeByDefault>
-                        </activation>
-
-                        <dependencies>
-                                <dependency>
-                                        <groupId>javax.xml.bind</groupId>
-                                        <artifactId>jaxb-api</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                                <dependency>
-                                        <groupId>com.sun.xml.bind</groupId>
-                                        <artifactId>jaxb-core</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                                <dependency>
-                                        <groupId>com.sun.xml.bind</groupId>
-                                        <artifactId>jaxb-impl</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                        </dependencies>
-                </profile>
-        </profiles>
-
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
@@ -102,6 +60,14 @@
 					<groupId>org.apache.commons</groupId>
    					<artifactId>commons-lang3</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>net.sf.barcode4j</groupId>
+   					<artifactId>barcode4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+   					<artifactId>jaxb-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
@@ -132,7 +98,7 @@
 				</exclusion>
 		    </exclusions>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
@@ -151,6 +117,22 @@
 		<dependency>
 			<groupId>net.sourceforge.barbecue</groupId>
 			<artifactId>barbecue</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.barcode4j</groupId>
+   			<artifactId>barcode4j</artifactId>
+   			<exclusions>
+				<exclusion>
+					<groupId>org.apache.ant</groupId>
+		    		<artifactId>ant</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.ant</groupId>
+		    <artifactId>ant</artifactId>
 		</dependency>
 
 		<dependency>
@@ -183,6 +165,37 @@
 			<groupId>org.apache.commons</groupId>
    			<artifactId>commons-lang3</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 	</dependencies>
 
@@ -210,7 +223,24 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.5.0</version>
+				<version>3.2.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>jakarta.xml.bind</groupId>
+						<artifactId>jakarta.xml.bind-api</artifactId>
+						<version>3.0.1</version>
+					</dependency>
+					<dependency>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>jaxb-runtime</artifactId>
+						<version>3.0.2</version>
+					</dependency>
+					<dependency>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>jaxb-xjc</artifactId>
+						<version>3.0.2</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<id>xjc1</id>
@@ -218,7 +248,6 @@
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<target>2.1</target>
 							<sources>
 								<source>src/main/resources/schemi/xsd/govpayStampe.xsd</source>
 							</sources>
@@ -232,7 +261,7 @@
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<target>2.1</target>
+							<target>3.0</target>
 							<sources>
 								<source>src/main/resources/schemi/xsd/avvisiPagamento_v2.xsd</source>
 							</sources>

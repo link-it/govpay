@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -893,6 +895,45 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			}
 
 			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);
+	
+		}catch(ServiceException | NotImplementedException e){
+			rollback = true;
+			this.logError(e); throw e;
+		}catch(Exception e){
+			rollback = true;
+			this.logError(e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
+		}finally{
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
+		}
+	
+	}
+	
+	@Override
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException, NotImplementedException {
+		
+		Connection connection = null;
+		boolean oldValueAutoCommit = false;
+		boolean rollback = false;
+		try{
+			
+			// check parameters
+			if(sql==null){
+				throw new ServiceException("Parameter 'sql' is null");
+			}
+		
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			// transaction
+			if(this.jdbcProperties.isAutomaticTransactionManagement()){
+				oldValueAutoCommit = connection.getAutoCommit();
+				connection.setAutoCommit(false);
+			}
+
+			return this.serviceCRUD.nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);
 	
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;

@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.crypt.Password;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -52,6 +52,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.CryptoUtils;
 import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 
@@ -120,7 +121,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, UnprocessableEntityException {  
+	ApplicazioneNonTrovataException, UnprocessableEntityException, UtilsException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putApplicazioneDTO.getIdOperatore());
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
@@ -209,11 +210,10 @@ public class ApplicazioniDAO extends BaseDAO {
 			// se la stringa ricevuta e' vuota non la aggiorno, altrimenti la cambio
 			if(StringUtils.isNotEmpty(putApplicazioneDTO.getApplicazione().getUtenza().getPassword())) {
 				// cifratura dalla nuova password 
-				Password password = new Password();
 				String pwdTmp = putApplicazioneDTO.getApplicazione().getUtenza().getPassword();
-				String cryptPwd = password.cryptPw(pwdTmp);
+				String cryptPwd = CryptoUtils.cryptPw(pwdTmp);
 				
-//				log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]") 
+//				CryptoUtils.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]") 
 				putApplicazioneDTO.getApplicazione().getUtenza().setPassword(cryptPwd);
 			}
 
@@ -265,7 +265,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		return applicazioneDTOResponse;
 	}
 
-	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, ValidationException{
+	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, ValidationException, UtilsException{
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 		try {

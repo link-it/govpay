@@ -7,35 +7,76 @@
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
-	<modules>
-		<module>jars</module>
-		<module>wars</module>
-		<module>ear</module>
-	</modules>
-
 	<profiles>
 		<profile>
-			<id>java-1.8</id>
+			<id>govpay-ear</id>
 			<properties>
-				<javaVersion>1.8</javaVersion>
-				
-				<!-- cxf -->
-				<cxf.version>3.5.9</cxf.version>
-				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
+				<javaVersion>21</javaVersion>
 			</properties>
+			<modules>
+				<module>jars</module>
+				<module>wars</module>
+				<module>ear</module>
+			</modules>
+			<dependencyManagement>
+				<dependencies>
+					<dependency>
+						<groupId>it.govpay</groupId>
+						<artifactId>ear</artifactId>
+						<version>${project.version}</version>
+						<type>ear</type>
+						<scope>compile</scope>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jboss.as.plugins</groupId>
+						<artifactId>jboss-as-maven-plugin</artifactId>
+						<version>7.6.Final</version>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<activation>
-           			<activeByDefault>true</activeByDefault>
-        		</activation>
-			<id>java-11</id>
+           		<activeByDefault>true</activeByDefault>
+        	</activation>
+			<id>govpay-tomcat</id>
 			<properties>
-				<javaVersion>11</javaVersion>
-				<!-- cxf -->
-				<cxf.version>3.6.5</cxf.version>
-				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
-				<jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
+				<javaVersion>21</javaVersion>
+				<!-- Nomi dei war -->
+				<api-backoffice-tomcat-war-name>govpay-api-backoffice</api-backoffice-tomcat-war-name>
+				<api-jppapdp-tomcat-war-name>govpay-api-jppapdp</api-jppapdp-tomcat-war-name>
+				<api-pagamento-tomcat-war-name>govpay-api-pagamento</api-pagamento-tomcat-war-name>
+				<api-pagopa-tomcat-war-name>govpay-api-pagopa</api-pagopa-tomcat-war-name>
+				<api-pendenze-tomcat-war-name>govpay-api-pendenze</api-pendenze-tomcat-war-name>
+				<api-ragioneria-tomcat-war-name>govpay-api-ragioneria</api-ragioneria-tomcat-war-name>
+				<api-user-tomcat-war-name>govpay-api-user</api-user-tomcat-war-name>
+				<web-connector-tomcat-war-name>govpay-web-connector</web-connector-tomcat-war-name>
+				<web-console-tomcat-war-name>govpay-console</web-console-tomcat-war-name>
+
+				<!-- versioni jar -->
+				<angus-mail.version>2.0.3</angus-mail.version>
 			</properties>
+			<modules>
+				<module>jars</module>
+				<module>wars</module>
+			</modules>
+			<dependencyManagement>
+				<dependencies>
+					<dependency>
+						<groupId>org.eclipse.angus</groupId>
+    					<artifactId>angus-mail</artifactId>
+    					<version>${angus-mail.version}</version>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
 		</profile>
 	</profiles>
 
@@ -45,46 +86,52 @@
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
-		
+
 		<!-- op2 -->
-		<openspcoop2.version>3.2.1</openspcoop2.version>
-		
+		<openspcoop2.version>3.4.0-SNAPSHOT</openspcoop2.version>
+
 		<!-- log -->
-		<slf4j.version>1.7.36</slf4j.version>
+		<slf4j.version>2.0.13</slf4j.version>
 		<logger.version>2.23.1</logger.version>
-		
+
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-4</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.57</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.6.14</swagger.version>
 		<swagger.v3.version>2.2.22</swagger.v3.version>
 		<swagger.parser.v3.version>2.1.22</swagger.parser.v3.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<guava.version>33.2.1-jre</guava.version>
-		
+
+		<!-- cxf -->
+		<cxf.version>4.1.0</cxf.version>
+		<cxf.xjc.runtime.version>4.0.1</cxf.xjc.runtime.version>
+
+		<!-- angus-mail-->
+		<angus-mail.version>1.1.0</angus-mail.version>
+
 		<!-- jackson -->
 		<jackson.version>2.17.1</jackson.version>
-		
+
 		<!-- Jersey -->
-		<jersey.version>2.38</jersey.version>
-		
+		<jersey.version>3.1.7</jersey.version>
+
 		<!-- Spring -->
-		<spring.gov4j.version>5.3.39-gov4j-1</spring.gov4j.version>
-		<spring.version>5.3.39</spring.version>
-		
+		<spring.version>6.2.1</spring.version>
+
 		<!-- Spring Security -->
-		<spring.security.version>5.8.15</spring.security.version>
-		
+		<spring.security.version>6.4.2</spring.security.version>
+
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>2.4.4</spring.ldap.version>
-		
+		<spring.ldap.version>3.2.10</spring.ldap.version>
+
 		<!-- nimbus-jose-jwt version -->
 		<nimbus-jose-jwt.version>9.39.3</nimbus-jose-jwt.version>
-		
+
 		<!-- joda time -->
 		<joda-time.version>2.10</joda-time.version>
 
 		<!-- Commons -->
-		<commons-jcs-core.version>2.2.1</commons-jcs-core.version>
+		<commons-jcs-core.version>3.2.1</commons-jcs-core.version>
 		<commons.csv.version>1.11.0</commons.csv.version>
 		<commons.codec.version>1.17.0</commons.codec.version>
 		<commons.io.version>2.16.1</commons.io.version>
@@ -92,55 +139,60 @@
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.lang3.version>3.14.0</commons.lang3.version>
 		<commons.pool2.version>2.12.0</commons.pool2.version>
+		<commons.net.version>3.9.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
-		
+
 		<!-- xmlsec -->
-		<xmlsec.version>2.3.4</xmlsec.version>
-		
+		<xmlsec.version>4.0.2</xmlsec.version>
+
 		<!-- freemarker -->
-		<freemarker.version>2.3.28</freemarker.version>
-		
+		<freemarker.version>2.3.33</freemarker.version>
+
 		<!-- http client -->
-		<httpclient.version>4.5.14</httpclient.version>
-		
+		<httpclient.version>5.3.1</httpclient.version>
+
 		<!-- concurrent -->
 		<concurrent.version>1.3.4</concurrent.version>
-		
+
 		<!-- jsch -->
-		<jsch.version>0.1.54</jsch.version>
-		
+		<jsch.version>0.2.18</jsch.version>
+
 		<!-- fge_json-schema-validator -->
-		<fge_json-schema-validator.version>2.2.10</fge_json-schema-validator.version>
-		
+		<fge_json-schema-validator.version>2.2.14</fge_json-schema-validator.version>
+
 		<!-- networknt_json-schema-validator -->
-		<networknt_json-schema-validator.version>1.0.76</networknt_json-schema-validator.version>
-		
+		<networknt_json-schema-validator.version>1.4.0</networknt_json-schema-validator.version>
+
 		<!-- org.json -->
 		<org.json.json.version>20240303</org.json.json.version>
-		
+
 		<!-- xercesImpl -->
 		<xercesImpl.version>2.12.2</xercesImpl.version>
-		
+
 		<!-- mime-util -->
 		<mime-util.version>2.1.1</mime-util.version>
-		
+
 		<!-- xml-security-impl -->
 		<xml-security-impl.version>1.0</xml-security-impl.version>
-		
+
 		<!-- servlet api -->
-		<javax.servlet.api3.version>3.1.0</javax.servlet.api3.version>
-		
+		<jakarta.servlet.api3.version>6.1.0</jakarta.servlet.api3.version>
+
 		<!-- JaxWS-API -->
-		<jaxws-api.version>2.3.1</jaxws-api.version>
-		
+		<jakarta-api-version>4.0.2</jakarta-api-version>
+
+		<!-- XML SOAP API -->
+		<jakarta-soap-api-version>3.0.2</jakarta-soap-api-version>
+		<jakarta-saaj-impl-version>3.0.4</jakarta-saaj-impl-version>
+
 		<!-- webjars- swagger ui api -->
-		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
-		
+		<webjars-swaggerui.version>5.17.14</webjars-swaggerui.version>
+
 		<!-- Json Path -->
 		<json-path.version>2.9.0</json-path.version>
 		<json-smart.version>2.5.2</json-smart.version>
-		<accessors-smart.version>1.3</accessors-smart.version>
-		
+		<accessors-smart.version>2.5.1</accessors-smart.version>
+
 		<!-- Base64 java8 migration class. -->
         <!-- Questo artefatto antico deve essere incluso nel pom perchè i progetti client generati
 	        da swagger-generator utilizzando la libreria jersey2 fanno uso di questo package
@@ -148,15 +200,15 @@
 	        Una volta aggiornato il generatore, all'ultima versione, si suppone che i client generati con jersey2 utilizzino
 	        la classe nativa di java8. E quindi questa dipendenza diventerà inutile. -->
         <migbase64.version>2.2</migbase64.version>
-        
+
         <!-- Postgres driver -->
         <postgresql.driver.version>42.7.3</postgresql.driver.version>
-        
+
         <!-- Stampe -->
         <!-- xalan -->
         <xalan.version>2.7.3</xalan.version>
         <!-- Jaxen -->
-        <jaxen.version>1.2.0</jaxen.version>
+        <jaxen.version>2.0.0</jaxen.version>
         <!-- barbecue -->
         <barbecue.version>1.5-beta1</barbecue.version>
         <!-- Groovy -->
@@ -166,72 +218,74 @@
         <!-- xmlgraphics-batik-bridge -->
         <batik-bridge.version>1.17</batik-bridge.version>
         <!-- com.google.zxing.javase -->
-        <com.google.zxing.javase.version>3.4.0</com.google.zxing.javase.version>
+        <com.google.zxing.javase.version>3.5.3</com.google.zxing.javase.version>
         <!-- dynamicreports-core -->
-        <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
+        <dynamicreports-core.version>6.20.1</dynamicreports-core.version>
         <!-- jasperreports -->
         <jasperreports.version>6.21.3</jasperreports.version>
-        <!-- jfreechart -->
-        <jfreechart.version>1.0.19</jfreechart.version>
-        
-		<jaxb.api.version>2.3.1</jaxb.api.version>
-		<jaxb.core.version>2.3.0.1</jaxb.core.version>
-		<jaxb.impl.version>2.3.7</jaxb.impl.version>
-		<jaxb.xjc.version>2.3.7</jaxb.xjc.version>
-		<jaxws-jsr181-api.version>1.0-MR1</jaxws-jsr181-api.version>
-		<javax.activation>1.1.1</javax.activation>
-		
+        <!-- barcode4j -->
+        <barcode4j.version>2.1</barcode4j.version>
+        <!-- ant version -->
+        <ant.version>1.10.14</ant.version>
+
+		<jaxb.api.version>3.0.1</jaxb.api.version>
+		<jaxb.core.version>3.0.2</jaxb.core.version>
+		<jaxb.impl.version>3.0.2</jaxb.impl.version>
+		<jaxb.xjc.version>3.0.2</jaxb.xjc.version>
+		<jaxws-api.version>3.0.0</jaxws-api.version>
+		<jakarta.activation>2.1.3</jakarta.activation>
+
 		<!-- javax.mail -->
-		<javax.mail.version>1.4.4</javax.mail.version>
-        
+		<jakarta.mail.version>2.1.3</jakarta.mail.version>
+
         <!-- javax validation-->
-        <javax.validation-api.version>1.0.0.GA</javax.validation-api.version>
-        
+        <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
+
         <!-- javassist -->
-        <javassist.version>3.28.0-GA</javassist.version>
-        
+        <javassist.version>3.30.2-GA</javassist.version>
+
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
         <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
-        
-        <!-- Esclusione dal controllo della regola java:S2647 la classe BasicClientCORE.java, la regola consiglia di non usare credenziali basic per l'autenticazione, 
+
+        <!-- Esclusione dal controllo della regola java:S2647 la classe BasicClientCORE.java, la regola consiglia di non usare credenziali basic per l'autenticazione,
         	che sono invece necessarie perche' previste di protocolli di connessione verso l'esterno. -->
         <sonar.issue.ignore.multicriteria.coreFP1.ruleKey>java:S2647</sonar.issue.ignore.multicriteria.coreFP1.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP1.resourceKey>**/src/main/java/it/govpay/core/utils/client/BasicClientCORE.java</sonar.issue.ignore.multicriteria.coreFP1.resourceKey>
-        
+
         <!-- Esclusione dal controllo della regola java:S5042 la classe SpedizioneTracciatoNotificaPagamentiThread.java, la regola consiglia di non scompattare file zip senza conoscerne
         	l'origine, I file trattati dalla classe in questione sono degli zip prodotti internamente che vengono divisi per essere spediti verso un'API Rest. -->
         <sonar.issue.ignore.multicriteria.coreFP2.ruleKey>java:S5042</sonar.issue.ignore.multicriteria.coreFP2.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP2.resourceKey>**/src/main/java/it/govpay/core/utils/thread/SpedizioneTracciatoNotificaPagamentiThread.java</sonar.issue.ignore.multicriteria.coreFP2.resourceKey>
-        
+
         <!-- Esclusione dal controllo della regola java:S5804 la classe AutenticazioneUtenzeRegistrateDAO.java, la regola consiglia di non restituire i dettagli riguardanti errori
-        	di autenticazione (user/pwd errate, utenze non esistenti, ecc...), in GovPay le eccezioni lanciate da questa classe sono catturate dagli handler di Spring-Sec che rispondono 
+        	di autenticazione (user/pwd errate, utenze non esistenti, ecc...), in GovPay le eccezioni lanciate da questa classe sono catturate dagli handler di Spring-Sec che rispondono
         	con un messaggio generico 'Bad Credential' a chi ha provato a fare l'autenticazione. -->
         <sonar.issue.ignore.multicriteria.coreFP3.ruleKey>java:S5804</sonar.issue.ignore.multicriteria.coreFP3.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP3.resourceKey>**/src/main/java/it/govpay/core/dao/autorizzazione/AutenticazioneUtenzeRegistrateDAO.java</sonar.issue.ignore.multicriteria.coreFP3.resourceKey>
-        
+
         <!-- Esclusione dal controllo della regola java:S1168 la classe AuthorizationManager.java, la regola consiglia di non restituire una Collection vuota anziche null per evitare di aggiungere complessita' computazionale
         	nel metodo chiamante. Nella funzionalita' di controllo delle autorizzazioni sulle UO e' il valore null e il valore 'lista vuota' hanno due significati completamente distinti nel decidere le autorizzazioni di un'utenza. -->
         <sonar.issue.ignore.multicriteria.coreFP4.ruleKey>java:S1168</sonar.issue.ignore.multicriteria.coreFP4.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP4.resourceKey>**/src/main/java/it/govpay/core/autorizzazione/AuthorizationManager.java</sonar.issue.ignore.multicriteria.coreFP4.resourceKey>
-        
+
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
 		<owasp.plugin.version>12.1.0</owasp.plugin.version>
 		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnAnyVulnerability>false</owasp.plugin.failBuildOnAnyVulnerability>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
-        
+
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-		
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>${commons.codec.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>xml-adapters</artifactId>
@@ -266,20 +320,12 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>ear</artifactId>
-				<version>${project.version}</version>
-				<type>ear</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>api-pagopa</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>api-jppapdp</artifactId>
@@ -287,7 +333,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>orm-beans</artifactId>
@@ -358,20 +404,20 @@
 				<version>${project.version}</version>
 				<type>jar</type>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>appio-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
-			</dependency>	
-			
+			</dependency>
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>jppapdp-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
-			</dependency>		
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -396,7 +442,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>api-user</artifactId>
@@ -437,7 +483,7 @@
 
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
+				<artifactId>log4j-slf4j2-impl</artifactId>
 				<version>${logger.version}</version>
 			</dependency>
 
@@ -446,7 +492,7 @@
 				<artifactId>log4j-1.2-api</artifactId>
 				<version>${logger.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-text</artifactId>
@@ -464,7 +510,7 @@
 				<artifactId>commons-lang</artifactId>
 				<version>${commons.lang.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.commons</groupId>
     			<artifactId>commons-lang3</artifactId>
@@ -616,43 +662,43 @@
 				<artifactId>openspcoop2_utils-mime</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-jaxrs</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-io</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-service</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-certificate</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-regexp</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-mail</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-crypt</artifactId>
@@ -660,14 +706,20 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-random</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents.client5</groupId>
+				<artifactId>httpclient5</artifactId>
 				<version>${httpclient.version}</version>
 			</dependency>
 
 			<dependency>
 			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-jcs-core</artifactId>
+			    <artifactId>commons-jcs3-core</artifactId>
 			    <version>${commons-jcs-core.version}</version>
 			</dependency>
 
@@ -678,21 +730,33 @@
 			</dependency>
 
 			<dependency>
-			    <groupId>com.github.fge</groupId>
+			    <groupId>com.github.java-json-tools</groupId>
 			    <artifactId>json-schema-validator</artifactId>
 			   <version>${fge_json-schema-validator.version}</version>
 			</dependency>
 
 			<dependency>
-			    <groupId>javax.servlet</groupId>
-			    <artifactId>javax.servlet-api</artifactId>
-			    <version>${javax.servlet.api3.version}</version>
+			    <groupId>jakarta.servlet</groupId>
+			    <artifactId>jakarta.servlet-api</artifactId>
+			    <version>${jakarta.servlet.api3.version}</version>
 			</dependency>
-			
+
 			<dependency>
-				<groupId>javax.xml.ws</groupId>
-				<artifactId>jaxws-api</artifactId>
-				<version>${jaxws-api.version}</version>
+				<groupId>jakarta.xml.ws</groupId>
+				<artifactId>jakarta.xml.ws-api</artifactId>
+				<version>${jakarta-api-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>jakarta.xml.soap</groupId>
+				<artifactId>jakarta.xml.soap-api</artifactId>
+				<version>${jakarta-soap-api-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.messaging.saaj</groupId>
+				<artifactId>saaj-impl</artifactId>
+				<version>${jakarta-saaj-impl-version}</version>
 			</dependency>
 
 			<dependency>
@@ -757,7 +821,7 @@
 
 			<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 			<dependency>
-				<groupId>com.jcraft</groupId>
+				<groupId>com.github.mwiede</groupId>
 				<artifactId>jsch</artifactId>
 				<version>${jsch.version}</version>
 			</dependency>
@@ -780,19 +844,29 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.v3.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
         		<artifactId>swagger-jaxrs2</artifactId>
 				<version>${swagger.v3.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>io.github.classgraph</groupId>
+						<artifactId>classgraph</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 			    <groupId>io.swagger.parser.v3</groupId>
 			    <artifactId>swagger-parser</artifactId>
@@ -804,7 +878,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.parser.v3</groupId>
 				<artifactId>swagger-parser-core</artifactId>
@@ -822,7 +896,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.codegen.v3</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
@@ -850,13 +924,13 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 			    <groupId>com.google.guava</groupId>
 			    <artifactId>guava</artifactId>
 			    <version>${guava.version}</version>
 			</dependency>
-			
+
 			<dependency>
 	            <groupId>org.apache.cxf</groupId>
 	            <artifactId>cxf-core</artifactId>
@@ -872,7 +946,7 @@
 					</exclusion>
 				</exclusions>
 	        </dependency>
-	        
+
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-service-description</artifactId>
@@ -897,7 +971,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-client</artifactId>
@@ -921,7 +995,7 @@
 					</exclusion>
 				</exclusions>
 	        </dependency>
-	        
+
 	        <dependency>
 	            <groupId>org.apache.cxf</groupId>
 	            <artifactId>cxf-rt-frontend-jaxws</artifactId>
@@ -930,6 +1004,22 @@
 					<exclusion>
 						<groupId>org.apache.cxf</groupId>
 	            		<artifactId>cxf-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.cxf</groupId>
+	            		<artifactId>cxf-rt-frontend-simple</artifactId>
+					</exclusion>
+				</exclusions>
+	        </dependency>
+
+	         <dependency>
+	            <groupId>org.apache.cxf</groupId>
+        		<artifactId>cxf-rt-frontend-simple</artifactId>
+	            <version>${cxf.version}</version>
+	            <exclusions>
+					<exclusion>
+						<groupId>org.eclipse.angus</groupId>
+	            		<artifactId>angus-mail</artifactId>
 					</exclusion>
 				</exclusions>
 	        </dependency>
@@ -961,7 +1051,7 @@
 					</exclusion>
 				</exclusions>
             </dependency>
-            
+
             <dependency>
 	            <groupId>org.apache.cxf</groupId>
 	            <artifactId>cxf-rt-ws-policy</artifactId>
@@ -985,7 +1075,7 @@
 					</exclusion>
 				</exclusions>
             </dependency>
-            
+
             <dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-features-logging</artifactId>
@@ -997,7 +1087,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 		        <groupId>org.apache.cxf</groupId>
 		        <artifactId>cxf-rt-rs-extension-providers</artifactId>
@@ -1009,7 +1099,7 @@
 					</exclusion>
 				</exclusions>
 		    </dependency>
-		    
+
 		    <dependency>
 		        <groupId>org.apache.cxf</groupId>
 		        <artifactId>cxf-rt-rs-security-oauth2</artifactId>
@@ -1022,10 +1112,22 @@
 				</exclusions>
 		    </dependency>
 
+		    <dependency>
+				<groupId>org.eclipse.angus</groupId>
+        		<artifactId>angus-mail</artifactId>
+        		<version>${angus-mail.version}</version>
+	        </dependency>
+
 			<!-- Jackson -->
 			<dependency>
 				<groupId>com.fasterxml.jackson.module</groupId>
 				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 
@@ -1046,43 +1148,37 @@
 				<artifactId>jackson-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.jaxrs</groupId>
 				<artifactId>jackson-jaxrs-json-provider</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
-				<groupId>com.fasterxml.jackson.jaxrs</groupId>
-				<artifactId>jackson-jaxrs-xml-provider</artifactId>
+				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+				<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
-				<artifactId>jackson-datatype-joda</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-jsr310</artifactId>
 				<version>${jackson.version}</version>
-	        </dependency> 
-	        
+	        </dependency>
+
 	        <dependency>
 				<groupId>com.fasterxml.jackson.dataformat</groupId>
   				<artifactId>jackson-dataformat-xml</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency>
-	        
+
 	        <dependency>
 				<groupId>com.fasterxml.jackson.dataformat</groupId>
   				<artifactId>jackson-dataformat-yaml</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency>
-			
+
 			<!-- Jersey -->
 			<dependency>
 	            <groupId>org.glassfish.jersey.core</groupId>
@@ -1110,51 +1206,51 @@
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
 				<version>${jersey.version}</version>
-	        </dependency> 
-			
+	        </dependency>
+
 			<!-- Spring -->
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>${spring.gov4j.version}</version>
+                <version>${spring.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>${spring.gov4j.version}</version>
+                <version>${spring.version}</version>
             </dependency>
-            
+
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>${spring.gov4j.version}</version>
+                <version>${spring.version}</version>
             </dependency>
-            
+
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>${spring.gov4j.version}</version>
+                <version>${spring.version}</version>
             </dependency>
-            
+
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            
+
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-expression</artifactId>
-                <version>${spring.gov4j.version}</version>
+                <version>${spring.version}</version>
             </dependency>
-            
+
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-jcl</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            
+
             <!-- Spring Security -->
             <dependency>
             	<groupId>org.springframework.security</groupId>
@@ -1179,7 +1275,7 @@
 					</exclusion>
 				</exclusions>
             </dependency>
-            
+
             <dependency>
             	<groupId>org.springframework.security</groupId>
             	<artifactId>spring-security-core</artifactId>
@@ -1207,7 +1303,7 @@
 					</exclusion>
 				</exclusions>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
@@ -1227,7 +1323,7 @@
 					</exclusion>
 				</exclusions>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-ldap</artifactId>
@@ -1243,7 +1339,7 @@
 					</exclusion>
 				</exclusions>
             </dependency>
-            
+
             <!-- Spring Security OAuth2 -->
 		    <dependency>
 			    <groupId>org.springframework.security</groupId>
@@ -1251,7 +1347,7 @@
 			    <version>${spring.security.version}</version>
 			    <exclusions>
 					<exclusion>
-						<groupId>com.nimbusds</groupId>						
+						<groupId>com.nimbusds</groupId>
 						<artifactId>nimbus-jose-jwt</artifactId>
 					</exclusion>
 					<exclusion>
@@ -1260,7 +1356,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			 <dependency>
 			    <groupId>org.springframework.security</groupId>
 			    <artifactId>spring-security-oauth2-client</artifactId>
@@ -1272,7 +1368,7 @@
 					</exclusion>
 			    </exclusions>
 			</dependency>
-			
+
 			<dependency>
 			    <groupId>org.springframework.security</groupId>
 			    <artifactId>spring-security-oauth2-resource-server</artifactId>
@@ -1282,9 +1378,9 @@
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-core</artifactId>
 					</exclusion>
-			    </exclusions>	
+			    </exclusions>
 			</dependency>
-            
+
             <!-- Spring Security Ldap Plugin -->
         	<dependency>
     	        <groupId>org.springframework.ldap</groupId>
@@ -1301,28 +1397,22 @@
 					</exclusion>
 				</exclusions>
         	</dependency>
-        	
+
         	<!-- nimbus jose jwt-->
         	<dependency>
-				<groupId>com.nimbusds</groupId>						
+				<groupId>com.nimbusds</groupId>
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>${nimbus-jose-jwt.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>${joda-time.version}</version>
-			</dependency>
-			
 			<!-- webjar-swagger ui -->
 			<dependency>
 				<groupId>org.webjars</groupId>
 				<artifactId>swagger-ui</artifactId>
 				<version>${webjars-swaggerui.version}</version>
 			</dependency>
-			
-			<!-- Json Path -->			
+
+			<!-- Json Path -->
             <dependency>
 	            <groupId>com.jayway.jsonpath</groupId>
 	            <artifactId>json-path</artifactId>
@@ -1334,7 +1424,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>net.minidev</groupId>
 				<artifactId>json-smart</artifactId>
@@ -1346,7 +1436,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 	            <groupId>net.minidev</groupId>
 	            <artifactId>accessors-smart</artifactId>
@@ -1358,13 +1448,19 @@
 	                    </exclusion>
 	            </exclusions>
            </dependency>
-           
+
            <dependency>
 	            <groupId>org.apache.commons</groupId>
 	            <artifactId>commons-email</artifactId>
 	            <version>${commons.email.version}</version>
            </dependency>
-           
+
+           <dependency>
+	            <groupId>commons-net</groupId>
+	            <artifactId>commons-net</artifactId>
+	            <version>${commons.net.version}</version>
+           </dependency>
+
            <!-- Base64 Java8 migration -->
            <dependency>
 	           <groupId>com.brsanthu</groupId>
@@ -1379,32 +1475,44 @@
 			    <version>${postgresql.driver.version}</version>
 			    <scope>provided</scope>
 			</dependency>
-			
+
 			<!-- stampe -->
 			<dependency>
 				<groupId>com.google.zxing</groupId>
 				<artifactId>javase</artifactId>
 				<version>${com.google.zxing.javase.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
 				<artifactId>xmlgraphics-commons</artifactId>
 				<version>${xmlgraphics.commons.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy-all</artifactId>
 				<version>${groovy.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>net.sourceforge.barbecue</groupId>
 				<artifactId>barbecue</artifactId>
 				<version>${barbecue.version}</version>
 			</dependency>
-	
+
+			<dependency>
+				<groupId>net.sf.barcode4j</groupId>
+	   			<artifactId>barcode4j</artifactId>
+	   			<version>${barcode4j.version}</version>
+			</dependency>
+
+			<dependency>
+			    <groupId>org.apache.ant</groupId>
+			    <artifactId>ant</artifactId>
+			    <version>${ant.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>xalan</groupId>
 				<artifactId>xalan</artifactId>
@@ -1416,13 +1524,13 @@
 	                    </exclusion>
 	            </exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>xalan</groupId>
 				<artifactId>serializer</artifactId>
 				<version>${xalan.version}</version>
 			</dependency>
-			
+
 			<dependency>
 			    <groupId>jaxen</groupId>
 			    <artifactId>jaxen</artifactId>
@@ -1430,8 +1538,8 @@
 			</dependency>
 
 				<dependency>
-				        <groupId>javax.xml.bind</groupId>
-				        <artifactId>jaxb-api</artifactId>
+				        <groupId>jakarta.xml.bind</groupId>
+				        <artifactId>jakarta.xml.bind-api</artifactId>
 				        <version>${jaxb.api.version}</version>
 				</dependency>
 				<dependency>
@@ -1450,29 +1558,29 @@
 				        <version>${jaxb.xjc.version}</version>
 				</dependency>
 				<dependency>
-				        <groupId>javax.jws</groupId>
-				        <artifactId>jsr181-api</artifactId>
-				        <version>${jaxws-jsr181-api.version}</version>
+				        <groupId>jakarta.jws</groupId>
+				        <artifactId>jakarta.jws-api</artifactId>
+				        <version>${jaxws-api.version}</version>
 				</dependency>
-				
+
 				<dependency>
-					<groupId>javax.activation</groupId>
-					<artifactId>activation</artifactId>
-					<version>${javax.activation}</version>
-				</dependency>		
-				
-				<dependency>
-				    <groupId>javax.mail</groupId>
-				    <artifactId>mail</artifactId>
-				    <version>${javax.mail.version}</version>
+					<groupId>jakarta.activation</groupId>
+					<artifactId>jakarta.activation-api</artifactId>
+					<version>${jakarta.activation}</version>
 				</dependency>
-				
+
 				<dependency>
-				    <groupId>javax.validation</groupId>
-					<artifactId>validation-api</artifactId>
-				    <version>${javax.validation-api.version}</version>
+				    <groupId>jakarta.mail</groupId>
+				    <artifactId>jakarta.mail-api</artifactId>
+				    <version>${jakarta.mail.version}</version>
 				</dependency>
-				
+
+				<dependency>
+				    <groupId>jakarta.validation</groupId>
+					<artifactId>jakarta.validation-api</artifactId>
+				    <version>${jakarta.validation-api.version}</version>
+				</dependency>
+
 				<dependency>
 				    <groupId>org.javassist</groupId>
 					<artifactId>javassist</artifactId>
@@ -1525,19 +1633,10 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.13.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jboss.as.plugins</groupId>
-				<artifactId>jboss-as-maven-plugin</artifactId>
-				<version>7.6.Final</version>
-				<inherited>true</inherited>
-				<configuration>
-					<skip>true</skip>
+					<source>21</source>
+					<target>21</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -1569,10 +1668,6 @@
 <!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
-								<suppressionFile>${owasp.falsePositives.dir}/CVE-2023-30614.xml</suppressionFile>
-								<suppressionFile>${owasp.falsePositives.dir}/CVE-2024-38820.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
-                            	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>
                             	<suppressionFile>${owasp.falsePositives.dir}/openspcoop2_utils-crypt.xml</suppressionFile>
                             </suppressionFiles>
@@ -1584,7 +1679,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>		
+			</plugin>
 	        <plugin>
 	            <groupId>com.github.spotbugs</groupId>
 	            <artifactId>spotbugs-maven-plugin</artifactId>
@@ -1599,6 +1694,10 @@
 	                </plugins>
 	            </configuration>
 	        </plugin>
+	        <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
 		</plugins>
 	</build>
 	<repositories>

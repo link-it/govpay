@@ -17,14 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
@@ -33,15 +34,15 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Audit">
- * 		&lt;sequence>
- * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idOggetto" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tipoOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="oggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="Audit"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idOggetto" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="tipoOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="oggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * @version $Rev$, $Date$
@@ -64,25 +65,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "Audit")
 
-public class Audit extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class Audit extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public Audit() {
-	  //donothing
-  }
-
-  public Long getId() {
-    if(this.id!=null) {
-		return this.id;
-    } else {
-		return Long.valueOf(-1);
-    }
-  }
-
-  public void setId(Long id) {
-    if(id!=null) {
-		this.id=id;
-    } else {
-		this.id=Long.valueOf(-1);
-    }
+    super();
   }
 
   public java.util.Date getData() {
@@ -127,9 +112,6 @@ public class Audit extends org.openspcoop2.utils.beans.BaseBean implements Seria
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.AuditModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.Audit.modelStaticInstance==null){
@@ -144,23 +126,23 @@ public class Audit extends org.openspcoop2.utils.beans.BaseBean implements Seria
   }
 
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="data",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date data;
 
   @XmlElement(name="idOperatore",required=true,nillable=false)
   protected IdOperatore idOperatore;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="idOggetto",required=true,nillable=false)
   protected long idOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoOggetto",required=true,nillable=false)
   protected java.lang.String tipoOggetto;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="oggetto",required=true,nillable=false)
   protected java.lang.String oggetto;
 

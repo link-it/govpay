@@ -21,7 +21,7 @@ package it.govpay.rs.v1.authentication.preauth.filter;
 
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -85,8 +85,8 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 			StringBuilder sbNewCertificate = new StringBuilder();
 			boolean forceEnrichPEMBeginEnd = replaceCharacters(config, headerValue, sbNewCertificate);
 			headerValue = sbNewCertificate.toString();
-
-			if(config.isEnrich_BEGIN_END() || forceEnrichPEMBeginEnd) {
+			
+			if(config.isEnrichPEMBeginEnd() || forceEnrichPEMBeginEnd) {
 				headerValue = addPEMDeclaration(headerValue, forceEnrichPEMBeginEnd);
 			}
 

@@ -89,14 +89,14 @@ public class MessaggiPagoPAUtils {
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
-		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
+		ctRpt.setDataOraMessaggioRichiesta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.N_A); // Informazione non presente nella V2 ma campo obbligatorio nella V1
 		// ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante)) Versante??
 		ctRpt.setSoggettoPagatore(toCtSoggettoPagatore(data.getDebtor()));
 		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
-		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
+		datiVersamento.setDataEsecuzionePagamento(DateUtils.toLocalDate(rpt.getDataMsgRichiesta()));
 		datiVersamento.setImportoTotaleDaVersare(data.getPaymentAmount());
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
@@ -147,14 +147,14 @@ public class MessaggiPagoPAUtils {
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
-		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
+		ctRpt.setDataOraMessaggioRichiesta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.N_A); // Informazione non presente nella V2 ma campo obbligatorio nella V1
 		// ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante)) Versante??
 		ctRpt.setSoggettoPagatore(toCtSoggettoPagatore(data.getDebtor()));
 		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
-		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
+		datiVersamento.setDataEsecuzionePagamento(DateUtils.toLocalDate(rpt.getDataMsgRichiesta()));
 		datiVersamento.setImportoTotaleDaVersare(data.getPaymentAmount());
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
@@ -209,7 +209,7 @@ public class MessaggiPagoPAUtils {
 		Dominio dominio = versamento.getDominio(configWrapper);
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
-		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
+		ctRt.setDataOraMessaggioRicevuta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
 		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
 		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
 		StOutcome ctReceiptOutcome = receipt.getOutcome();
@@ -234,7 +234,7 @@ public class MessaggiPagoPAUtils {
 			ctDatiSingoloPagamentoRT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
 //			ctDatiSingoloPagamentoRT.setCommissioniApplicatePA(null);
 			ctDatiSingoloPagamentoRT.setCommissioniApplicatePSP(receipt.getFee());
-			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(receipt.getPaymentDateTime());
+			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(DateUtils.toLocalDate(receipt.getPaymentDateTime()));
 			ctDatiSingoloPagamentoRT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
 			ctDatiSingoloPagamentoRT.setEsitoSingoloPagamento(receipt.getOutcome().toString()); 
 			ctDatiSingoloPagamentoRT.setIdentificativoUnivocoRiscossione(receipt.getReceiptId());
@@ -258,7 +258,7 @@ public class MessaggiPagoPAUtils {
 		ctIstitutoAttestante.setDenominazioneAttestante(receipt.getPSPCompanyName());
 		
 		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
-		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());
+		ctRt.setRiferimentoDataRichiesta(DateUtils.toLocalDate(rpt.getDataMsgRicevuta()));
 		ctRt.setRiferimentoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRt.setSoggettoPagatore(toCtSoggettoPagatore(receipt.getDebtor()));
 		ctRt.setSoggettoVersante(null); // informazione non presente
@@ -278,7 +278,7 @@ public class MessaggiPagoPAUtils {
 		Dominio dominio = versamento.getDominio(configWrapper); 
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
-		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
+		ctRt.setDataOraMessaggioRicevuta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
 		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
 		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
 		StOutcome ctReceiptOutcome = receipt.getOutcome();
@@ -298,7 +298,7 @@ public class MessaggiPagoPAUtils {
 			ctDatiSingoloPagamentoRT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
 //			ctDatiSingoloPagamentoRT.setCommissioniApplicatePA(null);
 			ctDatiSingoloPagamentoRT.setCommissioniApplicatePSP(receipt.getFee());
-			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(receipt.getPaymentDateTime());
+			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(DateUtils.toLocalDate(receipt.getPaymentDateTime()));
 			ctDatiSingoloPagamentoRT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
 			ctDatiSingoloPagamentoRT.setEsitoSingoloPagamento(receipt.getOutcome().toString()); 
 			ctDatiSingoloPagamentoRT.setIdentificativoUnivocoRiscossione(receipt.getReceiptId());
@@ -323,7 +323,7 @@ public class MessaggiPagoPAUtils {
 		ctIstitutoAttestante.setDenominazioneAttestante(receipt.getPSPCompanyName());
 		
 		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
-		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());
+		ctRt.setRiferimentoDataRichiesta(DateUtils.toLocalDate(rpt.getDataMsgRicevuta()));
 		ctRt.setRiferimentoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRt.setSoggettoPagatore(toCtSoggettoPagatore(receipt.getDebtor()));
 		ctRt.setSoggettoVersante(null); // informazione non presente
@@ -367,7 +367,7 @@ public class MessaggiPagoPAUtils {
 		ctPaymentPA.setCreditorReferenceId(receipt.getCreditorReferenceId());
 		ctPaymentPA.setDebtor(receipt.getDebtor());
 		ctPaymentPA.setDescription(receipt.getDescription());
-		ctPaymentPA.setDueDate(CtPaymentPABuilder.calcolaDueDate(versamento));
+		ctPaymentPA.setDueDate(DateUtils.toLocalDate(CtPaymentPABuilder.calcolaDueDate(versamento)));
 		ctPaymentPA.setLastPayment(null);
 		ctPaymentPA.setMetadata(receipt.getMetadata());
 		ctPaymentPA.setOfficeName(receipt.getOfficeName());
@@ -395,7 +395,7 @@ public class MessaggiPagoPAUtils {
 		ctPaymentPA.setCreditorReferenceId(receipt.getCreditorReferenceId());
 		ctPaymentPA.setDebtor(receipt.getDebtor());
 		ctPaymentPA.setDescription(receipt.getDescription());
-		ctPaymentPA.setDueDate(CtPaymentPABuilder.calcolaDueDate(versamento));
+		ctPaymentPA.setDueDate(DateUtils.toLocalDate(CtPaymentPABuilder.calcolaDueDate(versamento)));
 		ctPaymentPA.setLastPayment(null);
 		ctPaymentPA.setMetadata(receipt.getMetadata());
 		ctPaymentPA.setOfficeName(receipt.getOfficeName());

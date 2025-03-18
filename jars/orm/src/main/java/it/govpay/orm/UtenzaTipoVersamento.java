@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -17,39 +17,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
 /** <p>Java class for UtenzaTipoVersamento complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="UtenzaTipoVersamento">
- * 		&lt;sequence>
- * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idTipoVersamento" type="{http://www.govpay.it/orm}id-tipo-versamento" minOccurs="1" maxOccurs="1"/>
- * 		&lt;/sequence>
- * &lt;/complexType>
+ * &lt;complexType name="UtenzaTipoVersamento"&gt;
+ * 		&lt;sequence&gt;
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="idTipoVersamento" type="{http://www.govpay.it/orm}id-tipo-versamento" minOccurs="1" maxOccurs="1"/&gt;
+ * 		&lt;/sequence&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * @version $Rev$, $Date$
- * 
+ *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UtenzaTipoVersamento", 
+@XmlType(name = "UtenzaTipoVersamento",
   propOrder = {
   	"idUtenza",
   	"idTipoVersamento"
@@ -58,25 +59,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "UtenzaTipoVersamento")
 
-public class UtenzaTipoVersamento extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class UtenzaTipoVersamento extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public UtenzaTipoVersamento() {
-	  //donothing
-  }
-
-  public Long getId() {
-    if(this.id!=null) {
-		return this.id;
-    } else {
-		return Long.valueOf(-1);
-    }
-  }
-
-  public void setId(Long id) {
-    if(id!=null) {
-		this.id=id;
-    } else {
-		this.id=Long.valueOf(-1);
-    }
+    super();
   }
 
   public IdUtenza getIdUtenza() {
@@ -96,9 +81,6 @@ public class UtenzaTipoVersamento extends org.openspcoop2.utils.beans.BaseBean i
   }
 
   private static final long serialVersionUID = 1L;
-
-  @XmlTransient
-  private Long id;
 
   private static it.govpay.orm.model.UtenzaTipoVersamentoModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){

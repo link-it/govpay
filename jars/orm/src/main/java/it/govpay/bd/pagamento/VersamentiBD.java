@@ -968,9 +968,9 @@ public class VersamentiBD extends BasicBD {
 			if(dataPagamento != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_PAGAMENTO, dataPagamento));
 			if(totalePagato != null)
-				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_PAGATO, totalePagato.doubleValue()));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_PAGATO, totalePagato));
 			if(totaleIncassato != null)
-				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, totaleIncassato.doubleValue()));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, totaleIncassato));
 			if(iuvPagamento != null) {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IUV_PAGAMENTO, iuvPagamento));
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().SRC_IUV, iuvPagamento.toUpperCase()));
@@ -1040,7 +1040,7 @@ public class VersamentiBD extends BasicBD {
 			idVO.setId(versamento.getId());
 			
 			
-			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, importoIncassato.doubleValue()));
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, importoIncassato));
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);

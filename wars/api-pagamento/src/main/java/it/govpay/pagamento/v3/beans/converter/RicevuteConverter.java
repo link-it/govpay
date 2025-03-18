@@ -21,7 +21,7 @@ package it.govpay.pagamento.v3.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;

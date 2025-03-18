@@ -66,8 +66,7 @@ public class RptConverter {
 		dto.setId(vo.getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
-		if(vo.getImportoTotalePagato() != null)
-			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
+		dto.setImportoTotalePagato(vo.getImportoTotalePagato());
 		dto.setIuv(vo.getIuv());
 		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
 		dto.setPspRedirectURL(vo.getPspRedirectURL());
@@ -153,7 +152,7 @@ public class RptConverter {
 		versamento.setCodBundlekey(vo.getVrsCodBundlekey()); 
 		versamento.setDatiAllegati(vo.getVrsDatiAllegati());
 		if(vo.getVrsIncasso() != null) {
-			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE));
 		}
 		versamento.setAnomalie(vo.getVrsAnomalie());
 
@@ -173,10 +172,8 @@ public class RptConverter {
 		versamento.setIdSessione(vo.getVrsIdSessione());
 
 		versamento.setDataPagamento(vo.getVrsDataPagamento());
-		if(vo.getVrsImportoPagato() != null)
-			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato())); 
-		if(vo.getVrsImportoIncassato() != null)
-			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
+		versamento.setImportoPagato(vo.getVrsImportoPagato()); 
+		versamento.setImportoIncassato(vo.getVrsImportoIncassato());
 		if(vo.getVrsStatoPagamento() != null)
 			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 		versamento.setIuvPagamento(vo.getVrsIuvPagamento());

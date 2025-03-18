@@ -80,7 +80,7 @@ public class UtenzaConverter {
 		it.govpay.orm.Utenza vo = new it.govpay.orm.Utenza();
 		vo.setId(dto.getId());
 		try {
-			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.subject));
+			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.SUBJECT));
 		} catch (Exception e) {
 			vo.setPrincipal(dto.getPrincipal());
 		}

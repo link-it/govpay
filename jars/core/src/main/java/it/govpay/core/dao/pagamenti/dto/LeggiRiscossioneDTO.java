@@ -22,6 +22,8 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
+import java.math.BigInteger;
+
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
@@ -40,7 +42,7 @@ public class LeggiRiscossioneDTO extends BasicCreateRequestDTO {
 		this.idDominio=idDominio;
 		this.iuv=iuv;
 		this.iur=iur;
-		this.indice=indice;
+		this.indice=indice != null ? BigInteger.valueOf(indice) : null;
 	}
 
 	public String getIdDominio() {
@@ -69,14 +71,14 @@ public class LeggiRiscossioneDTO extends BasicCreateRequestDTO {
 		this.iur = iur;
 	}
 
-	public Integer getIndice() {
+	public BigInteger getIndice() {
 		return this.indice;
 	}
 
-	public void setIndice(Integer indice) {
+	public void setIndice(BigInteger indice) {
 		this.indice = indice;
 	}
 
 	private String iur;
-	private Integer indice;
+	private BigInteger indice;
 }

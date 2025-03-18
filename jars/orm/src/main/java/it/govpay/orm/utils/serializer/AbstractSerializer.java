@@ -17,16 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-
-import javax.xml.bind.JAXBElement;
 
 import org.openspcoop2.generic_project.exception.SerializerException;
 import org.openspcoop2.utils.beans.WriteToSerializerType;
@@ -115,6 +114,7 @@ import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.VistaRptVersamento;
 import it.govpay.orm.VistaVersamento;
 import it.govpay.orm.VistaVersamentoNonRendicontato;
+import jakarta.xml.bind.JAXBElement;
 
 /**     
  * XML Serializer of beans
@@ -149,7 +149,9 @@ public abstract class AbstractSerializer {
 		finally{
 			try{
 				out.flush();
-			}catch(Exception e){}
+			}catch(Exception e){
+				// ignore
+			}
 		}
 	}
 	protected void objToXml(String fileName,Class<?> c,Object object,boolean prettyPrint) throws SerializerException{
@@ -168,9 +170,19 @@ public abstract class AbstractSerializer {
 			throw new SerializerException(e.getMessage(), e);
 		}
 		finally{
-			if(fout!=null) {
-				try{ fout.flush(); } catch(IOException e){}
-				try{ fout.close(); } catch(IOException e){}
+			try{
+				if(fout!=null){
+					fout.flush();
+				}
+			}catch(Exception e){
+				// ignore
+			}
+			try{
+				if(fout!=null){
+					fout.close();
+				}
+			}catch(Exception e){
+				// ignore
 			}
 		}
 	}
@@ -183,9 +195,19 @@ public abstract class AbstractSerializer {
 			throw new SerializerException(e.getMessage(), e);
 		}
 		finally{
-			if(bout!=null) {
-				try{ bout.flush(); } catch(IOException e){}
-				try{ bout.close(); } catch(IOException e){}
+			try{
+				if(bout!=null){
+					bout.flush();
+				}
+			}catch(Exception e){
+				// ignore
+			}
+			try{
+				if(bout!=null){
+					bout.close();
+				}
+			}catch(Exception e){
+				// ignore
 			}
 		}
 		return bout;

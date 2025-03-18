@@ -213,12 +213,22 @@ public class AllegatiBD extends BasicBD {
 
 			Connection underlyingConnection = null;
 			org.postgresql.PGConnection pgConnection = null;
+			Method method = null;
 			try {
-				Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+				method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+				
+			} catch (NoSuchMethodException | SecurityException | IllegalArgumentException e) {
+				log.trace("Installazione WF con driver postgresql non installato come modulo oppure un'installazione tomcat: " + e.getMessage(), e);
+			} 
+			
+			try {
 
-				Object invoke = method.invoke(wrappedConnection);
-
-				underlyingConnection = (Connection) invoke;
+				if(method != null) {
+					Object invoke = method.invoke(wrappedConnection);
+					underlyingConnection = (Connection) invoke;
+				} else {
+					underlyingConnection = wrappedConnection;
+				}
 
 				if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
 					pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
@@ -249,7 +259,7 @@ public class AllegatiBD extends BasicBD {
 							oututStreamDestinazione.close();
 					}
 				}
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 				throw new ServiceException(e);
 			} catch (SQLException e) {

@@ -13,7 +13,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -35,8 +35,8 @@ pipeline {
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
-        sh 'sudo systemctl start wildfly-26.1.3.Final@standalone'
-	sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
+        sh 'sudo systemctl start wildfly-26.1.3.Final@ndpsym tomcat_govpay'
+	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }
     stage('test') {
@@ -45,10 +45,9 @@ pipeline {
       }
       post {
         always {
+			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym tomcat_govpay'
             junit 'integration-test/target/surefire-reports/*.xml'
             sh 'tar -cvf ./integration-test/target/surefire-reports.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
-            sh 'tar -uvf ./integration-test/target/test-logs.tar /var/log/govpay/* --transform s#var/log/##'
-            sh 'tar -uvf ./integration-test/target/test-logs.tar /opt/wildfly/standalone_govpay/log/* --transform s#opt/wildfly/standalone_govpay/log/#wildfly/#'
             sh 'gzip ./integration-test/target/surefire-reports.tar'
             archiveArtifacts 'integration-test/target/surefire-reports.tar.gz'
         }

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -135,9 +136,9 @@ public class SeveritaProperties {
 		return mappingSeveritaErrori;
 	}
 	
-	public Integer getSeverita(EsitoOperazione esito) {
+	public BigInteger getSeverita(EsitoOperazione esito) {
 		String severitaS = this.getSeveritaErrori().get(esito.toString());
-		Integer severita = null;
+		BigInteger severita = null;
 		
 		if(severitaS == null) {
 			LogUtils.logWarn(log, "Livello di severita' per l'EsitoOperazione '"+esito+"' non trovato all'interno del file "+MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME + ", verra' impostato il default '5'.");
@@ -145,7 +146,7 @@ public class SeveritaProperties {
 		}
 		
 		try{
-			severita = Integer.parseInt(severitaS);
+			severita = new BigInteger(severitaS);
 		} catch(Throwable t) {
 			LogUtils.logError(log, "Lettura del livello di severita' per l'EsitoOperazione '"+esito+"' terminata con errore: "+t.getMessage(),t);
 			severita = null;
@@ -154,9 +155,9 @@ public class SeveritaProperties {
 		return severita;
 	}
 	
-	public Integer getSeverita(CategoriaEnum categoria) {
+	public BigInteger getSeverita(CategoriaEnum categoria) {
 		String severitaS = this.getSeveritaErrori().get(categoria.toString());
-		Integer severita = null;
+		BigInteger severita = null;
 		
 		if(severitaS == null) {
 			LogUtils.logWarn(log, "Livello di severita' per la BaseException.CategoriaEnum '"+categoria+"' non trovato all'interno del file "+MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME + ", verra' impostato il default '5'.");
@@ -164,7 +165,7 @@ public class SeveritaProperties {
 		}
 		
 		try{
-			severita = Integer.parseInt(severitaS);
+			severita = new BigInteger(severitaS);
 		} catch(Throwable t) {
 			LogUtils.logError(log, "Lettura del livello di severita' per la BaseException.CategoriaEnum '"+categoria+"' terminata con errore: "+t.getMessage(),t);
 			severita = null;

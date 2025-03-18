@@ -236,14 +236,14 @@ Then status 200
  <ns2:CodiceContestoPagamento>#(ccpRT)</ns2:CodiceContestoPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
-    <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
+    <ns2:dataEsitoSingoloPagamento>2020-01-10</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
     <ns2:causaleVersamento>#('/RFB/' + iuvRTFormattata + '/109.99/TXT/Diritti e segreteria')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/SEGRETERIA</ns2:datiSpecificiRiscossione>
  </ns2:datiSingoloPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>16.00</ns2:singoloImportoPagato>
-    <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
+    <ns2:dataEsitoSingoloPagamento>2020-01-10</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
     <ns2:causaleVersamento>#('/RFB/' + iuvRTFormattata + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/MBT</ns2:datiSpecificiRiscossione>
@@ -439,14 +439,14 @@ Then status 200
  <ns2:CodiceContestoPagamento>#(ccpRT)</ns2:CodiceContestoPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
-    <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
+    <ns2:dataEsitoSingoloPagamento>2020-01-10</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
     <ns2:causaleVersamento>#('/RFB/' + iuvRTFormattata + '/109.99/TXT/Diritti e segreteria modificato')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/SEGRETERIA</ns2:datiSpecificiRiscossione>
  </ns2:datiSingoloPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>16.00</ns2:singoloImportoPagato>
-    <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
+    <ns2:dataEsitoSingoloPagamento>2020-01-10</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
     <ns2:causaleVersamento>#('/RFB/' + iuvRTFormattata + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/MBT</ns2:datiSpecificiRiscossione>
@@ -555,14 +555,14 @@ Then status 200
  <ns2:CodiceContestoPagamento>#(ccpRT)</ns2:CodiceContestoPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
-    <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
+    <ns2:dataEsitoSingoloPagamento>2020-01-10</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
     <ns2:causaleVersamento>#('/RFB/' + iuvRTFormattata + '/109.98/TXT/Diritti e segreteria')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/SEGRETERIA</ns2:datiSpecificiRiscossione>
  </ns2:datiSingoloPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>16.00</ns2:singoloImportoPagato>
-    <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
+    <ns2:dataEsitoSingoloPagamento>2020-01-10</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
     <ns2:causaleVersamento>#('/RFB/' + iuvRTFormattata + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/MBT</ns2:datiSpecificiRiscossione>

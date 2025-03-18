@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -59,7 +59,7 @@ public class GovpayConfig {
 	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE = "/" + MSG_DIAGNOSTICI_PROPERTIES_FILE_NAME;
 	public static final String LOG4J2_XML_FILE_NAME = "log4j2.xml";
 	public static final String LOG4J2_XML_FILE = "/" + LOG4J2_XML_FILE_NAME;
-	
+
 	private static GovpayConfig instance;
 
 	public static GovpayConfig getInstance() {
@@ -103,71 +103,71 @@ public class GovpayConfig {
 	private Integer timeoutPendentiModello3Mins;
 	private boolean timeoutPendentiModello1;
 	private Integer timeoutPendentiModello1Mins;
-	
+
 	private Integer timeoutPendentiModello3SANP24Mins;
-	
+
 	private Integer timeoutInvioRPTModello3Millis;
-	
+
 	private Properties[] props;
-	
+
 	private String appName;
 	private String ambienteDeploy;
-	
+
 	private String autenticazioneSPIDNomeHeaderPrincipal;
 	private Map<String,String> autenticazioneSPIDElencoHeadersRequest;
 	private boolean checkCfDebitore;
 	private List<String> autenticazioneHeaderNomeHeaderPrincipal;
 	private List<String> autenticazioneHeaderElencoHeadersRequest;
 	private Properties autenticazioneSSLHeaderProperties;
-	
+
 	// nomi header dove leggere le informazioni per l'autenticazione API-Key (Erogazione)
 	private String autenticazioneApiKeyNomeHeaderApiKey;
 	private String autenticazioneApiKeyNomeHeaderApiId;
-	
+
 	// nomi header dove impostare l'autenticazione API-Key (Fruizione)
 	private String autenticazioneApiKeyNomeHeaderApiKeyFruizione;
 	private String autenticazioneApiKeyNomeHeaderApiIdFruizione;
-	
+
 	private int numeroMassimoEntriesProspettoRiscossione;
-	
+
 	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
-	
+
 	private boolean scritturaDiagnosticiFileEnabled;
 	private boolean scritturaDumpFileEnabled;
 	private boolean giornaleEventiEnabled;
-	
+
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
 	private boolean censimentoTipiVersamentoSconosciutiEnabled;
-	
+
 	private Properties corsProperties;
-	
+
 	private CustomIuv defaultCustomIuvGenerator;
-	
+
 	private String templateProspettoRiscossioni;
-	
+
 	private Properties apiUserLoginRedirectURLs;
 	private Properties apiUserLogoutRedirectURLs;
-	
+
 	private Integer batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread;
 	private Integer batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread;
-	
+
 	private boolean aggiornamentoValiditaMandatorio;
-	
+
 	private Integer dimensioneMassimaListaRisultati;
-	
+
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	private Integer batchCaricamentoTracciatiNotificaPagamentiDimensionePagina;
-	
+
 	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
-	
-	
+
+
 	private Integer connectionTimeout;
 	private Integer readTimeout;
 	private Integer connectionRequestTimeout;
 	private Integer numeroMassimoConnessioniPerPool;
 	private Integer numeroMassimoConnessioniPerRouteDefault;
-	
+
 	// timeout specifici per tipo connettore
 	private Integer connectionTimeoutPagoPA;
 	private Integer readTimeoutPagoPA;
@@ -181,24 +181,24 @@ public class GovpayConfig {
 	private Integer connectionTimeoutMaggioliJPPA;
 	private Integer readTimeoutMaggioliJPPA;
 	private Integer connectionRequestTimeoutMaggioliJPPA;
-	
-	
+
+
 	private Integer numeroMassimoGiorniRPTPendenti;
-	
+
 	private String templateQuietanzaPagamento;
-	
+
 	private String checkoutBaseURL;
 	private boolean checkoutEnabled;
 	private boolean checkoutResponseSendRedirectEnabled;
-	
+
 	private boolean conversioneMessaggiPagoPAV2NelFormatoV1;
-	
+
 	private String nomeHeaderSubscriptionKeyPagoPA;
-	
+
 	private String operazioneVerifica;
-	
+
 	private Integer numeroGiorniValiditaPendenza;
-	
+
 	private boolean batchAcquisizioneRendicontazioni;
 	private boolean batchChiusuraRPTScadute;
 	private boolean batchElaborazioneRiconciliazioni;
@@ -207,15 +207,15 @@ public class GovpayConfig {
 	private boolean batchSpedizioneNotificheAppIO;
 	private boolean batchSpedizionePromemoria;
 	private boolean batchRecuperoRT;
-	
+
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
-	
-	private Properties risorseCustomBaseURLProperties;
-	
-	
+
+	private boolean controlloPasswordBackwardCompatibilityMD5;
+
 	private Integer numeroGiorniRendicontazioniSenzaPagamento;
-	
-	
+
+	private Properties risorseCustomBaseURLProperties;
+
 	public GovpayConfig(InputStream is, String warName) throws IOException {
 		// Default values:
 		this.dimensionePoolThreadNotifica = 10;
@@ -246,42 +246,42 @@ public class GovpayConfig {
 		this.timeoutPendentiModello1Mins = null;
 		this.timeoutPendentiModello3SANP24Mins = 30;
 		this.timeoutInvioRPTModello3Millis = 100;
-		
+
 		this.appName = null;
 		this.ambienteDeploy = null;
 
 		this.checkCfDebitore = false;
-		
+
 		this.autenticazioneSPIDNomeHeaderPrincipal = null;
 		this.autenticazioneSPIDElencoHeadersRequest = new HashMap<>();
 		this.autenticazioneHeaderNomeHeaderPrincipal = null;
 		this.autenticazioneHeaderElencoHeadersRequest = new ArrayList<>();
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		this.autenticazioneSSLHeaderProperties = new Properties();
-		
+
 		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
-		
+
 		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
 		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
 		this.censimentoTipiVersamentoSconosciutiEnabled = false;
-		
+
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
 		this.giornaleEventiEnabled = true;
 		this.corsProperties = new Properties();
 		this.templateProspettoRiscossioni = null;
-		
+
 		this.apiUserLoginRedirectURLs = new Properties();
 		this.apiUserLogoutRedirectURLs = new Properties();
-		
+
 		this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
-		
+
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
-		
+
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
 		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
-		
+
 		this.readTimeout = 180000;
 		this.connectionTimeout = 10000;
 		this.connectionRequestTimeout = 180000;
@@ -299,25 +299,25 @@ public class GovpayConfig {
 		this.readTimeoutMaggioliJPPA = 180000;
 		this.connectionTimeoutMaggioliJPPA = 10000;
 		this.connectionRequestTimeoutMaggioliJPPA = 180000;
-		
+
 		this.aggiornamentoValiditaMandatorio = false;
-		
+
 		this.numeroMassimoGiorniRPTPendenti = 30;
-		
+
 		this.checkoutBaseURL = null;
 		this.checkoutEnabled = false;
 		this.checkoutResponseSendRedirectEnabled = false;
-		
+
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
-		
+
 		this.nomeHeaderSubscriptionKeyPagoPA = null;
-		
+
 		this.operazioneVerifica = null;
-		
+
 		this.numeroGiorniValiditaPendenza = null;
-		
+
 		this.keywordsDaSostituireIdentificativiDebitoreAvviso = new ArrayList<>();
-		
+
 		this.batchAcquisizioneRendicontazioni = false;
 		this.batchChiusuraRPTScadute = false;
 		this.batchElaborazioneRiconciliazioni = false;
@@ -326,9 +326,11 @@ public class GovpayConfig {
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
 		this.batchRecuperoRT = false;
-		
+
 		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
-		
+
+		this.controlloPasswordBackwardCompatibilityMD5 = false;
+
 		this.risorseCustomBaseURLProperties = new Properties();
 
 		// Recupero il property all'interno dell'EAR
@@ -351,7 +353,7 @@ public class GovpayConfig {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + warName + "-"+ LOG4J2_XML_FILE_NAME);
 					LoggerWrapperFactory.getLogger("boot").info("Ricerco configurazione log4j specifica per il war {} nel file: {}", warName , log4j2ConfigFile.toURI());
 				}
-				
+
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
 					LoggerWrapperFactory.getLogger("boot").info("Configurazione log4j specifica per il war {} non presente, ricerco configurazione unica esterna nel file: {}", warName , log4j2ConfigFile.toURI());
@@ -374,28 +376,28 @@ public class GovpayConfig {
 		try {
 			Properties props0 = null;
 			this.props[0] = props0;
-			
+
 			File gpConfigFile = null;
 			if(StringUtils.isNotBlank(warName)) {
 				gpConfigFile = new File(this.resourceDir + File.separatorChar + warName + ".properties");
 			}
-			
+
 			if(gpConfigFile == null || !gpConfigFile.exists()) {
 				gpConfigFile = new File(this.resourceDir + File.separatorChar + PROPERTIES_FILE_NAME);
 			}
 
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
-				
+
 				try(InputStream is = new FileInputStream(gpConfigFile)) {
 					props0.load(is);
 				} catch (IOException e) {
 					throw new ConfigException(e);
-				} 
+				}
 				log.info("Individuata configurazione prioritaria: {}", gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
 			}
-			
+
 			this.dimensionePoolThreadNotifica = getIntegerProperty(log, "it.govpay.thread.pool.notifica", this.props, false, 10);
 			this.dimensionePoolThreadNotificaAppIo = getIntegerProperty(log, "it.govpay.thread.pool.notificaAppIO", this.props, false, 10);
 			this.dimensionePoolThreadRPT = getIntegerProperty(log, "it.govpay.thread.pool.rpt", this.props, false, 10);
@@ -406,7 +408,7 @@ public class GovpayConfig {
 			this.dimensionePoolThreadRecuperoRT = getIntegerProperty(log, "it.govpay.thread.pool.recuperoRT", this.props, false, 10);
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
-			if(mLogClassString != null && !mLogClassString.isEmpty()) 
+			if(mLogClassString != null && !mLogClassString.isEmpty())
 				this.mLogClass = mLogClassString;
 
 			String mLogOnLog4jString = getProperty("it.govpay.mlog.log4j", this.props, false, log);
@@ -475,7 +477,7 @@ public class GovpayConfig {
 			String batchOnString = getProperty("it.govpay.batchOn", this.props, false, log);
 			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
 				this.batchOn = false;
-			
+
 			log.info("Abilitazione generale Batch: {}", this.batchOn);
 
 			String clusterIdString = getProperty("it.govpay.clusterId", this.props, false, log);
@@ -490,11 +492,11 @@ public class GovpayConfig {
 				log.info("Proprieta \"it.govpay.timeoutBatch\" impostata con valore di default (5 minuti)");
 				this.timeoutBatch = (long) 5 * 60 * 1000;
 			}
-			
+
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
-			
+
 			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
 			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
 				try{
@@ -504,7 +506,7 @@ public class GovpayConfig {
 					log.warn("La proprieta \"it.govpay.modello3.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
 				}
 			}
-			
+
 			String timeoutPendentiModello1String = getProperty("it.govpay.modello1.timeoutPagamento", props, false, log);
 			if(timeoutPendentiModello1String != null && !timeoutPendentiModello1String.equalsIgnoreCase("false")) {
 				try{
@@ -514,17 +516,17 @@ public class GovpayConfig {
 					log.warn("La proprieta \"it.govpay.modello1.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
 				}
 			}
-			
+
 			String timeoutPendentiModello3SANP24String = getProperty("it.govpay.modello3.sanp24.timeoutPagamento", props, false, log);
 			if(timeoutPendentiModello3SANP24String != null) {
 				try{
 					this.timeoutPendentiModello3SANP24Mins = Integer.parseInt(timeoutPendentiModello3SANP24String);
-					
+
 					if(this.timeoutPendentiModello3SANP24Mins.intValue() > 30) {
 						this.timeoutPendentiModello3SANP24Mins = 30;
 						log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero non superiore a 30. Utilizzato valore di default: 30");
 					}
-					
+
 					if(this.timeoutPendentiModello3SANP24Mins.intValue() < 1) {
 						this.timeoutPendentiModello3SANP24Mins = 1;
 						log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero non inferiore a 1. Utilizzato valore di default: 30");
@@ -533,14 +535,14 @@ public class GovpayConfig {
 					log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero. Utilizzato valore di default: 30");
 				}
 			}
-			
+
 			this.appName = getProperty("it.govpay.backoffice.gui.appName", this.props, false, log);
 			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
 			this.autenticazioneSPIDNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneSPID.nomeHeaderPrincipal", this.props, false, log);
 			this.autenticazioneSPIDElencoHeadersRequest = getProperties("it.govpay.autenticazioneSPID.headers.",this.props, false, log);
-			
-			
-			
+
+
+
 			String nomiHeadersListS = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", props, false, log);
 			if(StringUtils.isNotEmpty(nomiHeadersListS)) {
 				String[] split = nomiHeadersListS.split(",");
@@ -548,7 +550,7 @@ public class GovpayConfig {
 					this.autenticazioneHeaderNomeHeaderPrincipal = Arrays.asList(split);
 				}
 			}
-			
+
 			String headersListS = getProperty("it.govpay.autenticazioneHeader.nomiHeadersInfo", props, false, log);
 			if(StringUtils.isNotEmpty(headersListS)) {
 				String[] split = headersListS.split(",");
@@ -556,42 +558,42 @@ public class GovpayConfig {
 					this.autenticazioneHeaderElencoHeadersRequest = Arrays.asList(split);
 				}
 			}
-			
+
 			Map<String, String> propertiesSH = getProperties("it.govpay.autenticazioneSSLHeader.",this.props, false, log);
 			this.autenticazioneSSLHeaderProperties.putAll(propertiesSH);
-			
+
 			String checkCFDebitoreString = getProperty("it.govpay.autenticazione.utenzaAnonima.checkCfDebitore.enabled", props, false, log);
 			if(StringUtils.isNotEmpty(checkCFDebitoreString) && !checkCFDebitoreString.equalsIgnoreCase("false")) {
 				this.checkCfDebitore = true;
 			}
-			
+
 			this.numeroMassimoEntriesProspettoRiscossione = getIntegerProperty(log, "it.govpay.reportistica.prospettoRiscossione.numeroMassimoEntries", this.props, false, 5000);
-			
+
 			this.intervalloDisponibilitaPagamentoUtenzaAnonima = getIntegerProperty(log, "it.govpay.autenticazione.utenzaAnonima.intervalloDisponibilitaPagamento", this.props, false, 60);
-			
+
 			this.codTipoVersamentoPendenzeLibere = getProperty("it.govpay.versamenti.codTipoVersamentoPerPagamentiLiberi", this.props, true, log);
 			this.codTipoVersamentoPendenzeNonCensite = getProperty("it.govpay.versamenti.codTipoVersamentoPerTipiPendenzeNonCensiti", this.props, true, log);
-			
+
 			String censimentoTipiVersamentoSconosciutiEnabledString = getProperty("it.govpay.versamenti.censimentoAutomaticoTipiPendenza.enabled", this.props, false, log);
 			if(censimentoTipiVersamentoSconosciutiEnabledString != null)
 				this.censimentoTipiVersamentoSconosciutiEnabled = Boolean.valueOf(censimentoTipiVersamentoSconosciutiEnabledString);
-			
+
 			Map<String, String> properties = getProperties("it.govpay.configurazioneFiltroCors.",this.props, false, log);
 			this.corsProperties.putAll(properties);
-			
-			
+
+
 			String scritturaDiagnosticiFileEnabledString = getProperty("it.govpay.context.savataggioDiagnosticiSuFile.enabled", this.props, false, log);
 			if(scritturaDiagnosticiFileEnabledString != null && Boolean.valueOf(scritturaDiagnosticiFileEnabledString))
 				this.scritturaDiagnosticiFileEnabled = true;
-			
+
 			String scritturaDumpFileEnabledString = getProperty("it.govpay.context.savataggioDumpSuFile.enabled", this.props, false, log);
 			if(scritturaDumpFileEnabledString != null && Boolean.valueOf(scritturaDumpFileEnabledString))
 				this.scritturaDumpFileEnabled = true;
-			
+
 			String giornaleEventiEnabledString = getProperty("it.govpay.context.giornaleEventi.enabled", this.props, false, log);
 			if(giornaleEventiEnabledString != null && Boolean.valueOf(giornaleEventiEnabledString))
 				this.giornaleEventiEnabled = true;
-			
+
 			String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false, log);
 			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 				Class<?> c = null;
@@ -611,86 +613,185 @@ public class GovpayConfig {
 					LogUtils.logError(log, MessageFormat.format("Errore durante la crazione dell''oggetto di classe [{0}] specificata per la gestione di IUV: {1}", defaultCustomIuvGeneratorClass, e.getMessage()));
 					throw new ConfigException(e);
 				}
-				
+
 			} else {
 				this.defaultCustomIuvGenerator = new CustomIuv();
 			}
-			
+
 			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
-			
+
 			this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = getIntegerProperty(log, "it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread", this.props, false, 100);
 			this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = getIntegerProperty(log, "it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread", this.props, false, 100);
-			
+
 			// Mapping URL-ID -> Url abilitate nel sistema
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
-			
+
 			Map<String, String> logoutRedirectURLs = getProperties("it.govpay.logout-redirect.",this.props, false, log);
 			this.apiUserLogoutRedirectURLs.putAll(logoutRedirectURLs);
-			
+
 			this.dimensioneMassimaListaRisultati = getIntegerProperty(log, "it.govpay.api.find.maxRisultatiPerPagina", this.props, false, BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
-			
+
 			String batchCaricamentoTracciatiNotificaPagamentiString = getProperty("it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
-			
+
 			this.batchCaricamentoTracciatiNotificaPagamentiDimensionePagina = getIntegerProperty(log, "it.govpay.batch.caricamentoTracciatiNotificaPagamenti.dimensionePagina", this.props, false, BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
-			
+
 			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
 			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
 				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
-			
+
 			this.connectionTimeout = getIntegerProperty(log, "it.govpay.client.connectionTimeout", this.props, false, 10000);
 			this.readTimeout = getIntegerProperty(log, "it.govpay.client.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeout = getIntegerProperty(log, "it.govpay.client.connectionRequestTimeout", this.props, false, 10000);
-			
+
 			this.numeroMassimoConnessioniPerPool = getIntegerProperty(log, "it.govpay.client.numeroMassimoConnessioniPerPool", this.props, false, 200);
 			this.numeroMassimoConnessioniPerRouteDefault = getIntegerProperty(log, "it.govpay.client.numeroMassimoConnessioniPerRouteDefault", this.props, false, 20);
-			
+
 			this.connectionTimeoutPagoPA = getIntegerProperty(log, "it.govpay.client.pagopa.connectionTimeout", this.props, false, 10000);
 			this.readTimeoutPagoPA = getIntegerProperty(log, "it.govpay.client.pagopa.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutPagoPA = getIntegerProperty(log, "it.govpay.client.pagopa.connectionRequestTimeout", this.props, false, 10000);
-			
+
 			this.connectionTimeoutEnte = getIntegerProperty(log, "it.govpay.client.ente.connectionTimeout", this.props, false, 10000);
 			this.readTimeoutEnte = getIntegerProperty(log, "it.govpay.client.ente.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutEnte = getIntegerProperty(log, "it.govpay.client.ente.connectionRequestTimeout", this.props, false, 10000);
-			
+
 			this.connectionTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionTimeout", this.props, false, 10000);
 			this.readTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionRequestTimeout", this.props, false, 10000);
-			
+
 			this.connectionTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionTimeout", this.props, false, 10000);
 			this.readTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, 10000);
-			
+
+			String connectTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutPagoPA = Integer.parseInt(connectTimeoutPagoPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.pagopa.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutPagoPA = 10000;
+			}
+
+			String readTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutPagoPA = Integer.parseInt(readTimeoutPagoPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.pagopa.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutPagoPA = 180000;
+			}
+
+			String connectionRequestTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutPagoPA = Integer.parseInt(connectionRequestTimeoutPagoPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.pagopa.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutPagoPA = 10000;
+			}
+
+			String connectTimeoutEnteString = getProperty("it.govpay.client.ente.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutEnte = Integer.parseInt(connectTimeoutEnteString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.ente.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutEnte = 10000;
+			}
+
+			String readTimeoutEnteString = getProperty("it.govpay.client.ente.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutEnte = Integer.parseInt(readTimeoutEnteString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.ente.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutEnte = 180000;
+			}
+
+			String connectionRequestTimeoutEnteString = getProperty("it.govpay.client.ente.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutEnte = Integer.parseInt(connectionRequestTimeoutEnteString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.ente.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutEnte = 10000;
+			}
+
+			String connectTimeoutAppIOString = getProperty("it.govpay.client.appio.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutAppIO = Integer.parseInt(connectTimeoutAppIOString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.appio.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutAppIO = 10000;
+			}
+
+			String readTimeoutAppIOString = getProperty("it.govpay.client.appio.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutAppIO = Integer.parseInt(readTimeoutAppIOString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.appio.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutAppIO = 180000;
+			}
+
+			String connectionRequestTimeoutAppIOString = getProperty("it.govpay.client.appio.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutAppIO = Integer.parseInt(connectionRequestTimeoutAppIOString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.appio.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutAppIO = 10000;
+			}
+
+			String connectTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeoutMaggioliJPPA = Integer.parseInt(connectTimeoutMaggioliJPPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.maggioli.connectionTimeout\" impostata con valore di default 10000");
+				this.connectionTimeoutMaggioliJPPA = 10000;
+			}
+
+			String readTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.readTimeout", this.props, false, log);
+			try{
+				this.readTimeoutMaggioliJPPA = Integer.parseInt(readTimeoutMaggioliJPPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.maggioli.readTimeout\" impostata con valore di default 180000");
+				this.readTimeoutMaggioliJPPA = 180000;
+			}
+
+			String connectionRequestTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeoutMaggioliJPPA = Integer.parseInt(connectionRequestTimeoutMaggioliJPPAString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.maggioli.connectionTimeout\" impostata con valore di default 180000");
+				this.connectionRequestTimeoutMaggioliJPPA = 10000;
+			}
+
+
+
+
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
 				this.aggiornamentoValiditaMandatorio = true;
-			
+
 			String timeoutInvioRPTModello3MillisString = getProperty("it.govpay.modello3.timeoutInvioRPT", this.props, false, log);
 			try{
 				this.timeoutInvioRPTModello3Millis = Integer.parseInt(timeoutInvioRPTModello3MillisString);
-				
+
 				if(this.timeoutInvioRPTModello3Millis < 0 || this.timeoutInvioRPTModello3Millis > 1000) {
 					log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" trovata con valore non valido [{}], viene impostata con valore di default 100 ms", this.timeoutInvioRPTModello3Millis);
 					this.timeoutInvioRPTModello3Millis = 100;
 				}
-				
+
 			} catch(NullPointerException | NumberFormatException t) {
 				log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" impostata con valore di default 100 ms");
 				this.timeoutInvioRPTModello3Millis = 100;
 			}
-			
+
 			this.numeroMassimoGiorniRPTPendenti = getIntegerProperty(log, "it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero", this.props, false, 30);
-			
+
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
-			
+
 			this.checkoutBaseURL = getProperty("it.govpay.checkout.baseUrl", this.props, true, log);
-			
+
 			String checkoutEnabledString = getProperty("it.govpay.checkout.enabled", this.props, false, log);
 			if(checkoutEnabledString != null && Boolean.valueOf(checkoutEnabledString))
 				this.checkoutEnabled = true;
-			
+
 			String checkoutResponseSendRedirectEnabledString = getProperty("it.govpay.checkout.response.sendRedirect.enabled", this.props, false, log);
 			if(checkoutResponseSendRedirectEnabledString != null && Boolean.valueOf(checkoutResponseSendRedirectEnabledString))
 				this.checkoutResponseSendRedirectEnabled = true;
@@ -698,28 +799,28 @@ public class GovpayConfig {
 			String conversioneMessaggiPagoPAV2NelFormatoV1String = getProperty("it.govpay.retrocompatibilitaMessaggiPagoPA.v1.enable", this.props, false, log);
 			if(conversioneMessaggiPagoPAV2NelFormatoV1String != null && Boolean.valueOf(conversioneMessaggiPagoPAV2NelFormatoV1String))
 				this.conversioneMessaggiPagoPAV2NelFormatoV1 = true;
-			
+
 			this.nomeHeaderSubscriptionKeyPagoPA = getProperty("it.govpay.client.pagopa.autenticazione.subscriptionkey.header.name", this.props, false, log);
-			
+
 			this.autenticazioneApiKeyNomeHeaderApiId = getProperty("it.govpay.autenticazioneApiKey.apiId.header.name", this.props, false, log);
 			this.autenticazioneApiKeyNomeHeaderApiKey = getProperty("it.govpay.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
-			
+
 			this.autenticazioneApiKeyNomeHeaderApiIdFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiId.header.name", this.props, false, log);
 			this.autenticazioneApiKeyNomeHeaderApiKeyFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
-			
+
 			this.operazioneVerifica = getProperty("it.govpay.api.ente.verificaPendenza.operazione", this.props, false, log);
-			
+
 			if(this.operazioneVerifica != null && !(Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica) ||
 					Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica))) {
 				log.info("Proprieta \"it.govpay.api.ente.verificaPendenza.operazione\" trovata con valore non valido [{}], viene impostata con valore di default null",this.operazioneVerifica);
 				this.operazioneVerifica = null;
 			}
-			
+
 			String numeroGiorniValiditaPendenzaString = getProperty("it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita", this.props, false, log);
 			if(numeroGiorniValiditaPendenzaString != null) {
 				try{
 					this.numeroGiorniValiditaPendenza = Integer.parseInt(numeroGiorniValiditaPendenzaString);
-					
+
 					if(this.numeroGiorniValiditaPendenza < 1) {
 						log.info("Proprieta \"it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita\" trovata con valore non valido [{}], viene impostata con valore di default null",	this.operazioneVerifica);
 						this.numeroGiorniValiditaPendenza = null;
@@ -729,39 +830,39 @@ public class GovpayConfig {
 					this.numeroGiorniValiditaPendenza = null;
 				}
 			}
-			
+
 			String batchAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.enabled", this.props, false, log);
 			if(batchAcquisizioneRendicontazioniString != null && Boolean.valueOf(batchAcquisizioneRendicontazioniString))
 				this.batchAcquisizioneRendicontazioni = true;
-			
+
 			String batchChiusuraRPTScaduteString = getProperty("it.govpay.batch.chiusuraRptScadute.enabled", this.props, false, log);
 			if(batchChiusuraRPTScaduteString != null && Boolean.valueOf(batchChiusuraRPTScaduteString))
 				this.batchChiusuraRPTScadute = true;
-			
+
 			String batchElaborazioneRiconciliazioniString = getProperty("it.govpay.batch.elaborazioneRiconciliazioni.enabled", this.props, false, log);
 			if(batchElaborazioneRiconciliazioniString != null && Boolean.valueOf(batchElaborazioneRiconciliazioniString))
 				this.batchElaborazioneRiconciliazioni = true;
-			
+
 			String batchGestionePromemoriaString = getProperty("it.govpay.batch.gestionePromemoria.enabled", this.props, false, log);
 			if(batchGestionePromemoriaString != null && Boolean.valueOf(batchGestionePromemoriaString))
 				this.batchGestionePromemoria = true;
-			
+
 			String batchSpedizioneNotificheString = getProperty("it.govpay.batch.spedizioneNotifiche.enabled", this.props, false, log);
 			if(batchSpedizioneNotificheString != null && Boolean.valueOf(batchSpedizioneNotificheString))
 				this.batchSpedizioneNotifiche = true;
-			
+
 			String batchSpedizioneNotificheAppIOString = getProperty("it.govpay.batch.spedizioneNotificheAppIO.enabled", this.props, false, log);
 			if(batchSpedizioneNotificheAppIOString != null && Boolean.valueOf(batchSpedizioneNotificheAppIOString))
 				this.batchSpedizioneNotificheAppIO = true;
-			
+
 			String batchSpedizionePromemoriaString = getProperty("it.govpay.batch.spedizionePromemoria.enabled", this.props, false, log);
 			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
 				this.batchSpedizionePromemoria = true;
-			
+
 			String batchRecuperoRTString = getProperty("it.govpay.batch.recuperoRT.enabled", this.props, false, log);
 			if(batchRecuperoRTString != null && Boolean.valueOf(batchRecuperoRTString))
 				this.batchRecuperoRT = true;
-			
+
 			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
 			if(StringUtils.isNotEmpty(keywordsS)) {
 				String[] split = keywordsS.split(",");
@@ -769,18 +870,22 @@ public class GovpayConfig {
 					this.keywordsDaSostituireIdentificativiDebitoreAvviso = Arrays.asList(split);
 				}
 			}
-			
+
+			String controlloPasswordBackwardCompatibilityMD5String = getProperty("it.govpay.autenticazione.controlloPassword.backwardCompatibilityMD5.enabled", this.props, false, log);
+			if(controlloPasswordBackwardCompatibilityMD5String != null && Boolean.valueOf(controlloPasswordBackwardCompatibilityMD5String))
+				this.controlloPasswordBackwardCompatibilityMD5 = true;
+
 			this.numeroGiorniRendicontazioniSenzaPagamento = getIntegerProperty(log, "it.govpay.batch.recuperoRT.limiteTemporaleRecupero", this.props, false, 15);
-			
+
 			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
 			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
-			
+
 		} catch (PropertyNotFoundException | InvalidPropertyException e) {
 			LogUtils.logError(log, MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
 		}
 	}
-	
+
 	public synchronized void leggiFileEsternoLog4j2() {
 		// Recupero la configurazione della working dir Se e' configurata, la uso come prioritaria
 		try {
@@ -794,12 +899,12 @@ public class GovpayConfig {
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifico esistenza configurazione log4j: {}", this.log4j2Config);
 					log4j2ConfigFile = new File(this.log4j2Config);
 				}
-				
+
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifica esistenza configurazione log4j: {}, file non presente.", this.log4j2Config);
 				}
-				
+
 				if(log4j2ConfigFile.exists()) {
 					this.log4j2Config = log4j2ConfigFile.toURI();
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j: {}", this.log4j2Config);
@@ -812,10 +917,10 @@ public class GovpayConfig {
 			LoggerWrapperFactory.getLogger(GovpayConfig.class).warn("Errore di inizializzazione: {}. Property ignorata.", e.getMessage());
 		}
 	}
-	
+
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		Map<String, String> valori = new HashMap<>();
-		
+
 		List<String> nomiProperties = new ArrayList<>();
 		// 1. collezionare tutti i nomi di properties da leggere (possono essere definiti in piu' file)
 		for(int i=0; i<props.length; i++) {
@@ -828,17 +933,17 @@ public class GovpayConfig {
 				}
 			}
 		}
-		
+
 		// 2. leggere la property singola
 		for (String nomeProprieta : nomiProperties) {
 			String valoreProprieta = getProperty(nomeProprieta, props, required, log);
-			
+
 			if (valoreProprieta != null) {
 				String key = nomeProprieta.substring(baseName.length());
 				valori.put(key, valoreProprieta);
 			}
 		}
-		
+
 		return valori;
 	}
 
@@ -860,7 +965,7 @@ public class GovpayConfig {
 				}
 			}
 			if(value == null) {
-				if(required) 
+				if(required)
 					throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 				else return null;
 			} else {
@@ -884,12 +989,12 @@ public class GovpayConfig {
 
 		if(log!= null) log.info("Proprieta {} non trovata", name);
 
-		if(required) 
+		if(required)
 			throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
-		else 
+		else
 			return null;
 	}
-	
+
 	private static Integer getIntegerProperty(Logger log, String name, Properties[] props, boolean required, Integer defaultValue) throws PropertyNotFoundException {
 		String propValueString = getProperty(name, props, required, log);
 		try{
@@ -899,7 +1004,7 @@ public class GovpayConfig {
 			return defaultValue;
 		}
 	}
-	
+
 	public static String escape(String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
@@ -911,11 +1016,11 @@ public class GovpayConfig {
 	public int getDimensionePoolNotifica() {
 		return this.dimensionePoolThreadNotifica;
 	}
-	
+
 	public int getDimensionePoolNotificaAppIO() {
 		return this.dimensionePoolThreadNotificaAppIo;
 	}
-	
+
 	public int getDimensionePoolRPT() {
 		return this.dimensionePoolThreadRPT;
 	}
@@ -923,19 +1028,19 @@ public class GovpayConfig {
 	public int getDimensionePoolCaricamentoTracciati() {
 		return dimensionePoolThreadCaricamentoTracciati;
 	}
-	
+
 	public int getDimensionePoolCaricamentoTracciatiStampaAvvisi() {
 		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	}
-	
+
 	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
 		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
-	
+
 	public int getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli() {
 		return dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	}
-	
+
 	public int getDimensionePoolThreadRecuperoRT() {
 		return dimensionePoolThreadRecuperoRT;
 	}
@@ -1011,7 +1116,7 @@ public class GovpayConfig {
 	public boolean isBatchCaricamentoTracciati() {
 		return batchCaricamentoTracciati;
 	}
-	
+
 	public boolean isTimeoutPendentiModello3() {
 		return timeoutPendentiModello3;
 	}
@@ -1019,7 +1124,7 @@ public class GovpayConfig {
 	public Integer getTimeoutPendentiModello3Mins() {
 		return timeoutPendentiModello3Mins;
 	}
-	
+
 	public boolean isTimeoutPendentiModello1() {
 		return timeoutPendentiModello1;
 	}
@@ -1027,7 +1132,7 @@ public class GovpayConfig {
 	public Integer getTimeoutPendentiModello1Mins() {
 		return timeoutPendentiModello1Mins;
 	}
-	
+
 	public Integer getTimeoutPendentiModello3SANP24Mins() {
 		return timeoutPendentiModello3SANP24Mins;
 	}
@@ -1103,7 +1208,7 @@ public class GovpayConfig {
 	public String getTemplateProspettoRiscossioni() {
 		return templateProspettoRiscossioni;
 	}
-	
+
 	public String getTemplateQuietanzaPagamento() {
 		return templateQuietanzaPagamento;
 	}
@@ -1111,7 +1216,7 @@ public class GovpayConfig {
 	public Properties getApiUserLoginRedirectURLs() {
 		return apiUserLoginRedirectURLs;
 	}
-	
+
 	public Properties getApiUserLogoutRedirectURLs() {
 		return apiUserLogoutRedirectURLs;
 	}
@@ -1143,11 +1248,11 @@ public class GovpayConfig {
 	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
 		return batchCaricamentoTracciatiNotificaPagamenti;
 	}
-	
+
 	public Integer getBatchCaricamentoTracciatiNotificaPagamentiDimensionePagina() {
 		return batchCaricamentoTracciatiNotificaPagamentiDimensionePagina;
 	}
-	
+
 	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {
 		return ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	}
@@ -1171,87 +1276,87 @@ public class GovpayConfig {
 	public Integer getNumeroMassimoConnessioniPerRouteDefault() {
 		return numeroMassimoConnessioniPerRouteDefault;
 	}
-	
+
 	public Integer getConnectionTimeoutPagoPA() {
 		return connectionTimeoutPagoPA;
 	}
-	
+
 	public Integer getReadTimeoutPagoPA() {
 		return readTimeoutPagoPA;
 	}
-	
+
 	public Integer getConnectionRequestTimeoutPagoPA() {
 		return connectionRequestTimeoutPagoPA;
 	}
-	
+
 	public Integer getConnectionTimeoutEnte() {
 		return connectionTimeoutEnte;
 	}
-	
+
 	public Integer getReadTimeoutEnte() {
 		return readTimeoutEnte;
 	}
-	
+
 	public Integer getConnectionRequestTimeoutEnte() {
 		return connectionRequestTimeoutEnte;
 	}
-	
+
 	public Integer getConnectionTimeoutAppIO() {
 		return connectionTimeoutAppIO;
 	}
-	
+
 	public Integer getReadTimeoutAppIO() {
 		return readTimeoutAppIO;
 	}
-	
+
 	public Integer getConnectionRequestTimeoutAppIO() {
 		return connectionRequestTimeoutAppIO;
 	}
-	
+
 	public Integer getConnectionTimeoutMaggioliJPPA() {
 		return connectionTimeoutMaggioliJPPA;
 	}
-	
+
 	public Integer getReadTimeoutMaggioliJPPA() {
 		return readTimeoutMaggioliJPPA;
 	}
-	
+
 	public Integer getConnectionRequestTimeoutMaggioliJPPA() {
 		return connectionRequestTimeoutMaggioliJPPA;
 	}
-	
+
 	public Integer getTimeoutInvioRPTModello3Millis() {
 		return timeoutInvioRPTModello3Millis;
 	}
-	
+
 	public Integer getNumeroMassimoGiorniRPTPendenti() {
 		return numeroMassimoGiorniRPTPendenti;
 	}
-	
+
 	public String getCheckoutBaseURL() {
 		return checkoutBaseURL;
 	}
-	
+
 	public boolean isCheckoutEnabled() {
 		return checkoutEnabled;
 	}
-	
+
 	public boolean isCheckoutResponseSendRedirectEnabled() {
 		return checkoutResponseSendRedirectEnabled;
 	}
-	
+
 	public boolean isConversioneMessaggiPagoPAV2NelFormatoV1() {
 		return conversioneMessaggiPagoPAV2NelFormatoV1;
 	}
-	
+
 	public String getNomeHeaderSubscriptionKeyPagoPA() {
 		return nomeHeaderSubscriptionKeyPagoPA;
 	}
-	
+
 	public String getOperazioneVerifica() {
 		return operazioneVerifica;
 	}
-	
+
 	public Integer getNumeroGiorniValiditaPendenza() {
 		return numeroGiorniValiditaPendenza;
 	}
@@ -1299,7 +1404,7 @@ public class GovpayConfig {
 	public boolean isBatchSpedizionePromemoria() {
 		return batchSpedizionePromemoria;
 	}
-	
+
 	public boolean isBatchRecuperoRT() {
 		return batchRecuperoRT;
 	}
@@ -1307,9 +1412,13 @@ public class GovpayConfig {
 	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
-	
+
 	public Integer getNumeroGiorniRendicontazioniSenzaPagamento() {
 		return numeroGiorniRendicontazioniSenzaPagamento;
+	}
+
+	public boolean isControlloPasswordBackwardCompatibilityMD5() {
+		return controlloPasswordBackwardCompatibilityMD5;
 	}
 
 	public Properties getRisorseCustomBaseURLProperties() {

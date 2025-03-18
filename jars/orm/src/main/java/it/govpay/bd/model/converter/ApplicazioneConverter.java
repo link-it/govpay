@@ -61,7 +61,7 @@ public class ApplicazioneConverter {
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setId(dto.getIdUtenza());
 		try {
-			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.subject));
+			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.SUBJECT));
 		} catch (Exception e) {
 			idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
 		}

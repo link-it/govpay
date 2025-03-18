@@ -22,7 +22,7 @@ package it.govpay.core.utils;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;

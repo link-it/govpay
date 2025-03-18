@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
+import jakarta.annotation.Resource;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.WebServiceContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
@@ -112,6 +112,7 @@ import it.govpay.core.utils.CtPaymentPABuilder;
 import it.govpay.core.utils.CtPaymentPAV2Builder;
 import it.govpay.core.utils.CtReceiptUtils;
 import it.govpay.core.utils.CtReceiptV2Utils;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -1352,7 +1353,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
 			ctPaymentOptionDescriptionPA.setAmount(versamento.getImportoTotale());
 			ctPaymentOptionDescriptionPA.setDetailDescription(versamento.getCausaleVersamento().getSimple());
-			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita());
+			ctPaymentOptionDescriptionPA.setDueDate(DateUtils.toLocalDate(versamento.getDataValidita()));
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
 //			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA);
 			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);

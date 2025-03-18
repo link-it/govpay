@@ -12,8 +12,8 @@ dependsOn:
     - name: Java
       optional: false
       version: ''
-      versionMax: '11'
-      versionMin: '8'
+      versionMax: '21'
+      versionMin: '21'
 description:
   it:
     apiDocumentation: 'https://govpay.readthedocs.io/it/latest/integrazione/api/index.html'
@@ -195,7 +195,7 @@ maintenance:
       phone: '+39050504639'
   contractors:
     - name: Link.it
-      until: '2024-12-31'
+      until: '2025-12-31'
       website: 'https://www.link.it'
   type: community
 name: GovPay
@@ -207,7 +207,7 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2024-11-30'
+releaseDate: '2025-03-31'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
 softwareVersion: 3.8.0

@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -217,8 +218,8 @@ public class Versamento  {
 				boolean inserisciNotificaAvviso = false;
 				boolean inserisciNotificaPromemoriaScadenzaMail = false;
 				boolean inserisciNotificaPromemoriaScadenzaAppIO = false;
-				BigDecimal giorniPreavvisoMail = null;
-				BigDecimal giorniPreavvisoAppIO = null;
+				BigInteger giorniPreavvisoMail = null;
+				BigInteger giorniPreavvisoAppIO = null;
 
 				if((tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato() || 
 						tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) && !(avvisatura != null && !avvisatura.booleanValue())) {
@@ -232,7 +233,7 @@ public class Versamento  {
 					giorniPreavvisoAppIO = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavviso();
 
 					if(giorniPreavvisoAppIO == null)
-						giorniPreavvisoAppIO = new BigDecimal(new it.govpay.core.business.Configurazione().getConfigurazione().getAvvisaturaViaAppIo().getPromemoriaScadenza().getPreavviso());
+						giorniPreavvisoAppIO = BigInteger.valueOf(new it.govpay.core.business.Configurazione().getConfigurazione().getAvvisaturaViaAppIo().getPromemoriaScadenza().getPreavviso());
 				}
 
 				if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato()) && !(avvisatura != null && !avvisatura.booleanValue())) {
@@ -241,7 +242,7 @@ public class Versamento  {
 					giorniPreavvisoMail = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavviso();
 
 					if(giorniPreavvisoMail == null)
-						giorniPreavvisoMail = new BigDecimal(new it.govpay.core.business.Configurazione().getConfigurazione().getAvvisaturaViaMail().getPromemoriaScadenza().getPreavviso());
+						giorniPreavvisoMail = BigInteger.valueOf(new it.govpay.core.business.Configurazione().getConfigurazione().getAvvisaturaViaMail().getPromemoriaScadenza().getPreavviso());
 				}
 
 				// dataNotificaAvviso e avvisoNotificato

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.Rendicontazione;
@@ -43,9 +45,9 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 	
 		this.IUV = new Field("iuv",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.IUR = new Field("iur",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
-		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"Rendicontazione",Rendicontazione.class);
-		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"Rendicontazione",Rendicontazione.class);
-		this.ESITO = new Field("esito",java.lang.Integer.class,"Rendicontazione",Rendicontazione.class);
+		this.INDICE_DATI = new Field("indiceDati",java.math.BigInteger.class,"Rendicontazione",Rendicontazione.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.math.BigDecimal.class,"Rendicontazione",Rendicontazione.class);
+		this.ESITO = new Field("esito",java.math.BigInteger.class,"Rendicontazione",Rendicontazione.class);
 		this.DATA = new Field("data",java.util.Date.class,"Rendicontazione",Rendicontazione.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
@@ -61,9 +63,9 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 	
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
-		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"Rendicontazione",Rendicontazione.class);
-		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"Rendicontazione",Rendicontazione.class);
-		this.ESITO = new ComplexField(father,"esito",java.lang.Integer.class,"Rendicontazione",Rendicontazione.class);
+		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.math.BigInteger.class,"Rendicontazione",Rendicontazione.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.math.BigDecimal.class,"Rendicontazione",Rendicontazione.class);
+		this.ESITO = new ComplexField(father,"esito",java.math.BigInteger.class,"Rendicontazione",Rendicontazione.class);
 		this.DATA = new ComplexField(father,"data",java.util.Date.class,"Rendicontazione",Rendicontazione.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"Rendicontazione",Rendicontazione.class);

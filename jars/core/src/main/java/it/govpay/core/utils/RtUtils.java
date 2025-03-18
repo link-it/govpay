@@ -23,18 +23,19 @@ package it.govpay.core.utils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPBody;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.SOAPBody;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -498,7 +499,7 @@ public class RtUtils extends NdpValidationUtils {
 				CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 				BigDecimal transferAmount = ctDatiSingoloPagamentoRT.getSingoloImportoPagato();
 				String iur = ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione();
-				Date dataEsitoSingoloPagamento = ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento();
+				Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 				BigDecimal commissioniApplicatePSP = ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP(); 
 				
 				// Se non e' stato completato un pagamento, non faccio niente.
@@ -511,7 +512,7 @@ public class RtUtils extends NdpValidationUtils {
 				boolean insert = true;
 				
 				try {
-					pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur, indice+1);
+					pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur,  BigInteger.valueOf(indice+1));
 
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione

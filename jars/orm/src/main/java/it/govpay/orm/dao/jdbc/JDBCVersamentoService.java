@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -954,8 +956,8 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 	
 	}
 	
+	@Override
 	public int nativeUpdate(String sql,Object ... param) throws ServiceException, NotImplementedException {
-		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
 		boolean rollback = false;
@@ -978,7 +980,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 				connection.setAutoCommit(false);
 			}
 
-			return ((JDBCVersamentoServiceImpl)this.serviceCRUD).nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);
+			return this.serviceCRUD.nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);
 	
 		}catch(ServiceException | NotImplementedException e){
 			rollback = true;

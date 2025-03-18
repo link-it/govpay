@@ -19,7 +19,8 @@
  */
 package it.govpay.bd.anagrafica;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -1026,6 +1027,6 @@ public class AnagraficaManager {
 	}
 	
 	public static Date generaNuovaDataReset() {
-		return Date.from(OffsetDateTime.now().plusMinutes(5).toInstant());
+		return Date.from(LocalDateTime.now().plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant());
 	}
 }

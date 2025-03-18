@@ -20,7 +20,7 @@
         		        <filter token="GOVPAY_URL_VERIFICA" value="${antinstaller_pddcheck}"/>
                 		<filter token="GOVPAY_TIPO_DATABASE" value="${antinstaller_tipo_database}"/>
 		                <filter token="GOVPAY_LOG_SHOWSQL" value="false"/>
-        		        <filter token="GOVPAY_DATASOURCE" value="govpay"/>
+        		        <filter token="GOVPAY_DATASOURCE" value="${antinstaller_jndi_name}"/>
                 		<filter token="GOVPAY_JMX_AS" value="${antinstaller_as}"/>
 
                                 <filter token="GOVPAY_AUTENTICAZIONE" value="${autenticazione}"/>
@@ -37,6 +37,10 @@
 				
 				<filter token="GOVPAY_SPRING_SEC_FOLDER" value="${springsec_location}" />
 				<filter token="WILFLY_MODULE_DEPENDENCY" value="${dipendenza_modulo_postgres}" />
+        			
+        			<filter token="GOVPAY_BACKEND_GUI_BASE_PATH" value="${antinstaller_govpay_backend_gui_base_path}" />
+        			<filter token="GOVPAY_BACKEND_API_FORM_BASE_URL" value="${antinstaller_govpay_backend_api_form_base_url}" />
+        			<filter token="GOVPAY_BACKEND_API_PUBLIC_BASE_URL" value="${antinstaller_govpay_backend_api_public_base_url}" />
 
 		        </filterset>
 		</copy>

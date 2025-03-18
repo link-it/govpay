@@ -31,13 +31,13 @@
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -85,11 +85,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
@@ -119,48 +114,145 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.1</version>
-				<configuration>
-					<webResources>
-						<webResource>
-							<directory>src/main/webapp</directory>
-							<filtering>true</filtering>
-						</webResource>
-						<webResource>
-							<directory>src/main/resources/</directory>
-							<filtering>true</filtering>
-							<include>web.xml</include>
-							<targetPath>WEB-INF</targetPath>
-						</webResource>						
-						<webResource>
-							<directory>src/main/resources/spring-jaxrs</directory>
-							<filtering>true</filtering>
-							<include>applicationContext-jaxrs-*.xml</include>
-							<targetPath>WEB-INF</targetPath>
-						</webResource>
-						<webResource>
-							<directory>src/main/resources/spring-sec</directory>
-							<filtering>true</filtering>
-							<include>*-applicationContext-security.xml</include>
-							<targetPath>WEB-INF</targetPath>
-						</webResource>
-					</webResources>
-					<webXml>src/main/resources/web.xml</webXml>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-						</manifest>
-						<manifestEntries>
-							<Class-Path>properties/</Class-Path>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+        <profile>
+            <id>govpay-ear</id>
+            <properties>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,${spring.sec_config_folder}/api-user-applicationContext-security.xml</contextConfigLocation>
+			</properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>govpay-ear</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+                                <configuration>
+                                    <webResources>
+                                        <webResource>
+                                            <directory>src/main/webapp</directory>
+                                            <filtering>true</filtering>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/</directory>
+                                            <filtering>true</filtering>
+                                            <include>web.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-jaxrs</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-jaxrs-*.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-sec</directory>
+                                            <filtering>true</filtering>
+                                            <include>*-applicationContext-security.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                    </webResources>
+                                    <webXml>src/main/resources/web.xml</webXml>
+									<failOnMissingWebXml>false</failOnMissingWebXml>
+                                    <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                                    <archive>
+                                        <manifest>
+                                            <addClasspath>true</addClasspath>
+                                            <classpathPrefix>lib/</classpathPrefix>
+                                        </manifest>
+                                        <manifestEntries>
+											<Class-Path>properties/</Class-Path>
+										</manifestEntries>
+                                    </archive>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>govpay-tomcat</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+				<tomcat-war-name>${api-user-tomcat-war-name}</tomcat-war-name>
+				<contextConfigLocation>/WEB-INF/applicationContext-jaxrs-v1.xml,${spring.sec_config_folder}/api-user-applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</contextConfigLocation>
+			</properties>
+            <build>
+            	<finalName>${tomcat-war-name}</finalName>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>govpay-tomcat</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+                                <configuration>
+                                    <webResources>
+                                        <webResource>
+                                            <directory>src/main/webapp</directory>
+                                            <filtering>true</filtering>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/</directory>
+                                            <filtering>true</filtering>
+                                            <include>web.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-jaxrs</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-jaxrs-*.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-sec</directory>
+                                            <filtering>true</filtering>
+                                            <include>*-applicationContext-security.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>src/main/resources/spring-timers</directory>
+                                            <filtering>true</filtering>
+                                            <include>applicationContext-timers.xml</include>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </webResource>
+                                        <webResource>
+                                            <directory>${rel-to-parent}/ear/src/main/application/properties</directory>
+                                            <filtering>true</filtering>
+                                            <include>*.*</include>
+                                            <targetPath>WEB-INF/classes</targetPath>
+                                        </webResource>
+                                    </webResources>
+                                    <webXml>src/main/resources/web.xml</webXml>
+									<failOnMissingWebXml>false</failOnMissingWebXml>
+                                    <archive>
+                                    	<manifest>
+                                            <addClasspath>true</addClasspath>
+                                            <classpathPrefix>lib/</classpathPrefix>
+                                        </manifest>
+                                    </archive>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

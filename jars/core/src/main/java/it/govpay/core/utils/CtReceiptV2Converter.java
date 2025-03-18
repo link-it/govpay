@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -39,30 +39,30 @@ import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 
 /**
  * Utilities di conversione ricevuta dal formato ricevuto via API-REST al formato "nativo" via API-SOAP di cui sono gia' disponibili le funzioni di acquisizione
- * 
+ *
  * @author Pintori Giuliano (giuliano.pintori@link.it)
- * 
+ *
  */
 public class CtReceiptV2Converter {
-	
+
 	private CtReceiptV2Converter() {}
-	
+
 	public static PaSendRTV2Request toPaSendRTV2Request(String codIntermediario, String codStazione, String codDominio, CtReceiptModelResponse response) {
 		PaSendRTV2Request paSendRTV2Request = new PaSendRTV2Request();
-		
+
 		paSendRTV2Request.setIdBrokerPA(codIntermediario);
 		paSendRTV2Request.setIdStation(codStazione);
 		paSendRTV2Request.setIdPA(codDominio);
 		paSendRTV2Request.setReceipt(toCtReceiptV2(response));
-		
+
 		return paSendRTV2Request;
 	}
-	
+
 	public static CtReceiptV2 toCtReceiptV2(CtReceiptModelResponse response) {
 		CtReceiptV2 ctReceiptV2 = new CtReceiptV2();
-		
+
 		ctReceiptV2.setStandIn(false);
-		ctReceiptV2.setApplicationDate(SimpleDateFormatUtils.toDate(response.getApplicationDate()));
+		ctReceiptV2.setApplicationDate(response.getApplicationDate());
 		ctReceiptV2.setChannelDescription(response.getChannelDescription());
 		ctReceiptV2.setCompanyName(response.getCompanyName());
 		ctReceiptV2.setCreditorReferenceId(response.getCreditorReferenceId());
@@ -84,7 +84,7 @@ public class CtReceiptV2Converter {
 		}
 		ctReceiptV2.setPayer(toCtSubjectPayer(response.getPayer()));
 		ctReceiptV2.setPaymentAmount(response.getPaymentAmount());
-		ctReceiptV2.setPaymentDateTime(SimpleDateFormatUtils.toDate(response.getPaymentDateTimeFormatted()));
+		ctReceiptV2.setPaymentDateTime(response.getPaymentDateTimeFormatted());
 		ctReceiptV2.setPaymentMethod(response.getPaymentMethod());
 		// ctReceiptV2.setPaymentNote(response.getpaymentNote()) NON PRESENTE
 		ctReceiptV2.setPrimaryCiIncurredFee(response.getPrimaryCiIncurredFee());
@@ -92,9 +92,9 @@ public class CtReceiptV2Converter {
 		ctReceiptV2.setPspFiscalCode(response.getPspFiscalCode());
 		ctReceiptV2.setPspPartitaIVA(response.getPspPartitaIVA());
 		ctReceiptV2.setReceiptId(response.getReceiptId());
-		ctReceiptV2.setTransferDate(SimpleDateFormatUtils.toDate(response.getTransferDate()));
+		ctReceiptV2.setTransferDate(response.getTransferDate());
 		ctReceiptV2.setTransferList(toCtTransferListPAReceiptV2(response.getTransferList()));
-		
+
 		return ctReceiptV2;
 	}
 
@@ -102,13 +102,13 @@ public class CtReceiptV2Converter {
 		if(transferList == null) {
 			return null;
 		}
-		
+
 		CtTransferListPAReceiptV2 ctTransferListPAReceiptV2 = new CtTransferListPAReceiptV2();
-		
+
 		for (TransferPA TransferPA : transferList) {
-			
+
 			CtTransferPAReceiptV2 ctTransferPAReceiptV2 = new CtTransferPAReceiptV2();
-			
+
 			//ctTransferPAReceiptV2.setCompanyName(TransferPA.getCompanyName()) NON PRESENTE
 			ctTransferPAReceiptV2.setFiscalCodePA(TransferPA.getFiscalCodePA());
 			ctTransferPAReceiptV2.setIBAN(TransferPA.getIban());
@@ -120,12 +120,12 @@ public class CtReceiptV2Converter {
 			ctTransferPAReceiptV2.setRemittanceInformation(TransferPA.getRemittanceInformation());
 			ctTransferPAReceiptV2.setTransferAmount(TransferPA.getTransferAmount());
 			ctTransferPAReceiptV2.setTransferCategory(TransferPA.getTransferCategory());
-			
-			
+
+
 			ctTransferListPAReceiptV2.getTransfer().add(ctTransferPAReceiptV2 );
 		}
-		
-		
+
+
 		return ctTransferListPAReceiptV2;
 	}
 
@@ -133,18 +133,18 @@ public class CtReceiptV2Converter {
 		if(metadata == null) {
 			return null;
 		}
-		
+
 		CtMetadata ctMetadata = new CtMetadata();
-		
+
 		for (MapEntry MapEntry : metadata) {
 			CtMapEntry ctMapEntry = new CtMapEntry();
-			
+
 			ctMapEntry.setKey(MapEntry.getKey());
 			ctMapEntry.setValue(MapEntry.getValue());
-			
+
 			ctMetadata.getMapEntry().add(ctMapEntry);
 		}
-		
+
 		return ctMetadata;
 	}
 
@@ -152,9 +152,9 @@ public class CtReceiptV2Converter {
 		if(debtor == null) {
 			return null;
 		}
-		
+
 		CtSubject ctSubject = new CtSubject();
-		
+
 		ctSubject.setCity(debtor.getCity());
 		ctSubject.setCivicNumber(debtor.getCivicNumber());
 		ctSubject.setCountry(debtor.getCountry());
@@ -173,17 +173,17 @@ public class CtReceiptV2Converter {
 		}
 		uniqueIdentifier.setEntityUniqueIdentifierValue(debtor.getEntityUniqueIdentifierValue());
 		ctSubject.setUniqueIdentifier(uniqueIdentifier );
-		
+
 		return ctSubject;
 	}
-	
+
 	private static CtSubject toCtSubjectPayer(Payer payer) {
 		if(payer == null) {
 			return null;
 		}
-		
+
 		CtSubject ctSubject = new CtSubject();
-		
+
 		ctSubject.setCity(payer.getCity());
 		ctSubject.setCivicNumber(payer.getCivicNumber());
 		ctSubject.setCountry(payer.getCountry());
@@ -202,7 +202,7 @@ public class CtReceiptV2Converter {
 		}
 		uniqueIdentifier.setEntityUniqueIdentifierValue(payer.getEntityUniqueIdentifierValue());
 		ctSubject.setUniqueIdentifier(uniqueIdentifier );
-		
+
 		return ctSubject;
 	}
 }

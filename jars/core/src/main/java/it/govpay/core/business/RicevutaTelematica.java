@@ -26,7 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -55,6 +54,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -66,6 +66,7 @@ import it.govpay.stampe.model.VoceRicevutaTelematicaInput;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaCostanti;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
+import jakarta.xml.bind.JAXBException;
 
 public class RicevutaTelematica {
 
@@ -143,7 +144,7 @@ public class RicevutaTelematica {
 
 		CtRichiestaPagamentoTelematico ctRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 
-		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, ctRichiestaPagamentoTelematico.getDataOraMessaggioRichiesta(), rt.getDataOraMessaggioRicevuta()));
+		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, DateUtils.toJavaDate(ctRichiestaPagamentoTelematico.getDataOraMessaggioRichiesta()), DateUtils.toJavaDate(rt.getDataOraMessaggioRicevuta())));
 		input.setImporto(datiPagamento.getImportoTotalePagato().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -299,7 +300,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,DateUtils.toJavaDate(datiPagamento.getPaymentDateTime()), DateUtils.toJavaDate(datiPagamento.getApplicationDate())));
 		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -430,7 +431,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,DateUtils.toJavaDate(datiPagamento.getPaymentDateTime()), DateUtils.toJavaDate(datiPagamento.getApplicationDate())));
 		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 

@@ -19,7 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class RendicontazioneConverter {
 		dto.setIuv(vo.getIuv());
 		dto.setIur(vo.getIur());
 		dto.setIndiceDati(vo.getIndiceDati());
-		dto.setImporto(BigDecimal.valueOf(vo.getImportoPagato()));
+		dto.setImporto(vo.getImportoPagato());
 		dto.setData(vo.getData());
 		dto.setEsito(EsitoRendicontazione.toEnum(vo.getEsito()));
 		dto.setStato(StatoRendicontazione.valueOf(vo.getStato()));
@@ -62,9 +62,9 @@ public class RendicontazioneConverter {
 		vo.setIur(dto.getIur());
 		vo.setIndiceDati(dto.getIndiceDati());
 
-		vo.setImportoPagato(dto.getImporto().doubleValue());
+		vo.setImportoPagato(dto.getImporto());
 		vo.setData(dto.getData());
-		vo.setEsito(dto.getEsito().getCodifica());
+		vo.setEsito(BigInteger.valueOf(dto.getEsito().getCodifica()));
 		vo.setStato(dto.getStato().toString());
 		vo.setAnomalie(dto.getAnomalieString());
 		

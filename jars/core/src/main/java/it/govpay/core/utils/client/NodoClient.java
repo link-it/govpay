@@ -21,7 +21,7 @@ package it.govpay.core.utils.client;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;

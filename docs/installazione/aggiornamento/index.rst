@@ -25,9 +25,16 @@ Si consiglia di effettuare l'aggiornamento dell'EAR con l'Application Server spe
 Aggiornamento di una minor version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Nel caso di aggiornamento di una minor version, ad esempio per aggiornare la versione 3.1.1 alla 3.3.3,
-è necessario sostituire l'archivio EAR dispiegato nell'Application Server ed applicare in sequenza le patch 3.2.sql e 3.3.sql.
+Nel caso di aggiornamento di una minor version oltre a sostituire l'EAR può essere necessario:
 
+- Applicare una o più patch al database
+- Aggiungere i file di Spring security alla directory di lavoro la configurazione usata lo prevede
+
+Ad esempio, nel caso di aggiornamento dalla versione 3.4.1 alla versione 3.6.0 è necessario
+
+- Applicare le patch 3.5.sql e 3.6.sql
+- Copiare il file di configurazione api-jppapdp-applicationContext-security.xml nella directory di lavoro
+ 
 Si consiglia di effettuare le operazioni di aggiornamento con l'Application Server spento
 e di eseguire un backup del DB prima di applicare le patch.
 

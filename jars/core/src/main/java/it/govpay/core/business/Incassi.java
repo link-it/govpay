@@ -520,7 +520,7 @@ public class Incassi {
 							pagamento.setImportoPagato(rendicontazione.getImporto());
 							pagamento.setIur(rendicontazione.getIur());
 							pagamento.setIuv(rendicontazione.getIuv());
-							pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
+							pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati().intValue());
 
 							SingoloVersamento singoloVersamento = singoliVersamenti.get(0); 
 							pagamento.setSingoloVersamento(singoloVersamento);

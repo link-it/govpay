@@ -23,7 +23,7 @@ package it.govpay.core.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 public class VersamentoKey {
 
     protected List<JAXBElement<String>> content;

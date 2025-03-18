@@ -23,7 +23,7 @@
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 		</dependency>
 
 		<dependency>
@@ -52,18 +52,8 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-		
-		<dependency>
 			<groupId>com.brsanthu</groupId>
 			<artifactId>migbase64</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -94,7 +84,8 @@
 							<inputSpec>${project.basedir}/src/main/resources/appio/io_functions_services.yaml</inputSpec>
 							<language>java</language>
 							<configOptions>
-								<dateLibrary>joda</dateLibrary>
+								<jakarta>true</jakarta>
+								<dateLibrary>java8-localdatetime</dateLibrary>
 								<library>jersey2</library>
 								<sourceFolder>target/generated-sources/java/</sourceFolder>
 								<apiPackage>it.govpay.core.utils.appio.api</apiPackage>

@@ -19,6 +19,9 @@
  */
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.springframework.security.core.Authentication;
@@ -234,7 +237,7 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaOggettoDefault(null);
 				}
 				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso());
+					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(BigInteger.valueOf(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso().intValue()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(null);
 				}
@@ -373,7 +376,7 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(null);
 				}
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso());
+					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(BigInteger.valueOf(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso().intValue()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(null);
 				}
@@ -492,7 +495,8 @@ public class TipiPendenzaConverter {
 			avvisaturaMailPromemoriaScadenza.setOggetto(new RawObject(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaOggettoDefault()));
 		if(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault() != null)
 			avvisaturaMailPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault()));
-		avvisaturaMailPromemoriaScadenza.setPreavviso(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault());
+		if(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() != null)
+			avvisaturaMailPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault()));
 		avvisaturaMailPromemoriaScadenza.setTipo(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaTipoDefault());
 
 		avvisaturaMail.setPromemoriaScadenza(avvisaturaMailPromemoriaScadenza);
@@ -555,7 +559,8 @@ public class TipiPendenzaConverter {
 			avvisaturaAppIOPromemoriaScadenza.setOggetto(new RawObject(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault()));
 		if(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault() != null)
 			avvisaturaAppIOPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault()));
-		avvisaturaAppIOPromemoriaScadenza.setPreavviso(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault());
+		if(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() != null)
+			avvisaturaAppIOPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault()));
 		avvisaturaAppIOPromemoriaScadenza.setTipo(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault());
 
 		avvisaturaAppIO.setPromemoriaScadenza(avvisaturaAppIOPromemoriaScadenza);

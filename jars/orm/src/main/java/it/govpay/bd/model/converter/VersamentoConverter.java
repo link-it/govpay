@@ -132,10 +132,8 @@ public class VersamentoConverter {
 		dto.setIdSessione(vo.getIdSessione());
 
 		dto.setDataPagamento(vo.getDataPagamento());
-		if(vo.getImportoPagato() != null)
-			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		if(vo.getImportoIncassato() != null)
-			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
+		dto.setImportoPagato(vo.getImportoPagato());
+		dto.setImportoIncassato(vo.getImportoIncassato());
 		if(vo.getStatoPagamento() != null)
 			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 		dto.setIuvPagamento(vo.getIuvPagamento());
@@ -263,10 +261,8 @@ public class VersamentoConverter {
 		vo.setIdSessione(dto.getIdSessione());
 
 		vo.setDataPagamento(dto.getDataPagamento());
-		if(dto.getImportoPagato() != null)
-			vo.setImportoPagato(dto.getImportoPagato().doubleValue());
-		if(dto.getImportoIncassato() != null)
-			vo.setImportoIncassato(dto.getImportoIncassato().doubleValue());
+		vo.setImportoPagato(dto.getImportoPagato());
+		vo.setImportoIncassato(dto.getImportoIncassato());
 		if(dto.getStatoPagamento() != null)
 			vo.setStatoPagamento(dto.getStatoPagamento().toString()); 
 		vo.setIuvPagamento(dto.getIuvPagamento());

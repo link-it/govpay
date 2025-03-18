@@ -44,7 +44,7 @@ public class IncassoConverter {
 			if(vo.getIdOperatore() != null)
 				dto.setIdApplicazione(vo.getIdOperatore().getId());
 			
-			dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
+			dto.setImporto(vo.getImporto());
 			dto.setTrn(vo.getTrn());
 			dto.setIbanAccredito(vo.getIbanAccredito());
 			dto.setSct(vo.getSct());
@@ -75,7 +75,7 @@ public class IncassoConverter {
 			idOperatore.setId(dto.getIdOperatore());
 			vo.setIdOperatore(idOperatore);
 		}
-		vo.setImporto(dto.getImporto().doubleValue());
+		vo.setImporto(dto.getImporto());
 		vo.setTrn(dto.getTrn());
 		vo.setIbanAccredito(dto.getIbanAccredito());
 		vo.setSct(dto.getSct());

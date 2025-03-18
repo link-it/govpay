@@ -50,8 +50,7 @@ public class PagamentoConverter {
 		pagamento.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
 		pagamento.setDataAcquisizione(vo.getDataAcquisizione());
 		pagamento.setDataPagamento(vo.getDataPagamento());
-		if(vo.getCommissioniPsp() != null)
-			pagamento.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
+		pagamento.setCommissioniPsp(vo.getCommissioniPsp());
 		if(vo.getTipoAllegato() != null)
 			pagamento.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
 		pagamento.setAllegato(vo.getAllegato());
@@ -65,8 +64,7 @@ public class PagamentoConverter {
 		pagamento.setDatiRevoca(vo.getDatiRevoca());
 		pagamento.setEsitoRevoca(vo.getEsitoRevoca());
 		pagamento.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
-		if(vo.getImportoRevocato() != null)
-			pagamento.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
+		pagamento.setImportoRevocato(vo.getImportoRevocato());
 		if(vo.getStato() != null)
 			pagamento.setStato(Stato.valueOf(vo.getStato()));
 

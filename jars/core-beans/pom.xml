@@ -17,47 +17,6 @@
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>java-11</id>
-			<activation>
-	   			<activeByDefault>true</activeByDefault>
-			</activation>
-
-			<dependencies>
-				<dependency>
-				        <groupId>javax.xml.bind</groupId>
-				        <artifactId>jaxb-api</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>com.sun.xml.bind</groupId>
-				        <artifactId>jaxb-core</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>com.sun.xml.bind</groupId>
-				        <artifactId>jaxb-impl</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
@@ -80,8 +39,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
 		</dependency>
 
 		<dependency>
@@ -91,12 +50,43 @@
 		
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
-		    <artifactId>openspcoop2_utils-serialization</artifactId>
+			<artifactId>openspcoop2_utils-serialization</artifactId>
 		</dependency>
 		
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
+			<groupId>org.apache.commons</groupId>
     		<artifactId>commons-text</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		 <dependency>

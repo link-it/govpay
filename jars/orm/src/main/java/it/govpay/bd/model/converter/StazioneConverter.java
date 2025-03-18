@@ -23,6 +23,7 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.model.Stazione.Versione;
 import it.govpay.orm.IdIntermediario;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class StazioneConverter {
 		dto.setPassword(vo.getPassword());
 		dto.setIdIntermediario(vo.getIdIntermediario().getId());
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setApplicationCode(vo.getApplicationCode());
+		dto.setApplicationCode(vo.getApplicationCode().intValue());
 		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		return dto;
 	}
@@ -61,7 +62,7 @@ public class StazioneConverter {
 		idInterm.setId(dto.getIdIntermediario());
 		vo.setIdIntermediario(idInterm);
 		vo.setAbilitato(dto.isAbilitato());
-		vo.setApplicationCode(dto.getApplicationCode());
+		vo.setApplicationCode(BigInteger.valueOf(dto.getApplicationCode()));
 		vo.setVersione(dto.getVersione().toString());
 		return vo;
 	}

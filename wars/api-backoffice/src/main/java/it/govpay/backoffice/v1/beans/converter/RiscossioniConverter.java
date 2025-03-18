@@ -21,7 +21,7 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import java.math.BigDecimal;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;

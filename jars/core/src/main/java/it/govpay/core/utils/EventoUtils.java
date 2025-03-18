@@ -19,6 +19,8 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigInteger;
+
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Evento;
@@ -103,25 +105,25 @@ public class EventoUtils {
 			if(eventoCtx.getException() != null) {
 				LogUtils.logDebug(log, "Classe exception: " + eventoCtx.getException().getClass());
 
-				if(eventoCtx.getException() instanceof GovPayException) {
+				if(eventoCtx.getException() instanceof GovPayException govpayException) {
 					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) eventoCtx.getException()).getCodEsito()));
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(govpayException.getCodEsito()));
 					} catch (Exception e) {
 						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
 				}
 
-				if(eventoCtx.getException() instanceof BaseExceptionV1) {
+				if(eventoCtx.getException() instanceof BaseExceptionV1 baseExceptionV1) {
 					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((BaseExceptionV1) eventoCtx.getException()).getCategoria()));
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(baseExceptionV1.getCategoria()));
 					} catch (Exception e) {
 						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
 				}
 
-				if(eventoCtx.getException() instanceof UnprocessableEntityException) {
+				if(eventoCtx.getException() instanceof UnprocessableEntityException unprocessableEntityException) {
 					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((UnprocessableEntityException) eventoCtx.getException()).getCategoria()));
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(unprocessableEntityException.getCategoria()));
 					} catch (Exception e) {
 						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
@@ -136,7 +138,7 @@ public class EventoUtils {
 				}
 
 				if(eventoCtx.getException() instanceof ClientException) {
-					dto.setSeverita(5);
+					dto.setSeverita(BigInteger.valueOf(5));
 				}
 			}	
 		}

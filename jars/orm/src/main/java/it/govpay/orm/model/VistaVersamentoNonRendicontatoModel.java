@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaVersamentoNonRendicontato;
@@ -47,7 +49,7 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.SNG_IMPORTO_SINGOLO_VERSAMENTO = new Field("sngImportoSingoloVersamento",double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DESCRIZIONE = new Field("sngDescrizione",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DATI_ALLEGATI = new Field("sngDatiAllegati",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.SNG_INDICE_DATI = new Field("sngIndiceDati",java.lang.Integer.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.SNG_INDICE_DATI = new Field("sngIndiceDati",java.math.BigInteger.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new Field("sngDescrizioneCausaleRPT",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_CONTABILITA = new Field("sngContabilita",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_METADATA = new Field("sngMetadata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -98,8 +100,8 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.VRS_DIREZIONE = new Field("vrsDirezione",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_ID_SESSIONE = new Field("vrsIdSessione",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_DATA_PAGAMENTO = new Field("vrsDataPagamento",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.VRS_IMPORTO_PAGATO = new Field("vrsImportoPagato",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.VRS_IMPORTO_PAGATO = new Field("vrsImportoPagato",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_STATO_PAGAMENTO = new Field("vrsStatoPagamento",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_IUV_PAGAMENTO = new Field("vrsIuvPagamento",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_COD_RATA = new Field("vrsCodRata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -113,13 +115,13 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.PAG_DATA_ACQUISIZIONE = new Field("pagDataAcquisizione",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_IUR = new Field("pagIur",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATA_PAGAMENTO = new Field("pagDataPagamento",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.PAG_COMMISSIONI_PSP = new Field("pagCommissioniPsp",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.PAG_COMMISSIONI_PSP = new Field("pagCommissioniPsp",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_TIPO_ALLEGATO = new Field("pagTipoAllegato",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_ALLEGATO = new Field("pagAllegato",byte[].class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATA_ACQUISIZIONE_REVOCA = new Field("pagDataAcquisizioneRevoca",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_CAUSALE_REVOCA = new Field("pagCausaleRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATI_REVOCA = new Field("pagDatiRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.PAG_IMPORTO_REVOCATO = new Field("pagImportoRevocato",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.PAG_IMPORTO_REVOCATO = new Field("pagImportoRevocato",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_ESITO_REVOCA = new Field("pagEsitoRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATI_ESITO_REVOCA = new Field("pagDatiEsitoRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_STATO = new Field("pagStato",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -141,7 +143,7 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.SNG_IMPORTO_SINGOLO_VERSAMENTO = new ComplexField(father,"sngImportoSingoloVersamento",double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DESCRIZIONE = new ComplexField(father,"sngDescrizione",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DATI_ALLEGATI = new ComplexField(father,"sngDatiAllegati",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.SNG_INDICE_DATI = new ComplexField(father,"sngIndiceDati",java.lang.Integer.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.SNG_INDICE_DATI = new ComplexField(father,"sngIndiceDati",java.math.BigInteger.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"sngDescrizioneCausaleRPT",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_CONTABILITA = new ComplexField(father,"sngContabilita",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.SNG_METADATA = new ComplexField(father,"sngMetadata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -192,8 +194,8 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.VRS_DIREZIONE = new ComplexField(father,"vrsDirezione",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_ID_SESSIONE = new ComplexField(father,"vrsIdSessione",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_DATA_PAGAMENTO = new ComplexField(father,"vrsDataPagamento",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.VRS_IMPORTO_PAGATO = new ComplexField(father,"vrsImportoPagato",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.VRS_IMPORTO_PAGATO = new ComplexField(father,"vrsImportoPagato",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_STATO_PAGAMENTO = new ComplexField(father,"vrsStatoPagamento",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_IUV_PAGAMENTO = new ComplexField(father,"vrsIuvPagamento",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.VRS_COD_RATA = new ComplexField(father,"vrsCodRata",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
@@ -207,13 +209,13 @@ public class VistaVersamentoNonRendicontatoModel extends AbstractModel<VistaVers
 		this.PAG_DATA_ACQUISIZIONE = new ComplexField(father,"pagDataAcquisizione",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_IUR = new ComplexField(father,"pagIur",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATA_PAGAMENTO = new ComplexField(father,"pagDataPagamento",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.PAG_COMMISSIONI_PSP = new ComplexField(father,"pagCommissioniPsp",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.PAG_COMMISSIONI_PSP = new ComplexField(father,"pagCommissioniPsp",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_TIPO_ALLEGATO = new ComplexField(father,"pagTipoAllegato",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_ALLEGATO = new ComplexField(father,"pagAllegato",byte[].class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"pagDataAcquisizioneRevoca",java.util.Date.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_CAUSALE_REVOCA = new ComplexField(father,"pagCausaleRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATI_REVOCA = new ComplexField(father,"pagDatiRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
-		this.PAG_IMPORTO_REVOCATO = new ComplexField(father,"pagImportoRevocato",java.lang.Double.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
+		this.PAG_IMPORTO_REVOCATO = new ComplexField(father,"pagImportoRevocato",java.math.BigDecimal.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_ESITO_REVOCA = new ComplexField(father,"pagEsitoRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_DATI_ESITO_REVOCA = new ComplexField(father,"pagDatiEsitoRevoca",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);
 		this.PAG_STATO = new ComplexField(father,"pagStato",java.lang.String.class,"VistaVersamentoNonRendicontato",VistaVersamentoNonRendicontato.class);

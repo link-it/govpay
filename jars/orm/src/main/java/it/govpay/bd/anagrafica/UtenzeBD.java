@@ -20,9 +20,9 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -298,15 +298,15 @@ public class UtenzeBD extends BasicBD {
 			}
 			IExpression expr = this.getUtenzaService().newExpression();
 
-			Hashtable<String,List<String>> hashSubject = null;
+			Map<String, List<String>> hashSubject = null;
 			try {
-			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
+			  hashSubject = CertificateUtils.getPrincipalIntoMap(principal,PrincipalType.SUBJECT);
 			}catch(UtilsException e) {
 				throw new NotFoundException("Utenza" + principal + "non autorizzata");
 			}
-			Enumeration<String> keys = hashSubject.keys();
-			while(keys.hasMoreElements()){
-				String key = keys.nextElement();
+			Iterator<String> keys = hashSubject.keySet().iterator();
+			while(keys.hasNext()){
+				String key = keys.next();
 				List<String> listValues = hashSubject.get(key);
                 for (String value : listValues) {
                 	expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
@@ -369,16 +369,16 @@ public class UtenzeBD extends BasicBD {
 			}
 			
 			IExpression expr = this.getUtenzaService().newExpression();
-			Hashtable<String,List<String>> hashSubject = null;
+			Map<String, List<String>> hashSubject = null;
 			try {
-			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
+			  hashSubject = CertificateUtils.getPrincipalIntoMap(principal,PrincipalType.SUBJECT);
 			}catch(UtilsException e) {
 				log.error("Impossibile estrarre le informazioni sul subject dalla stringa indicata ["+principal+"].", e);
 				return false;
 			}
-			Enumeration<String> keys = hashSubject.keys();
-			while(keys.hasMoreElements()){
-				String key = keys.nextElement();
+			Iterator<String> keys = hashSubject.keySet().iterator();
+			while(keys.hasNext()){
+				String key = keys.next();
 				List<String> listValues = hashSubject.get(key);
                 for (String value : listValues) {
                 	expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
@@ -442,13 +442,13 @@ public class UtenzeBD extends BasicBD {
 			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
 			String pr, prOld;
 			try {
-				pr = CertificateUtils.formatPrincipal(utenza.getPrincipal(), PrincipalType.subject);
+				pr = CertificateUtils.formatPrincipal(utenza.getPrincipal(), PrincipalType.SUBJECT);
 			}catch(Exception e) {
 				pr= utenza.getPrincipal();
 			}
 			
 			try {
-				prOld = CertificateUtils.formatPrincipal(utenza2.getPrincipal(), PrincipalType.subject);
+				prOld = CertificateUtils.formatPrincipal(utenza2.getPrincipal(), PrincipalType.SUBJECT);
 			}catch(Exception e) {
 				prOld= utenza2.getPrincipal();
 			}

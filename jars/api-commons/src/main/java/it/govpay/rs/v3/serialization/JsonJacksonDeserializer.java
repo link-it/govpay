@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -58,7 +58,7 @@ public class JsonJacksonDeserializer {
 				mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 
 			mapper = new ObjectMapper();
-			mapper.registerModule(new JaxbAnnotationModule());
+			mapper.registerModule(new JakartaXmlBindAnnotationModule());
 			mapper.registerModule(new DateModule());
 			mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

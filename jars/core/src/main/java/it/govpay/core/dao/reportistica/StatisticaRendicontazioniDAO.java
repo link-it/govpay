@@ -38,7 +38,7 @@ import it.govpay.core.dao.reportistica.dto.ListaRendicontazioniDTOResponse;
 public class StatisticaRendicontazioniDAO extends BaseDAO{
 
 	public StatisticaRendicontazioniDAO() {
-		//donothing
+		// donothing
 	}
 
 	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRiscossioniDTO) throws ServiceException {

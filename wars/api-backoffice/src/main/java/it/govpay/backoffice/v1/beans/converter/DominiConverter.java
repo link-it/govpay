@@ -19,6 +19,8 @@
  */
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,7 +211,7 @@ public class DominiConverter {
 		}
 		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
 		if(dominioPost.getSegregationCode() != null)
-			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
+			dominio.setSegregationCode(new BigInteger(dominioPost.getSegregationCode()));
 
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 
@@ -642,7 +644,8 @@ public class DominiConverter {
 			avvisaturaMailPromemoriaScadenza.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaOggettoDefault()));
 		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault() != null)
 			avvisaturaMailPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault()));
-		avvisaturaMailPromemoriaScadenza.setPreavviso(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault());
+		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() != null)
+		avvisaturaMailPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault()));
 		avvisaturaMailPromemoriaScadenza.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaTipoDefault());
 
 		avvisaturaMail.setPromemoriaScadenza(avvisaturaMailPromemoriaScadenza);
@@ -699,7 +702,8 @@ public class DominiConverter {
 			avvisaturaAppIOPromemoriaScadenza.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault()));
 		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault() != null)
 			avvisaturaAppIOPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault()));
-		avvisaturaAppIOPromemoriaScadenza.setPreavviso(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault());
+		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() != null)
+		avvisaturaAppIOPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault()));
 		avvisaturaAppIOPromemoriaScadenza.setTipo(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault());
 
 		avvisaturaAppIO.setPromemoriaScadenza(avvisaturaAppIOPromemoriaScadenza);
@@ -798,7 +802,8 @@ public class DominiConverter {
 			valoriAvvisaturaMailPromemoriaScadenza.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaOggettoCustom()));
 		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaMessaggioCustom() != null)
 			valoriAvvisaturaMailPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaMessaggioCustom()));
-		valoriAvvisaturaMailPromemoriaScadenza.setPreavviso(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom());
+		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom() != null)
+		valoriAvvisaturaMailPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom()));
 		valoriAvvisaturaMailPromemoriaScadenza.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaTipoCustom());
 
 		valoriAvvisaturaMail.setPromemoriaScadenza(valoriAvvisaturaMailPromemoriaScadenza);
@@ -856,7 +861,8 @@ public class DominiConverter {
 			valoriAvvisaturaAppIOPromemoriaScadenza.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaOggettoCustom()));
 		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaMessaggioCustom() != null)
 			valoriAvvisaturaAppIOPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaMessaggioCustom()));
-		valoriAvvisaturaAppIOPromemoriaScadenza.setPreavviso(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom());
+		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom() != null)
+			valoriAvvisaturaAppIOPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom()));
 		valoriAvvisaturaAppIOPromemoriaScadenza.setTipo(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaTipoCustom());
 
 		valoriAvvisaturaAppIO.setPromemoriaScadenza(valoriAvvisaturaAppIOPromemoriaScadenza);
@@ -1051,7 +1057,7 @@ public class DominiConverter {
 					tipoVersamentoDominio.setAvvisaturaMailPromemoriaScadenzaOggettoCustom(null);
 				}
 				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso() != null) {
-					tipoVersamentoDominio.setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso());
+					tipoVersamentoDominio.setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(BigInteger.valueOf(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso().intValue()));
 				}else {
 					tipoVersamentoDominio.setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(null);
 				}
@@ -1194,7 +1200,7 @@ public class DominiConverter {
 					tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaScadenzaOggettoCustom(null);
 				}
 				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso() != null) {
-					tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso());
+					tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(BigInteger.valueOf(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso().intValue()));
 				}else {
 					tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(null);
 				}

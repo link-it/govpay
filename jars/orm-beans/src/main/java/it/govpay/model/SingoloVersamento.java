@@ -20,6 +20,7 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -73,7 +74,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String codContabilita;
 	private String datiAllegati;
 	private String descrizione;
-	private Integer indiceDati;
+	private BigInteger indiceDati;
 	private String descrizioneCausaleRPT;
 	private String contabilita;
 	private Long idDominio;
@@ -217,11 +218,11 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.idIbanAppoggio = idIbanAppoggio;
 	}
 
-	public Integer getIndiceDati() {
+	public BigInteger getIndiceDati() {
 		return indiceDati;
 	}
 
-	public void setIndiceDati(Integer indiceDati) {
+	public void setIndiceDati(BigInteger indiceDati) {
 		this.indiceDati = indiceDati;
 	}
 

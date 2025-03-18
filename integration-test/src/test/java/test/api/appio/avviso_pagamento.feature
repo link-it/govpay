@@ -146,6 +146,7 @@ Background:
 	}
 """
 
+@test1
 Scenario: Caricamento pendenza dovuta con spedizione notifica AppIO, ApiKey non valida.
 
 # Svuoto Cache Simulatore AppIO

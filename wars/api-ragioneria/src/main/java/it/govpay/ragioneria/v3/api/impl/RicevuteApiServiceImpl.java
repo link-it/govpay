@@ -25,9 +25,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -97,7 +97,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
 			listaRptDTO.setEsitoPagamento(null);
-			
+
 			// 2025/02/24 - Leggo solo RPP che hanno la ricevuta
 			listaRptDTO.setRicevute(true);
 
@@ -157,7 +157,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
     /**
      * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
      *
-     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
+     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo.
      *
      */
     @Override
@@ -197,20 +197,20 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			leggiRptDTO.setCcp(idRicevuta);
 
 			RptDAO ricevuteDAO = new RptDAO();
-			
+
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = null;
 			if(accept.toLowerCase().contains("application/pdf")) {
 				leggiRptDTO.setFormato(FormatoRicevuta.PDF);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
 				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ idRicevuta + ".pdf";
-				byte[] b = ricevutaDTOResponse.getPdf(); 
+				byte[] b = ricevutaDTOResponse.getPdf();
 				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiRptDTO.setFormato(FormatoRicevuta.JSON);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
 				Ricevuta response =  RicevuteConverter.toRsModel(ricevutaDTOResponse.getRpt());
-				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName); 
+				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 			} else {
 				// formato non accettato

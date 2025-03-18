@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,8 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.xml.bind.JAXBException;
+import jakarta.activation.DataHandler;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -80,6 +81,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -266,7 +268,7 @@ public class Rendicontazioni {
 					try {
 						LogUtils.logDebug(log, "Verifico presenza del flusso [{}, {}, {}]", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
 						// Uso la GET perche' la exists risulta buggata con la data nella tupla di identificazione
-						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), DateUtils.toJavaDate(idRendicontazione.getDataOraFlusso()));
 						LogUtils.logDebug(log, "Flusso di rendicontazione [{}, {}, {}] gia'' acquisito", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
 						// C'e' gia. Se viene da file, lo elimino
 						if(rnd.getFrFile() != null) {
@@ -281,10 +283,11 @@ public class Rendicontazioni {
 						}
 					} catch (NotFoundException e) {
 						// Flusso originale, lo aggiungo ma controllo che non sia gia' nella lista di quelli da aggiungere
-						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime())) {
+						long timeMillis = DateUtils.toJavaDate( idRendicontazione.getDataOraFlusso() ).getTime();
+						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + timeMillis)) {
 							LogUtils.logInfo(log, "Flusso di rendicontazione [{}, {}, {}] da acquisire", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
 							flussiDaAcquisire.add(rnd);
-							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime());
+							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + timeMillis);
 						}
 					}
 				}
@@ -409,8 +412,8 @@ public class Rendicontazioni {
 						fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
 						fr.setIur(flussoRendicontazione.getIdentificativoUnivocoRegolamento());
 						fr.setDataAcquisizione(new Date());
-						fr.setDataFlusso(idRendicontazione.getDataOraFlusso());
-						fr.setDataRegolamento(flussoRendicontazione.getDataRegolamento());
+						fr.setDataFlusso(DateUtils.toJavaDate(idRendicontazione.getDataOraFlusso()));
+						fr.setDataRegolamento(DateUtils.toJavaDate(flussoRendicontazione.getDataRegolamento()));
 						fr.setNumeroPagamenti(flussoRendicontazione.getNumeroTotalePagamenti().longValue());
 						fr.setImportoTotalePagamenti(flussoRendicontazione.getImportoTotalePagamenti());
 
@@ -450,7 +453,7 @@ public class Rendicontazioni {
 
 							String iur = dsp.getIdentificativoUnivocoRiscossione();
 							String iuv = dsp.getIdentificativoUnivocoVersamento();
-							Integer indiceDati = dsp.getIndiceDatiSingoloPagamento();
+							BigInteger indiceDati = dsp.getIndiceDatiSingoloPagamento() != null ? BigInteger.valueOf(dsp.getIndiceDatiSingoloPagamento()) : null;
 							BigDecimal importoRendicontato = dsp.getSingoloImportoPagato();
 
 							LogUtils.logInfo(log, "Rendicontato (Esito {}) per un importo di ({}) [CodDominio: {}] [Iuv: {}][Iur: {}]",
@@ -466,7 +469,7 @@ public class Rendicontazioni {
 								rendicontazione.addAnomalia("007110", MessageFormat.format("Codice esito [{0}] sconosciuto", dsp.getCodiceEsitoSingoloPagamento()));
 							}
 
-							rendicontazione.setData(dsp.getDataEsitoSingoloPagamento());
+							rendicontazione.setData(DateUtils.toJavaDate(dsp.getDataEsitoSingoloPagamento()));
 							rendicontazione.setIur(dsp.getIdentificativoUnivocoRiscossione());
 							rendicontazione.setIuv(dsp.getIdentificativoUnivocoVersamento());
 							rendicontazione.setImporto(dsp.getSingoloImportoPagato());

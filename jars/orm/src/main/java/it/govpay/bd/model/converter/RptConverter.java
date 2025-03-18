@@ -20,6 +20,7 @@
 package it.govpay.bd.model.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class RptConverter {
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
 		if(vo.getImportoTotalePagato() != null)
-			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
+			dto.setImportoTotalePagato(vo.getImportoTotalePagato());
 		dto.setIuv(vo.getIuv());
 		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
 		dto.setPspRedirectURL(vo.getPspRedirectURL());
@@ -110,7 +111,7 @@ public class RptConverter {
 		vo.setCodCarrello(dto.getCodCarrello());
 		vo.setCodDominio(dto.getCodDominio());
 		if(dto.getEsitoPagamento() != null)
-			vo.setCodEsitoPagamento(dto.getEsitoPagamento().getCodifica());
+			vo.setCodEsitoPagamento(BigInteger.valueOf(dto.getEsitoPagamento().getCodifica()));
 		vo.setCodMsgRichiesta(dto.getCodMsgRichiesta());
 		vo.setCodMsgRicevuta(dto.getCodMsgRicevuta());
 		vo.setCodSessione(dto.getCodSessione());
@@ -127,7 +128,7 @@ public class RptConverter {
 		idVersamento.setId(dto.getIdVersamento());
 		vo.setIdVersamento(idVersamento);
 		if(dto.getImportoTotalePagato() != null)
-			vo.setImportoTotalePagato(dto.getImportoTotalePagato().doubleValue());
+			vo.setImportoTotalePagato(dto.getImportoTotalePagato());
 		vo.setIuv(dto.getIuv());
 		
 		if(dto.getModelloPagamento() != null)
