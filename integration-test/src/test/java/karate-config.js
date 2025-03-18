@@ -21,7 +21,7 @@ function() {
 			govpay_url: 'http://localhost:8080',
 			govpay_backoffice_user: 'gpadmin',
 			govpay_backoffice_password: 'Password1!',
-			ndpsym_url: 'http://localhost:8080/govpay-ndpsym',
+			ndpsym_url: 'http://localhost:8180/govpay-ndpsym',
 			ndpsym_user: 'ndpsym',
 			ente_api_url: 'http://localhost:8888/paServiceImpl',
 			ente_api_rendicontazioni_url: 'http://localhost:8888/enteRendicontazioni',
@@ -29,12 +29,12 @@ function() {
 			recaptcha_api_url: 'http://localhost:8888/recaptcha',
 			appio_api_url: 'http://localhost:8888/appio',
 			maggioli_url: 'http://localhost:8888/maggioli',
-			deploy_ear: true,
+			deploy_ear: false,
 	};
 	
-	if (env == 'tomcat') {
-		config.deploy_ear = false;
-		config.ndpsym_url = 'http://localhost:8180/govpay-ndpsym';
+	if (env == 'wildfly') {
+		config.deploy_ear = true;
+		config.ndpsym_url = 'http://localhost:8080/govpay-ndpsym';
 	}
 	
 	return config;
