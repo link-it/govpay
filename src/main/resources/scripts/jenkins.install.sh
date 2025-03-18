@@ -15,6 +15,7 @@ cd $dirname
 sed -i -r -e 's/<installer (.*)/<installer ui="text-auto" loadDefaults="true" \1/'  installer/setup/antinstall-config.xml
 
 echo "
+antinstaller_jndi_name=java:comp/env/it.govpay.datasource
 antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
 antinstaller_principal_pwd=Password1!
