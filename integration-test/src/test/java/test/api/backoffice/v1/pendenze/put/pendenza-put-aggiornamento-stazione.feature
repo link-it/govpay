@@ -73,7 +73,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -113,7 +113,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -168,7 +168,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -237,7 +237,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -314,7 +314,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '00',
@@ -354,7 +354,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -409,7 +409,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '00',
@@ -478,7 +478,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,

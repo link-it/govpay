@@ -30,11 +30,27 @@ function() {
 			appio_api_url: 'http://localhost:8888/appio',
 			maggioli_url: 'http://localhost:8888/maggioli',
 			deploy_ear: false,
+			govpay_api_backoffice_url : 'http://localhost:8080/govpay-api-backoffice',
+			govpay_api_pagamento_url : 'http://localhost:8080/govpay-api-pagamento',
+			govpay_api_pendenze_url : 'http://localhost:8080/govpay-api-pendenze',
+			govpay_api_ragioneria_url : 'http://localhost:8080/govpay-api-ragioneria',
+			govpay_api_pagopa_url : 'http://localhost:8080/govpay-api-pagopa',
+			govpay_api_jppapdp_url : 'http://localhost:8080/govpay-api-jppapdp',
+			govpay_api_user_url : 'http://localhost:8080/govpay-api-user',
+			govpay_web_connector_url : 'http://localhost:8080/govpay-web-connector',
 	};
 	
 	if (env == 'wildfly') {
 		config.deploy_ear = true;
 		config.ndpsym_url = 'http://localhost:8080/govpay-ndpsym';
+		config.govpay_api_backoffice_url = 'http://localhost:8080/govpay/backend/api/backoffice';
+		config.govpay_api_pagamento_url = 'http://localhost:8080/govpay/frontend/api/pagamento';
+		config.govpay_api_pendenze_url = 'http://localhost:8080/govpay/backend/api/pendenze';
+		config.govpay_api_ragioneria_url = 'http://localhost:8080/govpay/backend/api/ragioneria';
+		config.govpay_api_pagopa_url = 'http://localhost:8080/govpay/frontend/api/pagopa';
+		config.govpay_api_jppapdp_url = 'http://localhost:8080/govpay/backend/api/jppapdp';
+		config.govpay_api_user_url = 'http://localhost:8080/govpay/frontend/api/user';
+		config.govpay_web_connector_url = 'http://localhost:8080/govpay/frontend/web/connector';
 	}
 	
 	return config;

@@ -70,7 +70,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -162,7 +162,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -248,7 +248,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -338,7 +338,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -435,7 +435,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -533,7 +533,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -635,7 +635,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"

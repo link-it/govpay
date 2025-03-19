@@ -184,7 +184,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -232,7 +232,7 @@ And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnu
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,

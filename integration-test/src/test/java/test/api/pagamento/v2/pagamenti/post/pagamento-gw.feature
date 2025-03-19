@@ -43,7 +43,7 @@ And match response == { id: '#notnull', location: '#notnull', redirect: '#notnul
 
 * configure followRedirects = false
 
-Given url govpay_url + "/govpay/frontend/web/connector/ecsp/psp"
+Given url govpay_web_connector_url + "/ecsp/psp"
 And param idSession = response.idSession
 And param idDominio = pendenza.idDomino
 And param esito = 'ERROR'

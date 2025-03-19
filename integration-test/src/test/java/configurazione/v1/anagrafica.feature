@@ -378,7 +378,7 @@ And path 'domini', idDominio
 And request 
 """
 {
-  "urlEC": "#(govpay_url +'/govpay/frontend/web/connector/ecsp/psp')",
+  "urlEC": "#(govpay_web_connector_url +'/ecsp/psp')",
   "auxDigit": 0,
   "versione": 1,
   "segregationCode": null,
