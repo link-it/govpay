@@ -262,7 +262,7 @@
     		<b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
 
-        <b:bean id="userDetailServiceUtenzeApiKey" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        <b:bean id="userDetailServiceUtenzeApiKey" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
       		<b:property name="apiName" value="API_MAGGIOLI_JPPA" />
         	<b:property name="authType" value="API_KEY" />
         </b:bean>
