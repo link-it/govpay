@@ -834,4 +834,6 @@ DROP INDEX idx_versamenti_stati;
 DROP INDEX idx_pagamenti_tipo_stato_id;
 
 
+-- 20/03/2025 Indice mancante tabella rpt
+CREATE INDEX idx_rpt_data_msg_ricevuta ON rpt (data_msg_ricevuta);
 

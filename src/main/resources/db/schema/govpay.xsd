@@ -2422,6 +2422,9 @@
 							<linkit:sql-table-index-field name="versione"/>
 							<linkit:sql-table-index-field name="dataMsgRichiesta" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_data_msg_ricevuta">
+							<linkit:sql-table-index-field name="dataMsgRicevuta" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
