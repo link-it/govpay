@@ -13,6 +13,9 @@ And headers basicAutenticationHeader
 When method get
 Then assert responseStatus == 200
 
+# Il reset della cache e' istantaneo solo per il backoffice, aspettiamo che tutti i war recepiscano la notifica di reset 
+* call sleep(70000)
+
 # Logout delle sessioni SPID 
 
 * def pagamentiSpidV1Baseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})

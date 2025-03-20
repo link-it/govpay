@@ -95,6 +95,53 @@ When method get
 Then status 200
 And match response == pendenzaGetResponse
 
+
+Scenario: Aggiornamento pendenza non pagata eliminazione data scadenza
+
+* def pendenzaGet = read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def pendenzaPutResponse = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response == pendenzaGet
+
+* def pendenzaGetResponse = response
+
+* set pendenzaPut.importo = pendenzaPut.importo + 10
+* set pendenzaPut.voci[0].importo = pendenzaPut.voci[0].importo + 10
+* set pendenzaPut.causale = pendenzaPut.causale + ' con importo maggiorato' 
+* set pendenzaPut.dataValidita = null
+* set pendenzaPut.dataScadenza = null
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 200
+And match response.dataValidita == '#notpresent'
+And match response.dataScadenza == '#notpresent'
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.dataValidita == '#notpresent'
+And match response.dataScadenza == '#notpresent'
+
+
 Scenario: Aggiornamento pendenza non pagata con modifica dell'iban di accredito
 
 * set pendenzaPut.voci = 

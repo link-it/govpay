@@ -18,6 +18,9 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
@@ -104,6 +107,9 @@ And headers gpAdminBasicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -192,6 +198,9 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 
@@ -270,6 +279,9 @@ And headers gpAdminBasicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -355,6 +367,9 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
@@ -370,6 +385,9 @@ And headers basicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
@@ -448,6 +466,9 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
@@ -463,6 +484,9 @@ And headers basicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
@@ -552,6 +576,9 @@ And headers gpAdminBasicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 

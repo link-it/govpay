@@ -315,6 +315,9 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
 * call sleep(200)
@@ -396,6 +399,9 @@ And headers basicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 

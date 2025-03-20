@@ -30,6 +30,14 @@ function() {
 			appio_api_url: 'http://localhost:8888/appio',
 			maggioli_url: 'http://localhost:8888/maggioli',
 			deploy_ear: false,
+			govpay_api_backoffice_context : '/govpay-api-backoffice',
+			govpay_api_pagamento_context : '/govpay-api-pagamento',
+			govpay_api_pendenze_context : '/govpay-api-pendenze',
+			govpay_api_ragioneria_context : '/govpay-api-ragioneria',
+			govpay_api_pagopa_context : '/govpay-api-pagopa',
+			govpay_api_jppapdp_context : '/govpay-api-jppapdp',
+			govpay_api_user_context : '/govpay-api-user',
+			govpay_web_connector_context : '/govpay-web-connector',
 			govpay_api_backoffice_url : 'http://localhost:8080/govpay-api-backoffice',
 			govpay_api_pagamento_url : 'http://localhost:8080/govpay-api-pagamento',
 			govpay_api_pendenze_url : 'http://localhost:8080/govpay-api-pendenze',
@@ -43,6 +51,14 @@ function() {
 	if (env == 'wildfly') {
 		config.deploy_ear = true;
 		config.ndpsym_url = 'http://localhost:8080/govpay-ndpsym';
+		config.govpay_api_backoffice_context = '/govpay/backend/api/backoffice';
+		config.govpay_api_pagamento_context = '/govpay/frontend/api/pagamento';
+		config.govpay_api_pendenze_context = '/govpay/backend/api/pendenze';
+		config.govpay_api_ragioneria_context = '/govpay/backend/api/ragioneria';
+		config.govpay_api_pagopa_context = '/govpay/frontend/api/pagopa';
+		config.govpay_api_jppapdp_context = '/govpay/backend/api/jppapdp';
+		config.govpay_api_user_context = '/govpay/frontend/api/user';
+		config.govpay_web_connector_context = '/govpay/frontend/web/connector';
 		config.govpay_api_backoffice_url = 'http://localhost:8080/govpay/backend/api/backoffice';
 		config.govpay_api_pagamento_url = 'http://localhost:8080/govpay/frontend/api/pagamento';
 		config.govpay_api_pendenze_url = 'http://localhost:8080/govpay/backend/api/pendenze';
