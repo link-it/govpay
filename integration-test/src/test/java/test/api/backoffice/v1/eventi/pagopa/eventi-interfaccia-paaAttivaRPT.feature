@@ -7,6 +7,8 @@ Background:
 
 * def tipoRicevuta = "R01"
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Eventi attiva pendenza annullata
 
 * def idPendenza = getCurrentTimeMillis()
@@ -383,7 +385,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/psp-attiva-rpt.feature')
@@ -481,7 +483,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/psp-attiva-rpt.feature')

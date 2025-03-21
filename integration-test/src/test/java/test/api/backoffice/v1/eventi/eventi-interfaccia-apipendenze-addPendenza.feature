@@ -7,6 +7,8 @@ Background:
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Evento creazione da applicazione in api Pendenze
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
@@ -270,7 +272,7 @@ And request applicazione
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
