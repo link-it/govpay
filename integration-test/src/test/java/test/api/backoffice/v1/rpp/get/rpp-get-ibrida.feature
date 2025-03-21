@@ -20,7 +20,6 @@ Background:
 # Configurazione Dominio 3
 
 * callonce read('classpath:configurazione/v1/anagrafica_dominio3.feature')
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 Scenario: Filtro su retrocompatibilitaMessaggiPagoPAV1 per una RPT SANP 2.4.0
 
@@ -39,7 +38,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_3
 * def versionePagamento = 2

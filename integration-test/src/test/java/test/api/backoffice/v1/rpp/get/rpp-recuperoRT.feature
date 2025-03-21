@@ -20,7 +20,6 @@ Background:
 # Configurazione Dominio 4 Il simulatore non invia la ricevuta per i pagamenti di questo EC ma devono essere recuperate
 
 * callonce read('classpath:configurazione/v1/anagrafica_dominio4.feature')
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 # Configurazione intermediario al recuperoRT
 * def intermediario = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-recuperoRT.json')
@@ -32,7 +31,7 @@ And request intermediario
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 @ModelloUnicoV2
 Scenario: Ricevuta per una transazione SANP 2.4.0 V2
@@ -52,7 +51,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_4
 * def versionePagamento = 3
@@ -255,7 +254,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_4
 * def versionePagamento = 2
@@ -458,7 +457,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_4
 * def versionePagamento = 2

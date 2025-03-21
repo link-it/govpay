@@ -216,7 +216,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -478,7 +478,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -704,7 +704,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo

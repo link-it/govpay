@@ -86,7 +86,7 @@ And request entrataTefaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
@@ -117,7 +117,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def versionePagamento = 3
 
