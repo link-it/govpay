@@ -19,6 +19,8 @@ Background:
 """
 * configure followRedirects = false
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Attivazione RPT scaduta precaricata
 
 * call read('classpath:utils/pa-carica-avviso.feature')
