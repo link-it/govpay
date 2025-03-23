@@ -68,6 +68,10 @@
 					<groupId>org.glassfish.jaxb</groupId>
    					<artifactId>jaxb-core</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+            		<artifactId>jaxb-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
@@ -95,6 +99,10 @@
 				<exclusion>
 					<groupId>org.jfree</groupId>
   					<artifactId>jfreechart</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.sf.barcode4j</groupId>
+   					<artifactId>barcode4j</artifactId>
 				</exclusion>
 		    </exclusions>
 		</dependency>
@@ -124,8 +132,8 @@
    			<artifactId>barcode4j</artifactId>
    			<exclusions>
 				<exclusion>
-					<groupId>org.apache.ant</groupId>
-		    		<artifactId>ant</artifactId>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

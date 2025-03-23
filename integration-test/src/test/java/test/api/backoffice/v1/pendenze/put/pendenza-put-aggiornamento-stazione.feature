@@ -21,7 +21,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -65,7 +65,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 
 # Configuro il simulatore per utilizzare la seconda stazione
@@ -141,7 +141,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -161,7 +161,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Configuro il simulatore per utilizzare la seconda stazione
 
@@ -262,7 +262,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -306,7 +306,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 
 # Configuro il simulatore per utilizzare la seconda stazione
@@ -382,7 +382,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -402,7 +402,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Configuro il simulatore per utilizzare la seconda stazione
 

@@ -13,11 +13,16 @@
 	<b:bean id="batchResetCacheAnagrafica" class="it.govpay.core.utils.tasks.ResetCacheAnagrafica"/>
 	<b:bean id="batchResetCacheAnagraficaCheck" class="it.govpay.core.utils.tasks.ResetCacheAnagraficaCheck"/>
 	
+	<b:bean id="batchElaborazioneRiconciliazioniCheck" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioniCheck"/>
+	
 	<task:scheduled-tasks scheduler="myScheduler">
         <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
         <!-- Check data reset della cache tutti i giorni ogni minuto -->
         <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="0 * * * * ?" />
+        
+        <!-- Check riconciliazioni da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneRiconciliazioniCheck" method="exec" cron="0/5 * * * * ?" />
     </task:scheduled-tasks>
  
 <task:scheduler id="myScheduler" pool-size="1"/>

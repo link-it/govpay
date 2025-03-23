@@ -8,6 +8,8 @@ Background:
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 
+# * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Riconciliazioni da applicazione autorizzata per dominio_1 e dominio_2
 
 * call sleep(1000)
@@ -71,7 +73,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl

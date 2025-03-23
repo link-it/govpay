@@ -7,6 +7,8 @@ Background:
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Riconciliazione cumulativa da applicazione
 
 * def tipoRicevuta = "R01"

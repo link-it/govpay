@@ -7,6 +7,8 @@ Background:
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Riconciliazione singola da applicazione non autorizzata per il dominio
 
 * def tipoRicevuta = "R01"
@@ -28,7 +30,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -67,7 +69,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -99,7 +101,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -131,7 +133,7 @@ And request operatore
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * configure cookies = null
 
@@ -175,7 +177,7 @@ And request operatore
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * configure cookies = null
 
@@ -220,7 +222,7 @@ And request operatore
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * configure cookies = null
 

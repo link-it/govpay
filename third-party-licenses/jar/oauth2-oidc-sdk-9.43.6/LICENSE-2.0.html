@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +31,7 @@
   <link href="/css/min.bootstrap.css" rel="stylesheet">
   <link href="/css/styles.css" rel="stylesheet">
   <link href="/css/new-ui.css" rel="stylesheet">
+  <script src="https://www.apachecon.com/event-images/snippet.js"></script>
   <style>
 .headerlink {
   visibility: hidden;
@@ -54,7 +54,7 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
       });
     }
   </script>
-
+  
 
 <!-- https://www.apache.org/licenses/LICENSE-2.0 -->  <!-- Matomo -->
   <script>
@@ -92,7 +92,7 @@ s=d.getElementsByTagName('script')[0];
 		<a href="#maincontent">Skip to Main Content</a>
 	</div>
     <nav class="navbar navbar-inverse navbar-fixed-top mainmenu">
-
+      
       <div class="container">
         <div class="navbar-header">
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#mainnav-collapse">
@@ -111,7 +111,7 @@ s=d.getElementsByTagName('script')[0];
               <a target="_blank" href="https://www.youtube.com/c/TheApacheFoundation"><img src="/images/youtube-icon.svg" alt="youtube icon"></a>
               <a target="_blank" href="https://twitter.com/TheASF"><img src="/images/x-icon.svg" alt="X icon"></a>
             </div>
-            <a href="/foundation/sponsorship" class="btn btn-default" onclick="_paq.push(['trackEvent', 'click', 'SponsorASF Button']);">Sponsor the ASF</a>
+            <a href="https://donate.apache.org/48ff" target="_blank" class="btn btn-default" onclick="_paq.push(['trackEvent', 'click', 'SponsorASF Button']);">Donate</a>
           </div>
           <ul class="nav navbar-nav navbar-justified n-navbar-padding">
             <li class="dropdown">
@@ -123,7 +123,6 @@ s=d.getElementsByTagName('script')[0];
                 <li><a href="/community-resources/">Community Resources</a></li>
                 <li><a href="https://communityovercode.org/" target="_blank">Community Over Code</a></li>
                 <li><a href="https://events.apache.org/" target="_blank">Events</a></li>
-                <li><a href="https://www.redbubble.com/people/comdev/shop" target="_blank">Store</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -185,9 +184,9 @@ s=d.getElementsByTagName('script')[0];
                 <li><a href="/foundation/contact">Contact</a></li>
               </ul>
             </li>
-
-
-
+            
+           
+            
             <li class="dropdown">
               <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown" role="button"><span class="glyphicon glyphicon-search"
                   aria-hidden="true"></span><span class="sr-only">Search</span></a>
@@ -202,20 +201,33 @@ s=d.getElementsByTagName('script')[0];
       </div>
     </nav>
   </header>
+     <!-- Script is to make the input field ready as soon as user click the search button-->
+      <!-- script could be simplyfy and shorten in length bootstrap framework  -->
+     <script>
+   document.addEventListener('DOMContentLoaded', function () {
+    // Using Bootstrap's event system for dropdowns
+    $(document).on('shown.bs.dropdown', '.dropdown', function () {
+        // Check if this is the search dropdown
+        if ($(this).find('.glyphicon-search').length > 0) {
+            // Find and focus the search input
+            setTimeout(function() {
+                $('.pagefind-ui__search-input').focus();
+            }, 50); // Small delay to ensure input is ready
+        }
+    });
+});
+  </script>
   <!-- / Navigation -->
   <header id="main-header" class="container">
     <div class="sideImg">
-          <a class="visible-home" href="https://events.apache.org/x/current-event.html">
-            <img class="img-responsive" style="width: 125px;" src="/events/current-event-125x125.png" alt="Apache Events"/>
-<!-- STALE: <img class="img-responsive" style="width: 125px;" src="https://www.apachecon.com/event-images/default-square-light.png" alt="ApacheCon 2021 Coming Soon!" /> -->
-          </a>
+      <a class="acevent visible-home" data-format="square"></a>
       <a class="hidden-home" href="/"><img class="img-responsive" src="/img/asf-estd-1999-logo.jpg" alt="The Apache Software Foundation"></a>
     </div>
     <div class="main">
       <img class="img-responsive center-block visible-home" src="/img/asf-estd-1999-logo.jpg" alt="Apache 20th Anniversary Logo">
 
     </div>
-
+ 
   </header>
   <main id="maincontent">
 <div class="container">    <h1 id="apache-license-version-20">Apache License, Version 2.0<a class="headerlink" href="#apache-license-version-20" title="Permalink">&para;</a></h1>
@@ -420,7 +432,6 @@ limitations under the License.
             <li><a href="/community-resources/">Community Resources</a></li>
             <li><a href="https://communityovercode.org/" target="_blank">Community Over Code</a></li>
             <li><a href="https://events.apache.org/" target="_blank">Events</a></li>
-            <li><a href="https://www.redbubble.com/people/comdev/shop" target="_blank">Store</a></li>
           </ul>
         </div>
 
@@ -493,7 +504,7 @@ limitations under the License.
       <hr class="col-lg-12 hr-white" />
       <div class="row">
         <div class="col-lg-12">
-          <p class="text-center">Copyright &#169; 2024 The Apache Software Foundation, Licensed under the <a class="white" href="/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+          <p class="text-center">Copyright &#169; 2025 The Apache Software Foundation, Licensed under the <a class="white" href="/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
           <p class="text-center">Apache and the Apache feather logo are trademarks of The Apache Software Foundation. </p>
         </div>
       </div>

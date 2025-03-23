@@ -58,6 +58,11 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		</dependency>
+		
+		<dependency>
 			<groupId>io.swagger.parser.v3</groupId>
 			<artifactId>swagger-parser-core</artifactId>
 		</dependency>
