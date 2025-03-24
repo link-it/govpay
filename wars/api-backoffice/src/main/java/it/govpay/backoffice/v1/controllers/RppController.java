@@ -194,6 +194,11 @@ public class RppController extends BaseController {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, "dataRtA");
 				listaRptDTO.setDataRtA(dataADate);
 			}
+			
+			// indico che sto ricercando le ricevute
+			if (listaRptDTO.getEsitoPagamento() != null && (dataRtDa != null || dataRtA != null)) {
+				listaRptDTO.setRicevute(true);
+			}
 
 			// INIT DAO
 
@@ -213,6 +218,8 @@ public class RppController extends BaseController {
 			}
 			listaRptDTO.setIdTipiVersamento(idTipiVersamento);
 
+			listaRptDTO.setEseguiCountConLimit(false);
+			
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA

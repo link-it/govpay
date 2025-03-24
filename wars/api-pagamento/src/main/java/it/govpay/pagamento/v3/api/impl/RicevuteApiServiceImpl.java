@@ -212,7 +212,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// se la ricerca per la coppia idDominio/iuv non ha prodotto alcun risultato allora restituisco 404
-			if(listaRptDTOResponse.getResults().size() == 0) {
+			if(listaRptDTOResponse.getResults().isEmpty()) {
 				throw new RicevutaNonTrovataException("Non sono presenti ricevute per [IdDominio: "+idDominio+", IUV: "+iuv+"].");
 			}
 
