@@ -732,12 +732,43 @@ public class VersamentiBD extends BasicBD {
 			}
 		}
 	}
+	
+	public void updateVersamentoIuvNav(Long idVersamento, boolean updateIuv, String iuvVersamento, boolean updateNav, String numerAvviso) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
 
-	public VersamentoFilter newFilter() throws ServiceException {
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+
+			if(updateIuv) {
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, iuvVersamento));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().SRC_IUV, iuvVersamento));
+			}
+			if(updateNav) {
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().NUMERO_AVVISO, numerAvviso));
+			}
+			
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, new Date()));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException | NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	public VersamentoFilter newFilter() {
 		return new VersamentoFilter(this.getVersamentoService());
 	}
 
-	public VersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public VersamentoFilter newFilter(boolean simpleSearch) {
 		return new VersamentoFilter(this.getVersamentoService(),simpleSearch);
 	}
 	
