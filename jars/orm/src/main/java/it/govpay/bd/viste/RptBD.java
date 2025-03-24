@@ -59,11 +59,11 @@ public class RptBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
-	public RptFilter newFilter() throws ServiceException {
+	public RptFilter newFilter() {
 		return new RptFilter(this.getVistaRptVersamentoServiceSearch());
 	}
 	
-	public RptFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public RptFilter newFilter(boolean simpleSearch) {
 		return new RptFilter(this.getVistaRptVersamentoServiceSearch(),simpleSearch);
 	}
 
@@ -112,12 +112,16 @@ public class RptBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
+			if(filter.getRicevute() != null && filter.getRicevute()) {			
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICEVUTA), "data_msg_ricevuta");
+			} else {
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
+			}
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -125,7 +129,11 @@ public class RptBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICHIESTA, true), false);
+			if(filter.getRicevute() != null && filter.getRicevute()) {	
+				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICEVUTA, true), false);
+			} else {
+				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICHIESTA, true), false);
+			}
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -139,8 +147,7 @@ public class RptBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -168,11 +175,7 @@ public class RptBD extends BasicBD {
 				rptLst.add(RptConverter.toDTO(rptVO));
 			}
 			return rptLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

@@ -43,6 +43,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -146,6 +147,8 @@ public class FlussiRendicontazioneController extends BaseController {
 
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);

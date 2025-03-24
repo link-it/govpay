@@ -47,6 +47,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -77,8 +78,10 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Parametri - > DTO Input
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			if(idDominio != null)
+			if(idDominio != null) {
 				validatoreId.validaIdDominio("idDominio", idDominio);
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			}
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
