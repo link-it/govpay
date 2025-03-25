@@ -85,9 +85,7 @@ public class IbanAccreditoBD extends BasicBD {
 			}
 			
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = ((JDBCIbanAccreditoServiceSearch)this.getIbanAccreditoService()).get(id);
-			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
-			
-			return ibanAccredito;
+			return IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -114,20 +112,13 @@ public class IbanAccreditoBD extends BasicBD {
 			
 			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			
-//			IdIbanAccredito id = new IdIbanAccredito();
-//			id.setCodIban(codIban);
-//			IdDominio idDominioVo = new IdDominio();
-//			idDominioVo.setId(idDominio);
-//			id.setIdDominio(idDominioVo);
-			
 			IExpression expr = this.getIbanAccreditoService().newExpression();
 			expr.equals(it.govpay.orm.IbanAccredito.model().COD_IBAN, codIban);
 			expr.and();
 			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
 			
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().find(expr);
-			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
-			return ibanAccredito;
+			return IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
@@ -152,22 +143,11 @@ public class IbanAccreditoBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-//			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabaseType());
-			
-//			IdIbanAccredito id = new IdIbanAccredito();
-//			id.setCodIban(codIban);
-//			IdDominio idDominioVo = new IdDominio();
-//			idDominioVo.setId(idDominio);
-//			id.setIdDominio(idDominioVo);
-			
 			IExpression expr = this.getIbanAccreditoService().newExpression();
 			expr.equals(it.govpay.orm.IbanAccredito.model().COD_IBAN, codIban);
-//			expr.and();
-//			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
 			
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().find(expr);
-			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
-			return ibanAccredito;
+			return IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
@@ -198,9 +178,7 @@ public class IbanAccreditoBD extends BasicBD {
 			this.getIbanAccreditoService().update(id, vo);
 			ibanAccredito.setId(vo.getId());
 			this.emitAudit(ibanAccredito);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 
@@ -239,10 +217,10 @@ public class IbanAccreditoBD extends BasicBD {
 	}
 
 	public long count(IbanAccreditoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(IbanAccreditoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(IbanAccreditoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -259,7 +237,7 @@ public class IbanAccreditoBD extends BasicBD {
 		} 
 	}
 	
-	private long _countConLimit(IbanAccreditoFilter filter) throws ServiceException {
+	private long countConLimitEngine(IbanAccreditoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -282,12 +260,12 @@ public class IbanAccreditoBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_IBAN));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_IBAN), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_IBAN, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_IBAN, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -295,7 +273,7 @@ public class IbanAccreditoBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_IBAN, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_IBAN, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -309,8 +287,7 @@ public class IbanAccreditoBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

@@ -122,7 +122,7 @@ public class UtenzeBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			return this._exists(utenza);
+			return this.existsEngine(utenza);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -130,14 +130,12 @@ public class UtenzeBD extends BasicBD {
 		}
 	}
 	
-	private boolean _exists(Utenza utenza) throws ServiceException {
+	private boolean existsEngine(Utenza utenza) throws ServiceException {
 		try {
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, utenza.getPrincipalOriginale());
-			return  this._count(expr) > 0 ;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException | ExpressionException  e) {
+			return  this.countEngine(expr) > 0 ;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -157,7 +155,7 @@ public class UtenzeBD extends BasicBD {
 			
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal);
-			return  this._count(expr) > 0 ;
+			return  this.countEngine(expr) > 0 ;
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
 		} finally {
@@ -208,17 +206,13 @@ public class UtenzeBD extends BasicBD {
 
 			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
 			return this.getUtenza(utenzaVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} 
 	}
 
 
-	private Utenza getUtenza(it.govpay.orm.Utenza utenzaVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	private Utenza getUtenza(it.govpay.orm.Utenza utenzaVO) throws ServiceException {
 
 		List<IdUnitaOperativa> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
 		List<Long> utenzaTipiVersamentoLst = this.getUtenzeTipoVersamento(utenzaVO.getId());
@@ -230,20 +224,20 @@ public class UtenzeBD extends BasicBD {
 
 		List<Acl> findAllPrincipal = aclDB.findAll(filter);
 		
-		if(findAllPrincipal != null && findAllPrincipal.size() > 0) {
+		if(findAllPrincipal != null && !findAllPrincipal.isEmpty()) {
 			for (Acl acl : findAllPrincipal) {
 				acl.setUtenza(utenza);
 			} 
 		}
 		
-		if(utenza.getRuoli() != null && utenza.getRuoli().size() > 0) {
+		if(utenza.getRuoli() != null && !utenza.getRuoli().isEmpty()) {
 			List<Acl> findAllRuoli = new ArrayList<>();
 			for (String idRuolo : utenza.getRuoli()) {
 				filter = aclDB.newFilter();
 				filter.setRuolo(idRuolo);
 				
 				List<Acl> findAllRuolo = aclDB.findAll(filter);
-				if(findAllRuolo != null && findAllRuolo.size() > 0) {
+				if(findAllRuolo != null && !findAllRuolo.isEmpty()) {
 					findAllRuoli.addAll(findAllRuolo);
 				}
 			}
@@ -341,10 +335,8 @@ public class UtenzeBD extends BasicBD {
 			
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, principal);
-			return this._count(expr) > 0 ;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException | ExpressionException  e) {
+			return this.countEngine(expr) > 0 ;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -385,10 +377,8 @@ public class UtenzeBD extends BasicBD {
                 }
 			}
 			
-			return this._count(expr) > 0 ;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException | ExpressionException  e) {
+			return this.countEngine(expr) > 0 ;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -403,7 +393,7 @@ public class UtenzeBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			return this._count(expr);
+			return this.countEngine(expr);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -411,7 +401,7 @@ public class UtenzeBD extends BasicBD {
 		}
 	}
 	
-	private long _count(IExpression expr) throws ServiceException {
+	private long countEngine(IExpression expr) throws ServiceException {
 		try {
 			return this.getUtenzaService().count(expr).longValue();
 		} catch (NotImplementedException e) {
@@ -434,7 +424,7 @@ public class UtenzeBD extends BasicBD {
 			
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
-			if(!this._exists(utenza)) {
+			if(!this.existsEngine(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale(), false);
@@ -498,9 +488,7 @@ public class UtenzeBD extends BasicBD {
 			
 			utenza.setId(vo.getId());
 			this.emitAudit(utenza);
-		} catch (NotImplementedException | MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
+		} catch (NotImplementedException | MultipleResultException | UtilsException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -548,11 +536,7 @@ public class UtenzeBD extends BasicBD {
 			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
 			exp.equals(field, utenza);
 			this.getUtenzaDominioService().deleteAll(exp);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionException e) {
+		} catch (ExpressionNotImplementedException | NotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -585,11 +569,7 @@ public class UtenzeBD extends BasicBD {
 			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTipoVersamento.model()));
 			exp.equals(field, utenza);
 			this.getUtenzaTipoVersamentoService().deleteAll(exp);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionException e) {
+		} catch (ExpressionNotImplementedException | NotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -601,11 +581,7 @@ public class UtenzeBD extends BasicBD {
 			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTipoVersamento.model()));
 			exp.equals(field, utenza);
 			return this.getUtenzaTipoVersamentoService().findAll(exp).stream().map(a -> a.getIdTipoVersamento().getId()).collect(Collectors.toList());
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
+		} catch(ExpressionException | NotImplementedException | ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -616,7 +592,7 @@ public class UtenzeBD extends BasicBD {
 			UtenzaDominioFieldConverter converter = new UtenzaDominioFieldConverter(this.getJdbcProperties().getDatabase());
 			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
 			exp.equals(field, utenza);
-			List<IdUnitaOperativa> toRet = new ArrayList<IdUnitaOperativa>();
+			List<IdUnitaOperativa> toRet = new ArrayList<>();
 			List<UtenzaDominio> findAll = this.getUtenzaDominioService().findAll(exp);
 			
 			for (UtenzaDominio utenzaDominio : findAll) {
@@ -633,13 +609,8 @@ public class UtenzeBD extends BasicBD {
 				
 				toRet.add(idUnita);
 			}
-//			return this.getUtenzaDominioService().findAll(exp).stream().map(a -> a.getIdDominio().getId()).collect(Collectors.toList());
 			return toRet;
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
+		} catch(ExpressionException | NotImplementedException | ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -663,7 +634,7 @@ public class UtenzeBD extends BasicBD {
 			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDominiUo());
 			this.updateUtenzeTipoVersamento(utenza.getId(), utenza.getIdTipiVersamento());
 			
-			if(utenza.getAclPrincipal() != null && utenza.getAclPrincipal().size() > 0) {
+			if(utenza.getAclPrincipal() != null && !utenza.getAclPrincipal().isEmpty()) {
 				AclBD aclBD = new AclBD(this);
 				aclBD.setAtomica(false);
 				for(Acl aclNuova : utenza.getAclPrincipal()) {

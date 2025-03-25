@@ -418,7 +418,9 @@ public class RptBD extends BasicBD {
 				
 				try {
 					popolaRpt(true, rpt);
-				}catch (NotFoundException e) {} // pagamentoportale puo' non esserci
+				}catch (NotFoundException e) {
+					//donothing
+				} // pagamentoportale puo' non esserci
 				
 				rptLst.add(rpt);
 			}
@@ -537,7 +539,7 @@ public class RptBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -545,7 +547,7 @@ public class RptBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICHIESTA, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICHIESTA, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

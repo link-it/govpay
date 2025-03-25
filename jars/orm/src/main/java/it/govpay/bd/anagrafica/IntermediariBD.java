@@ -375,7 +375,7 @@ public class IntermediariBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_INTERMEDIARIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_INTERMEDIARIO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_INTERMEDIARIO, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_INTERMEDIARIO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -383,7 +383,7 @@ public class IntermediariBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_INTERMEDIARIO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_INTERMEDIARIO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

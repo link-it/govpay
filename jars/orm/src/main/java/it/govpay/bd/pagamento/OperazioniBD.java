@@ -116,10 +116,10 @@ public class OperazioniBD extends BasicBD {
 	}
 	
 	public long count(OperazioneFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(OperazioneFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(OperazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -137,7 +137,7 @@ public class OperazioniBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(OperazioneFilter filter) throws ServiceException {
+	private long countConLimitEngine(OperazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -160,12 +160,12 @@ public class OperazioniBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.LINEA_ELABORAZIONE), "linea_elaborazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.LINEA_ELABORAZIONE), "linea_elaborazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -173,7 +173,7 @@ public class OperazioniBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.LINEA_ELABORAZIONE, true), true);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.LINEA_ELABORAZIONE, true), true);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -187,8 +187,7 @@ public class OperazioniBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

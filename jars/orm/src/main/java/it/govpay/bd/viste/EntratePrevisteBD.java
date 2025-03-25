@@ -59,11 +59,11 @@ public class EntratePrevisteBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
-	public EntrataPrevistaFilter newFilter() throws ServiceException {
+	public EntrataPrevistaFilter newFilter() {
 		return new EntrataPrevistaFilter(this.getVistaRiscossioniServiceSearch());
 	}
 
-	public EntrataPrevistaFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public EntrataPrevistaFilter newFilter(boolean simpleSearch) {
 		return new EntrataPrevistaFilter(this.getVistaRiscossioniServiceSearch(),simpleSearch);
 	}
 
@@ -99,9 +99,7 @@ public class EntratePrevisteBD extends BasicBD {
 				entratePrevisteLst.add(EntrataPrevistaConverter.toDTO(riscossioneVO));
 			}
 			return entratePrevisteLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -123,7 +121,6 @@ public class EntratePrevisteBD extends BasicBD {
 				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
-//			exp.equals(model.STATO, Stato.INCASSATO.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.COD_TIPO_VERSAMENTO, listaTipiPendenza);
@@ -144,13 +141,7 @@ public class EntratePrevisteBD extends BasicBD {
 				entratePrevisteLst.add(EntrataPrevistaConverter.toDTO(riscossioneVO));
 			}
 			return entratePrevisteLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -172,7 +163,6 @@ public class EntratePrevisteBD extends BasicBD {
 				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
-//			exp.equals(model.STATO, Stato.INCASSATO.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.COD_TIPO_VERSAMENTO, listaTipiPendenza);
@@ -186,11 +176,7 @@ public class EntratePrevisteBD extends BasicBD {
 			NonNegativeNumber count = this.getVistaRiscossioniServiceSearch().count(exp);
 			
 			return count.longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

@@ -80,10 +80,10 @@ public class PagamentiPortaleBD extends BasicBD{
 	}
 	
 	public long count(PagamentoPortaleFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(PagamentoPortaleFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -101,7 +101,7 @@ public class PagamentiPortaleBD extends BasicBD{
 		}
 	}
 
-	private long _countConLimit(PagamentoPortaleFilter filter) throws ServiceException {
+	private long countConLimitEngine(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -123,19 +123,19 @@ public class PagamentiPortaleBD extends BasicBD{
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
 			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true));
-			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true));
+//			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			// creo condizioni
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true), false);
+//			sqlQueryObjectInterno.addOrderBy(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -149,8 +149,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -281,7 +280,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			
 			List<List<Object>> nativeQuery = this.getVistaPagamentoPortaleServiceSearch().nativeQuery(sql, returnTypes, parameters);
 			
-			List<it.govpay.orm.PagamentoPortale> pagamentoVOLst = new ArrayList<it.govpay.orm.PagamentoPortale>();
+			List<it.govpay.orm.PagamentoPortale> pagamentoVOLst = new ArrayList<>();
 			
 			for (List<Object> row : nativeQuery) {
 				int pos = 0;
@@ -326,7 +325,7 @@ public class PagamentiPortaleBD extends BasicBD{
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<PagamentoPortale>();
+			return new ArrayList<>();
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -394,9 +393,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			CustomField field = new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
 			exp.equals(field, pagamentoPortale.getId());
 			this.getPagamentoPortaleVersamentoService().deleteAll(exp);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException();
 		}
 	}
@@ -409,9 +406,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			CustomField field = new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
 			exp.equals(field, pagamentoPortale.getId());
 			return this.getPagamentoPortaleVersamentoService().findAll(exp);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException();
 		}
 	}
@@ -482,9 +477,7 @@ public class PagamentiPortaleBD extends BasicBD{
 					this.deleteAllPagPortVers(pagamento);
 					this.insertPagPortVers(pagamento);
 				}
-			} catch (NotFoundException e) {
-				throw new ServiceException();
-			} catch (NotImplementedException e) {
+			} catch (NotFoundException | NotImplementedException e) {
 				throw new ServiceException();
 			}
 			if(!commitParent)
@@ -518,7 +511,7 @@ public class PagamentiPortaleBD extends BasicBD{
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.PagamentoPortale.model().ACK, ack));
 			
 			if(statoPagamentoPortale != null)
-				lstUpdateFields.add(new UpdateField(it.govpay.orm.PagamentoPortale.model().STATO, statoPagamentoPortale.toString()));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.PagamentoPortale.model().STATO, statoPagamentoPortale));
 			if(descrizioneStato != null) {
 				if(descrizioneStato.length() > 1024)
 					descrizioneStato = descrizioneStato.substring(0, 1021)+ "...";
@@ -527,9 +520,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			}
 
 			this.getPagamentoPortaleService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -548,9 +539,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			}
 			
 			return PagamentoPortaleConverter.toDTO(((IDBPagamentoPortaleService)this.getPagamentoPortaleService()).get(id));
-		} catch (MultipleResultException e) {
-			throw new ServiceException();
-		} catch (NotImplementedException e) {
+		} catch (MultipleResultException | NotImplementedException e) {
 			throw new ServiceException();
 		} finally {
 			if(this.isAtomica()) {
@@ -572,13 +561,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			exp.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE, codSessione);
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().find(exp));
 			return this.getPagamentoArricchito(dto);
-		} catch (MultipleResultException e) {
-			throw new ServiceException();
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
+		} catch (MultipleResultException | NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException();
 		} finally {
 			if(this.isAtomica()) {
@@ -610,13 +593,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			exp.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, codSessionePsp);
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().find(exp));
 			return this.getPagamentoArricchito(dto);
-		} catch (MultipleResultException e) {
-			throw new ServiceException();
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
+		} catch (MultipleResultException | NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException();
 		} finally {
 			if(this.isAtomica()) {

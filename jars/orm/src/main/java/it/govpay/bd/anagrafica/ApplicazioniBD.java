@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -22,6 +22,7 @@ package it.govpay.bd.anagrafica;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -81,7 +82,7 @@ public class ApplicazioniBD extends BasicBD {
 
 	/**
 	 * Recupera l'applicazione tramite l'id fisico
-	 * 
+	 *
 	 * @param idApplicazione
 	 * @return
 	 * @throws NotFoundException se non esiste.
@@ -100,9 +101,7 @@ public class ApplicazioniBD extends BasicBD {
 			long id = idApplicazione.longValue();
 
 			it.govpay.orm.Applicazione applicazioneVO = ((JDBCApplicazioneServiceSearch)this.getApplicazioneService()).get(id);
-			Applicazione applicazione = this.getApplicazione(applicazioneVO);
-
-			return applicazione;
+			return this.getApplicazione(applicazioneVO);
 		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -114,7 +113,7 @@ public class ApplicazioniBD extends BasicBD {
 
 	/**
 	 * Recupera l'applicazione tramite l'id logico
-	 * 
+	 *
 	 * @param codEnte
 	 * @return
 	 * @throws NotFoundException se l'ente non esiste.
@@ -134,9 +133,8 @@ public class ApplicazioniBD extends BasicBD {
 			expr.equals(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE, codApplicazione);
 
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
-			Applicazione applicazione = this.getApplicazione(applicazioneVO);
-			return applicazione;
-		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) { 
+			return this.getApplicazione(applicazioneVO);
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -147,7 +145,7 @@ public class ApplicazioniBD extends BasicBD {
 
 	/**
 	 * Recupera l'applicazione identificata dal Principal fornito
-	 * 
+	 *
 	 * @param idEnte
 	 * @return
 	 * @throws NotFoundException se l'ente non esiste.
@@ -162,14 +160,8 @@ public class ApplicazioniBD extends BasicBD {
 			IExpression exp = this.getApplicazioneService().newExpression();
 			exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
-			Applicazione applicazione = this.getApplicazione(applicazioneVO);
-
-			return applicazione;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+			return this.getApplicazione(applicazioneVO);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -180,7 +172,7 @@ public class ApplicazioniBD extends BasicBD {
 	}
 	/**
 	 * Recupera l'applicazione identificata dal Principal fornito
-	 * 
+	 *
 	 * @param idEnte
 	 * @return
 	 * @throws NotFoundException se l'ente non esiste.
@@ -210,10 +202,8 @@ public class ApplicazioniBD extends BasicBD {
 			}
 
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
-			Applicazione applicazione = this.getApplicazione(applicazioneVO);
-
-			return applicazione;
-		} catch (NotImplementedException  | ExpressionNotImplementedException | ExpressionException e) { 
+			return this.getApplicazione(applicazioneVO);
+		} catch (NotImplementedException  | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -242,9 +232,7 @@ public class ApplicazioniBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Applicazione.model().TRUSTED, trusted));
 
 			this.getApplicazioneService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -266,7 +254,7 @@ public class ApplicazioniBD extends BasicBD {
 
 			UtenzeBD utenzeBD = new UtenzeBD(this);
 			utenzeBD.setAtomica(false);
-			// autocommit false		
+			// autocommit false
 			this.setAutoCommit(false);
 
 			// prelevo la vecchia utenza
@@ -284,7 +272,7 @@ public class ApplicazioniBD extends BasicBD {
 
 				List<Acl> listaAclPrincipal =  null;
 				if(alcEsistenti != null) {
-					listaAclPrincipal = new ArrayList<Acl>();
+					listaAclPrincipal = new ArrayList<>();
 					for (Acl aclPrincipalOld : alcEsistenti) {
 						aclPrincipalOld.setIdUtenza(utenzaApplicazione.getId());
 						listaAclPrincipal.add(aclPrincipalOld);
@@ -348,7 +336,7 @@ public class ApplicazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} finally {
 			// ripristino l'autocommit.
-			this.setAutoCommit(true); 
+			this.setAutoCommit(true);
 
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -370,7 +358,7 @@ public class ApplicazioniBD extends BasicBD {
 
 			UtenzeBD utenzeBD = new UtenzeBD(this);
 			utenzeBD.setAtomica(false);
-			// autocommit false		
+			// autocommit false
 			this.setAutoCommit(false);
 
 			if(!utenzeBD.exists(applicazione.getUtenza())) {
@@ -411,7 +399,7 @@ public class ApplicazioniBD extends BasicBD {
 			throw e;
 		} finally {
 			// ripristino l'autocommit.
-			this.setAutoCommit(true); 
+			this.setAutoCommit(true);
 
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -430,10 +418,10 @@ public class ApplicazioniBD extends BasicBD {
 	}
 
 	public long count(ApplicazioneFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 
-	private long _countSenzaLimit(ApplicazioneFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(ApplicazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -450,7 +438,7 @@ public class ApplicazioniBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(ApplicazioneFilter filter) throws ServiceException {
+	private long countConLimitEngine(ApplicazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -462,15 +450,15 @@ public class ApplicazioniBD extends BasicBD {
 			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
 			ApplicazioneModel model = it.govpay.orm.Applicazione.model();
-			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			/*
-			SELECT count(distinct id) 
+			SELECT count(distinct id)
 				FROM
 				  (
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
+				  ORDER BY data_richiesta
 				  LIMIT K
 				  ) a
 				);
@@ -478,7 +466,7 @@ public class ApplicazioniBD extends BasicBD {
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_APPLICAZIONE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_APPLICAZIONE), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_APPLICAZIONE, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_APPLICAZIONE, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -486,7 +474,7 @@ public class ApplicazioniBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_APPLICAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_APPLICAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -500,8 +488,7 @@ public class ApplicazioniBD extends BasicBD {
 
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 
 			return count.longValue();
@@ -529,9 +516,7 @@ public class ApplicazioniBD extends BasicBD {
 				dtoList.add(AnagraficaManager.getApplicazione(this.getBdConfigWrapper(), vo.getId()));
 			}
 			return dtoList;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) { // la ricerca dalla cache lancia una notfound la catturo.
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -548,7 +533,7 @@ public class ApplicazioniBD extends BasicBD {
 	public List<String> findAllCodApplicazione(ApplicazioneFilter filter) throws ServiceException {
 		List<String> lstApplicazioni = new ArrayList<>();
 
-		try {	
+		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 				filter.setExpressionConstructor(this.getApplicazioneService());
@@ -591,14 +576,8 @@ public class ApplicazioniBD extends BasicBD {
 			utenzeBD.setAtomica(false); // non deve aprire una nuova connessione
 			applicazione.setUtenza(new UtenzaApplicazione(utenzeBD.getUtenza(applicazioneVO.getIdUtenza().getId()), applicazione.getCodApplicazione()));
 			return applicazione;
-		} catch (ExpressionNotImplementedException | MultipleResultException | NotFoundException e) {
+		} catch (ExpressionNotImplementedException | MultipleResultException | NotFoundException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} 
+		}
 	}
 }

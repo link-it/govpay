@@ -108,14 +108,8 @@ public class NotificheBD extends BasicBD {
 			exp.addOrder(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, SortOrder.DESC);
 			
 			List<it.govpay.orm.Notifica> findAll = this.getNotificaService().findAll(exp);
-			List<Notifica> dtoList = NotificaConverter.toDTOList(findAll);
-			
-			return dtoList;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+			return NotificaConverter.toDTOList(findAll);
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -156,7 +150,6 @@ public class NotificheBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-//			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().STATO, stato.toString()));
@@ -173,9 +166,7 @@ public class NotificheBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DATA_AGGIORNAMENTO_STATO, new Date()));
 
 			((JDBCNotificaService)this.getNotificaService()).updateFields(id, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -184,19 +175,19 @@ public class NotificheBD extends BasicBD {
 		}
 	}
 	
-	public NotificaFilter newFilter() throws ServiceException {
+	public NotificaFilter newFilter() {
 		return new NotificaFilter(this.getNotificaService());
 	}
 
-	public NotificaFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public NotificaFilter newFilter(boolean simpleSearch) {
 		return new NotificaFilter(this.getNotificaService(),simpleSearch);
 	}
 	
 	public long count(NotificaFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(NotificaFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(NotificaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -214,7 +205,7 @@ public class NotificheBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(NotificaFilter filter) throws ServiceException {
+	private long countConLimitEngine(NotificaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -237,12 +228,12 @@ public class NotificheBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
@@ -251,7 +242,7 @@ public class NotificheBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -265,8 +256,7 @@ public class NotificheBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

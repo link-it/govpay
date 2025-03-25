@@ -121,17 +121,10 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-		boolean setIdMappingResolutionBehaviour = 
-			(idMappingResolutionBehaviour==null) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
-			
-
 
 		// Object batch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getBatchFieldConverter().toTable(Batch.model()));
-		boolean isUpdate_batch = true;
 		java.util.List<JDBCObject> lstObjects_batch = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getBatchFieldConverter().toColumn(Batch.model().COD_BATCH,false), "?");
 		lstObjects_batch.add(new JDBCObject(batch.getCodBatch(), Batch.model().COD_BATCH.getFieldType()));
@@ -144,12 +137,8 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_batch.add(new JDBCObject(tableId, Long.class));
 
-		if(isUpdate_batch) {
-			// Update batch
-			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
-				lstObjects_batch.toArray(new JDBCObject[]{}));
-		}
-
+		// Update batch
+		jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(),	lstObjects_batch.toArray(new JDBCObject[]{}));
 
 	}
 	

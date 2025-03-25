@@ -361,7 +361,7 @@ public class VersamentiBD extends BasicBD {
 			}
 			
 			// allegati
-			if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+			if(versamento.getAllegati() != null && !versamento.getAllegati().isEmpty()) {
 				AllegatiBD allegatiBD  = new AllegatiBD(this);
 				allegatiBD.setAtomica(false);
 				
@@ -513,7 +513,7 @@ public class VersamentiBD extends BasicBD {
 				}
 				
 				// allegati
-				if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+				if(versamento.getAllegati() != null && !versamento.getAllegati().isEmpty()) {
 					for (Allegato allegato : versamento.getAllegati()) {
 						allegato.setIdVersamento(versamento.getId());
 						allegatiBD.insertAllegato(allegato);
@@ -822,7 +822,7 @@ public class VersamentiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -830,7 +830,7 @@ public class VersamentiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

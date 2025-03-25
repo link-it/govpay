@@ -218,8 +218,6 @@ public class RppController extends BaseController {
 			}
 			listaRptDTO.setIdTipiVersamento(idTipiVersamento);
 
-			listaRptDTO.setEseguiCountConLimit(false);
-			
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA

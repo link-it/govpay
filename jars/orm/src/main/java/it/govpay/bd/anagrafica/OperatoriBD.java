@@ -222,7 +222,7 @@ public class OperatoriBD extends BasicBD {
 	}
 
 
-	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException {
 		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
 		operatore.setUtenza(new UtenzeBD(this).getUtenza(operatoreVO.getIdUtenza().getId()));
 		return operatore;
@@ -348,10 +348,10 @@ public class OperatoriBD extends BasicBD {
 	}
 
 	public long count(OperatoreFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(OperatoreFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(OperatoreFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -364,7 +364,7 @@ public class OperatoriBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(OperatoreFilter filter) throws ServiceException {
+	private long countConLimitEngine(OperatoreFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -387,12 +387,12 @@ public class OperatoriBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.NOME));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.NOME), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.NOME, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.NOME, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -400,7 +400,7 @@ public class OperatoriBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.NOME, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.NOME, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -414,8 +414,7 @@ public class OperatoriBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

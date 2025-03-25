@@ -61,11 +61,11 @@ public class AclBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
-	public AclFilter newFilter() throws ServiceException {
+	public AclFilter newFilter(){
 		return new AclFilter(this.getAclService());
 	}
 
-	public AclFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public AclFilter newFilter(boolean simpleSearch) {
 		return new AclFilter(this.getAclService(),simpleSearch);
 	}
 	
@@ -92,12 +92,8 @@ public class AclBD extends BasicBD {
 			}
 			
 			it.govpay.orm.ACL applicazioneVO = ((JDBCACLServiceSearch)this.getAclService()).get(id);
-			Acl applicazione = AclConverter.toDTO(applicazioneVO);
-
-			return applicazione;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+			return AclConverter.toDTO(applicazioneVO);
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -135,9 +131,7 @@ public class AclBD extends BasicBD {
 				dtoList.add(AclConverter.toDTO(vo));
 			}
 			return dtoList;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -162,9 +156,7 @@ public class AclBD extends BasicBD {
 			}
 			
 			return ruoli;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -183,11 +175,7 @@ public class AclBD extends BasicBD {
 			Object cntDistinct = this.getAclService().aggregate(filter.toExpression(), new FunctionField(ACL.model().RUOLO, Function.COUNT_DISTINCT, "cnt"));
 			return Long.parseLong(((String) cntDistinct));
 			
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | NotFoundException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -219,9 +207,7 @@ public class AclBD extends BasicBD {
 			this.getAclService().update(id, vo);
 			acl.setId(vo.getId());
 			this.emitAudit(acl);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -265,9 +251,7 @@ public class AclBD extends BasicBD {
 			}
 			
 			((IDBACLService)this.getAclService()).deleteById(id);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -305,9 +289,7 @@ public class AclBD extends BasicBD {
 			id.setServizio(servizio.getCodifica());
 			
 			return this.getAclService().exists(id);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

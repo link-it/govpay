@@ -130,8 +130,7 @@ public class EventiBD extends BasicBD {
 			return new EventiFilter(this.getEventoService(), this.vista);
 
 		switch (this.vista) {
-		case PAGAMENTI:
-		case RPT:
+		case PAGAMENTI: case RPT:
 			return new EventiFilter(this.getEventoService(), this.vista);
 		case VERSAMENTI:
 			return  new EventiFilter(this.getVistaEventiVersamentoService(), this.vista);
@@ -140,13 +139,12 @@ public class EventiBD extends BasicBD {
 		return new EventiFilter(this.getEventoService(), this.vista);
 	}
 
-	public EventiFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public EventiFilter newFilter(boolean simpleSearch) {
 		if(this.vista == null)
 			return new EventiFilter(this.getEventoService(),simpleSearch, this.vista);
 
 		switch (this.vista) {
-		case PAGAMENTI:
-		case RPT:
+		case PAGAMENTI: case RPT:
 			return new EventiFilter(this.getEventoService(),simpleSearch, this.vista);
 		case VERSAMENTI:
 			return  new EventiFilter(this.getVistaEventiVersamentoService(),simpleSearch, this.vista);
@@ -155,13 +153,12 @@ public class EventiBD extends BasicBD {
 		return new EventiFilter(this.getEventoService(),simpleSearch, this.vista);
 	}
 	
-	public IExpressionConstructor getExpressionConstructor() throws ServiceException {
+	public IExpressionConstructor getExpressionConstructor() {
 		if(this.vista == null)
 			return this.getEventoService();
 
 		switch (this.vista) {
-		case PAGAMENTI:
-		case RPT:
+		case PAGAMENTI: case RPT:
 			return this.getEventoService();
 		case VERSAMENTI:
 			return  this.getVistaEventiVersamentoService();
@@ -171,10 +168,10 @@ public class EventiBD extends BasicBD {
 	}
 	
 	public long count(EventiFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(EventiFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(EventiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -182,8 +179,7 @@ public class EventiBD extends BasicBD {
 					filter.setExpressionConstructor(this.getEventoService());
 				}else {
 					switch (this.vista) {
-					case PAGAMENTI:
-					case RPT:
+					case PAGAMENTI: case RPT:
 						filter.setExpressionConstructor(this.getEventoService());
 						break;
 					case VERSAMENTI:
@@ -197,8 +193,7 @@ public class EventiBD extends BasicBD {
 				return this.getEventoService().count(filter.toExpression()).longValue();
 			}else {
 				switch (this.vista) {
-				case PAGAMENTI:
-				case RPT:
+				case PAGAMENTI: case RPT:
 					return this.getEventoService().count(filter.toExpression()).longValue();
 				case VERSAMENTI:
 					return  this.getVistaEventiVersamentoService().count(filter.toExpression()).longValue();
@@ -214,7 +209,7 @@ public class EventiBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(EventiFilter filter) throws ServiceException {
+	private long countConLimitEngine(EventiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -237,12 +232,12 @@ public class EventiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA), "data");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA), "data");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -250,7 +245,7 @@ public class EventiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -265,8 +260,7 @@ public class EventiBD extends BasicBD {
 				nativeQuery = this.getEventoService().nativeQuery(sql, returnTypes, parameters);
 			else {
 				switch (this.vista) {
-				case PAGAMENTI:
-				case RPT:
+				case PAGAMENTI: case RPT:
 					nativeQuery = this.getEventoService().nativeQuery(sql, returnTypes, parameters);
 					break;
 				case VERSAMENTI:
@@ -278,8 +272,7 @@ public class EventiBD extends BasicBD {
 			Long count = 0L;
 			if(nativeQuery != null)
 				for (List<Object> row : nativeQuery) {
-					int pos = 0;
-					count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+					count = BasicBD.getValueOrNull(row.get(0), Long.class);
 				}
 			
 			return count.longValue();
@@ -303,8 +296,7 @@ public class EventiBD extends BasicBD {
 					filter.setExpressionConstructor(this.getEventoService());
 				}else {
 					switch (this.vista) {
-					case PAGAMENTI:
-					case RPT:
+					case PAGAMENTI: case RPT:
 						filter.setExpressionConstructor(this.getEventoService());
 						break;
 					case VERSAMENTI:
@@ -355,8 +347,7 @@ public class EventiBD extends BasicBD {
 					filter.setExpressionConstructor(this.getEventoService());
 				}else {
 					switch (this.vista) {
-					case PAGAMENTI:
-					case RPT:
+					case PAGAMENTI: case RPT:
 						filter.setExpressionConstructor(this.getEventoService());
 						break;
 					case VERSAMENTI:
@@ -400,8 +391,7 @@ public class EventiBD extends BasicBD {
 				select = this.getEventoService().select(filter.toPaginatedExpression(), fields.toArray(new IField[fields.size()]));
 			} else {
 				switch (this.vista) {
-				case PAGAMENTI:
-				case RPT:
+				case PAGAMENTI: case RPT:
 					select = this.getEventoService().select(filter.toPaginatedExpression(), fields.toArray(new IField[fields.size()]));
 					break;
 				case VERSAMENTI:

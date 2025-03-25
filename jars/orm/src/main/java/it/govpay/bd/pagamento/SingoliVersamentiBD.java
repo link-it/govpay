@@ -70,13 +70,7 @@ public class SingoliVersamentiBD extends BasicBD {
 			
 			it.govpay.orm.SingoloVersamento singoloVersamentoVO = ((IDBSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).get(idSingoloVersamento);
 			return SingoloVersamentoConverter.toDTO(singoloVersamentoVO);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotFoundException | MultipleResultException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -96,13 +90,7 @@ public class SingoliVersamentiBD extends BasicBD {
 			exp.equals(new CustomField("id_versamento", Long.class, "id_versamento", fieldConverter.toTable(it.govpay.orm.SingoloVersamento.model())), idVersamento);
 			List<it.govpay.orm.SingoloVersamento> singoliVersamenti =  this.getSingoloVersamentoService().findAll(exp);
 			return SingoloVersamentoConverter.toDTO(singoliVersamenti);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -122,13 +110,9 @@ public class SingoliVersamentiBD extends BasicBD {
 			IdVersamento idVersamento = new IdVersamento();
 			idVersamento.setId(id);
 			idSingoloVersamento.setIdVersamento(idVersamento);
-			it.govpay.orm.SingoloVersamento singoloVersamentoVO = ((IDBSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).get(idSingoloVersamento);
+			it.govpay.orm.SingoloVersamento singoloVersamentoVO = this.getSingoloVersamentoService().get(idSingoloVersamento);
 			return SingoloVersamentoConverter.toDTO(singoloVersamentoVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | MultipleResultException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -149,9 +133,7 @@ public class SingoliVersamentiBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO, statoSingoloVersamento.toString()));
 	
 			this.getSingoloVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

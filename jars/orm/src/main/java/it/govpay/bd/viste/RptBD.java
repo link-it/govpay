@@ -68,10 +68,10 @@ public class RptBD extends BasicBD {
 	}
 
 	public long count(RptFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(RptFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(RptFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -89,7 +89,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(RptFilter filter) throws ServiceException {
+	private long countConLimitEngine(RptFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -109,7 +109,6 @@ public class RptBD extends BasicBD {
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
 				)
@@ -117,11 +116,6 @@ public class RptBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
-			if(filter.getRicevute() != null && filter.getRicevute()) {			
-				sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICEVUTA), "data_msg_ricevuta");
-			} else {
-				sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
-			}
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -129,11 +123,6 @@ public class RptBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			if(filter.getRicevute() != null && filter.getRicevute()) {	
-				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICEVUTA, true), false);
-			} else {
-				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_MSG_RICHIESTA, true), false);
-			}
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
