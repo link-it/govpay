@@ -140,14 +140,6 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			expr.and();
 			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), idDominio);
 			
-//			IdTipoVersamentoDominio idTipoVersamentoDominio = new IdTipoVersamentoDominio();
-//			IdDominio idDominioOrm = new IdDominio();
-//			IdTipoVersamento idTipoVersamento = new IdTipoVersamento();
-//			idDominioOrm.setId(idDominio);
-//			idTipoVersamento.setCodTipoVersamento(codTipoVersamento);
-//			idTipoVersamentoDominio.setIdDominio(idDominioOrm);
-//			idTipoVersamentoDominio.setIdTipoVersamento(idTipoVersamento);
-			
 			return TipoVersamentoDominioConverter.toDTO( this.getTipoVersamentoDominioService().find(expr));
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
@@ -179,11 +171,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			this.getTipoVersamentoDominioService().update(idVO, vo);
 			tipoVersamento.setId(vo.getId());
 			this.emitAudit(tipoVersamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | UtilsException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -243,10 +231,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	}
 
 	public long count(TipoVersamentoDominioFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(TipoVersamentoDominioFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(TipoVersamentoDominioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -263,7 +251,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(TipoVersamentoDominioFilter filter) throws ServiceException {
+	private long countConLimitEngine(TipoVersamentoDominioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -286,7 +274,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.ABILITATO));
@@ -300,7 +288,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			
 //			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), false);
 //			sqlQueryObjectInterno.addOrderBy("id", false);
-			sqlQueryObjectInterno.addOrderBy(converter.toTable(model.ABILITATO) + ".id", false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toTable(model.ABILITATO) + ".id", false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -314,8 +302,8 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+//				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -365,7 +353,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			CustomField cfIdTipoVersamento = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(model));
 			List<Object> select = this.getTipoVersamentoDominioService().select(pagExpr, true, cfIdTipoVersamento);
 
-			if(select != null && select.size() > 0)
+			if(select != null && !select.isEmpty())
 				for (Object object : select) {
 					if(object instanceof Long){
 						lstIdTipiTributi.add((Long) object); 
@@ -375,11 +363,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw e;
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
+		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -408,7 +392,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model));
 			List<Object> select = this.getTipoVersamentoDominioService().select(pagExpr, true, cfIdDominio);
 
-			if(select != null && select.size() > 0)
+			if(select != null && !select.isEmpty())
 				for (Object object : select) {
 					if(object instanceof Long){
 						idDomini.add((Long) object); 
@@ -417,12 +401,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 
 		}catch(ServiceException e){
 			throw e;
-		} catch (ExpressionException e) {
+		} catch (ExpressionException | NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
 		}  finally {
 			if(this.isAtomica()) {
 				this.closeConnection();

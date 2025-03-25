@@ -89,9 +89,7 @@ public class TributiBD extends BasicBD {
 			}
 			
 			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id), configWrapper);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -128,17 +126,8 @@ public class TributiBD extends BasicBD {
 			expr.and();
 			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Tributo.model())), idDominio);
 			
-//			IdTributo idTributo = new IdTributo();
-//			IdDominio idDominioOrm = new IdDominio();
-//			IdTipoTributo idTipoTributo = new IdTipoTributo();
-//			idDominioOrm.setId(idDominio);
-//			idTributo.setIdDominio(idDominioOrm);
-//			idTipoTributo.setCodTributo(codTributo);
-//			idTributo.setIdTipoTributo(idTipoTributo); 
 			return TributoConverter.toDTO(this.getTributoService().find(expr), configWrapper);
-		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -168,11 +157,7 @@ public class TributiBD extends BasicBD {
 			this.getTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
 			this.emitAudit(tributo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | UtilsException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -217,10 +202,10 @@ public class TributiBD extends BasicBD {
 	}
 
 	public long count(TributoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(TributoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(TributoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -237,7 +222,7 @@ public class TributiBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(TributoFilter filter) throws ServiceException {
+	private long countConLimitEngine(TributoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -260,7 +245,7 @@ public class TributiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.ABILITATO));
@@ -273,7 +258,7 @@ public class TributiBD extends BasicBD {
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
 //			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.TIPO_TRIBUTO.COD_TRIBUTO, true), false);
-			sqlQueryObjectInterno.addOrderBy(converter.toTable(model.ABILITATO) + ".id", false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toTable(model.ABILITATO) + ".id", false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -287,8 +272,7 @@ public class TributiBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -312,9 +296,7 @@ public class TributiBD extends BasicBD {
 			}
 			
 			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()), configWrapper);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -340,7 +322,7 @@ public class TributiBD extends BasicBD {
 			CustomField cfIdTipoTributo = new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", converter.toTable(it.govpay.orm.Tributo.model()));
 			List<Object> select = this.getTributoService().select(pagExpr, true, cfIdTipoTributo);
 
-			if(select != null && select.size() > 0)
+			if(select != null && !select.isEmpty())
 				for (Object object : select) {
 					if(object instanceof Long){
 						lstIdTipiTributi.add((Long) object); 
@@ -350,11 +332,7 @@ public class TributiBD extends BasicBD {
 			throw e;
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
+		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

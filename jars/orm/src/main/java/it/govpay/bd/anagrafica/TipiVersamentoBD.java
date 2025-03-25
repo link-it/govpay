@@ -144,11 +144,7 @@ public class TipiVersamentoBD extends BasicBD {
 			this.getTipoVersamentoService().update(idVO, vo);
 			tipoVersamento.setId(vo.getId());
 			this.emitAudit(tipoVersamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | UtilsException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -209,10 +205,10 @@ public class TipiVersamentoBD extends BasicBD {
 	}
 
 	public long count(TipoVersamentoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(TipoVersamentoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(TipoVersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -229,7 +225,7 @@ public class TipiVersamentoBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(TipoVersamentoFilter filter) throws ServiceException {
+	private long countConLimitEngine(TipoVersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -252,12 +248,12 @@ public class TipiVersamentoBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_TIPO_VERSAMENTO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_TIPO_VERSAMENTO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_TIPO_VERSAMENTO, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_TIPO_VERSAMENTO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -265,7 +261,7 @@ public class TipiVersamentoBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_TIPO_VERSAMENTO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_TIPO_VERSAMENTO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -279,8 +275,7 @@ public class TipiVersamentoBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

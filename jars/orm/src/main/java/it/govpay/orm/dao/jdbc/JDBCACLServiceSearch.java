@@ -72,8 +72,6 @@ public class JDBCACLServiceSearch implements IDBACLServiceSearch, IDBServiceUtil
 	protected Logger log = null;
 	protected IJDBCServiceSearchWithId<ACL, IdAcl, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
-	private String modelClassName = ACL.class.getName();
-	private String idModelClassName = IdAcl.class.getName();
 	public JDBCACLServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();

@@ -108,11 +108,7 @@ public class NotificheAppIoBD extends BasicBD {
 			
 			List<it.govpay.orm.NotificaAppIO> findAll = this.getNotificaAppIOService().findAll(exp);
 			return NotificaAppIoConverter.toDTOList(findAll);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -153,7 +149,6 @@ public class NotificheAppIoBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-//			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().STATO, stato.toString()));
@@ -176,9 +171,7 @@ public class NotificheAppIoBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().STATO_MESSAGGIO, statoMessaggio.toString()));
 
 			((JDBCNotificaAppIOService)this.getNotificaAppIOService()).updateFields(id, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -187,19 +180,19 @@ public class NotificheAppIoBD extends BasicBD {
 		}
 	}
 	
-	public NotificaAppIoFilter newFilter() throws ServiceException {
+	public NotificaAppIoFilter newFilter() {
 		return new NotificaAppIoFilter(this.getNotificaAppIOService());
 	}
 
-	public NotificaAppIoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public NotificaAppIoFilter newFilter(boolean simpleSearch) {
 		return new NotificaAppIoFilter(this.getNotificaAppIOService(),simpleSearch);
 	}
 	
 	public long count(NotificaAppIoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(NotificaAppIoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(NotificaAppIoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -217,7 +210,7 @@ public class NotificheAppIoBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(NotificaAppIoFilter filter) throws ServiceException {
+	private long countConLimitEngine(NotificaAppIoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -240,12 +233,12 @@ public class NotificheAppIoBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -253,7 +246,7 @@ public class NotificheAppIoBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -267,8 +260,7 @@ public class NotificheAppIoBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

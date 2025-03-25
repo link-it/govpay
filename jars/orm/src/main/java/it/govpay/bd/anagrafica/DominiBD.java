@@ -107,16 +107,9 @@ public class DominiBD extends BasicBD {
 			expr.equals(it.govpay.orm.Dominio.model().COD_DOMINIO, codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
+			return DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
 					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
-			return dominio;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -135,13 +128,7 @@ public class DominiBD extends BasicBD {
 				connettoreMyPivot = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
 			return connettoreMyPivot;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -156,13 +143,7 @@ public class DominiBD extends BasicBD {
 				connettoreSecim = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
 			return connettoreSecim;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -177,13 +158,7 @@ public class DominiBD extends BasicBD {
 				connettoreGovpay = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
 			return connettoreGovpay;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -198,13 +173,7 @@ public class DominiBD extends BasicBD {
 				connettoreGovpay = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
 			return connettoreGovpay;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -219,13 +188,7 @@ public class DominiBD extends BasicBD {
 				connettoreMaggioliJPPA = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
 			return connettoreMaggioliJPPA;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -252,9 +215,8 @@ public class DominiBD extends BasicBD {
 			}
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
+			return DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
 					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
-			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -515,10 +477,10 @@ public class DominiBD extends BasicBD {
 	}
 
 	public long count(DominioFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(DominioFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(DominioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -534,7 +496,7 @@ public class DominiBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(DominioFilter filter) throws ServiceException {
+	private long countConLimitEngine(DominioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -562,7 +524,7 @@ public class DominiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_DOMINIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_DOMINIO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_DOMINIO, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_DOMINIO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -570,7 +532,7 @@ public class DominiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_DOMINIO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_DOMINIO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -584,8 +546,7 @@ public class DominiBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -607,9 +568,7 @@ public class DominiBD extends BasicBD {
 				dtoList.add(AnagraficaManager.getDominio(getBdConfigWrapper(), dominioVO.getId()));
 			}
 			return dtoList;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) { // uso la cache per popolare il dettaglio del dominio.
+		} catch (NotImplementedException | NotFoundException e) { // uso la cache per popolare il dettaglio del dominio.
 			throw new ServiceException(e);
 		}
 	}
@@ -637,7 +596,6 @@ public class DominiBD extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
-//				filter.setExpressionConstructor(this.getDominioService());
 			}
 			return this._findAll(this.newFilter());
 		}finally {

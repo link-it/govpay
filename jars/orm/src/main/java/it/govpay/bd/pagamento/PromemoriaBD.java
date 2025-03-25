@@ -124,7 +124,7 @@ public class PromemoriaBD extends BasicBD {
 						try {
 							promemoria.setDocumento(documentiBD.getDocumento(promemoria.getIdDocumento()));
 						} catch (NotFoundException e) {
-							
+							//donothing
 						}
 					}
 					
@@ -137,11 +137,7 @@ public class PromemoriaBD extends BasicBD {
 			}
 			
 			return dtoList;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -186,11 +182,9 @@ public class PromemoriaBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-//			IdPromemoria idVO = ((JDBCPromemoriaServiceSearch)this.getPromemoriaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().STATO, stato.toString()));
-//			if(descrizione != null)
 			if(descrizione != null && descrizione.length() > 1024)
 				descrizione = descrizione.substring(0, 1021)+ "...";
 			
@@ -202,9 +196,7 @@ public class PromemoriaBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().DATA_AGGIORNAMENTO_STATO, new Date()));
 
 			((JDBCPromemoriaService)this.getPromemoriaService()).updateFields(id, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -219,7 +211,6 @@ public class PromemoriaBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-//			IdPromemoria idVO = ((JDBCPromemoriaServiceSearch)this.getPromemoriaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(oggetto != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().OGGETTO, oggetto));
@@ -230,9 +221,7 @@ public class PromemoriaBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().DATA_AGGIORNAMENTO_STATO, new Date()));
 
 			((JDBCPromemoriaService)this.getPromemoriaService()).updateFields(id, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -242,19 +231,19 @@ public class PromemoriaBD extends BasicBD {
 	}
 	
 	
-	public PromemoriaFilter newFilter() throws ServiceException {
+	public PromemoriaFilter newFilter() {
 		return new PromemoriaFilter(this.getPromemoriaService());
 	}
 
-	public PromemoriaFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public PromemoriaFilter newFilter(boolean simpleSearch) {
 		return new PromemoriaFilter(this.getPromemoriaService(),simpleSearch);
 	}
 	
 	public long count(PromemoriaFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(PromemoriaFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(PromemoriaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -272,7 +261,7 @@ public class PromemoriaBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(PromemoriaFilter filter) throws ServiceException {
+	private long countConLimitEngine(PromemoriaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -295,12 +284,12 @@ public class PromemoriaBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
@@ -309,7 +298,7 @@ public class PromemoriaBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -323,8 +312,7 @@ public class PromemoriaBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

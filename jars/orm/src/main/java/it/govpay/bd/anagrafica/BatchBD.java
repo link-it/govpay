@@ -96,13 +96,7 @@ public class BatchBD extends BasicBD {
 			expr.equals(it.govpay.orm.Batch.model().COD_BATCH, codBatch);
 			
 			return BatchConverter.toDTO(this.getBatchService().find(expr));
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

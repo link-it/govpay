@@ -78,11 +78,7 @@ public class IncassiBD extends BasicBD {
 			
 			it.govpay.orm.Incasso pagamentoVO = ((JDBCIncassoServiceSearch)this.getIncassoService()).get(id);
 			return IncassoConverter.toDTO(pagamentoVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | MultipleResultException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -104,13 +100,7 @@ public class IncassiBD extends BasicBD {
 			
 			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().find(expr);
 			return IncassoConverter.toDTO(pagamentoVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw e;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -154,19 +144,19 @@ public class IncassiBD extends BasicBD {
 		}
 	}
 
-	public IncassoFilter newFilter() throws ServiceException {
+	public IncassoFilter newFilter(){
 		return new IncassoFilter(this.getIncassoService());
 	}
 
-	public IncassoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public IncassoFilter newFilter(boolean simpleSearch) {
 		return new IncassoFilter(this.getIncassoService(),simpleSearch);
 	}
 	
 	public long count(IncassoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(IncassoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(IncassoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -184,7 +174,7 @@ public class IncassiBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(IncassoFilter filter) throws ServiceException {
+	private long countConLimitEngine(IncassoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -207,12 +197,12 @@ public class IncassiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.TRN));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.TRN), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ORA_INCASSO), "data_ora_incasso");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ORA_INCASSO), "data_ora_incasso");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -220,7 +210,7 @@ public class IncassiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ORA_INCASSO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ORA_INCASSO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -234,8 +224,7 @@ public class IncassiBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -259,7 +248,6 @@ public class IncassiBD extends BasicBD {
 			
 			List<Incasso> incassoLst = new ArrayList<>();
 
-			// if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
 			List<it.govpay.orm.Incasso> incassoVOLst = this.getIncassoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Incasso incassoVO: incassoVOLst) {
 				incassoLst.add(IncassoConverter.toDTO(incassoVO));
@@ -336,11 +324,7 @@ public class IncassiBD extends BasicBD {
 			}
 			
 			return incassoLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -362,11 +346,7 @@ public class IncassiBD extends BasicBD {
 			NonNegativeNumber count = this.getIncassoService().count(exp);
 			
 			return count != null ? count.longValue(): 0l;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
