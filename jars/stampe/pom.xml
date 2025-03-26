@@ -68,10 +68,6 @@
 					<groupId>org.glassfish.jaxb</groupId>
    					<artifactId>jaxb-core</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>javax.xml.bind</groupId>
-            		<artifactId>jaxb-api</artifactId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		
