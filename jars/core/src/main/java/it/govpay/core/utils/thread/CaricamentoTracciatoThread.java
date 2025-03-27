@@ -172,7 +172,18 @@ public class CaricamentoTracciatoThread implements Runnable {
 			
 		} finally {
 			this.completed = true;
-			if(operazioniBD != null) operazioniBD.closeConnection(); 
+			if(operazioniBD != null) {
+				// ripristino autocommit
+				try {
+					if(!operazioniBD.isAutoCommit() ) {
+						operazioniBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					// donothing
+				}
+				
+				operazioniBD.closeConnection(); 
+			}
 			
 			LogUtils.logDebug(log, this.nomeThread + " Linee elaborate: " + this.lineeElaborate.size());
 			LogUtils.logDebug(log, this.nomeThread + " Risposte prodotte: " + this.risposte.size());

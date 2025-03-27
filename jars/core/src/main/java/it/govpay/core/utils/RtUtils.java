@@ -632,8 +632,14 @@ public class RtUtils extends NdpValidationUtils {
 			
 			throw e;
 		} finally {
-			if(rptBD != null)
+			if(rptBD != null) {
+				// ripristino autocommit
+				if(!rptBD.isAutoCommit() ) {
+					rptBD.setAutoCommit(true);
+				}
+				
 				rptBD.closeConnection();
+			}
 		}
 	}
 

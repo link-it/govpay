@@ -119,6 +119,15 @@ public class Pagamento   {
 			throw new GovPayException(EsitoOperazione.INTERNAL, e);
 		} finally {
 			if(rptBD != null) {
+				// ripristino autocommit
+				try {
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					// donothing
+				}
+				
 				rptBD.closeConnection();
 			}
 		}

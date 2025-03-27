@@ -71,6 +71,12 @@ public class AvvisiDAO extends BaseDAO{
 			versamentiBD = new VersamentiBD(configWrapper);
 			return this.getAvviso(getAvvisoDTO, versamentiBD, configWrapper);
 		} finally {
+			
+			// ripristino autocommit
+			if(!versamentiBD.isAutoCommit() ) {
+				versamentiBD.setAutoCommit(true);
+			}
+			
 			versamentiBD.closeConnection();
 		}
 	}

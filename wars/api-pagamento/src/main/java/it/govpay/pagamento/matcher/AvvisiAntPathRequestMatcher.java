@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -298,8 +299,18 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 		}catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile effettuare il check disponibilita' avviso: "+ e.getMessage(), e);
 		}	finally {
-			if(versamentiBD != null)
+			if(versamentiBD != null) {
+				// ripristino autocommit
+				try {
+					if(!versamentiBD.isAutoCommit() ) {
+						versamentiBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					//donothing
+				}
+				
 				versamentiBD.closeConnection();
+			}
 		}
 
 		return authorized;

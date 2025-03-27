@@ -183,6 +183,11 @@ public class Tracciati {
 			tracciatiBD.updateFineElaborazione(tracciato);
 			tracciatiBD.commit();	
 		} finally {
+			// ripristino autocommit
+			if(!tracciatiBD.isAutoCommit() ) {
+				tracciatiBD.setAutoCommit(true);
+			}
+			
 			tracciatiBD.closeConnection();
 		}
 	}
@@ -607,8 +612,14 @@ public class Tracciati {
 			} catch (java.io.IOException e) {
 				log.error(e.getMessage(), e);
 			}finally {
-				if(tracciatiBeanDatiBD != null)
+				if(tracciatiBeanDatiBD != null) {
+					// ripristino autocommit
+					if(!tracciatiBeanDatiBD.isAutoCommit() ) {
+						tracciatiBeanDatiBD.setAutoCommit(true);
+					}
+					
 					tracciatiBeanDatiBD.closeConnection();
+				}
 			}
 			
 			beanDati.setDataUltimoAggiornamento(new Date());
@@ -1062,8 +1073,14 @@ public class Tracciati {
 			} catch (java.io.IOException e) {
 				log.error(e.getMessage(), e);
 			}finally {
-				if(tracciatiBeanDatiBD != null)
+				if(tracciatiBeanDatiBD != null) {
+					// ripristino autocommit
+					if(!tracciatiBeanDatiBD.isAutoCommit() ) {
+						tracciatiBeanDatiBD.setAutoCommit(true);
+					}
+					
 					tracciatiBeanDatiBD.closeConnection();
+				}
 			}
 			
 			beanDati.setDataUltimoAggiornamento(new Date());

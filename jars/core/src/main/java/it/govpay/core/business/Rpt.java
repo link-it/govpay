@@ -326,6 +326,11 @@ public class Rpt {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
@@ -507,6 +512,11 @@ public class Rpt {
 				rptBD.rollback();
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
@@ -600,6 +610,11 @@ public class Rpt {
 		}finally {
 			if(rptBD != null) {
 				rptBD.disableSelectForUpdate();
+				
+				// ripristino autocommit
+				if(!rptBD.isAutoCommit() ) {
+					rptBD.setAutoCommit(true);
+				}
 				
 				rptBD.closeConnection();
 			}

@@ -527,6 +527,11 @@ public class TracciatiNotificaPagamenti {
 				LogUtils.logError(log,"Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
 			} finally {
 				if(tracciatiNotificaPagamentiBD != null) {
+					// ripristino autocommit
+					if(!tracciatiNotificaPagamentiBD.isAutoCommit() ) {
+						tracciatiNotificaPagamentiBD.setAutoCommit(true);
+					}
+					
 					tracciatiNotificaPagamentiBD.closeConnection();
 				}
 			}

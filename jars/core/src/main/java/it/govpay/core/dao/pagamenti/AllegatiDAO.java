@@ -150,7 +150,9 @@ public class AllegatiDAO  extends BaseDAO {
 
 					if(bd != null) {
 						try {
-							bd.setAutoCommit(true);
+							if(!bd.isAutoCommit()) {
+								bd.setAutoCommit(true);
+							}
 						} catch (ServiceException e) {
 							//donothing
 						}
@@ -241,7 +243,8 @@ public class AllegatiDAO  extends BaseDAO {
 
 				if(bd != null) {
 					try {
-						bd.setAutoCommit(true);
+						if(!bd.isAutoCommit())
+							bd.setAutoCommit(true);
 					} catch (ServiceException e) {
 						//donothing
 					}

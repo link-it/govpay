@@ -729,8 +729,12 @@ public class Rendicontazioni {
 								rendicontazioniBD.rollback();
 							
 							LogUtils.logError(log, MessageFormat.format("Flusso di rendicontazione non acquisito: {0}", e.getMessage()), e);
-							//throw e;
 						} finally {
+							// ripristino autocommit
+							if(!rendicontazioniBD.isAutoCommit() ) {
+								rendicontazioniBD.setAutoCommit(true);
+							}
+							
 							rendicontazioniBD.closeConnection();
 						}
 					} catch (GovPayException ce) {
@@ -755,6 +759,7 @@ public class Rendicontazioni {
 			LogUtils.logError(log, MessageFormat.format("Acquisizione dei flussi di rendicontazione in completata con errore: {0}", e.getMessage()), e);
 			throw new GovPayException(e);
 		} finally {
+			//donothing
 		}
 		response.descrizioneEsito = MessageFormat.format("Operazione completata: {0} flussi acquisiti", frAcquisiti);
 		if(frNonAcquisiti > 0) response.descrizioneEsito += MessageFormat.format(" e {0}non acquisiti per errori", frNonAcquisiti);

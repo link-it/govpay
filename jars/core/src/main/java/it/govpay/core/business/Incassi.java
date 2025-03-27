@@ -391,10 +391,18 @@ public class Incassi {
 			try {
 				if(incassiBD != null)
 					incassiBD.disableSelectForUpdate();
-			} catch (ServiceException e) {}
+			} catch (ServiceException e) {
+				//donothing
+			}
 
-			if(incassiBD != null)
+			if(incassiBD != null) {
+				// ripristino autocommit
+				if(!incassiBD.isAutoCommit() ) {
+					incassiBD.setAutoCommit(true);
+				}
+				
 				incassiBD.closeConnection();
+			}
 
 			if(!listaEventi.isEmpty()) {
 				EventiBD eventiBD = null;
@@ -871,8 +879,18 @@ public class Incassi {
 				//donothing
 			}
 
-			if(incassiBD != null)
+			if(incassiBD != null) {
+				// ripristino autocommit
+				try {
+					if(!incassiBD.isAutoCommit() ) {
+						incassiBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					// donothing
+				}
+				
 				incassiBD.closeConnection();
+			}
 
 			if(!listaEventi.isEmpty()) {
 				EventiBD eventiBD = null;

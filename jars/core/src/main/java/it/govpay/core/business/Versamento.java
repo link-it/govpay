@@ -321,8 +321,18 @@ public class Versamento  {
 			else 
 				throw new GovPayException(e);
 		} finally {
-			if(versamentiBD != null  && bd == null)
+			if(versamentiBD != null  && bd == null) {
+				// ripristino autocommit
+				try {
+					if(!versamentiBD.isAutoCommit() ) {
+						versamentiBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					// donothing
+				}
+				
 				versamentiBD.closeConnection();
+			}
 		}
 	}
 
@@ -430,6 +440,11 @@ public class Versamento  {
 			if(versamentiBD != null) {
 				try {
 					versamentiBD.disableSelectForUpdate();
+					
+					// ripristino autocommit
+					if(!versamentiBD.isAutoCommit() ) {
+						versamentiBD.setAutoCommit(true);
+					}
 				} catch (ServiceException e) {
 					//	donothing
 				}
@@ -634,6 +649,11 @@ public class Versamento  {
 				//donothing
 			} 
 		}finally {
+			// ripristino autocommit
+			if(!versamentiBD.isAutoCommit() ) {
+				versamentiBD.setAutoCommit(true);
+			}
+			
 			versamentiBD.closeConnection();
 		}
 	}
@@ -683,6 +703,11 @@ public class Versamento  {
 				//donothing
 			}
 		}finally {
+			// ripristino autocommit
+			if(!versamentiBD.isAutoCommit() ) {
+				versamentiBD.setAutoCommit(true);
+			}
+			
 			versamentiBD.closeConnection();
 		}
 	}
@@ -760,6 +785,11 @@ public class Versamento  {
 				//donothing
 			}
 		}finally {
+			// ripristino autocommit
+			if(!versamentiBD.isAutoCommit() ) {
+				versamentiBD.setAutoCommit(true);
+			}
+			
 			versamentiBD.closeConnection();
 		}
 	}

@@ -567,8 +567,14 @@ public class PendenzeDAO extends BaseDAO{
 					else 
 						throw new GovPayException(e);
 				} finally {
-					if(versamentiBD != null)
+					if(versamentiBD != null) {
+						// ripristino autocommit
+						if(!versamentiBD.isAutoCommit() ) {
+							versamentiBD.setAutoCommit(true);
+						}
+						
 						versamentiBD.closeConnection();
+					}
 				}
 			}
 

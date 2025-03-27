@@ -298,8 +298,14 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException(e.getMessage());
 		} finally {
-			if(dominiBD != null)
+			if(dominiBD != null) {
+				// ripristino autocommit
+				if(!dominiBD.isAutoCommit() ) {
+					dominiBD.setAutoCommit(true);
+				}
+				
 				dominiBD.closeConnection();
+			}
 		}
 		return dominioDTOResponse;
 	}

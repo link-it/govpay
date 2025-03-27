@@ -286,8 +286,19 @@ public class InviaRptThread implements Runnable {
 				LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
 			}
 		} finally {
-			if(rptBD != null)
+			if(rptBD != null) {
+				
+				// ripristino autocommit
+				try {
+					if(!rptBD.isAutoCommit()) {
+						rptBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					//donothing
+				}
+				
 				rptBD.closeConnection();
+			}
 
 			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
 				try {

@@ -386,7 +386,9 @@ public class TracciatiDAO extends BaseDAO{
 						
 						if(bd != null) {
 							try {
-								bd.setAutoCommit(true);
+								if(!bd.isAutoCommit()) {
+									bd.setAutoCommit(true);
+								}
 							} catch (ServiceException e) {
 								//donothing
 							}

@@ -524,6 +524,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
@@ -1677,6 +1682,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
@@ -2342,6 +2352,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
