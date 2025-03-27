@@ -8,6 +8,8 @@ Background:
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def getYear2 =
   """
   function() {
@@ -41,7 +43,7 @@ And request dominio
 When method put
 Then assert responseStatus == 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def isValidNumeroAvviso = function(x){ return new RegExp(<regex>).test(x) }
 

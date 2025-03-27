@@ -9,6 +9,7 @@ Background:
 * def pendenzaPutMono = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Caricamento a nome di un'altra applicazione
 
@@ -34,7 +35,7 @@ And request applicazione
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -64,7 +65,7 @@ And request applicazione
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * set pendenzaPutMono.idTipoPendenza = codLibero
 * set pendenzaPutMono.voci = 

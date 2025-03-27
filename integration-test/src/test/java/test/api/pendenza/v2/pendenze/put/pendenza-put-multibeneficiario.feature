@@ -7,6 +7,8 @@ Background:
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 @test1
 Scenario: Caricamento pendenza multivoce definita con numero avviso, due iban accredito distinti
 

@@ -32,6 +32,8 @@ Background:
 	}
 """
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 @test1
 Scenario: Attivazione di una RPT per una pendenza con MBT Sanp 2.3.0
 

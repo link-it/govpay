@@ -27,6 +27,8 @@ Background:
 }
 """
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario Outline: Caricamento pendenza con controllo del campo opzionale <field> 
 
 * set pendenzaPut.documento = documento

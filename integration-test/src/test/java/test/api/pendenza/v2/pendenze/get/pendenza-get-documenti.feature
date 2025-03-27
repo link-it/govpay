@@ -9,6 +9,7 @@ Background:
 * def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Lettura di un avviso pdf per un documento con rate
 

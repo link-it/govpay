@@ -10,6 +10,8 @@ Background:
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 * def versionePagamento = 2
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 @test1
 Scenario: Aggiornamento pendenza non pagata scaduta non presente nelle API di verifica
 

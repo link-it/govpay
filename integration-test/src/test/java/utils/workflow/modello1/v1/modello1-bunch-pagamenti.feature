@@ -5,6 +5,8 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
 
 # idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA

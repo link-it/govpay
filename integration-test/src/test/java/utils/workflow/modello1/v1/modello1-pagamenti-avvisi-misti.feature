@@ -9,6 +9,8 @@ Feature: Pagamento ad iniziativa Ente
 # 		DECORRENZA_TERMINI_PARZIALE ("R05"), 
 # 		PAGAMENTO_ESEGUITO_SENZA_RPT_CON_RT("R12"); 
 
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Pagamento ad iniziativa Ente dominio1
 
 * def idPendenza = getCurrentTimeMillis()

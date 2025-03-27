@@ -10,6 +10,8 @@ Background:
 * def pendenzaPutMonoDefinito = read('msg/pendenza-put_monovoce_definito.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Caricamento idA2A disabilitato
 
 * set applicazione.abilitato = false
@@ -21,7 +23,7 @@ And request applicazione
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -50,7 +52,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', 'ALTRO', idPendenza
@@ -99,7 +101,7 @@ And request dominio
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -148,7 +150,7 @@ And request unitaOperativa
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * set pendenzaPutMono.idUnitaOperativa = idUnitaOperativa
 
@@ -197,7 +199,7 @@ And request { tipoContabilita: 'ALTRO', codiceContabilita: 'MBT', abilitato: fal
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -311,7 +313,7 @@ And request {postale:false,mybank:false,abilitato:false}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

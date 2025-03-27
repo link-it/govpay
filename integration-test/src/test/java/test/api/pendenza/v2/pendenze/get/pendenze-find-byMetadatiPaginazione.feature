@@ -8,6 +8,8 @@ Background:
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pathServizio = '/pendenze'
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Ricerca tracciati senza filtri sui metadati di paginazione
 
 Given url pendenzeBaseurl

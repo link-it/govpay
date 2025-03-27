@@ -30,6 +30,8 @@ Background:
   """
 * def currentYear4 = getYear4()
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario Outline: IUV custom per <scenariodescr>
 
 * set dominio.iuvPrefix = <iuvprefix>
@@ -41,7 +43,7 @@ And request dominio
 When method put
 Then assert responseStatus == 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def isValidNumeroAvviso = function(x){ return new RegExp(<regex>).test(x) }
 

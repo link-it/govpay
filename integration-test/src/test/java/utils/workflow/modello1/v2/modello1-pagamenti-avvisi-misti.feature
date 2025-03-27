@@ -7,7 +7,9 @@ Feature: Pagamento ad iniziativa Ente
 # 		PAGAMENTO_PARZIALMENTE_ESEGUITO ("R03"), 
 # 		DECORRENZA_TERMINI ("R04"), 
 # 		DECORRENZA_TERMINI_PARZIALE ("R05"), 
-# 		PAGAMENTO_ESEGUITO_SENZA_RPT_CON_RT("R12"); 
+# 		PAGAMENTO_ESEGUITO_SENZA_RPT_CON_RT("R12");
+
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature') 
 
 Scenario: Pagamento ad iniziativa Ente dominio1
 

@@ -8,6 +8,8 @@ Background:
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Caricamento avviso senza numeroAvviso con voce riferita
 
 Given url pendenzeBaseurl

@@ -8,6 +8,8 @@ Background:
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Caricamento pendenza con stampa avviso 
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')

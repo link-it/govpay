@@ -11,6 +11,8 @@ Background:
 
 * configure retry = { count: 25, interval: 10000 }
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Caricamento pendenza con contabilita definita
 
 * def idPendenza = getCurrentTimeMillis()

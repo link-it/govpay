@@ -9,6 +9,8 @@ Background:
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 @test1
 Scenario: Aggiornamento pendenza non pagata scaduta tramite API di verifica
 

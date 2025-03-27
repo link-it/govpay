@@ -8,6 +8,8 @@ Background:
 * def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario Outline: Caricamento pendenza con dati allegati
 
 * set pendenzaPut.datiAllegati = <datiAllegati>
