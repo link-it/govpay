@@ -834,11 +834,18 @@ public class BasicBD {
 	}
 
 	public boolean isAutoCommit() throws ServiceException {
+		if(this.father != null) {
+			return this.father.isAutoCommit();
+		}
+		
 		try {
-			return this.getConnection().getAutoCommit();
+			if(!this.isClosed) {
+				return this.connection.getAutoCommit();
+			}
 		} catch (SQLException e) {
 			throw new ServiceException("Errore nell'identificazione dello stato di autocommit.", e);
 		}
+		return true; // indico che la connessione è gia' stata riportata su autocommit
 	}
 	
 	public boolean isClosed() throws ServiceException {
