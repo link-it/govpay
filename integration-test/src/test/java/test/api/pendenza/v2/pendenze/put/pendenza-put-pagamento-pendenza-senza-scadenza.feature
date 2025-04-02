@@ -4,13 +4,13 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 * def versionePagamento = 2
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 @test1
 Scenario: Aggiornamento pendenza non pagata scaduta non presente nelle API di verifica

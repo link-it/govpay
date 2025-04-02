@@ -30,12 +30,6 @@
 	<property name="sql" value="../sql/" />
 	<property name="datasource" value="../datasource/" />
 	
-	
-	<!-- path risorse console -->	
-	<property name="antinstaller_govpay_backend_gui_base_path" value="/govpay/backend/gui/backoffice/" />
-	<property name="antinstaller_govpay_backend_api_form_base_url" value="/govpay/backend/api/backoffice/rs/form/v1" />
-	<property name="antinstaller_govpay_backend_api_public_base_url" value="/govpay/backend/api/backoffice/public" />
-	
         <!-- Codifico le password -->
         <java classname="org.openspcoop2.utils.crypt.Password" fork="true" outputproperty="antinstaller_principal_pwd_md5">
                 <arg value="${antinstaller_principal_pwd}" />
@@ -106,6 +100,15 @@
        } else {
           project.setUserProperty('springsec_location','/WEB-INF')
        }      
+	
+	   def basepathAPIBO = properties['antinstaller_govpay_backend_api_base_url']
+	       if (basepathAPIBO) {
+	          project.setUserProperty('antinstaller_govpay_backend_api_form_base_url',basepathAPIBO+'/rs/form/v1')
+			  project.setUserProperty('antinstaller_govpay_backend_api_public_base_url',basepathAPIBO+'/public')
+	       } else {
+			  project.setUserProperty('antinstaller_govpay_backend_api_form_base_url','/govpay-api-backoffice/rs/form/v1')
+			  project.setUserProperty('antinstaller_govpay_backend_api_public_base_url','/govpay-api-backoffice/public')
+	       }
 </groovy>
 
     <!-- Se protocollo=https => autenticazione=ssl, altrimenti=basic -->

@@ -2,15 +2,14 @@ Feature: Errori di autorizzazione inserimento pendenza
 
 Background: 
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPutMulti = read('msg/pendenza-put_multivoce_bollo.json')
 * def pendenzaPutMono = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
-
 
 Scenario: Caricamento a nome di un'altra applicazione
 

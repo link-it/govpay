@@ -31,6 +31,7 @@ GOVPAY_RAG=../../../../wars/api-ragioneria/target/govpay-api-ragioneria.war
 GOVPAY_USR=../../../../wars/api-user/target/govpay-api-user.war
 GOVPAY_WC=../../../../wars/web-connector/target/govpay-web-connector.war
 GOVPAY_CONSOLE=../../../../wars/web-console/target/govpay-console.war
+THIRD_PARTY_LICENSES=../../../../third-party-licenses
 
 
 # Template
@@ -93,7 +94,13 @@ then
         exit 6
 fi 
 cp ${COPYING_FILE} core.template/
-mv core.template/doc/README.txt core.template/
+cp ${COPYING_FILE} core.template/doc/
+
+# readme
+cp core.template/doc/README.txt core.template/
+
+# librerie terze parti
+cp -r ${THIRD_PARTY_LICENSES}/jar/* core.template/doc/
 echo "Prepare doc [completed]"
 
 # Prepare SOFTWARE

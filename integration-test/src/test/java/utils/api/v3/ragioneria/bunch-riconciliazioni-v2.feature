@@ -8,6 +8,7 @@ Scenario: Rendicontazioni
 
 * call read('classpath:utils/common-utils.feature')
 * call read('classpath:configurazione/v1/anagrafica.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 

@@ -2,15 +2,15 @@ Feature: Validazione semantica inserimento pendenza
 
 Background: 
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPutMulti = read('msg/pendenza-put_multivoce_bollo.json')
 * def pendenzaPutMono = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzaPutMonoDefinito = read('msg/pendenza-put_monovoce_definito.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Caricamento idA2A disabilitato
 
@@ -120,6 +120,17 @@ And match response ==
 """
 
 Scenario: Caricamento idUnitaOperativa inesistente
+
+* set dominio.abilitato = true
+
+Given url backofficeBaseurl
+And path 'domini', idDominio 
+And headers gpAdminBasicAutenticationHeader
+And request dominio
+When method put
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * set pendenzaPutMono.idUnitaOperativa = '00000000000_00'
 

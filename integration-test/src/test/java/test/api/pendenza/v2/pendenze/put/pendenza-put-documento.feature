@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
@@ -26,8 +28,6 @@ Background:
 	giorni: 5
 }
 """
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario Outline: Caricamento pendenza con controllo del campo opzionale <field> 
 

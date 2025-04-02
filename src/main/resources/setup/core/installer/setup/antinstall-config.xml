@@ -117,6 +117,18 @@
 		<validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+" />
 		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
 	</page>
+	
+	<page name="informazioniserviziconsole" type="input" displayText="Servizi Backoffice" ifProperty="${antinstaller_as}==wildfly28">
+		<validated defaultValue="/govpay/backend/gui/backoffice/" property="antinstaller_govpay_backend_gui_base_path" displayText="Base path risorse statiche console" regex=".+" />
+		<validated defaultValue="/govpay/backend/api/backoffice" property="antinstaller_govpay_backend_api_base_url" displayText="Base path API Backoffice" regex=".+" />
+		<comment explanatoryText="Indicare i base path necessari al funzionamento della console" />
+	</page>
+	
+	<page name="informazioniserviziconsole" type="input" displayText="Servizi Backoffice" ifProperty="${antinstaller_as}!=wildfly28">
+		<validated defaultValue="/govpay-console/" property="antinstaller_govpay_backend_gui_base_path" displayText="Base path risorse statiche console" regex=".+" />
+		<validated defaultValue="/govpay-api-backoffice" property="antinstaller_govpay_backend_api_base_url" displayText="Base path API Backoffice" regex=".+" />
+		<comment explanatoryText="Indicare i base path necessari al funzionamento della console" />
+	</page>
 
 	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true">
 		<comment displayText="Configurazione Spring Security" title="true" />

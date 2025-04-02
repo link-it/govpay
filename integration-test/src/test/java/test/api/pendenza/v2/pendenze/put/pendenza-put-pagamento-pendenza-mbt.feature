@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def esitoPaGetPaymentV2 = read('classpath:test/workflow/modello3/v2/msg/getPaymentV2-response-ok.json')
 
@@ -31,8 +33,6 @@ Background:
 		"originalDescription":'##null'
 	}
 """
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 @test1
 Scenario: Attivazione di una RPT per una pendenza con MBT Sanp 2.3.0

@@ -26,5 +26,7 @@
     <property name="antinstaller_dbpassword" value="govpay" />
     <property name="antinstaller_springsec_ext" value="false" />
     <property name="antinstaller_modulo_postgres" value="org.postgresql.jdbc" />
+	<property name="antinstaller_govpay_backend_gui_base_path" value="/govpay-console/" />
+	<property name="antinstaller_govpay_backend_api_form_base_url" value="/govpay-api-backoffice/rs/form/v1" />
+    <property name="antinstaller_govpay_backend_api_public_base_url" value="/govpay-api-backoffice/public" />
 </project>
-

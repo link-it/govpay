@@ -3,7 +3,9 @@ Feature: Riconciliazione non autorizzata
 Background:
 
 * callonce read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
@@ -30,7 +32,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
@@ -42,6 +44,18 @@ And match response == read('msg/errore_auth.json')
 
 
 Scenario: Riconciliazione cumulativa da applicazione non autorizzata per il dominio
+
+* def applicazioneAuth = read('classpath:configurazione/v1/msg/applicazione.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazioneAuth
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
@@ -70,7 +84,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 

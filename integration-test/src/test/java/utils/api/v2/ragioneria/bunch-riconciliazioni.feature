@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
@@ -34,7 +35,7 @@ And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
-And match response == read('msg/riconciliazione-singola-response.json')
+And match response == read('classpath:test/api/ragioneria/v2/riconciliazioni/get/msg/riconciliazione-singola-response.json')
 
 * def idRiconciliazioneSin_DOM1_A2A = response.idRiconciliazione
 * def riconciliazioneSin_DOM1_A2A = response

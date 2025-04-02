@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_monovoce_definito.json')
 * def pendenzaResponse = read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
@@ -19,8 +21,6 @@ Background:
 	]
 }
 """
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Caricamento pendenza con metadata definiti
 
