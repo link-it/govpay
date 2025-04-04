@@ -41,6 +41,8 @@ package it.govpay.core.utils.adapter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -50,7 +52,8 @@ import java.util.Date;
 import jakarta.xml.bind.DatatypeConverter;
 
 public final class DataTypeAdapterCXF {
-    private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER;
+    private static final String PATTERN_OFFSET = ".*[+-]\\d{2}:\\d{2}$";
+	private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER;
     static {
     	LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
@@ -84,7 +87,19 @@ public final class DataTypeAdapterCXF {
     }
 
     public static LocalDate parseLocalDate(String value) {
-    	return value != null && !value.isEmpty() ? LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE) : null;
+    	if (value == null || value.isEmpty()) {
+            return null;
+        }
+        
+        // Verifica se la stringa termina con un offset nel formato +HH:mm o -HH:mm
+        if (value.matches(PATTERN_OFFSET)) {
+            // La stringa contiene offset: uso ISO_OFFSET_DATE
+            OffsetDateTime odt = OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE);
+            return odt.toLocalDate();
+        } else {
+            // La stringa non contiene offset: uso ISO_LOCAL_DATE
+            return LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+        }
     }
 
 	public static String printLocalDate(LocalDate value) {
@@ -107,7 +122,19 @@ public final class DataTypeAdapterCXF {
     }
 
     public static LocalTime parseLocalTime(String value) {
-    	return value != null && !value.isEmpty() ? LocalTime.parse(value, DateTimeFormatter.ISO_LOCAL_TIME) : null;
+    	if (value == null || value.isEmpty()) {
+            return null;
+        }
+        
+        // Verifica se la stringa termina con un offset nel formato +HH:mm o -HH:mm
+        if (value.matches(PATTERN_OFFSET)) {
+            // La stringa contiene offset: uso ISO_OFFSET_TIME
+        	OffsetTime odt = OffsetTime.parse(value, DateTimeFormatter.ISO_OFFSET_TIME);
+            return odt.toLocalTime();
+        } else {
+            // La stringa non contiene offset: uso ISO_LOCAL_TIME
+            return LocalTime.parse(value, DateTimeFormatter.ISO_LOCAL_TIME);
+        }
     }
 
 	public static String printLocalTime(LocalTime value) {
@@ -131,7 +158,19 @@ public final class DataTypeAdapterCXF {
     }
 
     public static LocalDateTime parseLocalDateTime(String value) {
-    	return value != null && !value.isEmpty() ? LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null;
+    	if (value == null || value.isEmpty()) {
+            return null;
+        }
+        
+        // Verifica se la stringa termina con un offset nel formato +HH:mm o -HH:mm
+        if (value.matches(PATTERN_OFFSET)) {
+            // La stringa contiene offset: uso ISO_OFFSET_DATE_TIME
+            OffsetDateTime odt = OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return odt.toLocalDateTime();
+        } else {
+            // La stringa non contiene offset: uso ISO_LOCAL_DATE_TIME
+            return LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
     }
 
 	public static String printLocalDateTime(LocalDateTime value) {
