@@ -35,6 +35,28 @@
           </div>
         </div>
       </mat-card>
+       <mat-card class="shadow no-border-radius mb-3" *ngIf="_isVisualizzaPersonalizzazioni">
+       	<p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.ALTRE_INFORMAZIONI}}</p>
+    	<p class="matcard-title py-3 color-gray regular-18" *ngIf="proprietaPendenzaAvviso.length != 0" >{{_voce.AVVISO_PAGAMENTO}}</p>
+    	<div class="d-block" *ngIf="proprietaPendenzaAvviso.length != 0">
+      		<link-key-value-view *ngFor="let item of proprietaPendenzaAvviso" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+      	</div>
+      	<p class="matcard-title py-3 color-gray regular-18" *ngIf="proprietaPendenzaRt.length != 0" >{{_voce.RICEVUTA_PAGAMENTO}}</p>
+    	<div class="d-block" *ngIf="proprietaPendenzaRt.length != 0">
+      		<link-key-value-view *ngFor="let item of proprietaPendenzaRt" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+      	</div>
+      	<p class="matcard-title py-3 color-gray regular-18" *ngIf="datiAllegati" >{{_voce.DATI_CUSTOM}}</p>
+      	<div class="container p-0" *ngIf="datiAllegati">
+	        <div class="row lh-130 regular-16 mb-2 break-all">
+	          <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">Payload:</div>
+	          <div class="col-12 col-sm-8">
+	          	<div class="border p-2" style="height: 240px;overflow: auto;" *ngIf="datiAllegati">
+		          	<pre>{{ datiAllegati }}</pre>
+		          </div>
+	          </div>
+	        </div>
+	      </div>
+      </mat-card>
       <mat-card class="shadow no-border-radius mb-3">
         <div class="d-flex flex-row">
           <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Allegati</p>

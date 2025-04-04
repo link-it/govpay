@@ -12,6 +12,7 @@ export class Voce {
   public static ALLEGA_PDF_AVVISO: string = 'Allega PDF avviso';
   public static ALLEGA_PDF_RICEVUTA: string = 'Allega PDF ricevuta';
   public static ALTRE_FUNZIONI: string = 'Altre funzioni';
+  public static ALTRE_INFORMAZIONI: string = 'Altre informazioni';
   public static ANNO_RIFERIMENTO: string = 'Anno riferimento';
   public static API_PAGAMENTI: string = 'API Pagamenti';
   public static API_PENDENZE: string = 'API Pendenze';
@@ -32,6 +33,7 @@ export class Voce {
   public static AVVISI_FALLITI: string = 'Totale avvisi scartati';
   public static AVVISI_STAMPATI: string = 'Totale avvisi stampati';
   public static AVVISI_TOTALI: string = 'Totale avvisi';
+  public static AVVISO_PAGAMENTO: string = 'Avviso pagamento';
 
   public static BASIC: string = 'HTTP Basic';
   public static BIC_ACCREDITO: string = 'BIC accredito';
@@ -42,6 +44,7 @@ export class Voce {
   public static CARTELLA_DI_PAGAMENTO: string = 'Cartella di pagamento';
   public static CATEGORIA_EVENTO: string = 'Categoria evento';
   public static CAUSALE: string = 'Causale';
+  public static CAUSALE_LINGUA_SECONDARIA_AVVISO: string = 'Causale nella lingua secondaria';
   public static CBILL: string = 'CBill';
   public static CCP: string = 'CCP';
   public static CIVICO: string = 'Numero civico';
@@ -82,6 +85,8 @@ export class Voce {
   public static DATA_ULTIMO_AGGIORNAMENTO: string = 'Ultimo aggiornamento';
   public static DATA_VALUTA_INCASSO: string = 'Data valuta incasso';
   public static DATA_VALIDITA: string = 'Data validità';
+  public static DATA_VALIDITA_AVVISO: string = 'Data validità avviso';
+  public static DATI_CUSTOM: string = 'Dati Custom';
   public static DATI_PAGO_PA: string = 'Dati pagoPA';
   public static DEBITORE: string = 'Debitore';
   public static DEFAULT: string = 'Predefinito';
@@ -160,6 +165,8 @@ export class Voce {
   public static INDICE_PENDENZA: string = 'Indice pendenza';
   public static INDICE_VOCE: string = 'Indice voce';
   public static INDIRIZZO: string = 'Indirizzo';
+  public static INFORMATIVA_IMPORTO_AVVISO: string = 'Messaggio informativo importo avviso';
+  public static INFORMATIVA_IMPORTO_LINGUA_SECONDARIA_AVVISO: string = 'Messaggio informativo importo avviso nella lingua secondaria';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTERMEDIATO: string = 'Intermediato';
   public static INTERVALLO_CREAZIONE: string = 'Intervallo creazione';
@@ -186,6 +193,7 @@ export class Voce {
 
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
+  public static LINGUA_SECONDARIA_AVVISO: string = 'Lingua secondaria';
 
   public static METADATA: string = 'Metadata';
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
@@ -227,6 +235,7 @@ export class Voce {
 
   public static PAGAMENTI_RICONCILIATI: string = 'Pagamenti riconciliati';
   public static PAGAMENTO_SPONTANEO: string = 'Pagamento spontaneo';
+  public static PAGAMENTO_IN_CORSO: string = 'Pagamento in corso';
   public static PAGO_PA: string = 'Principal pagoPa';
   public static PARAMETRI: string = 'Parametri';
   public static PARSER_TRACCIATI: string = 'Parser tracciati csv';
@@ -250,11 +259,14 @@ export class Voce {
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static RICHIESTA_STAMPA_AVVISI: string = 'Richiesta stampa avvisi';
+  public static RICEVUTA_PAGAMENTO: string = 'Ricevuta pagamento';
   public static RICONCILIAZIONE: string = 'Riconciliazione';
   public static RIEPILOGO: string = 'Riepilogo informazioni';
   public static RISORSA: string = 'Risorsa';
   public static RUOLO: string = 'Ruolo';
   public static RUOLI: string = 'Ruoli';
+  public static RT_LINEA_TESTO_RIGA1: string = 'Testo riga 1';
+  public static RT_LINEA_TESTO_RIGA2: string = 'Testo riga 2';
 
   public static SCADENZA: string = 'Scadenza';
   public static SCT: string = 'SCT';

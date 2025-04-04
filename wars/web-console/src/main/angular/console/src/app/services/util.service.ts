@@ -297,6 +297,15 @@ export class UtilService {
 
   //REUSE FOR SOCKET NOTIFICATION
   public static HasSocketNotification: boolean = false;
+  
+  // Lingua secondaria
+  public static LINGUE_SECONDARIE: any = {
+      'false': 'Nessuna',
+      'de': 'Tedesco',
+      'en': 'Inglese',
+      'fr': 'Francese',
+	  'sl': 'Sloveno'
+    };
 
   //TIPI SOGGETTO
   public static TIPI_SOGGETTO: any = {
@@ -546,6 +555,7 @@ export class UtilService {
   public static KEY_VALUE: string = 'key_value';
   public static KEY_JSON: string = 'key_json';
   public static ALLEGATO: string = 'allegato';
+  public static PROPRIETA: string = 'proprieta';
   //Dialog view ref
   public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';
