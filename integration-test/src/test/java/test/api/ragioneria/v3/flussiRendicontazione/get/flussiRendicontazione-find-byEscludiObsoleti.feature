@@ -3,8 +3,8 @@ Feature: Ricerca per filtro escludiObsoleti
 Background: 
 
 * def pathServizio = '/flussiRendicontazione'
-
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 

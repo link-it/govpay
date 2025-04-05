@@ -55,7 +55,6 @@ public class RicevutaTelematicaPdf{
 	
 	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
 	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
-	private static final String PROPERY_NAME_COM_SUN_XML_BIND_XML_DECLARATION = "com.sun.xml.bind.xmlDeclaration";
 	private static RicevutaTelematicaPdf instance = null;
 	private static JAXBContext jaxbContext = null;
 

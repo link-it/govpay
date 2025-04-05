@@ -58,7 +58,6 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
  */
 public class JaxbUtils {
 
-	private static final String PROPERTY_NAME_COM_SUN_XML_BIND_XML_DECLARATION = "com.sun.xml.bind.xmlDeclaration";
 	private static JAXBContext jaxbBolloContext;
 	private static JAXBContext jaxbRptRtContext;
 	private static JAXBContext jaxbFrContext;

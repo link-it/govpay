@@ -3,7 +3,7 @@ Feature: Riconciliazione pagamento singolo
 Background:
 
 * callonce read('classpath:utils/common-utils.feature')
-* callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
