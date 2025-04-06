@@ -7,7 +7,7 @@ Background:
 * def applicazioneRequest = read('msg/applicazione_nonAuthServizio.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
-* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della riscossione autorizzata
 
