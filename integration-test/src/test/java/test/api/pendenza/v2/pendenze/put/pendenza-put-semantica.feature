@@ -4,13 +4,15 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPutMulti = read('msg/pendenza-put_multivoce_bollo.json')
 * def pendenzaPutMono = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzaPutMonoDefinito = read('msg/pendenza-put_monovoce_definito.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 
 Scenario: Caricamento idA2A disabilitato
 
@@ -40,6 +42,17 @@ And match response ==
 	dettaglio: '#("Applicazione [" + idA2A + "] disabilitata.")'
 }
 """
+
+* set applicazione.abilitato = true
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A 
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Caricamento idA2A diverso dal chiamante
 
@@ -119,8 +132,6 @@ And match response ==
 }
 """
 
-Scenario: Caricamento idUnitaOperativa inesistente
-
 * set dominio.abilitato = true
 
 Given url backofficeBaseurl
@@ -131,6 +142,8 @@ When method put
 Then status 200
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
+Scenario: Caricamento idUnitaOperativa inesistente
 
 * set pendenzaPutMono.idUnitaOperativa = '00000000000_00'
 
@@ -181,6 +194,17 @@ And match response ==
 }
 """
 
+* set unitaOperativa.abilitato = true
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'unitaOperative', idUnitaOperativa
+And headers gpAdminBasicAutenticationHeader
+And request unitaOperativa
+When method put
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Caricamento entrata inesistente
 
 * set pendenzaPutMono.voci[0].codEntrata = 'XXX'
@@ -227,6 +251,15 @@ And match response ==
 	dettaglio: '#("Tributo ("+ codEntrataBollo +") disabilitato per il dominio (" + idDominio + ")")'
 }
 """
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'entrate', codEntrataBollo
+And headers gpAdminBasicAutenticationHeader
+And request { tipoContabilita: 'ALTRO', codiceContabilita: 'MBT', abilitato: true }
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Caricamento multivoce con numeroAvviso
 
@@ -342,6 +375,15 @@ And match response ==
 	dettaglio: '#("Iban di accredito (" + ibanAccredito + ") disabilitato per il dominio (" + idDominio + ")")'
 }
 """
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'contiAccredito', ibanAccredito
+And headers gpAdminBasicAutenticationHeader
+And request {postale:false,mybank:false,abilitato:true}
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 
 Scenario: Caricamento con iuv non univoco

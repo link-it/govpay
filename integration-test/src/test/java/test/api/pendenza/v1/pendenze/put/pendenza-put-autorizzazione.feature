@@ -11,6 +11,8 @@ Background:
 * def pendenzaPutMono = read('msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+
 Scenario: Caricamento a nome di un'altra applicazione
 
 Given url pendenzeBaseurl
