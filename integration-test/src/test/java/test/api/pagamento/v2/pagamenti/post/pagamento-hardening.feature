@@ -55,7 +55,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -94,7 +94,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -133,7 +133,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -172,7 +172,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -211,7 +211,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -251,7 +251,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -291,7 +291,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
