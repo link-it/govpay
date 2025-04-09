@@ -19,11 +19,6 @@
  */
 package it.govpay.ragioneria.v3.api.impl;
 
-import java.text.MessageFormat;
-
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
@@ -32,6 +27,8 @@ import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.ragioneria.v3.api.UtentiApi;
 import it.govpay.ragioneria.v3.beans.Profilo;
 import it.govpay.ragioneria.v3.beans.converter.ProfiloConverter;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 
 /**

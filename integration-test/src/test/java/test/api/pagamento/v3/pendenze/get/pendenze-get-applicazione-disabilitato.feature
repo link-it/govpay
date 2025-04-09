@@ -3,12 +3,14 @@ Feature: Ricerca pagamenti
 Background:
 
 * callonce read('classpath:utils/api/v2/pendenze/bunch-pendenze.feature')
-* def applicazioneRequest = read('msg/applicazione_auth.json')
+* def applicazioneRequest = read('msg/applicazione_disabilitato.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'basic'})
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della pendenza [<idPendenza>]
+
+* def risposta = read('msg/<risposta>')
 
 Given url pendenzeBaseurl
 And path '/pendenze', <idA2A>, <idPendenza>

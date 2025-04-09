@@ -10,6 +10,8 @@ Background:
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della pendenza [<idPendenza>]
 
+* def risposta = read('msg/<risposta>')	
+
 Given url pendenzeBaseurl
 And path '/pendenze', <idA2A>, <idPendenza>
 And headers idA2ABasicAutenticationHeader
