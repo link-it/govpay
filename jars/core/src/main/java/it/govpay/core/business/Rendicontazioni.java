@@ -85,6 +85,7 @@ import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.NodoClient;
@@ -197,6 +198,7 @@ public class Rendicontazioni {
 		int frAcquisiti = 0;
 		int frNonAcquisiti = 0;
 		
+		boolean verificaPendenzaMandatoria = GovpayConfig.getInstance().isVerificaPendenzaMandatoriaInAcquisizioneRendicontazioni();
 		DownloadRendicontazioniResponse response = new DownloadRendicontazioniResponse();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -522,11 +524,14 @@ public class Rendicontazioni {
 										LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] non trovato, ricerco pendenza a cui assegnare la rendicontazione...",	codDominio, iuv, iur, indiceDati);
 										versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 									} catch (NotFoundException nfe) {
-										// Non e' su sistema. Individuo l'applicativo gestore
-										Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
-										if(applicazioneDominio != null) {
-											codApplicazione = applicazioneDominio.getCodApplicazione();
-											versamento = VersamentoUtils.acquisisciVersamento(applicazioneDominio, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
+										// Verifico se lo iuv appartiene al dominio, se lo e' provo ad acquisire la pendenza
+										if(IuvUtils.isIuvInterno(dominio, iuv)) {
+											// Non e' su sistema. Individuo l'applicativo gestore
+											Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
+											if(applicazioneDominio != null) {
+												codApplicazione = applicazioneDominio.getCodApplicazione();
+												versamento = VersamentoUtils.acquisisciVersamento(applicazioneDominio, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
+											}	
 										}
 									}
 								} catch (VersamentoScadutoException e1) {
@@ -538,15 +543,25 @@ public class Rendicontazioni {
 								} catch (VersamentoSconosciutoException e1) {
 									erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCONOSCIUTO.";
 								} catch (ClientException ce) {
-									rnd.getErrori().add(MessageFormat.format("Acquisizione flusso fallita. Riscontrato errore nell''acquisizione del versamento dall''applicazione gestrice [Transazione: {0}].", ctx.getTransactionId()));
-									LogUtils.logError(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}]. Flusso non acquisito.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
-									ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
-									throw new GovPayException(ce);
+									if(verificaPendenzaMandatoria) {
+										rnd.getErrori().add(MessageFormat.format("Acquisizione flusso fallita. Riscontrato errore nell''acquisizione del versamento dall''applicazione gestrice [Transazione: {0}].", ctx.getTransactionId()));
+										LogUtils.logError(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}]. Flusso non acquisito.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
+										ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
+										throw new GovPayException(ce);	
+									} else {
+										LogUtils.logWarn(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}], stato pendenza gestito come SCONOSCIUTO.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
+										erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCONOSCIUTO.";
+									}
 								} catch (ClientInitializeException ce) {
-									rnd.getErrori().add(MessageFormat.format("Acquisizione flusso fallita. Riscontrato errore nella creazione del client per l''acquisizione del versamento dall''applicazione gestrice [Transazione: {0}].", ctx.getTransactionId()));
-									LogUtils.logError(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}] a causa di un errore durante la creazione del client. Flusso non acquisito.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
-									ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
-									throw new GovPayException(ce);
+									if(verificaPendenzaMandatoria) {
+										rnd.getErrori().add(MessageFormat.format("Acquisizione flusso fallita. Riscontrato errore nella creazione del client per l''acquisizione del versamento dall''applicazione gestrice [Transazione: {0}].", ctx.getTransactionId()));
+										LogUtils.logError(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}] a causa di un errore durante la creazione del client. Flusso non acquisito.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
+										ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
+										throw new GovPayException(ce);	
+									} else {
+										LogUtils.logWarn(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}], stato pendenza gestito come SCONOSCIUTO.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
+										erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCONOSCIUTO.";
+									}
 								} catch (VersamentoNonValidoException e1) {
 									erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' NON VALIDO: " + e.getMessage();
 								}
@@ -885,4 +900,6 @@ public class Rendicontazioni {
 			datiPagoPA.setCodDominio(dominio.getCodDominio());
 		eventoCtx.setDatiPagoPA(datiPagoPA);
 	}
+	
+	
 }
