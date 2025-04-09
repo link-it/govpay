@@ -512,8 +512,13 @@ public class Rendicontazioni {
 							} catch (NotFoundException e) {
 								// Pagamento non trovato. Devo capire se ce' un errore.
 								
-								// 2024-10-31 Nuova procedura, recupero il versamento, se lo trovo poi decido in base al codice esito se si tratta di una ANOMALIA o di un ESEGUITO_SENZA_RPT
-								// Se non lo trovo allora si tratta di ALTRO_INTERMEDIARIO
+								// controllo se lo IUV e' interno, se non lo e' salto tutta la parte di acquisizione 
+								if(!IuvUtils.isIuvInterno(dominio, iuv)) {
+									LogUtils.logDebug(log, "IUV {} appartenente ad un Dominio {} non intermediato, salto acquisizione.", iuv, codDominio);
+									rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
+									// passo alla prossima rendicontazione
+									continue;
+								}
 								
 								//Recupero il versamento, internamente o dall'applicazione esterna
 								it.govpay.bd.model.Versamento versamento = null;
@@ -524,14 +529,13 @@ public class Rendicontazioni {
 										LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] non trovato, ricerco pendenza a cui assegnare la rendicontazione...",	codDominio, iuv, iur, indiceDati);
 										versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 									} catch (NotFoundException nfe) {
-										// Verifico se lo iuv appartiene al dominio, se lo e' provo ad acquisire la pendenza
-										if(IuvUtils.isIuvInterno(dominio, iuv)) {
-											// Non e' su sistema. Individuo l'applicativo gestore
-											Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
-											if(applicazioneDominio != null) {
-												codApplicazione = applicazioneDominio.getCodApplicazione();
-												versamento = VersamentoUtils.acquisisciVersamento(applicazioneDominio, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
-											}	
+										// Non e' su sistema. Individuo l'applicativo gestore
+										Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
+										if(applicazioneDominio != null) {
+											codApplicazione = applicazioneDominio.getCodApplicazione();
+											versamento = VersamentoUtils.acquisisciVersamento(applicazioneDominio, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
+										} else {
+											erroreVerifica = "Non e' stata trovata un'Applicazione autorizzata a gestire lo Iuv per il dominio indicato.";
 										}
 									}
 								} catch (VersamentoScadutoException e1) {
@@ -598,16 +602,9 @@ public class Rendicontazioni {
 										if(singoliVersamenti.size() != 1) {
 											// Un pagamento senza rpt DEVE riferire un pagamento tipo 3 con un solo singolo versamento
 											ctx.getApplicationLogger().log("rendicontazioni.senzaRptVersamentoMalformato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
-											LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.",	codDominio, iuv, iur, indiceDati);
+											LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: Pagamento senza RPT di versamento malformato, numero voci maggiore di 1.", codDominio, iuv, iur, indiceDati);
 											rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
 										}
-										// salto la parte di add anomalia
-										continue;
-									}
-								} else {
-									// Se il versamento non e' in base dati allora e' di un altro intermediario
-									if(versamento == null) {
-										rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
 										// salto la parte di add anomalia
 										continue;
 									}
