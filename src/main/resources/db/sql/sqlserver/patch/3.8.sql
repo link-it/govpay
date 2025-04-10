@@ -22,6 +22,8 @@ DROP VIEW v_vrs_non_rnd;
 ALTER TABLE versamenti ADD data_ultima_modifica_aca DATETIME2;
 ALTER TABLE versamenti ADD data_ultima_comunicazione_aca DATETIME2;
 
+UPDATE versamenti SET data_ultima_modifica_aca = CONVERT(datetime, '1900-01-01 00:00:00', 120) WHERE data_ultima_modifica_aca IS NULL;
+
 CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 
 CREATE VIEW versamenti_incassi AS 
