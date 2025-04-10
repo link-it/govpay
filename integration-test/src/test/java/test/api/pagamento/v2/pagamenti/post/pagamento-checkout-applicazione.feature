@@ -5,16 +5,10 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
-* def stazione = read('classpath:test/api/backoffice/v1/intermediari/put/msg/stazione.json')
+* def stazioneRequest = read('classpath:test/api/backoffice/v1/intermediari/put/msg/stazione.json')
 * def idStazione = idIntermediario + '_01'
-* set stazione.versione = 'V2'
-
-Given url backofficeBaseurl
-And path 'intermediari', idIntermediario, 'stazioni', idStazione
-And headers gpAdminBasicAutenticationHeader
-And request stazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
+* set stazioneRequest.versione = 'V2'
+* callonce read('classpath:utils/api/v1/backoffice/stazione-put.feature')
 
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')

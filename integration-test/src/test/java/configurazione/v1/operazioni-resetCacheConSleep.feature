@@ -7,4 +7,5 @@ Background:
 Scenario:
 
 # Il reset della cache e' istantaneo solo per il backoffice, aspettiamo che tutti i war recepiscano la notifica di reset 
-* call sleep(70000)
+* call sleep(65000)
+# * call sleep(70000)
