@@ -105,10 +105,10 @@ import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.model.configurazione.TracciatoCsv;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdTracciato;
-import it.govpay.orm.constants.StatoTracciatoType;
 
 public class Tracciati {
 
@@ -169,7 +169,7 @@ public class Tracciati {
 			tracciato.setDescrizioneStato(descrizioneStato.length() > 256 ? descrizioneStato.substring(0, 255): descrizioneStato);
 			tracciato.setDataCompletamento(new Date());
 			if(beanDati != null) {
-				beanDati.setStepElaborazione(StatoTracciatoType.ANNULLATO.getValue());
+				beanDati.setStepElaborazione(StatoTracciatoType.ANNULLATO.toString());
 				beanDati.setLineaElaborazioneAdd(0);
 				beanDati.setLineaElaborazioneDel(0);
 				beanDati.setNumAddTotali(0);
@@ -204,9 +204,9 @@ public class Tracciati {
 		List<PendenzaPost> inserimenti = tracciatoPendenzeRequest.getInserimenti();
 		List<AnnullamentoPendenza> annullamenti = tracciatoPendenzeRequest.getAnnullamenti();
 
-		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.NUOVO.getValue())) {
+		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.NUOVO.toString())) {
 			log.debug("Cambio stato del tracciato da NUOVO a IN_CARICAMENTO");
-			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.getValue());
+			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.toString());
 			beanDati.setLineaElaborazioneAdd(0);
 			beanDati.setLineaElaborazioneDel(0);
 			beanDati.setNumAddTotali(inserimenti != null ? inserimenti.size() : 0);
@@ -221,7 +221,7 @@ public class Tracciati {
 			tracciatiBD.setAutoCommit(false);
 		
 		// se riprendo un tracciato in stato 'IN_STAMPA' evito di ricaricare tutte le pendenze
-		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.IN_CARICAMENTO.getValue())) {
+		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.IN_CARICAMENTO.toString())) {
 			OperazioniBD operazioniBD = new OperazioniBD(tracciatiBD);
 			operazioniBD.setAtomica(false);
 			
@@ -650,9 +650,9 @@ public class Tracciati {
 		byte[] rawRichiesta = tracciato.getRawRichiesta();
 		TracciatiPendenzeManager manager = new TracciatiPendenzeManager();
 
-		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.NUOVO.getValue())) {
+		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.NUOVO.toString())) {
 			log.debug("Cambio stato del tracciato da NUOVO a IN_CARICAMENTO");
-			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.getValue());
+			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.toString());
 			beanDati.setLineaElaborazioneAdd(1); // skip intestazione file csv
 			beanDati.setLineaElaborazioneDel(0);
 			long numLines = rawRichiesta != null ? CSVUtils.countLines(rawRichiesta) : 0;
@@ -675,7 +675,7 @@ public class Tracciati {
 		idTracciato.setIdTracciato(tracciato.getId());
 		
 		// se riprendo un tracciato in stato 'IN_STAMPA' evito di ricaricare tutte le pendenze
-		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.IN_CARICAMENTO.getValue())) {
+		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.IN_CARICAMENTO.toString())) {
 
 			OperazioniBD operazioniBD = new OperazioniBD(tracciatiBD);
 			operazioniBD.setAtomica(false);

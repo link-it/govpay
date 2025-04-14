@@ -23,6 +23,10 @@ import java.util.Date;
 
 public class Tracciato extends BasicModel {
 
+	public enum StatoTracciatoType {
+		ANNULLATO, NUOVO, IN_CARICAMENTO, CARICAMENTO_OK, CARICAMENTO_KO, STAMPATO;
+	}
+	
 	/**
 	 * 
 	 */

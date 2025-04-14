@@ -44,6 +44,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import it.govpay.core.utils.LogUtils;
+
 
 /**
  * TomcatApplicationAuthenticationProvider
@@ -78,6 +80,12 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 	private String configDir = "catalina.home";
 
 	private UserDetailsService userDetailsService;
+	
+	public static final String PASSWORD_DEFAULT_VALUE = "UTENZA_SENZA_PASSWORD";
+	
+	public static String generaPasswordUtenza() {
+		return PASSWORD_DEFAULT_VALUE;
+	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -143,7 +151,7 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 			}
 
 			if(!found) {
-				//throw new UsernameNotFoundException("Username '"+username+"' not found");
+				//throw new UsernameNotFoundException("Username '"+username+"' not found")
 				// Fix security: Make sure allowing user enumeration is safe here.
 				throw new BadCredentialsException("Bad credentials");
 			}
@@ -161,19 +169,20 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 					userAuth = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
 				}catch(UsernameNotFoundException e){
 					String msg = "User '"+username+"' unknown: "+e.getMessage();
-					this.log.debug(msg,e);
+					LogUtils.logDebugException(this.log,msg,e);
 					throw new BadCredentialsException(msg,e);
 				}
 			}
 			else {	
-				User user = new User(username, "secret", true, true, true, true, roles);
-				userAuth = new UsernamePasswordAuthenticationToken(user, "secret", user.getAuthorities());
+				String passwordGenerata = generaPasswordUtenza();
+				User user = new User(username, passwordGenerata, true, true, true, true, roles);
+				userAuth = new UsernamePasswordAuthenticationToken(user, passwordGenerata, user.getAuthorities());
 			}
 			userAuth.setDetails(authentication.getDetails());
 			return userAuth;
 
 		} catch (Exception e) {
-			this.log.error(e.getMessage(),e);
+			LogUtils.logError(this.log, e.getMessage(),e);
 			throw new ProviderNotFoundException("Errore durante la lettura del file degli utenti: " + e.getMessage());
 		}
 	}

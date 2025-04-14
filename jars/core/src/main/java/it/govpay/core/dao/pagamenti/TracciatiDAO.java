@@ -77,8 +77,8 @@ import it.govpay.core.dao.pagamenti.exception.TracciatoNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
-import it.govpay.orm.constants.StatoTracciatoType;
 import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
 import it.govpay.orm.model.TracciatoModel;
 
@@ -173,7 +173,7 @@ public class TracciatiDAO extends BaseDAO{
 			tracciatoBD = new TracciatiBD(configWrapper);
 
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
-			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
+			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.toString());
 			beanDati.setStampaAvvisi(postTracciatoDTO.isStampaAvvisi());
 
 			Tracciato tracciato = new Tracciato();

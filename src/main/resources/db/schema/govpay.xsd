@@ -3995,25 +3995,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:simpleType name="StatoTracciatoType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="ANNULLATO" />
-			<xsd:enumeration value="NUOVO" />
-			<xsd:enumeration value="IN_CARICAMENTO" />
-			<xsd:enumeration value="CARICAMENTO_OK" />
-			<xsd:enumeration value="CARICAMENTO_KO" />
-			<xsd:enumeration value="STAMPATO" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="StatoOperazioneType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="NON_VALIDO" />
-			<xsd:enumeration value="ESEGUITO_OK" />
-			<xsd:enumeration value="ESEGUITO_KO" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
 	<!-- Bean delle Viste -->
 	<xsd:element name="VersamentoIncasso" type="VersamentoIncasso"/>
 	<xsd:complexType name="VersamentoIncasso">

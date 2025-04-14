@@ -21,6 +21,8 @@ package it.govpay.core.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.LinkedHashMap;
@@ -53,7 +55,7 @@ public class UrlUtils {
 	
 	public static String getParameter(String urlString,String parameterName)  {
 		try {
-		URL url = new URL(urlString);
+		URL url = new URI(urlString).toURL(); //URL(urlString);
 		if(splitQuery(url).get(parameterName) != null)
 			return splitQuery(url).get(parameterName).get(0);
 		else
@@ -63,7 +65,7 @@ public class UrlUtils {
 		}
 	}
 	
-	public static URL addParameter(URL url, String paramName, String paramValue) throws MalformedURLException {
+	public static URL addParameter(URL url, String paramName, String paramValue) throws MalformedURLException, URISyntaxException {
 		String urlString = url.toString();
 		if(urlString.contains("?")) {
 			if(urlString.endsWith("&")) 
@@ -73,7 +75,7 @@ public class UrlUtils {
 		} else {
 			urlString = urlString + "?" + paramName + "=" + paramValue;
 		}
-		return new URL(urlString);
+		return new URI(urlString).toURL(); // new URL(urlString);
 	}
 	
 	public static String addParameter(String urlString, String paramName, String paramValue) {

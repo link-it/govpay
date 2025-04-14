@@ -48,7 +48,7 @@ public class GovpayPasswordEncoder implements org.springframework.security.crypt
 
 	@Override
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
-		if (encodedPassword == null || encodedPassword.length() == 0) {
+		if (encodedPassword == null || encodedPassword.isEmpty()) {
 			this.log.warn("Empty encoded password");
 			return false;
 		}

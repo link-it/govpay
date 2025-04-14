@@ -512,7 +512,7 @@ public class RtUtils extends NdpValidationUtils {
 				boolean insert = true;
 				
 				try {
-					pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur,  BigInteger.valueOf(indice+1));
+					pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur,  BigInteger.valueOf((long) indice+1));
 
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione

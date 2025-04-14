@@ -50,7 +50,7 @@ import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 
 public class TracciatiConverter {
 

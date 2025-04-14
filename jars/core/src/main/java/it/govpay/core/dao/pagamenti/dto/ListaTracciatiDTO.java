@@ -28,9 +28,9 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.StatoTracciatoPendenza;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.Tracciato;
-import it.govpay.orm.constants.StatoTracciatoType;
 
 public class ListaTracciatiDTO extends BasicFindRequestDTO{
 
@@ -92,16 +92,16 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 		if(this.statoTracciatoPendenza != null) {
 			switch (this.statoTracciatoPendenza) {
 			case ESEGUITO:
-				this.dettaglioStato = StatoTracciatoType.CARICAMENTO_OK.getValue();
+				this.dettaglioStato = StatoTracciatoType.CARICAMENTO_OK.toString();
 				break;
 			case ESEGUITO_CON_ERRORI:
-				this.dettaglioStato =  StatoTracciatoType.CARICAMENTO_KO.getValue();
+				this.dettaglioStato =  StatoTracciatoType.CARICAMENTO_KO.toString();
 				break;
 			case IN_ATTESA:
-				this.dettaglioStato = StatoTracciatoType.NUOVO.getValue();
+				this.dettaglioStato = StatoTracciatoType.NUOVO.toString();
 				break;
 			case IN_ELABORAZIONE:
-				this.dettaglioStato = StatoTracciatoType.IN_CARICAMENTO.getValue();
+				this.dettaglioStato = StatoTracciatoType.IN_CARICAMENTO.toString();
 				break;
 			case SCARTATO:
 			default:

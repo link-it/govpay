@@ -62,6 +62,7 @@ import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.pagamento.filters.AllegatoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
+import it.govpay.model.Operazione;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -74,7 +75,6 @@ import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
-import it.govpay.orm.constants.StatoOperazioneType;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCVersamentoServiceSearch;
@@ -1308,7 +1308,7 @@ public class VersamentiBD extends BasicBD {
 			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
 			VersamentoModel model = it.govpay.orm.Versamento.model();
 			IExpression exp = this.getVersamentoService().newExpression();
-			exp.and().equals(model.ID_OPERAZIONE.STATO, StatoOperazioneType.ESEGUITO_OK.toString());
+			exp.and().equals(model.ID_OPERAZIONE.STATO, Operazione.StatoOperazioneType.ESEGUITO_OK.toString());
 			exp.and().equals(new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(model.ID_OPERAZIONE)), idTracciato);
 			
 			IPaginatedExpression pagExpr = this.getVersamentoService().toPaginatedExpression(exp);

@@ -52,7 +52,7 @@ import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Operazione.StatoOperazioneType;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 
 public class TracciatiUtils {
 
@@ -83,9 +83,9 @@ public class TracciatiUtils {
 
 	public static void setStatoDettaglioTracciato(it.govpay.core.beans.tracciati.TracciatoPendenza beanDati) {
 		if((beanDati.getNumAddKo() + beanDati.getNumDelKo()) > 0) {
-			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_KO.getValue());
+			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_KO.toString());
 		} else {
-			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_OK.getValue());
+			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_OK.toString());
 		}
 	}
 
