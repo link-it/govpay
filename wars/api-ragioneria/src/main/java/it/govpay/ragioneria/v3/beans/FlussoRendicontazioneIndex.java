@@ -23,46 +23,46 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class FlussoRendicontazioneIndex   {
 
-  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "Identificativo del flusso di rendicontazione")
+  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", requiredMode = RequiredMode.REQUIRED, description = "Identificativo del flusso di rendicontazione")
  /**
    * Identificativo del flusso di rendicontazione
   **/
   private String idFlusso = null;
 
-  @Schema(required = true, description = "Data di emissione del flusso")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data di emissione del flusso")
  /**
    * Data di emissione del flusso
   **/
   private Date dataFlusso = null;
 
-  @Schema(required = true, description = "Data di acquisizione del flusso")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data di acquisizione del flusso")
  /**
    * Data di acquisizione del flusso
   **/
   private Date data = null;
 
-  @Schema(example = "idriversamento12345", required = true, description = "Identificativo dell'operazione di riversamento assegnato dal psp debitore")
+  @Schema(example = "idriversamento12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo dell'operazione di riversamento assegnato dal psp debitore")
  /**
    * Identificativo dell'operazione di riversamento assegnato dal psp debitore
   **/
   private String trn = null;
 
-  @Schema(required = true, description = "Data dell'operazione di riversamento fondi")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data dell'operazione di riversamento fondi")
  /**
    * Data dell'operazione di riversamento fondi
   **/
   private Date dataRegolamento = null;
 
-  @Schema(example = "ABI-12345", required = true, description = "Identificativo dell'istituto mittente")
+  @Schema(example = "ABI-12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo dell'istituto mittente")
  /**
    * Identificativo dell'istituto mittente
   **/
@@ -74,22 +74,22 @@ public class FlussoRendicontazioneIndex   {
   **/
   private String bicRiversamento = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Dominio dominio = null;
 
-  @Schema(example = "3", required = true, description = "numero di pagamenti oggetto della rendicontazione")
+  @Schema(example = "3", requiredMode = RequiredMode.REQUIRED, description = "numero di pagamenti oggetto della rendicontazione")
  /**
    * numero di pagamenti oggetto della rendicontazione
   **/
   private BigDecimal numeroPagamenti = null;
 
-  @Schema(example = "100.01", required = true, description = "somma degli importi rendicontati")
+  @Schema(example = "100.01", requiredMode = RequiredMode.REQUIRED, description = "somma degli importi rendicontati")
  /**
    * somma degli importi rendicontati
   **/
   private Double importoTotale = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private StatoFlussoRendicontazione stato = null;
 
   @Schema(description = "")

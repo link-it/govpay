@@ -85,14 +85,14 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 	}
 
 	public boolean doMatches(HttpServletRequest request) {
+		String url = LogoutRequestMatcher.getRequestPath(request);
+		
 		if (this.pattern.equals(LogoutRequestMatcher.MATCH_ALL)) {
-			log.debug("Request '" + LogoutRequestMatcher.getRequestPath(request)	+ "' matched by universal pattern '/**'");
+			log.debug("Request '{}' matched by universal pattern '/**'", url);
 			return true;
 		}
 
-		String url = LogoutRequestMatcher.getRequestPath(request);
-
-		log.debug("Checking match of request : '" + url + "'; against '" + this.pattern + "'");
+		log.debug("Checking match of request : '{}'; against '{}'", url, this.pattern);
 
 		return this.matcher.matches(url);
 	}
@@ -102,31 +102,9 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 
 		log.debug("Esecuzione del logout in corso...");
 		String url = LogoutRequestMatcher.getRequestPath(request);
-		log.debug("Url invocata ["+url+"]");
-		String urlID = null;
-		if(doMatches(request)) {
-			String [] tokensPath = org.springframework.util.StringUtils.tokenizeToStringArray(url, AntPathMatcher.DEFAULT_PATH_SEPARATOR, false, true);
-			String [] tokensPattern = org.springframework.util.StringUtils.tokenizeToStringArray(this.pattern, AntPathMatcher.DEFAULT_PATH_SEPARATOR, false, true);
-			// il pattern e il path invocato matchano grazie al confronto fatto con il metodo domatch, mi preoccupo di estrarre solo la parte finale
-			String tokenTrovato = null;
-			for (int i = 0; i < tokensPattern.length; i++) {
-				if(this.pattern.endsWith(LogoutRequestMatcher.MATCH_ALL)) {
-					// skip di tutti i token fino al doppio **
-					if(!tokensPattern[i].equals("**")) {
-						continue;
-					}
-
-					if(i < tokensPath.length) {
-						tokenTrovato = tokensPath[i];
-					}
-				}
-			}
-			if(tokenTrovato != null) {
-				urlID = url.substring(url.indexOf(tokenTrovato));
-			}
-		}
-
-		log.debug("urlID ["+urlID+"]");
+		log.debug("Url invocata [{}]",url);
+		String urlID = doMatches(request) ? decodificaUrlID(url) : null;
+		log.debug("urlID [{}]", urlID);
 
 		if(StringUtils.isBlank(urlID)) {
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -143,8 +121,32 @@ public class RedirectLogoutSuccessHandler implements LogoutSuccessHandler{
 			} else {
 				response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 				response.setHeader("Location", redirectURL);
-				log.debug("Esecuzione del logout completata con status 303 SeeOther, Location ["+redirectURL+"].");
+				log.debug("Esecuzione del logout completata con status 303 SeeOther, Location [{}].", redirectURL);
 			}
 		}
+	}
+
+	private String decodificaUrlID(String url) {
+		String urlID = null;
+		String [] tokensPath = org.springframework.util.StringUtils.tokenizeToStringArray(url, AntPathMatcher.DEFAULT_PATH_SEPARATOR, false, true);
+		String [] tokensPattern = org.springframework.util.StringUtils.tokenizeToStringArray(this.pattern, AntPathMatcher.DEFAULT_PATH_SEPARATOR, false, true);
+		// il pattern e il path invocato matchano grazie al confronto fatto con il metodo domatch, mi preoccupo di estrarre solo la parte finale
+		String tokenTrovato = null;
+		for (int i = 0; i < tokensPattern.length; i++) {
+			if(this.pattern.endsWith(LogoutRequestMatcher.MATCH_ALL)) {
+				// skip di tutti i token fino al doppio **
+				if(!tokensPattern[i].equals("**")) {
+					continue;
+				}
+
+				if(i < tokensPath.length) {
+					tokenTrovato = tokensPath[i];
+				}
+			}
+		}
+		if(tokenTrovato != null) {
+			urlID = url.substring(url.indexOf(tokenTrovato));
+		}
+		return urlID;
 	}
 }

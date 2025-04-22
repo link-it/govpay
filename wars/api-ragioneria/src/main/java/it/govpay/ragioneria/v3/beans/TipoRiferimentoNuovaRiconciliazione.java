@@ -19,19 +19,19 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import jakarta.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import jakarta.validation.constraints.NotNull;
 
 public class TipoRiferimentoNuovaRiconciliazione  implements OneOfTipoRiferimentoNuovaRiconciliazione, IValidable  {
 
 
-	@Schema(example = "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234", required = true, description = "")
+	@Schema(example = "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String causale = null;
 	 /**
 	   * Get causale
@@ -52,7 +52,7 @@ public class TipoRiferimentoNuovaRiconciliazione  implements OneOfTipoRiferiment
 	    return this;
 	  }
 
-	  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "")
+	  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String idFlussoRendicontazione = null;
 	 /**
 	   * Get idFlussoRendicontazione
@@ -73,7 +73,7 @@ public class TipoRiferimentoNuovaRiconciliazione  implements OneOfTipoRiferiment
 	    return this;
 	  }
 
-	  @Schema(example = "RF23567483937849450550875", required = true, description = "")
+	  @Schema(example = "RF23567483937849450550875", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String iuv = null;
 	 /**
 	   * Get iuv

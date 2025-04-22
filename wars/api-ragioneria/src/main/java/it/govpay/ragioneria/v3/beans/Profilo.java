@@ -22,33 +22,33 @@ package it.govpay.ragioneria.v3.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class Profilo   {
 
-  @Schema(required = true, description = "Nome o principal dell'utenza")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Nome o principal dell'utenza")
  /**
    * Nome o principal dell'utenza
   **/
   private String nome = null;
 
-  @Schema(required = true, description = "domini su cui e' abilitato ad operare")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "domini su cui e' abilitato ad operare")
  /**
    * domini su cui e' abilitato ad operare
   **/
   private List<Dominio> domini = new ArrayList<>();
 
-  @Schema(required = true, description = "tipologie di pendenza su cui e' abilitato ad operare")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "tipologie di pendenza su cui e' abilitato ad operare")
  /**
    * tipologie di pendenza su cui e' abilitato ad operare
   **/
   private List<TipoPendenza> tipiPendenza = new ArrayList<>();
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private List<Acl> acl = new ArrayList<>();
 
   @Schema(description = "")

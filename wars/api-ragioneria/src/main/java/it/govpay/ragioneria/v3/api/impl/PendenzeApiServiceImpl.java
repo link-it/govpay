@@ -103,7 +103,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -152,7 +152,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

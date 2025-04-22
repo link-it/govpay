@@ -19,15 +19,15 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import jakarta.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class VincoloDocumento  implements OneOfTipoRiferimentoDocumento  {
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private VincoloPagamento soglia = null;
  /**
    * Get soglia

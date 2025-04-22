@@ -23,19 +23,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -57,6 +44,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.beans.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
@@ -75,9 +63,21 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v3.beans.FaultBean;
 import it.govpay.ragioneria.v3.beans.FaultBean.CategoriaEnum;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 public class BaseApiServiceImpl {
 
+	private static final String RICHIESTA_NON_VALIDA = "Richiesta non valida";
 	public static final String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
 	public static final String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
 	public static final String SUFFIX_CONTENT_DISPOSITION = "\"";
@@ -170,11 +170,11 @@ public class BaseApiServiceImpl {
 
 	protected IContext getContext() {
 		IContext context = ContextThreadLocal.get();
-		if(context instanceof org.openspcoop2.utils.service.context.Context) {
-			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
-			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+		if(context instanceof org.openspcoop2.utils.service.context.Context op2Context) {
+			op2Context.update(this.request, this.response, this.uriInfo, 2, this.log);
+			op2Context.setRestPath(this.getPathFromRestMethod(context.getMethodName()));
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			GpContext ctx = (GpContext) op2Context.getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
@@ -183,8 +183,7 @@ public class BaseApiServiceImpl {
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
 				switch(utenza.getTipoUtenza()) {
-				case CITTADINO:
-				case ANONIMO:
+				case CITTADINO, ANONIMO:
 					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
 					break;
 				case APPLICAZIONE:
@@ -241,7 +240,7 @@ public class BaseApiServiceImpl {
 							sb.append("\t\t");
 
 							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
-									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
+									dominio.getUo().stream().map(Uo::getCodUo).toList()
 									) : "Tutte")).append("]");
 						}
 						sb.append("\t");
@@ -268,11 +267,11 @@ public class BaseApiServiceImpl {
 
 	protected void buildContext() {
 		IContext context = ContextThreadLocal.get();
-		if(context instanceof org.openspcoop2.utils.service.context.Context) {
-			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
-			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+		if(context instanceof org.openspcoop2.utils.service.context.Context op2Context) {
+			op2Context.update(this.request, this.response, this.uriInfo, 2, this.log);
+			op2Context.setRestPath(this.getPathFromRestMethod(context.getMethodName()));
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			GpContext ctx = (GpContext) op2Context.getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
@@ -281,8 +280,7 @@ public class BaseApiServiceImpl {
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
 				switch(utenza.getTipoUtenza()) {
-				case CITTADINO:
-				case ANONIMO:
+				case CITTADINO, ANONIMO:
 					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
 					break;
 				case APPLICAZIONE:
@@ -339,7 +337,7 @@ public class BaseApiServiceImpl {
 							sb.append("\t\t");
 
 							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
-									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
+									dominio.getUo().stream().map(Uo::getCodUo).toList()
 									) : "Tutte")).append("]");
 						}
 						sb.append("\t");
@@ -452,34 +450,34 @@ public class BaseApiServiceImpl {
 			return responseBuilder;
 	}
 
-	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
+	protected Response handleException(String methodName, Exception e, String transactionId) {
 
-		if(e instanceof UnprocessableEntityException) {
-			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
+		if(e instanceof UnprocessableEntityException unprocessEntityException) {
+			return this.handleUnprocessableEntityException(methodName, unprocessEntityException,transactionId);
 		}
 
-		if(e instanceof IncassiException) {
-			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
+		if(e instanceof IncassiException incassiException) {
+			return this.handleIncassiException(methodName, incassiException,transactionId);
 		}
 
-		if(e instanceof BaseExceptionV1) {
-			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
+		if(e instanceof BaseExceptionV1 baseExceptionV1) {
+			return this.handleBaseException(methodName, baseExceptionV1,transactionId);
 		}
 
-		if(e instanceof RedirectException) {
-			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
+		if(e instanceof RedirectException redirectException) {
+			return this.handleRedirectException(methodName, redirectException,transactionId);
 		}
 
-		if(e instanceof GovPayException) {
-			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
+		if(e instanceof GovPayException govPayException) {
+			return this.handleGovpayException(methodName, govPayException,transactionId);
 		}
 
-		if(e instanceof ValidationException) {
-			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+		if(e instanceof ValidationException validationException) {
+			return this.handleValidationException(validationException,transactionId);
 		}
 
-		if(e instanceof IOException) {
-			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		if(e instanceof IOException ioException) {
+			return this.handleIOException(ioException,transactionId);
 		}
 
 		this.logError("Errore interno durante "+methodName+": " + e.getMessage(), e);
@@ -494,7 +492,7 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
+	private Response handleBaseException(String methodName, BaseExceptionV1 e, String transactionId) {
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(FaultBean.CategoriaEnum.fromValue(e.getCategoria().name()));
 		respKo.setCodice(e.getCode());
@@ -517,10 +515,9 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
+	private Response handleGovpayException(String methodName, GovPayException e, String transactionId) {
 		switch (e.getStatusCode()) {
-		case 200:
-		case 422: // richieste che non passano la validazione semantica
+		case 200, 422: // richieste che non passano la validazione semantica
 			this.logInfo("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
 			break;
 		default:
@@ -551,13 +548,13 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
+	private Response handleUnprocessableEntityException(String methodName, UnprocessableEntityException e, String transactionId) {
 		this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
 		respKo.setCodice("SEMANTICA");
-		respKo.setDescrizione("Richiesta non valida");
+		respKo.setDescrizione(RICHIESTA_NON_VALIDA);
 		respKo.setDettaglio(e.getDetails());
 
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respKo);
@@ -569,12 +566,12 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
+	private Response handleValidationException(ValidationException e, String transactionId) {
 		this.logWarn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice("SINTASSI");
-			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDescrizione(RICHIESTA_NON_VALIDA);
 			respKo.setDettaglio(e.getMessage());
 
 		int statusCode = 400;
@@ -584,12 +581,12 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
+	private Response handleIOException(IOException e, String transactionId) {
 		this.logWarn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice("SINTASSI");
-			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDescrizione(RICHIESTA_NON_VALIDA);
 			respKo.setDettaglio(e.getMessage());
 
 		int statusCode = 400;
@@ -599,7 +596,7 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
+	private Response handleIncassiException(String methodName, IncassiException e, String transactionId) {
 		this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
 
 		FaultBean respKo = new FaultBean();
@@ -616,7 +613,7 @@ public class BaseApiServiceImpl {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
+	private Response handleRedirectException(String methodName, RedirectException e, String transactionId) {
 		this.logError("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
 		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
 		this.handleEventoOk(responseBuilder, transactionId);

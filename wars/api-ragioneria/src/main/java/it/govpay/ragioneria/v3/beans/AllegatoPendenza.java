@@ -19,16 +19,16 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class AllegatoPendenza   {
 
-  @Schema(required = true, description = "nome del file")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "nome del file")
  /**
    * nome del file
   **/
@@ -46,7 +46,7 @@ public class AllegatoPendenza   {
   **/
   private String descrizione = null;
 
-  @Schema(required = true, description = "path per accedere al file, nella forma /allegati/{id}")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "path per accedere al file, nella forma /allegati/{id}")
  /**
    * path per accedere al file, nella forma /allegati/{id}
   **/

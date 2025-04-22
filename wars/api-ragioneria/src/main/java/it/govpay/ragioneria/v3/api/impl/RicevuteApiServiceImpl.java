@@ -148,7 +148,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -218,7 +218,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 
 			}
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

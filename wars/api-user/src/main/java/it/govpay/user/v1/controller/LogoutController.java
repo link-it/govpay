@@ -24,18 +24,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import it.govpay.core.utils.GovpayConfig;
 import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
-
-import it.govpay.core.utils.GovpayConfig;
 
 public class LogoutController extends BaseController {
 
@@ -44,7 +41,7 @@ public class LogoutController extends BaseController {
 	}
 
 
-	public Response logout(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String urlID) {
+	public Response logout(UriInfo uriInfo, String urlID) {
 		String methodName = "logout";
 		String transactionId = this.context.getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -70,16 +67,16 @@ public class LogoutController extends BaseController {
 					UriBuilder target = UriBuilder.fromUri(new URI(redirectURL));
 
 					for (Entry<String, List<String>> next : queryParameters.entrySet()) {
-						this.log.debug("Aggiungo queryParam " + next.getKey() + ": " + next.getValue());
+						this.log.debug("Aggiungo queryParam {}: {}",next.getKey(), next.getValue());
 						target = target.queryParam(next.getKey(), next.getValue().get(0));
 					}
 					redirectURL = target.build().toString();
-					this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");
+					this.log.info("Esecuzione {} completata con redirect verso la URL [{}].", methodName, redirectURL);
 					return this.handleResponseOk(Response.seeOther(new URI(redirectURL)),transactionId).build();
 				}
 			}
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(this.context);
 		}

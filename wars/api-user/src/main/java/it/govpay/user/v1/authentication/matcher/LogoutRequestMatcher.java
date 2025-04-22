@@ -43,6 +43,7 @@ import org.springframework.util.StringUtils;
  * @author pintori
  *
  */
+@SuppressWarnings("deprecation")
 public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
 
 	private static final Log logger = LogFactory.getLog(LogoutRequestMatcher.class);
@@ -122,9 +123,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 	 */
 	@Override
 	public boolean matches(HttpServletRequest request) {
-		boolean matches = this.doMatches(request);
-
-		return matches;
+		return this.doMatches(request);
 	}
 
 	public boolean doMatches(HttpServletRequest request) {
@@ -228,6 +227,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 			return HttpMethod.valueOf(method);
 		}
 		catch (IllegalArgumentException e) {
+			// donothing
 		}
 
 		return null;
@@ -279,7 +279,9 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 		private final boolean caseSensitive;
 
 		public SubpathMatcher(String subpath, boolean caseSensitive) {
-			assert!subpath.contains("*");
+			if (subpath.contains("*")) {
+			    throw new IllegalArgumentException("Il valore di subpath non può contenere '*'");
+			}
 			this.subpath = caseSensitive ? subpath : subpath.toLowerCase();
 			this.length = subpath.length();
 			this.caseSensitive = caseSensitive;

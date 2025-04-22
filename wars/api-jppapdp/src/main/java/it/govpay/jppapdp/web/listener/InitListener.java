@@ -44,7 +44,7 @@ import it.govpay.core.utils.StartupUtils;
 
 public class InitListener implements ServletContextListener {
 
-	private static Logger log = null;
+	private Logger log = null;
 	private static boolean initialized = false;
 	private String warName = "GovPay-API-JppaPdP";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_WS;

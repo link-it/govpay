@@ -38,6 +38,8 @@ import it.govpay.ragioneria.v3.beans.Profilo;
  *
  */
 public class ProfiloConverter {
+	
+	private ProfiloConverter() {}
 
 	/**
 	 * @param user

@@ -119,7 +119,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 				return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt),transactionId).build();
 			}
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -185,7 +185,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -242,7 +242,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

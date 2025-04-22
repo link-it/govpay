@@ -29,7 +29,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.MessaggiPagoPARptUtils;
@@ -46,6 +45,8 @@ import it.govpay.ragioneria.v3.beans.RicevutaRt.TipoEnum;
 import it.govpay.ragioneria.v3.beans.RicevuteRisultati;
 
 public class RicevuteConverter {
+	
+	private RicevuteConverter() {}
 
 	public static RicevuteRisultati toRsModelIndex(Rpt dto) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -62,11 +63,6 @@ public class RicevuteConverter {
 
 
 	public static Ricevuta toRsModel(Rpt rpt) throws ServiceException, IOException, UnsupportedEncodingException {
-		return toRsModel(rpt, rpt.getVersamento());
-	}
-
-
-	public static Ricevuta toRsModel(Rpt rpt, Versamento versamento) throws ServiceException, UnsupportedEncodingException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Ricevuta rsModel = new Ricevuta();
 
@@ -103,17 +99,13 @@ public class RicevuteConverter {
 			Object messaggioRPTRaw = MessaggiPagoPARptUtils.getMessaggioRPT(rpt, FormatoRicevuta.RAW, false);
 			ricevutaRpt.setXml((byte[]) messaggioRPTRaw);
 			switch (rpt.getVersione()) {
-			case SANP_230:
-			case RPTSANP230_RTV2:
+			case SANP_230, RPTSANP230_RTV2:
 				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ragioneria.v3.beans.RicevutaRpt.TipoEnum.CTRICHIESTAPAGAMENTOTELEMATICO);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
 				rsModel.setVersante(PendenzeConverter.toSoggettoRsModel(ctRpt.getSoggettoVersante()));
 				break;
-			case SANP_240:
-			case RPTV1_RTV2:
-			case SANP_321_V2:
-			case RPTV2_RTV1:
+			case SANP_240, RPTV1_RTV2, SANP_321_V2, RPTV2_RTV1:
 				ricevutaRpt.setTipo(it.govpay.ragioneria.v3.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
 				break;
@@ -132,16 +124,13 @@ public class RicevuteConverter {
 				rsModel.setImporto(MessaggiPagoPARtUtils.getImportoRT(rpt));
 				ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
 				switch (rpt.getVersione()) {
-				case SANP_240:
-				case RPTV2_RTV1:
+				case SANP_240, RPTV2_RTV1:
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					break;
 				case SANP_230:
 					ricevutaRt.setTipo(TipoEnum.CTRICEVUTATELEMATICA);
 					break;
-				case SANP_321_V2:
-				case RPTV1_RTV2:
-				case RPTSANP230_RTV2:
+				case SANP_321_V2, RPTV1_RTV2, RPTSANP230_RTV2:
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					break;
 				}

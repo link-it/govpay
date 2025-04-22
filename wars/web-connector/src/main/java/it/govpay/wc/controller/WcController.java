@@ -21,18 +21,14 @@ package it.govpay.wc.controller;
 
 import java.net.URI;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.lang3.StringUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.pagamenti.WebControllerDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
+import it.govpay.core.exceptions.ValidationException;
+import jakarta.ws.rs.core.Response;
 
 public class WcController  extends BaseController {
 
@@ -40,7 +36,7 @@ public class WcController  extends BaseController {
 		super(nomeServizio, log);
 	}
 
-	public Response getPsp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
+	public Response getPsp(String idSession, String esito) {
 		String methodName = "getPsp";  
 		String transactionId = this.context.getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName); 
@@ -64,7 +60,7 @@ public class WcController  extends BaseController {
 			return this.handleResponseOk(Response.seeOther(new URI(redirectDaPspDTOResponse.getLocation())),transactionId).build();
 			
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(this.context);
 		}

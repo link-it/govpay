@@ -19,15 +19,15 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
   * Definisce i dati di un bollo telematico
@@ -61,25 +61,25 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
       return null;
     }
   }
-  @Schema(required = true, description = "Tipologia di Bollo digitale")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipologia di Bollo digitale")
  /**
    * Tipologia di Bollo digitale
   **/
   private TipoBolloEnum tipoBollo = null;
 
-  @Schema(example = "--- base64 ---", required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
+  @Schema(example = "--- base64 ---", requiredMode = RequiredMode.REQUIRED, description = "Digest in base64 del documento informatico associato alla marca da bollo")
  /**
    * Digest in base64 del documento informatico associato alla marca da bollo
   **/
   private String hashDocumento = null;
 
-  @Schema(example = "RO", required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
+  @Schema(example = "RO", requiredMode = RequiredMode.REQUIRED, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
  /**
    * Sigla automobilistica della provincia di residenza del soggetto pagatore
   **/
   private String provinciaResidenza = null;
 
-  @Schema(example = "9/3321", required = true, description = "Tassonomia pagoPA")
+  @Schema(example = "9/3321", requiredMode = RequiredMode.REQUIRED, description = "Tassonomia pagoPA")
  /**
    * Tassonomia pagoPA
   **/

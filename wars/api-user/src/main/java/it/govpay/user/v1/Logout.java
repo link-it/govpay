@@ -52,7 +52,7 @@ public class Logout extends BaseRsServiceV1{
 
     public Response logout(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("urlID") String urlID){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.logout(this.getUser(), uriInfo, httpHeaders,  urlID);
+        return this.controller.logout(uriInfo, urlID);
     }
 
     @GET
@@ -61,7 +61,7 @@ public class Logout extends BaseRsServiceV1{
 
     public Response logoutSenzaRedirect(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.logout(this.getUser(), uriInfo, httpHeaders, null);
+        return this.controller.logout(uriInfo, null);
     }
 
 }

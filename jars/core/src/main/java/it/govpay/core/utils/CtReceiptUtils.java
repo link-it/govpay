@@ -208,7 +208,19 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			Long idPagamentoPortale = null;
 			VersioneRPT versioneRPTAttesa = it.govpay.model.Rpt.VersioneRPT.SANP_240;
 			try { 
-				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+				List<Rpt> listaTransazioniPerDominioIuv = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null);
+				
+				if(listaTransazioniPerDominioIuv.isEmpty()) { // replico il comportamento della vecchia getRpt, se non trovo transazioni devo acquisire la ricevuta ricostruendo la transazione
+					throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"] corrisponde ai parametri indicati.");
+				}
+				
+				// verifico che la ricevuta receitId non sia gia' stata acquisita.
+				for (Rpt rpt2 : listaTransazioniPerDominioIuv) {
+					if(rpt2.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt2.getCcp().equals(receiptId)) {
+						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, receiptId, 
+								SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt2.getDataMsgRicevuta())), rpt2.getCodDominio());
+					}
+				}
 
 				// Faccio adesso la select for update, altrimenti in caso di 
 				// ricezione di due RT afferenti allo stesso carrello di pagamento
@@ -223,11 +235,6 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 				} catch (NotFoundException e) {
 					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
-				}
-
-				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt.getCcp().equals(receiptId)) {
-					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, receiptId, 
-							SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt.getDataMsgRicevuta())), rpt.getCodDominio());
 				}
 
 				PaGetPaymentRes ctRpt = null; 

@@ -38,6 +38,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.ragioneria.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.ragioneria.v3.beans.AllegatoPendenza;
 import it.govpay.ragioneria.v3.beans.Documento;
@@ -58,6 +59,8 @@ import it.govpay.ragioneria.v3.beans.VocePendenza;
 import it.govpay.ragioneria.v3.beans.VocePendenzaPagata;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -157,8 +160,6 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		//		rsModel.setIndice(new BigDecimal(indice));
 		if(versamento != null)
 			rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
@@ -169,10 +170,8 @@ public class PendenzeConverter {
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
 
-			switch(singoloVersamento.getTipoBollo()) {
-			case IMPOSTA_BOLLO:
+			if (singoloVersamento.getTipoBollo().equals(TipoBollo.IMPOSTA_BOLLO)) {
 				rsModel.setTipoBollo(TipoBolloEnum._01);
-				break;
 			}
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
@@ -228,7 +227,6 @@ public class PendenzeConverter {
 		rsModel.setProvincia(soggettoVersante.getProvinciaVersante());
 		rsModel.setNazione(soggettoVersante.getNazioneVersante());
 		rsModel.setEmail(soggettoVersante.getEMailVersante());
-		//		rsModel.setCellulare(soggettoVersante.getCellulare());
 
 		return rsModel;
 	}
@@ -236,7 +234,7 @@ public class PendenzeConverter {
 	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) {
 		List<AllegatoPendenza> rsModel = null;
 
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 
 			for (Allegato allegato : allegati) {
@@ -265,7 +263,7 @@ public class PendenzeConverter {
 
 		// Le RPT sono ordinate per data attivazione desc.
 		// Seleziono la prima RT in ordine temporale con esito positivo
-		if(listRpts != null && listRpts.size() > 0) {
+		if(listRpts != null && !listRpts.isEmpty()) {
 			for (it.govpay.bd.model.Rpt rptTmp : listRpts) {
 				if(rptTmp.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
 					rpt = rptTmp;
@@ -398,8 +396,6 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
@@ -407,10 +403,8 @@ public class PendenzeConverter {
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
 
-			switch(singoloVersamento.getTipoBollo()) {
-			case IMPOSTA_BOLLO:
+			if (singoloVersamento.getTipoBollo().equals(TipoBollo.IMPOSTA_BOLLO)) {
 				rsModel.setTipoBollo(TipoBolloEnum._01);
-				break;
 			}
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)

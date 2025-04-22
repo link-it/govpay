@@ -65,7 +65,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl  implements UtentiA
  			return this.handleResponseOk(Response.status(Status.OK).entity(profilo),transactionId).build();
 
  		}catch (Exception e) {
- 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+ 			return this.handleException(methodName, e, transactionId);
  		} finally {
  			this.logContext(ContextThreadLocal.get());
  		}

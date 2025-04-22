@@ -21,22 +21,22 @@ package it.govpay.ragioneria.v3.beans;
 
 import java.math.BigDecimal;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 public class VincoloPagamento   {
 
-  @Schema(example = "5", required = true, description = "numero di giorni vincolo per il pagamento")
+  @Schema(example = "5", requiredMode = RequiredMode.REQUIRED, description = "numero di giorni vincolo per il pagamento")
  /**
    * numero di giorni vincolo per il pagamento
   **/
   private BigDecimal giorni = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private TipoSogliaVincoloPagamento tipo = null;
  /**
    * numero di giorni vincolo per il pagamento

@@ -1673,9 +1673,6 @@
 						<configuration>
 							<autoUpdate>${owasp.plugin.autoUpdate}</autoUpdate>
 							<failBuildOnAnyVulnerability>${owasp.plugin.failBuildOnAnyVulnerability}</failBuildOnAnyVulnerability>
-							<!-- <failBuildOnCVSS>8</failBuildOnCVSS> -->
-							<!-- <outputDirectory></outputDirectory> -->
-<!-- 							<jarAnalyzerEnabled>false</jarAnalyzerEnabled> -->
 							<format>ALL</format>
 							<suppressionFiles>
                             	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>

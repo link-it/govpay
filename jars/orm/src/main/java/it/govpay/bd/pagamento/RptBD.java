@@ -200,6 +200,39 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
+	public List<Rpt> getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.VersioneRPT versione) throws NotFoundException, ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.and();
+			exp.equals(RPT.model().IUV, iuv);
+			if(modelloPagamento != null) {
+				exp.and();
+				exp.equals(RPT.model().MODELLO_PAGAMENTO, modelloPagamento.getCodifica()+"");
+			}
+			if(versione != null) {
+				exp.and();
+				exp.equals(RPT.model().VERSIONE, versione.toString());
+			}
+			
+			IPaginatedExpression pagExpr = this.getRptService().toPaginatedExpression(exp);
+			pagExpr.addOrder(RPT.model().DATA_MSG_RICHIESTA, SortOrder.DESC);
+			
+			List<RPT> findAll = this.getRptService().findAll(pagExpr);
+			return RptConverter.toDTOList(findAll);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
 	public Rpt getRpt(String codDominio, String iuv, String ccp) throws NotFoundException, ServiceException {
 		return this.getRpt(codDominio, iuv, ccp, false);
 	}

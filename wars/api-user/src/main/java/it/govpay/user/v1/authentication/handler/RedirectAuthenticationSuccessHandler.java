@@ -84,11 +84,9 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 
 			if(redirectURL == null) {
 				this.debug(ctx.getTransactionId(), "Utente autorizzato ma URL di Redirect non indicata, restituisco 200 OK.");
-//				log.warn("Utente autorizzato ma URL di Redirect non indicata, restituisco 200 OK.");
 				return Response.status(Status.OK).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 			} else {
 				this.debug(ctx.getTransactionId(), "Utente autorizzato redirect verso la URL ["+ redirectURL +"].");
-//				log.info("Utente autorizzato redirect verso la URL ["+ redirectURL +"].");
 				return Response.seeOther(new URI(redirectURL)).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 			}
 		}catch (Exception e) {
@@ -147,6 +145,7 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 
 		sb.append(msg);
 
-		log.debug(sb.toString());
+		String logMsg = sb.toString();
+		log.debug(logMsg);
 	}
 }

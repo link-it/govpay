@@ -52,7 +52,7 @@ public class Login extends BaseRsServiceV1{
     public Response login(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("urlID") String urlID){
         this.controller.setContext(this.getContext());
         this.controller.setRequestResponse(this.request,this.response);
-        return this.controller.login(this.getUser(), uriInfo, httpHeaders,  urlID);
+        return this.controller.login(uriInfo, urlID);
     }
 
     @GET
@@ -62,7 +62,7 @@ public class Login extends BaseRsServiceV1{
     public Response loginSenzaRedirect(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
 	this.controller.setContext(this.getContext());
 	this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.login(this.getUser(), uriInfo, httpHeaders, null);
+        return this.controller.login(uriInfo, null);
     }
 
 }
