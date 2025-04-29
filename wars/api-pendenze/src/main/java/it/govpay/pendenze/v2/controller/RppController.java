@@ -138,7 +138,7 @@ public class RppController extends BaseController {
 			}
 
 			if(idDominio != null) {
-				validatoreId.validaIdDominio("idDominio", idDominio);
+				validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 				listaRptDTO.setIdDominio(idDominio);
 			}
 			if(iuv != null)
@@ -147,12 +147,12 @@ public class RppController extends BaseController {
 				listaRptDTO.setCcp(ccp);
 
 			if(idA2A != null) {
-				validatoreId.validaIdApplicazione("idA2A", idA2A);
+				validatoreId.validaIdApplicazione(Costanti.PARAM_ID_A2A, idA2A);
 				listaRptDTO.setIdA2A(idA2A);
 			}
 
 			if(idPendenza != null) {
-				validatoreId.validaIdPendenza("idPendenza", idPendenza);
+				validatoreId.validaIdPendenza(Costanti.PARAM_ID_PENDENZA, idPendenza);
 				listaRptDTO.setIdPendenza(idPendenza);
 			}
 
@@ -164,24 +164,24 @@ public class RppController extends BaseController {
 
 			// dat RPT
 			if(dataRptDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, Costanti.PARAM_DATA_RPT_DA);
 				listaRptDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataRptA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, Costanti.PARAM_DATA_RPT_A);
 				listaRptDTO.setDataA(dataADate);
 			}
 
 			// data RT
 			if(dataRtDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa, "dataRtDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa, Costanti.PARAM_DATA_RT_DA);
 				listaRptDTO.setDataRtDa(dataDaDate);
 			}
 
 
 			if(dataRtA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, "dataRtA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, Costanti.PARAM_DATA_RT_A);
 				listaRptDTO.setDataRtA(dataADate);
 			}
 
@@ -226,8 +226,8 @@ public class RppController extends BaseController {
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		String accept = MediaType.APPLICATION_JSON;
-		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+		if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_ACCEPT)) {
+			accept = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_ACCEPT).get(0).toLowerCase();
 		}
 
 		try{
@@ -235,18 +235,13 @@ public class RppController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 
 			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
 			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
 			leggiPagamentoPortaleDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp, Costanti.CHARSET_UTF_8) : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
-
-			// controllo che il dominio sia autorizzato
-//			if(!AuthorizationManager.isDominioAuthorized(leggiPagamentoPortaleDTO.getUser(), idDominio)) {
-//				throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(),idDominio, null);
-//			}
 
 			RptDAO ricevuteDAO = new RptDAO();
 
@@ -259,9 +254,9 @@ public class RppController extends BaseController {
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
 				mediaType = MediaType.APPLICATION_OCTET_STREAM;
-			} else if(accept.toLowerCase().contains("application/pdf")) {
+			} else if(accept.toLowerCase().contains(Costanti.MEDIA_TYPE_APPLICATION_PDF)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
-				mediaType = "application/pdf";
+				mediaType = Costanti.MEDIA_TYPE_APPLICATION_PDF;
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 				mediaType = MediaType.APPLICATION_JSON;
@@ -279,7 +274,7 @@ public class RppController extends BaseController {
 			String rtPdfEntryName = null;
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				messaggioRT = new String(ricevutaDTOResponse.getRpt().getXmlRt());
-			} else if(accept.toLowerCase().contains("application/pdf")) {
+			} else if(accept.toLowerCase().contains(Costanti.MEDIA_TYPE_APPLICATION_PDF)) {
 				messaggioRT = ricevutaDTOResponse.getPdf();
 				rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
@@ -290,8 +285,8 @@ public class RppController extends BaseController {
 
 			ResponseBuilder entity = Response.status(Status.OK).type(mediaType).entity(messaggioRT);
 
-			if(accept.toLowerCase().contains("application/pdf")) {
-				entity.header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"");
+			if(accept.toLowerCase().contains(Costanti.MEDIA_TYPE_APPLICATION_PDF)) {
+				entity.header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, "attachment; filename=\""+rtPdfEntryName+"\"");
 			}
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
@@ -312,36 +307,26 @@ public class RppController extends BaseController {
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			String accept = MediaType.APPLICATION_JSON;
-			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_ACCEPT)) {
+				accept = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_ACCEPT).get(0).toLowerCase();
 			}
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,Costanti.CHARSET_UTF_8) : ccp;
 			leggiRptDTO.setCcp(ccp);
-
-			// controllo che il dominio sia autorizzato
-//			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
-//				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
-//			}
 
 			RptDAO ricevuteDAO = new RptDAO();
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
 			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
-
-			// controllo che il dominio sia autorizzato
-//			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
-//				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
-//			}
 
 			boolean retrocompatibilitaMessaggiPagoPAV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 			String mediaType = null;
@@ -375,29 +360,19 @@ public class RppController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp, Costanti.CHARSET_UTF_8) : ccp;
 			leggiRptDTO.setCcp(ccp);
-
-//			// controllo che il dominio sia autorizzato
-//			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
-//				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
-//			}
 
 			RptDAO ricevuteDAO = new RptDAO();
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
 			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
-
-//			// controllo che il dominio sia autorizzato
-//			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
-//				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
-//			}
 
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
 
@@ -413,7 +388,7 @@ public class RppController extends BaseController {
 		}
 	}
 
-	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
+	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotAuthorizedException {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 
 		// se sei una applicazione allora vedi i pagamenti che hai caricato

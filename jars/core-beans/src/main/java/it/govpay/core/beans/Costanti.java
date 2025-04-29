@@ -52,4 +52,22 @@ public class Costanti {
 	
 	/** GESTIONE AVVISI CON DEBITORE ANONIMO */
 	public static final String IDENTIFICATIVO_DEBITORE_ANONIMO = "ANONIMO";
+	
+	
+	/** NOMI PARAMETRI */
+	public static final String PARAM_DATA_RT_A = "dataRtA";
+	public static final String PARAM_DATA_RT_DA = "dataRtDa";
+	public static final String PARAM_DATA_RPT_A = "dataRptA";
+	public static final String PARAM_DATA_RPT_DA = "dataRptDa";
+	public static final String PARAM_ID_PENDENZA = "idPendenza";
+	public static final String PARAM_ID_A2A = "idA2A";
+	public static final String PARAM_ID_DOMINIO = "idDominio";
+	
+	/** NOMI HEADERS */
+	public static final String HEADER_NAME_CONTENT_DISPOSITION = "content-disposition";
+	public static final String HEADER_NAME_ACCEPT = "Accept";
+	
+	/** ALTRE COSTANTI */
+	public static final String MEDIA_TYPE_APPLICATION_PDF = "application/pdf";
+	public static final String CHARSET_UTF_8 = "UTF-8";
 }
