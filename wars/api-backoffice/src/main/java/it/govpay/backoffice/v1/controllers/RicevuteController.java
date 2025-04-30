@@ -43,6 +43,7 @@ import it.govpay.backoffice.v1.beans.converter.RptConverter;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PostRicevutaDTO;
@@ -65,8 +66,8 @@ public class RicevuteController extends BaseController {
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			String contentTypeBody = null;
-			if(httpHeaders.getRequestHeaders().containsKey("Content-Type")) {
-				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_CONTENT_TYPE)) {
+				contentTypeBody = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_CONTENT_TYPE).get(0);
 			}
 
 			this.logDebug("Content-Type della richiesta: {}.", contentTypeBody);
@@ -75,9 +76,9 @@ public class RicevuteController extends BaseController {
 			InputStream fileInputStream = null;
 			try{
 				// controllo se sono in una richiesta multipart
-				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+				if(contentTypeBody != null && contentTypeBody.startsWith(Costanti.MULTIPART_PREFIX)) {
 					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter(Costanti.PARAM_BOUNDARY)));
 
 					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
@@ -99,8 +100,8 @@ public class RicevuteController extends BaseController {
 				this.log.error(e.getMessage(),e);
 			}
 
-			if(httpHeaders.getRequestHeaders().containsKey("X-GOVPAY-FILENAME")) {
-				fileName = httpHeaders.getRequestHeaders().get("X-GOVPAY-FILENAME").get(0);
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_X_GOVPAY_FILENAME)) {
+				fileName = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_X_GOVPAY_FILENAME).get(0);
 			}
 
 			if(fileInputStream == null) {

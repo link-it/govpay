@@ -53,11 +53,8 @@ public class TracciatiNotificaPagamentiController extends BaseController {
     	String methodName = "getTracciatoNotificaPagamenti";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
-//		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try{
 			// l'accesso a questa risorsa e' libero
-			// autorizzazione sulla API
-//			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			LeggiTracciatoNotificaPagamentiDTO leggiTracciatoDTO = new LeggiTracciatoNotificaPagamentiDTO(user);
 			leggiTracciatoDTO.setId(id);
@@ -65,21 +62,12 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 			leggiTracciatoDTO.setIncludiRaw(false);
 
 			List<Long> idDomini = null;
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
 
 			TracciatiNotificaPagamentiDAO tracciatiDAO = new TracciatiNotificaPagamentiDAO();
 			TracciatoNotificaPagamenti tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
 
 			if(!(tracciato.getStato().equals(STATO_ELABORAZIONE.FILE_CARICATO) || tracciato.getStato().equals(STATO_ELABORAZIONE.FILE_NUOVO)))
 				throw new NonTrovataException("Il tracciato richiesto non e' disponibile: elaborazione ancora in corso");
-
-			// check dominio
-//			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getDominio(configWrapper).getCodDominio())) {
-//				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getDominio(configWrapper).getCodDominio(),null);
-//			}
 
 			String zipFileName = (tracciato.getNomeFile().contains(".") ? tracciato.getNomeFile().substring(0, tracciato.getNomeFile().lastIndexOf(".")) : tracciato.getNomeFile()) + ".zip";
 

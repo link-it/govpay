@@ -174,7 +174,7 @@ public class SondeController extends BaseController{
 						log.error("Impossibile acquisire lo stato della sonda", t);
 					}
 				}
-			} catch(Exception e) {
+			} catch(ServiceException e) {
 				log.error("Errore durante la verifica della sonda " + id, e);
 				throw new Exception("Errore durante la verifica della sonda " + id);
 			} finally {

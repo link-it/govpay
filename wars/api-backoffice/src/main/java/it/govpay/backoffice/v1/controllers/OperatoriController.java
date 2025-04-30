@@ -66,7 +66,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class OperatoriController extends BaseController {
 
-     public OperatoriController(String nomeServizio,Logger log) {
+	public OperatoriController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
 
@@ -88,7 +88,7 @@ public class OperatoriController extends BaseController {
 				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdOperatore("principal", principal);
+			validatoreId.validaIdOperatore(Costanti.PARAM_PRINCIPAL, principal);
 
 			operatoreRequest.validate();
 
@@ -128,7 +128,7 @@ public class OperatoriController extends BaseController {
 				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdOperatore("principal", principal);
+			validatoreId.validaIdOperatore(Costanti.PARAM_PRINCIPAL, principal);
 
 			// Parametri - > DTO Input
 
@@ -174,7 +174,7 @@ public class OperatoriController extends BaseController {
 				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdOperatore("principal", principal);
+			validatoreId.validaIdOperatore(Costanti.PARAM_PRINCIPAL, principal);
 
 			String jsonRequest = baos.toString();
 

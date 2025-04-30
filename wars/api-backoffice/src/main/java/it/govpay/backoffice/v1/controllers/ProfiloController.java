@@ -90,8 +90,6 @@ public class ProfiloController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE));
 
-			// autorizzazione sulla API
-//			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
 			String jsonRequest = baos.toString();
 
 			UtentiDAO utentiDAO = new UtentiDAO(false);

@@ -64,7 +64,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getStatoOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.buildContext();
-        return this.controller.getStatoOperazione(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getStatoOperazione(uriInfo, httpHeaders);
     }
 
     @GET

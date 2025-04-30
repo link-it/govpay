@@ -104,11 +104,11 @@ public class IncassiController extends BaseController {
 			listaIncassoDTO.setCodFlusso(idFlusso);
 
 			if(dataDa != null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaIncassoDTO.setDataDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaIncassoDTO.setDataA(dataADate);
 			}
 
@@ -163,7 +163,7 @@ public class IncassiController extends BaseController {
 			// Parametri - > DTO Input
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
 			leggiIncassoDTO.setIdDominio(idDominio);
@@ -224,7 +224,7 @@ public class IncassiController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 
 			IncassoPost incasso = JSONSerializable.parse(baos.toString(), IncassoPost.class);
 			incasso.validate();

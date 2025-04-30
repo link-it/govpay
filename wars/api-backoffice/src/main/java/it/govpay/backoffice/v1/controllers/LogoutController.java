@@ -20,8 +20,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 
-import java.text.MessageFormat;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;

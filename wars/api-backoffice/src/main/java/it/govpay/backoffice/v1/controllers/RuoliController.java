@@ -200,9 +200,6 @@ public class RuoliController extends BaseController {
 				}
 			} catch (Exception e) {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
-//				PatchOp op = PatchOp.parse(jsonRequest);
-//				op.validate();
-//				lstOp.add(op);
 			}
 
 			ruoloPatchDTO.setOp(PatchOpConverter.toModel(lstOp));

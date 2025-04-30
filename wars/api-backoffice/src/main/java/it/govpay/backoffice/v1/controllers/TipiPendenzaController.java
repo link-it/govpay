@@ -125,7 +125,7 @@ public class TipiPendenzaController extends BaseController {
 				List<String> idDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 				if(idDominiAutorizzati == null)
 					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-				if(idDominiAutorizzati.size() > 0) {
+				if(!idDominiAutorizzati.isEmpty()) {
 					if(!idDominiAutorizzati.contains(nonAssociati)) {
 						throw new ValidationException("Il dominio [" + nonAssociati + "] e' tra quelli associati all'utenza.");
 					}
@@ -177,7 +177,7 @@ public class TipiPendenzaController extends BaseController {
 			if(tipiVersamentoAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-			if(tipiVersamentoAutorizzati.size() > 0) {
+			if(!tipiVersamentoAutorizzati.isEmpty()) {
 				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
 				}

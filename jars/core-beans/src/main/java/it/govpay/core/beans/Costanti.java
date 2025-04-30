@@ -31,6 +31,7 @@ public class Costanti {
 	
 	public static final String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
 	public static final String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
+	public static final String PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME = "attachment; filename=\"";
 	public static final String SUFFIX_CONTENT_DISPOSITION = "\"";
 	public static final String PREFIX_FILENAME = "filename=\"";
 	public static final String SUFFIX_FILENAME = "\"";
@@ -59,15 +60,34 @@ public class Costanti {
 	public static final String PARAM_DATA_RT_DA = "dataRtDa";
 	public static final String PARAM_DATA_RPT_A = "dataRptA";
 	public static final String PARAM_DATA_RPT_DA = "dataRptDa";
+	public static final String PARAM_DATA_A = "dataA";
+	public static final String PARAM_DATA_DA = "dataDa";
 	public static final String PARAM_ID_PENDENZA = "idPendenza";
 	public static final String PARAM_ID_A2A = "idA2A";
 	public static final String PARAM_ID_DOMINIO = "idDominio";
+	public static final String PARAM_BOUNDARY = "boundary";
+	public static final String PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_A = "flussoRendicontazione.dataFlussoA";
+	public static final String PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_DA = "flussoRendicontazione.dataFlussoDa";
+	public static final String PARAM_ID_UNITA_OPERATIVA = "idUnitaOperativa";
+	public static final String PARAM_ID_TIPO_PENDENZA = "idTipoPendenza";
+	public static final String PARAM_PRINCIPAL = "principal";
+    public static final String PARAM_ID_STAZIONE = "idStazione";
+	public static final String PARAM_ID_INTERMEDIARIO = "idIntermediario";
 	
 	/** NOMI HEADERS */
 	public static final String HEADER_NAME_CONTENT_DISPOSITION = "content-disposition";
 	public static final String HEADER_NAME_ACCEPT = "Accept";
+	public static final String HEADER_NAME_X_GOVPAY_FILENAME = "X-GOVPAY-FILENAME";
+	public static final String HEADER_NAME_CONTENT_TYPE = "Content-Type";
 	
 	/** ALTRE COSTANTI */
 	public static final String MEDIA_TYPE_APPLICATION_PDF = "application/pdf";
+	public static final String MEDIA_TYPE_TEXT_CSV = "text/csv";
+	public static final String MSG_FORMATO_NON_DISPONIBILE = "Formato non disponibile";
+	public static final String ESTENSIONE_PUNTO_JSON = ".json";
+	public static final String ESTENSIONE_PUNTO_CSV = ".csv";
+
 	public static final String CHARSET_UTF_8 = "UTF-8";
+	public static final String MULTIPART_PREFIX = "multipart";
+	
 }

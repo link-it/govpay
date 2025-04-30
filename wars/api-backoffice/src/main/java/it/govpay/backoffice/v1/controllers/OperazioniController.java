@@ -19,7 +19,6 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -128,7 +127,7 @@ public class OperazioniController extends BaseController {
 		}
     }
 
-    public Response getStatoOperazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response getStatoOperazione(UriInfo uriInfo, HttpHeaders httpHeaders) {
     	String methodName = "getStatoOperazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

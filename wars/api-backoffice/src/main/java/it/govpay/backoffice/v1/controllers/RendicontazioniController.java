@@ -54,7 +54,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class RendicontazioniController extends BaseController {
 
-     public RendicontazioniController(String nomeServizio,Logger log) {
+	public RendicontazioniController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
 
@@ -84,25 +84,25 @@ public class RendicontazioniController extends BaseController {
 
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true);
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, Costanti.PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_DA, true);
 				findRendicontazioniDTO.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
 			if(flussoRendicontazioneDataFlussoA!=null) {
-				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, Costanti.PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_A, true);
 				findRendicontazioniDTO.setDataFlussoA(dataFlussoADate);
 			}
 
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true);
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, Costanti.PARAM_DATA_DA, true);
 				findRendicontazioniDTO.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true);
+				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, Costanti.PARAM_DATA_A, true);
 				findRendicontazioniDTO.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 

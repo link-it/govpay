@@ -58,8 +58,6 @@ public class NotificheController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-
-
 	public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findNotifiche";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -118,12 +116,12 @@ public class NotificheController extends BaseController {
 			}
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaNotificheDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaNotificheDTO.setDataA(dataADate);
 			}
 

@@ -23,12 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -61,12 +55,20 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 
 
 public class RiscossioniController extends BaseController {
 
-     public RiscossioniController(String nomeServizio,Logger log) {
+     private static final String PARAM_ID_DOMINIO = "idDominio";
+
+
+
+	public RiscossioniController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
 
@@ -81,7 +83,7 @@ public class RiscossioniController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(PARAM_ID_DOMINIO, idDominio);
 
 			// Parametri - > DTO Input
 
@@ -196,9 +198,6 @@ public class RiscossioniController extends BaseController {
 
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-//			if(domini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
 			findRiscossioniDTO.setCodDomini(domini);
 
 			// INIT DAO
@@ -211,7 +210,7 @@ public class RiscossioniController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(t -> RiscossioniConverter.toRsModelIndex(t)).collect(Collectors.toList()),
+			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(RiscossioniConverter::toRsModelIndex).toList(),
 					 this.getServicePath(uriInfo), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);

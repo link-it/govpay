@@ -66,7 +66,7 @@ import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
 
 public class QuadratureController extends BaseController {
 
-     public QuadratureController(String nomeServizio,Logger log) {
+	public QuadratureController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
 
@@ -106,25 +106,25 @@ public class QuadratureController extends BaseController {
 
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true);
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, Costanti.PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_DA, true);
 				filtro.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
 			if(flussoRendicontazioneDataFlussoA!=null) {
-				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, Costanti.PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_A, true);
 				filtro.setDataFlussoA(dataFlussoADate);
 			}
 
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true);
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, Costanti.PARAM_DATA_DA, true);
 				filtro.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true);
+				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, Costanti.PARAM_DATA_A, true);
 				filtro.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
@@ -133,7 +133,7 @@ public class QuadratureController extends BaseController {
 			filtro.setDirezione(direzione);
 			filtro.setDivisione(divisione);
 
-			if(gruppi != null && gruppi.size() >0) {
+			if(gruppi != null && !gruppi.isEmpty()) {
 				List<ListaRendicontazioniDTO.GROUP_BY> groupBy = new ArrayList<>();
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatisticaRendicontazione gruppo = RaggruppamentoStatisticaRendicontazione.fromValue(gruppoString);
@@ -230,13 +230,13 @@ public class QuadratureController extends BaseController {
 
 			Date dataDaDate = null;
 			if(dataDa!=null) {
-				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				filtro.setDataDa(dataDaDate);
 			}
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				filtro.setDataA(dataADate);
 			}
 
@@ -257,12 +257,12 @@ public class QuadratureController extends BaseController {
 					}
 				}
 
-				if(tipi.size()> 0) {
+				if(!tipi.isEmpty()) {
 					filtro.setTipo(tipi);
 				}
 			}
 
-			if(gruppi != null && gruppi.size() >0) {
+			if(gruppi != null && !gruppi.isEmpty()) {
 				List<GROUP_BY> groupBy = new ArrayList<>();
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatistica gruppo = RaggruppamentoStatistica.fromValue(gruppoString);

@@ -25,12 +25,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -53,6 +47,11 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 public class ReportisticheController extends BaseController {
 
@@ -64,8 +63,8 @@ public class ReportisticheController extends BaseController {
 		String methodName = "getReportEntratePreviste";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		String accept = MediaType.APPLICATION_JSON;
-		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+		if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_ACCEPT)) {
+			accept = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_ACCEPT).get(0).toLowerCase();
 		}
 
 		try{
@@ -80,13 +79,13 @@ public class ReportisticheController extends BaseController {
 
 			Date dataDaDate = null;
 			if(dataDa!=null) {
-				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa", true);
+				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA, true);
 				listaEntratePrevisteDTO.setDataDa(dataDaDate);
 			}
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA", true);
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A, true);
 				listaEntratePrevisteDTO.setDataA(dataADate);
 			}
 
@@ -135,7 +134,7 @@ public class ReportisticheController extends BaseController {
 				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
-			} else if(accept.toLowerCase().contains("application/pdf")) {
+			} else if(accept.toLowerCase().contains(Costanti.MEDIA_TYPE_APPLICATION_PDF)) {
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.PDF);
 
 				ListaEntratePrevisteDTOResponse listaEntratePrevisteDTOResponse = entratePrevisteDAO.listaEntrate(listaEntratePrevisteDTO);
@@ -161,7 +160,7 @@ public class ReportisticheController extends BaseController {
 				byte[] b = listaEntratePrevisteDTOResponse.getPdf();
 
 				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+pdfEntryName+"\""),transactionId).build();
+				return this.handleResponseOk(Response.status(Status.OK).type(Costanti.MEDIA_TYPE_APPLICATION_PDF).entity(b).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+pdfEntryName+Costanti.SUFFIX_FILENAME),transactionId).build();
 			} else {
 				// formato non accettato
 				throw new NotAuthorizedException("Reportistica Entrate Previste non disponibile nel formato richiesto");

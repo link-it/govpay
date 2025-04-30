@@ -67,11 +67,10 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class IntermediariController extends BaseController {
-
-     public IntermediariController(String nomeServizio,Logger log) {
+	
+	public IntermediariController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
-
 
 
     public Response getIntermediario(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
@@ -83,7 +82,7 @@ public class IntermediariController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_PAGOPA), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
+			validatoreId.validaIdIntermediario(Costanti.PARAM_ID_INTERMEDIARIO, idIntermediario);
 
 			// Parametri - > DTO Input
 
@@ -143,8 +142,8 @@ public class IntermediariController extends BaseController {
 
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
-			validatoreId.validaIdStazione("idStazione", idStazione);
+			validatoreId.validaIdIntermediario(Costanti.PARAM_ID_INTERMEDIARIO, idIntermediario);
+			validatoreId.validaIdStazione(Costanti.PARAM_ID_STAZIONE, idStazione);
 
 			stazioneRequest.validate();
 
@@ -236,7 +235,7 @@ public class IntermediariController extends BaseController {
 			IntermediarioPost intermediarioRequest= JSONSerializable.parse(jsonRequest, IntermediarioPost.class);
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
+			validatoreId.validaIdIntermediario(Costanti.PARAM_ID_INTERMEDIARIO, idIntermediario);
 
 			intermediarioRequest.validate();
 
@@ -267,7 +266,7 @@ public class IntermediariController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_PAGOPA), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
+			validatoreId.validaIdIntermediario(Costanti.PARAM_ID_INTERMEDIARIO, idIntermediario);
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
@@ -324,8 +323,8 @@ public class IntermediariController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_PAGOPA), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
-			validatoreId.validaIdStazione("idStazione", idStazione);
+			validatoreId.validaIdIntermediario(Costanti.PARAM_ID_INTERMEDIARIO, idIntermediario);
+			validatoreId.validaIdStazione(Costanti.PARAM_ID_STAZIONE, idStazione);
 
 			// Parametri - > DTO Input
 

@@ -52,7 +52,7 @@ public class Info extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getInfo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
-        return this.controller.getInfo(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.getInfo(uriInfo, httpHeaders);
     }
 
 }

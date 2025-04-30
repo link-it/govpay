@@ -261,12 +261,12 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setOrderBy(ordinamento);
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaPendenzeDTO.setDataA(dataADate);
 			}
 
@@ -283,13 +283,6 @@ public class PendenzeController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
 			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
-
-			// Autorizzazione sui domini
-			//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-			//			if(idDomini == null) {
-			//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			//			}
-			//			listaPendenzeDTO.setIdDomini(idDomini);
 
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
@@ -369,9 +362,6 @@ public class PendenzeController extends BaseController {
 				}
 			} catch (IOException e) {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
-				//				PatchOp op = PatchOp.parse(jsonRequest);
-				//				op.validate();
-				//				lstOp.add(op);
 			}
 
 			patchPendenzaDTO.setOp(PatchOpConverter.toModel(lstOp));
@@ -410,8 +400,8 @@ public class PendenzeController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdApplicazione("idA2A", idA2A);
-			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			validatoreId.validaIdApplicazione(Costanti.PARAM_ID_A2A, idA2A);
+			validatoreId.validaIdPendenza(Costanti.PARAM_ID_PENDENZA, idPendenza);
 
 			String jsonRequest = baos.toString();
 			PendenzaPut pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPut.class);
@@ -514,10 +504,10 @@ public class PendenzeController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
-			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
+			validatoreId.validaIdTipoVersamento(Costanti.PARAM_ID_TIPO_PENDENZA, idTipoPendenza);
 			if(idUnitaOperativa != null)
-				validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
+				validatoreId.validaIdUO(Costanti.PARAM_ID_UNITA_OPERATIVA, idUnitaOperativa);
 
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(idUnitaOperativa != null) {
@@ -578,8 +568,8 @@ public class PendenzeController extends BaseController {
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			String contentTypeBody = null;
-			if(httpHeaders.getRequestHeaders().containsKey("Content-Type")) {
-				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_CONTENT_TYPE)) {
+				contentTypeBody = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_CONTENT_TYPE).get(0);
 			}
 
 			this.logDebug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
@@ -589,9 +579,9 @@ public class PendenzeController extends BaseController {
 			InputStream fileInputStream = null;
 			try{
 				// controllo se sono in una richiesta multipart
-				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+				if(contentTypeBody != null && contentTypeBody.startsWith(Costanti.MULTIPART_PREFIX)) {
 					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter(Costanti.PARAM_BOUNDARY)));
 
 					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
@@ -682,8 +672,8 @@ public class PendenzeController extends BaseController {
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			String contentTypeBody = null;
-			if(httpHeaders.getRequestHeaders().containsKey("Content-Type")) {
-				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_CONTENT_TYPE)) {
+				contentTypeBody = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_CONTENT_TYPE).get(0);
 			}
 
 			this.logDebug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
@@ -693,9 +683,9 @@ public class PendenzeController extends BaseController {
 			InputStream fileInputStream = null;
 			try{
 				// controllo se sono in una richiesta multipart
-				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+				if(contentTypeBody != null && contentTypeBody.startsWith(Costanti.MULTIPART_PREFIX)) {
 					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+					this.logDebug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter(Costanti.PARAM_BOUNDARY)));
 
 					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
@@ -717,8 +707,8 @@ public class PendenzeController extends BaseController {
 				this.log.error(e.getMessage(),e);
 			}
 
-			if(httpHeaders.getRequestHeaders().containsKey("X-GOVPAY-FILENAME")) {
-				fileName = httpHeaders.getRequestHeaders().get("X-GOVPAY-FILENAME").get(0);
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_X_GOVPAY_FILENAME)) {
+				fileName = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_X_GOVPAY_FILENAME).get(0);
 			}
 
 			if(fileInputStream == null) {
@@ -730,9 +720,9 @@ public class PendenzeController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 			if(checkTipoPendenza)
-				validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+				validatoreId.validaIdTipoVersamento(Costanti.PARAM_ID_TIPO_PENDENZA, idTipoPendenza);
 
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(idTipoPendenza != null && !AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
@@ -748,11 +738,13 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setIdDominio(idDominio);
 			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
 			postTracciatoDTO.setNomeFile(fileName);
-			if(postTracciatoDTO.getNomeFile() == null)
-				if(idTipoPendenza != null)
+			if(postTracciatoDTO.getNomeFile() == null) {
+				if(idTipoPendenza != null) {
 					postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
-				else
+				} else {
 					postTracciatoDTO.setNomeFile(idDominio);
+				}
+			}
 			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
 			if(stampaAvvisi == null)
@@ -900,31 +892,26 @@ public class PendenzeController extends BaseController {
 			String mediaType = MediaType.APPLICATION_JSON;
 			switch (tracciato.getFormato()) {
 			case CSV:
-				if(!resFileName.endsWith(".csv"))
-					resFileName = resFileName.concat(".csv");
+				if(!resFileName.endsWith(Costanti.ESTENSIONE_PUNTO_CSV))
+					resFileName = resFileName.concat(Costanti.ESTENSIONE_PUNTO_CSV);
 
-				mediaType = "text/csv";
+				mediaType = Costanti.MEDIA_TYPE_TEXT_CSV;
 
 				break;
 			case JSON:
-//				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
-
-				if(!resFileName.endsWith(".json"))
-					resFileName = resFileName.concat(".json");
+				if(!resFileName.endsWith(Costanti.ESTENSIONE_PUNTO_JSON))
+					resFileName = resFileName.concat(Costanti.ESTENSIONE_PUNTO_JSON);
 
 				break;
-
-//				this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-//				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
 			case XML:
 			default:
-				throw new ValidationException("Formato non disponibile");
+				throw new ValidationException(Costanti.MSG_FORMATO_NON_DISPONIBILE);
 			}
 
 			StreamingOutput streamingOutput = tracciatiDAO.leggiBlobTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().RAW_ESITO);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(streamingOutput).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(streamingOutput).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+resFileName+Costanti.SUFFIX_FILENAME),transactionId).build();
 
 
 		}catch (Exception e) {
@@ -1064,24 +1051,24 @@ public class PendenzeController extends BaseController {
 			String mediaType = MediaType.APPLICATION_JSON;
 			switch (tracciato.getFormato()) {
 			case CSV:
-				if(!reqFileName.endsWith(".csv"))
-					reqFileName = reqFileName.concat(".csv");
+				if(!reqFileName.endsWith(Costanti.ESTENSIONE_PUNTO_CSV))
+					reqFileName = reqFileName.concat(Costanti.ESTENSIONE_PUNTO_CSV);
 
-				mediaType = "text/csv";
+				mediaType = Costanti.MEDIA_TYPE_TEXT_CSV;
 				break;
 			case JSON:
-				if(!reqFileName.endsWith(".json"))
-					reqFileName = reqFileName.concat(".json");
+				if(!reqFileName.endsWith(Costanti.ESTENSIONE_PUNTO_JSON))
+					reqFileName = reqFileName.concat(Costanti.ESTENSIONE_PUNTO_JSON);
 				break;
 			case XML:
 			default:
-				throw new ValidationException("Formato non disponibile");
+				throw new ValidationException(Costanti.MSG_FORMATO_NON_DISPONIBILE);
 			}
 
 			StreamingOutput streamingOutput = tracciatiDAO.leggiBlobTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().RAW_RICHIESTA);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(streamingOutput).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(streamingOutput).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+reqFileName+SUFFIX_FILENAME),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -1124,9 +1111,6 @@ public class PendenzeController extends BaseController {
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: tracciato scartato");
 
-//			if(tracciato.getZipStampe() == null || tracciato.getZipStampe().length <= 0)
-//				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: archivio non presente");
-
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
@@ -1137,7 +1121,7 @@ public class PendenzeController extends BaseController {
 			StreamingOutput zipStream = tracciatiDAO.leggiBlobStampeTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().ZIP_STAMPE);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+zipFileName+Costanti.SUFFIX_FILENAME),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

@@ -21,19 +21,15 @@ package it.govpay.backoffice.v1.controllers;
 
 
 
-import java.text.MessageFormat;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.slf4j.Logger;
 
+import it.govpay.backoffice.v1.beans.InfoGovPay;
+import it.govpay.core.utils.GovpayConfig;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.UriInfo;
-
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
-
-import it.govpay.backoffice.v1.beans.InfoGovPay;
-import it.govpay.core.utils.GovpayConfig;
 
 
 
@@ -46,7 +42,7 @@ public class InfoController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response getInfo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+	public Response getInfo(UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "getInfo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

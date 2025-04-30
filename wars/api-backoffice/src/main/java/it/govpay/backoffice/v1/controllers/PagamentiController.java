@@ -166,12 +166,12 @@ public class PagamentiController extends BaseController {
 			}
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaPagamentiPortaleDTO.setDataA(dataADate);
 			}
 

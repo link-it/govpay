@@ -53,12 +53,12 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class PromemoriaController extends BaseController {
 
-     public PromemoriaController(String nomeServizio,Logger log) {
+	public PromemoriaController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-     }
+	}
 
-    public Response findPromemoria(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
-    	String methodName = "findPromemoria";
+	public Response findPromemoria(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
+		String methodName = "findPromemoria";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -79,61 +79,49 @@ public class PromemoriaController extends BaseController {
 
 			if(stato != null) {
 				StatoPromemoria statoPromemoria = StatoPromemoria.fromValue(stato);
-				if(statoPromemoria != null)
-				switch (statoPromemoria) {
-				case ANNULLATO:
-					listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.ANNULLATO);
-					break;
-				case DA_SPEDIRE:
-					listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.DA_SPEDIRE);
-					break;
-				case FALLITO:
-					listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.FALLITO);
-					break;
-				case SPEDITO:
-					listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.SPEDITO);
-					break;
+				if(statoPromemoria != null) {
+					switch (statoPromemoria) {
+					case ANNULLATO:
+						listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.ANNULLATO);
+						break;
+					case DA_SPEDIRE:
+						listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.DA_SPEDIRE);
+						break;
+					case FALLITO:
+						listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.FALLITO);
+						break;
+					case SPEDITO:
+						listaPromemoriaDTO.setStato(it.govpay.model.Promemoria.StatoSpedizione.SPEDITO);
+						break;
+					}
 				}
 			}
 
 			if(tipo != null) {
 				TipoPromemoria tipoPromemoria = TipoPromemoria.fromValue(tipo);
 				if(tipoPromemoria != null)
-				switch (tipoPromemoria) {
-				case AVVISO_PAGAMENTO:
-					listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.AVVISO);
-					break;
-				case RICEVUTA_TELEMATICA:
-					listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.RICEVUTA);
-					break;
-				case SCADENZA_AVVISO_PAGAMENTO:
-					listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.SCADENZA);
-					break;
-				}
+					switch (tipoPromemoria) {
+					case AVVISO_PAGAMENTO:
+						listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.AVVISO);
+						break;
+					case RICEVUTA_TELEMATICA:
+						listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.RICEVUTA);
+						break;
+					case SCADENZA_AVVISO_PAGAMENTO:
+						listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.SCADENZA);
+						break;
+					}
 			}
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaPromemoriaDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaPromemoriaDTO.setDataA(dataADate);
 			}
-
-//			// Autorizzazione sui domini
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaPromemoriaDTO.setIdDomini(idDomini);
-//			// autorizzazione sui tipi pendenza
-//			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
-//			if(idTipiVersamento == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-//			}
-//			listaPromemoriaDTO.setIdTipiVersamento(idTipiVersamento);
 
 			// INIT DAO
 
@@ -161,5 +149,5 @@ public class PromemoriaController extends BaseController {
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
-    }
+	}
 }
