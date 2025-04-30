@@ -37,6 +37,7 @@ import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.AllegatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTOResponse;
@@ -49,7 +50,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AllegatiController extends BaseController  {
 
-     public AllegatiController(String nomeServizio,Logger log) {
+	public AllegatiController(String nomeServizio,Logger log) {
  		super(nomeServizio,log);
  	}
 
@@ -87,7 +88,7 @@ public class AllegatiController extends BaseController  {
 			StreamingOutput contenutoStream = allegatiDAO.leggiBlobContenuto(allegato.getId());
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+allegatoFileName+Costanti.SUFFIX_FILENAME),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
