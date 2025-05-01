@@ -23,11 +23,6 @@ package it.govpay.backoffice.v1.controllers;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -48,6 +43,9 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 
 public class DocumentiController extends BaseController {
@@ -58,7 +56,7 @@ public class DocumentiController extends BaseController {
 
 
 
-    public Response getAvvisiDocumento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idDominio, String numeroDocumento, String linguaSecondaria, List<String> numeriAvviso) {
+    public Response getAvvisiDocumento(Authentication user, HttpHeaders httpHeaders , String idA2A, String idDominio, String numeroDocumento, String linguaSecondaria, List<String> numeriAvviso) {
     	String methodName = "getAvvisiDocumento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 

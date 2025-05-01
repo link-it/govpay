@@ -51,7 +51,7 @@ public class Enumerazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findEnumerazioniServiziACL(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
-        return this.controller.findEnumerazioniServiziACL(uriInfo, httpHeaders);
+        return this.controller.findEnumerazioniServiziACL();
     }
 
     @GET
@@ -60,7 +60,7 @@ public class Enumerazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findEnumerazioniVersioneConnettore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
-        return this.controller.findEnumerazioniVersioneConnettore(uriInfo, httpHeaders);
+        return this.controller.findEnumerazioniVersioneConnettore();
     }
 
 }

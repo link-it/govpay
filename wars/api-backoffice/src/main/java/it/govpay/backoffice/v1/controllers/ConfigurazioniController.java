@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -50,6 +45,8 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 
 public class ConfigurazioniController extends BaseController {
@@ -60,7 +57,7 @@ public class ConfigurazioniController extends BaseController {
 
 
 
-    public Response getConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response getConfigurazioni(Authentication user) {
     	String methodName = "getConfigurazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -87,7 +84,7 @@ public class ConfigurazioniController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response aggiornaConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+	public Response aggiornaConfigurazioni(Authentication user, java.io.InputStream is) {
     	String methodName = "aggiornaConfigurazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -151,7 +148,7 @@ public class ConfigurazioniController extends BaseController {
 
 
 
-    public Response addConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+    public Response addConfigurazioni(Authentication user, java.io.InputStream is) {
     	String methodName = "addConfigurazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

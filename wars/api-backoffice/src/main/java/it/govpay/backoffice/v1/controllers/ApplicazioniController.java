@@ -78,7 +78,7 @@ public class ApplicazioniController extends BaseController {
 
 
 
-	public Response getApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
+	public Response getApplicazione(Authentication user, String idA2A) {
 		String methodName = "getApplicazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -113,7 +113,7 @@ public class ApplicazioniController extends BaseController {
 
 
 	@SuppressWarnings("unchecked")
-	public Response updateApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
+	public Response updateApplicazione(Authentication user, java.io.InputStream is, String idA2A) {
 		String methodName = "updateApplicazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -172,7 +172,7 @@ public class ApplicazioniController extends BaseController {
 	}
 
 
-	public Response addApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
+	public Response addApplicazione(Authentication user, String idA2A, java.io.InputStream is) {
 		String methodName = "addApplicazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -218,7 +218,7 @@ public class ApplicazioniController extends BaseController {
 
 
 
-	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal, Boolean metadatiPaginazione, Boolean maxRisultati) {
+	public Response findApplicazioni(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findApplicazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

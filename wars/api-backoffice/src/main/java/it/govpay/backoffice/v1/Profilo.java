@@ -52,7 +52,7 @@ public class Profilo extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getProfilo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
-        return this.controller.getProfilo(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.getProfilo(this.getUser());
     }
 
     @PATCH
@@ -61,7 +61,7 @@ public class Profilo extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response updateProfilo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
     	 this.buildContext();
-        return this.controller.updateProfilo(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.updateProfilo(this.getUser(), is);
     }
 
 }

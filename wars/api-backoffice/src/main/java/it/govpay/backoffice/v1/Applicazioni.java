@@ -55,7 +55,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findApplicazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("idA2A") String idA2A, @QueryParam("principal") String principal, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findApplicazioni(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idA2A, principal, metadatiPaginazione, maxRisultati);
+        return this.controller.findApplicazioni(this.getUser(), uriInfo, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idA2A, principal, metadatiPaginazione, maxRisultati);
     }
 
     @GET
@@ -63,7 +63,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A){
         this.buildContext();
-        return this.controller.getApplicazione(this.getUser(), uriInfo, httpHeaders,  idA2A);
+        return this.controller.getApplicazione(this.getUser(), idA2A);
     }
 
     @PUT
@@ -71,7 +71,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     public Response addApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addApplicazione(this.getUser(), uriInfo, httpHeaders,  idA2A, is);
+        return this.controller.addApplicazione(this.getUser(), idA2A, is);
     }
 
     @PATCH
@@ -80,7 +80,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response updateApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idA2A") String idA2A){
         this.buildContext();
-        return this.controller.updateApplicazione(this.getUser(), uriInfo, httpHeaders, is,  idA2A);
+        return this.controller.updateApplicazione(this.getUser(), is,  idA2A);
     }
 
 }

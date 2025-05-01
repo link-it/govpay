@@ -52,7 +52,7 @@ public class Ricevute extends BaseRsServiceV1 {
     @Produces({ "application/json" })
     public Response addRicevuta(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
     	this.buildContext();
-        return this.controller.addRicevuta(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.addRicevuta(this.getUser(), httpHeaders, is);
     }
 
 }

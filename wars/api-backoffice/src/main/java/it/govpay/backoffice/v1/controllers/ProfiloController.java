@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -46,6 +41,8 @@ import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 public class ProfiloController extends BaseController {
 
@@ -53,7 +50,7 @@ public class ProfiloController extends BaseController {
  		super(nomeServizio,log);
      }
 
-    public Response getProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
+    public Response getProfilo(Authentication user) {
     	String methodName = "getProfilo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -79,7 +76,7 @@ public class ProfiloController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response updateProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+	public Response updateProfilo(Authentication user, java.io.InputStream is) {
     	String methodName = "updateProfilo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

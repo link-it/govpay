@@ -25,11 +25,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -64,6 +59,9 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 public class PagamentiController extends BaseController {
 
@@ -78,7 +76,7 @@ public class PagamentiController extends BaseController {
 
 
 
-    public Response getPagamento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response getPagamento(Authentication user, String id) {
     	String methodName = "getPagamento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -126,7 +124,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento,
+    public Response findPagamenti(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String ordinamento,
     		String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id,
     		Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA, String idDominio, String iuv, String idA2A, String idPendenza) {
     	String methodName = "findPagamenti";
@@ -260,7 +258,7 @@ public class PagamentiController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-	public Response updatePagamento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
+	public Response updatePagamento(Authentication user, java.io.InputStream is, String id) {
     	String methodName = "updatePagamento";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

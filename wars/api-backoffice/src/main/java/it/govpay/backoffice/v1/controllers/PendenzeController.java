@@ -125,7 +125,7 @@ public class PendenzeController extends BaseController {
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 	}
 
-    public Response getPendenzaByAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    public Response getPendenzaByAvviso(Authentication user, String idDominio, String numeroAvviso) {
     	String methodName = "getPendenzaByAvviso";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -166,7 +166,7 @@ public class PendenzeController extends BaseController {
 		}
     }
 
-	public Response getPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
+	public Response getPendenza(Authentication user, String idA2A, String idPendenza, boolean addInfoIncasso) {
 		String methodName = "getPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -205,7 +205,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, List<String> idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
+	public Response findPendenze(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, List<String> idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -320,7 +320,7 @@ public class PendenzeController extends BaseController {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Response updatePendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
+	public Response updatePendenza(Authentication user, String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
 		String methodName = "updatePendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -386,7 +386,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso) {
+	public Response addPendenza(Authentication user, String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso) {
 		String methodName = "addPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -439,7 +439,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso) {
+	public Response addPendenza(Authentication user, java.io.InputStream is, Boolean stampaAvviso) {
 		String methodName = "addPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -492,7 +492,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, String idUnitaOperativa, Boolean stampaAvviso) {
+	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, String idDominio, String idTipoPendenza, java.io.InputStream is, String idUnitaOperativa, Boolean stampaAvviso) {
 		String methodName = "addPendenzaPOST";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -559,7 +559,7 @@ public class PendenzeController extends BaseController {
 	}
 
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvvisi) {
+	public Response addTracciatoPendenze(Authentication user, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvvisi) {
 		String methodName = "addTracciatoPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -654,15 +654,15 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean stampaAvvisi) {
-		return addTracciatoPendenzeEngine(user, uriInfo, httpHeaders, is, idDominio, null, stampaAvvisi, false);
+	public Response addTracciatoPendenze(Authentication user, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean stampaAvvisi) {
+		return addTracciatoPendenzeEngine(user, httpHeaders, is, idDominio, null, stampaAvvisi, false);
 	}
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean stampaAvvisi) {
-		return addTracciatoPendenzeEngine(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, stampaAvvisi, true);
+	public Response addTracciatoPendenze(Authentication user, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean stampaAvvisi) {
+		return addTracciatoPendenzeEngine(user, httpHeaders, is, idDominio, idTipoPendenza, stampaAvvisi, true);
 	}
 
-	private Response addTracciatoPendenzeEngine(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
+	private Response addTracciatoPendenzeEngine(Authentication user, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
 			Boolean stampaAvvisi, boolean checkTipoPendenza) {
 		String methodName = "addTracciatoPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -779,7 +779,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
+	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findTracciatiPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -853,7 +853,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response getEsitoTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+	public Response getEsitoTracciatoPendenze(Authentication user, Integer id) {
 		String methodName = "getEsitoTracciatoPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -1078,7 +1078,7 @@ public class PendenzeController extends BaseController {
 	}
 
 
-	public Response getStampeTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+	public Response getStampeTracciatoPendenze(Authentication user, Integer id) {
 		String methodName = "getStampeTracciatoPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 

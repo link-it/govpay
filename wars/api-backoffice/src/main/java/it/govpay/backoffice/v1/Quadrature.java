@@ -56,7 +56,7 @@ public class Quadrature extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findQuadratureRiscossioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") List<String> idDominio, @QueryParam("idUnita") List<String> idUnita, @QueryParam("idTipoPendenza") List<String> idTipoPendenza, @QueryParam("idA2A") List<String> idA2A, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione, @QueryParam("tassonomia") List<String> tassonomia, @QueryParam("tipo") List<String> tipo, @QueryParam("gruppi") List<String> gruppi){
     	 this.buildContext();
-        return this.controller.getQuadratureRiscossioni(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, idDominio, idUnita, idTipoPendenza, idA2A, direzione, divisione, tassonomia, tipo, gruppi);
+        return this.controller.getQuadratureRiscossioni(this.getUser(), uriInfo, pagina, risultatiPerPagina, dataDa, dataA, idDominio, idUnita, idTipoPendenza, idA2A, direzione, divisione, tassonomia, tipo, gruppi);
     }
 
     @GET
@@ -65,7 +65,7 @@ public class Quadrature extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findQuadratureRendicontazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("gruppi") List<String> gruppi, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("flussoRendicontazione.dataFlussoDa") String flussoRendicontazioneDataFlussoDa, @QueryParam("flussoRendicontazione.dataFlussoA") String flussoRendicontazioneDataFlussoA, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idFlusso") String idFlusso, @QueryParam("iuv") String iuv, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione){
     	 this.buildContext();
-        return this.controller.getQuadratureRendicontazioni(this.getUser(), uriInfo, httpHeaders, gruppi, pagina, risultatiPerPagina, flussoRendicontazioneDataFlussoDa, flussoRendicontazioneDataFlussoA, dataDa, dataA, idFlusso, iuv, direzione, divisione);
+        return this.controller.getQuadratureRendicontazioni(this.getUser(), uriInfo, gruppi, pagina, risultatiPerPagina, flussoRendicontazioneDataFlussoDa, flussoRendicontazioneDataFlussoA, dataDa, dataA, idFlusso, iuv, direzione, divisione);
     }
 
 }

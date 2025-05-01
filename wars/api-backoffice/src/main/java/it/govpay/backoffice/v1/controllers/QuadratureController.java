@@ -24,11 +24,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -62,6 +57,9 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.reportistica.statistiche.FiltroRendicontazioni;
 import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 
 public class QuadratureController extends BaseController {
@@ -72,7 +70,7 @@ public class QuadratureController extends BaseController {
 
 
 
-    public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , List<String> gruppi, Integer pagina, Integer risultatiPerPagina,
+    public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, List<String> gruppi, Integer pagina, Integer risultatiPerPagina,
     		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
     	String methodName = "getQuadratureRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -197,7 +195,7 @@ public class QuadratureController extends BaseController {
 
 
 
-	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina,
+	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina,
 			String dataDa, String dataA, List<String> idDominio, List<String> idUnita, List<String> idTipoPendenza, List<String> idA2A, List<String> direzione, List<String> divisione, List<String> tassonomia, List<String> tipo, List<String> gruppi) {
 		String methodName = "getQuadratureRiscossioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();

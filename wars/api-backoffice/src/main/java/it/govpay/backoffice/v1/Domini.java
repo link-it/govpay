@@ -55,7 +55,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getUnitaOperativa(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa){
         this.buildContext();
-        return this.controller.getUnitaOperativa(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa);
+        return this.controller.getUnitaOperativa(this.getUser(), idDominio,  idUnitaOperativa);
     }
 
     @GET
@@ -64,7 +64,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findDomini(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento, @QueryParam("idStazione") String idStazione, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idDominio") String idDominio, @QueryParam("ragioneSociale") String ragioneSociale, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati, @QueryParam("intermediato") Boolean intermediato){
         this.buildContext();
-        return this.controller.findDomini(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, campi, abilitato, ordinamento, idStazione, associati, form, idDominio, ragioneSociale, metadatiPaginazione, maxRisultati, intermediato);
+        return this.controller.findDomini(this.getUser(), uriInfo, pagina, risultatiPerPagina, campi, abilitato, ordinamento, idStazione, associati, form, idDominio, ragioneSociale, metadatiPaginazione, maxRisultati, intermediato);
     }
 
     @GET
@@ -73,7 +73,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findContiAccredito(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("iban") String iban, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findContiAccredito(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, iban, metadatiPaginazione, maxRisultati);
+        return this.controller.findContiAccredito(this.getUser(), uriInfo, idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, iban, metadatiPaginazione, maxRisultati);
     }
 
     @GET
@@ -82,7 +82,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findEntrate(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("descrizione") String descrizione, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findEntrate(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, descrizione, metadatiPaginazione, maxRisultati);
+        return this.controller.findEntrate(this.getUser(), uriInfo, idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, descrizione, metadatiPaginazione, maxRisultati);
     }
 
     @GET
@@ -91,7 +91,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findUnitaOperative(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("associati") Boolean associati, @QueryParam("ragioneSociale") String ragioneSociale, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findUnitaOperative(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, associati, ragioneSociale, metadatiPaginazione, maxRisultati);
+        return this.controller.findUnitaOperative(this.getUser(), uriInfo, idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, associati, ragioneSociale, metadatiPaginazione, maxRisultati);
     }
 
     @GET
@@ -100,7 +100,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("trasformazione") Boolean trasformazione, @QueryParam("descrizione") String descrizione, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findTipiPendenza(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form, trasformazione, descrizione, metadatiPaginazione, maxRisultati);
+        return this.controller.findTipiPendenza(this.getUser(), uriInfo, idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form, trasformazione, descrizione, metadatiPaginazione, maxRisultati);
     }
 
     @PUT
@@ -109,7 +109,7 @@ public class Domini extends BaseRsServiceV1{
 
     public Response addUnitaOperativa(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addUnitaOperativa(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa, is);
+        return this.controller.addUnitaOperativa(this.getUser(), idDominio,  idUnitaOperativa, is);
     }
 
     @PUT
@@ -118,7 +118,7 @@ public class Domini extends BaseRsServiceV1{
 
     public Response addEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addEntrata(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata, is);
+        return this.controller.addEntrata(this.getUser(), idDominio,  idEntrata, is);
     }
 
     @PUT
@@ -127,7 +127,7 @@ public class Domini extends BaseRsServiceV1{
 
     public Response addDominio(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addDominio(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
+        return this.controller.addDominio(this.getUser(), idDominio, is);
     }
 
     @PUT
@@ -136,7 +136,7 @@ public class Domini extends BaseRsServiceV1{
 
     public Response addTipoPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addTipoPendenza(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is);
+        return this.controller.addTipoPendenza(this.getUser(), idDominio,  idTipoPendenza, is);
     }
 
     @PUT
@@ -145,7 +145,7 @@ public class Domini extends BaseRsServiceV1{
 
     public Response addContiAccredito(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addContiAccredito(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito, is);
+        return this.controller.addContiAccredito(this.getUser(), idDominio,  ibanAccredito, is);
     }
 
     @GET
@@ -154,7 +154,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getTipoPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza){
         this.buildContext();
-        return this.controller.getTipoPendenza(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza);
+        return this.controller.getTipoPendenza(this.getUser(), idDominio,  idTipoPendenza);
     }
 
     @GET
@@ -163,7 +163,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getContiAccredito(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito){
         this.buildContext();
-        return this.controller.getContiAccredito(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito);
+        return this.controller.getContiAccredito(this.getUser(), idDominio,  ibanAccredito);
     }
 
     @GET
@@ -172,7 +172,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getDominio(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
         this.buildContext();
-        return this.controller.getDominio(this.getUser(), uriInfo, httpHeaders,  idDominio);
+        return this.controller.getDominio(this.getUser(), idDominio);
     }
 
     @GET
@@ -181,7 +181,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata){
         this.buildContext();
-        return this.controller.getEntrata(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata);
+        return this.controller.getEntrata(this.getUser(), idDominio,  idEntrata);
     }
 
     @GET
@@ -189,7 +189,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" , "application/octet-stream"})
     public Response getLogo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
             this.buildContext();
-            return this.controller.getLogo(this.getUser(), uriInfo, httpHeaders,  idDominio);
+            return this.controller.getLogo(this.getUser(), idDominio);
     }
 
 }

@@ -57,7 +57,7 @@ public class Entrate extends BaseRsServiceV1{
 
     public Response addEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idEntrata") String idEntrata, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addEntrata(this.getUser(), uriInfo, httpHeaders,  idEntrata, is);
+        return this.controller.addEntrata(this.getUser(), idEntrata, is);
     }
 
     @GET
@@ -66,7 +66,7 @@ public class Entrate extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idEntrata") String idEntrata){
         this.buildContext();
-        return this.controller.getEntrata(this.getUser(), uriInfo, httpHeaders,  idEntrata);
+        return this.controller.getEntrata(this.getUser(), idEntrata);
     }
 
     @GET
@@ -75,7 +75,7 @@ public class Entrate extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findEntrate(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findEntrate(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, metadatiPaginazione, maxRisultati);
+        return this.controller.findEntrate(this.getUser(), uriInfo, pagina, risultatiPerPagina, ordinamento, campi, metadatiPaginazione, maxRisultati);
     }
 
 }

@@ -53,7 +53,7 @@ public class Avvisi extends BaseRsServiceV1{
     @Produces({ "application/json", "application/pdf" })
     public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("linguaSecondaria") String linguaSecondaria){
         this.buildContext();
-        return this.controller.getAvviso(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso, linguaSecondaria);
+        return this.controller.getAvviso(this.getUser(), httpHeaders,  idDominio,  numeroAvviso, linguaSecondaria);
     }
 
 }

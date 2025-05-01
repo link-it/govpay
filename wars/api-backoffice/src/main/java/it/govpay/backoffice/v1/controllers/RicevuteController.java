@@ -24,12 +24,6 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
-import jakarta.mail.BodyPart;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.mime.MimeMultipart;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -50,6 +44,10 @@ import it.govpay.core.dao.pagamenti.dto.PostRicevutaDTO;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.mail.BodyPart;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 public class RicevuteController extends BaseController {
 
@@ -57,7 +55,7 @@ public class RicevuteController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response addRicevuta(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+	public Response addRicevuta(Authentication user, HttpHeaders httpHeaders , java.io.InputStream is) {
 		String methodName = "addRicevuta";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 

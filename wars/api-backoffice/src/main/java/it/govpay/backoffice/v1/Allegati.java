@@ -55,7 +55,7 @@ public class Allegati extends BaseRsServiceV1 {
     @Produces({ "*/*" })
     public Response getAllegatoPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.getAllegatoPendenza(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getAllegatoPendenza(this.getUser(), id);
     }
 
 }

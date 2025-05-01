@@ -55,7 +55,7 @@ public class Eventi extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.buildContext();
-        return this.controller.getEvento(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getEvento(this.getUser(), id);
     }
 
     @GET
@@ -67,7 +67,7 @@ public class Eventi extends BaseRsServiceV1{
     		@QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("idPagamento") String idPagamento, @QueryParam("esito") String esito, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
 		@QueryParam("categoriaEvento") String categoriaEvento, @QueryParam("tipoEvento") String tipoEvento, @QueryParam("sottotipoEvento") String sottotipoEvento, @QueryParam("componente") String componente, @QueryParam("ruolo") String ruolo, @QueryParam("messaggi") Boolean messaggi, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati, @QueryParam("severitaDa") String severitaDa, @QueryParam("severitaA") String severitaA){
         this.buildContext();
-        return this.controller.findEventi(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, esito, dataDa, dataA, categoriaEvento, tipoEvento, sottotipoEvento, componente, ruolo, messaggi, metadatiPaginazione, maxRisultati, severitaDa, severitaA);
+        return this.controller.findEventi(this.getUser(), uriInfo, pagina, risultatiPerPagina, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, esito, dataDa, dataA, categoriaEvento, tipoEvento, sottotipoEvento, componente, ruolo, messaggi, metadatiPaginazione, maxRisultati, severitaDa, severitaA);
     }
 
 }

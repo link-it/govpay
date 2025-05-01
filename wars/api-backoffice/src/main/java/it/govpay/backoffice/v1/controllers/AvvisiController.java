@@ -45,7 +45,6 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
 
 public class AvvisiController extends BaseController {
 
@@ -53,7 +52,7 @@ public class AvvisiController extends BaseController {
     	 super(nomeServizio,log);
      }
 
-    public Response getAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String linguaSecondaria) {
+    public Response getAvviso(Authentication user, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String linguaSecondaria) {
     	String methodName = "getAvviso";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

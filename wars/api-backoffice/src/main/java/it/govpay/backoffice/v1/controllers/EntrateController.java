@@ -46,7 +46,6 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.UriInfo;
@@ -59,7 +58,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response addEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata, java.io.InputStream is) {
+    public Response addEntrata(Authentication user, String idEntrata, java.io.InputStream is) {
     	String methodName = "addEntrata";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -97,7 +96,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response getEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
+    public Response getEntrata(Authentication user, String idEntrata) {
     	String methodName = "getEntrata";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -136,7 +135,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean metadatiPaginazione, Boolean maxRisultati) {
+    public Response findEntrate(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findEntrate";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

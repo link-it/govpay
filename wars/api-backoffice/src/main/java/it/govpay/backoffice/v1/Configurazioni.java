@@ -53,7 +53,7 @@ public class Configurazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
-        return this.controller.getConfigurazioni(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.getConfigurazioni(this.getUser());
     }
 
     @PATCH
@@ -62,7 +62,7 @@ public class Configurazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response aggiornaConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.buildContext();
-        return this.controller.aggiornaConfigurazioni(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.aggiornaConfigurazioni(this.getUser(), is);
     }
 
     @POST
@@ -71,7 +71,7 @@ public class Configurazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response addConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addConfigurazioni(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.addConfigurazioni(this.getUser(), is);
     }
 
 }

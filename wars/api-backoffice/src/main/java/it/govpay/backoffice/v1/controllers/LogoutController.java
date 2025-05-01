@@ -24,9 +24,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
 
 
 
@@ -39,7 +37,7 @@ public class LogoutController extends BaseController {
 
 
 
-	public Response logout(UriInfo uriInfo, HttpHeaders httpHeaders ) {
+	public Response logout() {
 		String methodName = "logout";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);

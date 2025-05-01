@@ -30,10 +30,8 @@ import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
 import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
 
 
 
@@ -44,7 +42,7 @@ public class EnumerazioniController extends BaseController {
      }
 
 
-    public Response findEnumerazioniServiziACL(UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response findEnumerazioniServiziACL() {
 		String methodName = "findEnumerazioniServiziACL";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -66,7 +64,7 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response findEnumerazioniVersioneConnettore(UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response findEnumerazioniVersioneConnettore() {
 		String methodName = "findEnumerazioniVersioneConnettore";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
