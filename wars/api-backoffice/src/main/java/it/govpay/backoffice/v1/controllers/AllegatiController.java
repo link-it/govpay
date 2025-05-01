@@ -91,7 +91,7 @@ public class AllegatiController extends BaseController  {
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+allegatoFileName+Costanti.SUFFIX_FILENAME),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

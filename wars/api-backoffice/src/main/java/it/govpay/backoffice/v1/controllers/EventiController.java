@@ -101,9 +101,9 @@ public class EventiController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			if(idDominio != null)
-				validatoreId.validaIdDominio("idDominio", idDominio);
+				validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
 			if(idA2A != null)
-				validatoreId.validaIdApplicazione("idA2A", idA2A);
+				validatoreId.validaIdApplicazione(Costanti.PARAM_ID_A2A, idA2A);
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
@@ -179,12 +179,12 @@ public class EventiController extends BaseController {
 
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaEventiDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaEventiDTO.setDataA(dataADate);
 			}
 
@@ -195,7 +195,7 @@ public class EventiController extends BaseController {
 					throw new ValidationException("Il valore indicato per il parametro [severitaA] non e' valido: il valore fornito [" + severitaA + "] non e' un intero.");
 				}
 
-				ValidatoreUtils.validaSeveritaA(vf, "severitaA", listaEventiDTO.getSeveritaA());
+				ValidatoreUtils.validaSeveritaA(vf, Costanti.PARAM_SEVERITA_A, listaEventiDTO.getSeveritaA());
 			}
 			if(severitaDa != null) {
 				try {
@@ -204,7 +204,7 @@ public class EventiController extends BaseController {
 					throw new ValidationException("Il valore indicato per il parametro [severitaDa] non e' valido: il valore fornito [" + severitaDa + "] non e' un intero.");
 				}
 
-				ValidatoreUtils.validaSeveritaDa(vf, "severitaDa", listaEventiDTO.getSeveritaDa());
+				ValidatoreUtils.validaSeveritaDa(vf, Costanti.PARAM_SEVERITA_DA, listaEventiDTO.getSeveritaDa());
 			}
 
 			boolean autorizzato = true;
@@ -277,9 +277,6 @@ public class EventiController extends BaseController {
 			List<String> domini = null;
 			// Autorizzazione sui domini
 			domini = AuthorizationManager.getDominiAutorizzati(user);
-			//			if(domini == null) {
-			//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			//			}
 			listaEventiDTO.setCodDomini(domini);
 
 			EventiDAO pspDAO = new EventiDAO();
@@ -302,7 +299,7 @@ public class EventiController extends BaseController {
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -416,7 +413,7 @@ public class EventiController extends BaseController {
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)).type(MediaType.APPLICATION_JSON),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

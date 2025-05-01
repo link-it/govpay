@@ -54,7 +54,7 @@ public class TracciatiNotificaPagamenti extends BaseRsServiceV1{
     @Produces({ "application/zip" })
     public Response getTracciatoNotificaPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id, @QueryParam("secID") String secID){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.getTracciatoNotificaPagamenti(this.getUser(), uriInfo, httpHeaders,  id, secID);
+        return this.controller.getTracciatoNotificaPagamenti(this.getUser(), id, secID);
     }
 
 }

@@ -22,22 +22,20 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.StreamingOutput;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.TracciatiNotificaPagamentiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoNotificaPagamentiDTO;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.StreamingOutput;
 
 
 
@@ -49,7 +47,7 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 
 
 
-    public Response getTracciatoNotificaPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id, String secID) {
+    public Response getTracciatoNotificaPagamenti(Authentication user, Long id, String secID) {
     	String methodName = "getTracciatoNotificaPagamenti";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -74,9 +72,9 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 			StreamingOutput zipStream = tracciatiDAO.leggiBlobTracciato(id, secID, idDomini, it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+zipFileName+Costanti.SUFFIX_CONTENT_DISPOSITION),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

@@ -25,12 +25,10 @@ import java.util.List;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
 import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
@@ -46,7 +44,7 @@ public class EnumerazioniController extends BaseController {
      }
 
 
-    public Response findEnumerazioniServiziACL(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response findEnumerazioniServiziACL(UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniServiziACL";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -60,7 +58,7 @@ public class EnumerazioniController extends BaseController {
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -68,7 +66,7 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response findEnumerazioniVersioneConnettore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response findEnumerazioniVersioneConnettore(UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniVersioneConnettore";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -81,7 +79,7 @@ public class EnumerazioniController extends BaseController {
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

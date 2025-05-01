@@ -87,7 +87,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore, Boolean metadatiPaginazione, Boolean maxRisultati, Boolean retrocompatibilitaMessaggiPagoPAV1) {
+	public Response findRpps(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore, Boolean metadatiPaginazione, Boolean maxRisultati, Boolean retrocompatibilitaMessaggiPagoPAV1) {
 		String methodName = "findRpps";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -226,13 +226,13 @@ public class RppController extends BaseController {
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
-	public Response getRpp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
+	public Response getRpp(Authentication user, String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
 		String methodName = "getRpp";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -277,14 +277,14 @@ public class RppController extends BaseController {
 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public Response updateRpp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String iuv, String ccp) {
+	public Response updateRpp(Authentication user, java.io.InputStream is, String idDominio, String iuv, String ccp) {
 		String methodName = "updateRpp";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -349,13 +349,13 @@ public class RppController extends BaseController {
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
-	public Response getRpt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
+	public Response getRpt(Authentication user, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
 		String methodName = "getRpt";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -400,7 +400,7 @@ public class RppController extends BaseController {
 			return creaMessaggioRpt(retrocompatibilitaMessaggiPagoPAV1, methodName, transactionId, accept,
 					leggiRptDTOResponse);
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -424,7 +424,7 @@ public class RppController extends BaseController {
 		return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(messaggioRPT),transactionId).build();
 	}
 
-	public Response getRt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
+	public Response getRt(Authentication user, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean retrocompatibilitaMessaggiPagoPAV1) {
 		String methodName = "getRt";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -509,7 +509,7 @@ public class RppController extends BaseController {
 			return this.handleResponseOk(entity,transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

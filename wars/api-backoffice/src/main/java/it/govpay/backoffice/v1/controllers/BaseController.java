@@ -32,15 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -67,6 +58,13 @@ import it.govpay.core.utils.LogUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -99,7 +97,7 @@ public abstract class BaseController {
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
 	protected BigDecimal maxRisultatiBigDecimal;
 
-	public BaseController(String nomeServizio, Logger log) {
+	protected BaseController(String nomeServizio, Logger log) {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 	}
@@ -167,34 +165,34 @@ public abstract class BaseController {
 			return responseBuilder;
 	}
 
-	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
+	protected Response handleException(String methodName, Exception e, String transactionId) {
 
-		if(e instanceof IncassiException) {
-			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
+		if(e instanceof IncassiException incassiException) {
+			return this.handleIncassiException(methodName, incassiException,transactionId);
 		}
 
-		if(e instanceof UnprocessableEntityException) {
-			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
+		if(e instanceof UnprocessableEntityException unprocessableEntityException) {
+			return this.handleUnprocessableEntityException(methodName, unprocessableEntityException,transactionId);
 		}
 
-		if(e instanceof BaseExceptionV1) {
-			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
+		if(e instanceof BaseExceptionV1 baseExceptionV1) {
+			return this.handleBaseException(methodName, baseExceptionV1,transactionId);
 		}
 
-		if(e instanceof RedirectException) {
-			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
+		if(e instanceof RedirectException redirectException) {
+			return this.handleRedirectException(methodName, redirectException,transactionId);
 		}
 
-		if(e instanceof GovPayException) {
-			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
+		if(e instanceof GovPayException govPayException) {
+			return this.handleGovpayException(methodName, govPayException,transactionId);
 		}
 
-		if(e instanceof ValidationException) {
-			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+		if(e instanceof ValidationException validationException) {
+			return this.handleValidationException(validationException,transactionId);
 		}
 
-		if(e instanceof IOException) {
-			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		if(e instanceof IOException ioException) {
+			return this.handleIOException(ioException,transactionId);
 		}
 
 		this.logError(MessageFormat.format("Errore interno durante {0}", methodName), e);
@@ -221,7 +219,7 @@ public abstract class BaseController {
 		return respKoJson;
 	}
 
-	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
+	private Response handleBaseException(String methodName, BaseExceptionV1 e, String transactionId) {
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(FaultBean.CategoriaEnum.fromValue(e.getCategoria().name()));
 		respKo.setCodice(e.getCode());
@@ -245,7 +243,7 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
+	private Response handleUnprocessableEntityException(String methodName, UnprocessableEntityException e, String transactionId) {
 		this.logInfo("Errore ({}) durante {}: {}", e.getClass().getSimpleName(), methodName, e.getMessage());
 
 		FaultBean respKo = new FaultBean();
@@ -264,10 +262,9 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
+	private Response handleGovpayException(String methodName, GovPayException e, String transactionId) {
 		switch (e.getStatusCode()) {
-		case 200:
-		case 422: // richieste che non passano la validazione semantica
+		case 200, 422: // richieste che non passano la validazione semantica
 			this.logInfo("Rilevata GovPayException durante l''esecuzione del metodo: {}, causa: {}, messaggio: {}", methodName, e.getCausa(), e.getMessageV3());
 			break;
 		default:
@@ -300,7 +297,7 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
+	private Response handleValidationException(ValidationException e, String transactionId) {
 		this.logWarnException(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
@@ -316,7 +313,7 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
+	private Response handleIOException(IOException e, String transactionId) {
 		this.logWarnException(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
@@ -332,7 +329,7 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
+	private Response handleIncassiException(String methodName, IncassiException e, String transactionId) {
 		this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
 
 		FaultBean respKo = new FaultBean();
@@ -350,7 +347,7 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
+	private Response handleRedirectException(String methodName, RedirectException e, String transactionId) {
 		this.logError(MessageFormat.format("Esecuzione del metodo [{0}] si e'' conclusa con un errore: {1}, redirect verso la url: {2}", methodName, e.getMessage(), e.getLocation()));
 		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
 		this.handleEventoOk(responseBuilder, transactionId);
@@ -468,9 +465,8 @@ public abstract class BaseController {
 		Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
 		this.maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
 
-		if(anagrafica) {
-			if(!metadatiPaginazione)
-				this.maxRisultatiBigDecimal = null;
+		if(anagrafica && Boolean.FALSE.equals(metadatiPaginazione)) {
+			this.maxRisultatiBigDecimal = null;
 		}
 	}
 

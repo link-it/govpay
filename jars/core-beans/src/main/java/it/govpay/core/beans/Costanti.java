@@ -73,12 +73,21 @@ public class Costanti {
 	public static final String PARAM_PRINCIPAL = "principal";
     public static final String PARAM_ID_STAZIONE = "idStazione";
 	public static final String PARAM_ID_INTERMEDIARIO = "idIntermediario";
+	public static final String PARAM_DATA_ORA_FLUSSO = "dataOraFlusso";
+	public static final String PARAM_SEVERITA_DA = "severitaDa";
+	public static final String PARAM_SEVERITA_A = "severitaA";
+    public static final String PARAM_NUMERO_DOCUMENTO = "numeroDocumento";
+	public static final String PARAM_ID_ENTRATA = "idEntrata";
+	public static final String PARAM_IBAN_ACCREDITO = "ibanAccredito";
+	
 	
 	/** NOMI HEADERS */
 	public static final String HEADER_NAME_CONTENT_DISPOSITION = "content-disposition";
 	public static final String HEADER_NAME_ACCEPT = "Accept";
 	public static final String HEADER_NAME_X_GOVPAY_FILENAME = "X-GOVPAY-FILENAME";
 	public static final String HEADER_NAME_CONTENT_TYPE = "Content-Type";
+	public static final String HEADER_NAME_CACHE_CONTROL = "CacheControl";
+	public static final String HEADER_NAME_X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
 	
 	/** ALTRE COSTANTI */
 	public static final String MEDIA_TYPE_APPLICATION_PDF = "application/pdf";
@@ -89,5 +98,9 @@ public class Costanti {
 
 	public static final String CHARSET_UTF_8 = "UTF-8";
 	public static final String MULTIPART_PREFIX = "multipart";
+	public static final String VALUE_MAX_AGE = "max-age: ";
+	
+	/** COSTANTI MESSAGGI */
+	public static final String MSG_L_ENTE_CREDITORE_NON_E_TRA_QUELLI_ASSOCIATI_ALL_UTENZA = "l'ente creditore non e' tra quelli associati all'utenza";
 	
 }

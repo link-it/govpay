@@ -20,14 +20,13 @@
 package it.govpay.backoffice.v1.controllers;
 
 
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.slf4j.Logger;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
 
 
 
@@ -40,7 +39,7 @@ public class LogoutController extends BaseController {
 
 
 
-	public Response logout(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+	public Response logout(UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "logout";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -53,7 +52,7 @@ public class LogoutController extends BaseController {
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.ok(),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

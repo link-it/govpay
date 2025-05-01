@@ -23,13 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -56,6 +49,11 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 
 
@@ -94,11 +92,11 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
 			if(dataDa != null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				findRendicontazioniDTO.setDataAcquisizioneFlussoDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				findRendicontazioniDTO.setDataAcquisizioneFlussoA(dataADate);
 			}
 			if(incassato != null) {
@@ -142,14 +140,14 @@ public class FlussiRendicontazioneController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(findRendicontazioniDTOResponse.getResults().stream().map(t -> FlussiRendicontazioneConverter.toRsIndexModel(t.getFr())).collect(Collectors.toList()),
+			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(findRendicontazioniDTOResponse.getResults().stream().map(t -> FlussiRendicontazioneConverter.toRsIndexModel(t.getFr())).toList(),
 					this.getServicePath(uriInfo), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -166,8 +164,8 @@ public class FlussiRendicontazioneController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
 
 			String accept = MediaType.APPLICATION_JSON;
-			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			if(httpHeaders.getRequestHeaders().containsKey(Costanti.HEADER_NAME_ACCEPT)) {
+				accept = httpHeaders.getRequestHeaders().get(Costanti.HEADER_NAME_ACCEPT).get(0).toLowerCase();
 			}
 
 			// Parametri - > DTO Input
@@ -175,7 +173,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			leggiRendicontazioneDTO.setIdDominio(idDominio);
 			leggiRendicontazioneDTO.setAccept(accept);
 			if(dataOraFlusso != null) {
-				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
+				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, Costanti.PARAM_DATA_ORA_FLUSSO);
 				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);
 			} else {
 				leggiRendicontazioneDTO.setObsoleto(false);
@@ -215,7 +213,7 @@ public class FlussiRendicontazioneController extends BaseController {
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

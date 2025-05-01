@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -57,6 +52,9 @@ import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 public class SondeController extends BaseController{
 
@@ -64,7 +62,7 @@ public class SondeController extends BaseController{
 		super(nomeServizio, log);
 	}
 
-	public Response findSonde(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
+	public Response findSonde(Authentication user, UriInfo uriInfo) {
 		String methodName = "findSonde";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -118,13 +116,13 @@ public class SondeController extends BaseController{
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
-	public Response getSonda(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String id) {
+	public Response getSonda(Authentication user, String id) {
 		String methodName = "getSonda";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
@@ -186,7 +184,7 @@ public class SondeController extends BaseController{
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}

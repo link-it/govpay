@@ -47,7 +47,7 @@ public class Check extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonde(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders) {
 		 this.buildContext();
-		 return this.controller.findSonde(this.getUser(), uriInfo, httpHeaders);
+		 return this.controller.findSonde(this.getUser(), uriInfo);
 	}
 
 	@GET
@@ -55,7 +55,7 @@ public class Check extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonda(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam(value = "id") String id) {
 		this.buildContext();
-		 return this.controller.getSonda(this.getUser(), uriInfo, httpHeaders, id);
+		 return this.controller.getSonda(this.getUser(), id);
 	}
 
 }

@@ -51,7 +51,7 @@ public class Logout extends BaseRsServiceV1{
 
     public Response logout(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.logout(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.logout(uriInfo, httpHeaders);
     }
 
 }
