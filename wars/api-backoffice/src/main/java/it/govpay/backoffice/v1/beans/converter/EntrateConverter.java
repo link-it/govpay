@@ -29,6 +29,8 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.exceptions.ValidationException;
 
 public class EntrateConverter {
+	
+	private EntrateConverter() {}
 
 	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, Authentication user) throws ValidationException {
 		PutEntrataDTO entrataDTO = new PutEntrataDTO(user);

@@ -76,7 +76,6 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     @Produces({ "application/xml", "application/json" })
     public Response getFlussoRendicontazioneByIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso){
         this.buildContext();
-        //Per retrocompatibilita, controllo se mi stanno invocando /{idFlusso}/{dataOraFlusso}
         try {
         	SimpleDateFormatUtils.getDataDaConTimestamp(idFlusso, "dataOraFlusso");
         	return this.controller.getFlussoRendicontazione(this.getUser(), httpHeaders, null, idDominio, idFlusso);

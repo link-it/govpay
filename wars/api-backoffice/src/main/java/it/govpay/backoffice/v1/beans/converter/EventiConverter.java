@@ -34,8 +34,10 @@ import it.govpay.backoffice.v1.beans.RuoloEvento;
 import it.govpay.core.exceptions.IOException;
 
 public class EventiConverter {
+	
+	private EventiConverter() {}
 
-	public static EventoIndex toRsModelIndex(it.govpay.bd.model.Evento evento) throws IOException {
+	public static EventoIndex toRsModelIndex(it.govpay.bd.model.Evento evento) {
 		EventoIndex rsModel = new EventoIndex();
 
 		rsModel.setId(evento.getId());
@@ -174,11 +176,9 @@ public class EventiConverter {
 
 		if(evento.getDettaglioRichiesta() != null) {
 			rsModel.setParametriRichiesta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRichiesta())));
-//			rsModel.setParametriRichiesta(new RawObject(ConverterUtils.getParametriRichiestaEvento(evento.getDettaglioRichiesta())));
 		}
 		if(evento.getDettaglioRisposta() != null) {
 			rsModel.setParametriRisposta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRisposta())));
-//			rsModel.setParametriRisposta(new RawObject(ConverterUtils.getParametriRispostaEvento(evento.getDettaglioRisposta())));
 		}
 
 		rsModel.setSeverita(evento.getSeverita() != null ? evento.getSeverita().intValue() : null);
@@ -192,8 +192,6 @@ public class EventiConverter {
 		DatiPagoPA datiPagoPA = null;
 		if(evento.getPagoPA() != null) {
 			datiPagoPA = new DatiPagoPA();
-//			datiPagoPA.setIdentificativoErogatore(evento.getPagoPA().getErogatore());
-//			datiPagoPA.setIdentificativoFruitore(evento.getPagoPA().getFruitore());
 			datiPagoPA.setIdCanale(evento.getPagoPA().getCodCanale());
 			datiPagoPA.setIdPsp(evento.getPagoPA().getCodPsp());
 			datiPagoPA.setIdIntermediarioPsp(evento.getPagoPA().getCodIntermediarioPsp());

@@ -37,6 +37,8 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Stazione.Versione;
 
 public class StazioniConverter {
+	
+	private StazioniConverter() {}
 
 	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws UnprocessableEntityException, ValidationException {
 		PutStazioneDTO stazioneDTO = new PutStazioneDTO(user);

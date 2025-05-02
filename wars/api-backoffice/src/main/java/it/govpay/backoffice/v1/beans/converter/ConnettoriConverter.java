@@ -30,6 +30,8 @@ import it.govpay.model.Versionabile;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoriConverter {
+	
+	private ConnettoriConverter() {}
 
 	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.Connector connector) throws CodificaInesistenteException {
 		Connettore connettore = new Connettore();

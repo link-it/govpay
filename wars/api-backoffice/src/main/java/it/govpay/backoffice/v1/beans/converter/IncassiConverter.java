@@ -38,10 +38,10 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 
 public class IncassiConverter {
 
+	private IncassiConverter() {}
 
 	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, String idDominio, Authentication user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
@@ -57,7 +57,7 @@ public class IncassiConverter {
 	}
 
 
-	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, IOException, ValidationException {
+	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, IOException {
 		Incasso rsModel = new Incasso();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 

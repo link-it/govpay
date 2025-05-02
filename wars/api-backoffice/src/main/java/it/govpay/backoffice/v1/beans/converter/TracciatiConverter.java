@@ -54,6 +54,7 @@ import it.govpay.model.Tracciato.StatoTracciatoType;
 
 public class TracciatiConverter {
 
+	private TracciatiConverter() {}
 
 	public static Tracciato toRsModel(it.govpay.bd.model.Tracciato tracciato) {
 		Tracciato rsModel = new Tracciato();
@@ -119,12 +120,12 @@ public class TracciatiConverter {
 		}
 
 		try {
-			if(tracciato.getRawRichiesta() == null) {
-
-			} else {
+			if(tracciato.getRawRichiesta() != null) {
 				rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
 			}
-		}catch(Exception e) {}
+		}catch(Exception e) {
+			//donothing
+		}
 
 		return rsModel;
 	}
@@ -277,7 +278,7 @@ public class TracciatiConverter {
 		try {
 			risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
 		} catch(Exception e) {
-
+			//donothing
 		}
 
 		PendenzaPost pendenzaPost = null;
@@ -290,6 +291,7 @@ public class TracciatiConverter {
 				annullamentoPendenza = AnnullamentoPendenza.parse(new String(operazione.getDatiRichiesta()));
 				rsModel.setRichiesta(annullamentoPendenza);
 			} catch(Exception e1) {
+				//donothing
 			}
 		}
 
@@ -330,6 +332,7 @@ public class TracciatiConverter {
 			if(dominio != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
+			//donothing
 		}
 	}
 
@@ -347,6 +350,7 @@ public class TracciatiConverter {
 			if(dominio != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
+			//donothing
 		}
 
 		Versamento versamento = opCaricamento.getVersamento();

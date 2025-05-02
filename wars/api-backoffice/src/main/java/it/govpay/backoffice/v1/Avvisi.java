@@ -30,7 +30,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import it.govpay.backoffice.v1.controllers.AvvisiController;
-import it.govpay.rs.v1.BaseRsServiceV1;;
+import it.govpay.rs.v1.BaseRsServiceV1;
 
 
 @Path("/avvisi")

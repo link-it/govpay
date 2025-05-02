@@ -26,12 +26,13 @@ import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class OperazioniConverter {
+	
+	private OperazioniConverter() {}
 
 	public static Operazione toRsModel(LeggiOperazioneDTOResponse leggiOperazioneDTOResponse) {
 		Operazione rsModel = new Operazione();
 
 		rsModel.setDescrizione(leggiOperazioneDTOResponse.getDescrizioneStato());
-//		rsModel.setDettaglio(leggiOperazioneDTOResponse.getDettaglio()); //TODO dettaglio operazione
 		rsModel.setEsito(leggiOperazioneDTOResponse.getEsito());
 		rsModel.setStato(StatoEnum.fromValue(leggiOperazioneDTOResponse.getStato().toString()));
 		rsModel.setIdOperazione(leggiOperazioneDTOResponse.getNome());

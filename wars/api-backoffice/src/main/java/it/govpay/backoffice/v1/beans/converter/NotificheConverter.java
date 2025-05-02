@@ -31,6 +31,8 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Notifica;
 
 public class NotificheConverter {
+	
+	private NotificheConverter() {}
 
 	public static NotificaIndex toRsModelIndex(Notifica notifica) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);

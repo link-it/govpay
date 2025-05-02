@@ -50,6 +50,8 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class TipiPendenzaConverter {
+	
+	private TipiPendenzaConverter() {}
 
 	public static PutTipoPendenzaDTO getPutTipoPendenzaDTO(TipoPendenzaPost entrataPost, String idTipoPendenza, Authentication user) throws ValidationException, IOException {
 		PutTipoPendenzaDTO entrataDTO = new PutTipoPendenzaDTO(user);

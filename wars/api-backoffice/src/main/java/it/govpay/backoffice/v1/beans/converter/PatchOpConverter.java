@@ -27,6 +27,8 @@ import it.govpay.core.beans.commons.Dominio;
 import it.govpay.model.PatchOp;
 
 public class PatchOpConverter {
+	
+	private PatchOpConverter() {}
 
 	public static List<PatchOp> toModel(List<it.govpay.backoffice.v1.beans.PatchOp> lstOp) {
 		List<PatchOp> list = new ArrayList<>();
@@ -42,8 +44,7 @@ public class PatchOpConverter {
 
 	private static void setValue(it.govpay.backoffice.v1.beans.PatchOp op, PatchOp e) {
 
-		if(op.getValue() != null && op.getValue() instanceof DominioProfiloPost) {
-			DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) op.getValue();
+		if(op.getValue() != null && op.getValue() instanceof DominioProfiloPost dominioProfiloPost) {
 			Dominio dominioCommons = DominiConverter.getDominioCommons(dominioProfiloPost);
 			e.setValue(dominioCommons);
 			return;

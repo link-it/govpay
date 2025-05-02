@@ -41,6 +41,8 @@ import it.govpay.model.TipoVersamento;
  *
  */
 public class ProfiloConverter {
+	
+	private ProfiloConverter() {}
 
 	/**
 	 * @param user
@@ -64,9 +66,7 @@ public class ProfiloConverter {
 		profilo.setNome(leggiProfilo.getNome());
 
 		switch(user.getTipoUtenza()) {
-		case ANONIMO:
-		case APPLICAZIONE:
-		case CITTADINO:
+		case ANONIMO, APPLICAZIONE, CITTADINO:
 			break;
 		case OPERATORE:
 			profilo.setNome(((UtenzaOperatore) user).getNome());

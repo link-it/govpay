@@ -102,5 +102,9 @@ public class Costanti {
 	
 	/** COSTANTI MESSAGGI */
 	public static final String MSG_L_ENTE_CREDITORE_NON_E_TRA_QUELLI_ASSOCIATI_ALL_UTENZA = "l'ente creditore non e' tra quelli associati all'utenza";
+	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_GLI_ENTI_CREDITORI = "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori";
+	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA = "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza";
+	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_OPERATORE_A_TUTTI_GLI_ENTI_CREDITORI = "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori";
 	
+	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/"+"{0}";
 }

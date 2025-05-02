@@ -30,7 +30,8 @@ import it.govpay.backoffice.v1.beans.Giornale;
 import it.govpay.core.exceptions.ValidationException;
 
 public class GiornaleConverter {
-
+	
+	private GiornaleConverter() {}
 
 	public static it.govpay.model.configurazione.Giornale getGiornaleDTO(Giornale giornalePost) throws ValidationException {
 		it.govpay.model.configurazione.Giornale giornale = new it.govpay.model.configurazione.Giornale();

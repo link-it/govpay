@@ -457,7 +457,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("abilitato", this.abilitato).notNull();
 
-		if(this.abilitato) {
+		if(Boolean.TRUE.equals(this.abilitato)) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull();
 			vf.getValidator("codiceIPA", this.codiceIPA).notNull().minLength(1).maxLength(4000);
@@ -476,7 +476,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 				}
 				vf.getValidator("emailSubject", this.emailSubject).minLength(1).maxLength(4000);
 				vf.getValidator("emailAllegato", this.emailAllegato).notNull();
-				if(!this.emailAllegato) {
+				if(Boolean.FALSE.equals(this.emailAllegato)) {
 					vf.getValidator("downloadBaseUrl", this.downloadBaseUrl).notNull().pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 				}
 				break;
@@ -492,12 +492,10 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 			if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 				for (Object object : this.tipiPendenza) {
-					if(object instanceof String) {
-						String idTipoPendenza = (String) object;
+					if(object instanceof String idTipoPendenza) {
 						if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
 							validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
-					} else if(object instanceof TipoPendenzaProfiloIndex) {
-						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = (TipoPendenzaProfiloIndex) object;
+					} else if(object instanceof TipoPendenzaProfiloIndex tipoPendenzaProfiloPost) {
 						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
 							tipoPendenzaProfiloPost.validate();
 					} else if(object instanceof java.util.LinkedHashMap) {

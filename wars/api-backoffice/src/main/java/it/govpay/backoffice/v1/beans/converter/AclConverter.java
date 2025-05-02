@@ -39,6 +39,8 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class AclConverter {
+	
+	private AclConverter() { }
 
 	public static Acl getAclUtenza(AclPost aclPost, Authentication user) throws CodificaInesistenteException {
 
@@ -58,7 +60,7 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		acl.setUtenza(authenticationDetails.getUtenza());
 		return acl;
@@ -82,7 +84,7 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		acl.setUtenza(utenza);
 		return acl;
 	}
@@ -119,7 +121,7 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		acl.setRuolo(ruolo);
 		return acl;
 	}
@@ -157,9 +159,7 @@ public class AclConverter {
 			case RENDICONTAZIONI_E_INCASSI:
 				serv = ServizioEnum.RENDICONTAZIONI_E_INCASSI;
 				break;
-			case API_PAGAMENTI:
-			case API_PENDENZE:
-			case API_RAGIONERIA:
+			case API_PAGAMENTI, API_PENDENZE, API_RAGIONERIA:
 				break;
 			}
 		}
@@ -171,7 +171,7 @@ public class AclConverter {
 		rsModel.setServizio(serv.toString());
 
 		if(acl.getListaDiritti() != null) {
-			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
+			List<String> autorizzazioni = acl.getListaDiritti().stream().map(Diritti::getCodifica).collect(Collectors.toList());
 			Collections.sort(autorizzazioni);
 			rsModel.autorizzazioni(autorizzazioni);
 		}

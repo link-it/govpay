@@ -33,6 +33,8 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Rendicontazione.Anomalia;
 
 public class RendicontazioniConverter {
+	
+	private RendicontazioniConverter() {}
 
 	public static RendicontazioneConFlussoEVocePendenza toRsModel(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, IOException {
 
