@@ -44,11 +44,11 @@ public abstract class AbstractFilter implements IFilter {
 	
 	public static final String ALIAS_ID = "id";
 	
-	public AbstractFilter(IExpressionConstructor expressionConstructor) {
+	protected AbstractFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor, false);
 	}
 	
-	public AbstractFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	protected AbstractFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		this.expressionConstructor = expressionConstructor;
 		this.filterSortList = new ArrayList<>();
 		this.simpleSearch = simpleSearch;
@@ -126,11 +126,7 @@ public abstract class AbstractFilter implements IFilter {
 			
 			return exp;
 			
-		}catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
+		}catch(ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 		
@@ -139,12 +135,12 @@ public abstract class AbstractFilter implements IFilter {
 	@Override
 	public IExpression toExpression() throws ServiceException {
 		if(!this.simpleSearch)
-			return this._toExpression();
+			return this.toExpressionEngine();
 		else 
-			return this._toSimpleSearchExpression();
+			return this.toSimpleSearchExpressionEngine();
 	}
 	
-	public abstract IExpression _toExpression() throws ServiceException;
+	public abstract IExpression toExpressionEngine() throws ServiceException;
 	
 	public abstract ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException;
 	
@@ -156,11 +152,11 @@ public abstract class AbstractFilter implements IFilter {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
+	public IExpression toSimpleSearchExpressionEngine() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression(); 
 			
-			if(this.simpleSearchString != null && this.listaFieldSimpleSearch.size() > 0){
+			if(this.simpleSearchString != null && !this.listaFieldSimpleSearch.isEmpty()){
 				List<IExpression> orExpr = this.getSimpleSearchExpression();
 				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
@@ -168,11 +164,7 @@ public abstract class AbstractFilter implements IFilter {
 			this.setFiltroAbilitato(newExpression, true);
 			
 			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -200,8 +192,7 @@ public abstract class AbstractFilter implements IFilter {
 	protected FilterSortWrapper getDefaultFilterSortWrapper() throws ServiceException {
 		try {
 			CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
-			FilterSortWrapper wrapper = new FilterSortWrapper(baseField,SortOrder.ASC);
-			return wrapper;
+			return new FilterSortWrapper(baseField,SortOrder.ASC);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
@@ -210,8 +201,7 @@ public abstract class AbstractFilter implements IFilter {
 	public FilterSortWrapper getDefaultFilterSortWrapperDesc() throws ServiceException {
 		try {
 			CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
-			FilterSortWrapper fsw = new FilterSortWrapper(baseField, SortOrder.DESC);
-			return fsw;
+			return new FilterSortWrapper(baseField, SortOrder.DESC);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
@@ -251,15 +241,10 @@ public abstract class AbstractFilter implements IFilter {
 			org.openspcoop2.utils.TipiDatabase tipoDatabase = converter.getDatabaseType();
 			
 			switch (tipoDatabase) {
-			case ORACLE:
-			case DB2:
-			case SQLSERVER:
+			case ORACLE, DB2, SQLSERVER:
 				lst.add(valoreFiltro ? 1 : 0);
 				break;
-			case DERBY:
-			case HSQL:
-			case MYSQL:
-			case POSTGRESQL:
+			case DERBY, HSQL, MYSQL, POSTGRESQL:
 			default:
 				lst.add(valoreFiltro);
 				break;

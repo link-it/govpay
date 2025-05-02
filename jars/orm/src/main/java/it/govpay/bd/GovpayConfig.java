@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.PropertyNotFoundException;
+import it.govpay.core.utils.LogUtils;
 
 public class GovpayConfig {
 
@@ -105,11 +106,7 @@ public class GovpayConfig {
 
 			this.databaseType = this.getProperty("it.govpay.orm.databaseType", this.props, true);
 			switch (this.databaseType) {
-			case "oracle":
-			case "mysql":
-			case "postgresql":
-			case "sqlserver":
-			case "hsql":
+			case "oracle", "mysql", "postgresql", "sqlserver", "hsql":
 				break;
 			default:
 				LoggerWrapperFactory.getLogger("boot").warn("Database [{}] non supportato. Database validi: postgresql, oracle, mysql, sqlserver, hsql.", this.databaseType);
@@ -129,7 +126,7 @@ public class GovpayConfig {
 				}
 			}
 		} catch (PropertyNotFoundException | IOException e) {
-			LoggerWrapperFactory.getLogger("boot").error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
+			LogUtils.logError(LoggerWrapperFactory.getLogger("boot"), MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
 		}
 	}

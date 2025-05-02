@@ -74,7 +74,7 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
 			boolean addAnd = false;
