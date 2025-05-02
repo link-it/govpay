@@ -233,7 +233,7 @@ public class PagamentoPortale extends BasicModel {
 		if(this.versamenti != null)
 			return this.versamenti;
 
-		if(this.idVersamento != null && this.idVersamento.size() > 0) {
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamentiBD.setAtomica(false);
 			VersamentoFilter filter = versamentiBD.newFilter();
@@ -275,6 +275,7 @@ public class PagamentoPortale extends BasicModel {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;

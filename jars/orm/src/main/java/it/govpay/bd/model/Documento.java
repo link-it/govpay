@@ -56,9 +56,9 @@ public class Documento extends it.govpay.model.Documento {
 	}
 	
 	public List<Versamento> getVersamentiPagabili(BDConfigWrapper configWrapper, List<String> numeriAvviso) throws ServiceException {
-		List<Versamento> versamentiPagabili = new ArrayList<Versamento>();
-		List<Versamento> versamenti = getVersamenti(configWrapper);
-		for(Versamento v : versamenti) {
+		List<Versamento> versamentiPagabili = new ArrayList<>();
+		List<Versamento> versamentiTmp = getVersamenti(configWrapper);
+		for(Versamento v : versamentiTmp) {
 			if(v.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 				if(numeriAvviso != null && !numeriAvviso.isEmpty()) {
 					if(numeriAvviso.contains(v.getNumeroAvviso())) {
@@ -77,6 +77,7 @@ public class Documento extends it.govpay.model.Documento {
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;
@@ -87,6 +88,7 @@ public class Documento extends it.govpay.model.Documento {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;

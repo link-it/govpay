@@ -69,6 +69,7 @@ public class Notifica extends it.govpay.model.Notifica {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		return this.applicazione;
 	}

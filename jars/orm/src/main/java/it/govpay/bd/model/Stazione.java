@@ -39,6 +39,7 @@ public class Stazione extends it.govpay.model.Stazione {
 			try {
 				this.intermediario = AnagraficaManager.getIntermediario(configWrapper, this.getIdIntermediario());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		}
 		return this.intermediario;

@@ -129,14 +129,12 @@ public class PagamentiPortaleBD extends BasicBD{
 			
 			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
 			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true));
-//			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			// creo condizioni
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-//			sqlQueryObjectInterno.addOrderBy(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

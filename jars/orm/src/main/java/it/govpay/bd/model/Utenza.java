@@ -79,7 +79,7 @@ public class Utenza extends it.govpay.model.Utenza {
 	public List<Acl> getAclsProfilo() {
 		List<Acl> collect = new ArrayList<>();
 		
-		Map<Servizio, List<Acl>> mapServizio = new HashMap<it.govpay.model.Acl.Servizio, List<Acl>>();
+		Map<Servizio, List<Acl>> mapServizio = new HashMap<>();
 		
 		List<Acl> acls = this.getAcls();
 		for (Acl acl : acls) {
@@ -87,7 +87,7 @@ public class Utenza extends it.govpay.model.Utenza {
 			List<Acl> remove = mapServizio.remove(acl.getServizio());
 			
 			if(remove == null)
-				remove = new ArrayList<Acl>();
+				remove = new ArrayList<>();
 			
 			remove.add(acl);
 			mapServizio.put(acl.getServizio(), remove);
@@ -114,9 +114,9 @@ public class Utenza extends it.govpay.model.Utenza {
 		return false;
 	}
 	
-	public List<Long> getIdDomini() { // TODO
+	public List<Long> getIdDomini() {
 		if(this.dominiUo != null) {
-			List<Long> idDomini = new ArrayList<Long>();
+			List<Long> idDomini = new ArrayList<>();
 			
 			for(IdUnitaOperativa id: this.dominiUo) {
 				if(id.getIdDominio() != null) {
@@ -131,9 +131,9 @@ public class Utenza extends it.govpay.model.Utenza {
 		return null;
 	}
 
-	public List<String> getIdDominio() { // TODO
+	public List<String> getIdDominio() {
 		if(this.dominiUo != null) {
-			List<String> codDomini = new ArrayList<String>();
+			List<String> codDomini = new ArrayList<>();
 			
 			for(IdUnitaOperativa id: this.dominiUo) {
 				if(id.getCodDominio() != null) {
@@ -149,12 +149,12 @@ public class Utenza extends it.govpay.model.Utenza {
 	}
 
 	public List<String> getIdTipoVersamento() {
-		return this.tipiVersamento != null ? this.tipiVersamento.stream().map(d -> d.getCodTipoVersamento()).collect(Collectors.toList()) : null;
+		return this.tipiVersamento != null ? this.tipiVersamento.stream().map(d -> d.getCodTipoVersamento()).toList() : null;
 	}
 	
 	public List<IdUnitaOperativa> getDominiUo(String codDominio) {
 		if(this.dominiUo != null) {
-			List<IdUnitaOperativa> listaUO = new ArrayList<IdUnitaOperativa>();
+			List<IdUnitaOperativa> listaUO = new ArrayList<>();
 			for (IdUnitaOperativa idUnitaOperativa : dominiUo) {
 				if(idUnitaOperativa.getCodDominio() != null && idUnitaOperativa.getCodDominio().equals(codDominio))
 					listaUO.add(idUnitaOperativa);
@@ -182,6 +182,7 @@ public class Utenza extends it.govpay.model.Utenza {
 							idUo.setRagioneSociale(dominio.getRagioneSociale());
 						}
 					} catch (NotFoundException e) {
+						// donothing
 					}
 					try {
 						if(idUo.getIdUnita() != null) {
@@ -191,6 +192,7 @@ public class Utenza extends it.govpay.model.Utenza {
 						}
 						this.dominiUo.add(idUo);
 					} catch (NotFoundException e) {
+						// donothing
 					}
 				}
 			}

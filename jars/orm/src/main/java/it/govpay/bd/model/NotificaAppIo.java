@@ -34,7 +34,7 @@ import it.govpay.core.exceptions.NotificaException;
 public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 	
 	public NotificaAppIo() {
-		
+		// donothing
 	}
 	
 	public NotificaAppIo(Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException, NotificaException {
@@ -113,6 +113,7 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 			try {
 				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, this.getIdTipoVersamentoDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		}
 		return tipoVersamentoDominio;

@@ -42,6 +42,7 @@ public class Operatore extends it.govpay.model.Operatore{
 		try {
 			this.setUtenza(AnagraficaManager.getUtenza(configWrapper, this.getIdUtenza()));
 		} catch (NotFoundException e) {
+			// donothing
 		} 
 	}
 

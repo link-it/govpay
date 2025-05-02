@@ -65,6 +65,7 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			try {
 				this.tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, this.getIdTipoVersamento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.tipoVersamento;
@@ -75,6 +76,7 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;

@@ -64,7 +64,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
 
-	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
+	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) {
 		if(this.singoliVersamenti == null) {
 			this.singoliVersamenti = new ArrayList<>();
 		}
@@ -138,6 +138,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;
@@ -164,6 +165,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, this.getIdTipoVersamento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.tipoVersamento;
@@ -175,6 +177,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, this.getIdTipoVersamentoDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.tipoVersamentoDominio;
@@ -194,6 +197,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.documento = documentiBD.getDocumento(this.getIdDocumento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.documento;
@@ -206,6 +210,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.documento = documentiBD.getDocumento(this.getIdDocumento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.documento;

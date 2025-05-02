@@ -189,7 +189,6 @@ public class RendicontazioniBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "iuv");
 
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
@@ -198,7 +197,6 @@ public class RendicontazioniBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.IUV, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

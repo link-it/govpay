@@ -47,7 +47,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.exception.VersamentoException;
 import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Pagamento;
@@ -822,7 +821,6 @@ public class VersamentiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
-//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -830,7 +828,6 @@ public class VersamentiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -1080,37 +1077,6 @@ public class VersamentiBD extends BasicBD {
 				this.closeConnection();
 			}
 		}
-	}
-	
-	public void annullaVersamento(Versamento versamento, String descrizioneStato) throws VersamentoException,ServiceException{
-		try {
-			// Se è già annullato non devo far nulla.
-			if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-				return;
-			}
-
-			// Se è in stato NON_ESEGUITO lo annullo
-			if(versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-				versamento.setStatoVersamento(StatoVersamento.ANNULLATO);
-				versamento.setDescrizioneStato(descrizioneStato); 
-				this.updateStatoVersamento(versamento);
-				this.emitAudit(versamento);
-				return;
-			}
-			// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare
-			throw new VersamentoException(versamento.getCodVersamentoEnte(),VersamentoException.VER_009);
-		} catch (NotFoundException e) {
-			// Versamento inesistente
-			throw new VersamentoException(versamento.getCodVersamentoEnte(),VersamentoException.VER_008);
-		} catch (Exception e) {
-			this.rollback();
-			if(e instanceof ServiceException)
-				throw (ServiceException) e;
-			else if(e instanceof VersamentoException)
-				throw (VersamentoException) e;
-			else 
-				throw new ServiceException(e);
-		} 
 	}
 
 	public List<Versamento> findVersamentiConAvvisoDiPagamentoDaSpedire(Integer offset, Integer limit) throws ServiceException {

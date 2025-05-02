@@ -172,7 +172,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CARICAMENTO), "data_caricamento");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -180,7 +179,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CARICAMENTO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

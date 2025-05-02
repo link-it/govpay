@@ -202,7 +202,6 @@ public class IncassiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.TRN));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.TRN), "id");
-//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ORA_INCASSO), "data_ora_incasso");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -210,7 +209,6 @@ public class IncassiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ORA_INCASSO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

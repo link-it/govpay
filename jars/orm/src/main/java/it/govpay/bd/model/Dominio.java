@@ -85,6 +85,7 @@ public class Dominio extends it.govpay.model.Dominio {
 			try {
 				return AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazioneDefault());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return null;

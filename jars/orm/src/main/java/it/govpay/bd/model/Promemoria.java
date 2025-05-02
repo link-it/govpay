@@ -91,6 +91,7 @@ public class Promemoria extends it.govpay.model.Promemoria {
 			try {
 				this.documento = documentiBD.getDocumento(this.getIdDocumento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		}
 		return this.documento;

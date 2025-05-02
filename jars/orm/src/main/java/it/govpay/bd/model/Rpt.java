@@ -93,15 +93,6 @@ public class Rpt extends it.govpay.model.Rpt{
 		return this.pagamenti;
 	}
 	
-	public Pagamento getPagamento(String iur) throws ServiceException, NotFoundException {
-		List<Pagamento> pagamenti = this.getPagamenti();
-		for(Pagamento pagamento : pagamenti) {
-			if(pagamento.getIur().equals(iur))
-				return pagamento;
-		}
-		throw new NotFoundException();
-	}
-	
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
 	}
@@ -130,6 +121,7 @@ public class Rpt extends it.govpay.model.Rpt{
 			try {
 				this.pagamentoPortale = versamentiBD.getPagamento(this.getIdPagamentoPortale());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		}
 		return this.pagamentoPortale;
