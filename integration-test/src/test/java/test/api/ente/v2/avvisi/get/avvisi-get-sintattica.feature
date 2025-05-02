@@ -7,31 +7,13 @@ Background:
 * def idPendenza = getCurrentTimeMillis()
 * def esitoAttivaRPT = {"faultCode":"PAA_SYSTEM_ERROR","faultString":"Errore generico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
 * def loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non neque vestibulum, porta eros quis, fringilla enim. Nam sit amet justo sagittis, pretium urna et, convallis nisl. Proin fringilla consequat ex quis pharetra. Nam laoreet dignissim leo. Ut pulvinar odio et egestas placerat. Quisque tincidunt egestas orci, feugiat lobortis nisi tempor id. Donec aliquet sed massa at congue. Sed dictum, elit id molestie ornare, nibh augue facilisis ex, in molestie metus enim finibus arcu. Donec non elit dictum, dignissim dui sed, facilisis enim. Suspendisse nec cursus nisi. Ut turpis justo, fermentum vitae odio et, hendrerit sodales tortor. Aliquam varius facilisis nulla vitae hendrerit. In cursus et lacus vel consectetur.'
-* def metadataCustom = 
-"""
-{
-	"mapEntries" : [
-		{
-			"key":"chiave1", "value":"valore1"
-		}
-	]
-}
-"""
 
 # Configurazione Applicazione per utilizzare le API V2
 
-
-* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
-* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
-* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-
+* def applicazioneRequest = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazioneRequest.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazioneRequest.servizioIntegrazione.url = ente_api_url + '/v2'
+* callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
 Scenario Outline: <field> non valida
 
@@ -365,6 +347,16 @@ Examples:
 
 Scenario Outline: <field> non valida 
 
+* def metadataCustom = 
+"""
+{
+	"mapEntries" : [
+		{
+			"key":"chiave1", "value":"valore1"
+		}
+	]
+}
+"""
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 * set pendenzaPut.voci[0].metadata = metadataCustom
 

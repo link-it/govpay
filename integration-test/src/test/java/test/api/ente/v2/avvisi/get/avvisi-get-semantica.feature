@@ -9,17 +9,10 @@ Background:
 
 # Configurazione Applicazione per utilizzare le API V2
 
-
-* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
-* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
-* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
+* def applicazioneRequest = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazioneRequest.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazioneRequest.servizioIntegrazione.url = ente_api_url + '/v2'
+* callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
 Scenario: Numero avviso su multivoce
 
