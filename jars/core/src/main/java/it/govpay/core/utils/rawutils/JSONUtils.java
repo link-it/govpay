@@ -46,7 +46,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  * @version $Rev$, $Date$
  */
 public class JSONUtils extends AbstractUtils {
-
+	
 	private static JSONUtils jsonUtils = null;
 	private static JSONUtils jsonUtilsPretty = null;
 	private static synchronized void init(boolean prettyPrint){
@@ -67,18 +67,25 @@ public class JSONUtils extends AbstractUtils {
 	public static JSONUtils getInstance(boolean prettyPrint){
 		if(prettyPrint) {
 			if(JSONUtils.jsonUtilsPretty==null){
-				JSONUtils.init(true);
+				// spotbugs warning 'SING_SINGLETON_GETTER_NOT_SYNCHRONIZED'
+				synchronized (JSONUtils.class) {
+					JSONUtils.init(true);
+				}
 			}
 			return JSONUtils.jsonUtilsPretty;
 		}
 		else {
 			if(JSONUtils.jsonUtils==null){
-				JSONUtils.init(false);
+				// spotbugs warning 'SING_SINGLETON_GETTER_NOT_SYNCHRONIZED'
+				synchronized (JSONUtils.class) {
+					JSONUtils.init(false);
+				}
 			}
 			return JSONUtils.jsonUtils;
 		}
 	}
 	
+
 	private static org.openspcoop2.utils.Semaphore semaphore = new org.openspcoop2.utils.Semaphore("JSONUtils");
 	private static ObjectMapper internalMapper;
 	private static synchronized void initSyncMapper()  {
@@ -117,7 +124,6 @@ public class JSONUtils extends AbstractUtils {
 			semaphore.release(lock, "setMapperTimeZone");
 		}
 	}
-	
 	public static void registerJavaTimeModule() {
 		if(internalMapper==null){
 			initMapper();
@@ -171,7 +177,7 @@ public class JSONUtils extends AbstractUtils {
 	
 	
 	
-	protected JSONUtils(boolean prettyPrint) {
+	private JSONUtils(boolean prettyPrint) {
 		super(prettyPrint);
 	}
 	
@@ -240,4 +246,5 @@ public class JSONUtils extends AbstractUtils {
 			return new HashMap<>(); // empty return
 		}	
 	}
+	
 }
