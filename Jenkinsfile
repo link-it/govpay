@@ -75,9 +75,6 @@ pipeline {
 	                | sed "s#^#--sourcefiles #" \
 	                | xargs)
 	
-	      echo "Will use class dirs: $classArgs"
-	      echo "Will use source dirs: $srcArgs"
-	      
           JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar ${JACOCO_CLI} report ${JACOCO_EXEC} $classArgs $srcArgs --xml ${JACOCO_XML}
         """
       }
