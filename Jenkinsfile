@@ -4,6 +4,15 @@ pipeline {
     disableConcurrentBuilds()
     buildDiscarder(logRotator(numToKeepStr: '2', artifactNumToKeepStr: '2'))
   }
+  environment {
+    JACOCO_AGENT   = "/opt/jacoco-0.8.13/lib/jacocoagent.jar"
+    // dove Tomcat deposita il .exec
+    JACOCO_EXEC    = "/tmp/jacoco.exec"
+    // percorso al Jacoco CLI per generare l’XML
+    JACOCO_CLI     = "/opt/jacoco-0.8.13/lib/jacococli.jar"
+    // dove mettere l’XML
+    JACOCO_XML     = "target/jacoco.xml"
+  }
   stages {
     stage('cleanup') {
       steps {
@@ -41,7 +50,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test' 
+        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test -Dkarate.options="classpath:test/api/pagamento/v2/avvisi/get/verifica-avviso-basic.feature" -Dtest=test.workflow.WorkflowTest' 
       }
       post {
         always {
@@ -53,5 +62,38 @@ pipeline {
         }
       }
     }
+    stage('Generate JaCoCo XML Report') {
+      steps {
+        sh """
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk -jar ${JACOCO_CLI} report ${JACOCO_EXEC} \\
+            --classfiles target/classes \\
+            --sourcefiles src/main/java \\
+            --xml ${JACOCO_XML}
+        """
+      }
+    }
+    stage('SonarQube Analysis') {
+      environment {
+	  	// dico a Sonar dove trovare il coverage XML
+	    SONAR_COVERAGE_PATH = "${JACOCO_XML}"
+      }
+	  steps {
+	  	withSonarQubeEnv('GovPaySonar') {
+	    sh """
+	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
+	    	-Dsonar.projectKey=GovPay \\
+	        -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
+	        -Dsonar.host.url=http://localhost:9000 \\
+	        -Dsonar.coverage.jacoco.xmlReportPaths=${SONAR_COVERAGE_PATH}
+	       """
+	       }
+	     }
+	    post {
+          always {
+				archiveArtifacts 'target/jacoco.xml'
+			}
+		  }
+	   }
+	 }
   }
 }

@@ -12,3 +12,5 @@ sudo rm -rf /opt/apache-tomcat-govpay/webapps/govpay*
 sudo rm -rf /var/log/govpay/*
 sudo rm -rf /opt/apache-tomcat-govpay/log/*
 sudo rm -rf /var/log/govpay-ndp-sym/*
+echo "Rimozione file jacoco.exec..."
+sudo rm /tmp/jacoco.exec
