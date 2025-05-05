@@ -86,14 +86,13 @@ pipeline {
 	        -Dsonar.host.url=http://localhost:9000 \\
 	        -Dsonar.coverage.jacoco.xmlReportPaths=${SONAR_COVERAGE_PATH}
 	       """
-	       }
-	     }
-	    post {
-          always {
+	    }
+	  }
+	  post {
+        always {
 				archiveArtifacts 'target/jacoco.xml'
-			}
-		  }
-	   }
-	 }
+		}
+	  }
+	}
   }
 }
