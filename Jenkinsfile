@@ -65,10 +65,20 @@ pipeline {
     stage('Generate JaCoCo XML Report') {
       steps {
         sh """
-          JAVA_HOME=/usr/lib/jvm/java-21-openjdk -jar ${JACOCO_CLI} report ${JACOCO_EXEC} \\
-            --classfiles target/classes \\
-            --sourcefiles src/main/java \\
-            --xml ${JACOCO_XML}
+          # raccogliamo tutte le classi dei moduli
+	      classArgs=$(find . -type d -path "*/target/classes" \
+	                  | sed "s#^#--classfiles #" \
+	                  | xargs)
+	
+	      # raccogliamo tutte le sorgenti dei moduli
+	      srcArgs=$(find . -type d -path "*/src/main/java" \
+	                | sed "s#^#--sourcefiles #" \
+	                | xargs)
+	
+	      echo "Will use class dirs: $classArgs"
+	      echo "Will use source dirs: $srcArgs"
+	      
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar ${JACOCO_CLI} report ${JACOCO_EXEC} $classArgs $srcArgs --xml ${JACOCO_XML}
         """
       }
     }
@@ -90,7 +100,7 @@ pipeline {
 	  }
 	  post {
         always {
-				archiveArtifacts 'target/jacoco.xml'
+		  archiveArtifacts 'target/jacoco.xml'
 		}
 	  }
 	}
