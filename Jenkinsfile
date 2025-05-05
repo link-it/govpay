@@ -80,20 +80,14 @@ pipeline {
       }
     }
     stage('SonarQube Analysis') {
-      environment {
-	  	// dico a Sonar dove trovare il coverage XML
-	    SONAR_COVERAGE_PATH = "${JACOCO_XML}"
-      }
 	  steps {
-	  	withSonarQubeEnv('GovPaySonar') {
 	    sh """
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=GovPay \\
 	        -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
 	        -Dsonar.host.url=http://localhost:9000 \\
-	        -Dsonar.coverage.jacoco.xmlReportPaths=${SONAR_COVERAGE_PATH}
+	        -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML}
 	       """
-	    }
 	  }
 	  post {
         always {
