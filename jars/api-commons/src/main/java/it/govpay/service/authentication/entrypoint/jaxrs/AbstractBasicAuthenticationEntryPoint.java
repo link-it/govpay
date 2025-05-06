@@ -41,16 +41,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.govpay.core.jaxrs.JacksonJsonProviderCustomized;
 
 public abstract class AbstractBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
-	
+
 	private String realname = Costanti.OPENSPCOOP2;
-	
+
 	public String getRealname() {
 		return this.realname;
 	}
 	public void setRealname(String realname) {
 		this.realname = realname;
 	}
-	
+
 	private TimeZone timeZone = TimeZone.getDefault();
 	private String timeZoneId = null;
 	public String getTimeZoneId() {
@@ -60,61 +60,60 @@ public abstract class AbstractBasicAuthenticationEntryPoint extends BasicAuthent
 		this.timeZoneId = timeZoneId;
 		this.timeZone = TimeZone.getTimeZone(timeZoneId);
 	}
-	
+
 	public void fillResponse(AuthenticationException authException, HttpServletResponse httpResponse) {
 		AbstractBasicAuthenticationEntryPoint.fillResponse(httpResponse, getPayload(authException, httpResponse), this.timeZone);
 	}
-	
+
 	public static void fillResponse(HttpServletResponse httpResponse, Response response, TimeZone timeZone) {
-		ByteArrayInputStream bais = null;
 		ServletOutputStream outputStream = null;
 		try{
 			httpResponse.setStatus(response.getStatus());
 
-			MultivaluedMap<String, Object> headers = response.getHeaders();
-			if(!headers.isEmpty()) {
-				Set<String> keySet = headers.keySet();
-
-				for (String headerKey : keySet) {
-					List<Object> list = headers.get(headerKey);
-					if(!list.isEmpty()) {
-						StringBuilder sb = new StringBuilder();
-						for (Object object : list) {
-							if(sb.length() > 0)
-								sb.append(", ");
-
-							sb.append(object);
-						}
-						httpResponse.setHeader(headerKey, sb.toString());
-					}
-				}
-			}
+			impostaHeaderResponse(httpResponse, response);
 
 			ObjectMapper mapper = JacksonJsonProviderCustomized.getObjectMapper(false, timeZone);
 			String fault = mapper.writeValueAsString(response.getEntity());
-			bais = new ByteArrayInputStream(fault.getBytes());
 
-			outputStream = httpResponse.getOutputStream();
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(fault.getBytes())){
 
-			IOUtils.copy(bais, outputStream);
+				outputStream = httpResponse.getOutputStream();
 
-			outputStream.flush();
-		}catch(Exception e) {
+				IOUtils.copy(bais, outputStream);
 
-		} finally {
-			if(bais!= null) {
-				try {
-					bais.close();
-				} catch (IOException e) {
+				outputStream.flush();
+
+			}
+		}catch(IOException e) {
+			//donothing 
+		} 
+	}
+	
+	private static void impostaHeaderResponse(HttpServletResponse httpResponse, Response response) {
+		MultivaluedMap<String, Object> headers = response.getHeaders();
+		if(!headers.isEmpty()) {
+			Set<String> keySet = headers.keySet();
+
+			for (String headerKey : keySet) {
+				List<Object> list = headers.get(headerKey);
+				if(!list.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (Object object : list) {
+						if(sb.length() > 0)
+							sb.append(", ");
+
+						sb.append(object);
+					}
+					httpResponse.setHeader(headerKey, sb.toString());
 				}
 			}
 		}
 	}
-	
+
 	protected abstract Response getPayload(AuthenticationException authException, HttpServletResponse httpResponse);
 
 	protected abstract void addCustomHeaders(jakarta.servlet.http.HttpServletResponse httpResponse);
-	
+
 	@Override
 	public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException)  {
 		this.addCustomHeaders(response);

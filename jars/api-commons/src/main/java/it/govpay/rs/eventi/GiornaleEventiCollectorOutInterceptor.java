@@ -226,29 +226,24 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		@Override
 		public void onClose(CachedOutputStream cos) {
 
-			try {
-				final LogEvent event = new DefaultLogEventMapper().map(this.message);
-				if (shouldLogContent(event)) {
-					copyPayload(cos, event);
-				} else {
-					event.setPayload(CONTENT_SUPPRESSED);
-				}
-
-				if(event.getPayload() != null)
-					this.eventoCtx.getDettaglioRisposta().setPayload(Base64.getEncoder().encodeToString(event.getPayload().getBytes()));
-
-				try {
-					// empty out the cache
-					cos.lockOutputStream();
-					cos.resetOut(null, false);
-				} catch (Exception ex) {
-					// ignore
-				}
-				this.message.setContent(OutputStream.class, this.origStream);
-			} catch (Exception e) {
-				LogUtils.logError(LoggerWrapperFactory.getLogger(GiornaleEventiCollectorOutInterceptor.class),e.getMessage(),e);
-				throw new Fault(e);
+			final LogEvent event = new DefaultLogEventMapper().map(this.message);
+			if (shouldLogContent(event)) {
+				copyPayload(cos, event);
+			} else {
+				event.setPayload(CONTENT_SUPPRESSED);
 			}
+
+			if(event.getPayload() != null)
+				this.eventoCtx.getDettaglioRisposta().setPayload(Base64.getEncoder().encodeToString(event.getPayload().getBytes()));
+
+			try {
+				// empty out the cache
+				cos.lockOutputStream();
+				cos.resetOut(null, false);
+			} catch (Exception ex) {
+				// ignore
+			}
+			this.message.setContent(OutputStream.class, this.origStream);
 		}
 
 		private void copyPayload(CachedOutputStream cos, final LogEvent event) {

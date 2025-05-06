@@ -29,6 +29,7 @@ public class X509AuthenticationEntryPoint extends AbstractBasicAuthenticationEnt
 
 	@Override
 	protected void addCustomHeaders(HttpServletResponse httpResponse) {
+		//donothing
 	}
 	
 	@Override

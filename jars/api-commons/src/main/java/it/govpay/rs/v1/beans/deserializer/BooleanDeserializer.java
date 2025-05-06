@@ -37,9 +37,7 @@ public class BooleanDeserializer extends JsonDeserializer<Boolean> {
 		ObjectCodec oc = jsonParser.getCodec();
 		JsonNode node = oc.readTree(jsonParser);
 
-		if(node instanceof BooleanNode) {
-			BooleanNode bNode = (BooleanNode) node;
-
+		if(node instanceof BooleanNode bNode) {
 			return bNode.booleanValue();
 		}
 
