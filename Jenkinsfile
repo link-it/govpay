@@ -5,12 +5,7 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '2', artifactNumToKeepStr: '2'))
   }
   environment {
-    JACOCO_AGENT   = "/opt/jacoco-0.8.13/lib/jacocoagent.jar"
-    // dove Tomcat deposita il .exec
     JACOCO_EXEC    = "/tmp/jacoco.exec"
-    // percorso al Jacoco CLI per generare l’XML
-    JACOCO_CLI     = "/opt/jacoco-0.8.13/lib/jacococli.jar"
-    // dove mettere l’XML
     JACOCO_XML     = "target/jacoco.xml"
   }
   stages {
@@ -62,9 +57,9 @@ pipeline {
         }
       }
     }
-    stage('Generate JaCoCo XML Report') {
-      steps {
-        sh """
+    stage('sonarqube-analysis') {
+	  steps {
+		sh """
           # raccogliamo tutte le classi dei moduli
 	      classArgs=\$(find . -type d -path "*/target/classes" \
 	                  | sed "s#^#--classfiles #" \
@@ -75,12 +70,8 @@ pipeline {
 	                | sed "s#^#--sourcefiles #" \
 	                | xargs)
 	
-          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar ${JACOCO_CLI} report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML}
-        """
-      }
-    }
-    stage('SonarQube Analysis') {
-	  steps {
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML}
+           """
 	    sh """
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar -Dsonar.projectKey=GovPay -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
 	    	-Dsonar.login=$GOVPAY_SONAR_USER -Dsonar.password=$GOVPAY_SONAR_PWD \\
