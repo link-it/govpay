@@ -123,9 +123,6 @@
 					</execution>
 				</executions>
 				<configuration>
-<!-- 					<xjbSources> -->
-<!-- 						<xjbSource>${basedir}/src/main/resources/xsd/global.xjb</xjbSource> -->
-<!-- 					</xjbSources> -->
 					<clearOutputDir>false</clearOutputDir>
 				</configuration>
 			</plugin>
@@ -156,11 +153,6 @@
 						<id>generate-sources</id>
 						<phase>generate-sources</phase>
 						<configuration>
-<!-- 							<defaultOptions> -->
-<!-- 								<bindingFiles> -->
-<!-- 									<bindingFile>${basedir}/src/main/resources/wsdl/binding.xml</bindingFile> -->
-<!-- 								</bindingFiles> -->
-<!-- 							</defaultOptions> -->
 							<sourceRoot>${project.build.directory}/generated-sources/jaxb</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>

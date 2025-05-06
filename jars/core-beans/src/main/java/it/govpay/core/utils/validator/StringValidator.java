@@ -20,7 +20,8 @@
 package it.govpay.core.utils.validator;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,8 +92,8 @@ public class StringValidator {
 	public StringValidator isUrl() throws ValidationException {
 		if(this.fieldValue != null) {
 			try {
-				new URL(this.fieldValue);
-			} catch (MalformedURLException e) {
+				new URI(this.fieldValue).toURL();
+			} catch (MalformedURLException | URISyntaxException e) {
 				throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_CONTIENE_UNA_URL_VALIDA, this.fieldName));
 			}
 		}

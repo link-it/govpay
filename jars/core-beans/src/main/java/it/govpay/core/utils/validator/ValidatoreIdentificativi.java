@@ -91,7 +91,7 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdTipoVersamento(String fieldName, String idTipoVersamento) throws ValidationException {
-		this.validaIdTipoVersamento("idTipoPendenza", idTipoVersamento, false);
+		this.validaIdTipoVersamento(fieldName, idTipoVersamento, false);
 	}
 	
 	public void validaIdTipoVersamento(String fieldName, String idTipoVersamento, boolean notNull) throws ValidationException {
