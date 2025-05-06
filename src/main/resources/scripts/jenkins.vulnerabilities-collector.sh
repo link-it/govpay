@@ -1,0 +1,1 @@
+echo "Colleziono tutte le vulnerabilita' trovate..."

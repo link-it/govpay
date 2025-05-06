@@ -84,5 +84,10 @@ pipeline {
 		}
 	  }
 	}
+	stage('vulnerabilities-collector') {
+		steps {
+        sh 'sh ./src/main/resources/scripts/jenkins.vulnerabilites-collector.sh' 
+      }
+	}
   }
 }

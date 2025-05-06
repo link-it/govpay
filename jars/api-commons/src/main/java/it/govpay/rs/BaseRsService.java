@@ -21,15 +21,6 @@ package it.govpay.rs;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -51,6 +42,13 @@ import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 
 public abstract class BaseRsService {
@@ -120,11 +118,11 @@ public abstract class BaseRsService {
 
 	protected IContext getContext() {
 		IContext context = ContextThreadLocal.get();
-		if(context instanceof org.openspcoop2.utils.service.context.Context) {
-			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
-			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+		if(context instanceof org.openspcoop2.utils.service.context.Context op2Context) {
+			op2Context.update(this.request, this.response, this.uriInfo, 2, this.log);
+			op2Context.setRestPath(this.getPathFromRestMethod(context.getMethodName()));
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			GpContext ctx = (GpContext) op2Context.getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
@@ -150,8 +148,7 @@ public abstract class BaseRsService {
 				Utenza utenza = authenticationDetails.getUtenza();
 
 				switch(utenza.getTipoUtenza()) {
-				case CITTADINO:
-				case ANONIMO:
+				case CITTADINO, ANONIMO:
 					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
 					break;
 				case APPLICAZIONE:
@@ -216,7 +213,7 @@ public abstract class BaseRsService {
 					sb.append("\t\t");
 
 					sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
-							dominio.getUo().stream().map(Uo::getCodUo).collect(Collectors.toList())
+							dominio.getUo().stream().map(Uo::getCodUo).toList()
 							) : "Tutte")).append("]");
 				}
 				sb.append("\t");
@@ -229,11 +226,11 @@ public abstract class BaseRsService {
 
 	protected void buildContext() {
 		IContext context = ContextThreadLocal.get();
-		if(context instanceof org.openspcoop2.utils.service.context.Context) {
-			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
-			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+		if(context instanceof org.openspcoop2.utils.service.context.Context op2Context) {
+			op2Context.update(this.request, this.response, this.uriInfo, 2, this.log);
+			op2Context.setRestPath(this.getPathFromRestMethod(context.getMethodName()));
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			GpContext ctx = (GpContext) op2Context.getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
@@ -263,8 +260,7 @@ public abstract class BaseRsService {
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
 				switch(utenza.getTipoUtenza()) {
-				case CITTADINO:
-				case ANONIMO:
+				case CITTADINO, ANONIMO:
 					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
 					break;
 				case APPLICAZIONE:
