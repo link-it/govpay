@@ -1692,6 +1692,9 @@
 	            <artifactId>spotbugs-maven-plugin</artifactId>
 	            <version>4.8.6.0</version>
 	            <configuration>
+	            	<!-- abilita insieme XML e HTML -->
+    				<xmlOutput>true</xmlOutput>
+    				<htmlOutput>true</htmlOutput>
 	                <plugins>
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>

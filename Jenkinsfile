@@ -7,6 +7,8 @@ pipeline {
   environment {
     JACOCO_EXEC    = "/tmp/jacoco.exec"
     JACOCO_XML     = "target/jacoco.xml"
+    JACOCO_HTML    = "target/jacoco-html"
+    JACOCO_CSV     = "target/jacoco.csv"
   }
   stages {
     stage('cleanup') {
@@ -70,7 +72,7 @@ pipeline {
 	                | sed "s#^#--sourcefiles #" \
 	                | xargs)
 	
-          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML}
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
            """
 	    sh """
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar -Dsonar.projectKey=GovPay -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
