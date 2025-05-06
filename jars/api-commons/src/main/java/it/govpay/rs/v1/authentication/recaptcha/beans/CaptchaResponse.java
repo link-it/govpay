@@ -71,8 +71,7 @@ public class CaptchaResponse extends JSONSerializable{
 		}
 		for(ErrorCode error : errors) {
 			switch(error) {
-			case INVALID_RESPONSE:
-			case MISSING_RESPONSE:
+			case INVALID_RESPONSE, MISSING_RESPONSE:
 				return true;
 			default:
 				return false;
@@ -86,7 +85,7 @@ public class CaptchaResponse extends JSONSerializable{
 	    MISSING_RESPONSE,   INVALID_RESPONSE,
 	    BAD_REQUEST,        TIMEOUT_OR_DUPLICATE;
 
-	    private static Map<String, ErrorCode> errorsMap = new HashMap<>(4);
+	    private static Map<String, ErrorCode> errorsMap = HashMap.newHashMap(6);
 
 	    static {
 	        errorsMap.put("missing-input-secret",   MISSING_SECRET);

@@ -78,8 +78,7 @@ public class GovPayOAuth2UserService extends DefaultOAuth2UserService {
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
 		UserDetails loadUserByLdapUserDetail = this.userDetailService.loadUserByLdapUserDetail(govpayLdapOauth2Details.getUsername(), details);
-		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails) {
-			GovpayLdapUserDetails govpayDetails = (GovpayLdapUserDetails) loadUserByLdapUserDetail;
+		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails govpayDetails) {
 			govpayLdapOauth2Details.setUtenza(govpayDetails.getUtenza());
 			govpayLdapOauth2Details.setApplicazione(govpayDetails.getApplicazione());
 			govpayLdapOauth2Details.setOperatore(govpayDetails.getOperatore());

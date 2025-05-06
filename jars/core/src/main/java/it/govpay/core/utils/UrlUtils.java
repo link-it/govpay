@@ -55,7 +55,7 @@ public class UrlUtils {
 	
 	public static String getParameter(String urlString,String parameterName)  {
 		try {
-		URL url = new URI(urlString).toURL(); //URL(urlString);
+		URL url = new URI(urlString).toURL();
 		if(splitQuery(url).get(parameterName) != null)
 			return splitQuery(url).get(parameterName).get(0);
 		else
@@ -75,7 +75,7 @@ public class UrlUtils {
 		} else {
 			urlString = urlString + "?" + paramName + "=" + paramValue;
 		}
-		return new URI(urlString).toURL(); // new URL(urlString);
+		return new URI(urlString).toURL();
 	}
 	
 	public static String addParameter(String urlString, String paramName, String paramValue) {

@@ -43,9 +43,9 @@ import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 
-public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageContext> {
+public class MessageLoggingHandlerNDP010702 implements SOAPHandler<SOAPMessageContext> {
 
-	private static Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerNDP_010702.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerNDP010702.class);
 	private static final String SOAP_ACTION = "SOAPAction";
 	private String apiName;
 

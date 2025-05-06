@@ -50,8 +50,7 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
 	public boolean handleFault(SOAPMessageContext smc) {
-    	this.setupMDC(smc);
-        return true;
+    	return handleMessage(smc);
     }
 
     @Override

@@ -82,8 +82,7 @@ public class GovPayOidcUserService extends OidcUserService {
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
 		UserDetails loadUserByLdapUserDetail = this.userDetailService.loadUserByLdapUserDetail(govpayLdapOidcOauth2Details.getUsername(), details);
-		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails) {
-			GovpayLdapUserDetails govpayDetails = (GovpayLdapUserDetails) loadUserByLdapUserDetail;
+		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails govpayDetails) {
 			govpayLdapOidcOauth2Details.setUtenza(govpayDetails.getUtenza());
 			govpayLdapOidcOauth2Details.setApplicazione(govpayDetails.getApplicazione());
 			govpayLdapOidcOauth2Details.setOperatore(govpayDetails.getOperatore());

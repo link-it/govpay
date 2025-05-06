@@ -77,8 +77,8 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
 		if (this.realmName != null) {
 			parameters.put("realm", this.realmName);
 		}
-		if (authException instanceof OAuth2AuthenticationException) {
-			OAuth2Error error = ((OAuth2AuthenticationException) authException).getError();
+		if (authException instanceof OAuth2AuthenticationException oAuth2AuthenticationException) {
+			OAuth2Error error = oAuth2AuthenticationException.getError();
 			parameters.put("error", error.getErrorCode());
 			if (StringUtils.hasText(error.getDescription())) {
 				parameters.put("error_description", error.getDescription());
@@ -86,12 +86,11 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
 			if (StringUtils.hasText(error.getUri())) {
 				parameters.put("error_uri", error.getUri());
 			}
-			if (error instanceof BearerTokenError) {
-				BearerTokenError bearerTokenError = (BearerTokenError) error;
+			if (error instanceof BearerTokenError bearerTokenError) {
 				if (StringUtils.hasText(bearerTokenError.getScope())) {
 					parameters.put("scope", bearerTokenError.getScope());
 				}
-				status = ((BearerTokenError) error).getHttpStatus();
+				status = bearerTokenError.getHttpStatus();
 			}
 
 			String wwwAuthenticate = computeWWWAuthenticateHeaderValue(parameters);

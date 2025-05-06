@@ -106,8 +106,7 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
 		UserDetails loadUserByLdapUserDetail = this.userDetailService.loadUserByLdapUserDetail(govPayJwt.getUsername(), details);
-		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails) {
-			GovpayLdapUserDetails govpayDetails = (GovpayLdapUserDetails) loadUserByLdapUserDetail;
+		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails govpayDetails) {
 			govPayJwt.setUtenza(govpayDetails.getUtenza());
 			govPayJwt.setApplicazione(govpayDetails.getApplicazione());
 			govPayJwt.setOperatore(govpayDetails.getOperatore());

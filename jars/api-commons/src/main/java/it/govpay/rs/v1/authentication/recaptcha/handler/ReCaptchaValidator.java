@@ -22,11 +22,9 @@ package it.govpay.rs.v1.authentication.recaptcha.handler;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Arrays;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
@@ -44,6 +42,7 @@ import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaInvalidExcept
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaParametroResponseInvalidException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaScoreNonValidoException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaUnavailableException;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class ReCaptchaValidator {
 
@@ -62,8 +61,8 @@ public class ReCaptchaValidator {
 			throw new ReCaptchaConfigurazioneNonValidaException("URL servizio di verifica Google Recaptcha non presente.");
 
 		try {
-			new URL(this.captchaSettings.getGoogleCatpcha().getServerURL());
-		}catch(MalformedURLException e) {
+			new URI(this.captchaSettings.getGoogleCatpcha().getServerURL()).toURL();
+		}catch(MalformedURLException | URISyntaxException e) {
 			throw new ReCaptchaConfigurazioneNonValidaException("URL servizio di verifica Google Recaptcha non valida.");
 		}
 
@@ -118,10 +117,6 @@ public class ReCaptchaValidator {
         	// imposto i timeout di connessione
         	HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         	factory.setConnectTimeout(this.captchaSettings.getGoogleCatpcha().getConnectionTimeout());
-        	// TODO da verificare come configurare questo timeout nel SocketConfig e quindi nel client
-        	//      da passare poi al RestTemplate. La creazione del client è "pesante" e merita cercare
-        	//      di riusare i client
-        	// factory.setReadTimeout(this.captchaSettings.getGoogleCatpcha().getReadTimeout());
         	
            	RestTemplate restTemplate = new RestTemplate(factory);
 

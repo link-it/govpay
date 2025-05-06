@@ -69,8 +69,6 @@ wsdlLocation = "/wsdl/PaPerNodo.wsdl")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 
-//@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
-
 public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 	private static final String COD_DOMINIO = "codDominio";
