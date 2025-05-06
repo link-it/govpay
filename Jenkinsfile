@@ -82,11 +82,9 @@ pipeline {
     stage('SonarQube Analysis') {
 	  steps {
 	    sh """
-	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
-	    	-Dsonar.projectKey=GovPay \\
-	        -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
-	        -Dsonar.host.url=http://localhost:9000 \\
-	        -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML}
+	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar -Dsonar.projectKey=GovPay -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
+	    	-Dsonar.login=$GOVPAY_SONAR_USER -Dsonar.password=$GOVPAY_SONAR_PWD \\
+	    	 -Dsonar.host.url=http://localhost:9000 -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML}
 	       """
 	  }
 	  post {
