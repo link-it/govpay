@@ -150,12 +150,15 @@ public abstract class BaseRsService {
 				switch(utenza.getTipoUtenza()) {
 				case CITTADINO, ANONIMO:
 					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
-					break;
+				break;
 				case APPLICAZIONE:
 					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
 					break;
 				case OPERATORE:
 					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
+					break;
+				default: 
+					ctx.getEventoCtx().setUtente("Utenza "+utenza.getPrincipal()+" di tipo "+ utenza.getTipoUtenza()+" non supportato.");
 					break;
 				}
 
@@ -189,7 +192,7 @@ public abstract class BaseRsService {
 		for (Acl acl : aclsProfilo) {
 			sb.append("\t").append("\t");
 			sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
-				.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
+			.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
 			sb.append("\n");
 		}
 	}
@@ -262,12 +265,15 @@ public abstract class BaseRsService {
 				switch(utenza.getTipoUtenza()) {
 				case CITTADINO, ANONIMO:
 					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
-					break;
+				break;
 				case APPLICAZIONE:
 					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
 					break;
 				case OPERATORE:
 					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
+					break;
+				default: 
+					ctx.getEventoCtx().setUtente("Utenza "+utenza.getPrincipal()+" di tipo "+ utenza.getTipoUtenza()+" non supportato.");
 					break;
 				}
 
@@ -302,40 +308,40 @@ public abstract class BaseRsService {
 
 	private String getPathFromRestMethod(String methodName) {
 
-        try {
-        	Class<?> c = this.getClass();
+		try {
+			Class<?> c = this.getClass();
 
-        	String rsBasePathValue = "";
-        	Path rsBasePath = c.getAnnotation(Path.class);
-        	if(rsBasePath !=null) {
-        		rsBasePathValue = rsBasePath.value();
-        	}
-
-        	Method [] methods = c.getMethods();
-        	if(methods==null || methods.length<=0) {
-        		return null;
-        	}
-        	Method method = null;
-        	for (Method method2 : methods) {
-        		if (method2 != null && method2.getName().equals(methodName) && method2.isAnnotationPresent(Path.class)) {
-        			method = method2;
-        			break;
-        		}
+			String rsBasePathValue = "";
+			Path rsBasePath = c.getAnnotation(Path.class);
+			if(rsBasePath !=null) {
+				rsBasePathValue = rsBasePath.value();
 			}
-        	if(method==null) {
-        		return null;
-        	}
-        	Path path = method.getAnnotation(Path.class);
-        	if(path==null) {
-        		return null;
-        	}
-        	return rsBasePathValue + path.value();
-        } catch (Exception e) {
-            this.log.error(e.getMessage(),e);
-        }
 
-        return null;
-    }
+			Method [] methods = c.getMethods();
+			if(methods==null || methods.length<=0) {
+				return null;
+			}
+			Method method = null;
+			for (Method method2 : methods) {
+				if (method2 != null && method2.getName().equals(methodName) && method2.isAnnotationPresent(Path.class)) {
+					method = method2;
+					break;
+				}
+			}
+			if(method==null) {
+				return null;
+			}
+			Path path = method.getAnnotation(Path.class);
+			if(path==null) {
+				return null;
+			}
+			return rsBasePathValue + path.value();
+		} catch (Exception e) {
+			this.log.error(e.getMessage(),e);
+		}
+
+		return null;
+	}
 
 	protected void logDebugException(String msg, Exception e) {
 		LogUtils.logDebugException(this.log, msg, e);

@@ -69,13 +69,11 @@ public class CaptchaResponse extends JSONSerializable{
 		if(errors == null) {
 			return false;
 		}
+		
 		for(ErrorCode error : errors) {
-			switch(error) {
-			case INVALID_RESPONSE, MISSING_RESPONSE:
+			if (error.equals(ErrorCode.MISSING_SECRET) || error.equals(ErrorCode.INVALID_SECRET)) {
 				return true;
-			default:
-				return false;
-			}
+			} 
 		}
 		return false;
 	}
