@@ -47,7 +47,7 @@ sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/xml"
 sudo su -c "cp target/jacoco.xml ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/xml/report.xml"
 
 sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/csv"
-sudo su -c "cp target/jacoco.csv ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/xml/report.csv"
+sudo su -c "cp target/jacoco.csv ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/csv/report.csv"
 
 sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/html"
 sudo su -c "cp -r target/jacoco-html/* ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/html/"

@@ -1,4 +1,4 @@
-[![Quality Gate Status](http://jenkins-govpay.link.it:9000/api/project_badges/measure?branch=3.8.x&project=GovPay&metric=alert_status)](http://jenkins-govpay.link.it:9000/dashboard?id=GovPay&branch=3.8.x)
+[![Quality Gate Status](http://jenkins-govpay.link.it:9000/api/project_badges/measure?branch=3.8.x&project=GovPay&metric=alert_status&token=squ_2bf4af6b95accda310d123ec1bf12f9dfc38599f)](http://jenkins-govpay.link.it:9000/dashboard?id=GovPay&branch=3.8.x)
 [![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.8.x/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/3.8.x/)
 [![Docker](https://github.com/link-it/govpay/blob/3.8.x/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
 [![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.8.x)](https://govpay.readthedocs.io/it/latest/?badge=3.8.x)
