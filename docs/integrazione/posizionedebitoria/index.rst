@@ -12,7 +12,7 @@ Caricamento di una posizione debitoria
 
 Il caricamento di una posizione debitoria su GovPay si realizza tramite tramite chiamata alle API Pendenze:
 
-	PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false]
+	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false]`
 
 Dove:
 
@@ -69,8 +69,8 @@ Download avviso di pagamento
 
 L’avviso di pagamento può essere scaricato anche in una fase successiva alla creazione con la seguente chiamata:
 
-	GET /avvisi/{idDominio}/{numeroAvviso}
-	Accept: application/pdf
+	`GET /avvisi/{idDominio}/{numeroAvviso}
+	Accept: application/pdf`
 
 Dove:
 
@@ -96,7 +96,7 @@ Consultazione dello stato di una pendenza
 
 È possibile consultare lo stato di una pendenza ed eventuali ricevute di pagamento tramite la seguente risorsa:
 
-	GET /pendenze/{idA2A}/{idPendenza}
+	`GET /pendenze/{idA2A}/{idPendenza}`
 
 Dove:
 
@@ -254,8 +254,8 @@ Stampa della ricevuta di pagamento
 
 La piattaforma consente la stampa in versione analogica della ricevuta di pagamento tramite servizio REST:
 
-	GET /rpp/{idDominio}/{iuv}/{receiptId}/rt
-	Accept: application/pdf
+	`GET /rpp/{idDominio}/{iuv}/{receiptId}/rt
+	Accept: application/pdf`
 
 Dove:
 
