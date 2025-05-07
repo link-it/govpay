@@ -60,7 +60,7 @@ Esito del Pagamento
 Al ritorno sul Portale di Pagamento, al termine delle operazioni, il portale deve verificare l'effettivo esito del pagamento. 
 Invocando le API Pagamenti di GovPay, si ottiene la lista delle ricevute di pagamento dell'avviso individuato:
 
-   GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}
+   `GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}`
 
 Dove:
 
@@ -105,8 +105,8 @@ Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragione
 E' possibile infine stampare la versione PDF di una ricevuta utilizzando la risorsa `GET /ricevute/{idDominio}/{iuv}/{idRicevuta}` impostando l'header HTTP 
 `Accept: application/pdf`
 
-   GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}
-   Accept: application/pdf|application/json
+   `GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}
+   Accept: application/pdf|application/json`
 
 Dove:
 
