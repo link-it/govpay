@@ -40,7 +40,8 @@ CVE-2021-4277
 file name: openspcoop2_utils-crypt-3.2.1.jar
 
 La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' nel processamento del file 'screenshot_sync' del componente 'Filename Handler'.
-La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato.	   
+
+La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato, inoltre non viene utilizzata a runtime ma solo per l'esecuzione dell'installer.
 
 
 Test di copertura funzionale
