@@ -144,7 +144,7 @@ Examples:
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | emailAllegato | emailAllegato | null | 'emailAllegato' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
@@ -192,7 +192,7 @@ Examples:
 | versioneZip | versioneZip | null | 'versioneZip' |
 | fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
 
@@ -220,7 +220,7 @@ Examples:
 | contenuti | contenuti | null | 'contenuti' |
 | contenuti | contenuti | ['XXXX'] | 'contenuti' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | url | url | null | 'url' |
 | url | url | 'xxxx' | 'url' |
 | versioneApi | versioneApi | 'xxxx' | 'versioneApi' |
