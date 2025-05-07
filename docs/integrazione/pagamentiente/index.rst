@@ -95,7 +95,7 @@ Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragione
                   "ragioneSociale":"Ente Creditore"
                },
                "iuv":"10000000000000001",
-               "idRicevuta":"0817d3f933674921990505e927d79f56",
+               "idRicevuta":"100000000000902038186",
                "data":"2025-02-21T17:25:11",
                "esito":"ESEGUITO"
             }
@@ -115,19 +115,22 @@ Dove:
    - idRicevuta: identificativo della ricevuta
    - Header HTTP Accept: consente di scaricare l’avviso di pagamento in diversi formati. Per scaricare la ricevuta in formato pdf impostare il valore: ‘Accept: application/pdf’.
 
-Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}** per scaricare la ricevuta in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001**, l'idRicevuta sia **0817d3f933674921990505e927d79f56**.
+Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}** per scaricare la ricevuta in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001**, l'idRicevuta sia **100000000000902038186**.
 
 .. code-block:: json
       :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}*
 
-      GET https://demo.govcloud.it/govpay/backend/api/ragioneria/rs/basic/v3/ricevute/01234567890/10000000000000001/0817d3f933674921990505e927d79f56
+      GET https://demo.govcloud.it/govpay/backend/api/ragioneria/rs/basic/v3/ricevute/01234567890/10000000000000001/100000000000902038186
       Accept:application/pdf
 
       HTTP/1.1 200 OK
-      content-disposition: attachment; filename="01234567890_10000000000000001_0817d3f933674921990505e927d79f56.pdf"
+      content-disposition: attachment; filename="01234567890_10000000000000001_100000000000902038186.pdf"
       Content-Type: application/pdf
       
       ---[pdf della ricevuta]--- 
 
 .. INFO::
-   Si ricorda inoltre che GovPay notifica le ricevute di pagamento acquisite all'applicativo gestionale tramite le API Ente. Questo consente di evitare onerosi sistemi di polling per l'acquisizione.
+   Si ricorda inoltre che GovPay notifica le ricevute di pagamento acquisite all'applicativo gestionale tramite le API Ente.
+   Questo consente di evitare onerosi sistemi di polling per l'acquisizione.
+
+
