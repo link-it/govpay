@@ -34,6 +34,14 @@ Il metodo indicato non è utilizzato su GovPay.
 Nella discussione inoltre si fa riferimento alla vulnerabilità descritta in 'https://security.snyk.io/vuln/SNYK-JAVA-XERCES-31497' che consentiva di attuare attacchi DOS.
 Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
 
+CVE-2021-4277
+=============
+
+file name: openspcoop2_utils-crypt-3.2.1.jar
+
+La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' nel processamento del file 'screenshot_sync' del componente 'Filename Handler'.
+La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato.	   
+
 
 Test di copertura funzionale
 ============================
