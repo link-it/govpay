@@ -1,6 +1,6 @@
 .. _integrazione_pagamentiente:
 
-.. INFO::
+.. NOTE::
    In questa sezione viene descritto il nuovo processo di pagamento
    ad iniziativa Ente tramite il Modello Unico introdotto dalle SANP 3.2. 
    Restano disponibili i servizi che realizzano il precedente processo 
@@ -70,7 +70,7 @@ Dove:
 In risposta si ottiene l’elenco delle transazioni di pagamento che corrispondono ai criteri di ricerca.
 Nel caso fossero presenti piu’ tentativi di pagamento il servizio ordina i risultati per data decrescente.
 
-.. INFO::
+.. NOTE::
    Il modello unico pagoPA prevede che le ricevute siano emesse
    solo in caso di pagamento completato con successo.
 
@@ -129,7 +129,7 @@ Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragione
       
       ---[pdf della ricevuta]--- 
 
-.. INFO::
+.. NOTE::
    Si ricorda inoltre che GovPay notifica le ricevute di pagamento acquisite all'applicativo gestionale tramite le API Ente.
    Questo consente di evitare onerosi sistemi di polling per l'acquisizione.
 
