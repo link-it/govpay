@@ -44,7 +44,7 @@ La libreria in questione openspcoop2_utils-crypt non contiene il componente indi
 
 
 Test di copertura funzionale
-============================
+****************************
 
 Di seguito le funzionalità del prodotto ed i test che ne verificano il corretto funzionamento
 
