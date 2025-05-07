@@ -9,7 +9,7 @@ Ogni nuova versione di GovPay viene sottoposta alle seguenti verifiche di sicure
 - Dynamic Analysis: cerca vulnerabilità del software durante l’effettiva esecuzione del prodotto. L’analisi viene eseguita attraverso l’esecuzione di estese batterie di test realizzate con `Karate <https://github.com/karatelabs/karate>`_;
 - Third Party Dependency Analysis: assicura che tutte le librerie terza parte utilizzate non siano soggette a vulnerabilità di sicurezza note, utilizzando il tool `OWASP Dependency-Check </https://owasp.org/www-project-dependency-check/>`_.
 
-Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity/>`_.
+Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/job/govpay/>`_.
 
 Falsi positivi
 **************
@@ -34,9 +34,18 @@ Il metodo indicato non è utilizzato su GovPay.
 Nella discussione inoltre si fa riferimento alla vulnerabilità descritta in 'https://security.snyk.io/vuln/SNYK-JAVA-XERCES-31497' che consentiva di attuare attacchi DOS.
 Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
 
+CVE-2021-4277
+=============
+
+file name: openspcoop2_utils-crypt-3.2.1.jar
+
+La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' nel processamento del file 'screenshot_sync' del componente 'Filename Handler'.
+
+La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato, inoltre non viene utilizzata a runtime ma solo per l'esecuzione dell'installer.
+
 
 Test di copertura funzionale
-============================
+****************************
 
 Di seguito le funzionalità del prodotto ed i test che ne verificano il corretto funzionamento
 
