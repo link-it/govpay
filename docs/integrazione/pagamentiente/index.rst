@@ -44,7 +44,7 @@ Avvio del Pagamento
 Al termine della fase di predisposizione del pagamento, il portale
 dispone di un carrello di pendenze identificate dagli estremi degli 
 avvisi ad esse associati. Per avviare il pagamento è sufficiente 
-effettuare una richiesta alle `API Checkout di pagoPA https://docs.pagopa.it/sanp/appendici/primitive#ec-checkout-api` _ ottenendo la redirezione al portale di pagamento.
+effettuare una richiesta alle `API Checkout di pagoPA <https://docs.pagopa.it/sanp/appendici/primitive#ec-checkout-api>` _ ottenendo la redirezione al portale di pagamento.
 
 .. DANGER::
    Attualmente il servizio Checkout consente di pagare un solo
