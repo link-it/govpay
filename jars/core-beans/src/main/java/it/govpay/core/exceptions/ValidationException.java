@@ -19,6 +19,8 @@
  */
 package it.govpay.core.exceptions;
 
+import it.govpay.core.beans.Costanti;
+
 /**	
  * Contiene la definizione di una eccezione lanciata dalle funzioni di validazione
  *
@@ -45,4 +47,10 @@ public class ValidationException extends Exception {
 		super(msg);
 	}
 
+	public ValidationException(String fieldName, String valoreErrato, String valoriAmmessi) {
+		super(Costanti.MSG_VALIDATION_EXCEPTION_CODIFICA_INESISTENTE_PER +
+				fieldName + Costanti.MSG_VALIDATION_EXCEPTION_VALORE_FORNITO +
+				valoreErrato + Costanti.MSG_VALIDATION_EXCEPTION_VALORI_POSSIBILI +
+				valoriAmmessi + Costanti.MSG_VALIDATION_EXCEPTION_SUFFIX);
+	}
 }

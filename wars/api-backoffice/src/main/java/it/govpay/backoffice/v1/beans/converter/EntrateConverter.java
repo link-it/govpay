@@ -45,7 +45,7 @@ public class EntrateConverter {
 
 			// valore tipo contabilita non valido
 			if(TipoContabilita.fromValue(entrataPost.getTipoContabilita()) == null) {
-				throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + entrataPost.getTipoContabilita() + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+				throw new ValidationException("tipoContabilita", entrataPost.getTipoContabilita(), ArrayUtils.toString(TipoContabilita.values()));
 			}
 
 			entrataPost.setTipoContabilitaEnum(TipoContabilita.fromValue(entrataPost.getTipoContabilita()));

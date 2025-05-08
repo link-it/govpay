@@ -580,7 +580,7 @@ public class PendenzeConverter {
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
-				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+				throw new ValidationException("tassonomiaAvviso", pendenza.getTassonomiaAvviso(), ArrayUtils.toString(TassonomiaAvviso.values()));
 			}
 
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
@@ -610,8 +610,7 @@ public class PendenzeConverter {
 			if(pendenza.getDocumento().getSoglia() != null) {
 				// valore tassonomia avviso non valido
 				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo. Valore fornito ["
-								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+					throw new ValidationException("tipo", pendenza.getDocumento().getSoglia().getTipo(), ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 
 				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
@@ -657,7 +656,7 @@ public class PendenzeConverter {
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
-				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+				throw new ValidationException("tassonomiaAvviso", pendenza.getTassonomiaAvviso(), ArrayUtils.toString(TassonomiaAvviso.values()));
 			}
 
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
@@ -687,8 +686,7 @@ public class PendenzeConverter {
 			if(pendenza.getDocumento().getSoglia() != null) {
 				// valore tassonomia avviso non valido
 				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo. Valore fornito ["
-								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+					throw new ValidationException("tipo", pendenza.getDocumento().getSoglia().getTipo(), ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 
 				if(pendenza.getDocumento().getSoglia().getGiorni() != null)

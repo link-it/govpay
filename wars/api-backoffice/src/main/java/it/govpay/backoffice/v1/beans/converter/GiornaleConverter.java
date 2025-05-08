@@ -70,7 +70,7 @@ public class GiornaleConverter {
 
 			// valore log non valido
 			if(LogEnum.fromValue(gdeEvento.getLog()) == null) {
-				throw new ValidationException("Codifica inesistente per log. Valore fornito [" + gdeEvento.getLog() + "] valori possibili " + ArrayUtils.toString(LogEnum.values()));
+				throw new ValidationException("log", gdeEvento.getLog(), ArrayUtils.toString(LogEnum.values()));
 			}
 
 			gdeEvento.setLog(LogEnum.fromValue(gdeEvento.getLog()));
@@ -92,7 +92,7 @@ public class GiornaleConverter {
 
 			// valore dumo non valido
 			if(DumpEnum.fromValue(gdeEvento.getDump()) == null) {
-				throw new ValidationException("Codifica inesistente per dump. Valore fornito [" + gdeEvento.getDump() + "] valori possibili " + ArrayUtils.toString(DumpEnum.values()));
+				throw new ValidationException("dump", gdeEvento.getDump(), ArrayUtils.toString(DumpEnum.values()));
 			}
 
 			gdeEvento.setDump(DumpEnum.fromValue(gdeEvento.getDump()));

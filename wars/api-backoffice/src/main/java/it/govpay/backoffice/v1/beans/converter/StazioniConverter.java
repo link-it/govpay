@@ -76,7 +76,7 @@ public class StazioniConverter {
 			// valore versione non valido
 			VersioneStazione versioneStazione = VersioneStazione.fromValue(stazionePost.getVersione());
 			if(versioneStazione == null) {
-				throw new ValidationException("Codifica inesistente per versione. Valore fornito [" + stazionePost.getVersione() + "] valori possibili " + ArrayUtils.toString(VersioneStazione.values()));
+				throw new ValidationException("versione", stazionePost.getVersione(), ArrayUtils.toString(VersioneStazione.values()));
 			}
 
 			switch (versioneStazione) {

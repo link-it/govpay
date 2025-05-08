@@ -97,7 +97,7 @@ public class DominiConverter {
 
 			// valore tipo contabilita non valido
 			if(TipoContabilita.fromValue(entrataRequest.getTipoContabilita()) == null) {
-				throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + entrataRequest.getTipoContabilita() + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+				throw new ValidationException("tipoContabilita", entrataRequest.getTipoContabilita(), ArrayUtils.toString(TipoContabilita.values()));
 			}
 
 			entrataRequest.setTipoContabilitaEnum(TipoContabilita.fromValue(entrataRequest.getTipoContabilita()));
@@ -245,7 +245,7 @@ public class DominiConverter {
 		if(dominioPost.getTassonomiaPagoPA() != null) {
 			// valore tipo contabilita non valido
 			if(TassonomiaPagoPADominio.fromValue(dominioPost.getTassonomiaPagoPA()) == null) {
-				throw new ValidationException("Codifica inesistente per tassonomiaPagoPA. Valore fornito [" + dominioPost.getTassonomiaPagoPA() + "] valori possibili " + ArrayUtils.toString(TassonomiaPagoPADominio.values()));
+				throw new ValidationException("tassonomiaPagoPA", dominioPost.getTassonomiaPagoPA(), ArrayUtils.toString(TassonomiaPagoPADominio.values()));
 			}
 
 			dominioPost.setTassonomiaPagoPAEnum(TassonomiaPagoPADominio.fromValue(dominioPost.getTassonomiaPagoPA()));
@@ -909,11 +909,8 @@ public class DominiConverter {
 			}
 
 			if(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione() != null  && tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getDefinizione() != null && tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo() != null) {
-				if(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo() != null) {
-					// valore tipo template trasformazione non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 
 				Object definizione = tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getDefinizione();
@@ -944,11 +941,8 @@ public class DominiConverter {
 			}
 
 			if(tipoPendenzaRequest.getPortalePagamento().getTrasformazione() != null  && tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getDefinizione() != null && tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo() != null) {
-				if(tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo() != null) {
-					// valore tipo template trasformazione non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 
 				Object definizione = tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getDefinizione();
@@ -996,12 +990,8 @@ public class DominiConverter {
 					tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoTipoCustom(null);
 				}
 
-				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1039,12 +1029,8 @@ public class DominiConverter {
 					tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiCustom(null);
 				}
 
-				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1078,12 +1064,8 @@ public class DominiConverter {
 				}
 
 
-				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 		}
@@ -1097,12 +1079,8 @@ public class DominiConverter {
 				&& tipoPendenzaRequest.getTracciatoCsv().getRichiesta() != null
 				&& tipoPendenzaRequest.getTracciatoCsv().getRisposta() != null) {
 			tipoVersamentoDominio.setTracciatoCsvTipoCustom(tipoPendenzaRequest.getTracciatoCsv().getTipo());
-			if(tipoPendenzaRequest.getTracciatoCsv().getTipo() != null) {
-				// valore tipo contabilita non valido
-				if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getTracciatoCsv().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-							tipoPendenzaRequest.getTracciatoCsv().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-				}
+			if(tipoPendenzaRequest.getTracciatoCsv().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getTracciatoCsv().getTipo()) == null) {
+				throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getTracciatoCsv().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 
 			tipoVersamentoDominio.setTracciatoCsvIntestazioneCustom(tipoPendenzaRequest.getTracciatoCsv().getIntestazione());
@@ -1144,12 +1122,8 @@ public class DominiConverter {
 					tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoTipoCustom(null);
 				}
 
-				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1182,12 +1156,8 @@ public class DominiConverter {
 					tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiCustom(null);
 				}
 
-				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1221,12 +1191,8 @@ public class DominiConverter {
 				}
 
 
-				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 		}

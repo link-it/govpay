@@ -106,5 +106,13 @@ public class Costanti {
 	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA = "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza";
 	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_OPERATORE_A_TUTTI_GLI_ENTI_CREDITORI = "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori";
 	
+	/** COSTANTI PATH */
 	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/"+"{0}";
+	
+	/** COSTANTI VALIDAZIONE */
+	public static final String MSG_VALIDATION_EXCEPTION_CODIFICA_INESISTENTE_PER ="Codifica inesistente per ";
+	public static final String MSG_VALIDATION_EXCEPTION_VALORE_FORNITO = ". Valore fornito [";
+	public static final String MSG_VALIDATION_EXCEPTION_VALORI_POSSIBILI = "] valori possibili " ;
+	public static final String MSG_VALIDATION_EXCEPTION_SUFFIX = "" ;
+	
 }
