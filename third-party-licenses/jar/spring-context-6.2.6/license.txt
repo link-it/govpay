@@ -202,9 +202,15 @@
 
 =======================================================================
 
+<<<<<<<< HEAD:third-party-licenses/jar/spring-context-6.2.6/license.txt
 SPRING FRAMEWORK 6.2.6 SUBCOMPONENTS:
 
 Spring Framework 6.2.6 includes a number of subcomponents
+========
+SPRING FRAMEWORK 5.3.39 SUBCOMPONENTS:
+
+Spring Framework 5.3.39 includes a number of subcomponents
+>>>>>>>> origin/master:third-party-licenses/jar/spring-jcl-5.3.39/license.txt
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source

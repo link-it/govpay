@@ -202,15 +202,9 @@
 
 =======================================================================
 
-<<<<<<<< HEAD:third-party-licenses/jar/spring-jcl-6.2.6/license.txt
-SPRING FRAMEWORK 6.2.6 SUBCOMPONENTS:
-
-Spring Framework 6.2.6 includes a number of subcomponents
-========
 SPRING FRAMEWORK 5.3.39 SUBCOMPONENTS:
 
 Spring Framework 5.3.39 includes a number of subcomponents
->>>>>>>> origin/master:third-party-licenses/jar/spring-context-5.3.39-gov4j-1/license.txt
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -261,18 +255,10 @@ CGLIB 3.3 is licensed under the Apache License, version 2.0, the text of which
 is included above.
 
 
->>> JavaPoet 1.13.0 (com.squareup:javapoet:1.13.0):
-
-Per the LICENSE file in the JavaPoet JAR distribution downloaded from
-https://github.com/square/javapoet/archive/refs/tags/javapoet-1.13.0.zip,
-JavaPoet 1.13.0 is licensed under the Apache License, version 2.0, the text of
-which is included above.
-
-
->>> Objenesis 3.4 (org.objenesis:objenesis:3.4):
+>>> Objenesis 3.2 (org.objenesis:objenesis:3.2):
 
 Per the LICENSE file in the Objenesis ZIP distribution downloaded from
-http://objenesis.org/download.html, Objenesis 3.4 is licensed under the
+http://objenesis.org/download.html, Objenesis 3.2 is licensed under the
 Apache License, version 2.0, the text of which is included above.
 
 Per the NOTICE file in the Objenesis ZIP distribution downloaded from

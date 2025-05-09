@@ -1,4 +1,4 @@
-# This repository adheres to the publiccode.yml standard by including this 
+# This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
@@ -56,7 +56,7 @@ description:
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
       l'adesione a pagoPA necessari alla realizzazione di pagamenti, dovuti o
       spontanei, sia ad iniziativa Ente che ad iniziativa PSP nonché alla loro
-      riconciliazione in tesoreria. 
+      riconciliazione in tesoreria.
 
 
       Fornisce un cruscotto di gestione che implementa i servizi di "Tavolo
@@ -73,13 +73,13 @@ description:
       riconciliazione contabile in tesoreria delle riscossioni effettuate. Le
       stesse operazioni sono comunque disponibili anche sul cruscotto di
       gestione per gli operatori, tramite compilazione di form o file upload di
-      tracciati record. 
+      tracciati record.
 
 
       Di seguito le funzionalita fornite dal prodotto ed individuate dal [quadro
       sinottico dei
       servizi](https://www.pagopa.gov.it/it/pubbliche-amministrazioni/quadro-sinottico/)
-      al quale si rimanda per una descrizione più estesa. 
+      al quale si rimanda per una descrizione più estesa.
 
 
       **Servizi minimi**
@@ -92,7 +92,7 @@ description:
       - Modelli di pagamento
 
 
-      **Servizi base** 
+      **Servizi base**
 
 
       - Profilazione personale EC con diversi ruoli e permessi
@@ -118,7 +118,7 @@ description:
       - Riconciliazione
 
 
-      **Servizi a valore aggiunto** 
+      **Servizi a valore aggiunto**
 
 
       - Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi
@@ -207,7 +207,7 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2025-03-31'
+releaseDate: '2025-05-10'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
 softwareVersion: 3.8.0

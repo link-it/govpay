@@ -37,7 +37,7 @@
 				  "richiestaMarcaDaBollo" : {
 						"provinciaResidenza" : "#string",
 						"tipoBollo" : "#string",
-						"hashDocumento" : "#notnull" 
+						"hashDocumento" : "#notnull"
 					},
                   "metadata":null
                }
@@ -48,6 +48,3 @@
    "rt":null,
    "riscossioni":null
 }
-
-
-

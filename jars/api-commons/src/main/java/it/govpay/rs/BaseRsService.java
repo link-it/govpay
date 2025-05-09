@@ -157,7 +157,7 @@ public abstract class BaseRsService {
 				case OPERATORE:
 					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
 					break;
-				default: 
+				default:
 					ctx.getEventoCtx().setUtente("Utenza "+utenza.getPrincipal()+" di tipo "+ utenza.getTipoUtenza()+" non supportato.");
 					break;
 				}
@@ -272,7 +272,7 @@ public abstract class BaseRsService {
 				case OPERATORE:
 					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
 					break;
-				default: 
+				default:
 					ctx.getEventoCtx().setUtente("Utenza "+utenza.getPrincipal()+" di tipo "+ utenza.getTipoUtenza()+" non supportato.");
 					break;
 				}
@@ -379,4 +379,3 @@ public abstract class BaseRsService {
 		LogUtils.logTrace(this.log, msg, params);
 	}
 }
-

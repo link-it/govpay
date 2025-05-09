@@ -12,7 +12,7 @@
 	<packaging>jar</packaging>
 
 	<name>GovPay - jars - XML Adapters</name>
-			
+
 	<dependencies>
 		<dependency>
 		        <groupId>jakarta.xml.bind</groupId>
@@ -47,9 +47,9 @@
 		<dependency>
 			<groupId>jakarta.activation</groupId>
 			<artifactId>jakarta.activation-api</artifactId>
-		</dependency>		
+		</dependency>
 	</dependencies>
-			
+
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>

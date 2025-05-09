@@ -64,7 +64,7 @@
 			</resource>
 		</resources>
 	</build>
-	
+
 	<profiles>
         <profile>
             <id>govpay-ear</id>
@@ -139,7 +139,7 @@
                                 <phase>package</phase>
                                 <goals>
                                     <goal>war</goal>
-                                </goals>	
+                                </goals>
                                 <configuration>
                                 	<webResources>
                                         <webResource>

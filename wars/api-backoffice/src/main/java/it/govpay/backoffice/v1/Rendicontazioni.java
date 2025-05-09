@@ -61,5 +61,3 @@ public class Rendicontazioni extends BaseRsServiceV1{
     }
 
 }
-
-

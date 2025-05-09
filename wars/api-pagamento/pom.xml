@@ -104,7 +104,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
         <profile>
             <id>govpay-ear</id>
@@ -134,7 +134,7 @@
 											<filtering>true</filtering>
 											<include>web.xml</include>
 											<targetPath>WEB-INF</targetPath>
-										</webResource>						
+										</webResource>
 										<webResource>
 											<directory>src/main/resources/spring-jaxrs</directory>
 											<filtering>true</filtering>
@@ -201,7 +201,7 @@
 											<filtering>true</filtering>
 											<include>web.xml</include>
 											<targetPath>WEB-INF</targetPath>
-										</webResource>						
+										</webResource>
 										<webResource>
 											<directory>src/main/resources/spring-jaxrs</directory>
 											<filtering>true</filtering>

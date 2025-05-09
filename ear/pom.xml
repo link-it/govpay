@@ -114,7 +114,7 @@
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-pagamento</artifactId>
@@ -174,7 +174,7 @@
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-user</artifactId>
@@ -192,14 +192,14 @@
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-commons</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>web-console</artifactId>
@@ -211,7 +211,7 @@
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>fonts-TitilliumWeb</artifactId>

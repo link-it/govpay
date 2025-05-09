@@ -63,12 +63,12 @@ public class AppIoClient extends BasicClientCORE {
 	private static final String REQUEST_PATH = "RequestPath";
 	private static final String HTTP_METHOD = "HTTP-Method";
 	private static final String SUBSCRIPTION_KEY = "SubscriptionKey";
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(AppIoClient.class);
 	private AppIoAPIClient apiClient = null;
 
-	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException { 
-		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, appIo, eventoCtx); 
+	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
+		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, appIo, eventoCtx);
 
 		this.apiClient = new AppIoAPIClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
@@ -192,7 +192,7 @@ public class AppIoClient extends BasicClientCORE {
 			if(messaggio == null) {
 				messaggio = e.getMessage();
 			}
-			
+
 			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
@@ -201,7 +201,7 @@ public class AppIoClient extends BasicClientCORE {
 			if(msg != null && msg.length > 0) dumpResponse.setPayload(msg);
 			if(log.isTraceEnabled() && headerFields != null) {
 				StringBuilder sb = new StringBuilder();
-				for(String key : headerFields.keySet()) { 
+				for(String key : headerFields.keySet()) {
 					sb.append("\n\t" + key + ": " + headerFields.get(key));
 				}
 				sb.append("\n" + new String(msg));
@@ -260,7 +260,7 @@ public class AppIoClient extends BasicClientCORE {
 				jsonBody = ConverterUtils.toJSON(messageWithCF);
 			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di richiesta per il giornale eventi: " + e.getMessage(), e);
-			} 
+			}
 
 			// Salvataggio content type ed header con l'apikey
 			dumpRequest.setContentType(localVarContentTypes[0]);
@@ -321,7 +321,7 @@ public class AppIoClient extends BasicClientCORE {
 			if(messaggio == null) {
 				messaggio = e.getMessage();
 			}
-			
+
 			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
@@ -330,7 +330,7 @@ public class AppIoClient extends BasicClientCORE {
 			if(msg != null && msg.length > 0) dumpResponse.setPayload(msg);
 			if(log.isTraceEnabled() && headerFields != null) {
 				StringBuilder sb = new StringBuilder();
-				for(String key : headerFields.keySet()) { 
+				for(String key : headerFields.keySet()) {
 					sb.append("\n\t" + key + ": " + headerFields.get(key));
 				}
 				sb.append("\n" + new String(msg));

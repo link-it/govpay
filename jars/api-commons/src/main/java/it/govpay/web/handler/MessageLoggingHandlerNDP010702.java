@@ -142,11 +142,3 @@ public class MessageLoggingHandlerNDP010702 implements SOAPHandler<SOAPMessageCo
 		this.apiName = apiName;
 	}
 }
-
-
-
-
-
-
-
-

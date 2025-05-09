@@ -430,7 +430,7 @@ public class BaseApiServiceImpl {
 			return new URI(baseUri);
 		}
 	}
-	
+
 	public URI getServicePathConURIAssoluta(UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
 		return UriBuilderUtils.getServicePathConURIAssoluta(log, uriInfo, httpHeaders);
 	}

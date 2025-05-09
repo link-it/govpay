@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -43,27 +43,27 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(EnteRendicontazioniClient.class);
 	private Dominio dominio;
 	private it.govpay.bd.model.TracciatoNotificaPagamenti tracciato;
-	
+
 	public EnteRendicontazioniClient(Dominio dominio, it.govpay.bd.model.TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
-		super(dominio, TipoConnettore.GOVPAY, TipoDestinatario.GOVPAY, connettore, eventoCtx); 
+		super(dominio, TipoConnettore.GOVPAY, TipoDestinatario.GOVPAY, connettore, eventoCtx);
 		this.operationID = operationID;
 		this.dominio = dominio;
 		this.tracciato = tracciato;
 		this.setGiornale(giornale);
 	}
-	
+
 	@Override
 	public String getOperationId() {
 		return this.operationID;
 	}
-	
+
 	public void setOperationId(String operationID) {
 		this.operationID = operationID;
 	}
-	
+
 	public String getSwaggerOperationId(ConnettoreNotificaPagamenti.Contenuti contenuto) {
 		String swaggerOperationID = "";
-		
+
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
 			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIAFLUSSORENDICONTAZIONE.toString();
@@ -78,13 +78,13 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIPAGAMENTI.toString();
 			break;
 		}
-		
+
 		return swaggerOperationID;
 	}
-	
+
 	public String getContentType(ConnettoreNotificaPagamenti.Contenuti contenuto) {
 		String swaggerOperationID = "";
-		
+
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
 			swaggerOperationID = "application/xml";
@@ -99,17 +99,17 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 			swaggerOperationID = "text/csv";
 			break;
 		}
-		
+
 		return swaggerOperationID;
 	}
-	
-	public byte[] inviaFile(byte[] body, Map<String, String> queryParams, ConnettoreNotificaPagamenti.Contenuti contenuto, String idFile) throws ClientException { 
+
+	public byte[] inviaFile(byte[] body, Map<String, String> queryParams, ConnettoreNotificaPagamenti.Contenuti contenuto, String idFile) throws ClientException {
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
 		StringBuilder sb = new StringBuilder();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
 		String swaggerOperationID = this.getSwaggerOperationId(contenuto);
-		
+
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
 			sb.append("/flussiRendicontazione/" + this.dominio.getCodDominio() + "/" + idFile);
@@ -124,7 +124,7 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 			sb.append("/rpp/" + this.dominio.getCodDominio() + "/"+ this.tracciato.getIdentificativo());
 			break;
 		}
-		
+
 		// composizione URL
 		if(queryParams != null) {
 			boolean amp = false;
@@ -135,15 +135,15 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 					sb.append("?");
 					amp = true;
 				}
-	
+
 				sb.append(key).append("=").append(queryParams.get(key));
 			}
 		}
-		
+
 		LogUtils.logDebug(log, "Spedisco il contentuto " + contenuto.toString() + " del Tracciato (Dominio: " + this.dominio.getCodDominio() + ", Identificativo" + this.tracciato.getIdentificativo() + ") alla URL ("+sb.toString()+")");
-		
+
 		String contentType = this.getContentType(contenuto);
-		
+
 		return this.sendJson(sb.toString(), body, headerProperties, httpMethod, contentType, swaggerOperationID);
 	}
 

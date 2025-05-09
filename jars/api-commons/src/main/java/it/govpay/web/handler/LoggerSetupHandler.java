@@ -75,11 +75,3 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
         }
     }
 }
-
-
-
-
-
-
-
-

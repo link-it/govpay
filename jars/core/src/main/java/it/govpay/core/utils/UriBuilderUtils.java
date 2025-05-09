@@ -18,7 +18,7 @@
  *
  */
 /**
- * 
+ *
  */
 package it.govpay.core.utils;
 
@@ -39,12 +39,12 @@ import org.slf4j.Logger;
  * @author Bussu Giovanni (bussu@link.it)
  * @author  $Author: bussu $
  * @version $ Rev: 12563 $, $Date: 31 gen 2018 $
- * 
+ *
  */
 public class UriBuilderUtils {
-	
+
 	private UriBuilderUtils() {}
-	
+
 	public static String getFromOperazioni(String idOperazione) {
 		return getListOperazioni().path(idOperazione).build().toString();
 	}
@@ -52,9 +52,9 @@ public class UriBuilderUtils {
 	public static String getFromPagamenti(String idPagamento) {
 		return getListPagamenti().path(idPagamento).build().toString();
 	}
-	
+
 	public static String getRppByDominioIuvCcp(String idDominio,String iuv, String ccp) {
-		return getListRpp().path(idDominio).path(iuv).path(ccp).build().toString(); 
+		return getListRpp().path(idDominio).path(iuv).path(ccp).build().toString();
 	}
 
 	public static String getDominio(String codCominio) {
@@ -64,11 +64,11 @@ public class UriBuilderUtils {
 	public static String getLogoDominio(String codCominio) {
 		return getFromDomini().path("logo").buildFromEncoded(codCominio).toString();
 	}
-	
+
 	public static String getPendenzaByIdA2AIdPendenza(String idA2A, String idPendenza) {
 		return getListPendenze().path("{idA2A}").path("{idPendenza}").buildFromEncoded(idA2A,idPendenza).toString();
 	}
-	
+
 	public static String getPendenzeByPagamento(String idPagamento) {
 		return getByPagamento(getListPendenze(), idPagamento);
 	}
@@ -92,7 +92,7 @@ public class UriBuilderUtils {
 	public static String getEntrateByDominio(String idDominio) {
 		return getFromDomini().path("entrate").buildFromEncoded(idDominio).toString();
 	}
-	
+
 	public static String getTipiPendenzaByDominio(String idDominio) {
 		return getFromDomini().path("tipiPendenza").buildFromEncoded(idDominio).toString();
 	}
@@ -112,19 +112,19 @@ public class UriBuilderUtils {
 	public static UriBuilder getFromIntermediari() {
 		return getListIntermediari().path("{idIntermediario}");
 	}
-	
+
 	private static UriBuilder getFromDomini() {
 		return getListDomini().path("{idDominio}");
 	}
-	
+
 	private static UriBuilder getListIntermediari() {
 		return getBaseList("intermediari");
 	}
-	
+
 	private static UriBuilder getListDomini() {
 		return getBaseList("domini");
 	}
-	
+
 	private static UriBuilder getListPagamenti() {
 		return getBaseList("pagamenti");
 	}
@@ -132,31 +132,31 @@ public class UriBuilderUtils {
 	private static UriBuilder getListRpp() {
 		return getBaseList("rpp");
 	}
-	
+
 	private static UriBuilder getListIncassi() {
 		return getBaseList("incassi");
 	}
-	
+
 	private static UriBuilder getListRiconciliazioni() {
 		return getBaseList("riconciliazioni");
 	}
-	
+
 	private static UriBuilder getListPendenze() {
 		return getBaseList("pendenze");
 	}
-	
+
 	private static UriBuilder getListOperazioni() {
 		return getBaseList("operazioni");
 	}
-	
+
 	public static UriBuilder getListRendicontazioni() {
 		return getBaseList("rendicontazioni");
 	}
-	
+
 	private static UriBuilder getBaseList(String type) {
 		return getList(getBasePath(), type);
 	}
-	
+
 	private static UriBuilder getBasePath() {
 		UriBuilder fromPath = UriBuilder.fromPath("/");
 		return fromPath;
@@ -177,40 +177,40 @@ public class UriBuilderUtils {
 	public static String getIncassiByIdDominioIdIncasso(String idDominio, String idIncasso) {
 		return getListIncassi().path("{idDominio}").path("{idIncasso}").buildFromEncoded(idDominio,idIncasso).toString();
 	}
-	
+
 	public static String getRiconciliazioniByIdDominioIdIncasso(String idDominio, String idIncasso) {
 		return getListRiconciliazioni().path("{idDominio}").path("{idIncasso}").buildFromEncoded(idDominio,idIncasso).toString();
 	}
-	
+
 	public static boolean isRisorseCustomBaseUrlEnabled() {
 		Properties risorseCustomBaseURLProperties = GovpayConfig.getInstance().getRisorseCustomBaseURLProperties();
 		Object object = risorseCustomBaseURLProperties.get("enabled");
-		
+
 	    if (object instanceof String) {
 	        return Boolean.parseBoolean((String) object);
 	    }
-	    
+
 	    return object instanceof Boolean && (Boolean) object;
 	}
-	
+
 	public static URI getRisorseCustomBaseUrl(HttpHeaders httpHeaders) {
-		
+
 		Properties risorseCustomBaseURLProperties = GovpayConfig.getInstance().getRisorseCustomBaseURLProperties();
 		String nomeHeaderProtocollo = (String) risorseCustomBaseURLProperties.get("nomeHeaderProtocollo");
 		String nomeHeaderHost = (String) risorseCustomBaseURLProperties.get("nomeHeaderHost");
 		String nomeHeaderPorta = (String) risorseCustomBaseURLProperties.get("nomeHeaderPorta");
 		String nomeHeaderContesto = (String) risorseCustomBaseURLProperties.get("nomeHeaderContesto");
-		
+
 		String protocollo = StringUtils.isNotBlank(nomeHeaderProtocollo) ? httpHeaders.getHeaderString(nomeHeaderProtocollo) : null;
 		String host = StringUtils.isNotBlank(nomeHeaderHost) ? httpHeaders.getHeaderString(nomeHeaderHost) : null;
 		String porta = StringUtils.isNotBlank(nomeHeaderPorta) ? httpHeaders.getHeaderString(nomeHeaderPorta) : null;
 		String contesto = StringUtils.isNotBlank(nomeHeaderContesto) ? httpHeaders.getHeaderString(nomeHeaderContesto): null;
-		
+
 	    // Validazione del protocollo
 		if(protocollo == null) {
 			protocollo = "https";
 		}
-		
+
 	    if (!protocollo.equals("http") && !protocollo.equals("https")) {
 	        return null; // Restituisci null se il protocollo è invalido
 	    }
@@ -267,7 +267,7 @@ public class UriBuilderUtils {
 	        return null; // Restituisci null se l'URL è malformata
 	    }
 	}
-	
+
 	public static URI getServicePathConURIAssoluta(Logger log, UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
 		URI customURI = null;
 		if(isRisorseCustomBaseUrlEnabled()) {
@@ -281,13 +281,13 @@ public class UriBuilderUtils {
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
 
 			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-			
-			String uriCompleta = customURI.toString() + servicePathwithParameters; 
+
+			String uriCompleta = customURI.toString() + servicePathwithParameters;
 			log.debug("URI completa {}", uriCompleta);
-					
+
 			return new URI(uriCompleta);
 		}
-		
+
 		return uriInfo.getRequestUri();
 	}
 }

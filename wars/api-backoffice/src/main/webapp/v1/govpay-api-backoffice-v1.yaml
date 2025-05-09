@@ -193,7 +193,7 @@ paths:
         - $ref: '#/components/parameters/tassonomie'
         - $ref: '#/components/parameters/raggruppamentiStatistica'
         - $ref: '#/components/parameters/tipiRiscossione'
-        
+
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -269,7 +269,7 @@ paths:
       parameters:
         - in: query
           name: stampaAvvisi
-          description: >- 
+          description: >-
             indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
           schema:
             type: boolean
@@ -517,7 +517,7 @@ paths:
             pattern: '(^([0-9]){11}$)'
         - in: query
           name: stampaAvvisi
-          description: >- 
+          description: >-
                 indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
           schema:
             type: boolean
@@ -576,7 +576,7 @@ paths:
             pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
         - in: query
           name: stampaAvvisi
-          description: >- 
+          description: >-
                 indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
           schema:
             type: boolean
@@ -634,7 +634,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Zip contenente i dati del tracciato 
+          description: Zip contenente i dati del tracciato
           content:
             application/zip:
               schema:
@@ -667,7 +667,7 @@ paths:
             format: csv
             default: +denominazione
         - $ref: '#/components/parameters/campi'
-        - $ref: '#/components/parameters/abilitato'    
+        - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
       responses:
@@ -1558,7 +1558,7 @@ paths:
         - Enti Creditori
       summary: Aggiunge o aggiorna una tipologia di pendenza
       operationId: addTipoPendenza
-      parameters: 
+      parameters:
         - in: path
           name: idTipoPendenza
           schema:
@@ -2507,7 +2507,7 @@ paths:
     get:
       summary: Dettaglio di una pendenza per riferimento Avviso
       operationId: getPendenzaByAvviso
-      description: >- 
+      description: >-
         Fornisce il dettaglio di una pendenza.
       tags:
         - Pendenze
@@ -3198,10 +3198,10 @@ paths:
       parameters:
         - in: path
           name: idDominio
-          description: Identificativo dominio 
+          description: Identificativo dominio
           required: true
           schema:
-            type: string      
+            type: string
         - in: path
           name: idFlusso
           description: Identificativo del flusso di rendicontazione
@@ -3233,7 +3233,7 @@ paths:
         '404':
           $ref: '#/components/responses/400'
         '500':
-          $ref: '#/components/responses/500'          
+          $ref: '#/components/responses/500'
   '/rendicontazioni':
     get:
       tags:
@@ -3802,7 +3802,7 @@ components:
       required: false
       schema:
         type: boolean
-    associati: 
+    associati:
       name: associati
       in: query
       description: Restrizione ai soli elementi associati all'utenza chiamante
@@ -3918,7 +3918,7 @@ components:
         type: array
         items:
           type: string
-    divisione: 
+    divisione:
       name: divisione
       in: query
       description: Identificativo della divisione interna all'ente creditore
@@ -3965,7 +3965,7 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/esitoRpt'
-    flussoRendicontazioneDataFlussoDa:    
+    flussoRendicontazioneDataFlussoDa:
       in: query
       name: flussoRendicontazione.dataFlussoDa
       description: Filtro sulla data di acquisizione del flusso rendicontazioni
@@ -3973,7 +3973,7 @@ components:
       schema:
         type: string
         format: date
-    flussoRendicontazioneDataFlussoA:        
+    flussoRendicontazioneDataFlussoA:
       in: query
       name: flussoRendicontazione.dataFlussoA
       description: Filtro sulla data di acquisizione del flusso rendicontazioni
@@ -3981,7 +3981,7 @@ components:
       schema:
         type: string
         format: date
-    form:    
+    form:
       name: form
       in: query
       description: >-
@@ -4093,7 +4093,7 @@ components:
     idUnita:
       in: query
       name: idUnita
-      description: >- 
+      description: >-
                 Identificativo dell' unita' operativa
       required: false
       schema:
@@ -4137,8 +4137,8 @@ components:
     linguaSecondaria:
       name: linguaSecondaria
       in: query
-      description: >- 
-            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
+      description: >-
+            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso
       required: false
       schema:
         $ref: '#/components/schemas/LinguaSecondaria'
@@ -4149,7 +4149,7 @@ components:
       required: false
       schema:
         type: array
-        items: 
+        items:
           type: string
           pattern: '(^[0-9]{18}$)'
       example: ['123456789012345678']
@@ -4173,7 +4173,7 @@ components:
     metadatiPaginazione:
       name: metadatiPaginazione
       in: query
-      description: >- 
+      description: >-
               Indica se il servizio calcola e valorizza i dati di paginazione o meno
       required: false
       schema:
@@ -4229,16 +4229,16 @@ components:
       required: true
       schema:
         type: array
-        items: 
+        items:
           $ref: '#/components/schemas/raggruppamentoStatistica'
-    raggruppamentiStatisticaRendicontazione:      
+    raggruppamentiStatisticaRendicontazione:
       in: query
       name: gruppi
       description: Indica i gruppi da creare
       required: true
       schema:
         type: array
-        items: 
+        items:
           $ref: '#/components/schemas/raggruppamentoStatisticaRendicontazione'
     ragioneSociale:
       name: ragioneSociale
@@ -4314,7 +4314,7 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/StatoIncasso'
-    statoNotifica:    
+    statoNotifica:
       name: stato
       in: query
       description: filtro sullo stato della notifica
@@ -4328,7 +4328,7 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/statoPagamento'
-    statoPendenza:    
+    statoPendenza:
       name: stato
       in: query
       description: Filtro sullo stato della pendenza
@@ -4363,7 +4363,7 @@ components:
       required: false
       schema:
         type: string
-    tassonomie: 
+    tassonomie:
       in: query
       name: tassonomia
       description: Filtro per tassonomia
@@ -4390,14 +4390,14 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/tipoRiscossione'
-    tipoEvento: 
+    tipoEvento:
       name: tipoEvento
       in: query
       description: filtro per tipologia evento
       required: false
       schema:
         type: string
-    tipoNotifica: 
+    tipoNotifica:
       name: tipo
       in: query
       description: filtro sul tipo della notifica
@@ -4733,7 +4733,7 @@ components:
     sslConfigType:
       type: string
       example: TLS
-      enum: 
+      enum:
         - SSL
         - SSLv3
         - TLS
@@ -4746,7 +4746,7 @@ components:
         - type
         - location
       properties:
-        type: 
+        type:
           $ref: '#/components/schemas/keystoreType'
         location:
           type: string
@@ -4757,7 +4757,7 @@ components:
     keystoreType:
       type: string
       example: JKS
-      enum: 
+      enum:
         - JKS
     hardening:
       type: object
@@ -5157,7 +5157,7 @@ components:
           example: '12345'
         iuvPrefix:
           type: string
-          description: >- 
+          description: >-
                 Prefisso negli IUV generati da GovPay
                 - %(y) Anno di due cifre
                 - %(Y) Anno di quattro cifre
@@ -5203,7 +5203,7 @@ components:
         servizioHyperSicAPKappa:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
         servizioMaggioliJPPA:
-          $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'  
+          $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'
         intermediato:
           type: boolean
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
@@ -5875,7 +5875,7 @@ components:
           $ref: '#/components/schemas/tipoPendenzaAvvisaturaAppIO'
         visualizzazione:
           type: object
-          description: Definisce come visualizzare la pendenza 
+          description: Definisce come visualizzare la pendenza
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
     tipoPendenzaProfiloIndex:
@@ -5945,7 +5945,7 @@ components:
       type: object
       required:
         - abilitato
-      description: Configurazione della generazione dei promemoria scadenza avviso pagamento 
+      description: Configurazione della generazione dei promemoria scadenza avviso pagamento
       properties:
         abilitato:
           type: boolean
@@ -5968,7 +5968,7 @@ components:
       type: object
       required:
         - abilitato
-      description: Configurazione della generazione dei promemoria avviso pagamento 
+      description: Configurazione della generazione dei promemoria avviso pagamento
       properties:
         abilitato:
           type: boolean
@@ -5996,7 +5996,7 @@ components:
       type: object
       required:
         - abilitato
-      description: Configurazione della generazione dei promemoria ricevuta pagamento 
+      description: Configurazione della generazione dei promemoria ricevuta pagamento
       properties:
         abilitato:
           type: boolean
@@ -6371,17 +6371,17 @@ components:
               description: Identificativo del documento
               example: abcdef12345_1
               minLength: 1
-              maxLength: 35                 
+              maxLength: 35
             descrizione:
               type: string
               description: descrizione del documento
               example: Sanzione CdS n. abc00000
               minLength: 1
-              maxLength: 80 
+              maxLength: 80
         - $ref: "#/components/schemas/tipoRiferimentoDocumento"
     rataDocumento:
       type: object
-      required: 
+      required:
         - rata
       properties:
         rata:
@@ -6391,7 +6391,7 @@ components:
           example: 1
           minimum: 1
     tipoRiferimentoDocumento:
-      type: object              
+      type: object
       oneOf:
         - $ref: "#/components/schemas/rataDocumento"
         - $ref: "#/components/schemas/vincoloDocumento"
@@ -6402,10 +6402,10 @@ components:
       enum:
         - ENTRO
         - OLTRE
-      example: ENTRO 
+      example: ENTRO
     vincoloDocumento:
       type: object
-      required: 
+      required:
         - soglia
       properties:
         soglia:
@@ -7024,7 +7024,7 @@ components:
       properties:
         quote:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/quotaContabilita'
         proprietaCustom:
           type: object
@@ -7053,7 +7053,7 @@ components:
         accertamento:
           type: string
           description: Codice dell’accertamento
-          maxLength: 64        
+          maxLength: 64
         proprietaCustom:
           type: object
           description: Dati specifici del gestionale di contabilità
@@ -7246,7 +7246,7 @@ components:
           example: "2017-01-01ABI00000011234"
     riscossione:
       type: object
-      description: 
+      description:
         I campi idDominio, iuv, iur, indice, tipo, importo e data sono opzionali se e solo se la riscossione e' all'interno di una rendicontazione con esito uguale a 9.
       required:
         - idDominio
@@ -9464,7 +9464,7 @@ components:
           example: Divisione001
     AllegatoPendenza:
       type: object
-      required: 
+      required:
         - nome
         - contenuto
       properties:
@@ -9484,7 +9484,7 @@ components:
           description: descrizione del file
           minLength: 1
           maxLength: 255
-        contenuto: 
+        contenuto:
           type: string
           description: path per accedere al file, nella forma /allegati/{id}
     LinguaSecondaria:
@@ -9518,7 +9518,7 @@ components:
       properties:
         mapEntries:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/MapEntry'
           minItems: 1
           maxItems: 5
@@ -9635,7 +9635,7 @@ components:
               example: abcdef12345
     NuovoAllegatoPendenza:
       type: object
-      required: 
+      required:
         - nome
         - contenuto
       properties:
@@ -9655,7 +9655,7 @@ components:
           description: descrizione del file
           minLength: 1
           maxLength: 255
-        contenuto: 
+        contenuto:
           type: string
           format: byte
           description: contenuto del file
@@ -9672,7 +9672,7 @@ components:
           $ref: '#/components/schemas/LinguaSecondaria'
         descrizioneImporto:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/VoceDescrizioneImporto'
         lineaTestoRicevuta1:
           type: string
@@ -9686,12 +9686,12 @@ components:
               causale della pendenza nella lingua secondaria da inserire nell'avviso
         informativaImportoAvviso:
           type: string
-          description: >- 
+          description: >-
             se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
           maxLength: 255
         linguaSecondariaInformativaImportoAvviso:
           type: string
-          description: >- 
+          description: >-
             se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
           maxLength: 255
         dataScandenzaAvviso:
@@ -9721,13 +9721,12 @@ components:
     VoceDescrizioneImporto:
       type: object
       properties:
-        voce: 
+        voce:
           type: string
           description: voce importo
           example: canone annuo
-        importo: 
+        importo:
           type: number
           format: double
           description: importo
           example: 10.01
-          

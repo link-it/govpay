@@ -53,6 +53,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -137,7 +138,7 @@ public abstract class BaseController {
 			return new URI(baseUri);
 		}
 	}
-	
+
 	public URI getServicePathConURIAssoluta(UriInfo uriInfo, HttpHeaders httpHeaders) throws URISyntaxException {
 		return UriBuilderUtils.getServicePathConURIAssoluta(log, uriInfo, httpHeaders);
 	}
