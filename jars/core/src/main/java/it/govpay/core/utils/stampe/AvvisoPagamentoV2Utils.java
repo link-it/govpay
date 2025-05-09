@@ -511,20 +511,26 @@ public class AvvisoPagamentoV2Utils {
 	}
 
 	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza, RataAvviso rata) {
-		if(versamento.getDataValidita() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-		} else if(versamento.getDataScadenza() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		if(proprietaPendenza != null && proprietaPendenza.getDataScandenzaAvviso() != null) {
+			rata.setData(sdfDataScadenza.format(proprietaPendenza.getDataScandenzaAvviso()));
 		} else {
-			Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
-
-			if(numeroGiorniValiditaPendenza != null) {
-				Calendar instance = Calendar.getInstance();
-				instance.setTime(versamento.getDataCreazione()); 
-				instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
-				rata.setData(sdfDataScadenza.format(instance.getTime()));
+			if(versamento.getDataValidita() != null) {
+				rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
+			} else if(versamento.getDataScadenza() != null) {
+				rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
 			} else {
-				rata.setData("-");
+				Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+	
+				if(numeroGiorniValiditaPendenza != null) {
+					Calendar instance = Calendar.getInstance();
+					instance.setTime(versamento.getDataCreazione()); 
+					instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+					rata.setData(sdfDataScadenza.format(instance.getTime()));
+				} else {
+					rata.setData("-");
+				}
 			}
 		}
 	}

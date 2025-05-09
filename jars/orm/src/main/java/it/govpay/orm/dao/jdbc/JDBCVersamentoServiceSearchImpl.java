@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -53,7 +53,7 @@ import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VersamentoFetch;
 
-/**     
+/**
  * JDBCVersamentoServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -67,14 +67,14 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	public VersamentoFieldConverter getVersamentoFieldConverter() {
 		if(this._versamentoFieldConverter==null){
 			this._versamentoFieldConverter = new VersamentoFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
-		}		
+		}
 		return this._versamentoFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
 		return this.getVersamentoFieldConverter();
 	}
-	
+
 	private VersamentoFetch versamentoFetch = new VersamentoFetch();
 	public VersamentoFetch getVersamentoFetch() {
 		return this.versamentoFetch;
@@ -83,20 +83,20 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	public IJDBCFetch getFetch() {
 		return this.getVersamentoFetch();
 	}
-	
-	
+
+
 	private JDBCServiceManager jdbcServiceManager = null;
 
 	@Override
 	public void setServiceManager(JDBCServiceManager serviceManager) throws ServiceException{
 		this.jdbcServiceManager = serviceManager;
 	}
-	
+
 	@Override
 	public JDBCServiceManager getServiceManager() throws ServiceException{
 		return this.jdbcServiceManager;
 	}
-	
+
 
 	@Override
 	public IdVersamento convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Versamento versamento) throws NotImplementedException, ServiceException, Exception{
@@ -194,7 +194,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().ANOMALO);
 			fields.add(Versamento.model().DIREZIONE);
 			fields.add(Versamento.model().DIVISIONE);
-			fields.add(Versamento.model().ID_SESSIONE); 
+			fields.add(Versamento.model().ID_SESSIONE);
 			fields.add(Versamento.model().IMPORTO_PAGATO);
 			fields.add(Versamento.model().DATA_PAGAMENTO);
 			fields.add(Versamento.model().IMPORTO_INCASSATO);
@@ -211,6 +211,8 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA);
 			fields.add(Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO);
 			fields.add(Versamento.model().PROPRIETA);
+			fields.add(Versamento.model().DATA_ULTIMA_MODIFICA_ACA);
+			fields.add(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
@@ -252,14 +254,14 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 					id_versamento_tipoVersamento.setId(idTipoVersamento);
 					versamento.setIdTipoVersamento(id_versamento_tipoVersamento);
 				}
-				
+
 				if(idTipoVersamentoDominioObject instanceof Long) {
 					Long idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
 					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					versamento.setIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
 				}
-				
+
 				if(idDocumentoObject instanceof Long) {
 					Long idDocumento = (Long) idDocumentoObject;
 					it.govpay.orm.IdDocumento id_versamento_documento = new it.govpay.orm.IdDocumento();
@@ -271,19 +273,19 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			}
 		} catch(NotFoundException e) {}
 
-		return list;      
+		return list;
 
 	}
 
 	@Override
-	public Versamento find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public Versamento find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour)
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		
+
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
-		
+
 		List<Versamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
-		if(lst.size() <=0)
+		if(lst.isEmpty())
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
 
 		if(lst.size() > 1)
@@ -291,140 +293,140 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		return lst.get(0);
 	}
-	
+
 	@Override
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 
-		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVersamentoFieldConverter(), Versamento.model());
 
 		sqlQueryObject.addSelectCountField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVersamentoFieldConverter(), Versamento.model(),listaQuery);
 	}
 
 	@Override
 	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
-		
+
 		Long id_versamento = this.findIdVersamento(jdbcProperties, log, connection, sqlQueryObject, id, true);
         return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_versamento);
-		
+
 	}
 
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 				paginatedExpression, false, field);
 	}
 
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, boolean distinct, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		List<Map<String,Object>> map = 
+		List<Map<String,Object>> map =
 				this.select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, distinct, new IField[]{field});
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.selectSingleObject(map);
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectSingleObject(map);
 	}
 
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 				paginatedExpression, false, field);
 	}
 
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, boolean distinct, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,field);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,paginatedExpression,field);
 		try{
 
-			ISQLQueryObject sqlQueryObjectDistinct = 
-					org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
+			ISQLQueryObject sqlQueryObjectDistinct =
+					org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 							this.getVersamentoFieldConverter(), field);
 
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
 		}
 	}
 
 	@Override
-	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCExpression expression, FunctionField functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		Map<String,Object> map = 
+		Map<String,Object> map =
 				this.aggregate(jdbcProperties, log, connection, sqlQueryObject, expression, new FunctionField[]{functionField});
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.selectAggregateObject(map,functionField);
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectAggregateObject(map,functionField);
 	}
 
 	@Override
-	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {													
+	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+			JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
 			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
 	}
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		if(expression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
 	}
 
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		if(paginatedExpression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
 	}
 
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		List<Object> listaQuery = new ArrayList<>();
 		List<JDBCObject> listaParams = new ArrayList<>();
-		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-				expression, this.getVersamentoFieldConverter(), Versamento.model(), 
+		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject,
+				expression, this.getVersamentoFieldConverter(), Versamento.model(),
 				listaQuery,listaParams);
 
 		this._join(expression,sqlQueryObject);
 
-		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
-				org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
+		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.select(jdbcProperties, log, connection,
+				org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct),
 				expression, this.getVersamentoFieldConverter(), Versamento.model(),
 				listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
@@ -436,13 +438,13 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	}
 
 	@Override
-	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
+	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
-		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVersamentoFieldConverter(), Versamento.model(), 
+		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVersamentoFieldConverter(), Versamento.model(),
 				sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 
 		if(unionExpression!=null){
@@ -453,25 +455,25 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			}
 		}
 
-		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVersamentoFieldConverter(), Versamento.model(), 
+		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVersamentoFieldConverter(), Versamento.model(),
 				sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
 		if(list!=null && list.size()>0){
 			return list;
 		}
 		else{
 			throw new NotFoundException("Not Found");
-		}								
+		}
 	}
 
 	@Override
-	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
+	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
-		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVersamentoFieldConverter(), Versamento.model(), 
+		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVersamentoFieldConverter(), Versamento.model(),
 				sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 
 		if(unionExpression!=null){
@@ -482,8 +484,8 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			}
 		}
 
-		NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVersamentoFieldConverter(), Versamento.model(), 
+		NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVersamentoFieldConverter(), Versamento.model(),
 				sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
 		if(number!=null && number.longValue()>=0){
 			return number;
@@ -495,7 +497,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 
 
-	// -- ConstructorExpression	
+	// -- ConstructorExpression
 
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
@@ -515,7 +517,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	@Override
 	public JDBCExpression toExpression(JDBCPaginatedExpression paginatedExpression, Logger log) throws NotImplementedException, ServiceException {
 		try{
@@ -533,9 +535,9 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			throw new ServiceException(e);
 		}
 	}
-	
-	
-	
+
+
+
 	// -- DB
 
 	@Override
@@ -543,7 +545,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
-	
+
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Versamento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
@@ -554,74 +556,74 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdTipoVersamentoDominio()!=null && 
+		if(obj.getIdTipoVersamentoDominio()!=null &&
 				imgSaved.getIdTipoVersamentoDominio()!=null){
 			obj.getIdTipoVersamentoDominio().setId(imgSaved.getIdTipoVersamentoDominio().getId());
-			if(obj.getIdTipoVersamentoDominio().getIdDominio()!=null && 
+			if(obj.getIdTipoVersamentoDominio().getIdDominio()!=null &&
 					imgSaved.getIdTipoVersamentoDominio().getIdDominio()!=null){
 				obj.getIdTipoVersamentoDominio().getIdDominio().setId(imgSaved.getIdTipoVersamentoDominio().getIdDominio().getId());
 			}
-			if(obj.getIdTipoVersamentoDominio().getIdTipoVersamento()!=null && 
+			if(obj.getIdTipoVersamentoDominio().getIdTipoVersamento()!=null &&
 					imgSaved.getIdTipoVersamentoDominio().getIdTipoVersamento()!=null){
 				obj.getIdTipoVersamentoDominio().getIdTipoVersamento().setId(imgSaved.getIdTipoVersamentoDominio().getIdTipoVersamento().getId());
 			}
 		}
-		if(obj.getIdTipoVersamento()!=null && 
+		if(obj.getIdTipoVersamento()!=null &&
 				imgSaved.getIdTipoVersamento()!=null){
 			obj.getIdTipoVersamento().setId(imgSaved.getIdTipoVersamento().getId());
 		}
-		if(obj.getIdDominio()!=null && 
+		if(obj.getIdDominio()!=null &&
 				imgSaved.getIdDominio()!=null){
 			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
 		}
-		if(obj.getIdUo()!=null && 
+		if(obj.getIdUo()!=null &&
 				imgSaved.getIdUo()!=null){
 			obj.getIdUo().setId(imgSaved.getIdUo().getId());
-			if(obj.getIdUo().getIdDominio()!=null && 
+			if(obj.getIdUo().getIdDominio()!=null &&
 					imgSaved.getIdUo().getIdDominio()!=null){
 				obj.getIdUo().getIdDominio().setId(imgSaved.getIdUo().getIdDominio().getId());
 			}
 		}
-		if(obj.getIdApplicazione()!=null && 
+		if(obj.getIdApplicazione()!=null &&
 				imgSaved.getIdApplicazione()!=null){
 			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
 		}
-		if(obj.getIdPagamentoPortale()!=null && 
+		if(obj.getIdPagamentoPortale()!=null &&
 				imgSaved.getIdPagamentoPortale()!=null){
 			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
-			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null && 
+			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null &&
 					imgSaved.getIdPagamentoPortale().getIdApplicazione()!=null){
 				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
 			}
 		}
-		if(obj.getIuv()!=null && 
+		if(obj.getIuv()!=null &&
 				imgSaved.getIuv()!=null){
 			obj.getIuv().setId(imgSaved.getIuv().getId());
 		}
-		if(obj.getIdDocumento()!=null && 
+		if(obj.getIdDocumento()!=null &&
 				imgSaved.getIdDocumento()!=null){
 			obj.getIdDocumento().setId(imgSaved.getIdDocumento().getId());
-			if(obj.getIdDocumento().getIdApplicazione()!=null && 
+			if(obj.getIdDocumento().getIdApplicazione()!=null &&
 					imgSaved.getIdDocumento().getIdApplicazione()!=null){
 				obj.getIdDocumento().getIdApplicazione().setId(imgSaved.getIdDocumento().getIdApplicazione().getId());
 			}
 		}
-		if(obj.getIdOperazione()!=null && 
+		if(obj.getIdOperazione()!=null &&
 				imgSaved.getIdOperazione()!=null){
 			obj.getIdOperazione().setId(imgSaved.getIdOperazione().getId());
-			if(obj.getIdOperazione().getIdTracciato()!=null && 
+			if(obj.getIdOperazione().getIdTracciato()!=null &&
 					imgSaved.getIdOperazione().getIdTracciato()!=null){
 				obj.getIdOperazione().getIdTracciato().setId(imgSaved.getIdOperazione().getIdTracciato().getId());
 			}
 		}
 
 	}
-	
+
 	@Override
 	public Versamento get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
-	
+
 	private Versamento _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		IField idField = new CustomField("id", Long.class, "id", this.getVersamentoFieldConverter().toTable(Versamento.model()));
 
@@ -630,7 +632,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		expression.equals(idField, tableId);
 		List<Versamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
-		if(lst.size() <=0)
+		if(lst.isEmpty())
 			throw new NotFoundException("Id ["+tableId+"]");
 
 		if(lst.size() > 1)
@@ -639,18 +641,18 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		return lst.get(0);
 
-	} 
+	}
 
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._exists(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-	
+
 	private boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-				
+
 		boolean existsVersamento = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
@@ -665,9 +667,9 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		existsVersamento = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
-		
+
         return existsVersamento;
-	
+
 	}
 
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
@@ -677,7 +679,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_UO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(Versamento.model().ID_UO.ID_DOMINIO,false)){
 			if(!expression.inUseModel(Versamento.model().ID_UO,false)){
 				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
@@ -689,9 +691,9 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_UO);
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_UO.ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
-			
+
 		}
-		
+
 		if(expression.inUseModel(Versamento.model().ID_DOMINIO,false)){
 			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_DOMINIO);
@@ -703,7 +705,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(Versamento.model().ID_DOCUMENTO,false)){
 			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_DOCUMENTO);
@@ -723,7 +725,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String pagPort = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_PAGAMENTO_PORTALE);
 			sqlQueryObject.addFromTable(pagPortVers);
 			sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
-			
+
 			sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
 		}
 
@@ -738,7 +740,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO,false)){
 			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
 				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
@@ -751,7 +753,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO,false)){
 			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
 				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
@@ -764,7 +766,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
-		
+
 		boolean operazioniAdd = false;
 		String tableVersamenti = this.getFieldConverter().toAliasTable(Versamento.model());
 		String tableOperazioni = this.getFieldConverter().toAliasTable(Versamento.model().ID_OPERAZIONE);
@@ -773,14 +775,14 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			sqlQueryObject.addWhereCondition(tableVersamenti+".id="+tableOperazioni+".id_versamento");
 			operazioniAdd = true;
 		}
-		
+
 		if(expression.inUseModel(Versamento.model().ID_OPERAZIONE.ID_TRACCIATO,false)){
 			if(!expression.inUseModel(Versamento.model().ID_OPERAZIONE,false)){
 				if(!operazioniAdd) {
 					sqlQueryObject.addFromTable(tableOperazioni);
 					operazioniAdd = true;
 				}
-				
+
 				sqlQueryObject.addWhereCondition(tableVersamenti+".id="+tableOperazioni+".id_versamento");
 			}
 
@@ -797,11 +799,11 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		return rootTableIdValues;
 	}
-	
+
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
-	
+
 		VersamentoFieldConverter converter = this.getVersamentoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
@@ -903,10 +905,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			));
 
 
-        
-        return mapTableToPKColumn;		
+
+        return mapTableToPKColumn;
 	}
-	
+
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 
@@ -917,19 +919,19 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		sqlQueryObject.addSelectField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id");
 		Class<?> objectIdClass = Long.class;
 
-		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 				this.getVersamentoFieldConverter(), Versamento.model());
 
 		this._join(paginatedExpression,sqlQueryObject);
 
-		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
+		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 				this.getVersamentoFieldConverter(), Versamento.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
 		}
 
         return list;
-		
+
 	}
 
 	@Override
@@ -940,12 +942,12 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		sqlQueryObject.addSelectField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id");
 		Class<?> objectIdClass = Long.class;
 
-		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVersamentoFieldConverter(), Versamento.model());
 
 		this._join(expression,sqlQueryObject);
 
-		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
+		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVersamentoFieldConverter(), Versamento.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
@@ -981,7 +983,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	public IdVersamento findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -997,7 +999,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		sqlQueryObjectGet.addWhereCondition(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id_applicazione="+this.getVersamentoFieldConverter().toTable(Versamento.model().ID_APPLICAZIONE) + ".id");
 
 		// Recupero _versamento
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_versamento = new ArrayList<>();
@@ -1032,10 +1034,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	}
 
 	@Override
-	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			String sql,List<Class<?>> returnClassTypes,Object ... param) throws ServiceException,NotFoundException,NotImplementedException,Exception{
 
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.nativeQuery(jdbcProperties, log, connection, sqlQueryObject,
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeQuery(jdbcProperties, log, connection, sqlQueryObject,
 				sql,returnClassTypes,param);
 
 	}
@@ -1045,21 +1047,21 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		if(id == null) {
 			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = null;
-		
+
 		if((id!=null && id.getId()!=null && id.getId()>0))
 			return id.getId();
-		
+
 		if(id == null || id.getIdApplicazione() == null) {
 			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
-		
+
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0) {
 			// Object _versamento
 			sqlQueryObjectGet.addFromTable(this.getVersamentoFieldConverter().toTable(Versamento.model()));
@@ -1070,7 +1072,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			sqlQueryObjectGet.addWhereCondition(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_VERSAMENTO_ENTE, true)+"=?");
 
 			// Recupero _versamento
-			searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getId(),Long.class),
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodVersamentoEnte(),Versamento.model().COD_VERSAMENTO_ENTE.getFieldType())
 			};
@@ -1089,7 +1091,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			sqlQueryObjectGet.addWhereCondition(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id_applicazione="+this.getVersamentoFieldConverter().toTable(Versamento.model().ID_APPLICAZIONE) + ".id");
 
 			// Recupero _versamento
-			searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getCodApplicazione(),Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodVersamentoEnte(),Versamento.model().COD_VERSAMENTO_ENTE.getFieldType())
 			};

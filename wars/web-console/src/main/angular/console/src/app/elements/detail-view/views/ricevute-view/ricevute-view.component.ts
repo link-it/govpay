@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 
 import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
@@ -197,8 +198,8 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           if(item.fiscalCodePA) {
             _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: item.fiscalCodePA, type: 'string' });
           } else {
-			_std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.companyName} (${_json.rt.fiscalCode})`, type: 'string' });
-		  }
+          _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.companyName} (${_json.rt.fiscalCode})`, type: 'string' });
+          }
           if(item.IBAN) {
             _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.IBAN, type: 'string' });
           }
@@ -207,10 +208,9 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           }
           // Metadata
           if (item.metadata && item.metadata.mapEntry) {
-            _std.elenco.push({ label: Voce.METADATA, value: item.metadata.mapEntry, type: 'quote' });
-          }	
-          
-          
+            const _mapEntries = item.metadata.mapEntry.map(x => { return { label: x.key, value: x.value } });
+            _std.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+          }
           _std.importo = this.us.currencyFormat(item.transferAmount);
           _std.stato = item.stato;
           // this._paymentsSum += UtilService.defaultDisplay({ value: item.transferAmount, text: 0 });
@@ -240,7 +240,7 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
   protected elencoEventi() {
     let _url = UtilService.URL_GIORNALE_EVENTI;
     // eventi relativi alla transazione con la ricevuta
-     const versione620: boolean = !!(this.json.rpt && this.json.rpt.versioneOggetto && this.json.rpt.versioneOggetto === '6.2.0');
+    const versione620: boolean = !!(this.json.rpt && this.json.rpt.versioneOggetto && this.json.rpt.versioneOggetto === '6.2.0');
     let idDominio = '';
     let iuv = '';
     let idRicevuta = '';
@@ -339,7 +339,45 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
   }
 
   refresh(mb: ModalBehavior) {}
-  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {}
+
+  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    let headers;
+    let _service = UtilService.URL_CARICA_RICEVUTE;
+
+    let _data;
+    try {
+      if (mb.info.viewModel) {
+        if (mb.info.viewModel.json) {
+          _data = mb.info.viewModel.json;
+        } else {
+          headers = new HttpHeaders();
+          headers = headers.set('X-GOVPAY-FILENAME', mb.info.viewModel.nome);
+          _data = new FormData();
+          _data.append('file', mb.info.viewModel.file);
+        }
+        if(mb.info.viewModel.mimeType === 'text/csv') {
+          _service += '/' + mb.info.viewModel.idDominio;
+          if(mb.info.viewModel.idTipoPendenza) {
+            _service += '/' +mb.info.viewModel.idTipoPendenza;
+          }
+        }
+
+        this.gps.saveData(_service, _data, null, UtilService.METHODS.POST, false, headers).subscribe(
+          () => {
+            this.gps.updateSpinner(false);
+            responseService.next(true);
+          },
+          (error) => {
+            this.gps.updateSpinner(false);
+            this.us.onError(error);
+          });
+      } else {
+        this.us.alert('Impossibile eseguire l\'operazione richiesta, dati non disponibili.');
+      }
+    } catch(e) {
+      console.warn(e);
+    }
+  }
 
   esclusioneNotifiche() { }
 

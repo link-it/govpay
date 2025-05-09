@@ -106,7 +106,7 @@ public class VincoloPagamento extends JSONSerializable {
   }
 
   public static VincoloPagamento parse(String json) throws IOException {
-    return (VincoloPagamento) parse(json, VincoloPagamento.class);
+    return parse(json, VincoloPagamento.class);
   }
 
   @Override

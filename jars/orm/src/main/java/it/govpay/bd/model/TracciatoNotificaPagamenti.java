@@ -40,6 +40,7 @@ public class TracciatoNotificaPagamenti extends it.govpay.model.TracciatoNotific
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;

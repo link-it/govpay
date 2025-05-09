@@ -24,12 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -45,31 +44,31 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NuovoPagamento extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
-  
+
   @JsonProperty("contoAddebito")
   private Conto contoAddebito = null;
-  
+
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
-  
+
   @JsonProperty("credenzialiPagatore")
   private String credenzialiPagatore = null;
-  
+
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
-  
+
   @JsonProperty("autenticazioneSoggetto")
   private TipoAutenticazioneSoggetto autenticazioneSoggetto = TipoAutenticazioneSoggetto.N_A;
-  
+
   @JsonProperty("lingua")
   private LinguaPagamento lingua = null;
-  
+
   @JsonProperty("pendenze")
   private List<NuovaPendenza> pendenze = new ArrayList<>();
-  
+
   /**
    * url di ritorno al portale al termine della sessione di pagamento
    **/
@@ -163,7 +162,7 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
       return null;
     }
   }
-  
+
   public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws ValidationException{
     if(autenticazioneSoggetto != null) {
       this.autenticazioneSoggetto = TipoAutenticazioneSoggetto.fromValue(autenticazioneSoggetto);
@@ -248,7 +247,7 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovoPagamento {\n");
-    
+
     sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
     sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
     sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");

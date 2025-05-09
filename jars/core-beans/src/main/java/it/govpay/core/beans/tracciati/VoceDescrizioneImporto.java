@@ -90,7 +90,7 @@ public class VoceDescrizioneImporto extends JSONSerializable {
   }
 
   public static VoceDescrizioneImporto parse(String json) throws IOException { 
-    return (VoceDescrizioneImporto) parse(json, VoceDescrizioneImporto.class);
+    return parse(json, VoceDescrizioneImporto.class);
   }
 
   @Override

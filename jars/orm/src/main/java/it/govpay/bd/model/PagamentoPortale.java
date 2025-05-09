@@ -20,6 +20,7 @@
 package it.govpay.bd.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,7 +119,7 @@ public class PagamentoPortale extends BasicModel {
 	private int tipo;
 	private boolean ack;
 	
-	private Integer severita;
+	private BigInteger severita;
 	
 	public String getIdSessione() {
 		return this.idSessione;
@@ -232,7 +233,7 @@ public class PagamentoPortale extends BasicModel {
 		if(this.versamenti != null)
 			return this.versamenti;
 
-		if(this.idVersamento != null && this.idVersamento.size() > 0) {
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamentiBD.setAtomica(false);
 			VersamentoFilter filter = versamentiBD.newFilter();
@@ -274,6 +275,7 @@ public class PagamentoPortale extends BasicModel {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;
@@ -339,10 +341,10 @@ public class PagamentoPortale extends BasicModel {
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
-	public Integer getSeverita() {
+	public BigInteger getSeverita() {
 		return severita;
 	}
-	public void setSeverita(Integer severita) {
+	public void setSeverita(BigInteger severita) {
 		this.severita = severita;
 	}
 

@@ -126,7 +126,12 @@
     },
     GESTIONE_RISCOSSIONI: {
       ENABLED: true  // abilita la sezione riscossioni
-    }
+    },
+	MANUTENZIONE: {
+	  RECUPERO_RT: {
+	    ENABLED: true // abilita la funzione di recupero ricevute da pagopa
+	  }
+	}
   };
 
   addScript('assets/config/app-config.js');

@@ -19,9 +19,10 @@
  */
 package it.govpay.pagamento.v3.beans;
 
+import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -56,18 +57,24 @@ public class ProprietaPendenza   {
    * causale della pendenza nella lingua secondaria da inserire nell'avviso
   **/
   private String linguaSecondariaCausale = null;
-  
+
   @Schema(description = "se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.")
  /**
-   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.  
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
   **/
   private String informativaImportoAvviso = null;
-  
+
   @Schema(description = "se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.")
  /**
-   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.  
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
   **/
   private String linguaSecondariaInformativaImportoAvviso = null;
+
+  @Schema(description = "se valorizzata, sostituisce la data di scadenza standard.")
+ /**
+   * se valorizzata, sostituisce la data di scadenza standard.
+  **/
+  private Date dataScandenzaAvviso = null;
  /**
    * Get linguaSecondaria
    * @return linguaSecondaria
@@ -199,12 +206,30 @@ public class ProprietaPendenza   {
     return this;
   }
 
+ /**
+   * se valorizzata, sostituisce la data di scadenza standard.
+   * @return dataScandenzaAvviso
+  **/
+  @JsonProperty("dataScandenzaAvviso")
+  public Date getDataScandenzaAvviso() {
+    return dataScandenzaAvviso;
+  }
+
+  public void setDataScandenzaAvviso(Date dataScandenzaAvviso) {
+    this.dataScandenzaAvviso = dataScandenzaAvviso;
+  }
+
+  public ProprietaPendenza dataScandenzaAvviso(Date dataScandenzaAvviso) {
+    this.dataScandenzaAvviso = dataScandenzaAvviso;
+    return this;
+  }
+
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ProprietaPendenza {\n");
-    
+
     sb.append("    linguaSecondaria: ").append(toIndentedString(linguaSecondaria)).append("\n");
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
@@ -212,6 +237,7 @@ public class ProprietaPendenza   {
     sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
     sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
     sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
+    sb.append("    dataScandenzaAvviso: ").append(toIndentedString(dataScandenzaAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

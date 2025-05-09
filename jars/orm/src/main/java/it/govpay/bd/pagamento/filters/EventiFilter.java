@@ -85,7 +85,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 

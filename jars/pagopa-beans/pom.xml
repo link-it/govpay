@@ -5,45 +5,13 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.9-SNAPSHOT</version>
+		<version>3.8.0</version>
 	</parent>
 
 	<artifactId>pagopa-beans</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - pagoPA beans</name>
-        <profiles>
-                <profile>
-                        <id>java-11</id>
-                        <activation>
-                                <activeByDefault>true</activeByDefault>
-                        </activation>
 
-                        <dependencies>
-				<dependency>
-				        <groupId>javax.jws</groupId>
-				        <artifactId>jsr181-api</artifactId>
-				        <version>${jaxws-jsr181-api.version}</version>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>javax.xml.ws</groupId>
-				        <artifactId>jaxws-api</artifactId>
-				        <version>${jaxws-api.version}</version>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-                        </dependencies>
-                </profile>
-        </profiles>
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
@@ -53,17 +21,80 @@
 			<groupId>it.govpay</groupId>
 			<artifactId>xml-adapters</artifactId>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.cxf.xjc-utils</groupId>
 			<artifactId>cxf-xjc-runtime</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>jakarta.jws</groupId>
+			<artifactId>jakarta.jws-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.ws</groupId>
+			<artifactId>jakarta.xml.ws-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- dipendenze per generazione da openapi-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-extension-providers</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.brsanthu</groupId>
+			<artifactId>migbase64</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+       		<artifactId>swagger-jaxrs2</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -97,7 +128,24 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.5.0</version>
+				<version>3.1.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>jakarta.xml.bind</groupId>
+						<artifactId>jakarta.xml.bind-api</artifactId>
+						<version>3.0.1</version>
+					</dependency>
+					<dependency>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>jaxb-runtime</artifactId>
+						<version>3.0.2</version>
+					</dependency>
+					<dependency>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>jaxb-xjc</artifactId>
+						<version>3.0.2</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<id>xjc0</id>
@@ -107,7 +155,6 @@
 						<configuration>
 							<sources>
 								<source>${basedir}/src/main/resources/xsd/comuni/MarcaDaBollo.xsd</source>
-								<source>${basedir}/src/main/resources/xsd/comuni/RR_ER_1_0_0.xsd</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -123,56 +170,36 @@
 							<packageName>it.gov.digitpa.schemas._2011.pagamenti.riversamento</packageName>
 						</configuration>
 					</execution>
-					<execution>
-						<id>xjc2</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/ec/QuadraturePA_1_0_6.xsd</source>
-							</sources>
-							<packageName>it.gov.digitpa.schemas._2011.pagamenti.quadrature</packageName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>xjc3</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/ec/TabellaDelleControparti_1_0_8.xsd</source>
-							</sources>
-							<packageName>it.gov.digitpa.schemas._2011.pagamenti.controparti</packageName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>xjc4</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/ec/InformativaContoAccredito_1_2_1.xsd</source>
-							</sources>
-							<packageName>it.gov.digitpa.schemas._2011.pagamenti.informativa</packageName>
-						</configuration>
-					</execution>
 				</executions>
 				<configuration>
 					<xjbSources>
 						<xjbSource>${basedir}/src/main/resources/xsd/global.xjb</xjbSource>
 					</xjbSources>
 					<clearOutputDir>false</clearOutputDir>
-					<generateEpisode>false</generateEpisode>
 				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>3.4.4</version>
+				<version>4.0.4</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-rt-frontend-jaxws</artifactId>
+						<version>4.0.4</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-tools-wsdlto-frontend-jaxws</artifactId>
+						<version>4.0.4</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-tools-wsdlto-databinding-jaxb</artifactId>
+						<version>4.0.4</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<id>generate-sources</id>
@@ -186,17 +213,14 @@
 							<sourceRoot>${project.build.directory}/generated-sources/jaxb</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPa.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/NodoPerPa.wsdl</wsdlLocation>
 								</wsdlOption>
 								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodo.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodo.wsdl</wsdlLocation>
 								</wsdlOption>
 								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodoPagamentoPsp.wsdl</wsdlLocation>
 								</wsdlOption>
@@ -205,6 +229,64 @@
 						<goals>
 							<goal>wsdl2java</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources-recuperoRT-client</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/bizEvents.yaml</inputSpec>
+							<language>java</language>
+							<configOptions>
+								<jakarta>true</jakarta>
+								<dateLibrary>java8-localdatetime</dateLibrary>
+								<library>resttemplate</library>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.gov.pagopa.bizeventsservice.api</apiPackage>
+								<invokerPackage>it.gov.pagopa.bizeventsservice.impl</invokerPackage>
+								<modelPackage>it.gov.pagopa.bizeventsservice.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources-checkout-client</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/checkout.yaml</inputSpec>
+							<language>java</language>
+							<configOptions>
+								<jakarta>true</jakarta>
+								<dateLibrary>java8-localdatetime</dateLibrary>
+								<library>resttemplate</library>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.gov.pagopa.checkout.api</apiPackage>
+								<invokerPackage>it.gov.pagopa.checkout.impl</invokerPackage>
+								<modelPackage>it.gov.pagopa.checkout.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

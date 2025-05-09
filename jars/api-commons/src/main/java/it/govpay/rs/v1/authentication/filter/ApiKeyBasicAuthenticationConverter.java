@@ -19,7 +19,7 @@
  */
 package it.govpay.rs.v1.authentication.filter;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
@@ -38,9 +38,9 @@ import it.govpay.core.utils.GovpayConfig;
  * @author Giuliano Pintori
  */
 public class ApiKeyBasicAuthenticationConverter implements AuthenticationConverter {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(ApiKeyBasicAuthenticationConverter.class);
-	
+
 	private String apiIdHeader = null;
 	private String apiKeyHeader = null;
 
@@ -53,7 +53,7 @@ public class ApiKeyBasicAuthenticationConverter implements AuthenticationConvert
 	public ApiKeyBasicAuthenticationConverter(
 			AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource) {
 		this.authenticationDetailsSource = authenticationDetailsSource;
-		
+
 		this.apiIdHeader = GovpayConfig.getInstance().getAutenticazioneApiKeyNomeHeaderApiId();
 		this.apiKeyHeader = GovpayConfig.getInstance().getAutenticazioneApiKeyNomeHeaderApiKey();
 
@@ -74,17 +74,17 @@ public class ApiKeyBasicAuthenticationConverter implements AuthenticationConvert
 
 	@Override
 	public UsernamePasswordAuthenticationToken convert(HttpServletRequest request) {
-		
+
 		// estrazione dell'API-Id
 		log.debug("Lettura del API-Id dall'Header [{}]...", this.apiIdHeader);
 		String apiId = request.getHeader(this.apiIdHeader);
 		log.debug("Letto API-Id: [{}]", apiId);
-		
+
 		// estrazione dell'API-Key
 		log.debug("Lettura del API-Key dall'Header [{}]...", this.apiKeyHeader);
 		String apiKey = request.getHeader(this.apiKeyHeader);
 		log.debug("Letto API-Key: [{}]", apiKey);
-		
+
 		if (apiId == null || apiKey == null) {
 			return null;
 		}

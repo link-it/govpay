@@ -10,6 +10,8 @@ Background:
 * def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
 * configure followRedirects = false
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Pagamento eseguito dovuto precaricato senza verifica
 
 * call read('classpath:utils/pa-carica-avviso.feature')
@@ -209,7 +211,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * set pendenzaPut.dataValidita = '2000-01-01'
 * call read('classpath:utils/pa-carica-avviso.feature')

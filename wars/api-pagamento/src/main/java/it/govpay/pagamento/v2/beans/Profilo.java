@@ -35,25 +35,25 @@ import it.govpay.core.beans.JSONSerializable;
 "identityData",
 })
 public class Profilo extends JSONSerializable {
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("domini")
   private List<Dominio> domini = new ArrayList<>();
-  
+
   @JsonProperty("tipiPendenza")
   private List<TipoPendenzaIndex> tipiPendenza = new ArrayList<>();
-  
+
   @JsonProperty("acl")
   private List<Acl> acl = new ArrayList<>();
-  
+
   @JsonProperty("anagrafica")
   private Soggetto anagrafica = null;
-  
+
   @JsonProperty("identityData")
   private Object identityData = null;
-  
+
   /**
    * Nome o principal dell'utenza
    **/
@@ -182,7 +182,7 @@ public class Profilo extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");

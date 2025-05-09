@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,32 +49,32 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Operazione.model())){
 				Operazione object = new Operazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType()));
-				this.setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
+				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType()));
-				this.setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
+				setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato", Operazione.model().STATO.getFieldType()));
-				this.setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
+				setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_richiesta", Operazione.model().DATI_RICHIESTA.getFieldType()));
-				this.setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
+				setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_risposta", Operazione.model().DATI_RISPOSTA.getFieldType()));
-				this.setParameter(object, "setDettaglioEsito", Operazione.model().DETTAGLIO_ESITO.getFieldType(),
+				setParameter(object, "setDettaglioEsito", Operazione.model().DETTAGLIO_ESITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dettaglio_esito", Operazione.model().DETTAGLIO_ESITO.getFieldType()));
-				this.setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
+				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()));
-				this.setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
+				setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Operazione.model().COD_DOMINIO.getFieldType()));
-				this.setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
+				setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv", Operazione.model().IUV.getFieldType()));
-				this.setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
+				setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trn", Operazione.model().TRN.getFieldType()));
 				return object;
 			}
@@ -94,27 +96,27 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Operazione.model())){
 				Operazione object = new Operazione();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"tipoOperazione"));
-				this.setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
+				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"lineaElaborazione"));
-				this.setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
+				setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				this.setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
+				setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"datiRichiesta"));
-				this.setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
+				setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"datiRisposta"));
-				this.setParameter(object, "setDettaglioEsito", Operazione.model().DETTAGLIO_ESITO.getFieldType(),
+				setParameter(object, "setDettaglioEsito", Operazione.model().DETTAGLIO_ESITO.getFieldType(),
 					this.getObjectFromMap(map,"dettaglioEsito"));
-				this.setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
+				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
-				this.setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
+				setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				this.setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
+				setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
-				this.setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
+				setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
 					this.getObjectFromMap(map,"trn"));
 				return object;
 			}

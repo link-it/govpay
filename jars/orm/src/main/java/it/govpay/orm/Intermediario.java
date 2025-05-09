@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -17,26 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
 /** <p>Java class for Intermediario complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Intermediario">
  * 		&lt;sequence>
  * 			&lt;element name="codIntermediario" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreRecuperoRT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -45,19 +47,20 @@ import java.io.Serializable;
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * @version $Rev$, $Date$
- * 
+ *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Intermediario", 
+@XmlType(name = "Intermediario",
   propOrder = {
   	"codIntermediario",
   	"codConnettorePdd",
+  	"codConnettoreRecuperoRT",
   	"codConnettoreFtp",
   	"denominazione",
   	"principal",
@@ -68,22 +71,9 @@ import java.io.Serializable;
 
 @XmlRootElement(name = "Intermediario")
 
-public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public Intermediario() {
-  }
-
-  public Long getId() {
-    if(this.id!=null)
-		return this.id;
-	else
-		return new Long(-1);
-  }
-
-  public void setId(Long id) {
-    if(id!=null)
-		this.id=id;
-	else
-		this.id=new Long(-1);
+    super();
   }
 
   public java.lang.String getCodIntermediario() {
@@ -100,6 +90,14 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
 
   public void setCodConnettorePdd(java.lang.String codConnettorePdd) {
     this.codConnettorePdd = codConnettorePdd;
+  }
+
+  public java.lang.String getCodConnettoreRecuperoRT() {
+    return this.codConnettoreRecuperoRT;
+  }
+
+  public void setCodConnettoreRecuperoRT(java.lang.String codConnettoreRecuperoRT) {
+    this.codConnettoreRecuperoRT = codConnettoreRecuperoRT;
   }
 
   public java.lang.String getCodConnettoreFtp() {
@@ -148,9 +146,6 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
 
   private static final long serialVersionUID = 1L;
 
-  @XmlTransient
-  private Long id;
-
   private static it.govpay.orm.model.IntermediarioModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
 	  if(it.govpay.orm.Intermediario.modelStaticInstance==null){
@@ -165,31 +160,35 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
   }
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codIntermediario",required=true,nillable=false)
   protected java.lang.String codIntermediario;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettorePdd",required=true,nillable=false)
   protected java.lang.String codConnettorePdd;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreRecuperoRT",required=false,nillable=false)
+  protected java.lang.String codConnettoreRecuperoRT;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreFtp",required=false,nillable=false)
   protected java.lang.String codConnettoreFtp;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="denominazione",required=true,nillable=false)
   protected java.lang.String denominazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="principal",required=true,nillable=false)
   protected java.lang.String principal;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="principalOriginale",required=true,nillable=false)
   protected java.lang.String principalOriginale;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
 

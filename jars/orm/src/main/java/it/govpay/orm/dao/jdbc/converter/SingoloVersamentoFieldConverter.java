@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -319,6 +321,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".metadata";
+			}else{
+				return "metadata";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -439,6 +448,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(SingoloVersamento.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(SingoloVersamento.model().ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().METADATA)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 
 

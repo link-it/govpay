@@ -3,22 +3,12 @@ Feature: Ricerca pagamenti
 Background:
 
 * callonce read('classpath:utils/api/v2/pendenze/bunch-pendenze.feature')
-
-Scenario: Ricerca pendenze applicazione autorizzata filtrati per data escludendo gli spontanei non pagati
-
-* def applicazione = read('msg/applicazione_auth.json')
-* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* def applicazioneRequest = read('msg/applicazione_auth.json')
+* callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'basic'})
+
+Scenario: Ricerca pendenze applicazione autorizzata filtrati per data escludendo gli spontanei non pagati
 
 Given url pendenzeBaseurl
 And path '/pendenze'

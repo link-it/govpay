@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -58,6 +60,64 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
+	private static final String PARAMETER_TYPE_PREFIX = "Parameter (type:";
+	private ServiceException newServiceExceptionParameterIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+Versamento.class.getName()+") 'versamento' is null");
+	}
+	private ServiceException newServiceExceptionParameterIsLessEqualsZero(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+long.class.getName()+") 'tableId' is less equals 0");
+	}
+	private ServiceException newServiceExceptionParameterUpdateFieldsIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UpdateField.class.getName()+") 'updateFields' is null");
+	}
+	private ServiceException newServiceExceptionParameterOldIdIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IdVersamento.class.getName()+") 'oldId' is null");
+	}
+	private ServiceException newServiceExceptionParameterConditionIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+IExpression.class.getName()+") 'condition' is null");
+	}
+	private ServiceException newServiceExceptionParameterUpdateModelsIsNull(){
+		return new ServiceException(PARAMETER_TYPE_PREFIX+UpdateModel.class.getName()+") 'updateModels' is null");
+	}
+	
+	private ServiceException newServiceExceptionUpdateFieldsNotCompleted(Exception e){
+		return new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+	}
+	
+	
+	private void releaseResources(boolean rollback, Connection connection, boolean oldValueAutoCommit) throws ServiceException {
+		if(this.jdbcProperties.isAutomaticTransactionManagement()){
+			manageTransaction(rollback, connection);
+			try{
+				if(connection!=null)
+					connection.setAutoCommit(oldValueAutoCommit);
+			}catch(Exception eIgnore){
+				// ignore
+			}
+		}
+		if(connection!=null){
+			this.jdbcServiceManager.closeConnection(connection);
+		}
+	}
+	private void manageTransaction(boolean rollback, Connection connection) {
+		if(rollback){
+			try{
+				if(connection!=null)
+					connection.rollback();
+			}catch(Exception eIgnore){
+				// ignore
+			}
+		}else{
+			try{
+				if(connection!=null)
+					connection.commit();
+			}catch(Exception eIgnore){
+				// ignore
+			}
+		}
+	}
+	
+	
 	
 	@Override
 	public void create(Versamento versamento) throws ServiceException, NotImplementedException {
@@ -94,7 +154,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(versamento==null){
-				throw new Exception("Parameter (type:"+Versamento.class.getName()+") 'versamento' is null");
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			
 			// validate
@@ -116,39 +176,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 		
 			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,versamento,idMappingResolutionBehaviour);			
 
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -188,10 +223,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(versamento==null){
-				throw new Exception("Parameter (type:"+Versamento.class.getName()+") 'versamento' is null");
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdVersamento.class.getName()+") 'oldId' is null");
+				throw this.newServiceExceptionParameterOldIdIsNull();
 			}
 
 			// validate
@@ -213,42 +248,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,versamento,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -288,10 +298,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(versamento==null){
-				throw new Exception("Parameter (type:"+Versamento.class.getName()+") 'versamento' is null");
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 
 			// validate
@@ -313,42 +323,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,versamento,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -363,10 +348,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdVersamento.class.getName()+") 'id' is null");
+				throw this.newServiceExceptionParameterIdIsNull();
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -383,39 +368,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateFields);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -430,13 +393,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdVersamento.class.getName()+") 'id' is null");
+				throw this.newServiceExceptionParameterIdIsNull();
 			}
 			if(condition==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
+				throw this.newServiceExceptionParameterConditionIsNull();
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -453,39 +416,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,condition,updateFields);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -500,10 +441,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdVersamento.class.getName()+") 'id' is null");
+				throw this.newServiceExceptionParameterIdIsNull();
 			}
 			if(updateModels==null){
-				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
+				throw this.newServiceExceptionParameterUpdateModelsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -520,39 +461,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateModels);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -567,10 +486,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -587,39 +506,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,updateFields);	
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -634,13 +531,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 			if(condition==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
+				throw this.newServiceExceptionParameterConditionIsNull();
 			}
 			if(updateFields==null){
-				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
+				throw this.newServiceExceptionParameterUpdateFieldsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -657,39 +554,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,condition,updateFields);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -704,10 +579,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 			if(updateModels==null){
-				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
+				throw this.newServiceExceptionParameterUpdateModelsIsNull();
 			}
 
 			// ISQLQueryObject
@@ -724,39 +599,17 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,updateModels);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logDebug(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.logError(e); throw this.newServiceExceptionUpdateFieldsNotCompleted(e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -796,10 +649,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(versamento==null){
-				throw new Exception("Parameter (type:"+Versamento.class.getName()+") 'versamento' is null");
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdVersamento.class.getName()+") 'oldId' is null");
+				throw this.newServiceExceptionParameterOldIdIsNull();
 			}
 
 			// validate
@@ -821,39 +674,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,versamento,idMappingResolutionBehaviour);
 			
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -893,10 +721,10 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(versamento==null){
-				throw new Exception("Parameter (type:"+Versamento.class.getName()+") 'versamento' is null");
+				throw this.newServiceExceptionParameterIsNull();
 			}
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
+				throw this.newServiceExceptionParameterIsLessEqualsZero();
 			}
 
 			// validate
@@ -918,39 +746,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,versamento,idMappingResolutionBehaviour);
 
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException | ValidationException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(ValidationException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -965,7 +768,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(versamento==null){
-				throw new Exception("Parameter (type:"+Versamento.class.getName()+") 'versamento' is null");
+				throw this.newServiceExceptionParameterIsNull();
 			}
 
 			// ISQLQueryObject
@@ -982,36 +785,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,versamento);	
 
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
@@ -1027,7 +808,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdVersamento.class.getName()+") 'id' is null");
+				throw this.newServiceExceptionParameterIdIsNull();
 			}
 
 			// ISQLQueryObject
@@ -1044,36 +825,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,id);			
 
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 
 	}
@@ -1100,36 +859,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			return this.serviceCRUD.deleteAll(this.jdbcProperties,this.log,connection,sqlQueryObject);	
 
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
@@ -1144,13 +881,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(expression==null){
-				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+				throw this.newServiceExceptionParameterExpressionIsNull();
 			}
 			if( ! (expression instanceof JDBCExpression) ){
-				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+				throw this.newServiceExceptionParameterExpressionWrongType(expression);
 			}
 			JDBCExpression jdbcExpression = (JDBCExpression) expression;
-			this.log.debug("sql = "+jdbcExpression.toSql());
+			this.logJDBCExpression(jdbcExpression);
 		
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -1166,36 +903,14 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			return this.serviceCRUD.deleteAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);
 	
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
@@ -1212,7 +927,7 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter 'tableId' is less equals 0");
+				throw new ServiceException("Parameter 'tableId' is less equals 0");
 			}
 		
 			// ISQLQueryObject
@@ -1229,70 +944,54 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);
 	
-		}catch(ServiceException e){
+		}catch(ServiceException | NotImplementedException e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e.getMessage(),e); throw e;
+			this.logError(e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
+			this.logError(e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
 		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
 	
-	
 	@Override
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException{
-	
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException, NotImplementedException {
 		Connection connection = null;
+		boolean oldValueAutoCommit = false;
+		boolean rollback = false;
 		try{
 			
+			// check parameters
+			if(sql==null){
+				throw new ServiceException("Parameter 'sql' is null");
+			}
+		
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
 			sqlQueryObject.setANDLogicOperator(true);
 			// Connection sql
 			connection = this.jdbcServiceManager.getConnection();
 
-			return ((JDBCVersamentoServiceImpl)this.serviceCRUD).nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);		
-	
-		}catch(ServiceException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(NotFoundException e){
-			this.log.debug(e.getMessage(),e); throw e;
-		}catch(NotImplementedException e){
-			this.log.error(e.getMessage(),e); throw e;
-		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
-		}finally{
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
+			// transaction
+			if(this.jdbcProperties.isAutomaticTransactionManagement()){
+				oldValueAutoCommit = connection.getAutoCommit();
+				connection.setAutoCommit(false);
 			}
+
+			return this.serviceCRUD.nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);
+	
+		}catch(ServiceException | NotImplementedException e){
+			rollback = true;
+			this.logError(e); throw e;
+		}catch(Exception e){
+			rollback = true;
+			this.logError(e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
+		}finally{
+			this.releaseResources(rollback, connection, oldValueAutoCommit);
 		}
 	
 	}
-
 	
 }

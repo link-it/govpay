@@ -28,20 +28,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets StatoIncasso
  */
 public enum StatoIncasso {
-  
-  
-  
-  
+
+
+
+
   IN_ELABORAZIONE("IN_ELABORAZIONE"),
-  
-  
+
+
   ACQUISITO("ACQUISITO"),
-  
-  
+
+
   ERRORE("ERRORE");
-  
-  
-  
+
+
+
 
   private String value;
 

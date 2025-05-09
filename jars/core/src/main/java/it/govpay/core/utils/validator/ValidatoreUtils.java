@@ -35,6 +35,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ValidatoreUtils {
 	
+	private ValidatoreUtils() {}
+	
 	public static void validaCodiceConvenzione(ValidatorFactory vf, String nomeCampo, String codiceConvenzione) throws ValidationException {
 		vf.getValidator(nomeCampo, codiceConvenzione).minLength(5).maxLength(35);
 	}
@@ -192,7 +194,7 @@ public class ValidatoreUtils {
 		validaCodiceContabilita(vf, nomeCampo, split[1]);
 		} catch(ValidationException e) {
 			throw new ValidationException("La decodifica del valore ["+codiceTassonomicoPagoPA+"] contenuto nel campo ["+nomeCampo
-					+"] non ha avuto successo: valore non valido per la parte del C	odiceContabilita. Valore fornito [" + split[1] + "] non rispetta il pattern previsto ["+CostantiValidazione.PATTERN_COD_CONTABILITA+"].");
+					+"] non ha avuto successo: valore non valido per la parte del CodiceContabilita. Valore fornito [" + split[1] + "] non rispetta il pattern previsto ["+CostantiValidazione.PATTERN_COD_CONTABILITA+"].");
 		}
 	}
 	

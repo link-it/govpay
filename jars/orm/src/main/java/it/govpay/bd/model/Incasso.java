@@ -49,20 +49,12 @@ public class Incasso extends it.govpay.model.Incasso {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione (configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;
 	}
 
-	public void setApplicazione(long idApplicazione, BDConfigWrapper configWrapper) throws ServiceException {
-		try {
-			this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
-			this.setIdApplicazione(this.applicazione.getId());
-		} catch (NotFoundException e) {
-		}
-		
-	}
-	
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;
 		if(this.applicazione != null) {
@@ -75,6 +67,7 @@ public class Incasso extends it.govpay.model.Incasso {
 			try {
 				this.operatore = AnagraficaManager.getOperatore(configWrapper, this.getIdOperatore());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.operatore;
@@ -85,6 +78,7 @@ public class Incasso extends it.govpay.model.Incasso {
 			this.operatore = AnagraficaManager.getOperatore(configWrapper, idOperatore);
 			this.setIdOperatore(this.operatore.getId());
 		} catch (NotFoundException e) {
+			// donothing
 		}
 		
 	}

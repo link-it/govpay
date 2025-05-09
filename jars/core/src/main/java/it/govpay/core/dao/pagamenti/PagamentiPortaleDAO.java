@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -39,6 +39,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.gov.pagopa.checkout.model.CartRequest;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
@@ -64,7 +65,6 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
-import it.govpay.core.beans.checkout.CartRequest;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -90,7 +90,6 @@ import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.GovPayException.FaultBean;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
@@ -98,6 +97,7 @@ import it.govpay.core.utils.CheckoutUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
@@ -122,10 +122,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	public static final String PATH_VERIFICATO = "/verificato";
 
 	public PagamentiPortaleDAO() {
+		super();
 	}
 
 	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) 
-			throws IOException, CodificaInesistenteException, GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
+			throws IOException, CodificaInesistenteException, GovPayException, NotAuthorizedException, ServiceException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
@@ -154,7 +155,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			ctx.getApplicationLogger().log("ws.autorizzazione");
 
-			//			String codDominio = null;
 			String nome = null;
 			List<IdVersamento> idVersamento = new ArrayList<>();
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
@@ -173,11 +173,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					// se l'utenza che ha caricato la pendenza inline e' un cittadino sono necessari dei controlli supplementari.
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-						// controllo che il tipo pendenza sia pagabile spontaneamente
-						//						if(!versamentoModel.getTipoVersamentoDominio(bd).getTipo().equals(Tipo.SPONTANEO)) {
-						//							throw new GovPayException(EsitoOperazione.CIT_002, userDetails.getIdentificativo(),versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), 
-						//									versamentoModel.getCodVersamentoEnte(),versamentoModel.getTipoVersamentoDominio(bd).getCodTipoVersamento());
-						//						}
 
 						// se il tributo non puo' essere pagato da terzi allora debitore e versante (se presente) devono coincidere con chi sta effettuando il pagamento.
 						if(!versamentoModel.getTipoVersamentoDominio(configWrapper).isPagaTerzi()) {
@@ -189,14 +184,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						}
 
 					}
-
-					// se l'utenza che ha caricato la pendenza inline e' anonima sono necessari dei controlli supplementari.
-					//					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-					// controllo che il tipo pendenza sia pagabile spontaneamente
-					//						if(!versamentoModel.getTipoVersamentoDominio(bd).getTipo().equals(Tipo.SPONTANEO)) {
-					//							throw new GovPayException(EsitoOperazione.UAN_002, versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versamentoModel.getTipoVersamentoDominio(bd).getCodTipoVersamento());
-					//						}
-					//					}
 				}  else if(v instanceof RefVersamentoAvviso) {
 					String idDominio = ((RefVersamentoAvviso)v).getIdDominio();
 					String cfToCheck = ((RefVersamentoAvviso)v).getIdDebitore();
@@ -206,7 +193,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						if(!dominio.isAbilitato())
 							throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
-						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v,dominio);
+						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v);
 
 						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	
 						if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -229,12 +216,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 							// se l'utenza che ha caricato la pendenza inline e' un cittadino sono necessari dei controlli supplementari.
 							if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-								// controllo che il tipo pendenza sia pagabile spontaneamente
-								//								if(!versamentoModel.getTipoVersamentoDominio(bd).getTipo().equals(Tipo.SPONTANEO)) {
-								//									throw new GovPayException(EsitoOperazione.CIT_002, userDetails.getIdentificativo(),versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), 
-								//											versamentoModel.getCodVersamentoEnte(),versamentoModel.getTipoVersamentoDominio(bd).getCodTipoVersamento());
-								//								}
-
 								// se il tributo non puo' essere pagato da terzi allora debitore e versante (se presente) devono coincidere con chi sta effettuando il pagamento.
 								if(!versamentoModel.getTipoVersamentoDominio(configWrapper).isPagaTerzi()) {
 									if(!versamentoModel.getAnagraficaDebitore().getCodUnivoco().equals(userDetails.getIdentificativo()))
@@ -245,7 +226,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 								}
 
 							}
-							log.debug("RefVersamentoPendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] letto dalla lista identificativi in sessione");
+							log.debug("RefVersamentoPendenza [idA2A:{}, idPendenza: {}] letto dalla lista identificativi in sessione", idA2A, idPendenza);
 						} else {
 							versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
 						}
@@ -275,7 +256,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un tipo pendenza ["+idTipoVersamento+"] non disponibilte per il dominio ["+idDominio+"].", EsitoOperazione.TVD_000, idDominio, idTipoVersamento);
 					}
 
-					//					this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
 					VersamentoUtils.validazioneInputVersamentoModello4(this.log, dati, tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoValidazioneDefinizione());
 
 					MultivaluedMap<String, String> queryParameters = pagamentiPortaleDTO.getQueryParameters(); 
@@ -325,28 +305,41 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					Dominio dominio = versamentoModel.getDominio(configWrapper); 
 					UnitaOperativa uo = versamentoModel.getUo(configWrapper); 
 					TipoVersamento tipoVersamento = versamentoModel.getTipoVersamento(configWrapper); 
-					log.debug("Verifica autorizzazione utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza() 
-					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(configWrapper).getCodApplicazione() 
-					+ "] per il dominio [" + dominio.getCodDominio() + "], UO ["+uo.getCodUo()+"], tipoPendenza [" + tipoVersamento.getCodTipoVersamento() + "]...");
+					log.debug("Verifica autorizzazione utenza [{}], tipo [{}] al pagamento del versamento [Id: {}, IdA2A: {}] per il dominio [{}], UO [{}], tipoPendenza [{}]...",
+					          userDetails.getIdentificativo(),
+					          userDetails.getTipoUtenza(),
+					          versamentoModel.getCodVersamentoEnte(),
+					          versamentoModel.getApplicazione(configWrapper).getCodApplicazione(),
+					          dominio.getCodDominio(),
+					          uo.getCodUo(),
+					          tipoVersamento.getCodTipoVersamento());
 
 					if(!AuthorizationManager.isTipoVersamentoUOAuthorized(userDetails.getUtenza(), dominio.getCodDominio(), uo.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
-						log.warn("Non autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()
-						+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(configWrapper).getCodApplicazione() 
-						+ "] per il dominio [" + dominio.getCodDominio() + "], UO ["+uo.getCodUo()+"], tipoPendenza [" + tipoVersamento.getCodTipoVersamento() + "]");
-
+						log.warn("Non autorizzato utenza [{}], tipo [{}] al pagamento del versamento [Id: {}, IdA2A: {}] per il dominio [{}], UO [{}], tipoPendenza [{}]",
+						          userDetails.getIdentificativo(),
+						          userDetails.getTipoUtenza(),
+						          versamentoModel.getCodVersamentoEnte(),
+						          versamentoModel.getApplicazione(configWrapper).getCodApplicazione(),
+						          dominio.getCodDominio(),
+						          uo.getCodUo(),
+						          tipoVersamento.getCodTipoVersamento());
 						throw new GovPayException(EsitoOperazione.APP_003, userDetails.getIdentificativo(), versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}
 
-					log.debug("Autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()   
-					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(configWrapper).getCodApplicazione() 
-					+ "] per il dominio [" + dominio.getCodDominio() + "], UO ["+uo.getCodUo()+"], tipoPendenza [" + tipoVersamento.getCodTipoVersamento() + "]");
+					log.debug("Autorizzato utenza [{}], tipo [{}] al pagamento del versamento [Id: {}, IdA2A: {}] per il dominio [{}], UO [{}], tipoPendenza [{}]",
+					          userDetails.getIdentificativo(),
+					          userDetails.getTipoUtenza(),
+					          versamentoModel.getCodVersamentoEnte(),
+					          versamentoModel.getApplicazione(configWrapper).getCodApplicazione(),
+					          dominio.getCodDominio(),
+					          uo.getCodUo(),
+					          tipoVersamento.getCodTipoVersamento());
 
 
 					if(!uo.isAbilitato()) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+uo.getCodUo()+"].", EsitoOperazione.UOP_001, uo.getCodUo());
 					}
 
-					//Dominio dominio = uo.getDominio(configWrapper); 
 					if(!dominio.isAbilitato()) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+dominio.getCodDominio()+"].", EsitoOperazione.DOM_001, dominio.getCodDominio());
 					}
@@ -359,7 +352,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						} else {
 							try {
 								sbNomeVersamenti.append(versamentoModel.getCausaleVersamento().getSimple());
-							} catch (UnsupportedEncodingException e) {}						
+							} catch (UnsupportedEncodingException e) {
+								//donothing
+							}						
 						}
 						if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
 							int numeroAltre = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() -1;
@@ -368,10 +363,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							else 
 								sbNomeVersamenti.append(" ed altre "+ numeroAltre +" pendenze.");
 						}
-
-						// 	2. Codice dominio della prima pendenza
-						//						codDominio = dominio.getCodDominio();
-						// 3. ente creditore
 					}
 
 					versamenti.add(versamentoModel);
@@ -446,7 +437,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					// Esecuizione della chiamata verso PagoPA
 					try {
-						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), pagamentiPortaleDTO.getLingua(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione(), email);
+						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione(), email);
 
 						Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 						Giornale giornale = configurazione.getGiornale();
@@ -457,13 +448,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						response.setLocation(location);
 						response.setRedirectUrl(location);
 					} catch (UnsupportedEncodingException e) {
-						this.logError("Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
+						LogUtils.logError(log, "Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					} catch (ClientException e) {
-						this.logError("Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						LogUtils.logError(log, "Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					} catch (ClientInitializeException e) {
-						this.logError("Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						LogUtils.logError(log, "Errore durante la creazione del client per la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
 						throw new GovPayException(e);
 					}
 
@@ -651,7 +642,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 	}
 
-	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, ValidationException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 		PagamentiPortaleBD pagamentiPortaleBD = null;
@@ -680,7 +671,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			List<Versamento> versamenti = pagamentoPortale.getVersamenti(pagamentiPortaleBD);
 
-			if(versamenti != null && versamenti.size() > 0) {
+			if(versamenti != null && !versamenti.isEmpty()) {
 				for(Versamento versamento: versamenti) {
 					versamento.getDominio(configWrapper);
 					versamento.getSingoliVersamenti(pagamentiPortaleBD);
@@ -728,7 +719,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 
-	public ListaPagamentiPortaleDTOResponse countPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
+	public ListaPagamentiPortaleDTOResponse countPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotFoundException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
 
@@ -764,14 +755,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setSeveritaA(listaPagamentiPortaleDTO.getSeveritaA());
 
 			long count = pagamentiPortaleBD.count(filter);
-			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
+			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<>());
 		}finally {
-			if(pagamentiPortaleBD != null)
-				pagamentiPortaleBD.closeConnection();
+			pagamentiPortaleBD.closeConnection();
 		}
 	}
 
-	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, ValidationException{ 
+	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotFoundException, ValidationException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
 
@@ -837,16 +827,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				return new ListaPagamentiPortaleDTOResponse(count, lst);
 			} else {
-				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
+				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<>());
 			}
 		}finally {
-			if(pagamentiPortaleBD != null)
-				pagamentiPortaleBD.closeConnection();
+			pagamentiPortaleBD.closeConnection();
 		}
 	}
 
 	public LeggiPagamentoPortaleDTOResponse patch(PagamentoPatchDTO patchDTO) 
-			throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException,ValidationException{
+			throws ServiceException, PagamentoPortaleNonTrovatoException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 
@@ -943,15 +932,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			response.setDettaglioEsito(e.getMessage());
 			switch (e.getCodEsito()) {
 			case INTERNAL:
-				log.error("[" + e.getCodEsito() + "] " + e.getMessage() + (e.getCausa() != null ? "\n" + e.getCausa() : ""), this);
+				log.error("[" + e.getCodEsito() + "] " + e.getMessage() + (e.getCausa() != null ? "\n" + e.getCausa() : ""), e);
 				break;
 			default:
-				log.warn("[" + e.getCodEsito() + "] " + e.getMessage() +  (e.getCausa() != null ? "\n" + e.getCausa() : ""));
+				LogUtils.logWarn(log, "[" + e.getCodEsito() + "] " + e.getMessage() +  (e.getCausa() != null ? "\n" + e.getCausa() : ""));
 				break;
 			}
 
 			try {
-				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito(), response.getDescrizioneEsito(), response.getDettaglioEsito());
 			} catch (UtilsException e1) {
 				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e1.getMessage(),e1);
 			}

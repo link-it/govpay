@@ -52,6 +52,45 @@
       	
       	 BASIC_END -->
       	 
+      	 <!-- BASIC_TOMCAT_START 
+        
+        <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+        
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        	<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="authType" value="BASIC" />
+        </b:bean>
+        
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.TomcatApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+        
+        <authentication-manager id="authenticationManager">
+                <authentication-provider ref="wildflyApplicationAuthenticationProvider">
+                </authentication-provider>
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**" request-matcher="regex">
+
+                <csrf disabled="true"/>
+
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
+                
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+      	
+      	 BASIC_TOMCAT_END -->
+      	 
      	 <!-- LDAP_START 
       	 
       	<ldap-server id="defaultLdapServer" url="LDAP-SERVER-URL" manager-dn="MANAGER-DN" manager-password="MANAGER-PWD"/>
@@ -130,7 +169,7 @@
           <!-- SSL_HDR_START
       	<b:bean id="http403ForbiddenEntryPointSSLHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
-      	<b:bean id="userDetailServiceUtenzeSSLHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+      	<b:bean id="userDetailServiceUtenzeSSLHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
       		<b:property name="checkSubject" value="true"/>
       		<b:property name="apiName" value="API_PAGOPA" />
         	<b:property name="authType" value="SSL_HEADER" />
@@ -261,6 +300,42 @@
                 </headers>
         </http>
         API_KEY_END -->
+        
+        <!-- OAUTH2_START
+        
+        <b:bean id="oauth2AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.oauth2.server.entrypoint.BearerTokenAuthenticationEntryPoint" />
+        
+        <b:bean id="logoutSuccessHandlerOAuth2" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        
+        <b:bean id="userDetailServiceUtenzeOAuth2" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        	<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="authType" value="OAUTH2" />
+        </b:bean>
+        
+        <b:bean id="govpayJwtAuthenticationConverter" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtAuthenticationConverter">
+        	<b:property name="userDetailService" ref="userDetailServiceUtenzeOAuth2"/>
+        	<b:property name="principalClaimName" value="NOME_CLAIM_PRINCIPAL" />
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" request-matcher="regex">
+                <csrf disabled="true"/>
+
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />		
+                
+               	<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
+	       			<jwt jwk-set-uri="JWK_SET_URI" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       		</oauth2-resource-server>
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        OAUTH2_END -->
         
         
 </b:beans>

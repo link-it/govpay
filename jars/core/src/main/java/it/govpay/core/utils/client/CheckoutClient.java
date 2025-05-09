@@ -28,13 +28,14 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.springframework.http.HttpHeaders;
 
+import it.gov.pagopa.checkout.model.CartRequest;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.checkout.CartRequest;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.configurazione.Giornale;
@@ -71,7 +72,7 @@ public class CheckoutClient extends BasicClientCORE {
 		sb.append(CHECKOUT_V1_CARTS_OPERATION_PATH);
 		
 		try {
-			jsonBody = cartRequest.toJSON(null);
+			jsonBody = ConverterUtils.toJSON(cartRequest);
 		} catch (IOException e) {
 			throw new GovPayException(e);
 		}

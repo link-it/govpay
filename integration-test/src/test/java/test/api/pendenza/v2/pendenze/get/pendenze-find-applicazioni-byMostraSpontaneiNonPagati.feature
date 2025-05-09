@@ -3,6 +3,7 @@ Feature: Ricerca pagamenti
 Background:
 
 * callonce read('classpath:utils/api/v2/pendenze/bunch-pendenze.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Ricerca pendenze applicazione autorizzata filtrati per data
 

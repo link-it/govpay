@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaRiscossioni;
@@ -48,10 +50,10 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.FR_IUR = new Field("fr_iur",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_REGOLAMENTO = new Field("dataRegolamento",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.NUMERO_PAGAMENTI = new Field("numeroPagamenti",long.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.math.BigDecimal.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.math.BigDecimal.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.INDICE_DATI = new Field("indiceDati",java.math.BigInteger.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
@@ -72,6 +74,7 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.METADATA = new Field("metadata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -86,10 +89,10 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.FR_IUR = new ComplexField(father,"fr_iur",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_REGOLAMENTO = new ComplexField(father,"dataRegolamento",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.NUMERO_PAGAMENTI = new ComplexField(father,"numeroPagamenti",long.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.math.BigDecimal.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.math.BigDecimal.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.math.BigInteger.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
@@ -110,6 +113,7 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.METADATA = new ComplexField(father,"metadata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -176,6 +180,8 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 	public IField DATA_SCADENZA = null;
 	 
 	public IField CONTABILITA = null;
+	 
+	public IField METADATA = null;
 	 
 
 	@Override

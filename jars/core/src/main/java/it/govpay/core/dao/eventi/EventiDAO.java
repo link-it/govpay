@@ -39,13 +39,11 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.dao.eventi.exception.EventoNonTrovatoException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoUtils;
 
 public class EventiDAO extends BaseDAO {
 
-	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO) throws ServiceException, NotAuthenticatedException, NotAuthorizedException {
+	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		EventiBD eventiBD = null;
@@ -118,7 +116,7 @@ public class EventiDAO extends BaseDAO {
 	}
 
 
-	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws ServiceException {
 		PutEventoDTOResponse putEventoDTOResponse = new PutEventoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		EventiBD eventiBD = null;
@@ -132,12 +130,11 @@ public class EventiDAO extends BaseDAO {
 			eventiBD.insertEvento(evento);
 			return putEventoDTOResponse;
 		} finally {
-			if(eventiBD != null)
-				eventiBD.closeConnection();
+			eventiBD.closeConnection();
 		}
 	}
 
-	public LeggiEventoDTOResponse leggiEvento(LeggiEventoDTO leggiEventoDTO) throws ServiceException,EventoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiEventoDTOResponse leggiEvento(LeggiEventoDTO leggiEventoDTO) throws ServiceException,EventoNonTrovatoException {
 		LeggiEventoDTOResponse response = new LeggiEventoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		EventiBD eventiBD = null;
@@ -148,8 +145,7 @@ public class EventiDAO extends BaseDAO {
 		} catch (NotFoundException e) {
 			throw new EventoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			if(eventiBD != null)
-				eventiBD.closeConnection();
+			eventiBD.closeConnection();
 		}
 		return response;
 	}

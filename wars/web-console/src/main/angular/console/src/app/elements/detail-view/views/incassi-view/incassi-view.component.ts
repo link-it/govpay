@@ -138,6 +138,11 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
         if (item.vocePendenza && item.vocePendenza.pendenza && item.vocePendenza.pendenza.idPendenza) {
           _stdC.elenco.push({ label: Voce.ID_PENDENZA, value: item.vocePendenza.pendenza.idPendenza });
         }
+        // Metadata
+        if (item.vocePendenza && item.vocePendenza.metadata && item.vocePendenza.metadata.mapEntries) {
+          const _mapEntries = item.vocePendenza.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
+          _stdC.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+        }
         break;
     }
     return _stdC;

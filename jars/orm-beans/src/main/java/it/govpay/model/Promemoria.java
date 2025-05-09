@@ -24,7 +24,7 @@ import java.util.Date;
 public class Promemoria extends BasicModel {
 	
 	public Promemoria() {
-		
+		//donothing
 	}
 	
 	private static final long serialVersionUID = 1L;

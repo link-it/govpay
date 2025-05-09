@@ -69,13 +69,13 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("sct")
   private String sct = null;
-  
+
   @JsonProperty("stato")
   private StatoIncasso stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
 
@@ -329,7 +329,7 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class IncassoIndex {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");

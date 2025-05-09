@@ -35,10 +35,6 @@ import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
 import it.govpay.core.dao.configurazione.dto.PatchConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTOResponse;
-import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.PatchOp;
 import it.govpay.model.configurazione.AppIOBatch;
@@ -67,16 +63,17 @@ public class ConfigurazioneDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public LeggiConfigurazioneDTOResponse getConfigurazione(LeggiConfigurazioneDTO leggiConfigurazioneDTO) throws ConfigurazioneNonTrovataException, NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public LeggiConfigurazioneDTOResponse getConfigurazione(LeggiConfigurazioneDTO leggiConfigurazioneDTO) throws ServiceException {
 		try {
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
+			// donothing
 		}
 	}
 
 
-	public PutConfigurazioneDTOResponse salvaConfigurazione(PutConfigurazioneDTO putConfigurazioneDTO) throws ConfigurazioneNonTrovataException, ServiceException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {  
+	public PutConfigurazioneDTOResponse salvaConfigurazione(PutConfigurazioneDTO putConfigurazioneDTO) throws ServiceException {  
 		PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = new PutConfigurazioneDTOResponse();
 		try {
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
@@ -96,6 +93,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 		} finally {
+			// donothing
 		}
 		return putConfigurazioneDTOResponse;
 	}
@@ -142,6 +140,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
+			// donothing
 		}
 	}
 }

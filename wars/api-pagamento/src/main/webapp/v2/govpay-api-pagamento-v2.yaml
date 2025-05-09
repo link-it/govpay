@@ -1,7 +1,8 @@
 openapi: 3.0.0
 info:
-  version: "2.14.0"
+  version: "2.16.0"
   title: GovPay - API Pagamento
+  description: 'GovPay - API Pagamento V2 sono deprecate'
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -35,6 +36,7 @@ paths:
         (_idA2A_ e _idPendenza_) oppure con gli estremi dell'avviso (_idDominio_
         e _iuv_). Nel caso invece di pendenze spontanee, è possibile
         fornire direttamente i dati costitutivi.
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/reCaptcha'
@@ -92,6 +94,7 @@ paths:
                         amount:
                           description: importo
                           type: number
+                          format: double
                         agreement:
                           description: eventuale codice della convenzione tra EC e PSP
                           type: string
@@ -110,6 +113,7 @@ paths:
       operationId: findPagamenti
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
@@ -144,6 +148,7 @@ paths:
       operationId: getPagamento
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: id
@@ -172,6 +177,7 @@ paths:
       operationId: getPagamentoByIdSession
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idSession
@@ -201,6 +207,7 @@ paths:
       summary: Elenco delle pendenze
       operationId: findPendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
@@ -240,6 +247,7 @@ paths:
       summary: Dettaglio di una pendenza per identificativo
       operationId: getPendenza
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      deprecated: true
       parameters:
         - in: path
           name: idA2A
@@ -277,6 +285,7 @@ paths:
       summary: Caricamento della pendenza di tipo spontaneo
       operationId: addPendenza
       description: Operazione di caricamento della pendenza di tipo spontaneo
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -337,6 +346,7 @@ paths:
     get:
       summary: Lista delle richieste di pagamento pendenza
       operationId: findRpp
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -377,6 +387,7 @@ paths:
     get:
       summary: Dettaglio di una richiesta di pagamento pendenza
       operationId: getRpp
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -418,6 +429,7 @@ paths:
     get:
       summary: Acquisizione della richiesta di pagamento pagopa
       operationId: getRpt
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -447,11 +459,11 @@ paths:
             application/xml:
               schema:
                 type: object
-                example: xml della richiesta di pagamento pagopa
+                description: xml della richiesta di pagamento pagopa
             application/json:
               schema:
                 type: object
-                example: conversione json della richiesta di pagamento pagopa
+                description: conversione json della richiesta di pagamento pagopa
         '401':
           $ref: '#/components/responses/401NotAuthenticated'
         '403':
@@ -464,6 +476,7 @@ paths:
     get:
       operationId: getRt
       summary: Acquisizione della ricevuta di pagamento
+      deprecated: true
       tags:
         - Transazioni
       parameters:
@@ -498,11 +511,11 @@ paths:
             application/xml:
               schema:
                 type: object
-                example: xml della ricevuta
+                description: xml della ricevuta
             application/json:
               schema:
                 type: object
-                example: conversione json della ricevuta
+                description: conversione json della ricevuta
         '401':
           $ref: '#/components/responses/401NotAuthenticated'
         '403':
@@ -518,6 +531,7 @@ paths:
       summary: Dettaglio di una pendenza per riferimento avviso
       operationId: getPendenzaByAvviso
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -555,6 +569,7 @@ paths:
       summary: Avviso di pagamento
       operationId: getAvviso
       description: Fornisce un avviso di pagamento o la pendenza ad esso associata
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -596,7 +611,8 @@ paths:
     get:
       summary: Allegato di una pendenza
       operationId: getAllegatoPendenza
-      description:      Fornisce l'allegato di una pendenza
+      description: Fornisce l'allegato di una pendenza
+      deprecated: true
       tags:
         - Pendenze
       parameters:
@@ -629,6 +645,7 @@ paths:
       tags:
         - Anagrafica
       operationId: findDomini
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
@@ -647,6 +664,7 @@ paths:
       tags:
         - Anagrafica
       operationId: findTipiPendenzaDominio
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -668,6 +686,7 @@ paths:
       tags:
         - Anagrafica
       operationId: findUnitaOperative
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -693,6 +712,7 @@ paths:
       tags:
         - Anagrafica
       operationId: getProfilo
+      deprecated: true
       responses:
         '200':
           description: Autorizzazioni dell'utenza chiamante
@@ -708,6 +728,7 @@ paths:
     get:
       summary: Logout
       operationId: logout
+      deprecated: true
       tags:
         - Anagrafica
       responses:
@@ -1075,12 +1096,12 @@ components:
     '400BadRequest':
       description: Richiesta non correttamente formata
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/FaultBean'
           example:
             categoria: RICHIESTA
-            codice: 00001
+            codice: '00001'
             descrizione: Messaggio di richiesta non valido
             dettaglio: Codice Avviso non conforme alle specifiche pagoPA
     '401NotAuthenticated':
@@ -1092,7 +1113,7 @@ components:
     '500ServiceUnavailable':
       description: Servizio non disponibile
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/FaultBean'
           example:
@@ -1102,7 +1123,7 @@ components:
     '502BadGateway':
       description: Rilevato errore con la piattaforma PagoPA
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/FaultBeanEsteso'
           example:
@@ -1164,16 +1185,17 @@ components:
           $ref: "#/components/schemas/StatoAvviso"
         importo:
           type: number
+          format: double
           description: Importo della pendenza associata all'avviso.
           example: 10.01
         idDominio:
           type: string
           description: Identificativo del creditore dell'avviso
-          example: 01234567890
+          example: '012345678901'
         numeroAvviso:
           type: string
           description: Numero identificativo dell'avviso di pagamento
-          example: 00100000000000012
+          example: '00100000000000012'
         dataValidita:
           type: string
           format: date
@@ -1266,7 +1288,7 @@ components:
         idDominio:
           type: string
           description: Codice fiscale
-          example: 01234567890
+          example: '012345678901'
           minLength: 1
           maxLength: 35
         ragioneSociale:
@@ -1287,7 +1309,7 @@ components:
           maxLength: 16
         cap:
           type: string
-          example: 00000
+          example: '00000'
           minLength: 1
           maxLength: 16
         localita:
@@ -1317,11 +1339,11 @@ components:
         tel:
           type: string
           description: Numero di telefono dell'help desk di primo livello
-          example: 021234567890
+          example: '021234567890'
         fax:
           type: string
           description: Numero di fax dell'help desk di primo livello
-          example: 021234567890
+          example: '021234567890'
         web:
           type: string
           description: Url del sito web
@@ -1329,11 +1351,11 @@ components:
         gln:
           type: string
           description: Global location number del beneficiario
-          example: 0011223344556
+          example: '0011223344556'
         cbill:
           type: string
           description: codice cbill del beneficiario
-          example: 12345
+          example: '12345'
         logo:
           type: string
           description: URL del logo
@@ -1367,11 +1389,11 @@ components:
         codiceContabilita:
           description: Codifica del capitolo di bilancio
           type: string
-          example: 3321
+          example: '3321'
           minLength: 1
           maxLength: 135
     EsitoRpp:
-      example: Eseguito
+      example: ESEGUITO
       type: string
       enum:
         - IN_CORSO
@@ -1422,7 +1444,7 @@ components:
           properties:
             id:
               type: string
-              example: 12345
+              example: '12345'
               description: identificativo del pagamento creato
             location:
               type: string
@@ -1451,28 +1473,54 @@ components:
       type: object
       properties:
         numRisultati:
-          type: number
-          format: integer
-          example: '100'
+          type: integer
+          format: int32
+          example: 100
         numPagine:
-          type: number
-          format: integer
-          example: '4'
+          type: integer
+          format: int32
+          example: 4
         risultatiPerPagina:
-          type: number
-          format: integer
-          example: '25'
+          type: integer
+          format: int32
+          example: 25
         pagina:
-          type: number
-          format: integer
-          example: '1'
+          type: integer
+          format: int32
+          example: 1
         prossimiRisultati:
           type: string
           example: '/risorsa?pagina=2'
         maxRisultati:
-          type: number
-          format: integer
-          example: '100'
+          type: integer
+          format: int32
+          example: 100
+    MapEntry:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: chiave del metadata
+          minLength: 1
+          maxLength: 140
+        value:
+          type: string
+          description: valore del metadata
+          minLength: 1
+          maxLength: 140
+    Metadata:
+      type: object
+      description: Metadata Custom da inserire nella ricevuta di pagamento
+      properties:
+        mapEntries:
+          type: array
+          items: 
+            $ref: '#/components/schemas/MapEntry'      
+          minItems: 1
+          maxItems: 5
     NuovaPendenza:
       type: object
       allOf:
@@ -1489,7 +1537,7 @@ components:
             idDominio:
               type: string
               description: Identificativo del dominio creditore
-              example: 1234567890
+              example: '12345678901'
               minLength: 1
               maxLength: 35
               pattern: '(^([0-9]){11}$)'
@@ -1516,6 +1564,7 @@ components:
               $ref: '#/components/schemas/Soggetto'
             importo:
               type: number
+              format: double
               description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
               example: 10.01
               minimum: 0.00
@@ -1523,7 +1572,7 @@ components:
             numeroAvviso:
               type: string
               description: Identificativo univoco versamento, assegnato se pagabile da psp
-              example: 123456789012345678
+              example: '123456789012345678'
               pattern: "[0-9]{18}"
             tassonomia:
               type: string
@@ -1543,7 +1592,8 @@ components:
               description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
               example: '2020-12-31'
             annoRiferimento:
-              type: number
+              type: integer
+              format: int32
               description: Anno di riferimento della pendenza
               example: 2020
               pattern: "[0-9]{4}"
@@ -1597,6 +1647,7 @@ components:
               maxLength: 35
             importo:
               type: number
+              format: double
               description: Importo della voce
               example: 10.01
               minimum: 0.00
@@ -1618,10 +1669,12 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            metadata:
+                $ref: '#/components/schemas/Metadata'
             idDominio:
               type: string
               description: Identificativo del dominio creditore
-              example: 1234567890
+              example: '12345678901'
               minLength: 1
               maxLength: 35   
               pattern: '(^([0-9]){11}$)'
@@ -1754,6 +1807,7 @@ components:
               $ref: '#/components/schemas/StatoPagamento'
             importo:
               type: number
+              format: double
               description: >-
                 Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
             idSessionePortale:
@@ -1783,7 +1837,7 @@ components:
         id:
           type: string
           description: identificativo del pagamento
-          example: 12345
+          example: '12345'
         location:
           type: string
           description: Url del dettaglio del pagamento
@@ -1823,7 +1877,7 @@ components:
         idDominio:
           type: string
           description: Codice fiscale dell'ente creditore
-          example: 01234567890
+          example: '012345678901'
         idTipoPendenza:
           type: string
           description: >-
@@ -1834,6 +1888,7 @@ components:
           description: Definizione della pendenza              
     Pagina:
       type: integer
+      format: int32
       default: 1            
     Pendenza:
       type: object
@@ -1919,6 +1974,7 @@ components:
           $ref: '#/components/schemas/Soggetto'
         importo:
           type: number
+          format: double
           description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
           example: 10.01
           minimum: 0.00
@@ -1926,8 +1982,8 @@ components:
         numeroAvviso:
           type: string
           description: Identificativo univoco versamento, assegnato se pagabile da psp
-          example: 123456789012345678
-          pattern: "[0-9]18"
+          example: '123456789012345678'
+          pattern: "[0-9]{18}"
         dataCaricamento:
           type: string
           format: date
@@ -1944,7 +2000,8 @@ components:
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
         annoRiferimento:
-          type: number
+          type: integer
+          format: int32
           description: Anno di riferimento della pendenza
           example: 2020
         cartellaPagamento:
@@ -2070,6 +2127,10 @@ components:
           description: >- 
             se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
           maxLength: 255
+        dataScandenzaAvviso:
+          type: string
+          format: date
+          description: se valorizzata, sostituisce la data di scadenza standard.
     QuotaContabilita:
       type: object
       required:
@@ -2082,11 +2143,13 @@ components:
           description: Codice del capitolo
           maxLength: 64
         annoEsercizio:
-          type: number
+          type: integer
+          format: int32
           description: Anno di esercizio
           example: 2020
         importo:
           type: number
+          format: double
           description: Importo della voce di contabilita'
           example: 10.01
         accertamento:
@@ -2125,13 +2188,13 @@ components:
         idDominio:
           type: string
           description: Codice fiscale dell'ente creditore
-          example: 01234567890
+          example: '012345678901'
         numeroAvviso:
           type: string
           description: >-
             Numero avviso della pendenza, assegnato se
             pagabile da psp
-          example: 123456789012345678
+          example: '123456789012345678'
           pattern: "[0-9]{18}"
         idDebitore:
           type: string
@@ -2169,6 +2232,7 @@ components:
           example: abcdef12345
     RisultatiPerPagina:
       type: integer
+      format: int32
       default: 25
       maximum: 200             
     Rpp:
@@ -2372,7 +2436,7 @@ components:
         data:
           type: string
           format: date-time
-          example: '2018-12-31T12:53:49'
+          example: '2018-12-31T12:53:49Z'
         codice:
           type: string
           example: '0013'
@@ -2415,7 +2479,7 @@ components:
           maxLength: 16
         cap:
           type: string
-          example: 00000
+          example: '00000'
           minLength: 1
           maxLength: 16
         localita:
@@ -2438,11 +2502,11 @@ components:
           pattern: "[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*"
         cellulare:
           type: string
-          example: +39 000 1234567
+          example: '+39 000-1234567'
           pattern: "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}"
     StatoAvviso:
       description: Stato dell'avviso
-      example: Non pagato
+      example: NON_ESEGUITA
       type: string
       enum:
         - DUPLICATA
@@ -2599,7 +2663,7 @@ components:
         - Giornale degli Eventi
         - Configurazione e manutenzione
       example:
-        Pendenze e Pagamenti
+        Pendenze
     TipoSoggetto:
       description: >-
         tipologia di soggetto, se persona fisica (F) o giuridica
@@ -2617,7 +2681,7 @@ components:
         idUnitaOperativa:
           type: string
           description: Codice fiscale
-          example: 01234567890
+          example: '012345678901'
           minLength: 1
           maxLength: 35
         ragioneSociale:
@@ -2638,7 +2702,7 @@ components:
           maxLength: 16
         cap:
           type: string
-          example: 00000
+          example: '00000'
           minLength: 1
           maxLength: 16
         localita:
@@ -2668,11 +2732,11 @@ components:
         tel:
           type: string
           description: Numero di telefono dell'help desk di primo livello
-          example: 021234567890
+          example: '021234567890'
         fax:
           type: string
           description: Numero di fax dell'help desk di primo livello
-          example: 021234567890
+          example: '021234567890'
         web:
           type: string
           description: Url del sito web
@@ -2700,6 +2764,7 @@ components:
           example: canone annuo
         importo: 
           type: number
+          format: double
           description: importo
           example: 10.01
     VocePendenza:
@@ -2720,6 +2785,7 @@ components:
               maxLength: 35
             importo:
               type: number
+              format: double
               description: Importo della voce
               example: 10.01
               minimum: 0.00
@@ -2740,7 +2806,8 @@ components:
               minLength: 1
               maxLength: 140
             indice:
-              type: number
+              type: integer
+              format: int32
               description: indice di voce all'interno della pendenza
               example: 1
               minimum: 1

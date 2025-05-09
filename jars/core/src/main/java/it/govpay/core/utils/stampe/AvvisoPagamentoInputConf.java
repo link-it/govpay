@@ -33,6 +33,8 @@ import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class AvvisoPagamentoInputConf {
 	
+	private AvvisoPagamentoInputConf() {}
+	
 	public static AvvisoPagamentoInputConf getConfigurazioneFromVersamenti(Documento documento, List<Versamento> versamenti, Logger log) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		AvvisoPagamentoInputConf toRet = new AvvisoPagamentoInputConf();

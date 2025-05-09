@@ -32,15 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -63,9 +54,17 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -79,18 +78,18 @@ public abstract class BaseController {
 
 	private static final String FAULT_DESCRIZIONE_RICHIESTA_NON_VALIDA = "Richiesta non valida";
 
-	public final static Integer DEFAULT_NUMERO_ENTRIES_ANAGRAFICA = 500;
+	public static final Integer DEFAULT_NUMERO_ENTRIES_ANAGRAFICA = 500;
 
-	public final static String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
-	public final static String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
-	public final static String SUFFIX_CONTENT_DISPOSITION = "\"";
-	public final static String PREFIX_FILENAME = "filename=\"";
-	public final static String SUFFIX_FILENAME = "\"";
+	public static final String PARAMETRO_CONTENT_DISPOSITION = Costanti.PARAMETRO_CONTENT_DISPOSITION;
+	public static final String PREFIX_CONTENT_DISPOSITION = Costanti.PREFIX_CONTENT_DISPOSITION;
+	public static final String SUFFIX_CONTENT_DISPOSITION = Costanti.SUFFIX_CONTENT_DISPOSITION;
+	public static final String PREFIX_FILENAME = Costanti.PREFIX_FILENAME;
+	public static final String SUFFIX_FILENAME = Costanti.SUFFIX_FILENAME;
 
-	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean";
-	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
-	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
-	public static final String LOG_MSG_ESECUZIONE_OPERAZIONE_COMPLETATA = "Esecuzione {0} completata: Stato {1}, Descrizione: {2}";
+	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = Costanti.ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
+	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = Costanti.LOG_MSG_ESECUZIONE_METODO_COMPLETATA;
+	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = Costanti.LOG_MSG_ESECUZIONE_METODO_IN_CORSO;
+	public static final String LOG_MSG_ESECUZIONE_OPERAZIONE_COMPLETATA = Costanti.LOG_MSG_ESECUZIONE_OPERAZIONE_COMPLETATA;
 	protected Logger log;
 	protected String nomeServizio;
 	protected HttpServletRequest request;
@@ -98,7 +97,7 @@ public abstract class BaseController {
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
 	protected BigDecimal maxRisultatiBigDecimal;
 
-	public BaseController(String nomeServizio, Logger log) {
+	protected BaseController(String nomeServizio, Logger log) {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 	}
@@ -166,37 +165,37 @@ public abstract class BaseController {
 			return responseBuilder;
 	}
 
-	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
+	protected Response handleException(String methodName, Exception e, String transactionId) {
 
-		if(e instanceof IncassiException) {
-			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
+		if(e instanceof IncassiException incassiException) {
+			return this.handleIncassiException(methodName, incassiException,transactionId);
 		}
 
-		if(e instanceof UnprocessableEntityException) {
-			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
+		if(e instanceof UnprocessableEntityException unprocessableEntityException) {
+			return this.handleUnprocessableEntityException(methodName, unprocessableEntityException,transactionId);
 		}
 
-		if(e instanceof BaseExceptionV1) {
-			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
+		if(e instanceof BaseExceptionV1 baseExceptionV1) {
+			return this.handleBaseException(methodName, baseExceptionV1,transactionId);
 		}
 
-		if(e instanceof RedirectException) {
-			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
+		if(e instanceof RedirectException redirectException) {
+			return this.handleRedirectException(methodName, redirectException,transactionId);
 		}
 
-		if(e instanceof GovPayException) {
-			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
+		if(e instanceof GovPayException govPayException) {
+			return this.handleGovpayException(methodName, govPayException,transactionId);
 		}
 
-		if(e instanceof ValidationException) {
-			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+		if(e instanceof ValidationException validationException) {
+			return this.handleValidationException(validationException,transactionId);
 		}
 
-		if(e instanceof IOException) {
-			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		if(e instanceof IOException ioException) {
+			return this.handleIOException(ioException,transactionId);
 		}
 
-		this.log.error(MessageFormat.format("Errore interno durante {0}", methodName), e);
+		this.logError(MessageFormat.format("Errore interno durante {0}", methodName), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
@@ -214,13 +213,13 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(IOException ex) {
-			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.logError(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
 	}
 
-	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
+	private Response handleBaseException(String methodName, BaseExceptionV1 e, String transactionId) {
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(FaultBean.CategoriaEnum.fromValue(e.getCategoria().name()));
 		respKo.setCodice(e.getCode());
@@ -229,10 +228,10 @@ public abstract class BaseController {
 
 		String sottotipoEsito = respKo.getCodice();
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
-			this.log.info(MessageFormat.format("Accesso alla risorsa {0} non consentito: {1}, {2}", methodName, e.getMessage(), e.getDetails()));
+			this.logInfo("Accesso alla risorsa {} non consentito: {}, {}", methodName, e.getMessage(), e.getDetails());
 			sottotipoEsito = CategoriaEnum.AUTORIZZAZIONE.name();
 		} else {
-			this.log.info(MessageFormat.format("Errore ({0}) durante {1}: {2}", e.getClass().getSimpleName(), methodName, e.getMessage()));
+			this.logInfo("Errore ({}) durante {}: {}", e.getClass().getSimpleName(), methodName, e.getMessage());
 		}
 
 		String respJson = this.getRespJson(respKo);
@@ -244,8 +243,8 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
-		this.log.info(MessageFormat.format("Errore ({0}) durante {1}: {2}", e.getClass().getSimpleName(), methodName, e.getMessage()));
+	private Response handleUnprocessableEntityException(String methodName, UnprocessableEntityException e, String transactionId) {
+		this.logInfo("Errore ({}) durante {}: {}", e.getClass().getSimpleName(), methodName, e.getMessage());
 
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
@@ -263,14 +262,13 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
+	private Response handleGovpayException(String methodName, GovPayException e, String transactionId) {
 		switch (e.getStatusCode()) {
-		case 200: 
-		case 422: // richieste che non passano la validazione semantica
-			this.log.info(MessageFormat.format("Rilevata GovPayException durante l''esecuzione del metodo: {0}, causa: {1}, messaggio: {2}", methodName, e.getCausa(), e.getMessageV3()));
+		case 200, 422: // richieste che non passano la validazione semantica
+			this.logInfo("Rilevata GovPayException durante l''esecuzione del metodo: {}, causa: {}, messaggio: {}", methodName, e.getCausa(), e.getMessageV3());
 			break;
 		default:
-			this.log.error(MessageFormat.format("Rilevata GovPayException durante l''esecuzione del metodo: {0}, causa: {1}, messaggio: {2}", methodName, e.getCausa(), e.getMessageV3()), e);
+			this.logError(MessageFormat.format("Rilevata GovPayException durante l''esecuzione del metodo: {0}, causa: {1}, messaggio: {2}", methodName, e.getCausa(), e.getMessageV3()), e);
 			break;
 		}
 		FaultBean respKo = new FaultBean();
@@ -280,7 +278,7 @@ public abstract class BaseController {
 			respKo.setCodice(e.getFaultBean().getFaultCode());
 			respKo.setDescrizione(e.getFaultBean().getFaultString());
 			respKo.setDettaglio(e.getFaultBean().getDescription());
-			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500;
+			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500
 		} else {
 			respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
 			respKo.setCodice(e.getCodEsitoV3());
@@ -299,8 +297,8 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
-		this.log.warn(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
+	private Response handleValidationException(ValidationException e, String transactionId) {
+		this.logWarnException(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice(FAULT_CODICE_SINTASSI);
@@ -315,8 +313,8 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
-		this.log.warn(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
+	private Response handleIOException(IOException e, String transactionId) {
+		this.logWarnException(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice(FAULT_CODICE_SINTASSI);
@@ -331,8 +329,8 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
-		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
+	private Response handleIncassiException(String methodName, IncassiException e, String transactionId) {
+		this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
 
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
@@ -349,8 +347,8 @@ public abstract class BaseController {
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
-	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
-		this.log.error(MessageFormat.format("Esecuzione del metodo [{0}] si e'' conclusa con un errore: {1}, redirect verso la url: {2}", methodName, e.getMessage(), e.getLocation()));
+	private Response handleRedirectException(String methodName, RedirectException e, String transactionId) {
+		this.logError(MessageFormat.format("Esecuzione del metodo [{0}] si e'' conclusa con un errore: {1}, redirect verso la url: {2}", methodName, e.getMessage(), e.getLocation()));
 		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
 		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
@@ -360,12 +358,8 @@ public abstract class BaseController {
 	}
 
 	protected void logContext(IContext ctx) {
-		if(ctx != null) { // noop
-//			try {
-//				ctx.getApplicationLogger().log();
-//			} catch (UtilsException e) {
-//				 this.log.error("Errore durante la chiusura dell'operazione: "+e.getMessage(),e);
-//			}
+		if(ctx != null) {
+			// noop
 		}
 	}
 
@@ -421,15 +415,15 @@ public abstract class BaseController {
 	}
 
 	protected Map<String, String> getHeaders(HttpServletRequest request) {
-		
+
 		Map<String, String> result = new HashMap<>();
-		
+
 		if (request == null) {
 			return result;
 		}
 
 		Enumeration<String> headerNames = request.getHeaderNames();
-		
+
 		if (headerNames == null) {
 			return result;
 		}
@@ -471,9 +465,44 @@ public abstract class BaseController {
 		Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
 		this.maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
 
-		if(anagrafica) {
-			if(!metadatiPaginazione)
-				this.maxRisultatiBigDecimal = null;
+		if(anagrafica && Boolean.FALSE.equals(metadatiPaginazione)) {
+			this.maxRisultatiBigDecimal = null;
 		}
+	}
+
+	protected void logDebugException(String msg, Exception e) {
+		LogUtils.logDebugException(this.log, msg, e);
+	}
+
+	protected void logDebug(String msg, Object ... params) {
+		LogUtils.logDebug(this.log, msg, params);
+	}
+
+	protected void logInfoException(String msg, Exception e) {
+		LogUtils.logInfoException(this.log, msg, e);
+	}
+
+	protected void logInfo(String msg, Object ... params) {
+		LogUtils.logInfo(this.log, msg, params);
+	}
+
+	protected void logWarnException(String msg, Exception e) {
+		LogUtils.logWarnException(this.log, msg, e);
+	}
+
+	protected void logWarn(String msg, Object ... params) {
+		LogUtils.logWarn(this.log, msg, params);
+	}
+	
+	protected void logError(String msg) {
+		LogUtils.logError(this.log, msg);
+	}
+
+	protected void logError(String msg, Exception e) {
+		LogUtils.logError(this.log, msg, e);
+	}
+
+	protected void logTrace(String msg, Object ... params) {
+		LogUtils.logTrace(this.log, msg, params);
 	}
 }

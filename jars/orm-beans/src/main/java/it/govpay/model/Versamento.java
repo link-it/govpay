@@ -187,6 +187,9 @@ public class Versamento extends BasicModel {
 	
 	private String proprieta;
 	
+	private Date dataUltimaModificaAca;
+	private Date dataUltimaComunicazioneAca;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -455,11 +458,11 @@ public class Versamento extends BasicModel {
 		@Override
 		public String encode() throws UnsupportedEncodingException {
 			if(this.spezzoni == null) return null;
-			String encoded = "02";
+			StringBuilder sb = new StringBuilder("02");
 			for(String spezzone : this.spezzoni) {
-				encoded += " " + Base64.encodeBase64String(spezzone.getBytes(StandardCharsets.UTF_8));
+				sb.append(" " + Base64.encodeBase64String(spezzone.getBytes(StandardCharsets.UTF_8)));
 			}
-			return encoded;
+			return sb.toString();
 		}
 
 		@Override
@@ -492,17 +495,17 @@ public class Versamento extends BasicModel {
 		@Override
 		public String encode() throws UnsupportedEncodingException {
 			if(this.spezzoni == null) return null;
-			String encoded = "03";
+			StringBuilder sb = new StringBuilder("03");
 			for(int i=0; i<this.spezzoni.size(); i++) {
-				encoded += " " + Base64.encodeBase64String(this.spezzoni.get(i).getBytes(StandardCharsets.UTF_8)) + " " + Base64.encodeBase64String(Double.toString(this.importi.get(i).doubleValue()).getBytes(StandardCharsets.UTF_8));
+				sb.append(" " + Base64.encodeBase64String(this.spezzoni.get(i).getBytes(StandardCharsets.UTF_8)) + " " + Base64.encodeBase64String(Double.toString(this.importi.get(i).doubleValue()).getBytes(StandardCharsets.UTF_8)));
 			}
-			return encoded;
+			return sb.toString();
 		}
 
 		@Override
 		public String getSimple() throws UnsupportedEncodingException {
 			if(this.spezzoni != null && !this.spezzoni.isEmpty()){
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				sb.append(this.importi.get(0).doubleValue() + ": " + this.spezzoni.get(0) );
 				return sb.toString();
 			}
@@ -538,7 +541,7 @@ public class Versamento extends BasicModel {
 
 		@Override
 		public String toString() {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for(int i=0; i<this.spezzoni.size(); i++) {
 				sb.append(this.importi.get(i).doubleValue() + ": " + this.spezzoni.get(i) + "; ");
 			}
@@ -779,5 +782,17 @@ public class Versamento extends BasicModel {
 	}
 	public void setProprieta(String proprieta) {
 		this.proprieta = proprieta;
+	}
+	public Date getDataUltimaModificaAca() {
+		return dataUltimaModificaAca;
+	}
+	public void setDataUltimaModificaAca(Date dataUltimaModificaAca) {
+		this.dataUltimaModificaAca = dataUltimaModificaAca;
+	}
+	public Date getDataUltimaComunicazioneAca() {
+		return dataUltimaComunicazioneAca;
+	}
+	public void setDataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
+		this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
 	}
 }

@@ -23,6 +23,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+import org.openspcoop2.utils.cache.CacheType;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -31,7 +32,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 public class DominiBDCacheWrapper extends AbstractCacheWrapper {
 
 	public DominiBDCacheWrapper(boolean initializeCache, Logger log) throws UtilsException {
-		super("domini", initializeCache, log);
+		super(CacheType.JCS, "domini", initializeCache, log);
 	}
 
 	@Override

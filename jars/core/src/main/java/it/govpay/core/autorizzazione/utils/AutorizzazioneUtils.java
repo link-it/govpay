@@ -55,9 +55,15 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AutorizzazioneUtils {
+	
+	private AutorizzazioneUtils() {}
 
 	public static final String DIRITTI = "diritti";
 	public static final String PASSWORD_DEFAULT_VALUE = "UTENZA_SENZA_PASSWORD";
+	
+	public static String generaPasswordUtenza() {
+		return PASSWORD_DEFAULT_VALUE;
+	}
 
 	public static GovpayLdapUserDetails getAuthenticationDetails(Authentication authentication) {
 		if(authentication == null)
@@ -144,7 +150,7 @@ public class AutorizzazioneUtils {
 		Utenza utenza = null;
 		Applicazione applicazione = null;
 		Operatore operatore = null;
-		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		TIPO_UTENZA tipoUtenza = null;
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -184,7 +190,7 @@ public class AutorizzazioneUtils {
 		utenza.setAutenticazione(authType);
 		utenza.setApiName(apiName);
 		
-		String password = StringUtils.isNotBlank(utenza.getPassword()) ? utenza.getPassword() : PASSWORD_DEFAULT_VALUE;
+		String password = StringUtils.isNotBlank(utenza.getPassword()) ? utenza.getPassword() : generaPasswordUtenza();
 
 		GovpayLdapUserDetails userDetails = getUserDetail(username, password, username, authorities);
 		userDetails.setApplicazione(applicazione);
@@ -216,7 +222,7 @@ public class AutorizzazioneUtils {
 		Utenza utenza = null;
 		Applicazione applicazione = null;
 		Operatore operatore = null;
-		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		TIPO_UTENZA tipoUtenza = null;
 		// lettura dell'applicazione / operatore dal db, nel sistema dove si e' autenticato puo' essere passato tramite un autenticazione esterna che non prevede la lettura dell'utenza dalla base dati.
 		Utenza utenzaFromSession = userDetailFromSession.getUtenza();
 		Map<String, List<String>> headersFromSession = utenzaFromSession != null ? utenzaFromSession.getHeaders() : new HashMap<>();
@@ -322,7 +328,7 @@ public class AutorizzazioneUtils {
 		utenza.setAutenticazione(authType);
 		utenza.setApiName(apiName);
 
-		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
+		GovpayLdapUserDetails userDetails = getUserDetail(username, generaPasswordUtenza(), username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
 
@@ -392,7 +398,7 @@ public class AutorizzazioneUtils {
 		utenza.setAutenticazione(authType);
 		utenza.setApiName(apiName);
 
-		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
+		GovpayLdapUserDetails userDetails = getUserDetail(username, generaPasswordUtenza(), username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
 

@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
+import jakarta.annotation.Resource;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.WebServiceContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
@@ -109,8 +109,10 @@ import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.CtPaymentPABuilder;
+import it.govpay.core.utils.CtPaymentPAV2Builder;
 import it.govpay.core.utils.CtReceiptUtils;
 import it.govpay.core.utils.CtReceiptV2Utils;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -385,7 +387,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
+				filter.setStato(Rpt.getStatiPendenti());
 				filter.setIdVersamento(versamento.getId());
 				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
 				
@@ -522,6 +524,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
@@ -829,7 +836,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
+				filter.setStato(Rpt.getStatiPendenti());
 				filter.setIdVersamento(versamento.getId());
 				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
 				
@@ -964,6 +971,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
@@ -1350,7 +1358,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
 			ctPaymentOptionDescriptionPA.setAmount(versamento.getImportoTotale());
 			ctPaymentOptionDescriptionPA.setDetailDescription(versamento.getCausaleVersamento().getSimple());
-			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita());
+			ctPaymentOptionDescriptionPA.setDueDate(DateUtils.toLocalDate(versamento.getDataValidita()));
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
 //			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA);
 			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
@@ -1621,7 +1629,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			// Creazione dell'RPT
 			log.debug("Costruzione della RPT.");
-			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, ccp, numeroAvviso);
+			Rpt rpt = new CtPaymentPABuilder().buildCtPaymentPA(requestBody,versamento, iuv, ccp, numeroAvviso);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -1640,66 +1648,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				rptBD.setAutoCommit(false);
 				
-//				PagamentoPortale pagamentoPortale = new PagamentoPortale();
-//				Versamento versamento2 = rpt.getVersamento();
-//				it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
-//				pagamentoPortale.setPrincipal(applicazione.getPrincipal());
-//				pagamentoPortale.setTipoUtenza(TIPO_UTENZA.APPLICAZIONE);
-//				pagamentoPortale.setCodCanale(rpt.getCodCanale());
-//				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
-//				pagamentoPortale.setCodPsp(rpt.getCodPsp());
-//				pagamentoPortale.setDataRichiesta(rpt.getDataMsgRichiesta());
-//				pagamentoPortale.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
-//				
-//				appContext.getEventoCtx().setIdPagamento(pagamentoPortale.getIdSessione());
-//
-//				List<IdVersamento> idVersamentoList = new ArrayList<>();
-//
-//				IdVersamento idVersamento = new IdVersamento();
-//				idVersamento.setCodVersamentoEnte(versamento2.getCodVersamentoEnte());
-//				idVersamento.setId(versamento2.getId());
-//				
-//				idVersamentoList.add(idVersamento);
-//				pagamentoPortale.setIdVersamento(idVersamentoList);
-//				
-//				pagamentoPortale.setImporto(versamento2.getImportoTotale());
-//				pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
-				
-//				if(versamento2.getNome()!=null) {
-//					pagamentoPortale.setNome(versamento2.getNome());
-//				} else {
-//					try {
-//						pagamentoPortale.setNome(versamento2.getCausaleVersamento().getSimple());
-//					} catch(UnsupportedEncodingException e) {}
-//				}
-
-//				pagamentoPortale.setStato(STATO.IN_CORSO);
-//				pagamentoPortale.setTipo(3);
-				
-				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
-				ppbd.setAtomica(false);
-									
-//				ppbd.insertPagamento(pagamentoPortale, true);
-				
-				// imposto l'id pagamento all'rpt
-//				rpt.setIdPagamentoPortale(pagamentoPortale.getId());
-//				rpt.setPagamentoPortale(pagamentoPortale);
-				
 				try {
 					// 	L'RPT non esiste, procedo
 					rptBD.insertRpt(rpt);
 				}catch(ServiceException e) {
 					rptBD.rollback();
-//					rptBD.disableSelectForUpdate();
-
-					// update della entry pagamento portale
-//					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-//					pagamentoPortale.setStato(STATO.FALLITO);
-//					pagamentoPortale.setDescrizioneStato(e.getMessage());
-//					pagamentoPortale.setAck(false);
-//					ppbd.updatePagamento(pagamentoPortale, false, true);
 					
-					ppbd.commit();
 					throw e;
 				}
 				
@@ -1728,13 +1682,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
 			
 			response.setOutcome(StOutcome.OK);
 
-			PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), true);
+			PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), true);
 			response.setData(paGetPaymentRes_RPT.getData()); 
 			
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
@@ -1995,6 +1954,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
@@ -2340,7 +2300,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			// Creazione dell'RPT
 			log.debug("Costruzione della RPT.");
-			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata_SANP_321_V2(requestBody,versamento, iuv, ccp, numeroAvviso);
+			Rpt rpt = new CtPaymentPAV2Builder().buildCtPaymentPAV2(requestBody,versamento, iuv, ccp, numeroAvviso);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -2359,67 +2319,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				rptBD.setAutoCommit(false);
 				
-				// Creazione del pagamento portale eliminata per le API SANP 3.2.x e successive.
-//				PagamentoPortale pagamentoPortale = new PagamentoPortale();
-//				Versamento versamento2 = rpt.getVersamento();
-//				it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
-//				pagamentoPortale.setPrincipal(applicazione.getPrincipal());
-//				pagamentoPortale.setTipoUtenza(TIPO_UTENZA.APPLICAZIONE);
-//				pagamentoPortale.setCodCanale(rpt.getCodCanale());
-//				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
-//				pagamentoPortale.setCodPsp(rpt.getCodPsp());
-//				pagamentoPortale.setDataRichiesta(rpt.getDataMsgRichiesta());
-//				pagamentoPortale.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
-				
-//				appContext.getEventoCtx().setIdPagamento(pagamentoPortale.getIdSessione());
-
-//				List<IdVersamento> idVersamentoList = new ArrayList<>();
-
-//				IdVersamento idVersamento = new IdVersamento();
-//				idVersamento.setCodVersamentoEnte(versamento2.getCodVersamentoEnte());
-//				idVersamento.setId(versamento2.getId());
-				
-//				idVersamentoList.add(idVersamento);
-//				pagamentoPortale.setIdVersamento(idVersamentoList);
-				
-//				pagamentoPortale.setImporto(versamento2.getImportoTotale());
-//				pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
-				
-//				if(versamento2.getNome()!=null) {
-//					pagamentoPortale.setNome(versamento2.getNome());
-//				} else {
-//					try {
-//						pagamentoPortale.setNome(versamento2.getCausaleVersamento().getSimple());
-//					} catch(UnsupportedEncodingException e) {}
-//				}
-
-//				pagamentoPortale.setStato(STATO.IN_CORSO);
-//				pagamentoPortale.setTipo(3);
-				
-				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
-				ppbd.setAtomica(false);
-									
-//				ppbd.insertPagamento(pagamentoPortale, true);
-				
-				// imposto l'id pagamento all'rpt
-//				rpt.setIdPagamentoPortale(pagamentoPortale.getId());
-//				rpt.setPagamentoPortale(pagamentoPortale);
-				
 				try {
 					// 	L'RPT non esiste, procedo
 					rptBD.insertRpt(rpt);
 				}catch(ServiceException e) {
 					rptBD.rollback();
-//					rptBD.disableSelectForUpdate();
-
-					// update della entry pagamento portale
-//					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-//					pagamentoPortale.setStato(STATO.FALLITO);
-//					pagamentoPortale.setDescrizioneStato(e.getMessage());
-//					pagamentoPortale.setAck(false);
-//					ppbd.updatePagamento(pagamentoPortale, false, true);
-					
-					ppbd.commit();
 					throw e;
 				}
 				
@@ -2448,13 +2352,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
 			
 			response.setOutcome(StOutcome.OK);
 
-			PaGetPaymentV2Response paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), true);
+			PaGetPaymentV2Response paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), true);
 			response.setData(paGetPaymentRes_RPT.getData()); 
 			
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");

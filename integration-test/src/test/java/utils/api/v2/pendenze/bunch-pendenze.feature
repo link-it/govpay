@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A
 # idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A

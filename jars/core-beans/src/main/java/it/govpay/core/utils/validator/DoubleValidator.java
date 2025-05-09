@@ -46,11 +46,8 @@ public class DoubleValidator {
 		DecimalFormatSymbols symbols = this.df.getDecimalFormatSymbols();
 		
 		int i = value.lastIndexOf(symbols.getDecimalSeparator());
-		if(i != -1) {
-//			System.out.println("Il campo " + this.fieldName + " contiene un valore non valido: " + value + " has "+value.substring(i + 1).length()+" digits after dot");
-			if(value.substring(i + 1).length() > 2) {
-				throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_CONTIENE_UN_VALORE_NON_VALIDO, this.fieldName));
-			} 
+		if(i != -1 && value.substring(i + 1).length() > 2) {
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_CONTIENE_UN_VALORE_NON_VALIDO, this.fieldName));
 		}
 		return this;
 	}

@@ -25,15 +25,6 @@ package it.govpay.wc.controller;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -46,8 +37,16 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.wc.beans.FaultBean;
 import it.govpay.wc.beans.FaultBean.CategoriaEnum;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -57,15 +56,15 @@ import it.govpay.wc.beans.FaultBean.CategoriaEnum;
  */
 public abstract class BaseController {
 
-	public final static String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
-	public final static String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
-	public final static String SUFFIX_CONTENT_DISPOSITION = "\"";
-	public final static String PREFIX_FILENAME = "filename=\"";
-	public final static String SUFFIX_FILENAME = "\"";
+	public static final String PARAMETRO_CONTENT_DISPOSITION = Costanti.PARAMETRO_CONTENT_DISPOSITION;
+	public static final String PREFIX_CONTENT_DISPOSITION = Costanti.PREFIX_CONTENT_DISPOSITION;
+	public static final String SUFFIX_CONTENT_DISPOSITION = Costanti.SUFFIX_CONTENT_DISPOSITION;
+	public static final String PREFIX_FILENAME = Costanti.PREFIX_FILENAME;
+	public static final String SUFFIX_FILENAME = Costanti.SUFFIX_FILENAME;
 
-	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
-	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
-	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
+	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = Costanti.ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
+	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = Costanti.LOG_MSG_ESECUZIONE_METODO_COMPLETATA;
+	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = Costanti.LOG_MSG_ESECUZIONE_METODO_IN_CORSO;
 	protected Logger log;
 	protected String nomeServizio;
 	protected HttpServletRequest request;
@@ -73,7 +72,7 @@ public abstract class BaseController {
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
 	protected IContext context;
 	
-	public BaseController(String nomeServizio, Logger log){
+	protected BaseController(String nomeServizio, Logger log){
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 	}
@@ -106,43 +105,6 @@ public abstract class BaseController {
 	public int getVersione() {
 		return 1;
 	}
-	
-//	public void setupContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione) throws ServiceException, UtilsException {
-//		GpContextFactory factory  = new GpContextFactory();
-//		IContext ctx = factory.newContext(uriInfo,rsHttpHeaders, this.request, nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione());
-//		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-//		GpThreadLocal.set(ctx);
-//	}
-
-//	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException, ServiceException, UtilsException {
-//		if(o != null && o instanceof JSONSerializable) {
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
-//		}
-//		else if(o != null && o instanceof String) {
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((String) o).getBytes(), responseCode);
-//		}
-//		else{
-//			ObjectMapper mapper = new ObjectMapper();
-//			String json = mapper.writeValueAsString(o);
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
-//		}
-//	}
-	
-//	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws RequestValidationException, UtilsException {
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-//	}
-//	
-//	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws RequestValidationException, UtilsException{
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-//	}
-//
-//
-//	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws ResponseValidationException, UtilsException {
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
-//	}
 	
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
 		String baseUri = uriInfo.getBaseUri().toString();
@@ -181,35 +143,30 @@ public abstract class BaseController {
 			return responseBuilder;
 	}
 	
-	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
+	protected Response handleException(String methodName, Exception e, String transactionId) {
 		
-		if(e instanceof BaseExceptionV1) {
-			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
+		if(e instanceof BaseExceptionV1 baseExceptionV1) {
+			return this.handleBaseException(methodName, baseExceptionV1,transactionId);
 		}
 		
-		if(e instanceof RedirectException) {
-			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
+		if(e instanceof RedirectException redirectException) {
+			return this.handleRedirectException(methodName, redirectException,transactionId);
 		}
 		
-		if(e instanceof GovPayException) {
-			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
+		if(e instanceof GovPayException govPayException) {
+			return this.handleGovpayException(methodName, govPayException,transactionId);
 		}
 		
-		if(e instanceof ValidationException) {
-			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+		if(e instanceof ValidationException validationException) {
+			return this.handleValidationException(validationException,transactionId);
 		}
 		
-		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
+		this.logError("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
 		respKo.setDescrizione("Errore interno");
 		respKo.setDettaglio(e.getMessage());
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, Status.INTERNAL_SERVER_ERROR.getStatusCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta", e1);
-//		}
 		
 		String respKoJson = this.getRespJson(respKo);
 		 
@@ -221,17 +178,17 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(IOException ex) {
-			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.logError(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
 	}
 
-	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
+	private Response handleBaseException(String methodName, BaseExceptionV1 e, String transactionId) {
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
-			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
+			this.logInfo("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
 		} else {
-			this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+			this.logInfo("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		}
 		
 		FaultBean respKo = new FaultBean();
@@ -239,19 +196,13 @@ public abstract class BaseController {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 
 		String respJson = this.getRespJson(respKo);
 		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 
-	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+	private Response handleGovpayException(String methodName, GovPayException e, String transactionId) {
+		this.logError("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		int statusCode = e.getStatusCode();
 		if(e.getFaultBean()!=null) {
@@ -259,27 +210,21 @@ public abstract class BaseController {
 			respKo.setCodice(e.getFaultBean().getFaultCode());
 			respKo.setDescrizione(e.getFaultBean().getFaultString());
 			respKo.setDettaglio(e.getFaultBean().getDescription());
-			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500;
+			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500
 		} else {
 			respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
 			respKo.setCodice(e.getCodEsitoV3());
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessageV3());
 		}
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 		
 		String respJson = this.getRespJson(respKo);
 		
 		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 	
-	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
-		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+	private Response handleValidationException(ValidationException e, String transactionId) {
+		this.logWarn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice("SINTASSI");
@@ -287,20 +232,14 @@ public abstract class BaseController {
 			respKo.setDettaglio(e.getMessage());
 		
 		int statusCode = 400;
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 		
 		String respJson = this.getRespJson(respKo);
 		
 		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 
-	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
-		this.log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
+	private Response handleRedirectException(String methodName, RedirectException e, String transactionId) {
+		this.logError("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
 		if(transactionId != null)
 			return Response.seeOther(e.getURILocation()).header(this.transactionIdHeaderName, transactionId).build();
 		else
@@ -309,11 +248,43 @@ public abstract class BaseController {
 
 	protected void logContext(IContext ctx) {
 		if(ctx != null) {
-//			try {
-//				ctx.getApplicationLogger().log();
-//			} catch (UtilsException e) {
-//				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-//			}
+			// donothing
 		}
+	}
+	
+	protected void logDebugException(String msg, Exception e) {
+		LogUtils.logDebugException(this.log, msg, e);
+	}
+
+	protected void logDebug(String msg, Object ... params) {
+		LogUtils.logDebug(this.log, msg, params);
+	}
+
+	protected void logInfoException(String msg, Exception e) {
+		LogUtils.logInfoException(this.log, msg, e);
+	}
+
+	protected void logInfo(String msg, Object ... params) {
+		LogUtils.logInfo(this.log, msg, params);
+	}
+
+	protected void logWarnException(String msg, Exception e) {
+		LogUtils.logWarnException(this.log, msg, e);
+	}
+
+	protected void logWarn(String msg, Object ... params) {
+		LogUtils.logWarn(this.log, msg, params);
+	}
+	
+	protected void logError(String msg) {
+		LogUtils.logError(this.log, msg);
+	}
+
+	protected void logError(String msg, Exception e) {
+		LogUtils.logError(this.log, msg, e);
+	}
+
+	protected void logTrace(String msg, Object ... params) {
+		LogUtils.logTrace(this.log, msg, params);
 	}
 }

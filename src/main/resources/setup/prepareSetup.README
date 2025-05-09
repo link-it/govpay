@@ -1,7 +1,13 @@
+Versione Tomcat 
+
 1. Compila GovPay utilizzando il filtro "installer_template" (mvn -Denv=installer_template clean install)
 2. Avvia lo script prepareSetup.sh
+3. spostarsi nella directory target/govpay-installer-VERSIONE
+4. eseguire l'installer (sh install.sh o cmd install.cmd)
 
-Nota: per produrre la versione compatibile java8/wildfly18:
-1. mvn -Denv=installer_template clean install -Pjava-1.8,wildfly-18
-2. Avvia lo script prepareSetup.sh
+Versione Wildfly
 
+1. Compila GovPay utilizzando il filtro "installer_template_wildfly" (mvn -Denv=installer_template_wildfly clean install -P govpay-ear)
+2. Avvia lo script prepareSetup.sh tomcat
+3. spostarsi nella directory target/govpay-installer-VERSIONE
+4. eseguire l'installer (sh install.sh o cmd install.cmd)

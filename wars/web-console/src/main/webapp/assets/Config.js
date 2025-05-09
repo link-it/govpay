@@ -17,7 +17,7 @@
   }
 
   function httpDocumentsRoot() {
-    return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni/documenti
+    return hostname() + '${it.govpay.backoffice.gui.documentBaseUrl}'; // Root URL informazioni/documenti
   }
 
   // Map key generators
@@ -134,7 +134,12 @@
     },
     GESTIONE_RISCOSSIONI: {
       ENABLED: ${it.govpay.backoffice.gui.sezioneRiscossioni.enabled}  // abilita la sezione riscossioni
-    }
+    },
+	MANUTENZIONE: {
+	  RECUPERO_RT: {
+	    ENABLED: ${it.govpay.backoffice.gui.sezioneManutenzione.recuperaRT.enabled} // abilita la funzione di recupero ricevute
+	  }
+	}
   };
 
   addScript('assets/config/app-config.js');

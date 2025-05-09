@@ -63,6 +63,9 @@ public class NuovaVocePendenza extends TipoRiferimentoVocePendenza  {
   
   @Schema(description = "")
   private Contabilita contabilita = null;
+  
+  @Schema(description = "")
+  private Metadata metadata = null;
  /**
    * Get idDominio
    * @return idDominio
@@ -191,6 +194,24 @@ public class NuovaVocePendenza extends TipoRiferimentoVocePendenza  {
     return this;
   }
 
+ /**
+   * Get metadata
+   * @return metadata
+  **/
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
+  public NuovaVocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -204,6 +225,7 @@ public class NuovaVocePendenza extends TipoRiferimentoVocePendenza  {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

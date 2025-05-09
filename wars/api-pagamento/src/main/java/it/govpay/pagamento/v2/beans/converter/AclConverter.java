@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 import it.govpay.pagamento.v2.beans.TipoServizio;
 
 public class AclConverter {
-	
+
 	public static it.govpay.pagamento.v2.beans.Acl toRsModel(it.govpay.bd.model.Acl acl) {
 		it.govpay.pagamento.v2.beans.Acl rsModel = new it.govpay.pagamento.v2.beans.Acl();
 		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
-		
+
 		TipoServizio serv = null;
 		if(acl.getServizio() != null) {
 			switch(acl.getServizio()) {
@@ -68,20 +68,20 @@ public class AclConverter {
 				return null;
 			}
 		}
-		
+
 		// se l'acl non deve uscire allora ritorno null
 		if(serv ==null)
 			return null;
-		
+
 		rsModel.setServizio(serv);
-		
+
 		if(acl.getListaDiritti() != null) {
 			List<String> diritti = acl.getListaDiritti().stream().map(a -> a.toString()).collect(Collectors.toList());
 			Collections.sort(diritti);
 			rsModel.autorizzazioni(diritti);
 		}
-		
+
 		return rsModel;
 	}
-	
+
 }

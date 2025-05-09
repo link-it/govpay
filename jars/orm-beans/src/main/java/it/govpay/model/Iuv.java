@@ -19,6 +19,7 @@
  */
 package it.govpay.model;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,7 +47,7 @@ public class Iuv extends BasicModel {
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per TipoIUV. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoIUV.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per TipoIUV. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(TipoIUV.values())));
 		}
 		
 	}

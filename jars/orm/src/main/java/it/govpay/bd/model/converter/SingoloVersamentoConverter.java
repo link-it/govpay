@@ -34,6 +34,8 @@ import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdVersamento;
 
 public class SingoloVersamentoConverter {
+	
+	private SingoloVersamentoConverter() {}
 
 	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws CodificaInesistenteException {
 		List<SingoloVersamento> lstDTO = new ArrayList<>();
@@ -72,6 +74,8 @@ public class SingoloVersamentoConverter {
 		dto.setContabilita(vo.getContabilita());
 		if(vo.getIdDominio() != null)
 			dto.setIdDominio(vo.getIdDominio().getId());
+		
+		dto.setMetadata(vo.getMetadata());
 		
 		return dto;
 	}
@@ -123,6 +127,8 @@ public class SingoloVersamentoConverter {
 			idDominio.setId(dto.getIdDominio());
 			vo.setIdDominio(idDominio);
 		}
+		
+		vo.setMetadata(dto.getMetadata());
 		
 		return vo;
 	}

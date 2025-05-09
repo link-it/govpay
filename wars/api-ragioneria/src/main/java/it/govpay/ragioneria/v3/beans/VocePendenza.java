@@ -19,19 +19,19 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class VocePendenza extends TipoRiferimentoVocePendenza  {
 
   @Schema(description = "")
   private Dominio dominio = null;
 
-  @Schema(example = "abcdef12345_1", required = true, description = "Identificativo della voce di pedenza nel gestionale proprietario")
+  @Schema(example = "abcdef12345_1", requiredMode = RequiredMode.REQUIRED, description = "Identificativo della voce di pedenza nel gestionale proprietario")
  /**
    * Identificativo della voce di pedenza nel gestionale proprietario
   **/
@@ -58,7 +58,10 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
   @Schema(description = "")
   private Contabilita contabilita = null;
 
-  @Schema(required = true, description = "")
+  @Schema(description = "")
+  private Metadata metadata = null;
+
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Pendenza pendenza = null;
  /**
    * Get dominio
@@ -170,6 +173,24 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
   }
 
  /**
+   * Get metadata
+   * @return metadata
+  **/
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
+  public VocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+ /**
    * Get pendenza
    * @return pendenza
   **/
@@ -200,6 +221,7 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();

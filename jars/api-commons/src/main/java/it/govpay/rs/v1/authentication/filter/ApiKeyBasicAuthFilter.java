@@ -21,13 +21,11 @@ package it.govpay.rs.v1.authentication.filter;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.slf4j.Logger;
 import org.springframework.core.log.LogMessage;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -51,15 +49,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Based on {@link BasicAuthenticationFilter}
- * 
+ *
  * Classe ridefinita poiche' non e' possibile impostare un authenticationConverter personalizzato
- * 
+ *
  * @author Giuliano Pintori
  *
  */
 public class ApiKeyBasicAuthFilter extends OncePerRequestFilter {
-
-	private static Logger log = LoggerWrapperFactory.getLogger(ApiKeyBasicAuthFilter.class);
 
 	private SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
 			.getContextHolderStrategy();
@@ -173,12 +169,9 @@ public class ApiKeyBasicAuthFilter extends OncePerRequestFilter {
 		// Only reauthenticate if username doesn't match SecurityContextHolder and user
 		// isn't authenticated (see SEC-53)
 		Authentication existingAuth = this.securityContextHolderStrategy.getContext().getAuthentication();
-		if (existingAuth == null || !existingAuth.isAuthenticated()) {
-			return true;
-		}
 		// Limit username comparison to providers which use usernames (ie
 		// UsernamePasswordAuthenticationToken) (see SEC-348)
-		if (existingAuth instanceof UsernamePasswordAuthenticationToken && !existingAuth.getName().equals(username)) {
+		if (existingAuth == null || !existingAuth.isAuthenticated() || (existingAuth instanceof UsernamePasswordAuthenticationToken && !existingAuth.getName().equals(username))) {
 			return true;
 		}
 		// Handle unusual condition where an AnonymousAuthenticationToken is already
@@ -195,10 +188,12 @@ public class ApiKeyBasicAuthFilter extends OncePerRequestFilter {
 
 	protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			Authentication authResult) throws IOException {
+		//donothing
 	}
 
 	protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException {
+		//donothing
 	}
 
 	protected AuthenticationEntryPoint getAuthenticationEntryPoint() {

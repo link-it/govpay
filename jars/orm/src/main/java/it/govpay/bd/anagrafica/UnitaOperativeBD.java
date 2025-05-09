@@ -71,8 +71,7 @@ public class UnitaOperativeBD extends BasicBD {
 			}
 
 			it.govpay.orm.Uo uoVO = ((JDBCUoServiceSearch) this.getUoService()).get(id);
-			UnitaOperativa uo = UnitaOperativaConverter.toDTO(uoVO);
-			return uo;
+			return UnitaOperativaConverter.toDTO(uoVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -95,20 +94,9 @@ public class UnitaOperativeBD extends BasicBD {
 			expr.and();
 			expr.equals(it.govpay.orm.Uo.model().COD_UO, codUnitaOperativa);
 
-//			IdUo id = new IdUo();
-//			id.setCodUo(codUnitaOperativa);
-//			IdDominio idDominioOrm = new IdDominio();
-//			idDominioOrm.setId(idDominio);
-//			id.setIdDominio(idDominioOrm);
 			it.govpay.orm.Uo uoVO = this.getUoService().find(expr);
 			return UnitaOperativaConverter.toDTO(uoVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -126,7 +114,7 @@ public class UnitaOperativeBD extends BasicBD {
 			filter.setCodIdentificativo(codUnivocoUnitaOperativa);
 			filter.setDominioFilter(idDominio);
 			List<UnitaOperativa> findAll = this._findAll(filter);
-			if(findAll.size() == 0) {
+			if(findAll.isEmpty()) {
 				throw new NotFoundException();
 			} else {
 				return findAll.get(0);
@@ -150,11 +138,7 @@ public class UnitaOperativeBD extends BasicBD {
 			}
 			this.getUoService().update(idUnitaOperativa, vo);
 			this.emitAudit(uo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
+		} catch (NotImplementedException | MultipleResultException | UtilsException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -190,10 +174,10 @@ public class UnitaOperativeBD extends BasicBD {
 	}
 
 	public long count(UnitaOperativaFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(UnitaOperativaFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(UnitaOperativaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -209,7 +193,7 @@ public class UnitaOperativeBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(UnitaOperativaFilter filter) throws ServiceException {
+	private long countConLimitEngine(UnitaOperativaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -232,12 +216,12 @@ public class UnitaOperativeBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_UO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_UO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_UO, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_UO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -245,7 +229,7 @@ public class UnitaOperativeBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_UO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_UO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -259,8 +243,7 @@ public class UnitaOperativeBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

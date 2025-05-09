@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -47,8 +49,8 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaVersamento.model())){
 				VistaVersamento object = new VistaVersamento();
@@ -170,6 +172,10 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "doc_descrizione", VistaVersamento.model().DOC_DESCRIZIONE.getFieldType()));
 				setParameter(object, "setProprieta", VistaVersamento.model().PROPRIETA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "proprieta", VistaVersamento.model().PROPRIETA.getFieldType()));
+				setParameter(object, "setDataUltimaModificaAca", VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ultima_modifica_aca", VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()));
+				setParameter(object, "setDataUltimaComunicazioneAca", VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ultima_comunicazione_aca", VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()));
 				return object;
 			}
 			
@@ -308,6 +314,10 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"docDescrizione"));
 				setParameter(object, "setProprieta", VistaVersamento.model().PROPRIETA.getFieldType(),
 					this.getObjectFromMap(map,"proprieta"));
+				setParameter(object, "setDataUltimaModificaAca", VistaVersamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType(),
+					this.getObjectFromMap(map,"dataUltimaModificaAca"));
+				setParameter(object, "setDataUltimaComunicazioneAca", VistaVersamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
+					this.getObjectFromMap(map,"dataUltimaComunicazioneAca"));
 				return object;
 			}
 			

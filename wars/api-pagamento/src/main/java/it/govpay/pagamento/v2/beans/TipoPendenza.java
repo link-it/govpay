@@ -22,9 +22,6 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -36,19 +33,19 @@ import it.govpay.core.beans.JSONSerializable;
 "visualizzazione",
 })
 public class TipoPendenza extends JSONSerializable {
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("form")
   private TipoPendenzaForm form = null;
-  
+
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
-  
+
   /**
    **/
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {

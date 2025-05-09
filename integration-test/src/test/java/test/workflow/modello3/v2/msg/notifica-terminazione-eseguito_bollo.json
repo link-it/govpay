@@ -30,14 +30,14 @@
                   "idTransfer":1,
                   "transferAmount":'#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
                   "fiscalCodePA":"#(idDominio)",
-                  "companyName":"##null",
+                  "companyName":"#string",
                   "IBAN":"##null",
                   "remittanceInformation":"#('/RFB/' + iuv + '/16.00/TXT/Marca da bollo')",
                   "transferCategory":"9/MBT",
 				  "richiestaMarcaDaBollo" : {
 						"provinciaResidenza" : "#string",
 						"tipoBollo" : "#string",
-						"hashDocumento" : "#notnull" 
+						"hashDocumento" : "#notnull"
 					},
                   "metadata":null
                }
@@ -75,7 +75,7 @@
                   "idTransfer":1,
                   "transferAmount":'#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
                   "fiscalCodePA":"#(idDominio)",
-                  "companyName":"##null",
+                  "companyName":"#string",
                   "IBAN":"##null",
                   "remittanceInformation":"#('/RFB/' + iuv + '/16.00/TXT/Marca da bollo')",
                   "transferCategory":"9/MBT",
@@ -92,6 +92,7 @@
          "channelDescription":"#notnull",
          "payer":null,
          "paymentMethod": "##string",
+         "paymentNote": "##string",
          "fee":"1.00",
          "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
          "applicationDate":"#ignore",
@@ -100,7 +101,6 @@
          "idBundle":"##null",
          "idCiBundle":"##null",
          "standIn":"#null",
-         "paymentNote":"#null",
          "metadata":null
    },
 	"riscossioni":[

@@ -31,13 +31,13 @@ import it.govpay.core.exceptions.IOException;
 "apiKey",
 })
 public class TipoAutenticazioneApiKey extends JSONSerializable {
-  
+
   @JsonProperty("apiId")
   private String apiId = null;
-  
+
   @JsonProperty("apiKey")
   private String apiKey = null;
-  
+
   /**
    * valore da inserire all'interno dell'header previsto per l'API-ID
    **/
@@ -89,7 +89,7 @@ public class TipoAutenticazioneApiKey extends JSONSerializable {
   }
 
   public static TipoAutenticazioneApiKey parse(String json) throws IOException {
-    return (TipoAutenticazioneApiKey) parse(json, TipoAutenticazioneApiKey.class);
+    return parse(json, TipoAutenticazioneApiKey.class);
   }
 
   @Override
@@ -101,7 +101,7 @@ public class TipoAutenticazioneApiKey extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneApiKey {\n");
-    
+
     sb.append("    apiId: ").append(toIndentedString(apiId)).append("\n");
     sb.append("    apiKey: ").append(toIndentedString(apiKey)).append("\n");
     sb.append("}");

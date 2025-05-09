@@ -23,12 +23,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.Utilities;
-import org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -39,12 +38,13 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.StringUtils;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
+import it.govpay.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 
 
 /**
  * Un {@link AuthenticationEntryPoint} estende l'implementazione {@link org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint}
  * per includere una risposta nel formato GovPay nei casi non gestiti dalla procedura originale.
- * 
+ *
  * @author Giuliano Pintori
  */
 public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -58,7 +58,7 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
             this.timeZoneId = timeZoneId;
             this.timeZone = TimeZone.getTimeZone(timeZoneId);
     }
-	
+
 	private String realmName;
 
 	/**
@@ -77,8 +77,8 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
 		if (this.realmName != null) {
 			parameters.put("realm", this.realmName);
 		}
-		if (authException instanceof OAuth2AuthenticationException) {
-			OAuth2Error error = ((OAuth2AuthenticationException) authException).getError();
+		if (authException instanceof OAuth2AuthenticationException oAuth2AuthenticationException) {
+			OAuth2Error error = oAuth2AuthenticationException.getError();
 			parameters.put("error", error.getErrorCode());
 			if (StringUtils.hasText(error.getDescription())) {
 				parameters.put("error_description", error.getDescription());
@@ -86,26 +86,25 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
 			if (StringUtils.hasText(error.getUri())) {
 				parameters.put("error_uri", error.getUri());
 			}
-			if (error instanceof BearerTokenError) {
-				BearerTokenError bearerTokenError = (BearerTokenError) error;
+			if (error instanceof BearerTokenError bearerTokenError) {
 				if (StringUtils.hasText(bearerTokenError.getScope())) {
 					parameters.put("scope", bearerTokenError.getScope());
 				}
-				status = ((BearerTokenError) error).getHttpStatus();
+				status = bearerTokenError.getHttpStatus();
 			}
-			
+
 			String wwwAuthenticate = computeWWWAuthenticateHeaderValue(parameters);
 			response.addHeader(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
 			response.setStatus(status.value());
 			return;
 		}
-		
+
 		// altre eccezioni
 		if(Utilities.existsInnerException(authException, ServiceException.class)) {
 			AbstractBasicAuthenticationEntryPoint.fillResponse(response, CodiceEccezione.ERRORE_INTERNO.toFaultResponse(authException), this.timeZone);
 			return;
 		}
-		
+
 		AbstractBasicAuthenticationEntryPoint.fillResponse(response, CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException), this.timeZone);
 	}
 

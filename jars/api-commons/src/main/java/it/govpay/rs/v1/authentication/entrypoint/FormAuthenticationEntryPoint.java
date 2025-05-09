@@ -22,18 +22,18 @@ package it.govpay.rs.v1.authentication.entrypoint;
 import java.io.IOException;
 import java.util.TimeZone;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
+import it.govpay.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 
 public class FormAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	
+
 	private TimeZone timeZone = TimeZone.getDefault();
     private String timeZoneId = null;
     public String getTimeZoneId() {

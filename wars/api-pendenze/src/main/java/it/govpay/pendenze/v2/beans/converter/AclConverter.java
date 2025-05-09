@@ -27,12 +27,12 @@ import it.govpay.pendenze.v2.beans.Acl;
 import it.govpay.pendenze.v2.beans.TipoServizio;
 
 public class AclConverter {
-	
+
 	public static Acl toRsModel(it.govpay.bd.model.Acl acl) {
 		Acl rsModel = new Acl();
 		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
-		
+
 		TipoServizio serv = null;
 		if(acl.getServizio() != null) {
 			switch(acl.getServizio()) {
@@ -69,19 +69,19 @@ public class AclConverter {
 				break;
 			}
 		}
-		
+
 		// se l'acl non deve uscire allora ritorno null
 		if(serv ==null)
 			return null;
-		
+
 		rsModel.setServizio(serv);
-		
+
 		if(acl.getListaDiritti() != null) {
 			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
 			Collections.sort(autorizzazioni);
 			rsModel.autorizzazioni(autorizzazioni);
 		}
-		
+
 		return rsModel;
 	}
 }

@@ -56,16 +56,14 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
-import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Incasso.StatoIncasso;
 
 public class IncassiDAO extends BaseDAO{
 
-	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws ServiceException {
 		IncassiBD incassiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -124,7 +122,7 @@ public class IncassiDAO extends BaseDAO{
 			ListaIncassiDTOResponse listaIncassiDTOResponse = new ListaIncassiDTOResponse(count, findAll);
 
 			if(listaIncassoDTO.isIncludiPagamenti()) {
-				if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
+				if(listaIncassiDTOResponse.getResults() != null && !listaIncassiDTOResponse.getResults().isEmpty()) {
 					PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
 					pagamentiBD.setAtomica(false);
 					
@@ -165,7 +163,7 @@ public class IncassiDAO extends BaseDAO{
 		}
 	} 
 
-	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, NotAuthorizedException, ServiceException, NotAuthenticatedException{
+	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 
@@ -206,8 +204,7 @@ public class IncassiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(incassiBD != null)
-				incassiBD.closeConnection();
+			incassiBD.closeConnection();
 		}
 		return response;
 	}
@@ -225,7 +222,8 @@ public class IncassiDAO extends BaseDAO{
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
 			Operatore operatore = authenticationDetails.getOperatore();
-			boolean isApp = true, isOp = true;
+			boolean isApp = true;
+			boolean isOp = true;
 			if(applicazione == null) {
 				isApp = false;
 			} 
@@ -265,12 +263,8 @@ public class IncassiDAO extends BaseDAO{
 					
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
-							try {
-								this.populatePagamento(pagamento, incassiBD, configWrapper);
-								pagamento.setIncasso(incasso);
-							} catch (NotFoundException e) { 
-	
-							}
+							this.populatePagamento(pagamento, incassiBD, configWrapper);
+							pagamento.setIncasso(incasso);
 						}
 					}
 					
@@ -299,6 +293,7 @@ public class IncassiDAO extends BaseDAO{
 				try {
 					incassiBD.updateIncasso(incasso);
 				} catch (NotFoundException e) {
+					// donothing
 				}
 			}
 			// Incasso non registrato o reiterato, devo aspettare l'esecuzione del batch.
@@ -319,7 +314,7 @@ public class IncassiDAO extends BaseDAO{
 		return richiestaIncassoDTOResponse;
 	}
 
-	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException, GovPayException, EcException{
+	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException, GovPayException {
 		RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = new RichiestaIncassoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		IncassiBD incassiBD = null;
@@ -334,7 +329,8 @@ public class IncassiDAO extends BaseDAO{
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
 			Operatore operatore = authenticationDetails.getOperatore();
-			boolean isApp = true, isOp = true;
+			boolean isApp = true;
+			boolean isOp = true;
 			if(applicazione == null) {
 				isApp = false;
 			} 
@@ -366,12 +362,8 @@ public class IncassiDAO extends BaseDAO{
 			
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
-					try {
-						this.populatePagamento(pagamento, incassiBD, configWrapper);
-						pagamento.setIncasso(richiestaIncassoDTOResponse.getIncasso());
-					} catch (NotFoundException e) { 
-
-					}
+					this.populatePagamento(pagamento, incassiBD, configWrapper);
+					pagamento.setIncasso(richiestaIncassoDTOResponse.getIncasso());
 				}
 			}
 			
@@ -380,7 +372,7 @@ public class IncassiDAO extends BaseDAO{
 			FrFilter frFilter = frBD.newFilter();
 			frFilter.setIdIncasso(richiestaIncassoDTOResponse.getIncasso().getId());
 			List<Fr> frs = frBD.findAll(frFilter);
-			if(frs.size() > 0) {
+			if(!frs.isEmpty()) {
 				Fr fr = frs.get(0);
 				fr.getRendicontazioni(frBD);
 				richiestaIncassoDTOResponse.setFr(fr);
@@ -398,7 +390,7 @@ public class IncassiDAO extends BaseDAO{
 	}
 
 	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
-			throws ServiceException, NotFoundException {
+			throws ServiceException {
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd); 
 		Versamento versamento = singoloVersamento.getVersamentoBD(bd); 
 		versamento.getApplicazione(configWrapper);

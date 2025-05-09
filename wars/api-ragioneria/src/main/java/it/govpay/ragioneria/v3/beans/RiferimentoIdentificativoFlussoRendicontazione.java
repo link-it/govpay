@@ -19,11 +19,11 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 /**
   * Identificativo del flusso di rendicontazione.
@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Identificativo del flusso di rendicontazione.")
 public class RiferimentoIdentificativoFlussoRendicontazione  implements OneOfTipoRiferimentoNuovaRiconciliazione, OneOfTipoRiferimentoRiconciliazione  {
 
-  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "")
+  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", requiredMode = RequiredMode.REQUIRED, description = "")
   private String idFlussoRendicontazione = null;
  /**
    * Get idFlussoRendicontazione

@@ -20,7 +20,6 @@
 package it.govpay.pagamento.v3.api.impl;
 
 import java.net.URLDecoder;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,10 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -87,6 +86,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 	 * Ricerca delle ricevute di pagamento per identificativo transazione
 	 *
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Response findRicevute(String idDominio, String iuv, String esito) {
 		this.buildContext();
@@ -94,7 +94,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 		String methodName = "findRicevute";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
@@ -151,7 +151,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaRptDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				listaRptDTO.setIdDebitore(userDetails.getIdentificativo()); // cittadino vede solo le pendenze di cui e' debitore. 
+				listaRptDTO.setIdDebitore(userDetails.getIdentificativo()); // cittadino vede solo le pendenze di cui e' debitore.
 			}
 
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -161,11 +161,11 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 				// leggere dalla sessione gli id pendenza per iuv-dominio
 				HttpSession session = this.request.getSession(false);
 				if(session!= null) {
-					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 
 					String chiaveAvviso = idDominio+iuv;
 					if(iuv.length() == 18) {
-						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 					} else {
 						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 					}
@@ -180,7 +180,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 						}
 					}
 				}
-						
+
 				if(versamentoFromSession != null) {
 					listaRptDTO.setIdA2A(versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
 					listaRptDTO.setIdPendenza(versamentoFromSession.getCodVersamentoEnte());
@@ -193,7 +193,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(new Date());
 				calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
-				listaRptDTO.setDataRtDa(calendar.getTime()); //  
+				listaRptDTO.setDataRtDa(calendar.getTime()); //
 			}
 
 			// una applicazione vede le pendenze che ha caricato
@@ -212,7 +212,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// se la ricerca per la coppia idDominio/iuv non ha prodotto alcun risultato allora restituisco 404
-			if(listaRptDTOResponse.getResults().size() == 0) {
+			if(listaRptDTOResponse.getResults().isEmpty()) {
 				throw new RicevutaNonTrovataException("Non sono presenti ricevute per [IdDominio: "+idDominio+", IUV: "+iuv+"].");
 			}
 
@@ -234,7 +234,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 			}
 			response.setRisultati(results);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -246,15 +246,16 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 	/**
 	 * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
 	 *
-	 * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
+	 * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo.
 	 *
 	 */
+	@Override
 	public Response getRicevuta(String idDominio, String iuv, String idRicevuta) {
 		this.buildContext();
 		Authentication user = this.getUser();
 		String methodName = "getRicevuta";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		String accept = "";
 		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
@@ -280,10 +281,10 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 				leggiRptDTO.setFormato(FormatoRicevuta.PDF);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
 				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ idRicevuta + ".pdf";
-				byte[] b = ricevutaDTOResponse.getPdf(); 
+				byte[] b = ricevutaDTOResponse.getPdf();
 
 				checkAutorizzazioniUtenza(leggiRptDTO.getUser(), ricevutaDTOResponse.getRpt());
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiRptDTO.setFormato(FormatoRicevuta.JSON);
@@ -309,7 +310,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 	@SuppressWarnings("unchecked")
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotAuthorizedException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		Versamento versamento = rpt.getVersamento(); 
+		Versamento versamento = rpt.getVersamento();
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			if(!versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
@@ -330,18 +331,18 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 				if(dataPagamentoTime < riferimentoTime)
 					throw AuthorizationManager.toNotAuthorizedException(user);
 			}
-			
+
 			Map<String, Versamento> listaIdentificativi = null;
 			Map<String, String> listaAvvisi = null;
 			Versamento versamentoFromSession = null;
 			// leggere dalla sessione gli id pendenza per iuv-dominio
 			HttpSession session = this.request.getSession(false);
 			if(session!= null) {
-				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 
 				String chiaveAvviso = rpt.getCodDominio()+rpt.getIuv();
 				if(rpt.getIuv().length() == 18) {
-					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 				} else {
 					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 				}
@@ -356,7 +357,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 					}
 				}
 			}
-					
+
 			if(versamentoFromSession == null) {
 				// non ho trovato una pendenza nella sessione
 				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
@@ -371,4 +372,3 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 		}
 	}
 }
-

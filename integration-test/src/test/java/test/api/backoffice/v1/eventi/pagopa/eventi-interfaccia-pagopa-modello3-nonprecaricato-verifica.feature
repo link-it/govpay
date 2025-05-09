@@ -10,6 +10,8 @@ Background:
 * def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
 * configure followRedirects = false
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Verifica tutti gli eventi di un Pagamento eseguito dovuto non precaricato con verifica
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
@@ -104,7 +106,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciRTservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
@@ -211,7 +213,7 @@ And match response.risultati[2] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
@@ -266,7 +268,7 @@ And match response.risultati[3] ==
 	"parametriRichiesta": {
 	  "principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
@@ -309,7 +311,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 
@@ -421,7 +423,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciRTservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
@@ -528,7 +530,7 @@ And match response.risultati[2] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"

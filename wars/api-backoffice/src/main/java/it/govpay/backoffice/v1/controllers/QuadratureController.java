@@ -19,16 +19,10 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -63,23 +57,26 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.reportistica.statistiche.FiltroRendicontazioni;
 import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 
 public class QuadratureController extends BaseController {
 
-     public QuadratureController(String nomeServizio,Logger log) {
+	public QuadratureController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
 
 
 
-    public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , List<String> gruppi, Integer pagina, Integer risultatiPerPagina,
+    public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, List<String> gruppi, Integer pagina, Integer risultatiPerPagina,
     		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
     	String methodName = "getQuadratureRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -107,25 +104,25 @@ public class QuadratureController extends BaseController {
 
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true);
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, Costanti.PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_DA, true);
 				filtro.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
 			if(flussoRendicontazioneDataFlussoA!=null) {
-				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, Costanti.PARAM_FLUSSO_RENDICONTAZIONE_DATA_FLUSSO_A, true);
 				filtro.setDataFlussoA(dataFlussoADate);
 			}
 
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true);
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, Costanti.PARAM_DATA_DA, true);
 				filtro.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true);
+				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, Costanti.PARAM_DATA_A, true);
 				filtro.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
@@ -134,7 +131,7 @@ public class QuadratureController extends BaseController {
 			filtro.setDirezione(direzione);
 			filtro.setDivisione(divisione);
 
-			if(gruppi != null && gruppi.size() >0) {
+			if(gruppi != null && !gruppi.isEmpty()) {
 				List<ListaRendicontazioniDTO.GROUP_BY> groupBy = new ArrayList<>();
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatisticaRendicontazione gruppo = RaggruppamentoStatisticaRendicontazione.fromValue(gruppoString);
@@ -187,10 +184,10 @@ public class QuadratureController extends BaseController {
 
 			ListaStatisticheQuadratureRendicontazioni response = new ListaStatisticheQuadratureRendicontazioni(results, this.getServicePath(uriInfo), listaRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -198,13 +195,13 @@ public class QuadratureController extends BaseController {
 
 
 
-	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina,
+	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina,
 			String dataDa, String dataA, List<String> idDominio, List<String> idUnita, List<String> idTipoPendenza, List<String> idA2A, List<String> direzione, List<String> divisione, List<String> tassonomia, List<String> tipo, List<String> gruppi) {
 		String methodName = "getQuadratureRiscossioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -231,13 +228,13 @@ public class QuadratureController extends BaseController {
 
 			Date dataDaDate = null;
 			if(dataDa!=null) {
-				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				filtro.setDataDa(dataDaDate);
 			}
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				filtro.setDataA(dataADate);
 			}
 
@@ -258,12 +255,12 @@ public class QuadratureController extends BaseController {
 					}
 				}
 
-				if(tipi.size()> 0) {
+				if(!tipi.isEmpty()) {
 					filtro.setTipo(tipi);
 				}
 			}
 
-			if(gruppi != null && gruppi.size() >0) {
+			if(gruppi != null && !gruppi.isEmpty()) {
 				List<GROUP_BY> groupBy = new ArrayList<>();
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatistica gruppo = RaggruppamentoStatistica.fromValue(gruppoString);
@@ -328,14 +325,12 @@ public class QuadratureController extends BaseController {
 
 			ListaStatisticheQuadrature response = new ListaStatisticheQuadrature(results, this.getServicePath(uriInfo), listaRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
 	}
 }
-
-

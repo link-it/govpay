@@ -20,15 +20,14 @@
 package it.govpay.core.utils.rawutils;
 
 import java.io.IOException;
-
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
-import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.adapter.DataTypeAdapterCXF;
 
 public class LocalDateSerializer extends StdScalarSerializer<LocalDate> {
 
@@ -42,7 +41,7 @@ public class LocalDateSerializer extends StdScalarSerializer<LocalDate> {
     public void serialize(LocalDate dateTime,
                           JsonGenerator jsonGenerator,
                           SerializerProvider provider) throws IOException, JsonGenerationException {
-        String dateTimeAsString = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dateTime.toDate());
+        String dateTimeAsString = DataTypeAdapterCXF.printLocalDate(dateTime);
         jsonGenerator.writeString(dateTimeAsString);
     }
 }

@@ -5,6 +5,8 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * call read('classpath:configurazione/v1/anagrafica.feature')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Evento verifica pendenza annullata
 
 * def idPendenza = getCurrentTimeMillis()
@@ -315,6 +317,9 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
 * call sleep(200)
@@ -396,6 +401,9 @@ And headers basicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 

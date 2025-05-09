@@ -62,12 +62,12 @@ public class PendenzeConverter {
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
-		
+
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e); 
+				throw new ServiceException(e);
 			}
 
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
@@ -131,9 +131,9 @@ public class PendenzeConverter {
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
 				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper)));
-			} 
+			}
 		}
-		rsModel.setRpp(rpps); 
+		rsModel.setRpp(rpps);
 
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
@@ -150,7 +150,7 @@ public class PendenzeConverter {
 		for(String s : split){
 			String[] split2 = s.split("#");
 			Segnalazione a = new Segnalazione();
-			a.setCodice(split2[0]);;
+			a.setCodice(split2[0]);
 			a.setDescrizione(split2[1]);
 			list.add(a);
 		}
@@ -165,7 +165,7 @@ public class PendenzeConverter {
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
-		
+
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
@@ -334,7 +334,7 @@ public class PendenzeConverter {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
 		}
 
-		versamento.setNumeroAvviso(pendenza.getNumeroAvviso()); 
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());

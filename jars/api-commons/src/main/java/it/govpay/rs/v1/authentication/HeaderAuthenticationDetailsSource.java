@@ -19,7 +19,7 @@
  */
 package it.govpay.rs.v1.authentication;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
@@ -28,10 +28,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
 import it.govpay.core.utils.GovpayConfig;
- 
+
 public class HeaderAuthenticationDetailsSource implements
 		AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(HeaderAuthenticationDetailsSource.class);
 
 	// ~ Methods

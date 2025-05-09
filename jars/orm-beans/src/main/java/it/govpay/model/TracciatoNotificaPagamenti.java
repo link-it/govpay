@@ -34,11 +34,11 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 
 	public enum STATO_ELABORAZIONE {DRAFT, ERRORE_CREAZIONE, FILE_DUPLICATO, ERROR_LOAD, IMPORT_ESEGUITO, FILE_CARICATO, FILE_DA_CARICARE, FILE_NUOVO}
 	
-	public enum FORMATO_TRACCIATO { CSV };
+	public enum FORMATO_TRACCIATO { CSV }
 	
-	public enum TIPO_TRACCIATO { MYPIVOT, SECIM, GOVPAY, HYPERSIC_APK, MAGGIOLI_JPPA };
+	public enum TIPO_TRACCIATO { MYPIVOT, SECIM, GOVPAY, HYPERSIC_APK, MAGGIOLI_JPPA }
 	
-	public static List<STATO_ELABORAZIONE> statiNonTerminaliWS = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	private static List<STATO_ELABORAZIONE> statiNonTerminaliWS = new ArrayList<>();
 	
 	static {
 		statiNonTerminaliWS.add(STATO_ELABORAZIONE.FILE_CARICATO);
@@ -46,22 +46,38 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 		statiNonTerminaliWS.add(STATO_ELABORAZIONE.FILE_NUOVO);
 	}
 	
-	public static List<STATO_ELABORAZIONE> statiNonTerminaliEmail = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	public static List<STATO_ELABORAZIONE> getStatiNonTerminaliWS() {
+		return statiNonTerminaliWS;
+	}
+	
+	private static List<STATO_ELABORAZIONE> statiNonTerminaliEmail = new ArrayList<>();
 	
 	static {
 		statiNonTerminaliEmail.add(STATO_ELABORAZIONE.FILE_NUOVO);
 	}
 	
-	public static List<STATO_ELABORAZIONE> statiNonTerminaliFileSystem = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	public static List<STATO_ELABORAZIONE> getStatiNonTerminaliEmail() {
+		return statiNonTerminaliEmail;
+	}
+	
+	private static List<STATO_ELABORAZIONE> statiNonTerminaliFileSystem = new ArrayList<>();
 	
 	static {
 		statiNonTerminaliFileSystem.add(STATO_ELABORAZIONE.FILE_NUOVO);
 	}
 	
-	public static List<STATO_ELABORAZIONE> statiNonTerminaliREST = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	public static List<STATO_ELABORAZIONE> getStatiNonTerminaliFileSystem() {
+		return statiNonTerminaliFileSystem;
+	}
+	
+	private static List<STATO_ELABORAZIONE> statiNonTerminaliREST = new ArrayList<>();
 	
 	static {
 		statiNonTerminaliREST.add(STATO_ELABORAZIONE.FILE_NUOVO);
+	}
+	
+	public static List<STATO_ELABORAZIONE> getStatiNonTerminaliREST() {
+		return statiNonTerminaliREST;
 	}
 	
 	private String nomeFile;
@@ -148,6 +164,7 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	public void setBeanDati(String beanDati) {
 		this.beanDati = beanDati;
 	}
+	@Override
 	public Long getId() {
 		return id;
 	}

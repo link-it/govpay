@@ -19,12 +19,12 @@
  */
 package it.govpay.pagamento.v3.api;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,7 +52,7 @@ public interface RicevuteApi  {
     @Path("/ricevute/{idDominio}/{iuv}")
     @Produces({ "application/json" })
     @Operation(summary = "Ricerca delle ricevute di pagamento per identificativo transazione", tags={ "Ricevute" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista delle ricevute di pagamento", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevute.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
@@ -63,14 +63,14 @@ public interface RicevuteApi  {
     /**
      * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
      *
-     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
+     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo.
      *
      */
     @GET
     @Path("/ricevute/{idDominio}/{iuv}/{idRicevuta}")
     @Produces({ "application/json", "application/pdf" })
     @Operation(summary = "Acquisizione di una ricevuta di avvenuto pagamento pagoPA", tags={ "Ricevute" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "ricevuta di pagamento acquisita", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevuta.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),

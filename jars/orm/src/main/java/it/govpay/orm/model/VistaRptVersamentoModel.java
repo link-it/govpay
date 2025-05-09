@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaRptVersamento;
@@ -59,8 +61,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.MODELLO_PAGAMENTO = new Field("modelloPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.COD_MSG_RICEVUTA = new Field("codMsgRicevuta",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.DATA_MSG_RICEVUTA = new Field("dataMsgRicevuta",java.util.Date.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.COD_ESITO_PAGAMENTO = new Field("codEsitoPagamento",java.lang.Integer.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.COD_ESITO_PAGAMENTO = new Field("codEsitoPagamento",java.math.BigInteger.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.math.BigDecimal.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.XML_RT = new Field("xmlRT",byte[].class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.COD_CANALE = new Field("codCanale",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.COD_PSP = new Field("codPsp",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -124,8 +126,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.VRS_DIREZIONE = new Field("vrsDirezione",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_ID_SESSIONE = new Field("vrsIdSessione",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_DATA_PAGAMENTO = new Field("vrsDataPagamento",java.util.Date.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.VRS_IMPORTO_PAGATO = new Field("vrsImportoPagato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_IMPORTO_PAGATO = new Field("vrsImportoPagato",java.math.BigDecimal.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.math.BigDecimal.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_STATO_PAGAMENTO = new Field("vrsStatoPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_IUV_PAGAMENTO = new Field("vrsIuvPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_SRC_DEBITORE_IDENTIFICATIVO = new Field("vrsSrcDebitoreIdentificativo",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -158,8 +160,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.MODELLO_PAGAMENTO = new ComplexField(father,"modelloPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.COD_MSG_RICEVUTA = new ComplexField(father,"codMsgRicevuta",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.DATA_MSG_RICEVUTA = new ComplexField(father,"dataMsgRicevuta",java.util.Date.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.COD_ESITO_PAGAMENTO = new ComplexField(father,"codEsitoPagamento",java.lang.Integer.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.COD_ESITO_PAGAMENTO = new ComplexField(father,"codEsitoPagamento",java.math.BigInteger.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.math.BigDecimal.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.XML_RT = new ComplexField(father,"xmlRT",byte[].class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.COD_CANALE = new ComplexField(father,"codCanale",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -223,8 +225,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.VRS_DIREZIONE = new ComplexField(father,"vrsDirezione",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_ID_SESSIONE = new ComplexField(father,"vrsIdSessione",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_DATA_PAGAMENTO = new ComplexField(father,"vrsDataPagamento",java.util.Date.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.VRS_IMPORTO_PAGATO = new ComplexField(father,"vrsImportoPagato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
-		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_IMPORTO_PAGATO = new ComplexField(father,"vrsImportoPagato",java.math.BigDecimal.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.math.BigDecimal.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_STATO_PAGAMENTO = new ComplexField(father,"vrsStatoPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_IUV_PAGAMENTO = new ComplexField(father,"vrsIuvPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"vrsSrcDebitoreIdentificativo",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);

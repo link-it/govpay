@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.9-SNAPSHOT</version>
+		<version>3.8.0</version>
 	</parent>
 
 	<artifactId>core-beans</artifactId>
@@ -17,86 +17,86 @@
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>java-11</id>
-			<activation>
-	   			<activeByDefault>true</activeByDefault>
-			</activation>
-
-			<dependencies>
-				<dependency>
-				        <groupId>javax.xml.bind</groupId>
-				        <artifactId>jaxb-api</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>com.sun.xml.bind</groupId>
-				        <artifactId>jaxb-core</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>com.sun.xml.bind</groupId>
-				        <artifactId>jaxb-impl</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>xml-adapters</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>orm-beans</artifactId>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
 		</dependency>
 
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-core</artifactId>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
-		    <artifactId>openspcoop2_utils-serialization</artifactId>
+			<artifactId>openspcoop2_utils-serialization</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
+			<groupId>org.apache.commons</groupId>
     		<artifactId>commons-text</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		 <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
 	</dependencies>

@@ -33,7 +33,7 @@
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
                   "transferCategory":"9/SEGRETERIA",
-                  "metadata":null
+                  "metadata":"##null"
                },
                {
                   "idTransfer":2,
@@ -42,7 +42,7 @@
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
                   "transferCategory":"9/CodiceContabilita",
-                  "metadata":null
+                  "metadata":"##null"
                }
             ]
          },
@@ -81,7 +81,7 @@
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
                   "transferCategory":"9/SEGRETERIA",
-                  "metadata":null
+                  "metadata":"##null"
                },
                {
                   "idTransfer":2,
@@ -90,7 +90,7 @@
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
                   "transferCategory":"9/CodiceContabilita",
-                  "metadata":null
+                  "metadata":"##null"
                }
             ]
          },

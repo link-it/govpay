@@ -24,27 +24,32 @@ import java.util.Properties;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsAlreadyExistsException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.datasource.DataSource;
 import org.openspcoop2.utils.datasource.DataSourceFactory;
 import org.openspcoop2.utils.datasource.DataSourceParams;
 import org.slf4j.Logger;
+
+import it.govpay.core.utils.LogUtils;
+
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class ConnectionManager {
+	
+	private ConnectionManager() {}
 
-	private static Logger log;
 	private static JDBCServiceManagerProperties jdbcProperties;
 	private static JDBCServiceManagerProperties guiJdbcProperties;
 	private static DataSource ds;
 	private static boolean initialized = false;
 	
 	
-	public static void initialize() throws Exception {
+	public static void initialize() throws UtilsException, ServiceException {
 		if(initialized) return;
 		
-		ConnectionManager.log = LoggerWrapperFactory.getLogger(ConnectionManager.class);
-		ConnectionManager.log.info("Init ConnectionManager");
+		Logger log = LoggerWrapperFactory.getLogger(ConnectionManager.class);
+		log.info("Init ConnectionManager");
 		ConnectionManager.jdbcProperties = new JDBCServiceManagerProperties();
 		ConnectionManager.jdbcProperties.setDatabaseType(GovpayConfig.getInstance().getDatabaseType());
 		ConnectionManager.jdbcProperties.setShowSql(GovpayConfig.getInstance().isDatabaseShowSql());
@@ -62,39 +67,39 @@ public class ConnectionManager {
 		
 		try{
 			ConnectionManager.ds = DataSourceFactory.newInstance(GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
-			log.info("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] inizializzato con successo.");
+			log.info("DataSource [{}] inizializzato con successo.", GovpayConfig.getInstance().getDataSourceJNDIName());
 		} catch(Exception e) {
-			 if(e instanceof UtilsAlreadyExistsException){
-				 log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] gia' inizializzato.");
+			 if(e instanceof @SuppressWarnings("unused")  UtilsAlreadyExistsException e1){
+				 log.debug("DataSource [{}] gia' inizializzato.", GovpayConfig.getInstance().getDataSourceJNDIName());
 			 }else{
-				 log.error("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] non presente, provo a cercarlo col seguente nome [java:/" + GovpayConfig.getInstance().getDataSourceJNDIName() + "]");
+				 log.error("DataSource [{}] non presente, provo a cercarlo col seguente nome [java:/{}]", GovpayConfig.getInstance().getDataSourceJNDIName(), GovpayConfig.getInstance().getDataSourceJNDIName());
                  try {
                 	 ConnectionManager.ds = DataSourceFactory.newInstance("java:/"+GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);    	 
                  }catch(Exception e2) {
                      if(e instanceof UtilsAlreadyExistsException){
-                    	 log.debug("DataSource [java:/" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] gia' inizializzato.");
+                    	 log.debug("DataSource [java:/{}] gia' inizializzato.", GovpayConfig.getInstance().getDataSourceJNDIName());
 	                 }else{
-	                	 log.error("DataSource [java:/" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] non presente.");
+	                	 log.error("DataSource [java:/{}] non presente.", GovpayConfig.getInstance().getDataSourceJNDIName());
 	                 }
                  }
 			 }
 		}
         try{
             if(ConnectionManager.ds==null){
-            	log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceAppName() +"] getInstance in corso...");
+            	log.debug("DataSource [{}] getInstance in corso...", GovpayConfig.getInstance().getDataSourceJNDIName());
                 ConnectionManager.ds =  DataSourceFactory.getInstance(GovpayConfig.getInstance().getDataSourceAppName());
-                log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceAppName() +"] getInstance completata.");
+                log.debug("DataSource [{}] getInstance completata.", GovpayConfig.getInstance().getDataSourceJNDIName());
             }
-	    }catch(Exception e){
-            log.error(e.getMessage());//,e);
+	    }catch(UtilsException e){
+	    	LogUtils.logError(log, e.getMessage(), e);
             throw e;
 	    }
 		
-		ConnectionManager.log.info("Init ConnectionManager terminata");
+		log.info("Init ConnectionManager terminata");
 		initialized = true;
 	}
 	
-	public static void shutdown() throws Exception {
+	public static void shutdown() throws UtilsException {
 		if(!initialized) return;
 		DataSourceFactory.closeResources();
 		initialized = false;

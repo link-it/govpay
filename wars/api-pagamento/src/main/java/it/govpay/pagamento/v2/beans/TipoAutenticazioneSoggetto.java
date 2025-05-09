@@ -31,23 +31,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * modalita' di autenticazione del soggetto versante
  */
 public enum TipoAutenticazioneSoggetto {
-  
-  
-  
-  
+
+
+
+
   CNS("CNS"),
-  
-  
+
+
   USR("USR"),
-  
-  
+
+
   OTH("OTH"),
-  
-  
+
+
   N_A("N/A");
-  
-  
-  
+
+
+
 
   private String value;
 

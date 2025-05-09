@@ -42,6 +42,8 @@ import it.govpay.ragioneria.v3.beans.TipoRiscossione;
 import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {
+	
+	private RiscossioniConverter() {}
 
 	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento) throws IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);

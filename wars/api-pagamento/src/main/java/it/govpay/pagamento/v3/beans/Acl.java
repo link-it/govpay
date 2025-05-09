@@ -19,29 +19,29 @@
  */
 package it.govpay.pagamento.v3.beans;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Acl   {
-  
+
   @Schema(example = "Operatore", description = "ruolo a cui si applica l'acl")
  /**
-   * ruolo a cui si applica l'acl  
+   * ruolo a cui si applica l'acl
   **/
   private String ruolo = null;
-  
+
   @Schema(example = "user001", description = "principal a cui si applica l'acl")
  /**
-   * principal a cui si applica l'acl  
+   * principal a cui si applica l'acl
   **/
   private String principal = null;
-  
+
   @Schema(required = true, description = "")
   private TipoServizio servizio = null;
-  
+
   @Schema(required = true, description = "")
   private TipoAutorizzazione autorizzazioni = null;
  /**
@@ -123,7 +123,7 @@ public class Acl   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Acl {\n");
-    
+
     sb.append("    ruolo: ").append(toIndentedString(ruolo)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    servizio: ").append(toIndentedString(servizio)).append("\n");

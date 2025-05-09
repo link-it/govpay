@@ -57,7 +57,6 @@ public class Pagamento extends BasicModel {
 	
 	private Long idRpt;
 	private Long idSingoloVersamento;
-	private Long idRr;
 	private Long idIncasso;
 	
 	private Date dataAcquisizioneRevoca;
@@ -144,14 +143,6 @@ public class Pagamento extends BasicModel {
 
 	public void setCommissioniPsp(BigDecimal commissioniPsp) {
 		this.commissioniPsp = commissioniPsp;
-	}
-
-	public Long getIdRr() {
-		return this.idRr;
-	}
-
-	public void setIdRr(Long idRr) {
-		this.idRr = idRr;
 	}
 
 	public String getCausaleRevoca() {

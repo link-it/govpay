@@ -20,6 +20,7 @@
 package it.govpay.bd.viste;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -87,10 +88,10 @@ public class RendicontazioniBD extends BasicBD {
 	}
 
 	public List<Rendicontazione> findAll(RendicontazioneFilter filter) throws ServiceException {
-		return filter.isRicercaFR() ? this._findAllFR(filter) : this._findAll(filter);
+		return filter.isRicercaFR() ? this._findAllFR(filter) : this.findAllEngine(filter);
 	}
 
-	public List<Rendicontazione> _findAll(RendicontazioneFilter filter) throws ServiceException {
+	public List<Rendicontazione> findAllEngine(RendicontazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -99,11 +100,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = this.getVistaRendicontazioneServiceSearch().findAll(filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -114,12 +111,12 @@ public class RendicontazioniBD extends BasicBD {
 	
 	public long count(RendicontazioneFilter filter) throws ServiceException {
 		if(filter.isRicercaFR())
-			return this._countConLimit(filter);
+			return this.countConLimitEngine(filter);
 		else 
-			return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+			return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(RendicontazioneFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(RendicontazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -137,7 +134,7 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(RendicontazioneFilter filter) throws ServiceException {
+	private long countConLimitEngine(RendicontazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -157,19 +154,16 @@ public class RendicontazioniBD extends BasicBD {
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.RND_IUV));
 			if(filter.isRicercaFR()) {
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_ID), "fr_id");
-				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_DATA_ACQUISIZIONE), "fr_data_acquisizione");
 			} else {
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_IUV), "id");
-				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_DATA), "rnd_data");
 			}
 			
 			sqlQueryObjectInterno.setANDLogicOperator(true);
@@ -178,12 +172,6 @@ public class RendicontazioniBD extends BasicBD {
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
-			
-			if(filter.isRicercaFR()) {
-				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_DATA_ACQUISIZIONE, true), false);
-			} else {
-				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.RND_DATA, true), false);
-			}
 			
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
@@ -202,8 +190,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -222,7 +209,6 @@ public class RendicontazioniBD extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
-//				filter.setExpressionConstructor(this.getVistaRendicontazioneServiceSearch());
 			}
 			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
@@ -262,7 +248,6 @@ public class RendicontazioniBD extends BasicBD {
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
 			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_DATA_ACQUISIZIONE, true), false);
-//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_COD_FLUSSO, true), false);
 			
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
@@ -335,7 +320,7 @@ public class RendicontazioniBD extends BasicBD {
 				vo.setFrDataRegolamento(BasicBD.getValueOrNull(row.get(pos++), Date.class));
 				if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
 					vo.setFrDescrizioneStato(BasicBD.getValueOrNull(row.get(pos++), String.class));
-				vo.setFrImportoTotalePagamenti(BasicBD.getValueOrNull(row.get(pos++), Double.class));
+				vo.setFrImportoTotalePagamenti(BasicBD.getValueOrNull(row.get(pos++), BigDecimal.class));
 				vo.setFrIur(BasicBD.getValueOrNull(row.get(pos++), String.class));
 				vo.setFrNumeroPagamenti(BasicBD.getValueOrNull(row.get(pos++), Long.class));
 				vo.setFrObsoleto(BasicBD.getValueOrNull(row.get(pos++), Boolean.class));
@@ -353,13 +338,8 @@ public class RendicontazioniBD extends BasicBD {
 				rendicontazioneVOLst.add(vo);
 			}
 			
-//			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = this.getVistaRendicontazioneServiceSearch().findAll(filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
-		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
@@ -381,15 +361,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			it.govpay.orm.VistaRendicontazione rendicontazione = ((JDBCVistaRendicontazioneServiceSearch)this.getVistaRendicontazioneServiceSearch()).get(id);
 			return RendicontazioneConverter.toDTO(rendicontazione);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | NotFoundException | MultipleResultException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -470,11 +442,7 @@ public class RendicontazioniBD extends BasicBD {
 			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = this.getVistaRendicontazioneServiceSearch().findAll(pagExpr);
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 			
-		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -518,15 +486,7 @@ public class RendicontazioniBD extends BasicBD {
 				entratePrevisteLst.add(RendicontazioneConverter.toDTO(riscossioneVO));
 			}
 			return entratePrevisteLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -559,11 +519,7 @@ public class RendicontazioniBD extends BasicBD {
 			NonNegativeNumber count = this.getVistaRendicontazioneServiceSearch().count(exp);
 			
 			return count.longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

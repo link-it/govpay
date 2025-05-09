@@ -19,10 +19,10 @@
  */
 package it.govpay.backoffice.v1.authentication.handler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -48,25 +48,25 @@ public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.se
 		IContext ctx = null;
 		try{
 			ctx = ContextThreadLocal.get();
-			
+
 			if(ctx == null) {
 				GpContextFactory factory  = new GpContextFactory();
 				String user = authentication != null ? authentication.getName() : null;
 				ctx = factory.newContext(request.getRequestURI(), "profilo", "getProfilo", request.getMethod(), 1, user, Componente.API_BACKOFFICE);
 				ContextThreadLocal.set(ctx);
 			}
-			
+
 			GpContext gpContext = (GpContext) ctx.getApplicationContext();
-			
+
 			UtentiDAO utentiDAO = new UtentiDAO();
-			
+
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(authentication);
 
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
-			
+
 			gpContext.getEventoCtx().setEsito(Esito.OK);
 			gpContext.getEventoCtx().setIdTransazione(ctx.getTransactionId());
-			
+
 			return Response.status(Status.OK).entity(profilo.toJSON(null)).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 		}catch (Exception e) {
 			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);

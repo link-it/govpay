@@ -41,6 +41,7 @@ private static final long serialVersionUID = 1L;
 		try {
 			this.setUtenza(AnagraficaManager.getUtenza(configWrapper, this.getIdUtenza()));
 		} catch (NotFoundException e) {
+			// donothing
 		}
 	}
 

@@ -33,6 +33,8 @@ import it.govpay.ec.v2.beans.Contabilita;
 import it.govpay.ec.v2.beans.QuotaContabilita;
 
 public class ContabilitaConverter {
+	
+	private ContabilitaConverter() {}
 
 	public static Contabilita toRsModel(String contabilitaJson) throws IOException {
 		if(contabilitaJson == null)
@@ -46,7 +48,7 @@ public class ContabilitaConverter {
 	
 	public static List<QuotaContabilita> toRsModel(List<it.govpay.model.QuotaContabilita> dto) {
 		if(dto != null) {
-			List<QuotaContabilita> rsModel = new ArrayList<QuotaContabilita>();
+			List<QuotaContabilita> rsModel = new ArrayList<>();
 			for (it.govpay.model.QuotaContabilita contabilita : dto) {
 				rsModel.add(toRsModel(contabilita));
 			}
@@ -95,7 +97,7 @@ public class ContabilitaConverter {
 	
 	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
-			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
+			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<>();
 			for (QuotaContabilita contabilita : dto) {
 				rsModel.add(toDTO(contabilita));
 			}

@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.SondaException;
@@ -75,12 +76,11 @@ public class Operazioni{
 	private static final String OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA = "Operazione in corso su altro nodo. Richiesta interrotta.";
 	private static final String ERROR_MSG_AGGIORNAMENTO_SONDA_FALLITO_0 = "Aggiornamento sonda fallito: {0}";
 	private static final String ERROR_MSG_SONDA_0_NON_TROVATA = "Sonda [{0}] non trovata";
-	private static final String DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2 = "Completata Esecuzione dei [{}] Threads, OK [{}], Errore [{}]";
-	private static final String ERROR_MSG_INTERRUPTED_0 = "Interrupted: {0}";
+	public static final String DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2 = "Completata Esecuzione dei [{}] Threads, OK [{}], Errore [{}]";
+	public static final String ERROR_MSG_INTERRUPTED_0 = "Interrupted: {0}";
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String CHECK_DB = "check-db";
 	public static final String RND = "update-rnd";
-	public static final String PND = "update-pnd";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
 	public static final String CHECK_NTFY = "check-ntfy";
@@ -104,6 +104,9 @@ public class Operazioni{
 	
 	public static final String BATCH_CHIUSURA_RPT_SCADUTE = "rpt-scadute";
 	public static final String CHECK_CHIUSURA_RPT_SCADUTE = "check-rpt-scadute";
+	
+	public static final String BATCH_RECUPERO_RT = "recupero-rt";
+	public static final String CHECK_RECUPERO_RT = "check-recupero-rt";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
@@ -117,6 +120,8 @@ public class Operazioni{
 	
 	private static boolean eseguiElaborazioneRiconciliazioni;
 	private static boolean eseguiElaborazioneChiusuraRptScadute;
+	
+	private static boolean eseguiRecuperoRT;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -237,6 +242,18 @@ public class Operazioni{
 	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
 		return eseguiElaborazioneChiusuraRptScadute;
 	}
+	
+	public static synchronized void setEseguiRecuperoRT() {
+		eseguiRecuperoRT = true;
+	}
+
+	public static synchronized void resetEseguiRecuperoRT() {
+		eseguiRecuperoRT = false;
+	}
+
+	public static synchronized boolean getEseguiRecuperoRT() {
+		return eseguiRecuperoRT;
+	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -260,25 +277,25 @@ public class Operazioni{
 		}
 	}
 
-	public static String recuperoRptPendenti(IContext ctx){
+	public static String recuperoRt(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		log.info("Eseguo Batch Acquisizione RPT Pendenti");
+		log.info("Eseguo Batch Recupero RT");
 		try {
-			if(BatchManager.startEsecuzione(configWrapper, PND)) {
-				String verificaTransazioniPendenti = new Pagamento().verificaTransazioniPendenti();
-				aggiornaSondaOK(configWrapper, PND);
-				log.info("Batch Acquisizione RPT Pendenti completato: {}", verificaTransazioniPendenti);
-				return verificaTransazioniPendenti;
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_RECUPERO_RT)) {  
+				String recuperoRT = new Ricevute().recuperoRT();
+				aggiornaSondaOK(configWrapper, BATCH_RECUPERO_RT);
+				log.info("Recupero RT completato {}.", recuperoRT);
+				return recuperoRT;
 			} else {
-				log.info("Eseguo Batch Acquisizione RPT Pendenti: operazione in corso su altro nodo. Richiesta interrotta.");
+				log.info("Eseguo Batch Recupero RT: operazione in corso su altro nodo. Richiesta interrotta.");
 				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
-		} catch (Exception e) {
-			log.error("Acquisizione Rpt pendenti fallita", e);
-			aggiornaSondaKO(configWrapper, PND, e);
-			return "Acquisizione fallita#" + e;
+		} catch (ServiceException | IOException | UtilsException e) {
+			log.error("Recupero RT fallito", e);
+			aggiornaSondaKO(configWrapper, BATCH_RECUPERO_RT, e);
+			return "Recupero RT fallito#" + e;
 		} finally {
-			BatchManager.stopEsecuzione(configWrapper, PND);
+			BatchManager.stopEsecuzione(configWrapper, BATCH_RECUPERO_RT);
 		}
 	}
 	
@@ -300,7 +317,7 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Chiusura RPT scadute fallita", e);
-			aggiornaSondaKO(configWrapper, PND, e);
+			aggiornaSondaKO(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE, e);
 			return "Chiusura RPT scadute fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
@@ -336,7 +353,7 @@ public class Operazioni{
 						List<InviaNotificaThread> threads = new ArrayList<>();
 						List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 
-						log.info("Trovate [{}] notifiche da spedire per l''applicazione [{}]", notifiche.size(), codApplicazione);
+						log.info("Trovate [{}] notifiche da spedire per l'applicazione [{}]", notifiche.size(), codApplicazione);
 
 						if(!notifiche.isEmpty()) {
 							for(Notifica notifica: notifiche) {
@@ -567,7 +584,7 @@ public class Operazioni{
 		}
 	}
 
-	private static void aggiornaSondaOK(BDConfigWrapper configWrapper, String nome) {
+	public static void aggiornaSondaOK(BDConfigWrapper configWrapper, String nome) {
 		BasicBD bd = null;
 
 		try {
@@ -584,9 +601,9 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
-			//			Properties properties = new Properties();
-			//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			((SondaBatch)sonda).aggiornaStatoSonda(true,  new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell''aggiornamento della sonda OK: {}", t.getMessage());
@@ -604,7 +621,7 @@ public class Operazioni{
 		}
 	}
 
-	private static void aggiornaSondaKO(BDConfigWrapper configWrapper, String nome, Exception e) {
+	public static void aggiornaSondaKO(BDConfigWrapper configWrapper, String nome, Exception e) {
 		BasicBD bd = null;
 
 		try {
@@ -621,7 +638,9 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 			
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), MessageFormat.format("Il batch e'' stato interrotto con errore: {0}", e.getMessage()), con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda KO: {}", t.getMessage());
@@ -655,7 +674,9 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			return sonda;
 		} catch (Throwable t) {
 			log.warn(MessageFormat.format("Errore nella lettura della sonda [{0}]: {1}", nome, t.getMessage()));

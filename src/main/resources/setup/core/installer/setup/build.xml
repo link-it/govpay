@@ -13,6 +13,12 @@
               <pathelement location="${lib}/ant/ant-contrib-1.0b3.jar"/>
           </classpath>
 	</taskdef>
+       <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+          <classpath>
+              <pathelement location="${lib}/ant/groovy-3.0.23.jar"/>
+              <pathelement location="${lib}/ant/groovy-ant-3.0.23.jar"/>
+          </classpath>
+        </taskdef>
 	
 	<import file="./ant/properties-build.xml" />
 	<import file="./ant/ds-build.xml" />
@@ -48,7 +54,24 @@
 
 	
 	<target name="init_setup" depends="installer_clean,installer_init">
-		<unzip src="${archivi}/govpay.ear" dest="${tmp_dir}/govpay"/>
+		<if>
+        	<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+			<then>
+				<unzip src="${archivi}/govpay.ear" dest="${tmp_dir}/govpay" />
+			</then>
+        </if>
+		
+		<if>
+        	<equals arg1="${antinstaller_as}" arg2="tomcat11" />
+			<then>
+				<copy todir="${tmp_dir}/govpay">
+					<fileset dir="${archivi}">
+				    	<include name="*.war"/>
+			        </fileset>
+		        </copy>
+			</then>
+        </if>
+		
 	</target>
 		
 	<target name="setup_properties">
@@ -57,77 +80,114 @@
 		  $${antinstaller_log_folder}    => ${antinstaller_log_folder}
 		 </echo>
 
-		 <script language="javascript">
-			  var sep = project.getProperty('file.separator');
-			  var workf = project.getProperty('antinstaller_work_folder');
-			  if (workf.endsWith(sep) ) {
-			        workf= workf.substring(0,workf.length() - 1);
-			  }
-			  project.setUserProperty('antinstaller_work_folder_noendsep', workf);
+  <!-- Rimuovi lo slash finale con propertyregex (ant-contrib) -->
+<groovy>
+        def confpath = properties['antinstaller_work_folder']
+        if (confpath.endsWith(System.getProperty('file.separator'))) {
+            confpath = confpath.substring(0, confpath.length() - 1)
+        }
+        project.setUserProperty('antinstaller_work_folder_noendsep', confpath)
 
-			  var logf = project.getProperty('antinstaller_log_folder');
-			  if (logf.endsWith(sep) ) {
-			        logf= logf.substring(0,logf.length() - 1);
-			  }
-			  project.setUserProperty('antinstaller_log_folder_noendsep', logf);
+        def logpath = properties['antinstaller_log_folder']
+        if (logpath.endsWith(System.getProperty('file.separator'))) {
+            logpath = logpath.substring(0, logpath.length() - 1)
+        }
+        project.setUserProperty('antinstaller_log_folder_noendsep', logpath)
 
-			  /* impostazioni URL statiche */
-			  // project.setUserProperty('protocollo', 'https');
-			  if (project.getUserProperty('protocollo') === 'https') {
-				project.setUserProperty('autenticazione', 'ssl');
-			  } else {
+       def ext = properties['antinstaller_springsec_ext']
+       if (ext) {
+          project.setUserProperty('springsec_location','file:'+confpath)
+       } else {
+          project.setUserProperty('springsec_location','/WEB-INF')
+       }      
+	
+	   def basepathAPIBO = properties['antinstaller_govpay_backend_api_base_url']
+	       if (basepathAPIBO) {
+	          project.setUserProperty('antinstaller_govpay_backend_api_form_base_url',basepathAPIBO+'/rs/form/v1')
+			  project.setUserProperty('antinstaller_govpay_backend_api_public_base_url',basepathAPIBO+'/public')
+	       } else {
+			  project.setUserProperty('antinstaller_govpay_backend_api_form_base_url','/govpay-api-backoffice/rs/form/v1')
+			  project.setUserProperty('antinstaller_govpay_backend_api_public_base_url','/govpay-api-backoffice/public')
+	       }
+</groovy>
 
-				project.setUserProperty('autenticazione', 'basic');
-			  }
-		         	
-			  if (project.getUserProperty('antinstaller_springsec_ext')==='true') {
-	                    project.setUserProperty('springsec_location', 'file:'+workf);
-        		  } else {
-	                    project.setUserProperty('springsec_location', '/WEB-INF');
-        		  }
+    <!-- Se protocollo=https => autenticazione=ssl, altrimenti=basic -->
+    <condition property="autenticazione" value="ssl" else="basic">
+        <equals arg1="${protocollo}" arg2="https"/>
+    </condition>
 
 
-                          if (project.getUserProperty('antinstaller_modulo_postgres')) {
-                            project.setUserProperty('dipendenza_modulo_postgres', '&lt;dependencies&gt;&lt;module name=&quot;'+antinstaller_modulo_postgres+'&quot; /&gt;&lt;/dependencies&gt;');
-                          } else {
-                            project.setUserProperty('dipendenza_modulo_postgres', '');
-                          }
-
-
-		 </script>
-
+    <!-- dipendenza_modulo_postgres = snippet XML se esiste antinstaller_modulo_postgres, altrimenti vuoto -->
+    <condition property="dipendenza_modulo_postgres"
+               value="&lt;dependencies&gt;&lt;module name='${antinstaller_modulo_postgres}'/&gt;&lt;/dependencies&gt;"
+               else="">
+        <isset property="antinstaller_modulo_postgres"/>
+    </condition>
 
 		 <echo>
 		  $${antinstaller_work_folder_noendsep}    => ${antinstaller_work_folder_noendsep}
 		  $${antinstaller_log_folder_noendsep}    => ${antinstaller_log_folder_noendsep}
 		  $${protocollo}    => ${protocollo}
 		  $${autenticazione}    => ${autenticazione}
+		  $${springsec_location}    => ${springsec_location}
 		 </echo>
 
 		
 		<!-- GovPay EAR -->
-
-		<foreach target="govpay_war_properties" param="file" >
-		   <fileset dir="${tmp_dir}/govpay/"> 
-		     <include name="**/*.war"/>
-		   </fileset>
-		</foreach>
-
-
-		<antcall target="govpay_properties_settings">
-			<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
-		</antcall>
-		<antcall target="govpay_logger_properties_settings">
-			<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
-		</antcall>
-		<antcall target="govpay_jboss_deployment_structure">
-			<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>
-		</antcall>
-
-		<antcall target="dos2unix">
-			<param name="dir" value="${tmp_dir}/govpay/properties"/>
-			<param name="file" value="*.properties"/>
-		</antcall>
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+			<then>
+				<foreach target="govpay_war_properties" param="file" >
+				   <fileset dir="${tmp_dir}/govpay/"> 
+				     <include name="**/*.war"/>
+				   </fileset>
+				</foreach>
+		
+		
+				<antcall target="govpay_properties_settings">
+					<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
+				</antcall>
+				<antcall target="govpay_logger_properties_settings">
+					<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
+				</antcall>
+				<antcall target="govpay_jboss_deployment_structure">
+					<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>
+				</antcall>
+		
+				<antcall target="dos2unix">
+					<param name="dir" value="${tmp_dir}/govpay/properties"/>
+					<param name="file" value="*.properties"/>
+				</antcall>
+			</then>
+		</if>
+		
+		<!-- Tomcat -->
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="tomcat11" />
+			<then>
+				<foreach target="govpay_war_properties_tomcat" param="file" >
+				   <fileset dir="${tmp_dir}/govpay/"> 
+				     <include name="**/*.war"/>
+				   </fileset>
+				</foreach>
+		
+		
+<!--				<antcall target="govpay_properties_settings">-->
+<!--					<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>-->
+<!--				</antcall>-->
+<!--				<antcall target="govpay_logger_properties_settings">-->
+<!--					<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>-->
+<!--				</antcall>-->
+<!--				<antcall target="govpay_jboss_deployment_structure">-->
+<!--					<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>-->
+<!--				</antcall>-->
+		
+<!--				<antcall target="dos2unix">-->
+<!--					<param name="dir" value="${tmp_dir}/govpay/properties"/>-->
+<!--					<param name="file" value="*.properties"/>-->
+<!--				</antcall>-->
+			</then>
+		</if>
 
 	</target>
 		
@@ -166,20 +226,54 @@
 	<target name="setup_finished">
 		<delete dir="${dist}"/>
 
-                <if>
-                  <equals arg1="${antinstaller_springsec_ext}" arg2="true" />
-		  <then>
-                	<mkdir dir="${dist}/cfg" />
-	                <foreach target="extract_war_spring" param="file" >
-        	           <fileset dir="${tmp_dir}/govpay/">
-                	     <include name="**/api-*.war"/>
-	                   </fileset>
-        	        </foreach>
-		  </then>
-                </if>
+          <if>
+          	<equals arg1="${antinstaller_springsec_ext}" arg2="true" />
+		  	<then>
+            	<mkdir dir="${dist}/cfg" />
+	            
+		  		<if>
+					<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+					<then>
+				  		<foreach target="extract_war_spring" param="file" >
+		        	    	<fileset dir="${tmp_dir}/govpay/">
+		                		<include name="**/api-*.war"/>
+			                </fileset>
+		        	    </foreach>
+		  			</then>
+		  		</if>
+		  		
+		  		<if>
+					<equals arg1="${antinstaller_as}" arg2="tomcat11" />
+					<then>
+				  		<foreach target="extract_war_spring" param="file" >
+		        	    	<fileset dir="${tmp_dir}/govpay/">
+		                		<include name="govpay-api-*.war"/>
+			                </fileset>
+		        	    </foreach>
+		  			</then>
+		  		</if>
+		  	</then>
+          </if>
 
 		<mkdir dir="${dist}/archivi" />
-		<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="wildfly28" />
+			<then>
+				<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
+  			</then>
+  		</if>
+		
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="tomcat11" />
+			<then>
+				<copy todir="${dist}/archivi">
+					<fileset dir="${tmp_dir}/govpay"> 
+						<include name="*.war" />
+					</fileset>
+				</copy>
+  			</then>
+  		</if>
+		
 		<mkdir dir="${dist}/datasource" />
 		<copy file="${tmp_dir}/govpay-ds.xml" todir="${dist}/datasource" />
 		<mkdir dir="${dist}/sql" />

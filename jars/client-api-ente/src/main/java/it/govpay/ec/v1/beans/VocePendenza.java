@@ -21,12 +21,10 @@ package it.govpay.ec.v1.beans;
 
 import java.math.BigDecimal;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-//import io.swagger.v3.oas.annotations.media.Schema;
 
 public class VocePendenza extends DatiEntrata {
   
@@ -67,6 +65,8 @@ public class VocePendenza extends DatiEntrata {
   private String descrizioneCausaleRPT = null;
   
   private Contabilita contabilita = null;
+  
+  private Metadata metadata = null;
   
   private String idDominio = null;
   
@@ -202,7 +202,22 @@ public class VocePendenza extends DatiEntrata {
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
-  
+
+  /**
+   **/
+  public VocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
   /**
    * Identificativo del dominio creditore
    **/
@@ -232,6 +247,7 @@ public class VocePendenza extends DatiEntrata {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("}");
     return sb.toString();

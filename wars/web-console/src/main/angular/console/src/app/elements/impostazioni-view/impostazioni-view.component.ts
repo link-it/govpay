@@ -4,6 +4,7 @@ import { UtilService } from '../../services/util.service';
 import { GovpayService } from '../../services/govpay.service';
 import { Voce } from '../../services/voce.service';
 import { MatTabGroup } from '@angular/material';
+import { SslConfigComponent } from '../../elements/detail-view/views/ssl-config/ssl-config.component';
 
 declare let jQuery: any;
 
@@ -13,8 +14,9 @@ declare let jQuery: any;
   styleUrls: ['./impostazioni-view.component.scss']
 })
 export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterContentChecked {
-@ViewChild('tg', { read: MatTabGroup }) tg: MatTabGroup;
-@ViewChild('tgIO', { read: MatTabGroup }) tgIO: MatTabGroup;
+  @ViewChild('tg', { read: MatTabGroup }) tg: MatTabGroup;
+  @ViewChild('tgIO', { read: MatTabGroup }) tgIO: MatTabGroup;
+  @ViewChild('sslConfig') sslConfig: SslConfigComponent;
 
   protected Voce = Voce;
   protected Util = UtilService;
@@ -308,11 +310,9 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
     }
 
     if (this.json.appIOBatch) {
-      if (this.json.appIOBatch) {
-        this.appIOBatchForm.controls['appIOBatchUrl_ctrl'].setValue(this.json.appIOBatch.url || '');
-        this.appIOBatchForm.controls['appIOBatchTTL_ctrl'].setValue(this.json.appIOBatch.timeToLive || '');
-        this.appIOBatchForm.controls['appIOBatchAbilitato_ctrl'].setValue(this.json.appIOBatch.abilitato || false);
-      }
+      this.appIOBatchForm.controls['appIOBatchUrl_ctrl'].setValue(this.json.appIOBatch.url || '');
+      this.appIOBatchForm.controls['appIOBatchTTL_ctrl'].setValue(this.json.appIOBatch.timeToLive || '');
+      this.appIOBatchForm.controls['appIOBatchAbilitato_ctrl'].setValue(this.json.appIOBatch.abilitato || false);
     }
 
     if (this.json.avvisaturaMail) {
@@ -475,15 +475,18 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         }];
         break;
       case 'appIOBatchForm':
+        const _auth = this.sslConfig.mapToJson();
         _bodyPatch = [{
           op: UtilService.PATCH_METHODS.REPLACE,
           path: "/appIOBatch",
           value: {
             url: values.appIOBatchUrl_ctrl,
             timeToLive: values.appIOBatchTTL_ctrl,
-            abilitato: values.appIOBatchAbilitato_ctrl
+            abilitato: values.appIOBatchAbilitato_ctrl,
+            auth: _auth
           }
         }];
+        if(_auth == null) { delete _bodyPatch[0].value.auth; }
         break;
       case 'avvisaturaMailForm':
         _bodyPatch = [{

@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -67,6 +68,8 @@ import it.govpay.core.exceptions.IOException;
 "verificato",
 "tipo",
 "UUID",
+"dataUltimaModificaAca",
+"dataUltimaComunicazioneAca",
 "voci",
 "rpp",
 "pagamenti",
@@ -183,6 +186,14 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("UUID")
   private String UUID = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataUltimaModificaAca")
+  private Date dataUltimaModificaAca = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataUltimaComunicazioneAca")
+  private Date dataUltimaComunicazioneAca = null;
 
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -787,6 +798,38 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Data di ultimo aggiornamento dei dati da inviare ad ACA
+   **/
+  public Pendenza dataUltimaModificaAca(Date dataUltimaModificaAca) {
+    this.dataUltimaModificaAca = dataUltimaModificaAca;
+    return this;
+  }
+
+  @JsonProperty("dataUltimaModificaAca")
+  public Date getDataUltimaModificaAca() {
+    return dataUltimaModificaAca;
+  }
+  public void setDataUltimaModificaAca(Date dataUltimaModificaAca) {
+    this.dataUltimaModificaAca = dataUltimaModificaAca;
+  }
+
+  /**
+   * Data ultima comunicazione verso il servizio ACA
+   **/
+  public Pendenza dataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
+    this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+    return this;
+  }
+
+  @JsonProperty("dataUltimaComunicazioneAca")
+  public Date getDataUltimaComunicazioneAca() {
+    return dataUltimaComunicazioneAca;
+  }
+  public void setDataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
+    this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+  }
+
+  /**
    **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -877,6 +920,8 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(verificato, pendenza.verificato) &&
         Objects.equals(tipo, pendenza.tipo) &&
         Objects.equals(UUID, pendenza.UUID) &&
+        Objects.equals(dataUltimaModificaAca, pendenza.dataUltimaModificaAca) &&
+        Objects.equals(dataUltimaComunicazioneAca, pendenza.dataUltimaComunicazioneAca) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp) &&
         Objects.equals(pagamenti, pendenza.pagamenti);
@@ -884,7 +929,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, dataUltimaModificaAca, dataUltimaComunicazioneAca, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) throws IOException {
@@ -938,6 +983,8 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
+    sb.append("    dataUltimaModificaAca: ").append(toIndentedString(dataUltimaModificaAca)).append("\n");
+    sb.append("    dataUltimaComunicazioneAca: ").append(toIndentedString(dataUltimaComunicazioneAca)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");

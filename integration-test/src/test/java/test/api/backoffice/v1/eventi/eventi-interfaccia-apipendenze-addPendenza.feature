@@ -7,6 +7,8 @@ Background:
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Evento creazione da applicazione in api Pendenze
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
@@ -69,7 +71,7 @@ And match response.risultati[0] ==
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/pendenze/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_pendenze_context + '/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -153,7 +155,7 @@ And match response.risultati[0] ==
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/pendenze/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_pendenze_context + '/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -237,7 +239,7 @@ And match response.risultati[0] ==
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/pendenze/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_pendenze_context + '/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -270,7 +272,7 @@ And request applicazione
 When method put
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -332,7 +334,7 @@ And match response.risultati[0] ==
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/pendenze/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_pendenze_context + '/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"

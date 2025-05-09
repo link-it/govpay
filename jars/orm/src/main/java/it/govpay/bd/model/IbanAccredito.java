@@ -42,6 +42,7 @@ public class IbanAccredito extends it.govpay.model.IbanAccredito {
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;

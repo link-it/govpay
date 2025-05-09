@@ -23,6 +23,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL COMMENT 'Identificativo intermediario su pagopa',
 	cod_connettore_pdd VARCHAR(35) NOT NULL COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso pagopa',
+	cod_connettore_recupero_rt VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio recupero-rt pagopa',,
 	cod_connettore_ftp VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore ftp verso pagopa',
 	denominazione VARCHAR(255) NOT NULL COMMENT 'Nome dell\'intermediario',
 	principal VARCHAR(756) NOT NULL COMMENT 'Principal in forma canonica con cui si autentica l\'intermediario a govpay',
@@ -584,6 +585,8 @@ CREATE TABLE versamenti
 	avv_app_io_data_prom_scadenza DATETIME,
 	avv_app_io_prom_scad_notificat BOOLEAN,
 	proprieta LONGTEXT,
+	data_ultima_modifica_aca DATETIME COMMENT 'Data ultima modifica dati da inviare ad ACA',
+	data_ultima_comunicazione_aca DATETIME COMMENT 'Data ultima comunicazione con ACA conclusa con successo',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -614,6 +617,8 @@ CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
+CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 
 
 
@@ -632,6 +637,7 @@ CREATE TABLE singoli_versamenti
 	indice_dati INT NOT NULL COMMENT 'Numero progressivo della voce di pendenza',
 	descrizione_causale_rpt VARCHAR(140) COMMENT 'Descrizione da inserire nella RPT',
 	contabilita LONGTEXT COMMENT 'Informazioni di contabilita\' associate alla voce pendenza',
+	metadata LONGTEXT COMMENT 'Metadata da inserire all\'interno della RPT.',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
@@ -753,7 +759,7 @@ CREATE TABLE rpt
 	cod_sessione VARCHAR(255) COMMENT 'Codice della sessione di pagamento assegnata da GovPay',
 	cod_sessione_portale VARCHAR(255) COMMENT 'Codice della sessione di pagamento assegnato dal Portale',
 	psp_redirect_url VARCHAR(512) COMMENT 'Url di redirezione per procedere al pagamento',
-	xml_rpt MEDIUMBLOB NOT NULL COMMENT 'XML della RPT codificato in base64',
+	xml_rpt MEDIUMBLOB COMMENT 'XML della RPT codificato in base64',
 	data_aggiornamento_stato DATETIME(3) NOT NULL DEFAULT now() COMMENT 'Data dell\'ultimo aggiornamento di stato della RPT',
 	callback_url LONGTEXT COMMENT 'Url di ritorno al portale di pagamento',
 	modello_pagamento VARCHAR(16) NOT NULL COMMENT 'Indicazione sul modello di pagamento della RPT',
@@ -793,38 +799,9 @@ CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
+CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
+CREATE INDEX idx_rpt_data_msg_ricevuta ON rpt (data_msg_ricevuta);
 ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE INDEX idx_rpt_id_transazione (iuv, ccp, cod_dominio);
-
-
-CREATE TABLE rr
-(
-	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
-	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco di versamento',
-	ccp VARCHAR(35) NOT NULL COMMENT 'Codice contesto di pagamento',
-	cod_msg_revoca VARCHAR(35) NOT NULL COMMENT 'Identificativo della richiesta di revoca',
-	data_msg_revoca DATETIME(3) NOT NULL DEFAULT now() COMMENT 'Data di emissione della revoca',
-	data_msg_esito DATETIME(3) COMMENT 'Data del messaggio di esito',
-	stato VARCHAR(35) NOT NULL COMMENT 'Stato della revoca',
-	descrizione_stato VARCHAR(512) COMMENT 'Descrizione dello stato della revoca',
-	importo_totale_richiesto DOUBLE NOT NULL COMMENT 'Importo della richiesta',
-	cod_msg_esito VARCHAR(35) COMMENT 'Codice di esito della revoca',
-	importo_totale_revocato DOUBLE COMMENT 'Importo revocato',
-	xml_rr MEDIUMBLOB NOT NULL COMMENT 'XML della richiesta di revoca in base64',
-	xml_er MEDIUMBLOB COMMENT 'XML dell\'esito della revoca di revoca in base64',
-	cod_transazione_rr VARCHAR(36) COMMENT 'Identificativo della comunicazione della richiesta di revoca',
-	cod_transazione_er VARCHAR(36) COMMENT 'Identificativo della comunicazione dell\'esito di revoca',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_rpt BIGINT NOT NULL COMMENT 'Riferimento alla richiesta di pagamento oggetto della revoca',
-	-- unique constraints
-	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT pk_rr PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di revoca';
-
--- index
-CREATE UNIQUE INDEX index_rr_1 ON rr (cod_msg_revoca);
 
 
 
@@ -842,11 +819,9 @@ CREATE TABLE notifiche
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale destinatario della notifica',
 	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagamento oggetto della notifica',
-	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca oggetto della notifica',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche';
 
@@ -915,33 +890,6 @@ CREATE TABLE promemoria
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
-
-
-
-CREATE TABLE iuv
-(
-	prg BIGINT NOT NULL COMMENT 'Seme di generazione dello IUV',
-	iuv VARCHAR(35) NOT NULL COMMENT 'IUV generato',
-	application_code INT NOT NULL COMMENT 'Application code codificato nello IUV',
-	data_generazione DATETIME(3) NOT NULL DEFAULT now() COMMENT 'Data di generazione dello IUV',
-	tipo_iuv VARCHAR(1) NOT NULL COMMENT 'Tipologia di IUV generato',
-	cod_versamento_ente VARCHAR(35) COMMENT 'Identificativo della pendenza associata allo IUV',
-	aux_digit INT NOT NULL DEFAULT 0 COMMENT 'Aux digit codificato nello IUV',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_applicazione BIGINT NOT NULL COMMENT 'Identificativo dell\'applicazione che ha richiesto lo IUV',
-	id_dominio BIGINT NOT NULL COMMENT 'Identificativo del creditore proprietario dello IUV',
-	-- unique constraints
-	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_iuv PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'IUV emessi';
-
--- index
-CREATE UNIQUE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
-CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
 
 
 
@@ -1038,12 +986,10 @@ CREATE TABLE pagamenti
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagmaento',
 	id_singolo_versamento BIGINT COMMENT 'Riferimento alla voce della pendenza pagata',
-	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca',
 	id_incasso BIGINT COMMENT 'Riferimento all\'operazione di riconciliazione',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pagamenti';
@@ -1080,6 +1026,8 @@ CREATE TABLE rendicontazioni
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
+CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
 
 
 
@@ -1125,6 +1073,8 @@ CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+CREATE INDEX idx_evt_fk_inc ON eventi (id_incasso);
+CREATE INDEX idx_evt_fk_trac ON eventi (id_tracciato);
 
 
 
@@ -1278,7 +1228,6 @@ ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rr;
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_singolo_versamento;
 
 ALTER TABLE pagamenti_portale DROP FOREIGN KEY fk_ppt_id_applicazione;
@@ -1387,7 +1336,8 @@ CREATE VIEW v_riscossioni AS (
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
     versamenti.data_creazione AS data_creazione,
-    singoli_versamenti.contabilita AS contabilita
+    singoli_versamenti.contabilita AS contabilita,
+    singoli_versamenti.metadata AS metadata 
    FROM fr
    JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
    LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1717,6 +1667,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -1925,7 +1876,6 @@ SELECT
 	pagamenti.tipo AS tipo,                  
 	pagamenti.id_rpt AS id_rpt,                  
 	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
-	pagamenti.id_rr AS id_rr,                  
 	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,
@@ -2011,6 +1961,8 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -2026,6 +1978,7 @@ CREATE VIEW v_vrs_non_rnd AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -2112,5 +2065,6 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN rpt ON pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
+
 
 

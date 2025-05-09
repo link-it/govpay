@@ -8,7 +8,7 @@ required:
   - idDominio
   - soggettoPagatore
   - importo
-  - causale        
+  - causale
 properties:
   idA2A:
     type: string
@@ -24,7 +24,7 @@ properties:
     example: 1234567890
   idUnitaOperativa:
     type: string
-    description: Identificativo dell'unita' operativa
+    description: Identificativo dell'unità operativa
     example: UO33132
   idTipoPendenza:
     type: string
@@ -134,14 +134,14 @@ properties:
           - 'sl'
       descrizioneImporto:
         type: array
-        items: 
+        items:
           type: object
           properties:
-            voce: 
+            voce:
               type: string
               description: voce importo
               example: canone annuo
-            importo: 
+            importo:
               type: number
               description: importo
               example: 10.01
@@ -205,7 +205,7 @@ definitions:
         example: mario.rossi@host.eu
       cellulare:
         type: string
-        example: 0039000123456789      
+        example: 0039000123456789
   documento:
     type: object
     required:
@@ -217,7 +217,7 @@ definitions:
         description: Identificativo del documento
         example: abcdef12345_1
         minLength: 1
-        maxLength: 35             
+        maxLength: 35
       descrizione:
         type: string
         description: descrizione del documento
@@ -243,11 +243,11 @@ definitions:
              type: string
              enum:
                - ENTRO
-               - OLTRE 
+               - OLTRE
     vocePendenza:
-      type: object    
+      type: object
       allOf:
-        - type: object 
+        - type: object
           required:
             - idVocePendenza
             - importo
@@ -280,7 +280,7 @@ definitions:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
-        - type: object 
+        - type: object
           oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
               type: object
@@ -326,5 +326,4 @@ definitions:
                   type: string
                 provinciaResidenza:
                   description: Sigla automobilistica della provincia di residenza del soggetto pagatore
-                  type: string                    
-          
+                  type: string

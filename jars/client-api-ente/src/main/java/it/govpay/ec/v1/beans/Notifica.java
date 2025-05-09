@@ -21,11 +21,10 @@ package it.govpay.ec.v1.beans;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-//import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Notifica  {
   

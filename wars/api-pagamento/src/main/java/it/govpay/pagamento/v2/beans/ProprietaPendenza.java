@@ -20,17 +20,17 @@
 package it.govpay.pagamento.v2.beans;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -44,33 +44,37 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "linguaSecondariaCausale",
 "informativaImportoAvviso",
 "linguaSecondariaInformativaImportoAvviso",
+"dataScandenzaAvviso",
 })
 public class ProprietaPendenza extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("linguaSecondaria")
   private String linguaSecondaria = null;
-  
+
   @JsonIgnore
   private LinguaSecondaria linguaSecondariaEnum = null;
-  
+
   @JsonProperty("descrizioneImporto")
   private List<VoceDescrizioneImporto> descrizioneImporto = null;
-  
+
   @JsonProperty("lineaTestoRicevuta1")
   private String lineaTestoRicevuta1 = null;
-  
+
   @JsonProperty("lineaTestoRicevuta2")
   private String lineaTestoRicevuta2 = null;
-  
+
   @JsonProperty("linguaSecondariaCausale")
   private String linguaSecondariaCausale = null;
-  
+
   @JsonProperty("informativaImportoAvviso")
   private String informativaImportoAvviso = null;
-  
+
   @JsonProperty("linguaSecondariaInformativaImportoAvviso")
   private String linguaSecondariaInformativaImportoAvviso = null;
-  
+
+  @JsonProperty("dataScandenzaAvviso")
+  private Date dataScandenzaAvviso = null;
+
   /**
    **/
   public ProprietaPendenza linguaSecondaria(String linguaSecondaria) {
@@ -85,7 +89,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable {
   public void setLinguaSecondaria(String linguaSecondaria) {
     this.linguaSecondaria = linguaSecondaria;
   }
-  
+
   public ProprietaPendenza linguaSecondariaEnum(LinguaSecondaria linguaSecondaria) {
     this.linguaSecondariaEnum = linguaSecondaria;
     return this;
@@ -194,6 +198,22 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable {
     this.linguaSecondariaInformativaImportoAvviso = linguaSecondariaInformativaImportoAvviso;
   }
 
+  /**
+   * se valorizzata, sostituisce la data di scadenza standard.
+   **/
+  public ProprietaPendenza dataScandenzaAvviso(Date dataScandenzaAvviso) {
+    this.dataScandenzaAvviso = dataScandenzaAvviso;
+    return this;
+  }
+
+  @JsonProperty("dataScandenzaAvviso")
+  public Date getDataScandenzaAvviso() {
+    return dataScandenzaAvviso;
+  }
+  public void setDataScandenzaAvviso(Date dataScandenzaAvviso) {
+    this.dataScandenzaAvviso = dataScandenzaAvviso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -209,16 +229,17 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2) &&
         Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale) &&
         Objects.equals(informativaImportoAvviso, proprietaPendenza.informativaImportoAvviso) &&
-        Objects.equals(linguaSecondariaInformativaImportoAvviso, proprietaPendenza.linguaSecondariaInformativaImportoAvviso);
+        Objects.equals(linguaSecondariaInformativaImportoAvviso, proprietaPendenza.linguaSecondariaInformativaImportoAvviso) &&
+        Objects.equals(dataScandenzaAvviso, proprietaPendenza.dataScandenzaAvviso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso);
+    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso, dataScandenzaAvviso);
   }
 
-  public static ProprietaPendenza parse(String json) throws it.govpay.core.exceptions.IOException { 
-    return (ProprietaPendenza) parse(json, ProprietaPendenza.class);
+  public static ProprietaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
+    return parse(json, ProprietaPendenza.class);
   }
 
   @Override
@@ -230,7 +251,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ProprietaPendenza {\n");
-    
+
     sb.append("    linguaSecondaria: ").append(toIndentedString(linguaSecondaria)).append("\n");
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
@@ -238,6 +259,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable {
     sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
     sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
     sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
+    sb.append("    dataScandenzaAvviso: ").append(toIndentedString(dataScandenzaAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -252,7 +274,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();

@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.9-SNAPSHOT</version>
+		<version>3.8.0</version>
 	</parent>
 
 	<artifactId>xml-adapters</artifactId>
@@ -13,57 +13,46 @@
 
 	<name>GovPay - jars - XML Adapters</name>
 
-	<profiles>
-		<profile>
-			<id>java-11</id>
-			<activation>
-	   			<activeByDefault>true</activeByDefault>
-			</activation>
-			
-			<dependencies>
-				<dependency>
-				        <groupId>javax.xml.bind</groupId>
-				        <artifactId>jaxb-api</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>com.sun.xml.bind</groupId>
-				        <artifactId>jaxb-core</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-				        <groupId>com.sun.xml.bind</groupId>
-				        <artifactId>jaxb-impl</artifactId>
-				        <exclusions>
-				                <exclusion>
-				                        <groupId>*</groupId>
-				                        <artifactId>*</artifactId>
-				                </exclusion>
-				        </exclusions>
-				</dependency>
-				<dependency>
-					<groupId>javax.activation</groupId>
-					<artifactId>activation</artifactId>
-				</dependency>		
-			</dependencies>
-		</profile>
-	</profiles>
+	<dependencies>
+		<dependency>
+		        <groupId>jakarta.xml.bind</groupId>
+		        <artifactId>jakarta.xml.bind-api</artifactId>
+		        <exclusions>
+		                <exclusion>
+		                        <groupId>*</groupId>
+		                        <artifactId>*</artifactId>
+		                </exclusion>
+		        </exclusions>
+		</dependency>
+		<dependency>
+		        <groupId>com.sun.xml.bind</groupId>
+		        <artifactId>jaxb-core</artifactId>
+		        <exclusions>
+		                <exclusion>
+		                        <groupId>*</groupId>
+		                        <artifactId>*</artifactId>
+		                </exclusion>
+		        </exclusions>
+		</dependency>
+		<dependency>
+		        <groupId>com.sun.xml.bind</groupId>
+		        <artifactId>jaxb-impl</artifactId>
+		        <exclusions>
+		                <exclusion>
+		                        <groupId>*</groupId>
+		                        <artifactId>*</artifactId>
+		                </exclusion>
+		        </exclusions>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
+		</dependency>
+	</dependencies>
+
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
-
-	<dependencies>
-	</dependencies>
 
 	<build>
 		<filters>

@@ -47,6 +47,7 @@ public class Operazione extends it.govpay.model.Operazione{
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;
@@ -63,6 +64,7 @@ public class Operazione extends it.govpay.model.Operazione{
 				StampeBD stampeBD = new StampeBD(bd);
 				this.stampa = stampeBD.getStampa(this.getIdStampa());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.stampa;

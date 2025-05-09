@@ -6,6 +6,9 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def esitoAttivaRPT = read('msg/attiva-response-ok.json')
 * def numeroAvviso = response.numeroAvviso

@@ -81,11 +81,11 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Inserimento di una nuova pendenza di tipo spontaneo con utenza cittadino
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -119,7 +119,7 @@ And match response.idPendenza contains '' + idPendenza
 
 Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza cittadino
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -168,7 +168,7 @@ And match response.idPendenza contains '' + idPendenza
 
 Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza cittadino, parametri update non validi
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -225,7 +225,7 @@ Then status 422
 @debug
 Scenario: Aggiornamento di una pendenza di tipo spontaneo di un altro cittadino
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -260,7 +260,7 @@ And match response.idPendenza contains '' + idPendenza
 * copy pendenzaCreata = response
 
 * set requestPendenza.importo = 200.02
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pendenze', idDominio, idTipoPendenzaCOSAP

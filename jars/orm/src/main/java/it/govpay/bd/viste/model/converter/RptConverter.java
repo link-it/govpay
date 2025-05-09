@@ -41,6 +41,8 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RptConverter {
+	
+	private RptConverter() {}
 
 	public static Rpt toDTO(it.govpay.orm.VistaRptVersamento vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		Rpt dto = new Rpt();
@@ -64,8 +66,7 @@ public class RptConverter {
 		dto.setId(vo.getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
-		if(vo.getImportoTotalePagato() != null)
-			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
+		dto.setImportoTotalePagato(vo.getImportoTotalePagato());
 		dto.setIuv(vo.getIuv());
 		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
 		dto.setPspRedirectURL(vo.getPspRedirectURL());
@@ -151,7 +152,7 @@ public class RptConverter {
 		versamento.setCodBundlekey(vo.getVrsCodBundlekey()); 
 		versamento.setDatiAllegati(vo.getVrsDatiAllegati());
 		if(vo.getVrsIncasso() != null) {
-			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE));
 		}
 		versamento.setAnomalie(vo.getVrsAnomalie());
 
@@ -171,19 +172,8 @@ public class RptConverter {
 		versamento.setIdSessione(vo.getVrsIdSessione());
 
 		versamento.setDataPagamento(vo.getVrsDataPagamento());
-		if(vo.getVrsImportoPagato() != null)
-			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato())); 
-		if(vo.getVrsImportoIncassato() != null)
-			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-		if(vo.getVrsStatoPagamento() != null)
-			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-
-		versamento.setDataPagamento(vo.getVrsDataPagamento());
-		if(vo.getVrsImportoPagato() != null)
-			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato()));
-		if(vo.getVrsImportoIncassato() != null)
-			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
+		versamento.setImportoPagato(vo.getVrsImportoPagato()); 
+		versamento.setImportoIncassato(vo.getVrsImportoIncassato());
 		if(vo.getVrsStatoPagamento() != null)
 			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
@@ -201,12 +191,8 @@ public class RptConverter {
 				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				versamento.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				versamento.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 			}

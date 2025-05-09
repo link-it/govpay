@@ -18,8 +18,8 @@
     <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
 
     <!--  Jackson Provider for JSON/XML -->
-   	<b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
-    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+   	<b:bean id="jacksonJsonProvider" class="it.govpay.core.jaxrs.JacksonJsonProviderCustomized"/>
+    <b:bean id="jacksonXmlProvider" class="it.govpay.core.jaxrs.JacksonXmlProviderCustomized"/>
 
     
     <!-- FaultBean Exception Mapper -->
@@ -76,10 +76,10 @@
     <b:bean id="quadrature" class="it.govpay.backoffice.v1.Quadrature"/>
     <b:bean id="rendicontazioni" class="it.govpay.backoffice.v1.Rendicontazioni"/>
    	<b:bean id="reportistiche" class="it.govpay.backoffice.v1.Reportistiche"/>
+   	<b:bean id="ricevute" class="it.govpay.backoffice.v1.Ricevute"/>
    	<b:bean id="riscossioni" class="it.govpay.backoffice.v1.Riscossioni"/>
    	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
    	<b:bean id="ruoli" class="it.govpay.backoffice.v1.Ruoli"/>
-   	<b:bean id="tracciati" class="it.govpay.backoffice.v1.Tracciati"/>
    	<b:bean id="tracciatiNotificaPagamenti" class="it.govpay.backoffice.v1.TracciatiNotificaPagamenti"/>
    	<b:bean id="tipiPendenza" class="it.govpay.backoffice.v1.TipiPendenza"/>
        
@@ -114,10 +114,10 @@
 			   	<ref bean="quadrature" />
 			   	<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -162,10 +162,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -209,10 +209,10 @@
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -257,10 +257,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -305,10 +305,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -353,10 +353,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -401,10 +401,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -449,10 +449,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -519,10 +519,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -568,10 +568,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>

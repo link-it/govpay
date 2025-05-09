@@ -77,7 +77,7 @@ Examples:
 | pagaTerzi | null | '#notpresent' |
 | portaleBackoffice.abilitato | false | false |
 | portaleBackoffice.abilitato | true | true |
-| portaleBackoffice.validazione | "eyAidHlwZSI6ICJvYmplY3QiIH0=" | "eyAidHlwZSI6ICJvYmplY3QiIH0=" |
+| portaleBackoffice.validazione | "eyAiJHNjaGVtYSI6ICJodHRwOi8vanNvbi1zY2hlbWEub3JnL2RyYWZ0LTA3L3NjaGVtYSMiLCAidHlwZSI6ICJvYmplY3QiIH0=" | "eyAiJHNjaGVtYSI6ICJodHRwOi8vanNvbi1zY2hlbWEub3JnL2RyYWZ0LTA3L3NjaGVtYSMiLCAidHlwZSI6ICJvYmplY3QiIH0=" |
 | portaleBackoffice.validazione | null | '#notpresent' |
 | portaleBackoffice.trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | portaleBackoffice.trasformazione | null | '#notpresent' |
@@ -85,7 +85,7 @@ Examples:
 | portaleBackoffice.inoltro | null | '#notpresent' |
 | portalePagamento.abilitato | false | false |
 | portalePagamento.abilitato | true | true |
-| portalePagamento.validazione | "eyAidHlwZSI6ICJvYmplY3QiIH0=" | "eyAidHlwZSI6ICJvYmplY3QiIH0=" |
+| portalePagamento.validazione | "eyAiJHNjaGVtYSI6ICJodHRwOi8vanNvbi1zY2hlbWEub3JnL2RyYWZ0LTA3L3NjaGVtYSMiLCAidHlwZSI6ICJvYmplY3QiIH0=" | "eyAiJHNjaGVtYSI6ICJodHRwOi8vanNvbi1zY2hlbWEub3JnL2RyYWZ0LTA3L3NjaGVtYSMiLCAidHlwZSI6ICJvYmplY3QiIH0=" |
 | portalePagamento.validazione | null | '#notpresent' |
 | portalePagamento.trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | portalePagamento.trasformazione | null | '#notpresent' |

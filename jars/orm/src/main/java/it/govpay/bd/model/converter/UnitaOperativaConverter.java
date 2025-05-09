@@ -25,6 +25,8 @@ import it.govpay.orm.IdDominio;
 import it.govpay.orm.Uo;
 
 public class UnitaOperativaConverter {
+	
+	private UnitaOperativaConverter() {}
 
 	public static UnitaOperativa toDTO(Uo vo) {
 		UnitaOperativa dto = new UnitaOperativa();

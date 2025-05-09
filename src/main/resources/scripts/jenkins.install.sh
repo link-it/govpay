@@ -1,4 +1,4 @@
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 
@@ -15,11 +15,12 @@ cd $dirname
 sed -i -r -e 's/<installer (.*)/<installer ui="text-auto" loadDefaults="true" \1/'  installer/setup/antinstall-config.xml
 
 echo "
+antinstaller_jndi_name=java:comp/env/it.govpay.datasource
 antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
 antinstaller_principal_pwd=Password1!
 antinstaller_ragione_sociale=amministratore
-antinstaller_as=wildfly26
+antinstaller_as=tomcat11
 porta-db=5432
 basedir=/home/nardi/github/govpay/src/main/resources/setup/target/govpay-installer-${GOVPAY_VERSION}/./installer/setup
 antinstaller_tipo_database=postgresql
@@ -37,7 +38,7 @@ antinstaller_cod_univoco=00000000000ADMIN
 ant.install.config.version=0.0
 antinstaller_dbpassword=govpay
 antinstaller_dbname=govpay
-antinstaller_springsec_ext=false
+antinstaller_springsec_ext=true
 antinstaller_modulo_postgres=org.postgresql
 TABLESPACE=openspcoop2
 " >> ant.install.properties
@@ -56,10 +57,10 @@ psql govpay govpay < dist/sql/gov_pay.sql
 ## SETUP API SECURITY SETTINGS
 #####
 
-echo "Abilitazione delle modalita di autenticazione..."
+# echo "Abilitazione delle modalita di autenticazione..."
 
-sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic,apikey -pag public,spid,header,ssl,basic,apikey -rag spid,header,ssl,basic,apikey -pen spid,header,ssl,basic,apikey -pp basic -jppa basic -src dist/archivi/
+# sh ../../../scripts/abilitaAuthTomcat.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic,apikey -pag public,spid,header,ssl,basic,apikey -rag spid,header,ssl,basic,apikey -pen spid,header,ssl,basic,apikey -pp basic -jppa basic -src dist/archivi/
 
 echo "Deploy govpay in wildfly...";
-sudo cp dist/archivi/govpay.ear /opt/wildfly-26.1.3.Final/standalone/deployments/
+sudo cp dist/archivi/govpay*.war /opt/apache-tomcat-govpay/webapps/
 rm -rf govpay_ear_tmp

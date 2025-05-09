@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.beans.IField;
@@ -75,21 +75,20 @@ import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.TracciatoNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
-import it.govpay.orm.constants.StatoTracciatoType;
 import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
 import it.govpay.orm.model.TracciatoModel;
 
 public class TracciatiDAO extends BaseDAO{
 
 	public TracciatiDAO() {
+		super();
 	}
 
-	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		TracciatiBD tracciatoBD = null;
 
@@ -104,12 +103,11 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(tracciatoBD != null)
-				tracciatoBD.closeConnection();
+			tracciatoBD.closeConnection();
 		}
 	}
 
-	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException {
 		TracciatiBD tracciatoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -157,12 +155,11 @@ public class TracciatiDAO extends BaseDAO{
 
 			return new ListaTracciatiDTOResponse(count, resList);
 		} finally {
-			if(tracciatoBD != null)
-				tracciatoBD.closeConnection();
+			tracciatoBD.closeConnection();
 		}
 	}
 
-	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
+	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws GovPayException {
 		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
 		TracciatiBD tracciatoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -173,14 +170,10 @@ public class TracciatiDAO extends BaseDAO{
 			config.setIgnoreNullValues(true);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
-			//			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
-			//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
-			//			}
-
 			tracciatoBD = new TracciatiBD(configWrapper);
 
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
-			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
+			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.toString());
 			beanDati.setStampaAvvisi(postTracciatoDTO.isStampaAvvisi());
 
 			Tracciato tracciato = new Tracciato();
@@ -217,7 +210,7 @@ public class TracciatiDAO extends BaseDAO{
 
 	}
 
-	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException {
 		OperazioniBD operazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -250,12 +243,11 @@ public class TracciatiDAO extends BaseDAO{
 
 			return new ListaOperazioniTracciatoDTOResponse(count, resList);
 		} finally {
-			if(operazioniBD != null)
-				operazioniBD.closeConnection();
+			operazioniBD.closeConnection();
 		}
 	}
 
-	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException {
 
 		try {
 			IJDBCAdapter jdbcAdapter = JDBCAdapterFactory.createJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -272,7 +264,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -304,31 +296,30 @@ public class TracciatiDAO extends BaseDAO{
 						try {
 							if(resultSet != null)
 								resultSet.close(); 
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						try {
 							if(prepareStatement != null)
 								prepareStatement.close();
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						
 						if(bd != null)
 							bd.closeConnection();
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (JDBCAdapterException e) {
+		} catch (SQLQueryObjectException | ExpressionException | JDBCAdapterException e) {
 			throw new ServiceException(e);
 		} finally {
+			//donothing
 		}
 	}
 	
 	
-	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException {
 
 		try {
 			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -346,7 +337,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -383,29 +374,33 @@ public class TracciatiDAO extends BaseDAO{
 						try {
 							if(resultSet != null)
 								resultSet.close(); 
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						try {
 							if(prepareStatement != null)
 								prepareStatement.close();
-						} catch (SQLException e) { }
+						} catch (SQLException e) { 
+							//donothing
+						}
 						
 						if(bd != null) {
 							try {
-								bd.setAutoCommit(true);
+								if(!bd.isAutoCommit()) {
+									bd.setAutoCommit(true);
+								}
 							} catch (ServiceException e) {
+								//donothing
 							}
 							bd.closeConnection();
 						}
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
+			//donothing
 		}
 	}
 }

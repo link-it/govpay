@@ -40,6 +40,7 @@ import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -78,7 +79,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.lineeElaborate = new ArrayList<>();
-		this.risposte = new ArrayList<AbstractOperazioneResponse>();
+		this.risposte = new ArrayList<>();
 		OperazioneFactory factory = new OperazioneFactory();
 		OperazioniBD operazioniBD = null;
 		try {
@@ -90,7 +91,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 			
 			operazioniBD.setAutoCommit(false);
 			
-			log.debug(this.nomeThread + ": Elaborazione di " + this.richieste.size() + " operazioni...");
+			LogUtils.logDebug(log, this.nomeThread + ": Elaborazione di " + this.richieste.size() + " operazioni...");
 			
 			for (CaricamentoRequest request : this.richieste) {
 				try {
@@ -124,18 +125,16 @@ public class CaricamentoTracciatoThread implements Runnable {
 						CaricamentoResponse caricamentoResponse = (CaricamentoResponse) operazioneResponse;
 						operazione.setIdStampa(caricamentoResponse.getIdStampa());
 						operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
-					} else {
-						
 					}
 					
 					if(created) {
-						log.debug(this.nomeThread + " Inserimento operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB in corso...");
+						LogUtils.logDebug(log, this.nomeThread + " Inserimento operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB in corso...");
 						operazioniBD.insertOperazione(operazione);
-						log.debug(this.nomeThread + " Inserimento operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB completato.");
+						LogUtils.logDebug(log, this.nomeThread + " Inserimento operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB completato.");
 					} else {
-						log.debug(this.nomeThread + " Update operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB in corso...");
+						LogUtils.logDebug(log, this.nomeThread + " Update operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB in corso...");
 						operazioniBD.updateOperazione(operazione);
-						log.debug(this.nomeThread + " Update operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB completato.");
+						LogUtils.logDebug(log, this.nomeThread + " Update operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB completato.");
 					}
 					
 					if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
@@ -146,7 +145,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 						}
 						
 					} else {
-						if(!operazioneResponse.getEsito().equals(CostantiCaricamento.EMPTY.toString())) {
+						if(!operazioneResponse.getEsito().equals(CostantiCaricamento.EMPTY)) {
 							if(tipoOperazioneType.equals(TipoOperazioneType.ADD)) {
 								this.numeroAddElaborateKo ++;
 							} else {
@@ -159,24 +158,35 @@ public class CaricamentoTracciatoThread implements Runnable {
 					this.lineeElaborate.add(request.getLinea());
 					this.risposte.add(operazioneResponse);
 					operazioniBD.commit();
-					log.debug(this.nomeThread + " Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
+					LogUtils.logDebug(log, this.nomeThread + " Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 				}catch(ServiceException e) {
-					log.error(this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+					LogUtils.logError(log, this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 				} catch (IOException e) {
-					log.error(this.nomeThread + " Errore durante la serializzazione dei dati della risposta: " + e.getMessage());
+					LogUtils.logError(log, this.nomeThread + " Errore durante la serializzazione dei dati della risposta: " + e.getMessage());
 				} finally {
-					
+					//donothing
 				}
 			}
 		}catch(ServiceException e) {
-			log.error(this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+			LogUtils.logError(log, this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 			
 		} finally {
 			this.completed = true;
-			if(operazioniBD != null) operazioniBD.closeConnection(); 
+			if(operazioniBD != null) {
+				// ripristino autocommit
+				try {
+					if(!operazioniBD.isAutoCommit() ) {
+						operazioniBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					// donothing
+				}
+				
+				operazioniBD.closeConnection(); 
+			}
 			
-			log.debug(this.nomeThread + " Linee elaborate: " + this.lineeElaborate.size());
-			log.debug(this.nomeThread + " Risposte prodotte: " + this.risposte.size());
+			LogUtils.logDebug(log, this.nomeThread + " Linee elaborate: " + this.lineeElaborate.size());
+			LogUtils.logDebug(log, this.nomeThread + " Risposte prodotte: " + this.risposte.size());
 			ContextThreadLocal.unset();
 		}
 		

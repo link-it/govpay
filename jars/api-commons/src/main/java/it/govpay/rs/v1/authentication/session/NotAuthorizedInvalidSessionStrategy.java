@@ -22,17 +22,17 @@ package it.govpay.rs.v1.authentication.session;
 import java.io.IOException;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.Response;
 
-import org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
+import it.govpay.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 
 public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrategy {
-	
+
 	private TimeZone timeZone = TimeZone.getDefault();
     private String timeZoneId = null;
     public String getTimeZoneId() {
@@ -42,7 +42,7 @@ public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrate
             this.timeZoneId = timeZoneId;
             this.timeZone = TimeZone.getTimeZone(timeZoneId);
     }
-    
+
 	private boolean createNewSession = true;
 
 	public NotAuthorizedInvalidSessionStrategy() {

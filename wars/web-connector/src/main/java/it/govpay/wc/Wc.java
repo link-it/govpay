@@ -19,15 +19,15 @@
  */
 package it.govpay.wc;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.wc.controller.WcController;
@@ -47,6 +47,6 @@ public class Wc extends BaseRsServiceV1 {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPsp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSession") String idSession, @QueryParam("esito") String esito) {
 		this.controller.setContext(this.getContext());
-        return this.controller.getPsp(null, uriInfo, httpHeaders, idSession, esito);
+        return this.controller.getPsp(idSession, esito);
 	}
 }

@@ -40,6 +40,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "stato",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "idDominio",
 "datiAllegati",
 "hashDocumento",
@@ -74,6 +75,9 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
 
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
+
   @JsonProperty("idDominio")
   private String idDominio = null;
 
@@ -103,7 +107,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
-  
+
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -212,6 +216,21 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public NuovaVocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
   }
 
   /**
@@ -366,6 +385,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
         Objects.equals(stato, nuovaVocePendenza.stato) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
+        Objects.equals(metadata, nuovaVocePendenza.metadata) &&
         Objects.equals(idDominio, nuovaVocePendenza.idDominio) &&
         Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
         Objects.equals(this.hashDocumento, nuovaVocePendenza.hashDocumento) &&
@@ -379,7 +399,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, idDominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, metadata, idDominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
   }
 
   public static NuovaVocePendenza parse(String json) throws IOException {
@@ -403,6 +423,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
@@ -437,6 +458,8 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		vf.getValidator("contabilita", this.contabilita).validateFields();
+		vf.getValidator("metadata", this.metadata).validateFields();
+
 		if(this.idDominio != null) {
 			vi.validaIdDominio("idDominio", this.idDominio);
 		}

@@ -21,15 +21,15 @@ package it.govpay.pagamento.v3.api;
 
 import java.io.File;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Pattern;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Pattern;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,7 +59,7 @@ public interface PendenzeApi  {
     @Path("/pendenze")
     @Produces({ "application/json" })
     @Operation(summary = "Elenco delle pendenze", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Elenco delle pendenze che rispettano i filtri di ricerca", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PosizioneDebitoria.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
@@ -77,7 +77,7 @@ public interface PendenzeApi  {
     @Path("/allegati/{id}")
     @Produces({ "*/*", "application/json" })
     @Operation(summary = "Allegato di una pendenza", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Contenuto dell'allegato", content = @Content(mediaType = "*/*", schema = @Schema(implementation = File.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
@@ -95,7 +95,7 @@ public interface PendenzeApi  {
     @Path("/pendenze/{idA2A}/{idPendenza}")
     @Produces({ "application/json" })
     @Operation(summary = "Dettaglio di una pendenza per identificativo", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Informazioni dettagliate della pendenza", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PendenzaArchivio.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

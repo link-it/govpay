@@ -48,6 +48,7 @@ public class Acl extends it.govpay.model.Acl{
 			try {
 				this.setUtenza(AnagraficaManager.getUtenza(configWrapper, this.getIdUtenza()));
 			} catch (NotFoundException e) {
+				// donothing
 			}
 
 		return this.utenza;
@@ -85,7 +86,8 @@ public class Acl extends it.govpay.model.Acl{
 	}
 
 	public static Acl mergeAcls(List<Acl> listaServizio) {
-		Acl aclR = null, aclW = null;
+		Acl aclR = null;
+		Acl aclW = null;
 
 		for (Acl acl : listaServizio) {
 			if(acl.getListaDiritti().contains(Diritti.SCRITTURA) && acl.getListaDiritti().contains(Diritti.LETTURA)) {
@@ -94,7 +96,8 @@ public class Acl extends it.govpay.model.Acl{
 				aclW = acl;
 			} else if(acl.getListaDiritti().contains(Diritti.LETTURA)) {
 				aclR = acl;
-			} else { // donothing
+			} else { 
+				// donothing
 			}
 		}
 

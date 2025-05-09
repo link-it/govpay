@@ -41,7 +41,7 @@ public class RptConverter {
 		rsModel.setPendenza(PendenzeConverter.toRsIndexModel(versamento));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
-		
+
 		return rsModel;
 	}
 
@@ -54,7 +54,7 @@ public class RptConverter {
 		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
-		
+
 		return rsModel;
 	}
 }

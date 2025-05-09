@@ -27,23 +27,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Tipologia di codifica del capitolo di bilancio
  */
 public enum TipoContabilita {
-  
-  
-  
-  
+
+
+
+
   CAPITOLO("CAPITOLO"),
-  
-  
+
+
   SPECIALE("SPECIALE"),
-  
-  
+
+
   SIOPE("SIOPE"),
-  
-  
+
+
   ALTRO("ALTRO");
-  
-  
-  
+
+
+
 
   private String value;
 

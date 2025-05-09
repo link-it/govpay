@@ -42,6 +42,7 @@ public class UnitaOperativa extends it.govpay.model.UnitaOperativa {
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;

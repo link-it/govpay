@@ -67,7 +67,8 @@ public class Fr extends it.govpay.model.Fr {
 		if(this.dominio == null){
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
-			}catch(NotFoundException e) { // sono ammessi domini non censiti 
+			}catch(NotFoundException e) {
+				// sono ammessi domini non censiti 
 			}
 		}
 		return this.dominio;

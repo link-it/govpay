@@ -19,12 +19,12 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 /**
   * Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.")
 public class RiferimentoEntrata  implements OneOfTipoRiferimentoVocePendenza  {
 
-  @Schema(example = "SRV-12345", required = true, description = "")
+  @Schema(example = "SRV-12345", requiredMode = RequiredMode.REQUIRED, description = "")
   private String codEntrata = null;
  /**
    * Get codEntrata

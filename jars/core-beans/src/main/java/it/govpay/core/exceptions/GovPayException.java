@@ -290,7 +290,7 @@ public class GovPayException extends Exception {
 	public String getMessageV3() {
 		switch (this.codEsito) {
 		case NDP_000: 
-			if(super.getCause() != null && super.getCause() instanceof ClientException)
+			if(super.getCause() instanceof ClientException)
 				return super.getCause().getMessage();
 			else 
 				return super.getMessage();
@@ -301,127 +301,127 @@ public class GovPayException extends Exception {
 	
 	public int getStatusCode() {
 		switch (this.codEsito) {
-		case OK: return 200; // "Operazione completata con successo";
-		case INTERNAL: return 500; // "Errore interno";
-		case APP_000: return 400; // "Richiesta non valida";	
-		case APP_001: return 400; // "Richiesta non valida";
-		case APP_002: return 400; // "Richiesta non valida";
-		case AUT_000: return 403; // "Operazione non autorizzata";	
-		case AUT_001: return 403; // "Operazione non autorizzata";
-		case AUT_002: return 403; // "Operazione non autorizzata";
-		case DOM_000: return 422; // "Richiesta non valida";	
-		case DOM_001: return 422; // "Richiesta non valida";
-		case DOM_002: return 500; // "Richiesta non valida";	
-		case DOM_003: return 500; // "Richiesta non valida";
-		case NDP_000: return 502; // "Servizi pagoPA non disponibili.";
-		case NDP_001: return 500; // "Richiesta rifiutata dal Nodo dei Pagamenti";
-		case PAG_000: return 400; // "Richiesta non valida";	
-		case PAG_001: return 500; // "Richiesta non valida";	
-		case PAG_002: return 500; // "Richiesta non valida";
-		case PAG_003: return 500; // "Richiesta non valida";
-		case PAG_004: return 500; // "Richiesta non valida";
-		case PAG_005: return 500; // "Richiesta non valida";
-		case PAG_006: return 422; // "Richiesta non valida";
-		case PAG_007: return 422; // "Richiesta non valida";
-		case PAG_008: return 422; // "Richiesta non valida"; 
-		case PAG_009: return 422; // "Richiesta non valida"; 
-		case PAG_010: return 422; // "Richiesta non valida"; 
-		case PAG_011: return 422; // "Richiesta non valida"; 
-		case PAG_012: return 422; // "Richiesta non valida"; 
-		case PAG_013: return 422; // "Richiesta non valida"; 
-		case PRT_000: return 500; // "Richiesta non valida";	
-		case PRT_001: return 500; // "Richiesta non valida";
-		case PRT_002: return 500; // "Richiesta non valida";
-		case PRT_003: return 500; // "Richiesta non valida";
-		case PRT_004: return 500; // "Richiesta non valida"; 
-		case PRT_005: return 500; // "Richiesta non valida";
-		case PSP_000: return 500; // "Richiesta non valida";
-		case PSP_001: return 500; // "Richiesta non valida";
-		case RND_000: return 500; // "Richiesta non valida";
-		case RND_001: return 500; // "Richiesta non valida";
-		case STA_000: return 500; // "Richiesta non valida";	
-		case STA_001: return 500; // "Richiesta non valida";
-		case TRB_000: return 422; // "Richiesta non valida";
-		case UOP_000: return 422; // "Richiesta non valida";
-		case UOP_001: return 422; // "Richiesta non valida";
-		case VER_000: return 422; // "Richiesta non valida";
-		case VER_001: return 422; // "Richiesta non valida";
-		case VER_002: return 422; // "Richiesta non valida";
-		case VER_003: return 422; // "Richiesta non valida";
-		case VER_004: return 422; // "Richiesta non valida";
-		case VER_005: return 422; // "Richiesta non valida";
-		case VER_006: return 422; // "Richiesta non valida";
-		case VER_007: return 422; // "Richiesta non valida";
-		case VER_008: return 422; // "Richiesta non valida";
-		case VER_009: return 422; // "Richiesta non valida";
-		case VER_010: return 422; // "Richiesta non valida";
-		case VER_011: return 422; // "Richiesta non valida";
-		case VER_012: return 422; // "Richiesta non valida";
-		case VER_013: return 422; // "Richiesta non valida";
-		case VER_014: return 422; // "Impossibile aggiornare la pendenza scaduta.";
-		case VER_015: return 422; // "Richiesta non valida";
-		case VER_016: return 422; // "Richiesta non valida";
-		case VER_017: return 422; // "Richiesta non valida";
-		case VER_018: return 422; // "Richiesta non valida";
-		case VER_019: return 422; // "Richiesta non valida";
-		case VER_020: return 422; // "Richiesta non valida";
-		case VER_021: return 422; // "Richiesta non valida";
-		case VER_022: return 422; // "Richiesta non valida";
-		case VER_023: return 422; // "Richiesta non valida";
-		case WISP_000: return 500; // "Errore WISP";
-		case WISP_001: return 500; // "Errore WISP";
-		case WISP_002: return 500; //  "Errore WISP";
-		case WISP_003: return 500; // "Errore WISP";
-		case WISP_004: return 500; // "Errore WISP";
+		case OK: return 200; // "Operazione completata con successo"
+		case INTERNAL: return 500; // "Errore interno"
+		case APP_000: return 400; // "Richiesta non valida"	
+		case APP_001: return 400; // "Richiesta non valida"
+		case APP_002: return 400; // "Richiesta non valida"
+		case AUT_000: return 403; // "Operazione non autorizzata"	
+		case AUT_001: return 403; // "Operazione non autorizzata"
+		case AUT_002: return 403; // "Operazione non autorizzata"
+		case DOM_000: return 422; // "Richiesta non valida"	
+		case DOM_001: return 422; // "Richiesta non valida"
+		case DOM_002: return 500; // "Richiesta non valida"	
+		case DOM_003: return 500; // "Richiesta non valida"
+		case NDP_000: return 502; // "Servizi pagoPA non disponibili."
+		case NDP_001: return 500; // "Richiesta rifiutata dal Nodo dei Pagamenti"
+		case PAG_000: return 400; // "Richiesta non valida"	
+		case PAG_001: return 500; // "Richiesta non valida"	
+		case PAG_002: return 500; // "Richiesta non valida"
+		case PAG_003: return 500; // "Richiesta non valida"
+		case PAG_004: return 500; // "Richiesta non valida"
+		case PAG_005: return 500; // "Richiesta non valida"
+		case PAG_006: return 422; // "Richiesta non valida"
+		case PAG_007: return 422; // "Richiesta non valida"
+		case PAG_008: return 422; // "Richiesta non valida" 
+		case PAG_009: return 422; // "Richiesta non valida" 
+		case PAG_010: return 422; // "Richiesta non valida" 
+		case PAG_011: return 422; // "Richiesta non valida" 
+		case PAG_012: return 422; // "Richiesta non valida" 
+		case PAG_013: return 422; // "Richiesta non valida" 
+		case PRT_000: return 500; // "Richiesta non valida"	
+		case PRT_001: return 500; // "Richiesta non valida"
+		case PRT_002: return 500; // "Richiesta non valida"
+		case PRT_003: return 500; // "Richiesta non valida"
+		case PRT_004: return 500; // "Richiesta non valida" 
+		case PRT_005: return 500; // "Richiesta non valida"
+		case PSP_000: return 500; // "Richiesta non valida"
+		case PSP_001: return 500; // "Richiesta non valida"
+		case RND_000: return 500; // "Richiesta non valida"
+		case RND_001: return 500; // "Richiesta non valida"
+		case STA_000: return 500; // "Richiesta non valida"	
+		case STA_001: return 500; // "Richiesta non valida"
+		case TRB_000: return 422; // "Richiesta non valida"
+		case UOP_000: return 422; // "Richiesta non valida"
+		case UOP_001: return 422; // "Richiesta non valida"
+		case VER_000: return 422; // "Richiesta non valida"
+		case VER_001: return 422; // "Richiesta non valida"
+		case VER_002: return 422; // "Richiesta non valida"
+		case VER_003: return 422; // "Richiesta non valida"
+		case VER_004: return 422; // "Richiesta non valida"
+		case VER_005: return 422; // "Richiesta non valida"
+		case VER_006: return 422; // "Richiesta non valida"
+		case VER_007: return 422; // "Richiesta non valida"
+		case VER_008: return 422; // "Richiesta non valida"
+		case VER_009: return 422; // "Richiesta non valida"
+		case VER_010: return 422; // "Richiesta non valida"
+		case VER_011: return 422; // "Richiesta non valida"
+		case VER_012: return 422; // "Richiesta non valida"
+		case VER_013: return 422; // "Richiesta non valida"
+		case VER_014: return 422; // "Impossibile aggiornare la pendenza scaduta."
+		case VER_015: return 422; // "Richiesta non valida"
+		case VER_016: return 422; // "Richiesta non valida"
+		case VER_017: return 422; // "Richiesta non valida"
+		case VER_018: return 422; // "Richiesta non valida"
+		case VER_019: return 422; // "Richiesta non valida"
+		case VER_020: return 422; // "Richiesta non valida"
+		case VER_021: return 422; // "Richiesta non valida"
+		case VER_022: return 422; // "Richiesta non valida"
+		case VER_023: return 422; // "Richiesta non valida"
+		case WISP_000: return 500; // "Errore WISP"
+		case WISP_001: return 500; // "Errore WISP"
+		case WISP_002: return 500; //  "Errore WISP"
+		case WISP_003: return 500; // "Errore WISP"
+		case WISP_004: return 500; // "Errore WISP"
 		
 		// Aggiunti nella versione 3.0.x
-		case APP_003: return 403; // "Richiesta non valida";
-		case APP_004: return 403; // "Richiesta non valida";
-		case APP_005: return 403; // "Richiesta non valida";
-		case VER_024: return 422; // "Richiesta non valida";
-		case VER_025: return 422; // "Richiesta non valida";
-		case VER_026: return 422; // "Richiesta non valida";
-		case VER_027: return 422; // "Richiesta non valida";
-		case VER_028: return 422; // "Richiesta non valida";
-		case VER_029: return 422; // "Richiesta non valida";
-		case VER_030: return 422; // "Richiesta non valida";
-		case CIT_001: return 422; // "Richiesta non valida";
-		case CIT_002: return 422; // "Richiesta non valida";
-		case CIT_003: return 422; // "Richiesta non valida";
-		case CIT_004: return 422; // "Richiesta non valida";
-		case PAG_014: return 422; // "Richiesta non valida";
-		case APP_006: return 422; // "Richiesta non valida";
-		case UAN_001: return 422; // "Richiesta non valida";
-		case UAN_002: return 422; // "Richiesta non valida";
-		case TRB_001: return 422; // "Richiesta non valida";
-		case VER_031: return 422; // "Richiesta non valida";
-		case VER_032: return 422; // "Richiesta non valida";
-		case VER_033: return 422; // "Richiesta non valida";
-		case VER_034: return 422; // "Richiesta non valida";
+		case APP_003: return 403; // "Richiesta non valida"
+		case APP_004: return 403; // "Richiesta non valida"
+		case APP_005: return 403; // "Richiesta non valida"
+		case VER_024: return 422; // "Richiesta non valida"
+		case VER_025: return 422; // "Richiesta non valida"
+		case VER_026: return 422; // "Richiesta non valida"
+		case VER_027: return 422; // "Richiesta non valida"
+		case VER_028: return 422; // "Richiesta non valida"
+		case VER_029: return 422; // "Richiesta non valida"
+		case VER_030: return 422; // "Richiesta non valida"
+		case CIT_001: return 422; // "Richiesta non valida"
+		case CIT_002: return 422; // "Richiesta non valida"
+		case CIT_003: return 422; // "Richiesta non valida"
+		case CIT_004: return 422; // "Richiesta non valida"
+		case PAG_014: return 422; // "Richiesta non valida"
+		case APP_006: return 422; // "Richiesta non valida"
+		case UAN_001: return 422; // "Richiesta non valida"
+		case UAN_002: return 422; // "Richiesta non valida"
+		case TRB_001: return 422; // "Richiesta non valida"
+		case VER_031: return 422; // "Richiesta non valida"
+		case VER_032: return 422; // "Richiesta non valida"
+		case VER_033: return 422; // "Richiesta non valida"
+		case VER_034: return 422; // "Richiesta non valida"
 		
 		// Aggiunti nella versione 3.1.x
-		case TRASFORMAZIONE: return 500; // "Errore interno";
-		case VAL_000: return 500; // "Errore interno";
-		case VAL_001: return 500; // "Errore interno";
-		case VAL_002: return 500; // "Errore interno";
-		case VAL_003: return 500; // "Errore interno";
-		case TVD_000: return 422; // "Richiesta non valida";
-		case TVD_001: return 422; // "Richiesta non valida";
-		case TVR_000: return 422; // "Richiesta non valida";
-		case TVR_001: return 422; // "Richiesta non valida";
-		case PRM_001: return 500; // "Errore interno";
-		case PRM_002: return 500; // "Errore interno";
-		case PRM_003: return 500; // "Errore interno";
-		case PRM_004: return 500; // "Errore interno";
-		case PRM_005: return 500; // "Errore interno";
-		case PRM_006: return 500; // "Errore interno";
+		case TRASFORMAZIONE: return 500; // "Errore interno"
+		case VAL_000: return 500; // "Errore interno"
+		case VAL_001: return 500; // "Errore interno"
+		case VAL_002: return 500; // "Errore interno"
+		case VAL_003: return 500; // "Errore interno"
+		case TVD_000: return 422; // "Richiesta non valida"
+		case TVD_001: return 422; // "Richiesta non valida"
+		case TVR_000: return 422; // "Richiesta non valida"
+		case TVR_001: return 422; // "Richiesta non valida"
+		case PRM_001: return 500; // "Errore interno"
+		case PRM_002: return 500; // "Errore interno"
+		case PRM_003: return 500; // "Errore interno"
+		case PRM_004: return 500; // "Errore interno"
+		case PRM_005: return 500; // "Errore interno"
+		case PRM_006: return 500; // "Errore interno"
 		
 		// Aggiunti nella versione 3.5.x
-		case VER_035: return 422; // "Richiesta non valida";
-		case VER_036: return 422; // "Richiesta non valida";
-		case VER_037: return 422; // "Richiesta non valida";
-		case VER_038: return 422; // "Richiesta non valida";
-		case VER_039: return 422; // "Richiesta non valida";
+		case VER_035: return 422; // "Richiesta non valida"
+		case VER_036: return 422; // "Richiesta non valida"
+		case VER_037: return 422; // "Richiesta non valida"
+		case VER_038: return 422; // "Richiesta non valida"
+		case VER_039: return 422; // "Richiesta non valida"
 		}
 		
 		return 500;

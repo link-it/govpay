@@ -43,7 +43,7 @@ public class StatisticaRendicontazioniFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			if(this.filtro == null) 
 				throw new ServiceException("Filtro non definito");

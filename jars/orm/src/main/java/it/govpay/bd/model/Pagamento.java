@@ -30,7 +30,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -42,20 +41,18 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	private transient Dominio dominio;
 	private transient Rpt rpt;
 	private transient SingoloVersamento singoloVersamento;
-	private transient Rr rr;
 	private transient Incasso incasso;
 	private transient List<Rendicontazione> rendicontazioni;
 
 	public Pagamento() {
+		super();
 	}
 	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
-		if(this.getIdRpt() != null) {
-			if(this.rpt == null) {
-				RptBD rptBD = new RptBD(bd);
-				rptBD.setAtomica(false); // la connessione deve essere gia' aperta
-				this.rpt = rptBD.getRpt(this.getIdRpt());
-			}
+		if(this.getIdRpt() != null && this.rpt == null) {
+			RptBD rptBD = new RptBD(bd);
+			rptBD.setAtomica(false); // la connessione deve essere gia' aperta
+			this.rpt = rptBD.getRpt(this.getIdRpt());
 		}
 		return this.rpt;
 	}
@@ -65,19 +62,6 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		if(rpt.getId() != null) {
 			this.setIdRpt(rpt.getId());
 		}
-	}
-	
-	public Rr getRr(BasicBD bd) throws ServiceException {
-		if(this.rr == null) {
-			RrBD rrBD = new RrBD(bd);
-			this.rr = rrBD.getRr(this.getIdRr());
-		}
-		return this.rr;
-	}
-
-	public void setRr(Rr rr) {
-		this.rr = rr;
-		this.setIdRr(rr.getId());
 	}
 	
 	public SingoloVersamento getSingoloVersamento() {
@@ -114,11 +98,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 	
 	public Incasso getIncasso(BasicBD bd) throws ServiceException {
-		if(this.getIdIncasso() != null) {
-			if(this.incasso == null) {
-				IncassiBD incassiBD = new IncassiBD(bd);
-				this.incasso = incassiBD.getIncasso(this.getIdIncasso());
-			}
+		if(this.getIdIncasso() != null && this.incasso == null) {
+			IncassiBD incassiBD = new IncassiBD(bd);
+			this.incasso = incassiBD.getIncasso(this.getIdIncasso());
 		}
 		return this.incasso;
 	}
@@ -132,15 +114,8 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	
 	public boolean isPagamentoRendicontato(BasicBD bd) throws ServiceException {
 		for(Rendicontazione r : this.getRendicontazioni(bd)) {
-			if(r.getEsito().equals(EsitoRendicontazione.ESEGUITO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
-				return true;
-		}
-		return false;
-	}
-	
-	public boolean isPagamentoRevocato(BasicBD bd) throws ServiceException {
-		for(Rendicontazione r : this.getRendicontazioni(bd)) {
-			if(r.getEsito().equals(EsitoRendicontazione.REVOCATO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
+			if(r.getEsito().equals(EsitoRendicontazione.ESEGUITO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)
+					|| r.getEsito().equals(EsitoRendicontazione.ESEGUITO_STANDIN) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_STANDIN_SENZA_RPT))
 				return true;
 		}
 		return false;
@@ -150,7 +125,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		if(this.dominio == null){
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
-			}catch(NotFoundException e) {}
+			}catch(NotFoundException e) {
+				//donothing
+			}
 		}
 		return this.dominio;
 	}

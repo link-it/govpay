@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.Versamento;
@@ -89,8 +91,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"Versamento",Versamento.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"Versamento",Versamento.class);
-		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"Versamento",Versamento.class);
-		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"Versamento",Versamento.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.math.BigDecimal.class,"Versamento",Versamento.class);
+		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.math.BigDecimal.class,"Versamento",Versamento.class);
 		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"Versamento",Versamento.class);
@@ -106,6 +108,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new Field("avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new Field("idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -161,8 +165,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"Versamento",Versamento.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"Versamento",Versamento.class);
-		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"Versamento",Versamento.class);
-		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"Versamento",Versamento.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.math.BigDecimal.class,"Versamento",Versamento.class);
+		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.math.BigDecimal.class,"Versamento",Versamento.class);
 		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"Versamento",Versamento.class);
@@ -178,6 +182,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new ComplexField(father,"avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new ComplexField(father,"idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -312,6 +318,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public it.govpay.orm.model.IdOperazioneModel ID_OPERAZIONE = null;
 	 
 	public IField PROPRIETA = null;
+	 
+	public IField DATA_ULTIMA_MODIFICA_ACA = null;
+	 
+	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
 	 
 
 	@Override

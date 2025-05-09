@@ -36,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "datiAllegati",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "idDominio",
 "codEntrata",
 "ibanAccredito",
@@ -65,6 +66,9 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
+
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
 
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -162,6 +166,21 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public NuovaVocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
   }
 
   /**
@@ -382,6 +401,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
         Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
+        Objects.equals(metadata, nuovaVocePendenza.metadata) &&
         Objects.equals(idDominio, nuovaVocePendenza.idDominio) &&
         Objects.equals(codEntrata, nuovaVocePendenza.codEntrata) &&
         Objects.equals(ibanAccredito, nuovaVocePendenza.ibanAccredito) &&
@@ -395,7 +415,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, metadata, idDominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
   }
 
   public static NuovaVocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -418,6 +438,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
@@ -452,6 +473,8 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		vf.getValidator("contabilita", this.contabilita).validateFields();
+		vf.getValidator("metadata", this.metadata).validateFields();
+
 		if(this.idDominio != null) {
 			vi.validaIdDominio("idDominio", this.idDominio);
 		}

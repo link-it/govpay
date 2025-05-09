@@ -4,20 +4,11 @@ Background:
 
 * callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni.feature')
 
-Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della riconciliazione [<idRiconciliazione>]
-
-* def applicazione = read('msg/<applicazione>')
-* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* def applicazioneRequest = read('msg/applicazione_auth.json')
+* callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
+
+Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della riconciliazione [<idRiconciliazione>]
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', <idDominio>, <idRiconciliazione>

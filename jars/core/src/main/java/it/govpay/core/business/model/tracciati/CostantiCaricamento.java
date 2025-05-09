@@ -26,6 +26,9 @@ package it.govpay.core.business.model.tracciati;
  * 
  */
 public class CostantiCaricamento {
+	
+	private CostantiCaricamento() {}
+	
 	public static final String NOT_AUTHORIZED = "ERR_AUTH";
 	public static final String ERRORE_SINTASSI = "ERR_SIN";
 	public static final String EMPTY = "EMPTY";

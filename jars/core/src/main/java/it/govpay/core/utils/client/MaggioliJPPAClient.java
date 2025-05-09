@@ -19,7 +19,7 @@
  */
 package it.govpay.core.utils.client;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
@@ -78,7 +77,9 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 	public CtRispostaStandard send(String azione, byte[] body) throws ClientException, UtilsException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
-			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
+			if(!urlString.endsWith("/")) {
+				urlString = urlString.concat("/");
+			}
 		} 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -100,14 +101,7 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 			}
 			JAXBElement<?> jaxbElement = MaggioliJPPAUtils.toJaxbJPPAPdPInternal(response, null);
 			CtRispostaStandard r = (CtRispostaStandard) jaxbElement.getValue();
-//			if(r.getFault() != null) {
-//				this.faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
-//				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
-//				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
-//				ctx.getApplicationLogger().log("jppapdp_client.invioRichiestaFault", this.faultCode, faultString, faultDescription);
-//			} else {
 			ctx.getApplicationLogger().log("jppapdp_client.invioRichiestaOk");
-//			}
 			return r;
 		} catch (ClientException e) {
 			ctx.getApplicationLogger().log("jppapdp_client.invioRichiestaKo", e.getMessage());

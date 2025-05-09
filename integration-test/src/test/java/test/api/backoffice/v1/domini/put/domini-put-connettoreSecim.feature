@@ -110,7 +110,7 @@ Examples:
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | emailAllegato | emailAllegato | null | 'emailAllegato' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
@@ -160,7 +160,7 @@ Examples:
 | codiceCliente | codiceCliente | '12345678' | 'codiceCliente' |
 | codiceIstituto | codiceIstituto | '123456' | 'codiceIstituto' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
 | intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
 

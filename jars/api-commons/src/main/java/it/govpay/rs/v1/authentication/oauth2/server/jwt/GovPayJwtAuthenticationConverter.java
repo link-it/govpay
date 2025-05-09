@@ -20,7 +20,11 @@
 package it.govpay.rs.v1.authentication.oauth2.server.jwt;
 
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,8 +47,8 @@ import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 /***
  * Classe basata su {@link JwtAuthenticationConverter}, riscritta perche' non si poteva fare l'override del metodo AbstractAuthenticationToken convert(Jwt jwt).
  * Estende le funzionalita' della classe originale per caricare le informazioni relative all'utenza GovPay all'interno dell'oggetto {@link AbstractAuthenticationToken}
- * 
- * 
+ *
+ *
  * @author pintori@link.it
  *
  */
@@ -53,16 +57,37 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 	private Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
 	private String principalClaimName = JwtClaimNames.SUB;
-	
+
 	private BaseAutenticazioneDAO userDetailService;
+
+	private Logger logger = LoggerWrapperFactory.getLogger(GovPayJwtAuthenticationConverter.class);
 
 	@Override
 	public final AbstractAuthenticationToken convert(Jwt jwt) {
 		Collection<GrantedAuthority> authoritiesFromSuperClass = this.jwtGrantedAuthoritiesConverter.convert(jwt);
-		String principalClaimValue = jwt.getClaimAsString(this.principalClaimName);
+
+		logger.debug("Ricerca principal all'interno dei claim {}", this.principalClaimName);
+
+		Set<Entry<String,Object>> entrySet = jwt.getClaims().entrySet();
+		logger.trace("Claims disponibili: ");
+		for (Entry<String, Object> entry : entrySet) {
+			logger.trace("{}: {}", entry.getKey(), entry.getValue());
+		}
+
+		String[] split = this.principalClaimName.split(",");
+
+		String principalClaimValue = null;
+		for (String claimName : split) {
+			principalClaimValue = jwt.getClaimAsString(claimName);
+			if(principalClaimValue != null) {
+				break;
+			}
+		}
 		
+		logger.debug("Trovato principal {}", principalClaimValue);
+
 		GovPayLdapJwt govPayJwt = new GovPayLdapJwt(jwt.getTokenValue(), jwt.getIssuedAt(), jwt.getExpiresAt(), jwt.getHeaders(), jwt.getClaims());
-		
+
 		// creo un utenza ldap fittizzia per caricare le informazioni utente
 		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setAccountNonExpired(true);
@@ -70,26 +95,25 @@ public class GovPayJwtAuthenticationConverter implements Converter<Jwt, Abstract
 		essence.setCredentialsNonExpired(true);
 		essence.setEnabled(true);
 		essence.setUsername(principalClaimValue);
-		essence.setPassword(AutorizzazioneUtils.PASSWORD_DEFAULT_VALUE);
+		essence.setPassword(AutorizzazioneUtils.generaPasswordUtenza());
 		essence.setAuthorities(authoritiesFromSuperClass);
 		essence.setDn(principalClaimValue);
-		
+
 		LdapUserDetails createUserDetails = essence.createUserDetails();
 		govPayJwt.setLdapUserDetailsImpl(createUserDetails);
-		
+
 		// leggo le informazioni sull'utenza nel formato GovPay
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
 		details.setLdapUserDetailsImpl(createUserDetails);
 		UserDetails loadUserByLdapUserDetail = this.userDetailService.loadUserByLdapUserDetail(govPayJwt.getUsername(), details);
-		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails) {
-			GovpayLdapUserDetails govpayDetails = (GovpayLdapUserDetails) loadUserByLdapUserDetail;
+		if(loadUserByLdapUserDetail instanceof GovpayLdapUserDetails govpayDetails) {
 			govPayJwt.setUtenza(govpayDetails.getUtenza());
 			govPayJwt.setApplicazione(govpayDetails.getApplicazione());
 			govPayJwt.setOperatore(govpayDetails.getOperatore());
 			govPayJwt.setIdTransazioneAutenticazione(govpayDetails.getIdTransazioneAutenticazione());
 			govPayJwt.setTipoUtenza(govpayDetails.getTipoUtenza());
 		}
-		
+
 		return new JwtAuthenticationToken(govPayJwt, authoritiesFromSuperClass, principalClaimValue);
 	}
 

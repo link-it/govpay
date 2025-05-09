@@ -77,6 +77,7 @@ import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -217,7 +218,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		TracciatiNotificaPagamentiBD tracciatiMyPivotBD = null;
-//		NotificaClient client = null;
 		ISerializer serializer = null;
 		it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati = null;
 		String url = null;
@@ -233,11 +233,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 
 			beanDati = (it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti.class);
 			
-			log.info(MessageFormat.format("Spedizione del tracciato {0} {1}] al connettore previsto dalla configurazione...", this.tipoTracciato, this.tracciato.getNomeFile()));
+			LogUtils.logInfo(log, MessageFormat.format("Spedizione del tracciato {0} {1}] al connettore previsto dalla configurazione...", this.tipoTracciato, this.tracciato.getNomeFile()));
 			
 			if(!connettore.isAbilitato()) {
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.annullato");
-				log.info(MessageFormat.format("Connettore {0} non configurato per il Dominio [Id: {1}]. Spedizione inibita.", this.tipoTracciato, this.dominio.getCodDominio()));				
+				LogUtils.logInfo(log, MessageFormat.format("Connettore {0} non configurato per il Dominio [Id: {1}]. Spedizione inibita.", this.tipoTracciato, this.dominio.getCodDominio()));				
 				tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 				
 				this.tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
@@ -297,11 +297,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			}
 			
 			this.eventoCtx.setEsito(Esito.OK);
-			log.info(MessageFormat.format("Tracciato {0} [Nome: {1}] inviato con successo", this.tipoTracciato, tracciato.getNomeFile()));
+			LogUtils.logInfo(log, MessageFormat.format("Tracciato {0} [Nome: {1}] inviato con successo", this.tipoTracciato, tracciato.getNomeFile()));
 		} catch(Exception e) {
 			errore = true;
 			if(e instanceof GovPayException || e instanceof ClientException)
-				log.warn(MessageFormat.format("Errore nella Spedizione del tracciato {0}: {1}", this.tipoTracciato, e.getMessage()));
+				LogUtils.logWarn(log, MessageFormat.format("Errore nella Spedizione del tracciato {0}: {1}", this.tipoTracciato, e.getMessage()));
 			else
 				log.error(MessageFormat.format("Errore nella Spedizione del tracciato {0}", this.tipoTracciato), e);
 			
@@ -374,7 +374,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			ZipEntry entry;
 			while ((entry = stream.getNextEntry()) != null) {
             	String entryName = entry.getName();
-            	log.debug(MessageFormat.format(ELABORAZIONE_ENTRY_0, entryName));
+            	LogUtils.logDebug(log, MessageFormat.format(ELABORAZIONE_ENTRY_0, entryName));
             	appContext.getServerByOperationId(operationId).addGenericProperty(new Property("fileContenuto", entryName));
             	EventoContext eventoCtx = new EventoContext(Componente.API_GOVPAY);
             	
@@ -383,11 +383,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            	
 					if(entryName.equals(TracciatiNotificaPagamenti.GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME) 
 	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI.toString())) {
-						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_IN_CORSO, entryName));
+						LogUtils.logDebug(log, MessageFormat.format(SPEDIZIONE_ENTRY_0_IN_CORSO, entryName));
 						
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI.toString()));
 						
-						Map<String, String> queryParams = new HashMap<String, String>();
+						Map<String, String> queryParams = new HashMap<>();
 						queryParams.put("dataInizio", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtDa())));
 						queryParams.put("dataFine", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtA())));
 						if(connettore.getTipiPendenza() != null) {
@@ -398,7 +398,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI, null);
 						eventoCtx.setEsito(Esito.OK);
-						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
+						LogUtils.logDebug(log, MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
 						} catch (UtilsException e1) {
@@ -409,11 +409,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            	// sintesi flussi
 	            	if(entryName.equals(TracciatiNotificaPagamenti.GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME) 
 	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE.toString())) {
-	            		log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_IN_CORSO, entryName));
+	            		LogUtils.logDebug(log, MessageFormat.format(SPEDIZIONE_ENTRY_0_IN_CORSO, entryName));
 	            		
 	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE.toString()));
 	            		
-	            		Map<String, String> queryParams = new HashMap<String, String>();
+	            		Map<String, String> queryParams = new HashMap<>();
 	            		queryParams.put("dataInizio", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtDa())));
 	            		queryParams.put("dataFine", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtA())));
 	            		if(connettore.getTipiPendenza() != null) {
@@ -424,7 +424,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE, null);
 						eventoCtx.setEsito(Esito.OK);
-						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
+						LogUtils.logDebug(log, MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
 						} catch (UtilsException e1) {
@@ -435,7 +435,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            	// elenco RT
 	            	if(entryName.startsWith(TracciatiNotificaPagamenti.FILE_RT_DIR_PREFIX) 
 	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.RPP.toString())) {
-	            		log.debug(MessageFormat.format("Creazione RPP a partire dalla Entry: {0} in corso...", entryName));
+	            		LogUtils.logDebug(log, MessageFormat.format("Creazione RPP a partire dalla Entry: {0} in corso...", entryName));
 	            		
 	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
 	            		
@@ -454,7 +454,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            			remove.setRt(baos.toByteArray());
 	            			
 	            			mappaRPP.put(pathRT, remove);
-	            			log.debug(MessageFormat.format("Creazione RPP a partire dalla Entry: {0} aggiunta RT.", entryName));
+	            			LogUtils.logDebug(log, MessageFormat.format("Creazione RPP a partire dalla Entry: {0} aggiunta RT.", entryName));
 	            		} 
 	            		
 	            		boolean isRPT = TracciatiNotificaPagamentiUtils.isRPT(entry.getName());
@@ -470,19 +470,19 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            			remove.setRpt(baos.toByteArray());
 	            			
 	            			mappaRPP.put(pathRPT, remove);
-	            			log.debug(MessageFormat.format("Creazione RPP a partire dalla Entry: {0} aggiunta RPT.", entryName));
+	            			LogUtils.logDebug(log, MessageFormat.format("Creazione RPP a partire dalla Entry: {0} aggiunta RPT.", entryName));
 	            		}
-	            		log.debug(MessageFormat.format("Creazione RPP a partire dalla Entry: {0} completata.", entryName));
+	            		LogUtils.logDebug(log, MessageFormat.format("Creazione RPP a partire dalla Entry: {0} completata.", entryName));
 	            	}
 	            	
 	            	// elenco flussi
 	            	if(entryName.startsWith(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX) 
 	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE.toString())) {
-	            		log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_IN_CORSO, entryName));
+	            		LogUtils.logDebug(log, MessageFormat.format(SPEDIZIONE_ENTRY_0_IN_CORSO, entryName));
 	            		
 	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE.toString()));
 	            		
-	            		Map<String, String> queryParams = new HashMap<String, String>();
+	            		Map<String, String> queryParams = new HashMap<>();
 	            		queryParams.put("dataOraFlusso", TracciatiNotificaPagamentiUtils.getDataFlussoRendicontazione(entry.getName()));
 	            		
 	            		IOUtils.copy(stream, baos);
@@ -491,7 +491,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE, pathFlussoRendicontazione);
 						eventoCtx.setEsito(Esito.OK);
-						log.debug(MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
+						LogUtils.logDebug(log, MessageFormat.format(SPEDIZIONE_ENTRY_0_COMPLETATA, entryName));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
 						} catch (UtilsException e1) {
@@ -551,13 +551,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             		try {
 						Rpp rpp = mappaRPP.get(rppKey);
 						
-						log.debug(MessageFormat.format("Spedizione RPP: {0} in corso...", rppKey));
+						LogUtils.logDebug(log, MessageFormat.format("Spedizione RPP: {0} in corso...", rppKey));
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
 						
 						client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale, eventoCtx);
 						client.inviaFile(ConverterUtils.toJSON(rpp).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
 						eventoCtx.setEsito(Esito.OK);
-						log.debug(MessageFormat.format("Spedizione RPP: {0} completata.", rppKey));
+						LogUtils.logDebug(log, MessageFormat.format("Spedizione RPP: {0} completata.", rppKey));
 						try {
 							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_OK_KEY);
 						} catch (UtilsException e1) {
@@ -575,7 +575,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             			}
             			
             			if(eventoCtx != null) {
-//        					eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
             				eventoCtx.setEsito(Esito.FAIL);
             				eventoCtx.setDescrizioneEsito(e.getMessage());
             				eventoCtx.setException(e);
@@ -648,19 +647,18 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
     			} catch (UtilsException e1) {
     				log.error(e1.getMessage(), e1);
     			}
-            	log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
+            	LogUtils.logDebug(log, MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
             	beanDati.setDescrizioneStepElaborazione(StringUtils.join(erroriSpedizione, ","));
             }
 		} catch (java.io.IOException e) {
 			errore = MessageFormat.format("Errore durante la lettura del contenuto dello zip dal db durante l''invio del Tracciato {0} [Nome: {1}], al destinatario [{2}]:{3}", this.tipoTracciato, tracciato.getNomeFile(), this.connettore.getUrl(), e.getMessage());
 			log.error(errore, e);
 			
-//			log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore che non prevede la rispedizione...");
 			tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
 			tracciato.setDataCompletamento(new Date());
 			beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
 			beanDati.setDescrizioneStepElaborazione(errore);
-			log.debug(MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
+			LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
 			try {
 				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_KO_KEY, e.getMessage());
 			} catch (UtilsException e1) {
@@ -721,7 +719,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		
 		String errore = null;
-		Sender senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_MAIL, log);
+		Sender senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_NET, log);
 		
 		String host = mailserver.getHost();
 		int port = mailserver.getPort();
@@ -737,7 +735,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		mail.setServerHost(host);
 		mail.setServerPort(port);
 		if(username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-			log.debug("Autenticazione con username e password al mailserver");
+			LogUtils.logDebug(log, "Autenticazione con username e password al mailserver");
 			mail.setUsername(username);
 			mail.setPassword(password);
 		}
@@ -761,7 +759,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				sslConfig.setTrustStoreType(sslConfigSistema.getTrustStore().getType());
 			}
 			
-			log.debug("Abilitazione configurazione SSL per comunicazione al mailserver");
+			LogUtils.logDebug(log, "Abilitazione configurazione SSL per comunicazione al mailserver");
 			mail.setSslConfig(sslConfig);
 		}
 		
@@ -775,7 +773,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			mail.setCc(indirizzi.subList(1, indirizzi.size()));
 		}
 		
-		log.debug(MessageFormat.format("Invio Tracciato {0} [Nome: {1}], al destinatario [{2}] ...", this.tipoTracciato, tracciato.getNomeFile(), StringUtils.join(this.connettore.getEmailIndirizzi(), ",")));
+		LogUtils.logDebug(log, MessageFormat.format("Invio Tracciato {0} [Nome: {1}], al destinatario [{2}] ...", this.tipoTracciato, tracciato.getNomeFile(), StringUtils.join(this.connettore.getEmailIndirizzi(), ",")));
 
 		this.impostaOggettoEBodyMail(tracciato, dominio, connettore, beanDati, mail);
 		
@@ -798,9 +796,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		try {
 			
 			tracciato.setDataCaricamento(new Date());
-			log.debug(MessageFormat.format("Spediazione Tracciato {0} verso il mail server [{1}]:[{2}]...", this.tipoTracciato,	host, port));
+			LogUtils.logDebug(log, MessageFormat.format("Spediazione Tracciato {0} verso il mail server [{1}]:[{2}]...", this.tipoTracciato,	host, port));
 			senderCommonsMail.send(mail, true);
-			log.debug(MessageFormat.format("Spediazione Tracciato {0} verso il mail server [{1}]:[{2}] completata.", this.tipoTracciato, host, port));
+			LogUtils.logDebug(log, MessageFormat.format("Spediazione Tracciato {0} verso il mail server [{1}]:[{2}] completata.", this.tipoTracciato, host, port));
 			tracciato.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
 			beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_CARICATO.name());
 			beanDati.setDescrizioneStepElaborazione(null);
@@ -832,13 +830,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		Throwable innerException= ExceptionUtils.estraiInnerExceptionDaUtilsException(e); 
 		
 		if(innerException != null) {
-			log.info(errore, e);
-			log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore che non prevede la rispedizione...", this.tipoTracciato));
+			LogUtils.logInfo(log, errore, e);
+			LogUtils.logDebug(log, MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore che non prevede la rispedizione...", this.tipoTracciato));
 			tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
 			tracciato.setDataCompletamento(new Date());
 			beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
 			beanDati.setDescrizioneStepElaborazione(errore);
-			log.debug(MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
+			LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
 			try {
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailKo", e.getMessage());
 			} catch (UtilsException e1) {
@@ -851,7 +849,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			} catch (UtilsException e1) {
 				log.error(e1.getMessage(), e1);
 			}
-			log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
+			LogUtils.logDebug(log, MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
 		}
 	}
 
@@ -918,7 +916,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	private void salvaTracciatoSuFileSystem(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse) throws ServiceException {
 		
-		log.debug(MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] ...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
+		LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] ...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 		String errore = null;
 		boolean retry = true;
 		try {
@@ -951,9 +949,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
 						fos.write(blobRawContentuto); 
 						fos.flush();
-						fos.close();
 						
-						// dumpRequest.setPayload(blobRawContentuto);
 						dumpRequest.getHeaders().put("FilePath", fileName);
 						dumpRequest.getHeaders().put("Ente creditore", dominio.getRagioneSociale());
 						dumpRequest.getHeaders().put("Id Dominio", dominio.getCodDominio());
@@ -964,7 +960,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						dumpRequest.getHeaders().put("Numero pagamenti", beanDati.getNumRtTotali()+"");
 						dumpRequest.getHeaders().put("Versione tracciato", tracciato.getVersione());
 						
-						log.debug(MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] completato.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
+						LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] completato.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 						tracciato.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_CARICATO.name());
 						beanDati.setDescrizioneStepElaborazione(null);
@@ -983,23 +979,23 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 					}
 				} else {
 					errore = MessageFormat.format("Errore durante il salvataggio del Tracciato {0} [Nome: {1}], su FileSystem [{2}]: accesso in scrittura alla directory non consentito.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath());
-					log.debug(MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] accesso in scrittura alla directory non consentito.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
+					LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] accesso in scrittura alla directory non consentito.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 					retry = false;
 				}
 			} else {
 				errore = MessageFormat.format("Errore durante il salvataggio del Tracciato {0} [Nome: {1}], su FileSystem [{2}]: directory non presente.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath());
-				log.debug(MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] directory non presente.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
+				LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] directory non presente.", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 				retry = false;
 			}
 			
 			if(errore != null) {
 				if(!retry) {
-					log.debug(MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] si e'' concluso con errore che non prevede la rispedizione...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
+					LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] si e'' concluso con errore che non prevede la rispedizione...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 					tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
 					tracciato.setDataCompletamento(new Date());
 					beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
 					beanDati.setDescrizioneStepElaborazione(errore);
-					log.debug(MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
+					LogUtils.logDebug(log, MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
 					try {
 						ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.fileSystemKo", errore);
 					} catch (UtilsException e1) {
@@ -1011,7 +1007,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 					} catch (UtilsException e1) {
 						log.error(e1.getMessage(), e1);
 					}
-					log.debug(MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] si e'' concluso con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
+					LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] si e'' concluso con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 				}
 				dumpResponse.setPayload(errore.getBytes());
 			}
@@ -1033,11 +1029,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			boolean dumpEvento = false;
 			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.componente, this.giornale);
 			
-			log.debug(MessageFormat.format("Log Evento Client: [{0}] Tipo Connettore [{1}], Destinatario [{2}], Esito [{3}]", this.componente, tipoConnettore, url, eventoContext.getEsito()));
+			LogUtils.logDebug(log, MessageFormat.format("Log Evento Client: [{0}] Tipo Connettore [{1}], Destinatario [{2}], Esito [{3}]", this.componente, tipoConnettore, url, eventoContext.getEsito()));
 
 			if(configurazioneInterfaccia != null) {
 				try {
-					log.debug(MessageFormat.format("Configurazione Giornale Eventi API: [{0}]: {1}", this.componente, ConverterUtils.toJSON(configurazioneInterfaccia)));
+					LogUtils.logDebug(log, MessageFormat.format("Configurazione Giornale Eventi API: [{0}]: {1}", this.componente, ConverterUtils.toJSON(configurazioneInterfaccia)));
 				} catch (IOException e) {
 					log.error(MessageFormat.format("Errore durante il log della configurazione giornale eventi: {0}", e.getMessage()), e);
 				}
@@ -1045,13 +1041,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				if(EventiUtils.isRequestLettura(null, this.componente, eventoContext.getTipoEvento())) {
 					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
 					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
-					log.debug(MessageFormat.format("Tipo Operazione ''Lettura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
+					LogUtils.logDebug(log, MessageFormat.format("Tipo Operazione ''Lettura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
 				} else if(EventiUtils.isRequestScrittura(null, this.componente, eventoContext.getTipoEvento())) {
 					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
 					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
-					log.debug(MessageFormat.format("Tipo Operazione ''Scrittura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
+					LogUtils.logDebug(log, MessageFormat.format("Tipo Operazione ''Scrittura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
 				} else {
-					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
+					LogUtils.logDebug(log, "Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
 				}
 				
 				eventoContext.setRegistraEvento(logEvento);
@@ -1095,7 +1091,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 					eventoContext.setDettaglioRisposta(dettaglioRisposta);
 				}
 			} else {
-				log.warn(MessageFormat.format("La configurazione per l''API [{0}] non e'' corretta, salvataggio evento non eseguito.",	this.componente)); 
+				LogUtils.logWarn(log, MessageFormat.format("La configurazione per l''API [{0}] non e'' corretta, salvataggio evento non eseguito.",	this.componente)); 
 			}
 		}
 	}

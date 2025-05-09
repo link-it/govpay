@@ -22,19 +22,19 @@ package it.govpay.ragioneria.v3.beans;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import jakarta.validation.constraints.NotNull;
 
 public class NuovaRiconciliazione extends TipoRiferimentoNuovaRiconciliazione implements IValidable {
 
-  @Schema(example = "100.01", required = true, description = "Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.")
+  @Schema(example = "100.01", requiredMode = RequiredMode.REQUIRED, description = "Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.")
  /**
    * Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.
   **/
@@ -58,7 +58,7 @@ public class NuovaRiconciliazione extends TipoRiferimentoNuovaRiconciliazione im
   **/
   private String contoAccredito = null;
 
-  @Schema(example = "2017-01-01ABI00000011234", required = true, description = "Identificativo Sepa Credit Transfer")
+  @Schema(example = "2017-01-01ABI00000011234", requiredMode = RequiredMode.REQUIRED, description = "Identificativo Sepa Credit Transfer")
  /**
    * Identificativo Sepa Credit Transfer
   **/

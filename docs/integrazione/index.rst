@@ -19,7 +19,7 @@ a cui si rimanda per ogni ulteriore informazione sulla specifica pagoPA.
 
         architettura/index
         api/index
-        modellounico/index
+        posizionedebitoria/index
         pagamentiente/index
         pagamentipsp/index
         riconciliazioni/index

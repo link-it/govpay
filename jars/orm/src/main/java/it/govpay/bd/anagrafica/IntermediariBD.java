@@ -92,13 +92,7 @@ public class IntermediariBD extends BasicBD {
 			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getIntermediarioService()).get(id);
 			return this.getIntermediario(intermediarioVO);
 
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -128,13 +122,7 @@ public class IntermediariBD extends BasicBD {
 			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().find(expr);
 
 			return this.getIntermediario(intermediarioVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -153,6 +141,14 @@ public class IntermediariBD extends BasicBD {
 			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
 			Connettore connettorePdd = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePdd(connettorePdd);
+		}
+		if(intermediarioVO.getCodConnettoreRecuperoRT() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreRecuperoRT());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			Connettore connettorePdd = ConnettoreConverter.toDTO(connettori);
+			intermediario.setConnettorePddRecuperoRT(connettorePdd);
 		}
 		if(intermediarioVO.getCodConnettoreFtp() != null) {
 			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
@@ -212,6 +208,20 @@ public class IntermediariBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
+			
+			if(intermediario.getConnettorePddRecuperoRT() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddRecuperoRT());
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePddRecuperoRT().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
 
 			if(intermediario.getConnettoreSftp() != null) {
 
@@ -228,13 +238,7 @@ public class IntermediariBD extends BasicBD {
 			}
 
 			this.emitAudit(intermediario);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -274,6 +278,20 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 			
+			if(intermediario.getConnettorePddRecuperoRT() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddRecuperoRT());
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePddRecuperoRT().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+			
 			if(intermediario.getConnettoreSftp() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
@@ -289,11 +307,7 @@ public class IntermediariBD extends BasicBD {
 			}
 
 			this.emitAudit(intermediario);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -313,10 +327,10 @@ public class IntermediariBD extends BasicBD {
 	}
 
 	public long count(IntermediarioFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(IntermediarioFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(IntermediarioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -333,7 +347,7 @@ public class IntermediariBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(IntermediarioFilter filter) throws ServiceException {
+	private long countConLimitEngine(IntermediarioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -356,12 +370,12 @@ public class IntermediariBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_INTERMEDIARIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_INTERMEDIARIO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_INTERMEDIARIO, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_INTERMEDIARIO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -369,7 +383,7 @@ public class IntermediariBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_INTERMEDIARIO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_INTERMEDIARIO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -383,8 +397,7 @@ public class IntermediariBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -412,13 +425,7 @@ public class IntermediariBD extends BasicBD {
 				lst.add(this.getIntermediario(intermediarioVO));
 			}
 			return lst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

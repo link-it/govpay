@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -338,6 +340,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return this.toAliasTable(field)+".sng_contabilita";
 			}else{
 				return "sng_contabilita";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".sng_metadata";
+			}else{
+				return "sng_metadata";
 			}
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){
@@ -1028,6 +1037,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().SNG_CONTABILITA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){

@@ -46,10 +46,10 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.TipoVersamento;
 
 public class TipoPendenzaDAO extends BaseDAO{
@@ -63,7 +63,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 	}
 
 	public PutTipoPendenzaDTOResponse createOrUpdateTipoPendenza(PutTipoPendenzaDTO putTipoPendenzaDTO) throws ServiceException,
-		TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+		TipoVersamentoNonTrovatoException, NotAuthorizedException, ValidationException{
 		PutTipoPendenzaDTOResponse intermediarioDTOResponse = new PutTipoPendenzaDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putTipoPendenzaDTO.getIdOperatore());
 		TipiVersamentoBD tipiVerwsamentoBD = null;
@@ -85,7 +85,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				
 				byte[] template = Base64.getDecoder().decode(backofficeValidazioneDefinizione.getBytes());
 				
-				log.trace("Ricevuto schema validazione portale backoffice: {}", new String(template));
+				LogUtils.logTrace(log, "Ricevuto schema validazione portale backoffice: {}", new String(template));
 				
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
@@ -100,7 +100,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				try {
 					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
-					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					LogUtils.logError(log, "Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
@@ -118,7 +118,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				
 				byte[] template = Base64.getDecoder().decode(pagamentoValidazioneDefinizione.getBytes());
 				
-				log.trace("Ricevuto schema validazione portale pagamento: {}", new String(template));
+				LogUtils.logTrace(log, "Ricevuto schema validazione portale pagamento: {}", new String(template));
 	
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
@@ -130,7 +130,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				try {
 					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
-					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					LogUtils.logError(log, "Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali pagamento non e' valido.", e);
 				} 
 			}
@@ -140,7 +140,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			intermediarioDTOResponse.setCreated(isCreate);
 			if(isCreate) {
 				// possono creare i tipi pendenza solo gli utenti che hanno autorizzazione su tutti i tipi pendenza (lista idtipoversamento non null e vuota)
-				if(putTipoPendenzaDTO.getIdTipiVersamento() == null || putTipoPendenzaDTO.getIdTipiVersamento().size() > 0) {
+				if(putTipoPendenzaDTO.getIdTipiVersamento() == null || !putTipoPendenzaDTO.getIdTipiVersamento().isEmpty()) {
 					throw new NotAuthorizedException("L'utenza non possiede i diritti per creare nuovi Tipi Pendenza");
 				}
 				
@@ -151,7 +151,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 					throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare il Tipo Pendenza");
 				}
 				
-				if(putTipoPendenzaDTO.getCodTipiVersamento().size() > 0) {
+				if(!putTipoPendenzaDTO.getCodTipiVersamento().isEmpty()) {
 					if(!putTipoPendenzaDTO.getCodTipiVersamento().contains(putTipoPendenzaDTO.getCodTipoVersamento())) {
 						throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare il Tipo Pendenza");
 					}
@@ -168,13 +168,12 @@ public class TipoPendenzaDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException(e.getMessage());
 		} finally {
-			if(tipiVerwsamentoBD != null)
-				tipiVerwsamentoBD.closeConnection();
+			tipiVerwsamentoBD.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
-	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException, UnprocessableEntityException {
+	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws ServiceException, UnprocessableEntityException {
 		TipiVersamentoBD tipiVersamentoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -243,12 +242,11 @@ public class TipoPendenzaDAO extends BaseDAO{
 			
 			return new FindTipiPendenzaDTOResponse(count, findAll);
 		} finally {
-			if(tipiVersamentoBD != null)
-				tipiVersamentoBD.closeConnection();
+			tipiVersamentoBD.closeConnection();
 		}
 	}
 
-	public GetTipoPendenzaDTOResponse getTipoPendenza(GetTipoPendenzaDTO getTipoPendenzaDTO) throws NotAuthorizedException, TipoVersamentoNonTrovatoException, ServiceException, NotAuthenticatedException {
+	public GetTipoPendenzaDTOResponse getTipoPendenza(GetTipoPendenzaDTO getTipoPendenzaDTO) throws TipoVersamentoNonTrovatoException, ServiceException {
 		GetTipoPendenzaDTOResponse response = null;
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);

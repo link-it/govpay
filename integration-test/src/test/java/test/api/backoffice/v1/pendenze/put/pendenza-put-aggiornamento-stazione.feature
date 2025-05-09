@@ -21,7 +21,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -65,7 +65,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 
 # Configuro il simulatore per utilizzare la seconda stazione
@@ -73,7 +73,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -113,7 +113,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -141,7 +141,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -161,14 +161,14 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Configuro il simulatore per utilizzare la seconda stazione
 
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -237,7 +237,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -262,7 +262,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -306,7 +306,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 
 # Configuro il simulatore per utilizzare la seconda stazione
@@ -314,7 +314,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '00',
@@ -354,7 +354,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -382,7 +382,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -402,14 +402,14 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Configuro il simulatore per utilizzare la seconda stazione
 
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '00',
@@ -478,7 +478,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,

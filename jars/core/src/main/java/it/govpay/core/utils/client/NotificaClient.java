@@ -45,6 +45,7 @@ import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -116,7 +117,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug(MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})",	notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
+		LogUtils.logDebug(log, MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})",	notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -124,7 +125,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
-		String swaggerOperationID = this.getSwaggerOperationIdApiV1(notifica, rpt);
+		String swaggerOperationID = this.getSwaggerOperationIdApiV1(notifica);
 
 		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
@@ -169,7 +170,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getSwaggerOperationIdApiV1(Notifica notifica, Rpt rpt) { 
+	public String getSwaggerOperationIdApiV1(Notifica notifica) { 
 		String swaggerOperationID = "";
 
 		switch (notifica.getTipo()) {
@@ -179,7 +180,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -200,7 +201,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -211,7 +212,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug(MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})", notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
+		LogUtils.logDebug(log, MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})", notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -219,7 +220,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.PUT;
-		String swaggerOperationID = this.getSwaggerOperationIdApiV2(notifica, rpt);
+		String swaggerOperationID = this.getSwaggerOperationIdApiV2(notifica);
 
 		switch (notifica.getTipo()) {
 		
@@ -258,18 +259,14 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 
 		try {
 			jsonBody = this.getMessaggioRichiestaApiV2(notifica, rpt, applicazione, versamento, pagamenti);
-		} catch (ServiceException e) {
-			throw new GovPayException(e);
-		} catch (UnsupportedEncodingException e) {
-			throw new GovPayException(e);
-		} catch (IOException e) {
+		} catch (ServiceException | UnsupportedEncodingException | IOException e) {
 			throw new GovPayException(e);
 		}
 
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 	
-	public String getSwaggerOperationIdApiV2(Notifica notifica, Rpt rpt) { 
+	public String getSwaggerOperationIdApiV2(Notifica notifica) { 
 		String swaggerOperationID = "";
 
 		switch (notifica.getTipo()) {
@@ -279,7 +276,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -297,7 +294,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 

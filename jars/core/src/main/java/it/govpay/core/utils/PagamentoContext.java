@@ -119,10 +119,9 @@ public class PagamentoContext {
 			props.put(codApplicazioneIuvKey, applicazione.getCodApplicazioneIuv());
 		}
 		
-		if(this.versamentoCtx != null) {
-			if(this.versamentoCtx.getCodificaIuv() != null)
-				props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
-				props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
+		if(this.versamentoCtx != null && this.versamentoCtx.getCodificaIuv() != null) {
+			props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
+			props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
 		}
 		
 		Calendar now = Calendar.getInstance(); 
@@ -144,7 +143,7 @@ public class PagamentoContext {
 	}
 	
 	public String getAllIuvPropsString(Applicazione applicazione) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("Custom Props { ");
 		if(this.iuvProps != null) {
 			for(String key : this.iuvProps.keySet()) {
@@ -154,10 +153,8 @@ public class PagamentoContext {
 		sb.append("} Default Props { ");
 		
 		Map<String,String> props = this.getDefaultIuvProps(applicazione);
-		if(props != null) {
-			for(String key : props.keySet()) {
-				sb.append("[" + key + "=" + props.get(key) + "] ");
-			}
+		for(String key : props.keySet()) {
+			sb.append("[" + key + "=" + props.get(key) + "] ");
 		}
 		sb.append("}");
 		return sb.toString();

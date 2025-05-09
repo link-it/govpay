@@ -356,12 +356,10 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		if(this.domini != null && !this.domini.isEmpty()) {
 
 			for (Object object : this.domini) {
-				if(object instanceof String) {
-					String idDominio = (String) object;
+				if(object instanceof String idDominio) {
 					if(!idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						validatoreId.validaIdDominio("domini", idDominio);
-				} else if(object instanceof DominioProfiloPost) {
-					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+				} else if(object instanceof DominioProfiloPost dominioProfiloPost) {
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
 				} else if(object instanceof java.util.LinkedHashMap) {
@@ -394,7 +392,6 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 					if(dominioProfiloPost.getIdDominio() == null)
 						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
 
-//					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
 				} else {

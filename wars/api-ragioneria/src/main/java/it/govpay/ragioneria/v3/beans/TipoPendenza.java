@@ -19,18 +19,18 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class TipoPendenza   {
 
-  @Schema(example = "REFNIDO", required = true, description = "")
+  @Schema(example = "REFNIDO", requiredMode = RequiredMode.REQUIRED, description = "")
   private String idTipoPendenza = null;
 
-  @Schema(example = "Refezione scolastica Asilo Nido", required = true, description = "")
+  @Schema(example = "Refezione scolastica Asilo Nido", requiredMode = RequiredMode.REQUIRED, description = "")
   private String descrizione = null;
  /**
    * Get idTipoPendenza

@@ -81,13 +81,13 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   @JsonProperty("stato")
   private StatoIncasso stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   /**
    **/
   public Incasso dominio(DominioIndex dominio) {

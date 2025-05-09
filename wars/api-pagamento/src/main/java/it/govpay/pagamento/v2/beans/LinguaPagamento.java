@@ -31,26 +31,26 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Indica la lingua da utilizzare durante il pagamento sul Checkout
  */
 public enum LinguaPagamento {
-  
-  
-  
-  
+
+
+
+
   IT("it"),
-  
-  
+
+
   EN("en"),
-  
-  
+
+
   FR("fr"),
-  
-  
+
+
   SL("sl"),
-  
-  
+
+
   DE("de");
-  
-  
-  
+
+
+
 
   private String value;
 

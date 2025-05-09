@@ -40,10 +40,10 @@ public class Stazione extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("versione")
   private VersioneStazione versione = null;
-  
+
   @JsonProperty("idStazione")
   private String idStazione = null;
 
@@ -162,7 +162,7 @@ public class Stazione extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Stazione {\n");
-    
+
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    versione: ").append(toIndentedString(versione)).append("\n");

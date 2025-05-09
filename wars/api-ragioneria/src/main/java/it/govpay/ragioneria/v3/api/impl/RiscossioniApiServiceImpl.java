@@ -19,14 +19,13 @@
  */
 package it.govpay.ragioneria.v3.api.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -82,7 +81,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
     	Authentication user = this.getUser();
     	String methodName = "findRiscossioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -100,8 +99,6 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			findRiscossioniDTO.setIdDominio(idDominio);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
 			findRiscossioniDTO.setPagina(pagina);
-//			findRiscossioniDTO.setIdA2A(idA2A);
-//			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setIur(iur);
 			findRiscossioniDTO.setOrderBy(ordinamento);
 			if(stato != null) {
@@ -180,11 +177,11 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			Riscossioni response = new Riscossioni(this.getServicePathConURIAssoluta(uriInfo, httpHeaders), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(lst);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -200,7 +197,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
     	Authentication user = this.getUser();
     	String methodName = "getRiscossione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -232,15 +229,14 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			Versamento versamento = singoloVersamento.getVersamento(null);
 			Riscossione response = RiscossioniConverter.toRsModel(pagamento, singoloVersamento, versamento);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
     }
 
 }
-

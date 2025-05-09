@@ -9,6 +9,8 @@ Background:
 * def esitoAttivaRPT = read('msg/attiva-response-ok.json')
 * configure followRedirects = false
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Pagamento eseguito dovuto precaricato
 
 * call read('classpath:utils/pa-carica-avviso.feature')

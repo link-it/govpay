@@ -109,13 +109,13 @@ public class Evento extends JSONSerializable {
 
   @JsonProperty("severita")
   private Integer severita = null;
-  
+
   @JsonProperty("clusterId")
   private String clusterId = null;
-  
+
   @JsonProperty("transactionId")
   private String transactionId = null;
-  
+
   @JsonProperty("parametriRichiesta")
   private Object parametriRichiesta = null;
 

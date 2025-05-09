@@ -82,8 +82,4 @@ public class UtenzaApplicazione extends Utenza {
 		return sb.toString();
 	}
 
-//	public void setCodApplicazione(String codApplicazione) {
-//		this.codApplicazione = codApplicazione;
-//	}
-
 }

@@ -9,7 +9,7 @@
 		<hidden property="antinstaller_product_version" value="PRODUCT_VERSION" />
 
 		<comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay" />
-		<comment explanatoryText="Copyright (c) 2014-2024 Link.it srl (http://www.link.it)." />
+		<comment explanatoryText="Copyright (c) 2014-2025 Link.it srl (http://www.link.it)." />
 		<comment explanatoryText="" />
 		<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version." />
 		<comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details." />
@@ -20,12 +20,11 @@
 	<page name="informazioniente" type="input" displayText="Informazioni Preliminari">
 		<comment displayText="" />
 		<hidden property="antinstaller_log_level" value="INFO" />
-		<!--
-		<select defaultValue="wildfly26" property="antinstaller_as" displayText="Application Server">
-			<option value="wildfly18" text="WildFly 18" />
-			<option value="wildfly26" text="WildFly 26" />
-		</select>
-		-->
+		
+		<hidden property="antinstaller_as" value="APPLICATION_SERVER" />
+		
+		<hidden property="antinstaller_jndi_name" value="JNDI_NAME" />
+		
 		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
 			<option value="postgresql" text="PostgreSQL" />
 			<option value="mysql" text="MySQL" />
@@ -87,7 +86,7 @@
 		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
 	</page>
 
-	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}=postgresql">
+	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}==wildfly28)">
 		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
 		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
 			<hidden property="porta-db" value="5432" />
@@ -102,6 +101,33 @@
 		<comment displayText="" />
 		<validated property="antinstaller_modulo_postgres" displayText="Nome modulo driver postgresql" regex=".+" />
 		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL" />
+	</page>
+	
+	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}!=wildfly28)">
+		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
+		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
+			<hidden property="porta-db" value="5432" />
+			<hidden property="TABLESPACE" value="openspcoop2" />
+			<hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<hidden property="antinstaller_modulo_postgres" value="NONE" />
+		</conditional>
+		<validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta" />
+		<validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
+	</page>
+	
+	<page name="informazioniserviziconsole" type="input" displayText="Servizi Backoffice" ifProperty="${antinstaller_as}==wildfly28">
+		<validated defaultValue="/govpay/backend/gui/backoffice/" property="antinstaller_govpay_backend_gui_base_path" displayText="Base path risorse statiche console" regex=".+" />
+		<validated defaultValue="/govpay/backend/api/backoffice" property="antinstaller_govpay_backend_api_base_url" displayText="Base path API Backoffice" regex=".+" />
+		<comment explanatoryText="Indicare i base path necessari al funzionamento della console" />
+	</page>
+	
+	<page name="informazioniserviziconsole" type="input" displayText="Servizi Backoffice" ifProperty="${antinstaller_as}!=wildfly28">
+		<validated defaultValue="/govpay-console/" property="antinstaller_govpay_backend_gui_base_path" displayText="Base path risorse statiche console" regex=".+" />
+		<validated defaultValue="/govpay-api-backoffice" property="antinstaller_govpay_backend_api_base_url" displayText="Base path API Backoffice" regex=".+" />
+		<comment explanatoryText="Indicare i base path necessari al funzionamento della console" />
 	</page>
 
 	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true">

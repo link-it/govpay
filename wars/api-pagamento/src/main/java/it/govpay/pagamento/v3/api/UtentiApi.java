@@ -19,10 +19,10 @@
  */
 package it.govpay.pagamento.v3.api;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +49,7 @@ public interface UtentiApi  {
     @Path("/profilo")
     @Produces({ "application/json" })
     @Operation(summary = "Elenco delle acl associate all'utenza chiamante", tags={ "Utenti" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Autorizzazioni dell'utenza chiamante", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Profilo.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "500", description = "Servizio non disponibile", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))) })
@@ -63,7 +63,7 @@ public interface UtentiApi  {
     @Path("/logout")
     @Produces({ "application/json" })
     @Operation(summary = "Logout", tags={ "Utenti" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Operazione eseguita con successo"),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),

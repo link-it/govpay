@@ -66,7 +66,7 @@ public class StazioneFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			IExpression expr = this.newExpression();
 			boolean addAnd = false; 

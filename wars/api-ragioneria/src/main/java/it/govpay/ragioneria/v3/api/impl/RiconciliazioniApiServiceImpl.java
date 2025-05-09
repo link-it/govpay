@@ -21,14 +21,13 @@ package it.govpay.ragioneria.v3.api.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -84,7 +83,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
         Authentication user = this.getUser();
         String methodName = "addRiconciliazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -101,17 +100,13 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 
 			RichiestaIncassoDTO richiestaIncassoDTO = RiconciliazioniConverter.toRichiestaIncassoDTO(incasso, idDominio, id, user);
 
-//			if(idFlussoCaseInsensitive != null) {
-//				richiestaIncassoDTO.setRicercaIdFlussoCaseInsensitive(idFlussoCaseInsensitive);
-//			}
-
 			IncassiDAO incassiDAO = new IncassiDAO();
 
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.addRiconciliazione(richiestaIncassoDTO);
 
 			Riconciliazione incassoExt = RiconciliazioniConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			if(richiestaIncassoDTOResponse.isCreated()) {
 				Status responseStatus = Status.ACCEPTED;
 
@@ -124,7 +119,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 				return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt),transactionId).build();
 			}
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -140,7 +135,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
     	Authentication user = this.getUser();
         String methodName = "findRiconciliazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -186,11 +181,11 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 			Riconciliazioni response = new Riconciliazioni(this.getServicePath(uriInfo), listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			response.setRisultati(listaIncassi);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -207,7 +202,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
         String methodName = "getRiconciliazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
@@ -226,24 +221,6 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
 
-//			List<TipoPagamento> tipoEnum = new ArrayList<>();
-//			if(riscossioniTipo == null || riscossioniTipo.isEmpty()) { // valori di default
-//				tipoEnum.add(TipoPagamento.ENTRATA);
-//				tipoEnum.add(TipoPagamento.MBT);
-//			}
-
-//			if(riscossioniTipo!=null) {
-//				for (String tipoS : riscossioniTipo) {
-//					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
-//					if(tipoRiscossione != null) {
-//						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
-//					} else {
-//						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + riscossioniTipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
-//					}
-//				}
-//			}
-
-//			leggiIncassoDTO.setTipoRiscossioni(tipoEnum);
 			leggiIncassoDTO.setTipoRiscossioni(null);
 
 			IncassiDAO incassiDAO = new IncassiDAO();
@@ -261,15 +238,14 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
 
 			Riconciliazione response = RiconciliazioniConverter.toRsModel(leggiIncassoDTOResponse.getIncasso());
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
     }
 
 }
-

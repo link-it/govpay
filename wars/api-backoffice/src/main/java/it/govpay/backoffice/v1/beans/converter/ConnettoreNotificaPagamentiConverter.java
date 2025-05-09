@@ -37,6 +37,7 @@ import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
@@ -44,37 +45,37 @@ import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
 
 public class ConnettoreNotificaPagamentiConverter {
+	
+	
+
+	private ConnettoreNotificaPagamentiConverter() {}
 
 	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti connector, Authentication user, Tipo tipo) throws NotAuthorizedException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 
 		connettore.setAbilitato(connector.getAbilitato());
 
-		if(connector.getAbilitato()) {
+		if(Boolean.TRUE.equals(connector.getAbilitato())) {
 			connettore.setCodiceIPA(connector.getCodiceIPA());
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv().toString());
 			connettore.setIntervalloCreazioneTracciato(connector.getIntervalloCreazioneTracciato().intValue());
 
-//			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
 				List<String> idTipiVersamento = new ArrayList<>();
 
 				for (Object object : connector.getTipiPendenza()) {
-					if(object instanceof String) {
-						String idTipoPendenza = (String) object;
-
+					if(object instanceof String idTipoPendenza) {
 						if(idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
 
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-							if(tipiVersamentoAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+							if(!tipiVersamentoAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA);
 							}
 
-//							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
@@ -82,19 +83,17 @@ public class ConnettoreNotificaPagamentiConverter {
 						idTipiVersamento.add(idTipoPendenza);
 
 
-					} else if(object instanceof TipoPendenzaProfiloIndex) {
-						TipoPendenzaProfiloIndex tipoPendenzaPost = (TipoPendenzaProfiloIndex) object;
+					} else if(object instanceof TipoPendenzaProfiloIndex tipoPendenzaPost) {
 						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
 
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-							if(tipiVersamentoAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+							if(!tipiVersamentoAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA);
 							}
 
-//							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
@@ -116,11 +115,10 @@ public class ConnettoreNotificaPagamentiConverter {
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-							if(tipiVersamentoAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+							if(!tipiVersamentoAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA);
 							}
 
-//							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
@@ -144,9 +142,9 @@ public class ConnettoreNotificaPagamentiConverter {
 				break;
 			case WEBSERVICE:
 				connettore.setTipoConnettore(TipoConnettore.WEB_SERVICE);
-				
+
 				ConnettoriConverter.setAutenticazione(connettore, connector.getWebServiceAuth());
-				
+
 				connettore.setUrl(connector.getWebServiceUrl());
 				break;
 			}
@@ -205,6 +203,7 @@ public class ConnettoreNotificaPagamentiConverter {
 							tPI.setDescrizione(tipoVersamento.getDescrizione());
 							idTipiPendenza.add(tPI);
 						} catch (NotFoundException e) {
+							// donothing
 						}
 					}
 				}
@@ -244,9 +243,6 @@ public class ConnettoreNotificaPagamentiConverter {
 				break;
 			}
 		}
-
-//		if(connettore.getSslType() != null)
-//			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
 
 		return rsModel;
 	}

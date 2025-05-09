@@ -22,7 +22,9 @@ package it.govpay.core.autorizzazione;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.UtilsException;
@@ -45,6 +47,8 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AuthorizationManager {
+	
+	private AuthorizationManager() {}
 	
 	public static final String SESSION_PRINCIPAL_ATTRIBUTE_NAME = "GP_PRINCIPAL";
 	public static final String SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME = "GP_PRINCIPAL_OBJECT";
@@ -75,21 +79,21 @@ public class AuthorizationManager {
 	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws NotAuthorizedException{
 		boolean ok = true;
 
-		Hashtable<String,List<String>> hashSubject = null;
+		Map<String, List<String>> hashSubject = null;
 		try {
-			principalToCheck = CertificateUtils.formatPrincipal(principalToCheck,PrincipalType.subject);
+			principalToCheck = CertificateUtils.formatPrincipal(principalToCheck,PrincipalType.SUBJECT);
 		}catch(UtilsException e) {
 			throw new NotAuthorizedException("L'utenza registrata non e' un subject valido");
 		}
 		try {
-			principalFromRequest = CertificateUtils.formatPrincipal(principalFromRequest,PrincipalType.subject);
-			hashSubject = CertificateUtils.getPrincipalIntoHashtable(principalFromRequest,PrincipalType.subject);
+			principalFromRequest = CertificateUtils.formatPrincipal(principalFromRequest,PrincipalType.SUBJECT);
+			hashSubject = CertificateUtils.getPrincipalIntoMap(principalFromRequest,PrincipalType.SUBJECT);
 		}catch(UtilsException e) {
 			throw new NotAuthorizedException("Utenza" + principalFromRequest + "non autorizzata");
 		}
-		Enumeration<String> keys = hashSubject.keys();
-		while(keys.hasMoreElements()){
-			String key = keys.nextElement();
+		Iterator<String> keys = hashSubject.keySet().iterator();
+		while(keys.hasNext()){
+			String key = keys.next();
 			List<String> listValues = hashSubject.get(key);
             for (String value : listValues) {
             	ok = ok && principalToCheck.contains("/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/");
@@ -203,10 +207,7 @@ public class AuthorizationManager {
 			return false;
 
 		// controllo abilitazione
-		if(!utenza.isAbilitato())
-			return false;
-
-		return true;
+		return utenza.isAbilitato();
 	}
 	
 
@@ -250,7 +251,7 @@ public class AuthorizationManager {
 
 		if(authorized) {
 			if(codDominio != null) {
-				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				authorized = isDominioAuthorized(utenza, codDominio);
 			}
 
 			if(codTipoVersamento != null) {
@@ -397,15 +398,15 @@ public class AuthorizationManager {
 
 		if(authorized) {
 			if(codDominio != null) {
-				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				authorized = isDominioAuthorized(utenza, codDominio);
 				
 				if(authorized && codUO != null) {
-					authorized = authorized && isUOAuthorized(utenza, codDominio, codUO);
+					authorized = isUOAuthorized(utenza, codDominio, codUO);
 				}
 			}
 
 			if(authorized && codTipoVersamento != null) {
-				authorized = authorized && isTipoVersamentoAuthorized(utenza, codTipoVersamento);
+				authorized = isTipoVersamentoAuthorized(utenza, codTipoVersamento);
 			}
 		}
 

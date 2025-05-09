@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<b:beans 
+	xmlns:b="http://www.springframework.org/schema/beans"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<b:bean id="batchAcquisizioneRendicontazioni" class="it.govpay.core.utils.tasks.AcquisizioneRendicontazioni"/>
+	<b:bean id="batchSpedizioneNotifiche" class="it.govpay.core.utils.tasks.SpedizioneNotifiche"/>
+	<b:bean id="batchSpedizioneNotificheCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheCheck"/>
+	<b:bean id="batchSpedizioneNotificheAppIo" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIo"/>
+	<b:bean id="batchSpedizioneNotificheAppIoCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIoCheck"/>
+	<b:bean id="batchResetCacheAnagrafica" class="it.govpay.core.utils.tasks.ResetCacheAnagrafica"/>
+	<b:bean id="batchResetCacheAnagraficaCheck" class="it.govpay.core.utils.tasks.ResetCacheAnagraficaCheck"/>
+	<b:bean id="batchElaborazioneTracciatiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenzeCheck"/>
+	<b:bean id="batchElaborazioneTracciati" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenze"/>
+	<b:bean id="batchSpedizionePromemoria" class="it.govpay.core.utils.tasks.SpedizionePromemoria"/>
+	<b:bean id="batchSpedizionePromemoriaCheck" class="it.govpay.core.utils.tasks.SpedizionePromemoriaCheck"/>
+	<b:bean id="batchGestionePromemoria" class="it.govpay.core.utils.tasks.GestionePromemoria"/>
+	
+	<b:bean id="batchElaborazioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiNotificaPagamentiCheck"/>
+	<b:bean id="batchElaborazioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiNotificaPagamenti"/>
+	<b:bean id="batchSpedizioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamentiCheck"/>
+	<b:bean id="batchSpedizioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamenti"/>
+	
+	<b:bean id="batchElaborazioneRiconciliazioniCheck" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioniCheck"/>
+	<b:bean id="batchElaborazioneRiconciliazioni" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioni"/>
+	
+	<b:bean id="batchChiusuraRptScaduteCheck" class="it.govpay.core.utils.tasks.ChiusuraRptScaduteCheck"/>
+	<b:bean id="batchChiusuraRptScadute" class="it.govpay.core.utils.tasks.ChiusuraRptScadute"/>
+	
+	<b:bean id="batchRecuperoRTCheck" class="it.govpay.core.utils.tasks.RecuperoRTCheck"/>
+	<b:bean id="batchRecuperoRT" class="it.govpay.core.utils.tasks.RecuperoRT"/>
+	
+	<task:scheduled-tasks scheduler="myScheduler">
+		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
+		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
+        <!-- Notifiche spedite tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
+        <!-- Check Notifiche da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneNotificheCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Notifiche App IO spedite tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchSpedizioneNotificheAppIo" method="exec" cron="0 * * * * ?" />
+        <!-- Check Notifiche AppIO da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneNotificheAppIoCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Reset della cache tutti i giorni ogni 2 ore -->
+        <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
+        <!-- Check data reset della cache tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="0 * * * * ?" />
+        <!-- Check tracciati da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneTracciatiCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati viene eseguito tutti i giorni ogni 30 minuti -->
+        <task:scheduled ref="batchElaborazioneTracciati" method="exec" cron="0 0/30 * * * ?" />
+        <!-- Spedizione promemoria tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchSpedizionePromemoria" method="exec" cron="0 * * * * ?" />
+        <!-- Check promemoria da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizionePromemoriaCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Gestone Promemoria tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchGestionePromemoria" method="exec" cron="0 * * * * ?" />
+        
+        <!-- Check tracciati notifica pagamenti da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati notifica pagamenti viene eseguito tutti i giorni un minuto dopo ogni ora -->
+<!--         <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamenti" method="exec" cron="0 1 * * * ?" /> -->
+        <!-- Elaborazione tracciati notifica pagamenti viene eseguito tutti i giorni alle 3 del mattino -->
+        <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamenti" method="exec" cron="0 0 3 * * ?" />
+        <!-- Check tracciati notifica pagamenti da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+         <!-- tracciati notifica pagamenti spediti tutti i giorni ogni mezzora -->
+        <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamenti" method="exec" cron="0 0/30 * * * ?" />
+        
+        <!-- Check riconciliazioni da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneRiconciliazioniCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione riconciliazioni viene eseguito ogni ora -->
+        <task:scheduled ref="batchElaborazioneRiconciliazioni" method="exec" cron="0 0 * * * ?" />
+        
+        <!-- Check Rpt scadute da chiudere viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchChiusuraRptScaduteCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Rpt scadute da chiudere viene eseguito tutti i giorni ogni 30 minuti -->
+        <task:scheduled ref="batchChiusuraRptScadute" method="exec" cron="0 0/30 * * * ?" />
+        
+        <!-- Check RecuperoRT viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchRecuperoRTCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- RecuperoRT viene eseguito tutti i giorni ogni ora -->
+        <task:scheduled ref="batchChiusuraRptScadute" method="exec" cron="0 0 * * * ?" />
+        
+    </task:scheduled-tasks>
+ 
+<task:scheduler id="myScheduler" pool-size="1"/>
+
+</b:beans>

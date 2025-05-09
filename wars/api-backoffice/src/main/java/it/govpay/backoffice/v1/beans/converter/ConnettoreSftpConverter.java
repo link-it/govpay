@@ -24,6 +24,8 @@ import it.govpay.backoffice.v1.beans.ServizioFtp;
 import it.govpay.model.ConnettoreSftp;
 
 public class ConnettoreSftpConverter {
+	
+	private ConnettoreSftpConverter() {}
 
 	public static ConnettoreSftp getConnettore(it.govpay.backoffice.v1.beans.ServizioFtp connector, String idIntermediario) {
 		ConnettoreSftp connettoreSftp = new ConnettoreSftp();

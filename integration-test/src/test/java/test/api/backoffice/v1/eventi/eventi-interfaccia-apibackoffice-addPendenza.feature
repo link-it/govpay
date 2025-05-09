@@ -24,7 +24,7 @@ And request
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Evento creazione da operatore basic in api Backoffice
 
@@ -89,7 +89,7 @@ And match response.risultati[0] ==
 		"principal": "gpadmin",
 		"utente": "Amministratore",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/backoffice/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_backoffice_context + '/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -173,7 +173,7 @@ And match response.risultati[0] ==
 		"principal": "RSSMRA30A01H501I",
 		"utente": "Mario Rossi",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/backoffice/rs/spid/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_backoffice_context + '/rs/spid/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -254,7 +254,7 @@ And match response.risultati[0] ==
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('/govpay/backend/api/backoffice/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
+		"url": "#(govpay_api_backoffice_context + '/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"

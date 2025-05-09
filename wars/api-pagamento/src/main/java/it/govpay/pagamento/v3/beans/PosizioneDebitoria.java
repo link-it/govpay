@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class PosizioneDebitoria extends Lista  {
-	
+
 	public PosizioneDebitoria() {
 		super();
 	}
@@ -35,7 +35,7 @@ public class PosizioneDebitoria extends Lista  {
 	public PosizioneDebitoria(URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(requestUri, count, pagina, limit);
 	}
-  
+
   @Schema(description = "")
   private List<PendenzaArchivio> risultati = null;
  /**

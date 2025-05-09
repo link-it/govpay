@@ -19,8 +19,8 @@
  */
 package it.govpay.rs.eventi;
 
+import java.io.IOException;
 import java.io.OutputStream;
-import java.text.MessageFormat;
 import java.util.Base64;
 import java.util.Date;
 
@@ -35,6 +35,7 @@ import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CachedOutputStreamCallback;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -45,6 +46,7 @@ import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.HttpMethod;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.configurazione.GdeInterfaccia;
@@ -70,7 +72,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		Esito esito = null;
 		try {
 			if(!this.giornaleEventiConfig.isAbilitaGiornaleEventi()) return;
-			
+
 			String apiName = this.giornaleEventiConfig.getApiName();
 			boolean logEvento = false;
 			boolean dumpEvento = false;
@@ -85,34 +87,32 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 			url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
 			httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
 			principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
-			
+
 			HttpMethod httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
 			esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
-			
-			this.log.debug(MessageFormat.format("Log Evento API: [{0}] Method [{1}], Url [{2}], Esito [{3}]", apiName, httpMethodS,
-					url, esito));
+
+			LogUtils.logDebug(this.log, "Log Evento API: [{}] Method [{}], Url [{}], Esito [{}]", apiName, httpMethodS, url, esito);
 
 			GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
 
 			if(configurazioneInterfaccia == null) {
-				this.log.warn(MessageFormat.format(
-						"La configurazione per l''API [{0}] non e'' corretta, salvataggio evento non eseguito.",
-						apiName));
+				this.log.warn("La configurazione per l'API [{}] non e' corretta, salvataggio evento non eseguito.", apiName);
 				return;
 			}
-			
-			this.log.debug(MessageFormat.format("Configurazione Giornale Eventi API: [{0}]: {1}", apiName, ConverterUtils.toJSON(configurazioneInterfaccia)));
-			
+
+			String configurazioneInterfacciaJson = ConverterUtils.toJSON(configurazioneInterfaccia);
+			LogUtils.logDebug(this.log, "Configurazione Giornale Eventi API: [{}]: {}", apiName, configurazioneInterfacciaJson);
+
 			if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
 				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
-				this.log.debug(MessageFormat.format("Tipo Operazione ''Lettura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
+				LogUtils.logDebug(this.log, "Tipo Operazione ''Lettura'', Log [{}], Dump [{}].", logEvento, dumpEvento);
 			} else if(GiornaleEventiUtilities.isRequestScrittura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), esito);
 				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), esito);
-				this.log.debug(MessageFormat.format("Tipo Operazione ''Scrittura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
+				LogUtils.logDebug(this.log, "Tipo Operazione ''Scrittura'', Log [{}], Dump [{}].", logEvento, dumpEvento);
 			} else {
-				this.log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
+				LogUtils.logDebug(this.log, "Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
 			}
 
 			eventoCtx.setRegistraEvento(logEvento);
@@ -120,17 +120,17 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				Date dataIngresso = eventoCtx.getDataRichiesta();
 				Date dataUscita = new Date();
 				// lettura informazioni dalla richiesta
-				
+
 				DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-				
-			
+
+
 				dettaglioRichiesta.setPrincipal(principal);
 				dettaglioRichiesta.setUtente(eventoCtx.getUtente());
 				dettaglioRichiesta.setUrl(url);
 				dettaglioRichiesta.setMethod(httpMethodS);
 				dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
 				dettaglioRichiesta.setHeadersFromMap(eventRequest.getHeaders());
-				
+
 				// lettura informazioni dalla response
 				final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
 				DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
@@ -140,48 +140,53 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				eventoCtx.setDataRisposta(dataUscita);
 				eventoCtx.setDettaglioRichiesta(dettaglioRichiesta);
 				eventoCtx.setDettaglioRisposta(dettaglioRisposta);
-				
+
 				eventoCtx.setTransactionId(context.getTransactionId());
-				
+
 				String clusterId = GovpayConfig.getInstance().getClusterId();
 				if(clusterId == null)
 					clusterId = GovpayConfig.getInstance().getAppName();
-				
+
 				eventoCtx.setClusterId(clusterId);
 
 				if(dumpEvento) {
-					// dump richiesta
-					if (shouldLogContent(eventRequest)) {
-						GiornaleEventiUtilities.addContent(inMessage, eventRequest, this.giornaleEventiConfig);
-					} else {
-						eventRequest.setPayload(AbstractLoggingInterceptor.CONTENT_SUPPRESSED);
-					}
-					if(eventRequest.getPayload() != null)
-						dettaglioRichiesta.setPayload(Base64.getEncoder().encodeToString(eventRequest.getPayload().getBytes()));
-
-					// dump risposta
-					final OutputStream os = message.getContent(OutputStream.class);
-					if (os != null) {
-						LoggingCallback callback = new LoggingCallback(this.sender, message, eventoCtx, os, this.limit);
-						message.setContent(OutputStream.class, createCacheAndWriteOutputStream(message, os, callback));
-					}
-				} 
+					dumpEvento(message, eventoCtx, inMessage, eventRequest, dettaglioRichiesta);
+				}
 			}
-		} catch (Throwable e) {
+		} catch (it.govpay.core.exceptions.IOException | ServiceException e) {
 			this.log.error(e.getMessage(),e);
 		} finally {
-
+			//donothing
 		}
 	}
 
-	private OutputStream createCacheAndWriteOutputStream(Message message, final OutputStream os, CachedOutputStreamCallback callback) {
+	private void dumpEvento(Message message, EventoContext eventoCtx, Message inMessage, final LogEvent eventRequest,
+			DettaglioRichiesta dettaglioRichiesta) {
+		// dump richiesta
+		if (shouldLogContent(eventRequest)) {
+			GiornaleEventiUtilities.addContent(inMessage, eventRequest, this.giornaleEventiConfig);
+		} else {
+			eventRequest.setPayload(AbstractLoggingInterceptor.CONTENT_SUPPRESSED);
+		}
+		if(eventRequest.getPayload() != null)
+			dettaglioRichiesta.setPayload(Base64.getEncoder().encodeToString(eventRequest.getPayload().getBytes()));
+
+		// dump risposta
+		final OutputStream os = message.getContent(OutputStream.class);
+		if (os != null) {
+			LoggingCallback callback = new LoggingCallback(this.sender, message, eventoCtx, os, this.limit);
+			message.setContent(OutputStream.class, createCacheAndWriteOutputStream(os, callback));
+		}
+	}
+
+	private OutputStream createCacheAndWriteOutputStream(final OutputStream os, CachedOutputStreamCallback callback) {
 		final CacheAndWriteOutputStream newOut = new CacheAndWriteOutputStream(os);
 		if (this.threshold > 0) {
 			newOut.setThreshold(this.threshold);
 		}
 		if (this.limit > 0) {
-			// make the limit for the cache greater than the limit for the truncated payload in the log event, 
-			// this is necessary for finding out that the payload was truncated 
+			// make the limit for the cache greater than the limit for the truncated payload in the log event,
+			// this is necessary for finding out that the payload was truncated
 			//(see boolean isTruncated = cos.size() > limit && limit != -1;)  in method copyPayload
 			newOut.setCacheLimit(getCacheLimitExt());
 		}
@@ -221,36 +226,31 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		@Override
 		public void onClose(CachedOutputStream cos) {
 
-			try {
-				final LogEvent event = new DefaultLogEventMapper().map(this.message);
-				if (shouldLogContent(event)) {
-					copyPayload(cos, event);
-				} else {
-					event.setPayload(CONTENT_SUPPRESSED);
-				}
-				
-				if(event.getPayload() != null)
-					this.eventoCtx.getDettaglioRisposta().setPayload(Base64.getEncoder().encodeToString(event.getPayload().getBytes()));
-
-				try {
-					// empty out the cache
-					cos.lockOutputStream();
-					cos.resetOut(null, false);
-				} catch (Exception ex) {
-					// ignore
-				}
-				this.message.setContent(OutputStream.class, this.origStream);
-			} catch (Throwable e) {
-				LoggerWrapperFactory.getLogger(GiornaleEventiCollectorOutInterceptor.class).error(e.getMessage(),e);
-				throw new Fault(e); 
+			final LogEvent event = new DefaultLogEventMapper().map(this.message);
+			if (shouldLogContent(event)) {
+				copyPayload(cos, event);
+			} else {
+				event.setPayload(CONTENT_SUPPRESSED);
 			}
+
+			if(event.getPayload() != null)
+				this.eventoCtx.getDettaglioRisposta().setPayload(Base64.getEncoder().encodeToString(event.getPayload().getBytes()));
+
+			try {
+				// empty out the cache
+				cos.lockOutputStream();
+				cos.resetOut(null, false);
+			} catch (Exception ex) {
+				// ignore
+			}
+			this.message.setContent(OutputStream.class, this.origStream);
 		}
 
 		private void copyPayload(CachedOutputStream cos, final LogEvent event) {
 			try {
 				String encoding = (String) this.message.get(Message.ENCODING);
 				StringBuilder payload = new StringBuilder();
-				writePayload(payload, cos, encoding, event.getContentType());
+				writePayload(payload, cos, encoding);
 				event.setPayload(payload.toString());
 				boolean isTruncated = cos.size() > this.lim && this.lim != -1;
 				event.setTruncated(isTruncated);
@@ -259,8 +259,8 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 			}
 		}
 
-		protected void writePayload(StringBuilder builder, CachedOutputStream cos, String encoding, String contentType)
-				throws Exception {
+		protected void writePayload(StringBuilder builder, CachedOutputStream cos, String encoding)
+				throws IOException {
 			if (StringUtils.isEmpty(encoding)) {
 				cos.writeCacheTo(builder, this.lim);
 			} else {

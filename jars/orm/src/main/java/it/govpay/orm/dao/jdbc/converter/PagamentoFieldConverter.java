@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -319,13 +321,6 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "allegato";
 			}
 		}
-		if(field.equals(Pagamento.model().ID_RR.COD_MSG_REVOCA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_msg_revoca";
-			}else{
-				return "cod_msg_revoca";
-			}
-		}
 		if(field.equals(Pagamento.model().DATA_ACQUISIZIONE_REVOCA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_acquisizione_revoca";
@@ -517,9 +512,6 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Pagamento.model().ALLEGATO)){
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
-		if(field.equals(Pagamento.model().ID_RR.COD_MSG_REVOCA)){
-			return this.toTable(Pagamento.model().ID_RR, returnAlias);
-		}
 		if(field.equals(Pagamento.model().DATA_ACQUISIZIONE_REVOCA)){
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
@@ -595,9 +587,6 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO)){
 			return "tipi_tributo";
-		}
-		if(model.equals(Pagamento.model().ID_RR)){
-			return "rr";
 		}
 		if(model.equals(Pagamento.model().ID_INCASSO)){
 			return "incassi";

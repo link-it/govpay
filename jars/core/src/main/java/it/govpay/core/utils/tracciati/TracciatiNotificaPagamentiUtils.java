@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -67,6 +67,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
@@ -75,6 +76,8 @@ import it.govpay.model.TipoVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class TracciatiNotificaPagamentiUtils {
+	
+	private TracciatiNotificaPagamentiUtils() {}
 	
 	private static final SecureRandom random = new SecureRandom();
     private static final Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
@@ -112,7 +115,6 @@ public class TracciatiNotificaPagamentiUtils {
 	
 	
 	public static String creaNomeEntryFlussoRendicontazione(String idFlusso, String dataFlussoS) {
-//		return TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+".xml";
 		return TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+"_"+dataFlussoS+".xml";
 	}
 
@@ -208,7 +210,7 @@ public class TracciatiNotificaPagamentiUtils {
 		if(valoreCampo != null) {
 			if(valoreCampo.contains(tokenToDelete)) {
 				String nuovoValoreCampo = valoreCampo.replace(tokenToDelete, tokenToReplace);
-				log.warn("Entry ["+entryKey+"]: Campo ["+nomeCampo+"], valore ["+valoreCampo+"] contiene il token ["+ tokenToDelete+"], tutte le occorrenza vengono sostituite con il token ["+tokenToReplace+"]: ["+nuovoValoreCampo+"].");
+				LogUtils.logWarn(log, "Entry ["+entryKey+"]: Campo ["+nomeCampo+"], valore ["+valoreCampo+"] contiene il token ["+ tokenToDelete+"], tutte le occorrenza vengono sostituite con il token ["+tokenToReplace+"]: ["+nuovoValoreCampo+"].");
 				return nuovoValoreCampo;
 			}
 		}
@@ -223,7 +225,7 @@ public class TracciatiNotificaPagamentiUtils {
 		
 		if(valoreCampo.length() > dimensioneTotaleCampo) {
 			String nuovoValoreCampo = valoreCampo.substring(0,dimensioneTotaleCampo);
-			log.warn("Entry ["+entryKey+"]: Campo ["+nomeCampo+"], valore ["+valoreCampo+"] lunghezza ["+ valoreCampo.length()+"] viene troncato alla dimensione massima consentita ["+dimensioneTotaleCampo+"]: ["+nuovoValoreCampo+"].");
+			LogUtils.logWarn(log, "Entry ["+entryKey+"]: Campo ["+nomeCampo+"], valore ["+valoreCampo+"] lunghezza ["+ valoreCampo.length()+"] viene troncato alla dimensione massima consentita ["+dimensioneTotaleCampo+"]: ["+nuovoValoreCampo+"].");
 			return nuovoValoreCampo;
 		}
 		
@@ -286,7 +288,7 @@ public class TracciatiNotificaPagamentiUtils {
 	
 	@SuppressWarnings("unchecked")
 	public static String [] creaLineaCsvMyPivotRpt_SANP23(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, IOException { 
-		List<String> linea = new ArrayList<String>();
+		List<String> linea = new ArrayList<>();
 
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
@@ -309,7 +311,7 @@ public class TracciatiNotificaPagamentiUtils {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
 					
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+					if(proprietaCustom.length() > 0) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta tipoDovuto
 						if(parse.containsKey("tipoDovuto")) {
@@ -327,7 +329,7 @@ public class TracciatiNotificaPagamentiUtils {
 			}
 			
 			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
-			if(contabilita.getQuote() != null && contabilita.getQuote().size() > 0) {
+			if(contabilita.getQuote() != null && !contabilita.getQuote().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
 				
 				sb.append("<bilancio>");
@@ -401,13 +403,13 @@ public class TracciatiNotificaPagamentiUtils {
 	
 	@SuppressWarnings("unchecked")
 	public static String [] creaLineaCsvMyPivotRpt_SANP24(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, IOException { 
-		List<String> linea = new ArrayList<String>();
+		List<String> linea = new ArrayList<>();
 
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		CtReceipt ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPA ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -424,7 +426,7 @@ public class TracciatiNotificaPagamentiUtils {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
 					
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+					if(proprietaCustom.length() > 0) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta tipoDovuto
 						if(parse.containsKey("tipoDovuto")) {
@@ -442,7 +444,7 @@ public class TracciatiNotificaPagamentiUtils {
 			}
 			
 			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
-			if(contabilita.getQuote() != null && contabilita.getQuote().size() > 0) {
+			if(contabilita.getQuote() != null && !contabilita.getQuote().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
 				
 				sb.append("<bilancio>");
@@ -516,13 +518,13 @@ public class TracciatiNotificaPagamentiUtils {
 	
 	@SuppressWarnings("unchecked")
 	public static String [] creaLineaCsvMyPivotRpt_SANP321_V2(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, IOException { 
-		List<String> linea = new ArrayList<String>();
+		List<String> linea = new ArrayList<>();
 
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		CtReceiptV2 ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPAReceiptV2 ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -539,7 +541,7 @@ public class TracciatiNotificaPagamentiUtils {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
 					
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+					if(proprietaCustom.length() > 0) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta tipoDovuto
 						if(parse.containsKey("tipoDovuto")) {
@@ -557,7 +559,7 @@ public class TracciatiNotificaPagamentiUtils {
 			}
 			
 			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
-			if(contabilita.getQuote() != null && contabilita.getQuote().size() > 0) {
+			if(contabilita.getQuote() != null && !contabilita.getQuote().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
 				
 				sb.append("<bilancio>");
@@ -1004,7 +1006,7 @@ public class TracciatiNotificaPagamentiUtils {
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		CtReceipt ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPA ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -1053,19 +1055,10 @@ public class TracciatiNotificaPagamentiUtils {
 		
 //		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
 		String codiceIstituto = ctReceipt.getIdPSP();
-//		StTipoIdentificativoUnivoco tipoIdentificativoUnivocoATtestante = istitutoAttestante.getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco();
 		if(connettore.getCodiceIstituto() != null) {
 			codiceIstituto = connettore.getCodiceIstituto();
 		} else {
-//			switch (tipoIdentificativoUnivocoATtestante) {
-//			case A:
-//				codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
-//				break;
-//			case B:
-//			case G:
-				codiceIstituto = "00000";
-//				break;
-//			}
+			codiceIstituto = "00000";
 		}
 		
 		TracciatiNotificaPagamentiUtils.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
@@ -1366,7 +1359,7 @@ public class TracciatiNotificaPagamentiUtils {
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		CtReceiptV2 ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		CtTransferPAReceiptV2 ctTransferPA = ctReceipt.getTransferList().getTransfer().get(0);
@@ -1415,19 +1408,10 @@ public class TracciatiNotificaPagamentiUtils {
 		
 //		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
 		String codiceIstituto = ctReceipt.getIdPSP();
-//		StTipoIdentificativoUnivoco tipoIdentificativoUnivocoATtestante = istitutoAttestante.getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco();
 		if(connettore.getCodiceIstituto() != null) {
 			codiceIstituto = connettore.getCodiceIstituto();
 		} else {
-//			switch (tipoIdentificativoUnivocoATtestante) {
-//			case A:
-//				codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
-//				break;
-//			case B:
-//			case G:
-				codiceIstituto = "00000";
-//				break;
-//			}
+			codiceIstituto = "00000";
 		}
 		
 		TracciatiNotificaPagamentiUtils.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
@@ -1716,7 +1700,7 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	public static List<List<String>> creaLineaCsvGovPayRpt_SANP23(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
-		List<List<String>> linee = new ArrayList<List<String>>();
+		List<List<String>> linee = new ArrayList<>();
 		
 
 		Versamento versamento = rpt.getVersamento();
@@ -1742,7 +1726,7 @@ public class TracciatiNotificaPagamentiUtils {
 			SingoloVersamento singoloVersamento = singoliVersamenti.get(indiceDati);
 			String datiAllegatiSV = singoloVersamento.getDatiAllegati();
 			
-			List<String> linea = new ArrayList<String>();
+			List<String> linea = new ArrayList<>();
 			
 //			idA2A: da pendenza
 			linea.add(applicazione.getCodApplicazione());
@@ -1816,13 +1800,13 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	public static List<List<String>> creaLineaCsvGovPayRpt_SANP24(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException { 
-		List<List<String>> linee = new ArrayList<List<String>>();
+		List<List<String>> linee = new ArrayList<>();
 		
 
 		Versamento versamento = rpt.getVersamento();
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
 		TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 		CtReceipt ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		String datiAllegati = versamento.getDatiAllegati();
@@ -1841,7 +1825,7 @@ public class TracciatiNotificaPagamentiUtils {
 			SingoloVersamento singoloVersamento = singoliVersamenti.get(indiceDati);
 			String datiAllegatiSV = singoloVersamento.getDatiAllegati();
 			
-			List<String> linea = new ArrayList<String>();
+			List<String> linea = new ArrayList<>();
 			
 //			idA2A: da pendenza
 			linea.add(applicazione.getCodApplicazione());
@@ -1915,13 +1899,13 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	public static List<List<String>> creaLineaCsvGovPayRpt_SANP321_V2(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
-		List<List<String>> linee = new ArrayList<List<String>>();
+		List<List<String>> linee = new ArrayList<>();
 		
 
 		Versamento versamento = rpt.getVersamento();
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
 		TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 		CtReceiptV2 ctReceipt = paSendRTReq_RT.getReceipt();
 		CtSubject soggettoPagatore = ctReceipt.getDebtor();
 		String datiAllegati = versamento.getDatiAllegati();
@@ -1940,7 +1924,7 @@ public class TracciatiNotificaPagamentiUtils {
 			SingoloVersamento singoloVersamento = singoliVersamenti.get(indiceDati);
 			String datiAllegatiSV = singoloVersamento.getDatiAllegati();
 			
-			List<String> linea = new ArrayList<String>();
+			List<String> linea = new ArrayList<>();
 			
 //			idA2A: da pendenza
 			linea.add(applicazione.getCodApplicazione());

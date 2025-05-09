@@ -30,14 +30,14 @@
                   "idTransfer":1,
                   "transferAmount":'#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
                   "fiscalCodePA":"#(idDominio)",
-                  "companyName":"##null",
+                  "companyName":"#string",
                   "IBAN":"##null",
                   "remittanceInformation":"#('/RFB/' + iuv + '/16.00/TXT/Marca da bollo')",
                   "transferCategory":"9/MBT",
 				  "richiestaMarcaDaBollo" : {
 						"provinciaResidenza" : "#string",
 						"tipoBollo" : "#string",
-						"hashDocumento" : "#notnull" 
+						"hashDocumento" : "#notnull"
 					},
                   "metadata":null
                }
@@ -48,6 +48,3 @@
    "rt":null,
    "riscossioni":null
 }
-
-
-

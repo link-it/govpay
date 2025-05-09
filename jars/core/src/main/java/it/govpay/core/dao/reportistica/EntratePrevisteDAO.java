@@ -37,7 +37,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO.FormatoRichiesto;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.utils.GovpayConfig;
@@ -46,7 +45,7 @@ import it.govpay.orm.VistaRiscossioni;
 public class EntratePrevisteDAO extends BaseDAO{
 
 	public ListaEntratePrevisteDTOResponse listaEntrate(ListaEntratePrevisteDTO listaEntratePrevisteDTO) 
-			throws NotAuthenticatedException, NotAuthorizedException, RequestParamException, ServiceException {
+			throws NotAuthorizedException, RequestParamException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		EntratePrevisteBD entrateBD = null;
 
@@ -60,8 +59,9 @@ public class EntratePrevisteDAO extends BaseDAO{
 			entrateBD = new EntratePrevisteBD(configWrapper);
 			EntrataPrevistaFilter filter = entrateBD.newFilter();
 			
-			if(codDomini != null && codDomini.size() > 0)
+			if(!codDomini.isEmpty()) {
 				filter.setCodDomini(codDomini);
+			}
 
 			filter.setDataInizio(listaEntratePrevisteDTO.getDataDa());
 			filter.setDataFine(listaEntratePrevisteDTO.getDataA());

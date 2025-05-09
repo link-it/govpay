@@ -357,9 +357,6 @@ And request applicazione_2
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-#### resetCache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-
 #### Confiugrazione simulatore
 
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
@@ -378,7 +375,7 @@ And path 'domini', idDominio
 And request 
 """
 {
-  "urlEC": "#(govpay_url +'/govpay/frontend/web/connector/ecsp/psp')",
+  "urlEC": "#(govpay_web_connector_url +'/ecsp/psp')",
   "auxDigit": 0,
   "versione": 1,
   "segregationCode": null,
@@ -396,3 +393,5 @@ Given url ndpsym_url + '/pagopa/rs/dars/manutenzione/trash'
 When method get
 Then assert responseStatus == 200
 
+#### resetCache
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')

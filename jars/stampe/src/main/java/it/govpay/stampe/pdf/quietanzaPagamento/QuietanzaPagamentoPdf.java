@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -53,17 +53,19 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 public class QuietanzaPagamentoPdf {
 
-	private static QuietanzaPagamentoPdf _instance = null;
+	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
+	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
+	private static QuietanzaPagamentoPdf instance = null;
 	private static JAXBContext jaxbContext = null;
 
-	public static QuietanzaPagamentoPdf getInstance() {
-		if(_instance == null)
+	public static synchronized QuietanzaPagamentoPdf getInstance() {
+		if(instance == null)
 			init();
 
-		return _instance;
+		return instance;
 	}
 	
-	public static JAXBContext getJAXBContextInstance() {
+	public static synchronized JAXBContext getJAXBContextInstance() {
 		if(jaxbContext == null)
 			init();
 
@@ -71,8 +73,8 @@ public class QuietanzaPagamentoPdf {
 	}
 
 	public static synchronized void init() {
-		if(_instance == null)
-			_instance = new QuietanzaPagamentoPdf();
+		if(instance == null)
+			instance = new QuietanzaPagamentoPdf();
 		
 
 		if(jaxbContext == null) {
@@ -84,16 +86,9 @@ public class QuietanzaPagamentoPdf {
 		}
 	}
 
-	public QuietanzaPagamentoPdf() {
+	private QuietanzaPagamentoPdf() {
 
 	}
-	
-//	public JasperPrint creaJasperPrintQuietanzaPagamento(Logger log, QuietanzaPagamentoInput input,
-//			Properties propertiesRicevutaPerDominio, InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {
-//		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperTemplateInputStream);
-//		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
-//		return jasperPrint;
-//	}
 	
 	public byte[] creaQuietanzaPagamento(Logger log, QuietanzaPagamentoInput input, String codDominio, QuietanzaPagamentoProperties quietanzaPagamentoProperties, File jasperFile) throws Exception {
 	
@@ -117,14 +112,14 @@ public class QuietanzaPagamentoPdf {
 			
 			// leggo il template file jasper da inizializzare 
 			if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
-				LoggerWrapperFactory.getLogger(QuietanzaPagamentoPdf.class).debug("Utilizzo il template esterno: ["+jasperFile.getAbsolutePath()+"].");
+				LoggerWrapperFactory.getLogger(QuietanzaPagamentoPdf.class).debug("Utilizzo il template esterno: [{}].", jasperFile.getAbsolutePath());
 				isTemplate = new FileInputStream(jasperFile);
 				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
 				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
 			} else {
 				
 				if(jasperFile != null) 
-					LoggerWrapperFactory.getLogger(QuietanzaPagamentoPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+					LoggerWrapperFactory.getLogger(QuietanzaPagamentoPdf.class).error("Errore di configurazione: il template configurato {} non esiste. Verra utilizzato il template di default.", jasperFile.getAbsolutePath());
 				
 				if(!jasperTemplateFilename.startsWith("/"))
 					jasperTemplateFilename = "/" + jasperTemplateFilename; 
@@ -134,16 +129,16 @@ public class QuietanzaPagamentoPdf {
 			
 			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
 			
-			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
-                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty(PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY,
+                    PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME), QuietanzaPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
-			log.trace("QuietanzaPagamentoInput: " + new String(byteArray));
+			log.trace("QuietanzaPagamentoInput: {}", new String(byteArray));
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 				
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME);
@@ -160,17 +155,6 @@ public class QuietanzaPagamentoPdf {
 				isTemplate.close();
 		}
 	}
-	
-//	public JRDataSource creaXmlDataSource(Logger log,QuietanzaPagamentoInput input) throws UtilsException, JRException, JAXBException {
-////		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
-//		Marshaller jaxbMarshaller = getJAXBContextInstance().createMarshaller();
-//		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", "root"), QuietanzaPagamentoInput.class, null, input);
-//		jaxbMarshaller.marshal(jaxbElement, baos);
-//		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME);
-//		return dataSource;
-//	}
 	
 	public void caricaLoghiQuietanzaPagamento(QuietanzaPagamentoInput input, Properties propertiesQuietanzaPagamentoPerDominio) {
 		// valorizzo la sezione loghi

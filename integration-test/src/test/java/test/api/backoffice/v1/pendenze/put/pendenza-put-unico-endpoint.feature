@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
@@ -11,7 +12,7 @@ Background:
 * configure followRedirects = false
 
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-* set stazioneNdpSymPut.urlRT = govpay_url + '/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice'
+* set stazioneNdpSymPut.urlRT = govpay_api_pagopa_url + '/PagamentiTelematiciCCPservice'
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
 Scenario: Pagamento di una pendenza precaricata con invio della ricevuta al nuovo endpoint unico
@@ -117,7 +118,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
@@ -224,7 +225,7 @@ And match response.risultati[2] ==
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"

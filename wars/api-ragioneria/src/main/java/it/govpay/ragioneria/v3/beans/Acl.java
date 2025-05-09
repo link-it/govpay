@@ -19,11 +19,12 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class Acl   {
 
@@ -39,10 +40,10 @@ public class Acl   {
   **/
   private String principal = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private TipoServizio servizio = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private TipoAutorizzazione autorizzazioni = null;
  /**
    * ruolo a cui si applica l&#x27;acl

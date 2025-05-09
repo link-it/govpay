@@ -41,6 +41,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
  *
  */
 public class RuoliConverter {
+	
+	private RuoliConverter() {}
 
 	public static RuoloIndex toRsModelIndex(String ruoloName) {
 		RuoloIndex ruolo = new RuoloIndex();

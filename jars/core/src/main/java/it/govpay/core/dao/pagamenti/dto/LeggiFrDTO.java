@@ -24,7 +24,7 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import org.springframework.security.core.Authentication;
 

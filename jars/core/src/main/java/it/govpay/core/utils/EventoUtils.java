@@ -19,6 +19,8 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigInteger;
+
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Evento;
@@ -32,6 +34,10 @@ import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 
 public class EventoUtils {
+	
+	private static final String ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA = "Errore durante la decodifica del livello di severita': ";
+
+	private EventoUtils() {}
 
 	public static Evento toEventoDTO(EventoContext eventoCtx, Logger log) {
 		Evento dto = new Evento();
@@ -67,7 +73,7 @@ public class EventoUtils {
 				break;
 			}
 		}
-		//dto.setId(eventoCtx.getId());
+
 		if(eventoCtx.getDataRisposta() != null) {
 			if(eventoCtx.getDataRichiesta() != null) {
 				dto.setIntervallo(eventoCtx.getDataRisposta().getTime() - eventoCtx.getDataRichiesta().getTime());
@@ -97,29 +103,29 @@ public class EventoUtils {
 			dto.setSeverita(eventoCtx.getSeverita());
 		} else {
 			if(eventoCtx.getException() != null) {
-				log.debug("Classe exception: " + eventoCtx.getException().getClass());
+				LogUtils.logDebug(log, "Classe exception: " + eventoCtx.getException().getClass());
 
-				if(eventoCtx.getException() instanceof GovPayException) {
+				if(eventoCtx.getException() instanceof GovPayException govpayException) {
 					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) eventoCtx.getException()).getCodEsito()));
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(govpayException.getCodEsito()));
 					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
 				}
 
-				if(eventoCtx.getException() instanceof BaseExceptionV1) {
+				if(eventoCtx.getException() instanceof BaseExceptionV1 baseExceptionV1) {
 					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((BaseExceptionV1) eventoCtx.getException()).getCategoria()));
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(baseExceptionV1.getCategoria()));
 					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
 				}
 
-				if(eventoCtx.getException() instanceof UnprocessableEntityException) {
+				if(eventoCtx.getException() instanceof UnprocessableEntityException unprocessableEntityException) {
 					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((UnprocessableEntityException) eventoCtx.getException()).getCategoria()));
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(unprocessableEntityException.getCategoria()));
 					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
 				}
 
@@ -127,12 +133,12 @@ public class EventoUtils {
 					try {
 						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum.RICHIESTA));
 					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						LogUtils.logError(log, ERROR_MSG_ERRORE_DURANTE_LA_DECODIFICA_DEL_LIVELLO_DI_SEVERITA + e.getMessage(),e);
 					}
 				}
 
 				if(eventoCtx.getException() instanceof ClientException) {
-					dto.setSeverita(5);
+					dto.setSeverita(BigInteger.valueOf(5));
 				}
 			}	
 		}

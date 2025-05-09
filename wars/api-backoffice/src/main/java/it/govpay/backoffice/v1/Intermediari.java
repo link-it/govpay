@@ -19,18 +19,18 @@
  */
 package it.govpay.backoffice.v1;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import it.govpay.backoffice.v1.controllers.IntermediariController;
 import it.govpay.core.beans.Costanti;
@@ -57,7 +57,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getIntermediario(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario){
         this.buildContext();
-        return this.controller.getIntermediario(this.getUser(), uriInfo, httpHeaders,  idIntermediario);
+        return this.controller.getIntermediario(this.getUser(), idIntermediario);
     }
 
     @PUT
@@ -66,7 +66,7 @@ public class Intermediari extends BaseRsServiceV1{
 
     public Response addStazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addStazione(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
+        return this.controller.addStazione(this.getUser(), idIntermediario,  idStazione, is);
     }
 
     @GET
@@ -75,7 +75,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findIntermediari(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findIntermediari(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, metadatiPaginazione, maxRisultati);
+        return this.controller.findIntermediari(this.getUser(), uriInfo, pagina, risultatiPerPagina, ordinamento, campi, abilitato, metadatiPaginazione, maxRisultati);
     }
 
     @PUT
@@ -84,7 +84,7 @@ public class Intermediari extends BaseRsServiceV1{
 
     public Response addIntermediario(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, java.io.InputStream is){
         this.buildContext();
-        return this.controller.addIntermediario(this.getUser(), uriInfo, httpHeaders,  idIntermediario, is);
+        return this.controller.addIntermediario(this.getUser(), idIntermediario, is);
     }
 
     @GET
@@ -93,7 +93,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findStazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findStazioni(this.getUser(), uriInfo, httpHeaders,  idIntermediario, pagina, risultatiPerPagina, ordinamento, campi, abilitato, metadatiPaginazione, maxRisultati);
+        return this.controller.findStazioni(this.getUser(), uriInfo, idIntermediario, pagina, risultatiPerPagina, ordinamento, campi, abilitato, metadatiPaginazione, maxRisultati);
     }
 
     @GET
@@ -102,7 +102,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getStazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione){
         this.buildContext();
-        return this.controller.getStazione(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
+        return this.controller.getStazione(this.getUser(), idIntermediario,  idStazione);
     }
 
 }

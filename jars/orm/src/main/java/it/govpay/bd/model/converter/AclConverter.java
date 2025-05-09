@@ -29,6 +29,8 @@ import it.govpay.orm.ACL;
 import it.govpay.orm.IdUtenza;
 
 public class AclConverter {
+	
+	private AclConverter() {}
 
 	public static Acl toDTO(ACL vo) throws CodificaInesistenteException {
 		Acl dto = new Acl();
@@ -51,12 +53,12 @@ public class AclConverter {
 			IdUtenza idUtenza = new IdUtenza();
 			idUtenza.setId(dto.getIdUtenza());
 			try {
-				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.subject));
+				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.SUBJECT));
 			} catch (Exception e) {
 				idUtenza.setPrincipal(dto.getUtenzaPrincipal());
 			}
 			try {
-				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.subject));
+				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.SUBJECT));
 			} catch (Exception e) {
 				idUtenza.setPrincipalOriginale(dto.getUtenzaPrincipalOriginale());
 			}

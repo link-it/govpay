@@ -19,17 +19,20 @@
  */
 package it.govpay.core.business;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
+import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
@@ -51,9 +54,11 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.model.RicevutaTelematicaInput.ElencoVoci;
@@ -61,6 +66,7 @@ import it.govpay.stampe.model.VoceRicevutaTelematicaInput;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaCostanti;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
+import jakarta.xml.bind.JAXBException;
 
 public class RicevutaTelematica {
 
@@ -69,6 +75,7 @@ public class RicevutaTelematica {
 	private SimpleDateFormat sdfDataOraMinuti = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public RicevutaTelematica() {
+		//donothing
 	}
 
 
@@ -93,7 +100,7 @@ public class RicevutaTelematica {
 		return response;
 	}
 
-	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException, CodificaInesistenteException {
 		switch (rpt.getVersione()) {
 		case SANP_230:
 			return this._fromRpt(rpt);
@@ -102,13 +109,14 @@ public class RicevutaTelematica {
 			return this._fromRptVersione240(rpt);
 		case SANP_321_V2:
 		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 			return this._fromRptVersione321_V2(rpt);
 		}
 		
 		return this._fromRpt(rpt);
 	}
 	
-	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException, CodificaInesistenteException {
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 		input.setVersioneOggetto(rpt.getVersione().name());
 
@@ -136,7 +144,7 @@ public class RicevutaTelematica {
 
 		CtRichiestaPagamentoTelematico ctRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 
-		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, ctRichiestaPagamentoTelematico.getDataOraMessaggioRichiesta(), rt.getDataOraMessaggioRicevuta()));
+		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, DateUtils.toJavaDate(ctRichiestaPagamentoTelematico.getDataOraMessaggioRichiesta()), DateUtils.toJavaDate(rt.getDataOraMessaggioRicevuta())));
 		input.setImporto(datiPagamento.getImportoTotalePagato().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -212,7 +220,7 @@ public class RicevutaTelematica {
 		return dominio;
 	}
 
-	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, RicevutaTelematicaInput input) throws ServiceException {
+	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, RicevutaTelematicaInput input) {
 		Anagrafica anagraficaEnteCreditore = dominio.getAnagrafica();
 		if(anagraficaEnteCreditore != null) {
 			String indirizzo = StringUtils.isNotEmpty(anagraficaEnteCreditore.getIndirizzo()) ? anagraficaEnteCreditore.getIndirizzo() : "";
@@ -234,7 +242,7 @@ public class RicevutaTelematica {
 		}
 	}
 
-	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSoggettoPagatore soggettoPagatore) throws ServiceException {
+	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSoggettoPagatore soggettoPagatore) {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getIndirizzoPagatore()) ? soggettoPagatore.getIndirizzoPagatore() : "";
 			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivicoPagatore()) ? soggettoPagatore.getCivicoPagatore() : "";
@@ -259,14 +267,14 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 		input.setVersioneOggetto(rpt.getVersione().name());
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
 
-		PaSendRTReq rt = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq rt = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 
 		CtReceipt datiPagamento = rt.getReceipt();
 
@@ -292,7 +300,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,DateUtils.toJavaDate(datiPagamento.getPaymentDateTime()), DateUtils.toJavaDate(datiPagamento.getApplicationDate())));
 		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -365,7 +373,7 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSubject soggettoPagatore) throws ServiceException {
+	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSubject soggettoPagatore) {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getStreetName()) ? soggettoPagatore.getStreetName() : "";
 			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivicNumber()) ? soggettoPagatore.getCivicNumber() : "";
@@ -390,14 +398,14 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	public RicevutaTelematicaInput _fromRptVersione321_V2(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput _fromRptVersione321_V2(it.govpay.bd.model.Rpt rpt) throws JAXBException, SAXException, ServiceException, UnsupportedEncodingException {
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 		input.setVersioneOggetto(rpt.getVersione().name());
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
 
-		PaSendRTV2Request rt = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request rt = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 
 		CtReceiptV2 datiPagamento = rt.getReceipt();
 
@@ -423,7 +431,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,DateUtils.toJavaDate(datiPagamento.getPaymentDateTime()), DateUtils.toJavaDate(datiPagamento.getApplicationDate())));
 		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 

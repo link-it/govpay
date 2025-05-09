@@ -20,7 +20,7 @@ effettuati i seguenti passi:
 3. Garantire la raggiungibilità dell'application server al RDBMS
    indicato in fase di setup.
 4. Eseguire lo script **sql/gov_pay.sql** per la creazione dello schema
-   del database utilizzando un'utenza con sufficienti diritti per la 
+   del database utilizzando un'utenza con sufficienti diritti per la
    creazione delle tabelle. Ad esempio, nel caso di PostgreSQL, si potrà eseguire
    il comando:
 
@@ -43,16 +43,16 @@ effettuati i seguenti passi:
 10. In ambiente linux, intallare i pacchetti **fontconfig** e **urw-fonts**
     necessari alle stampe degli avvisi di pagamento
 11. Impostare le seguenti properties nella JVM dell'Application Server:
-	
+
 	- **java.awt.headless=true**
 	- **file.encoding=UTF-8**
 	- **user.timezone="Europe/Rome"**
-   
+
 12. Avviare l'application server (ad esempio su Linux con il comando
     **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
     service).
-    
-  
+
+
 
 .. _inst_dispiegamento_auth:
 
@@ -85,4 +85,4 @@ Eventuali modifiche richiedono il riavvio dell'applicazione per renderle operati
 Troubleshooting
 --------------------------
 
-In caso di deploy su versioni non supportate di WildFly e' possibile incorrere nell'errore `Caused by: org.jboss.modules.ModuleNotFoundException: jdk.unsupported` in fase di deploy. Un efficace workaround e' quello di registrare un modulo fittizio come suggerito in `https://stackoverflow.com/a/68318243`_
+In caso di deploy su versioni non supportate di WildFly è possibile incorrere nell'errore `Caused by: org.jboss.modules.ModuleNotFoundException: jdk.unsupported` in fase di deploy. Un efficace workaround è quello di registrare un modulo fittizio come suggerito in `https://stackoverflow.com/a/68318243`_

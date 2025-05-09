@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -52,7 +52,7 @@ import it.govpay.orm.VistaPagamentoPortale;
 import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VistaPagamentoPortaleFetch;
 
-/**     
+/**
  * JDBCVistaPagamentoPortaleServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -66,7 +66,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	public VistaPagamentoPortaleFieldConverter getVistaPagamentoPortaleFieldConverter() {
 		if(this._vistaPagamentoPortaleFieldConverter==null){
 			this._vistaPagamentoPortaleFieldConverter = new VistaPagamentoPortaleFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
-		}		
+		}
 		return this._vistaPagamentoPortaleFieldConverter;
 	}
 	@Override
@@ -138,7 +138,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			}
 		} catch(NotFoundException e) {}
 
-		return list;      
+		return list;
 
 	}
 
@@ -147,7 +147,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 
 		List<VistaPagamentoPortale> list = new ArrayList<>();
 
-		
+
 		try{
 			List<IField> fields = new ArrayList<>();
 
@@ -185,34 +185,34 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 
 			for(Map<String, Object> map: returnMap) {
 				Object idApplicazioneObject = map.remove("id_applicazione");
-				
-				VistaPagamentoPortale pagamentoPortale = (VistaPagamentoPortale)this.getFetch().fetch(jdbcProperties.getDatabase(), VistaPagamentoPortale.model(), map); 
-				
+
+				VistaPagamentoPortale pagamentoPortale = (VistaPagamentoPortale)this.getFetch().fetch(jdbcProperties.getDatabase(), VistaPagamentoPortale.model(), map);
+
 				if(idApplicazioneObject instanceof Long) {
 					Long idApplicazione = (Long) idApplicazioneObject;
-					
+
 					it.govpay.orm.IdApplicazione id_pagamentoPortale_applicazione = new it.govpay.orm.IdApplicazione();
 					id_pagamentoPortale_applicazione.setId(idApplicazione);
 					pagamentoPortale.setIdApplicazione(id_pagamentoPortale_applicazione);
 				}
-				
+
 				list.add(pagamentoPortale);
 			}
 		} catch(NotFoundException e) {}
 
-		return list;  
+		return list;
 
 	}
 
 	@Override
-	public VistaPagamentoPortale find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public VistaPagamentoPortale find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour)
 			throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
-		
+
 		List<VistaPagamentoPortale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
-		if(lst.size() <=0)
+		if(lst.isEmpty())
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
 
 		if(lst.size() > 1)
@@ -225,14 +225,14 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	@Override
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 
-		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model());
 
 		sqlQueryObject.addSelectCountField(this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),listaQuery);
 	}
 
@@ -245,116 +245,116 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	}
 
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 				paginatedExpression, false, field);
 	}
 
 	@Override
-	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, boolean distinct, IField field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		List<Map<String,Object>> map = 
+		List<Map<String,Object>> map =
 				this.select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, distinct, new IField[]{field});
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.selectSingleObject(map);
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectSingleObject(map);
 	}
 
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this.select(jdbcProperties, log, connection, sqlQueryObject,
 				paginatedExpression, false, field);
 	}
 
 	@Override
-	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, boolean distinct, IField ... field) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,field);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,paginatedExpression,field);
 		try{
 
-			ISQLQueryObject sqlQueryObjectDistinct = 
-					org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
+			ISQLQueryObject sqlQueryObjectDistinct =
+					org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 							this.getVistaPagamentoPortaleFieldConverter(), field);
 
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
 		}
 	}
 
 	@Override
-	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCExpression expression, FunctionField functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		Map<String,Object> map = 
+		Map<String,Object> map =
 				this.aggregate(jdbcProperties, log, connection, sqlQueryObject, expression, new FunctionField[]{functionField});
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.selectAggregateObject(map,functionField);
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.selectAggregateObject(map,functionField);
 	}
 
 	@Override
-	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {													
+	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+			JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
 			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
 	}
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		if(expression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
 	}
 
 
 	@Override
-	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			JDBCPaginatedExpression paginatedExpression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		if(paginatedExpression.getGroupByFields().size()<=0){
 			throw new ServiceException("GroupBy conditions not found in expression");
 		}
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
+		org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
+			org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
 	}
 
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
-	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		List<Object> listaQuery = new ArrayList<>();
 		List<JDBCObject> listaParams = new ArrayList<>();
-		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-				expression, this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), 
+		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject,
+				expression, this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),
 				listaQuery,listaParams);
 
 		this._join(expression,sqlQueryObject);
 
-		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
-				org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
+		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.select(jdbcProperties, log, connection,
+				org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct),
 				expression, this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),
 				listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
@@ -366,13 +366,13 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	}
 
 	@Override
-	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
+	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
-		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), 
+		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),
 				sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 
 		if(unionExpression!=null){
@@ -383,25 +383,25 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			}
 		}
 
-		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), 
+		List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),
 				sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
 		if(list!=null && list.size()>0){
 			return list;
 		}
 		else{
 			throw new NotFoundException("Not Found");
-		}								
+		}
 	}
-	
+
 	@Override
-	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
-			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
+	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
+			Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
-		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), 
+		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),
 				sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 
 		if(unionExpression!=null){
@@ -412,8 +412,8 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			}
 		}
 
-		NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), 
+		NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject,
+				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(),
 				sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
 		if(number!=null && number.longValue()>=0){
 			return number;
@@ -425,7 +425,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 
 
 
-	// -- ConstructorExpression	
+	// -- ConstructorExpression
 
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
@@ -484,22 +484,22 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdApplicazione()!=null && 
+		if(obj.getIdApplicazione()!=null &&
 				imgSaved.getIdApplicazione()!=null){
 			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
 		}
-		if(obj.getIdTipoVersamento()!=null && 
+		if(obj.getIdTipoVersamento()!=null &&
 				imgSaved.getIdTipoVersamento()!=null){
 			obj.getIdTipoVersamento().setId(imgSaved.getIdTipoVersamento().getId());
 		}
-		if(obj.getIdDominio()!=null && 
+		if(obj.getIdDominio()!=null &&
 				imgSaved.getIdDominio()!=null){
 			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
 		}
-		if(obj.getIdUo()!=null && 
+		if(obj.getIdUo()!=null &&
 				imgSaved.getIdUo()!=null){
 			obj.getIdUo().setId(imgSaved.getIdUo().getId());
-			if(obj.getIdUo().getIdDominio()!=null && 
+			if(obj.getIdUo().getIdDominio()!=null &&
 					imgSaved.getIdUo().getIdDominio()!=null){
 				obj.getIdUo().getIdDominio().setId(imgSaved.getIdUo().getIdDominio().getId());
 			}
@@ -521,7 +521,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		expression.equals(idField, tableId);
 		List<VistaPagamentoPortale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
-		if(lst.size() <=0)
+		if(lst.isEmpty())
 			throw new NotFoundException("Id ["+tableId+"]");
 
 		if(lst.size() > 1)
@@ -530,7 +530,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 
 		return lst.get(0);
 
-	} 
+	}
 
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
@@ -539,7 +539,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 
 	private boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		boolean existsVistaPagamentoPortale = false;
@@ -568,7 +568,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			String tableName2 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model().ID_UO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO,false)){
 			if(!expression.inUseModel(VistaPagamentoPortale.model().ID_UO,false)){
 				String tableName1 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model());
@@ -580,27 +580,27 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			String tableName1 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model().ID_UO);
 			String tableName2 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
-			
+
 		}
-		
+
 		if(expression.inUseModel(VistaPagamentoPortale.model().ID_DOMINIO,false)){
 			String tableName1 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model());
 			String tableName2 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model().ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(VistaPagamentoPortale.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model());
 			String tableName2 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
-		
+
 		if(expression.inUseModel(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO,false)){
 			String tableName1 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model());
 			String tableName2 = this.getVistaPagamentoPortaleFieldConverter().toAliasTable(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
-        
+
 	}
 
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -613,9 +613,9 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	}
 
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
-	
+
 		VistaPagamentoPortaleFieldConverter converter = this.getVistaPagamentoPortaleFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.HashMap<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
@@ -656,7 +656,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 				new CustomField("id", Long.class, "id", converter.toTable(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO))
 			));
 
-		return mapTableToPKColumn;		
+		return mapTableToPKColumn;
 	}
 
 	@Override
@@ -669,12 +669,12 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		sqlQueryObject.addSelectField(this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())+".id");
 		Class<?> objectIdClass = Long.class;
 
-		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model());
 
 		this._join(paginatedExpression,sqlQueryObject);
 
-		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
+		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
@@ -692,12 +692,12 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		sqlQueryObject.addSelectField(this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())+".id");
 		Class<?> objectIdClass = Long.class;
 
-		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model());
 
 		this._join(expression,sqlQueryObject);
 
-		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
+		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
@@ -726,7 +726,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	public IdPagamentoPortale findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -738,7 +738,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _vistaPagamentoPortale
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaPagamentoPortale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaPagamentoPortale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_vistaPagamentoPortale = new ArrayList<Class<?>>();
@@ -771,10 +771,10 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 	}
 
 	@Override
-	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject,
 			String sql,List<Class<?>> returnClassTypes,Object ... param) throws ServiceException,NotFoundException,NotImplementedException,Exception{
 
-		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.nativeQuery(jdbcProperties, log, connection, sqlQueryObject,
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeQuery(jdbcProperties, log, connection, sqlQueryObject,
 				sql,returnClassTypes,param);
 
 	}
@@ -784,12 +784,12 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		if(id == null) {
 			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-		
+
 		if((id!=null && id.getId()!=null && id.getId()>0))
 			return id.getId();
 
@@ -801,7 +801,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		sqlQueryObjectGet.addWhereCondition(this.getVistaPagamentoPortaleFieldConverter().toColumn(VistaPagamentoPortale.model().ID_SESSIONE,true)+"=?");
 
 		// Recupero _vistaPagamentoPortale
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaPagamentoPortale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaPagamentoPortale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdSessione(),VistaPagamentoPortale.model().ID_SESSIONE.getFieldType()),
 		};
 		Long id_vistaPagamentoPortale = null;
@@ -818,7 +818,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 				throw new NotFoundException("Not Found");
 			}
 		}
-		
+
 		return id_vistaPagamentoPortale;
 	}
 }

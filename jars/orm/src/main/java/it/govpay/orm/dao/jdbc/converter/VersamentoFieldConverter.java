@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -585,6 +587,20 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "proprieta";
 			}
 		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_MODIFICA_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ultima_modifica_aca";
+			}else{
+				return "data_ultima_modifica_aca";
+			}
+		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ultima_comunicazione_aca";
+			}else{
+				return "data_ultima_comunicazione_aca";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -818,6 +834,12 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model().ID_OPERAZIONE, returnAlias);
 		}
 		if(field.equals(Versamento.model().PROPRIETA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_MODIFICA_ACA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

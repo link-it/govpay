@@ -94,7 +94,9 @@ public class Evento extends it.govpay.model.Evento{
 			TracciatiBD frBD = new TracciatiBD(bd);
 			try {
 				this.tracciato = frBD.getTracciato(this.getIdTracciato(), false, false, false);
-			} catch (NotFoundException e) {	} catch (MultipleResultException e) { }
+			} catch (NotFoundException | MultipleResultException e) { 
+				// donothing
+			}
 		}
 		return tracciato;
 	}
@@ -108,6 +110,7 @@ public class Evento extends it.govpay.model.Evento{
 			try {
 				this.dettaglioRichiesta = this.getDettaglioObject(this.getParametriRichiesta(), DettaglioRichiesta.class);
 			}catch (IOException e) {
+				// donothing
 			}
 		}
 
@@ -123,6 +126,7 @@ public class Evento extends it.govpay.model.Evento{
 			try {
 				this.dettaglioRisposta = this.getDettaglioObject(this.getParametriRisposta(), DettaglioRisposta.class);
 			}catch (IOException e) {
+				// donothing
 			}
 		}
 
@@ -138,6 +142,7 @@ public class Evento extends it.govpay.model.Evento{
 			try {
 				this.datiPagoPA = this.getDettaglioObject(this.getDatiPagoPA(), DatiPagoPA.class);
 			}catch (IOException e) {
+				// donothing
 			}
 		}
 

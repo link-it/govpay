@@ -25,11 +25,11 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pendenze.v1.beans.DominioIndex;
 
 public class DominiConverter {
-	
+
 	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
 		DominioIndex rsModel = new DominioIndex();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
-		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 		rsModel.setCivico(dominio.getAnagrafica().getCivico());
@@ -55,7 +55,7 @@ public class DominiConverter {
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setAbilitato(dominio.isAbilitato());
-		
+
 		return rsModel;
 	}
 }

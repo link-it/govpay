@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaPagamento;
@@ -48,20 +50,19 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.IUR = new Field("iur",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
-		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO_ALLEGATO = new Field("tipoAllegato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ALLEGATO = new Field("allegato",byte[].class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_ACQUISIZIONE_REVOCA = new Field("dataAcquisizioneRevoca",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.CAUSALE_REVOCA = new Field("causaleRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_REVOCA = new Field("datiRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
-		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.ESITO_REVOCA = new Field("esitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_ESITO_REVOCA = new Field("datiEsitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.STATO = new Field("stato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRPT",it.govpay.orm.IdRpt.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"VistaPagamento",VistaPagamento.class));
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID = new Field("vrsId",long.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new Field("vrsCodVersamentoEnte",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -92,20 +93,19 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
-		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO_ALLEGATO = new ComplexField(father,"tipoAllegato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ALLEGATO = new ComplexField(father,"allegato",byte[].class,"VistaPagamento",VistaPagamento.class);
 		this.DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"dataAcquisizioneRevoca",java.util.Date.class,"VistaPagamento",VistaPagamento.class);
 		this.CAUSALE_REVOCA = new ComplexField(father,"causaleRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_REVOCA = new ComplexField(father,"datiRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
-		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.lang.Double.class,"VistaPagamento",VistaPagamento.class);
+		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.math.BigDecimal.class,"VistaPagamento",VistaPagamento.class);
 		this.ESITO_REVOCA = new ComplexField(father,"esitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.DATI_ESITO_REVOCA = new ComplexField(father,"datiEsitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRPT",it.govpay.orm.IdRpt.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"VistaPagamento",VistaPagamento.class));
-		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"VistaPagamento",VistaPagamento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new ComplexField(father,"vrsCodVersamentoEnte",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -166,8 +166,6 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 	public it.govpay.orm.model.IdRptModel ID_RPT = null;
 	 
 	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
-	 
-	public it.govpay.orm.model.IdRrModel ID_RR = null;
 	 
 	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
 	 

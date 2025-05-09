@@ -38,10 +38,13 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.ragioneria.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.ragioneria.v3.beans.AllegatoPendenza;
 import it.govpay.ragioneria.v3.beans.Documento;
 import it.govpay.ragioneria.v3.beans.LinguaSecondaria;
+import it.govpay.ragioneria.v3.beans.MapEntry;
+import it.govpay.ragioneria.v3.beans.Metadata;
 import it.govpay.ragioneria.v3.beans.Pendenza;
 import it.govpay.ragioneria.v3.beans.PendenzaPagata;
 import it.govpay.ragioneria.v3.beans.ProprietaPendenza;
@@ -56,6 +59,8 @@ import it.govpay.ragioneria.v3.beans.VocePendenza;
 import it.govpay.ragioneria.v3.beans.VocePendenzaPagata;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -155,21 +160,18 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		//		rsModel.setIndice(new BigDecimal(indice));
 		if(versamento != null)
 			rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
 
-			switch(singoloVersamento.getTipoBollo()) {
-			case IMPOSTA_BOLLO:
+			if (singoloVersamento.getTipoBollo().equals(TipoBollo.IMPOSTA_BOLLO)) {
 				rsModel.setTipoBollo(TipoBolloEnum._01);
-				break;
 			}
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
@@ -225,7 +227,6 @@ public class PendenzeConverter {
 		rsModel.setProvincia(soggettoVersante.getProvinciaVersante());
 		rsModel.setNazione(soggettoVersante.getNazioneVersante());
 		rsModel.setEmail(soggettoVersante.getEMailVersante());
-		//		rsModel.setCellulare(soggettoVersante.getCellulare());
 
 		return rsModel;
 	}
@@ -233,7 +234,7 @@ public class PendenzeConverter {
 	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) {
 		List<AllegatoPendenza> rsModel = null;
 
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 
 			for (Allegato allegato : allegati) {
@@ -256,13 +257,13 @@ public class PendenzeConverter {
 		Versamento versamento = rpt.getVersamento(configWrapper);
 		return toPendenzaPagataRsModel(rpt, versamento);
 	}
-	
+
 	public static PendenzaPagata toPendenzaPagataRsModel(Versamento versamento, List<it.govpay.bd.model.Rpt> listRpts) throws ServiceException, IOException, UnsupportedEncodingException {
 		it.govpay.bd.model.Rpt rpt = null;
-		
+
 		// Le RPT sono ordinate per data attivazione desc.
 		// Seleziono la prima RT in ordine temporale con esito positivo
-		if(listRpts != null && listRpts.size() > 0) {
+		if(listRpts != null && !listRpts.isEmpty()) {
 			for (it.govpay.bd.model.Rpt rptTmp : listRpts) {
 				if(rptTmp.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
 					rpt = rptTmp;
@@ -270,10 +271,10 @@ public class PendenzeConverter {
 				}
 			}
 		}
-		
+
 		return toPendenzaPagataRsModel(rpt , versamento);
 	}
-	
+
 	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
@@ -375,6 +376,7 @@ public class PendenzeConverter {
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
 			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return rsModel;
@@ -394,19 +396,15 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
 
-			switch(singoloVersamento.getTipoBollo()) {
-			case IMPOSTA_BOLLO:
+			if (singoloVersamento.getTipoBollo().equals(TipoBollo.IMPOSTA_BOLLO)) {
 				rsModel.setTipoBollo(TipoBolloEnum._01);
-				break;
 			}
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
@@ -425,6 +423,29 @@ public class PendenzeConverter {
 		if(pagamento != null) {
 			RiscossioneVocePagata riscossione = RiscossioniConverter.toRiscossioneVocePagataRsModel(pagamento);
 			rsModel.setRiscossione(riscossione );
+		}
+
+		return rsModel;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
 		}
 
 		return rsModel;

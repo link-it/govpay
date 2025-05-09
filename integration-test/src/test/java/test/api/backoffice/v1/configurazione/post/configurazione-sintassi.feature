@@ -196,3 +196,51 @@ Examples:
 
 
 
+Scenario Outline: Configurazione non valida: <path>
+
+* def configurazione_generale = read('msg/configurazione_generale.json')
+* set configurazione_generale.<path> = <value>
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_generale
+When method post
+Then status 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains <field>
+
+Examples:
+| path | value | field |
+| appIOBatch.auth | { } | 'tipo' |
+| appIOBatch.auth | { username: null, password: 'pwd' } | 'username' |
+| appIOBatch.auth | { username: 'usr', password: null } | 'password' |
+| appIOBatch.auth | { tipo: null, ksLocation: '/tmp/keystore.jks', ksPassword: null, tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} | 'tipo' |
+| appIOBatch.auth | { tipo: 'xxx', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd'	, tsType: 'JKS', sslType: 'TLSv1.2'} | 'tipo' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: null, ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'ksLocation' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: null, tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'ksPassword' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: null, tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsLocation' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: null, tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsPassword' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: null, sslType: 'TLSv1.2'	} |  'tsType' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'XXX', sslType: 'TLSv1.2'	} |  'tsType' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: null	} |  'sslType' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} |  'sslType' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: null, ksPKeyPasswd: 'ksPKeyPasswd'	} |  'ksType' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'XXX', ksPKeyPasswd: 'ksPKeyPasswd'	} |  'ksType' |
+| appIOBatch.auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	, ksType: 'JKS', ksPKeyPasswd:  null } |  'ksPKeyPasswd' |
+| appIOBatch.auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: null, tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsLocation' |
+| appIOBatch.auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: null, tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsPassword' |
+| appIOBatch.auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: null, sslType: 'TLSv1.2'	} |  'tsType' |
+| appIOBatch.auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'XXX', sslType: 'TLSv1.2'	} |  'tsType' |
+| appIOBatch.auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: null	} |  'sslType' |
+| appIOBatch.auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} |  'sslType' |
+| appIOBatch.auth | { headerName: null, headerValue: 'govpay' } | 'headerName' |
+| appIOBatch.auth | { headerName: 'X-GOVPAY-auth', headerValue: null } | 'headerValue' |
+| appIOBatch.auth | { apiId: null, apiKey: 'govpay' } | 'apiId' |
+| appIOBatch.auth | { apiId: 'X-GOVPAY-auth', apiKey: null } | 'apiKey' |
+| appIOBatch.auth | { clientId: 'GOVPAY', clientSecret: null, urlTokenEndpoint: 'http://localhost:8080/token' } | 'clientSecret' |
+| appIOBatch.auth | { clientId: null, clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token' } | 'clientId' |
+| appIOBatch.auth | { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: null } | 'urlTokenEndpoint' |
+
+
+

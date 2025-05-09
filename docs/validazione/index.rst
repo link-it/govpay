@@ -9,46 +9,12 @@ Ogni nuova versione di GovPay viene sottoposta alle seguenti verifiche di sicure
 - Dynamic Analysis: cerca vulnerabilità del software durante l’effettiva esecuzione del prodotto. L’analisi viene eseguita attraverso l’esecuzione di estese batterie di test realizzate con `Karate <https://github.com/karatelabs/karate>`_;
 - Third Party Dependency Analysis: assicura che tutte le librerie terza parte utilizzate non siano soggette a vulnerabilità di sicurezza note, utilizzando il tool `OWASP Dependency-Check </https://owasp.org/www-project-dependency-check/>`_.
 
-Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity/>`_.
+Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/job/govpay/>`_.
 
 Falsi positivi
 **************
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
-
-CVE-2023-30614
-==============
-
-file name: pom.xml
-
-La vulnerabilità indicata si riferisce alla libreria `Pay is a payments engine for Ruby on Rails 6.0 and higher` non utilizzata in GovPay.
-
-
-CVE-2024-38820
-==============
-
-Libreria: org.springframework:\* < 5.3.41
-
-La vulnerabilità indicata viene descritta come segue: `The fix for CVE-2022-22968 made disallowedFields patterns in DataBinder case insensitive. However, String.toLowerCase() has some Locale dependent exceptions that could potentially result in fields not protected as expected.`
-
-Nel progetto vengono utilizzate delle versioni ricompilate dei seguenti jar:
-- spring-beans-5.3.39-gov4j-1.jar
-- spring-context-5.3.39-gov4j-1.jar
-- spring-context-support-5.3.39-gov4j-1.jar
-- spring-core-5.3.39-gov4j-1.jar
-- spring-expression-5.3.39-gov4j-1.jar
-- spring-web-5.3.39-gov4j-1.jar
-La tag version 'v5.3.39' è stata modificata per riportare il `contenuto delle modifiche <https://github.com/spring-projects/spring-framework/commit/23656aebc6c7d0f9faff1080981eb4d55eff296c.diff>`_ evidenziate nel commit `23656ae <https://github.com/spring-projects/spring-framework/commit/23656aebc6c7d0f9faff1080981eb4d55eff296c>`_ sul progetto github `spring-projects/spring-framework <https://github.com/spring-projects/spring-framework>`_. Il commit `23656ae <https://github.com/spring-projects/spring-framework/commit/23656aebc6c7d0f9faff1080981eb4d55eff296c>`_ contiene il fix *'Use Locale.ROOT consistently for toLower/toUpperCase'* riferito nel `advisory-database di github <https://github.com/github/advisory-database/pull/4946>`_ come risoluzione per `CVE-2024-38820 <https://github.com/advisories/GHSA-4gc7-5j7h-4qph>`_.
-All'interno degli archivi jar è possibile trovare i file diff (5.3.39.diff, 5.3.39.adjunctToLowerCase.diff, 5.3.39.adjunctToUpperCase.diff, 5.3.9.compileJava11.diff) applicati sui sorgenti del tag 'v5.3.39' oltre ai sorgenti '\.java' delle classi modificate.
-
-CVE-2020-5408
-=============
-
-file name: spring-security-crypto-5.8.12.jar
-
-La vulnerabilità indicata viene descritta come segue: `Spring Security versions 5.3.x prior to 5.3.2, 5.2.x prior to 5.2.4, 5.1.x prior to 5.1.10, 5.0.x prior to 5.0.16 and 4.2.x prior to 4.2.16 use a fixed null initialization vector with CBC Mode in the implementation of the queryable text encryptor. A malicious user with access to the data that has been encrypted using such an encryptor may be able to derive the unencrypted values using a dictionary attack.`
-
-La versione utilizzata è superiore alla '5.3.2' quindi risulta un falso positivo ed in GovPay il metodo oggetto della vulnerabilità (Encryptors#queryableText(CharSequence, CharSequence)) non viene utilizzato.
 
 CVE-2017-10355
 ================
@@ -68,17 +34,18 @@ Il metodo indicato non è utilizzato su GovPay.
 Nella discussione inoltre si fa riferimento alla vulnerabilità descritta in 'https://security.snyk.io/vuln/SNYK-JAVA-XERCES-31497' che consentiva di attuare attacchi DOS.
 Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
 
-CVE-2016-1000027
-================
+CVE-2021-4277
+=============
 
-file name: spring-web-5.3.37.jar
+file name: openspcoop2_utils-crypt-3.2.1.jar
 
-La vulnerabilità indicata viene descritta come segue: `Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.`
+La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' nel processamento del file 'screenshot_sync' del componente 'Filename Handler'.
 
-La versione utilizzata è superiore alla '5.3.16' quindi risulta un falso positivo e la classe oggetto della vulnerabilità (https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#remoting-httpinvoker) non viene utilizzata.
+La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato, inoltre non viene utilizzata a runtime ma solo per l'esecuzione dell'installer.
+
 
 Test di copertura funzionale
-============================
+****************************
 
 Di seguito le funzionalità del prodotto ed i test che ne verificano il corretto funzionamento
 

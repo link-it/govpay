@@ -23,12 +23,11 @@ package it.govpay.pagamento.v2.beans;
 import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -38,19 +37,19 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "contenuto",
 })
 public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidable{
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = "application/octet-stream";
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("contenuto")
   private byte[] contenuto = null;
-  
+
   /**
    * nome del file
    **/
@@ -136,7 +135,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
   }
 
   public static NuovoAllegatoPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
-    return (NuovoAllegatoPendenza) parse(json, NuovoAllegatoPendenza.class);
+    return parse(json, NuovoAllegatoPendenza.class);
   }
 
   @Override
@@ -148,7 +147,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovoAllegatoPendenza {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
@@ -167,14 +166,14 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("nome", this.nome).notNull().minLength(1).maxLength(255);
 		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(255);
 		vf.getValidator("descrizione", this.descrizione).minLength(1).maxLength(255);
-		
+
 		if(this.contenuto == null)
 			throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
 	}

@@ -19,15 +19,15 @@
  */
 package it.govpay.backoffice.v1;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import it.govpay.backoffice.v1.controllers.ProfiloController;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -52,7 +52,7 @@ public class Profilo extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getProfilo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
-        return this.controller.getProfilo(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.getProfilo(this.getUser());
     }
 
     @PATCH
@@ -61,7 +61,7 @@ public class Profilo extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response updateProfilo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
     	 this.buildContext();
-        return this.controller.updateProfilo(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.updateProfilo(this.getUser(), is);
     }
 
 }

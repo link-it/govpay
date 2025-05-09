@@ -50,6 +50,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -90,19 +91,10 @@ public class InviaNotificaThread implements Runnable {
 		this.dominio = this.versamento.getDominio(configWrapper);
 		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
 		this.pagamenti = this.rpt.getPagamenti(configWrapper);
-//		if(pagamenti != null) {
-//			for(Pagamento pagamento : pagamenti)
-//				pagamento.getSingoloVersamento();
-//		}
 		
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 		this.rptKey = this.notifica.getRptKey();
 		this.pagamentoPortale = this.rpt.getPagamentoPortale() != null ? this.rpt.getPagamentoPortale() : this.rpt.getPagamentoPortale(configWrapper);;
-		
-//		if(this.notifica.getTipo().equals(TipoNotifica.RICEVUTA)) {
-//			if(pagamenti == null || pagamenti.size() ==0)
-//				throw new ServiceException("Non ci sono pagamenti");
-//		}
 	}
 
 	@Override
@@ -144,10 +136,10 @@ public class InviaNotificaThread implements Runnable {
 				break;
 			}
 			 
-			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.rptKey +"] all'applicazione [CodApplicazione: " + this.applicazione.getCodApplicazione() + "]");
+			LogUtils.logInfo(log, "Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.rptKey +"] all'applicazione [CodApplicazione: " + this.applicazione.getCodApplicazione() + "]");
 			if(connettoreNotifica == null || connettoreNotifica.getUrl() == null) {
 				ctx.getApplicationLogger().log("notifica.annullata");
-				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
+				LogUtils.logInfo(log, "Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(configWrapper);
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
@@ -157,11 +149,6 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-//			DatiPagoPA datiPagoPA = new DatiPagoPA();
-//			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
-//			datiPagoPA.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
-//			datiPagoPA.setCodDominio(this.rpt.getCodDominio());
-//			client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			// salvataggio id Rpt/ versamento/ pagamento
 			eventoCtx.setCodDominio(this.rpt.getCodDominio());
 			eventoCtx.setIuv(this.rpt.getIuv());
@@ -202,15 +189,15 @@ public class InviaNotificaThread implements Runnable {
 			}
 			 
 			eventoCtx.setEsito(Esito.OK);
-			log.info("Notifica consegnata con successo");
+			LogUtils.logInfo(log, "Notifica consegnata con successo");
 		} catch(Exception e) {
 			errore = true;
 			if(e instanceof GovPayException || e instanceof ClientException)
-				log.warn("Errore nella consegna della notifica: " + e.getMessage());
+				LogUtils.logWarn(log, "Errore nella consegna della notifica: " + e.getMessage());
 			else if(e instanceof ClientInitializeException)
-				log.error("Errore nella creazione del client per la consegna della notifica: " + e.getMessage(), e);
+				LogUtils.logError(log, "Errore nella creazione del client per la consegna della notifica: " + e.getMessage(), e);
 			else
-				log.error("Errore nella consegna della notifica", e);
+				LogUtils.logError(log, "Errore nella consegna della notifica", e);
 			
 			if(eventoCtx != null) {
 				if(e instanceof GovPayException) {
@@ -287,7 +274,7 @@ public class InviaNotificaThread implements Runnable {
 				try {
 					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 				} catch (ServiceException e) {
-					log.error("Errore durante il salvataggio dell'evento: ", e);
+					LogUtils.logError(log, "Errore durante il salvataggio dell'evento: ", e);
 				}
 			}
 			

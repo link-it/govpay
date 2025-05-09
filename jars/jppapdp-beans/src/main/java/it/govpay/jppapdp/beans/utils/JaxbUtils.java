@@ -22,17 +22,16 @@ package it.govpay.jppapdp.beans.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.validation.Schema;
 
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 /***
  * Utilities di conversione JAXB degli elementi XML per le API JPAPdP
@@ -43,10 +42,11 @@ import org.xml.sax.SAXException;
  */
 public class JaxbUtils {
 
-	private static JAXBContext jaxbWsJPPAPdPInternalContext, jaxbWsJPPAPdPExternalContext;
+	private static JAXBContext jaxbWsJPPAPdPInternalContext;
+	private static JAXBContext jaxbWsJPPAPdPExternalContext;
 	private static boolean initialized = false;
 	
-	public static void init() throws JAXBException, SAXException {
+	public static void init() throws JAXBException {
 		if(!initialized) {
 			jaxbWsJPPAPdPInternalContext = JAXBContext.newInstance("it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal:it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.schema._1_0");
 			jaxbWsJPPAPdPExternalContext = JAXBContext.newInstance("it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external:it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0");
@@ -54,31 +54,31 @@ public class JaxbUtils {
 		}
 	}
 	
-	public static void marshalJPPAPdPInternalService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+	public static void marshalJPPAPdPInternalService(Object jaxb, OutputStream os) throws JAXBException {
 		if(jaxb == null) return;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
 	
-	public static String marshalJPPAPdPInternalService(Object jaxb) throws JAXBException, SAXException {
+	public static String marshalJPPAPdPInternalService(Object jaxb) throws JAXBException {
 		if(jaxb == null) return null;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(jaxb, baos);
 		return new String(baos.toByteArray());
 	}
 	
-	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr) throws JAXBException, SAXException {
+	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr) throws JAXBException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPInternalContext.createUnmarshaller();
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
 	
-	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr, Schema schema) throws JAXBException {
 		if(schema == null) return unmarshalJPPAPdPInternalService(xsr);
 		
 		init();
@@ -88,31 +88,31 @@ public class JaxbUtils {
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
 	
-	public static void marshalJPPAPdPExternalService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+	public static void marshalJPPAPdPExternalService(Object jaxb, OutputStream os) throws JAXBException {
 		if(jaxb == null) return;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
 	
-	public static String marshalJPPAPdPExternalService(Object jaxb) throws JAXBException, SAXException {
+	public static String marshalJPPAPdPExternalService(Object jaxb) throws JAXBException {
 		if(jaxb == null) return null;
 		init();
 		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(jaxb, baos);
 		return new String(baos.toByteArray());
 	}
 	
-	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr) throws JAXBException, SAXException {
+	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr) throws JAXBException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPExternalContext.createUnmarshaller();
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
 	
-	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr, Schema schema) throws JAXBException {
 		if(schema == null) return unmarshalJPPAPdPExternalService(xsr);
 		
 		init();
@@ -126,7 +126,7 @@ public class JaxbUtils {
 		@Override
 		public boolean handleEvent(ValidationEvent ve) {
 			if(ve.getSeverity() == 0) {
-				LoggerFactory.getLogger(JaxbUtils.class).warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
+				LoggerFactory.getLogger(JaxbUtils.class).warn("Ricevuto warning di validazione durante il marshalling del messaggio: {}", ve.getMessage());
 				return true;
 			} else {
 				return false;

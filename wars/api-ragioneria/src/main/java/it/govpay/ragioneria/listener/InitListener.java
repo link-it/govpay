@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -33,16 +33,18 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.core.exceptions.StartupException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.InitConstants;
 import it.govpay.core.utils.LabelAvvisiProperties;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.StartupUtils;
 
 public class InitListener implements ServletContextListener {
 
-	private static Logger log = null;
+	private Logger log = null;
 	private static boolean initialized = false;
 	private String warName = "GovPay-API-Ragioneria";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_JSON;
@@ -67,7 +69,7 @@ public class InitListener implements ServletContextListener {
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
-		} catch (RuntimeException e) {
+		} catch (StartupException e) {
 			log.error("Inizializzazione fallita", e);
 			try {
 				ctx.getApplicationLogger().log();
@@ -82,7 +84,7 @@ public class InitListener implements ServletContextListener {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
 			}
-			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
+			throw new StartupException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
 		}
 
 		try {
@@ -91,7 +93,7 @@ public class InitListener implements ServletContextListener {
 			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
 		}
 
-		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
+		LogUtils.logInfo(log, "Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
 		initialized = true;
 	}
 
@@ -103,20 +105,6 @@ public class InitListener implements ServletContextListener {
 		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
 		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
 
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
-
-//		log.info("De-registrazione delle cache ...");
-//		AnagraficaManager.unregister();
-//		log.info("De-registrazione delle cache completato");
-//
-//		log.info("Shutdown del Connection Manager ...");
-//		try {
-//			ConnectionManager.shutdown();
-//			log.info("Shutdown del Connection Manager completato.");
-//		} catch (Exception e) {
-//			log.warn("Errore nello shutdown del Connection Manager: " + e);
-//		}
-
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
+		StartupUtils.stopServices(log, warName, InitConstants.GOVPAY_VERSION, commit, dominioAnagraficaManager);
 	}
 }

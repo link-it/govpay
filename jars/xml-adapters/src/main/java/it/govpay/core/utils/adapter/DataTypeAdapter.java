@@ -25,9 +25,11 @@ import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 public class DataTypeAdapter {
+	
+	private DataTypeAdapter() {}
 
 	public static BigDecimal parseImporto(String value) {
 		return new BigDecimal(value);
@@ -86,7 +88,7 @@ public class DataTypeAdapter {
         if (s == null || s.isEmpty()) {
             return null;
         }
-        return DatatypeConverter.parseDateTime(s).getTime();
+        return DatatypeConverter.parseDate(s).getTime();
     }
     
     public static String printDate(Date dt) {

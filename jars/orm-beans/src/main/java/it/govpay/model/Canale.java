@@ -19,6 +19,8 @@
  */
 package it.govpay.model;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
@@ -46,7 +48,7 @@ public class Canale extends BasicModel {
 				if(p.getCodifica() == codifica)
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per ModelloPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(ModelloPagamento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per ModelloPagamento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(ModelloPagamento.values())));
 		}
 	}
 	
@@ -73,7 +75,7 @@ public class Canale extends BasicModel {
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per TipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoVersamento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per TipoVersamento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(TipoVersamento.values())));
 		}
 	}
 	

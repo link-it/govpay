@@ -19,6 +19,9 @@
  */
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.springframework.security.core.Authentication;
@@ -47,6 +50,8 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class TipiPendenzaConverter {
+	
+	private TipiPendenzaConverter() {}
 
 	public static PutTipoPendenzaDTO getPutTipoPendenzaDTO(TipoPendenzaPost entrataPost, String idTipoPendenza, Authentication user) throws ValidationException, IOException {
 		PutTipoPendenzaDTO entrataDTO = new PutTipoPendenzaDTO(user);
@@ -76,11 +81,8 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getPortaleBackoffice().getTrasformazione() != null  && entrataPost.getPortaleBackoffice().getTrasformazione().getDefinizione() != null && entrataPost.getPortaleBackoffice().getTrasformazione().getTipo() != null) {
-					if(entrataPost.getPortaleBackoffice().getTrasformazione().getTipo() != null) {
-						// valore tipo template trasformazione non valido
-						if(TipoTemplateTrasformazione.fromValue(entrataPost.getPortaleBackoffice().getTrasformazione().getTipo()) == null) {
-							throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + entrataPost.getPortaleBackoffice().getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-						}
+					if(entrataPost.getPortaleBackoffice().getTrasformazione().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getPortaleBackoffice().getTrasformazione().getTipo()) == null) {
+						throw new ValidationException("tipo trasformazione", entrataPost.getPortaleBackoffice().getTrasformazione().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 					}
 
 					Object definizione = entrataPost.getPortaleBackoffice().getTrasformazione().getDefinizione();
@@ -110,11 +112,8 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getPortalePagamento().getTrasformazione() != null  && entrataPost.getPortalePagamento().getTrasformazione().getDefinizione() != null && entrataPost.getPortalePagamento().getTrasformazione().getTipo() != null) {
-					if(entrataPost.getPortalePagamento().getTrasformazione().getTipo() != null) {
-						// valore tipo template trasformazione non valido
-						if(TipoTemplateTrasformazione.fromValue(entrataPost.getPortalePagamento().getTrasformazione().getTipo()) == null) {
-							throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + entrataPost.getPortalePagamento().getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-						}
+					if(entrataPost.getPortalePagamento().getTrasformazione().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getPortalePagamento().getTrasformazione().getTipo()) == null) {
+						throw new ValidationException("tipo trasformazione", entrataPost.getPortalePagamento().getTrasformazione().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 					}
 
 					Object definizione = entrataPost.getPortalePagamento().getTrasformazione().getDefinizione();
@@ -163,12 +162,8 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoTipoDefault(null);
 				}
 
-				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -206,12 +201,8 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault(null);
 				}
 
-				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -234,7 +225,7 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaOggettoDefault(null);
 				}
 				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso());
+					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(BigInteger.valueOf(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getPreavviso().intValue()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(null);
 				}
@@ -245,12 +236,8 @@ public class TipiPendenzaConverter {
 				}
 
 
-				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 		}
@@ -269,8 +256,7 @@ public class TipiPendenzaConverter {
 
 			// valore tipo contabilita non valido
 			if(TipoTemplateTrasformazione.fromValue(entrataPost.getTracciatoCsv().getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-						entrataPost.getTracciatoCsv().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException("tipo trasformazione", entrataPost.getTracciatoCsv().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 
 			tipoVersamento.setTracciatoCsvIntestazioneDefault(entrataPost.getTracciatoCsv().getIntestazione());
@@ -307,12 +293,8 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoTipoDefault(null);
 				}
 
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -345,12 +327,8 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault(null);
 				}
 
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -373,7 +351,7 @@ public class TipiPendenzaConverter {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(null);
 				}
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso());
+					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(BigInteger.valueOf(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getPreavviso().intValue()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(null);
 				}
@@ -384,12 +362,8 @@ public class TipiPendenzaConverter {
 				}
 
 
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() != null) {
-					// valore tipo contabilita non valido
-					if(TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-								entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
-					}
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo()) == null) {
+					throw new ValidationException("tipo trasformazione", entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 		}
@@ -492,7 +466,8 @@ public class TipiPendenzaConverter {
 			avvisaturaMailPromemoriaScadenza.setOggetto(new RawObject(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaOggettoDefault()));
 		if(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault() != null)
 			avvisaturaMailPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault()));
-		avvisaturaMailPromemoriaScadenza.setPreavviso(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault());
+		if(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() != null)
+			avvisaturaMailPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault()));
 		avvisaturaMailPromemoriaScadenza.setTipo(tipoVersamento.getAvvisaturaMailPromemoriaScadenzaTipoDefault());
 
 		avvisaturaMail.setPromemoriaScadenza(avvisaturaMailPromemoriaScadenza);
@@ -555,7 +530,8 @@ public class TipiPendenzaConverter {
 			avvisaturaAppIOPromemoriaScadenza.setOggetto(new RawObject(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault()));
 		if(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault() != null)
 			avvisaturaAppIOPromemoriaScadenza.setMessaggio(new RawObject(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault()));
-		avvisaturaAppIOPromemoriaScadenza.setPreavviso(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault());
+		if(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() != null)
+			avvisaturaAppIOPromemoriaScadenza.setPreavviso(new BigDecimal(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault()));
 		avvisaturaAppIOPromemoriaScadenza.setTipo(tipoVersamento.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault());
 
 		avvisaturaAppIO.setPromemoriaScadenza(avvisaturaAppIOPromemoriaScadenza);

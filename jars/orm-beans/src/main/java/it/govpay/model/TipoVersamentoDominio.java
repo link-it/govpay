@@ -19,7 +19,7 @@
  */
 package it.govpay.model;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class TipoVersamentoDominio extends TipoVersamento {
 	private static final long serialVersionUID = 1L;
@@ -69,7 +69,7 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	
 	private Boolean avvisaturaMailPromemoriaScadenzaAbilitatoCustom;
 	private String avvisaturaMailPromemoriaScadenzaTipoCustom;
-	private BigDecimal avvisaturaMailPromemoriaScadenzaPreavvisoCustom;
+	private BigInteger avvisaturaMailPromemoriaScadenzaPreavvisoCustom;
 	private String avvisaturaMailPromemoriaScadenzaOggettoCustom;
 	private String avvisaturaMailPromemoriaScadenzaMessaggioCustom;
 	
@@ -101,7 +101,7 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	
 	private Boolean avvisaturaAppIoPromemoriaScadenzaAbilitatoCustom;
 	private String avvisaturaAppIoPromemoriaScadenzaTipoCustom;
-	private BigDecimal avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom;
+	private BigInteger avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom;
 	private String avvisaturaAppIoPromemoriaScadenzaOggettoCustom;
 	private String avvisaturaAppIoPromemoriaScadenzaMessaggioCustom;
 	
@@ -303,10 +303,10 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	public void setAvvisaturaMailPromemoriaScadenzaTipoCustom(String avvisaturaMailPromemoriaScadenzaTipoCustom) {
 		this.avvisaturaMailPromemoriaScadenzaTipoCustom = avvisaturaMailPromemoriaScadenzaTipoCustom;
 	}
-	public BigDecimal getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom() {
+	public BigInteger getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom() {
 		return avvisaturaMailPromemoriaScadenzaPreavvisoCustom;
 	}
-	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(BigDecimal avvisaturaMailPromemoriaScadenzaPreavvisoCustom) {
+	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(BigInteger avvisaturaMailPromemoriaScadenzaPreavvisoCustom) {
 		this.avvisaturaMailPromemoriaScadenzaPreavvisoCustom = avvisaturaMailPromemoriaScadenzaPreavvisoCustom;
 	}
 	public String getAvvisaturaMailPromemoriaScadenzaOggettoCustom() {
@@ -423,10 +423,10 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	public void setAvvisaturaAppIoPromemoriaScadenzaTipoCustom(String avvisaturaAppIoPromemoriaScadenzaTipoCustom) {
 		this.avvisaturaAppIoPromemoriaScadenzaTipoCustom = avvisaturaAppIoPromemoriaScadenzaTipoCustom;
 	}
-	public BigDecimal getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom() {
+	public BigInteger getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom() {
 		return avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom;
 	}
-	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(BigDecimal avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom) {
+	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(BigInteger avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom) {
 		this.avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom = avvisaturaAppIoPromemoriaScadenzaPreavvisoCustom;
 	}
 	public String getAvvisaturaAppIoPromemoriaScadenzaOggettoCustom() {

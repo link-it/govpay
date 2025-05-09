@@ -32,12 +32,13 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.backoffice.v1.Allegati;
 import it.govpay.backoffice.v1.beans.AllegatoPendenza;
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Documento;
 import it.govpay.backoffice.v1.beans.LinguaSecondaria;
+import it.govpay.backoffice.v1.beans.MapEntry;
+import it.govpay.backoffice.v1.beans.Metadata;
 import it.govpay.backoffice.v1.beans.NuovaVocePendenza;
 import it.govpay.backoffice.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.backoffice.v1.beans.Pendenza;
@@ -81,15 +82,16 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class PendenzeConverter {
 
+	private PendenzeConverter(){}
 
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, ValidationException, it.govpay.core.exceptions.IOException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, it.govpay.core.exceptions.IOException {
 		return toRsModel(dto.getVersamento(),
 				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(),
 				dto.getPagamenti(), dto.getRpts(), true, dto.getAllegati());
 	}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione,
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso, List<Allegato> allegati) throws ServiceException, ValidationException, it.govpay.core.exceptions.IOException {
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso, List<Allegato> allegati) throws ServiceException, it.govpay.core.exceptions.IOException {
 		Pendenza rsModel = new Pendenza();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		if(versamento.getCodAnnoTributario()!= null)
@@ -121,17 +123,15 @@ public class PendenzeConverter {
 
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
-		break;
-		case ESEGUITO:
-		case ESEGUITO_ALTRO_CANALE:
+			break;
+		case ESEGUITO, ESEGUITO_ALTRO_CANALE:
 			statoPendenza = StatoPendenza.ESEGUITA;
 			if(versamento.getStatoPagamento() != null) {
 				switch (versamento.getStatoPagamento()) {
 				case INCASSATO:
 					statoPendenza = StatoPendenza.INCASSATA;
 					break;
-				case NON_PAGATO:
-				case PAGATO:
+				case NON_PAGATO, PAGATO:
 				default:
 					break;
 				}
@@ -161,8 +161,6 @@ public class PendenzeConverter {
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 
-//		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie())); TODO togliere
-
 		if(unitaOperativa != null && !unitaOperativa.getCodUo().equals(it.govpay.model.Dominio.EC))
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(unitaOperativa));
 
@@ -176,16 +174,16 @@ public class PendenzeConverter {
 
 		List<it.govpay.backoffice.v1.beans.Pagamento> listaPagamentoIndex = new ArrayList<>();
 
-		if(pagamenti != null && pagamenti.size() > 0) {
+		if(pagamenti != null && !pagamenti.isEmpty()) {
 			for (PagamentoPortale pagamento : pagamenti) {
-				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,null,null));
+				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,null));
 			}
 		}
 
 		rsModel.setPagamenti(listaPagamentoIndex);
 
 		List<Rpp> rpps = new ArrayList<>();
-		if(rpts != null && rpts.size() > 0) {
+		if(rpts != null && !rpts.isEmpty()) {
 			for (Rpt rpt : rpts) {
 				rpps.add(RptConverter.toRsModel(rpt));
 			}
@@ -207,24 +205,11 @@ public class PendenzeConverter {
 
 		rsModel.setAllegati(toAllegatiRsModel(allegati));
 
+		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
+		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
+
 		return rsModel;
 	}
-
-	//	private static List<Segnalazione> unmarshall(String anomalie) {
-	//		List<Segnalazione> list = new ArrayList<>();
-	//
-	//		if(anomalie == null || anomalie.isEmpty()) return list;
-	//
-	//		String[] split = anomalie.split("\\|");
-	//		for(String s : split){
-	//			String[] split2 = s.split("#");
-	//			Segnalazione a = new Segnalazione();
-	//			a.setCodice(split2[0]);;
-	//			a.setDescrizione(split2[1]);
-	//			list.add(a);
-	//		}
-	//		return list;
-	//	}
 
 	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -261,16 +246,14 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 		break;
-		case ESEGUITO:
-		case ESEGUITO_ALTRO_CANALE:
+		case ESEGUITO, ESEGUITO_ALTRO_CANALE:
 			statoPendenza = StatoPendenza.ESEGUITA;
 			if(versamento.getStatoPagamento() != null) {
 				switch (versamento.getStatoPagamento()) {
 				case INCASSATO:
 					statoPendenza = StatoPendenza.INCASSATA;
 					break;
-				case NON_PAGATO:
-				case PAGATO:
+				case NON_PAGATO, PAGATO:
 				default:
 					break;
 				}
@@ -322,10 +305,13 @@ public class PendenzeConverter {
 
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 
+		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
+		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
+
 		return rsModel;
 	}
 
-	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, boolean addInfoIncasso, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, IOException {
+	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, boolean addInfoIncasso, BDConfigWrapper configWrapper) throws ServiceException, IOException {
 		VocePendenza rsModel = new VocePendenza();
 
 		if(singoloVersamento.getDatiAllegati() != null)
@@ -355,7 +341,7 @@ public class PendenzeConverter {
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			}
-			
+
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
@@ -390,14 +376,14 @@ public class PendenzeConverter {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
 
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
+
 		return rsModel;
 	}
 
-	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, IOException {
+	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException, IOException {
 		VocePendenzaRendicontazione rsModel = new VocePendenzaRendicontazione();
 
-//		if(singoloVersamento.getDatiAllegati() != null)
-//			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
 
@@ -418,7 +404,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
-		
+
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
@@ -434,10 +420,12 @@ public class PendenzeConverter {
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			}
-			
+
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
+
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		return rsModel;
 	}
@@ -445,8 +433,6 @@ public class PendenzeConverter {
 	public static VocePendenzaRiscossione toVocePendenzaRiscossioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException, IOException {
 		VocePendenzaRiscossione rsModel = new VocePendenzaRiscossione();
 
-//		if(singoloVersamento.getDatiAllegati() != null)
-//			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
 
@@ -467,7 +453,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
-		
+
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
@@ -483,15 +469,17 @@ public class PendenzeConverter {
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			}
-			
+
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
 
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
+
 		return rsModel;
 	}
 
-	public static Documento toDocumentoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Documento documento ) throws ServiceException {
+	public static Documento toDocumentoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Documento documento ) {
 		Documento rsModel = new Documento();
 
 		rsModel.setDescrizione(documento.getDescrizione());
@@ -568,7 +556,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException, ServiceException, GovPayException, it.govpay.core.exceptions.IOException {
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException, GovPayException, it.govpay.core.exceptions.IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -592,7 +580,7 @@ public class PendenzeConverter {
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
-				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+				throw new ValidationException("tassonomiaAvviso", pendenza.getTassonomiaAvviso(), ArrayUtils.toString(TassonomiaAvviso.values()));
 			}
 
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
@@ -622,8 +610,7 @@ public class PendenzeConverter {
 			if(pendenza.getDocumento().getSoglia() != null) {
 				// valore tassonomia avviso non valido
 				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo. Valore fornito ["
-								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+					throw new ValidationException("tipo", pendenza.getDocumento().getSoglia().getTipo(), ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 
 				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
@@ -645,7 +632,7 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, GovPayException, it.govpay.core.exceptions.IOException {
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, GovPayException, it.govpay.core.exceptions.IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -669,7 +656,7 @@ public class PendenzeConverter {
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
-				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+				throw new ValidationException("tassonomiaAvviso", pendenza.getTassonomiaAvviso(), ArrayUtils.toString(TassonomiaAvviso.values()));
 			}
 
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
@@ -699,8 +686,7 @@ public class PendenzeConverter {
 			if(pendenza.getDocumento().getSoglia() != null) {
 				// valore tassonomia avviso non valido
 				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo. Valore fornito ["
-								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+					throw new ValidationException("tipo", pendenza.getDocumento().getSoglia().getTipo(), ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 
 				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
@@ -722,11 +708,11 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException, it.govpay.core.exceptions.IOException {
+	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws GovPayException, it.govpay.core.exceptions.IOException {
 
 		BigDecimal importoTotale = BigDecimal.ZERO;
 
-		if(voci != null && voci.size() > 0) {
+		if(voci != null && !voci.isEmpty()) {
 			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
@@ -739,6 +725,7 @@ public class PendenzeConverter {
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setCodDominio(vocePendenza.getIdDominio());
+				sv.setMetadata(toMetadataDTO(vocePendenza.getMetadata()));
 
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 
@@ -801,14 +788,14 @@ public class PendenzeConverter {
 				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
 			}
 		}
-		
+
 		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
 		// in questo caso impostiamo i valori di default per gli identificativi
 		if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
 			anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
 		}
 		if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
-			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
+			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
 		}
 
 		return anagraficaCommons;
@@ -854,6 +841,9 @@ public class PendenzeConverter {
 			}
 
 			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			dto.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			dto.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			dto.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return dto;
@@ -901,6 +891,9 @@ public class PendenzeConverter {
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return rsModel;
@@ -909,7 +902,7 @@ public class PendenzeConverter {
 	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) {
 		List<AllegatoPendenza> rsModel = null;
 
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 
 			for (Allegato allegato : allegati) {
@@ -918,7 +911,7 @@ public class PendenzeConverter {
 				allegatoRsModel.setNome(allegato.getNome());
 				allegatoRsModel.setTipo(allegato.getTipo());
 				allegatoRsModel.setDescrizione(allegato.getDescrizione());
-				allegatoRsModel.setContenuto(MessageFormat.format(Allegati.DETTAGLIO_PATH_PATTERN, allegato.getId()));
+				allegatoRsModel.setContenuto(MessageFormat.format(Costanti.DETTAGLIO_PATH_PATTERN, allegato.getId()));
 
 				rsModel.add(allegatoRsModel);
 			}
@@ -930,7 +923,7 @@ public class PendenzeConverter {
 	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
 		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
 
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			allegatiDTO = new ArrayList<>();
 
 			for (NuovoAllegatoPendenza allegato : allegati) {
@@ -946,5 +939,51 @@ public class PendenzeConverter {
 		}
 
 		return allegatiDTO;
+	}
+
+	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
+		it.govpay.core.beans.tracciati.Metadata dto = null;
+		if(metadata != null) {
+			dto = new it.govpay.core.beans.tracciati.Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
+
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
+					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
+					mapEntryDto.setKey(mapEntry.getKey());
+					mapEntryDto.setValue(mapEntry.getValue());
+
+					mapEntriesDto.add(mapEntryDto);
+				}
+
+				dto.setMapEntries(mapEntriesDto);
+			}
+		}
+
+		return dto;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
+		return rsModel;
 	}
 }

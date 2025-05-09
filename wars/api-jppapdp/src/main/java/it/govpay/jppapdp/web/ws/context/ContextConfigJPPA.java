@@ -48,7 +48,7 @@ public class ContextConfigJPPA extends org.openspcoop2.utils.service.context.Con
 			this.setServiceType(GOVPAY_SERVICE_TYPE);
 			this.setServiceVersion(GOVPAY_VERSIONE_API);
 		} catch(Exception e) {
-			
+			//donothing
 		}
 	}
 }

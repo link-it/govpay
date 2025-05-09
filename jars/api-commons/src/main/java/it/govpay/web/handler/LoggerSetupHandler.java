@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -23,10 +23,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPException;
-import javax.xml.ws.handler.MessageContext;
-import javax.xml.ws.handler.soap.SOAPHandler;
-import javax.xml.ws.handler.soap.SOAPMessageContext;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.ws.handler.MessageContext;
+import jakarta.xml.ws.handler.soap.SOAPHandler;
+import jakarta.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.MD5Constants;
@@ -34,9 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(LoggerSetupHandler.class);
-	
+
     @Override
 	public Set<QName> getHeaders() {
         return null;
@@ -50,8 +50,7 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
 	public boolean handleFault(SOAPMessageContext smc) {
-    	this.setupMDC(smc);
-        return true;
+    	return handleMessage(smc);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (outboundProperty.booleanValue()) {
-        	try { 
+        	try {
         		smc.getMessage().setProperty("X-GP-CMDID", MDC.get(MD5Constants.OPERATION_ID));
         	} catch (SOAPException e) {
         		log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
@@ -76,11 +75,3 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
         }
     }
 }
-
-
-
-
-
-
-
-

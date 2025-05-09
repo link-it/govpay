@@ -28,7 +28,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * call sleep(1000)
 * def dataInizio = getDateTime()
@@ -117,5 +117,6 @@ And match response ==
 Given url ragioneriaBaseurl
 And path '/ricevute', rpt.dominio.idDominio, rpt.iuv, rpt.idRicevuta
 And headers idA2ABasicAutenticationHeader
+And header Accept = 'application/json'
 When method get
 Then status 200

@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
@@ -43,7 +44,7 @@ And match response == { id: '#notnull', location: '#notnull', redirect: '#notnul
 
 * configure followRedirects = false
 
-Given url govpay_url + "/govpay/frontend/web/connector/ecsp/psp"
+Given url govpay_web_connector_url + "/ecsp/psp"
 And param idSession = response.idSession
 And param idDominio = pendenza.idDomino
 And param esito = 'ERROR'

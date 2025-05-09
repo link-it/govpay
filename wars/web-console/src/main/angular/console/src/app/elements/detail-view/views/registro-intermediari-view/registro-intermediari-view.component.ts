@@ -22,6 +22,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   @Input() informazioni = [];
   @Input() connettoriSoap = [];
   @Input() connettoriSFtp = { lettura: [], scrittura: [] };
+  @Input() connettoreRT = [];
   @Input() stazioni = [];
 
   @Input() json: any;
@@ -55,36 +56,33 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dettaglio = { informazioni: [], connettoriSoap: [] };
+    let _dettaglio = { informazioni: [], connettoriSoap: [] , connettoreRT: [] };
     _dettaglio.informazioni.push(new Dato({ label: Voce.DENOMINAZIONE, value: this.json.denominazione }));
     _dettaglio.informazioni.push(new Dato({ label: Voce.ID_INTERMEDIARIO, value: this.json.idIntermediario }));
     _dettaglio.informazioni.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
     if(this.json.servizioPagoPa) {
       _dettaglio.connettoriSoap.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principalPagoPa }));
-      _dettaglio.connettoriSoap.push(new Dato({ label: Voce.SERVIZIO_RPT, value: this.json.servizioPagoPa.urlRPT }));
-      if(this.json.servizioPagoPa.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE) {
-        _dettaglio.connettoriSoap.push(new Dato({label: Voce.SERVIZIO_AVVISATURA, value: this.json.servizioPagoPa.urlAvvisatura}));
-      }
+      _dettaglio.connettoriSoap.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPa.urlRPT }));
       if (this.json.servizioPagoPa.subscriptionKey) {
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPa.subscriptionKey }));
       }
       if(this.json.servizioPagoPa.auth) {
-		if(this.json.servizioPagoPa.auth.clientId) {
-		  _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
+        if(this.json.servizioPagoPa.auth.clientId) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID, value: this.json.servizioPagoPa.auth.clientId }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET, value: this.json.servizioPagoPa.auth.clientSecret }));
           if(this.json.servizioPagoPa.auth.scope) {
-          	_dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioPagoPa.auth.scope }));
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioPagoPa.auth.scope }));
           }
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT, value: this.json.servizioPagoPa.auth.urlTokenEndpoint }));
         }
-		if(this.json.servizioPagoPa.auth.apiId) {
-		  _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
+        if(this.json.servizioPagoPa.auth.apiId) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.API_ID, value: this.json.servizioPagoPa.auth.apiId }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.API_KEY, value: this.json.servizioPagoPa.auth.apiKey }));
         }
-		if(this.json.servizioPagoPa.auth.headerName) {
-		  _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
+        if(this.json.servizioPagoPa.auth.headerName) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.HEADER_NAME, value: this.json.servizioPagoPa.auth.headerName }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.HEADER_VALUE, value: this.json.servizioPagoPa.auth.headerValue }));
         }
@@ -125,10 +123,74 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
+	
+	if(this.json.servizioPagoPaRecuperoRT) {
+	      _dettaglio.connettoreRT.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPaRecuperoRT.url }));
+	      if (this.json.servizioPagoPaRecuperoRT.subscriptionKey) {
+	        _dettaglio.connettoreRT.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPaRecuperoRT.subscriptionKey }));
+	      }
+	      if(this.json.servizioPagoPaRecuperoRT.auth) {
+	        if(this.json.servizioPagoPaRecuperoRT.auth.clientId) {
+	          _dettaglio.connettoreRT.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID, value: this.json.servizioPagoPaRecuperoRT.auth.clientId }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET, value: this.json.servizioPagoPaRecuperoRT.auth.clientSecret }));
+	          if(this.json.servizioPagoPaRecuperoRT.auth.scope) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioPagoPaRecuperoRT.auth.scope }));
+	          }
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT, value: this.json.servizioPagoPaRecuperoRT.auth.urlTokenEndpoint }));
+	        }
+	        if(this.json.servizioPagoPaRecuperoRT.auth.apiId) {
+	          _dettaglio.connettoreRT.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.API_ID, value: this.json.servizioPagoPaRecuperoRT.auth.apiId }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.API_KEY, value: this.json.servizioPagoPaRecuperoRT.auth.apiKey }));
+	        }
+	        if(this.json.servizioPagoPaRecuperoRT.auth.headerName) {
+	          _dettaglio.connettoreRT.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.HEADER_NAME, value: this.json.servizioPagoPaRecuperoRT.auth.headerName }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.HEADER_VALUE, value: this.json.servizioPagoPaRecuperoRT.auth.headerValue }));
+	        }
+	        if(this.json.servizioPagoPaRecuperoRT.auth.username) {
+	          _dettaglio.connettoreRT.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.BASIC }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.USERNAME, value: this.json.servizioPagoPaRecuperoRT.auth.username }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioPagoPaRecuperoRT.auth.password }));
+	        }
+	        if(this.json.servizioPagoPaRecuperoRT.auth.tipo) {
+	          _dettaglio.connettoreRT.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SSL }));
+	          _dettaglio.connettoreRT.push(new Dato({label: Voce.TIPO, value: this.json.servizioPagoPaRecuperoRT.auth.tipo }));
+	          if(this.json.servizioPagoPaRecuperoRT.auth.sslType) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.SSL_CFG_TYPE, value: this.json.servizioPagoPaRecuperoRT.auth.sslType }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.tsType) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.TRUST_STORE_TYPE, value: this.json.servizioPagoPaRecuperoRT.auth.tsType }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.tsLocation) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioPagoPaRecuperoRT.auth.tsLocation }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.tsPassword) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioPagoPaRecuperoRT.auth.tsPassword }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.ksType) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.KEY_STORE_TYPE, value: this.json.servizioPagoPaRecuperoRT.auth.ksType }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.ksLocation) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioPagoPaRecuperoRT.auth.ksLocation }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.ksPassword) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioPagoPaRecuperoRT.auth.ksPassword }));
+	          }
+	          if(this.json.servizioPagoPaRecuperoRT.auth.ksPKeyPasswd) {
+	            _dettaglio.connettoreRT.push(new Dato({label: Voce.KEY_STORE_PWD_PRIVATE_KEY, value: this.json.servizioPagoPaRecuperoRT.auth.ksPKeyPasswd }));
+	          }
+	        }
+	      } else {
+	        _dettaglio.connettoreRT.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
+	      }
+	    }
 
     this.elencoStazioni();
     this.informazioni = _dettaglio.informazioni.slice(0);
     this.connettoriSoap = _dettaglio.connettoriSoap.slice(0);
+	this.connettoreRT = _dettaglio.connettoreRT.slice(0);
   }
 
   protected elencoStazioni() {

@@ -24,7 +24,7 @@ import it.govpay.pendenze.v1.beans.Soggetto.TipoEnum;
 
 public class AnagraficaConverter {
 
-	
+
 	public static Soggetto toSoggettoRsModel(it.govpay.model.Anagrafica anagrafica) {
 		if(anagrafica == null) return null;
 		Soggetto rsModel = new Soggetto();
@@ -41,7 +41,7 @@ public class AnagraficaConverter {
 		rsModel.setNazione(anagrafica.getNazione());
 		rsModel.setEmail(anagrafica.getEmail());
 		rsModel.setCellulare(anagrafica.getCellulare());
-		
+
 		return rsModel;
 	}
 }

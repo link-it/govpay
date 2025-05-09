@@ -23,12 +23,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "urlRitorno",
 "contoAddebito",
@@ -48,56 +47,56 @@ import it.govpay.core.beans.JSONSerializable;
 "rpp",
 })
 public class PagamentoIndex extends JSONSerializable {
-  
+
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
-  
+
   @JsonProperty("contoAddebito")
   private Conto contoAddebito = null;
-  
+
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
-  
+
   @JsonProperty("credenzialiPagatore")
   private String credenzialiPagatore = null;
-  
+
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
-  
+
   @JsonProperty("autenticazioneSoggetto")
   private TipoAutenticazioneSoggetto autenticazioneSoggetto = null;
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("stato")
   private StatoPagamento stato = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
-  
+
   @JsonProperty("idSessionePsp")
   private String idSessionePsp = null;
-  
+
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
-  
+
   @JsonProperty("pendenze")
   private String pendenze = null;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
-  
+
   /**
    * url di ritorno al portale al termine della sessione di pagamento
    **/
@@ -191,7 +190,7 @@ public class PagamentoIndex extends JSONSerializable {
       return null;
     }
   }
-  
+
   public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws ValidationException{
     if(autenticazioneSoggetto != null) {
       this.autenticazioneSoggetto = TipoAutenticazioneSoggetto.fromValue(autenticazioneSoggetto);

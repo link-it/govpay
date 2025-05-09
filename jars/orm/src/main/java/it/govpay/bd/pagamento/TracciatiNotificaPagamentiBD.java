@@ -67,7 +67,7 @@ import it.govpay.orm.IdTracciatoNotificaPagamenti;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TracciatoNotificaPagamentiFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.TracciatoNotificaPagamentiFetch;
-import it.govpay.orm.model.TracciatoNotificaPagamentiModel;;
+import it.govpay.orm.model.TracciatoNotificaPagamentiModel;
 
 public class TracciatiNotificaPagamentiBD extends BasicBD {
 
@@ -123,10 +123,10 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 	}
 	
 	public long count(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -144,7 +144,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
+	private long countConLimitEngine(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -167,12 +167,11 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			 */
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CARICAMENTO), "data_caricamento");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -180,7 +179,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CARICAMENTO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -194,8 +192,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 
 			return count.longValue();
@@ -230,7 +227,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 
 			eseguiRicerca(model, tracciatoFetch, idMappingResolutionBehaviour, lstTracciatoVO, fields, pagExpr);
 
-			//			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoNotificaPagamentiService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.TracciatoNotificaPagamenti tracciatoVO: lstTracciatoVO) {
 				lst.add(TracciatoNotificaPagamentiConverter.toDTO(tracciatoVO));
 			}
@@ -245,17 +241,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			}
 		}
 	}
-
-//	public void update(Tracciato tracciato) throws ServiceException {
-//		try {
-//			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
-//			this.getTracciatoNotificaPagamentiService().update(this.getTracciatoNotificaPagamentiService().convertToId(vo), vo);
-//		} catch (NotImplementedException e) {
-//			throw new ServiceException(e);
-//		} catch (NotFoundException e) {
-//			throw new ServiceException(e);
-//		}
-//	}
 	
 	public void updateBeanDati(TracciatoNotificaPagamenti tracciato) throws ServiceException {
 		try {
@@ -294,9 +279,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 	private void updateBeanDati(IdTracciatoNotificaPagamenti idTracciato, String beanDati) throws ServiceException {
 		try {
 			this.getTracciatoNotificaPagamentiService().updateFields(idTracciato, new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().BEAN_DATI, beanDati));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -321,9 +304,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 	private void updateZipContenuto(IdTracciatoNotificaPagamenti idTracciato, byte[] zipContenuto) throws ServiceException {
 		try {
 			this.getTracciatoNotificaPagamentiService().updateFields(idTracciato, new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO, zipContenuto));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -336,17 +317,13 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			
 			IdTracciatoNotificaPagamenti convertToId = this.getTracciatoNotificaPagamentiService().convertToId(TracciatoNotificaPagamentiConverter.toVO(tracciato));
 
-			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
 			List<UpdateField> listaUpdateFields = new ArrayList<>();
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().BEAN_DATI, tracciato.getBeanDati()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().STATO, tracciato.getStato().name()));
-//			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
 
 			this.getTracciatoNotificaPagamentiService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -372,9 +349,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
 			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
-		//	sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
-//			if(tracciato.getDataCompletamento() != null)
-//				sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.RAW_CONTENUTO, false), "?");
 			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 
@@ -385,24 +359,19 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			int idx = 1;
 			prepareStatement.setString(idx ++, tracciato.getStato().name());
 			prepareStatement.setString(idx ++, tracciato.getBeanDati());
-//			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
-//			if(tracciato.getDataCompletamento() != null)
-//				prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
 			prepareStatement.setLong(idx ++, oid);
 			prepareStatement.setLong(idx ++, tracciato.getId());
 
 			prepareStatement.executeUpdate();
-		} catch (SQLException e) {
-			throw new ServiceException(e);
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			try {
 				if(prepareStatement != null)
 					prepareStatement.close();
-			} catch (SQLException e) { }
+			} catch (SQLException e) { 
+				//do nothing
+			}
 			
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -427,9 +396,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
 			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
-//			if(tracciato.getDataCompletamento() != null)
-//				sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.RAW_CONTENUTO, false), "?");
 			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 
@@ -440,24 +406,19 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			int idx = 1;
 			prepareStatement.setString(idx ++, tracciato.getStato().name());
 			prepareStatement.setString(idx ++, tracciato.getBeanDati());
-//			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
-//			if(tracciato.getDataCompletamento() != null)
-//				prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
 			prepareStatement.setBlob(idx ++, blob);
 			prepareStatement.setLong(idx ++, tracciato.getId());
 
 			prepareStatement.executeUpdate();
-		} catch (SQLException e) {
-			throw new ServiceException(e);
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			try {
 				if(prepareStatement != null)
 					prepareStatement.close();
-			} catch (SQLException e) { }
+			} catch (SQLException e) { 
+				// do nothing
+			}
 
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -511,7 +472,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			}
 		}
 
-		if(list.size() <=0)
+		if(list.isEmpty())
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
 
 		if(list.size() > 1)
@@ -568,15 +529,13 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			expr.equals(model.IDENTIFICATIVO, identificativo);
 		}
 
-		IPaginatedExpression pagExpr = this.getTracciatoNotificaPagamentiService().toPaginatedExpression(expr);
-		return pagExpr;
+		return this.getTracciatoNotificaPagamentiService().toPaginatedExpression(expr);
 	}
 
 	private List<IField> getListaFieldsRicerca(boolean includiRawContenuto,
 			TracciatoNotificaPagamentiFieldConverter converter, TracciatoNotificaPagamentiModel model) throws ExpressionException {
 		List<IField> fields = new ArrayList<>();
 		fields.add(new CustomField("id", Long.class, "id", converter.toTable(model)));
-//		fields.add(model.AUTHORIZATION_TOKEN);
 		fields.add(model.BEAN_DATI);
 		fields.add(model.DATA_CARICAMENTO);
 		fields.add(model.DATA_COMPLETAMENTO);
@@ -584,9 +543,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		fields.add(model.DATA_RT_A);
 		fields.add(model.DATA_RT_DA);
 		fields.add(model.NOME_FILE);
-//		fields.add(model.REQUEST_TOKEN);
 		fields.add(model.STATO);
-//		fields.add(model.UPLOAD_URL);
 		fields.add(model.TIPO);
 		fields.add(model.VERSIONE);
 		fields.add(model.IDENTIFICATIVO);
@@ -604,16 +561,16 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		switch (connettore.getTipoConnettore()) {
 		case EMAIL:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliEmail());
 			break;
 		case FILE_SYSTEM:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliFileSystem());
 			break;
 		case WEB_SERVICE:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliWS());
 			break;
 		case REST:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliREST());
 			break;
 		}
 		
@@ -631,16 +588,16 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		switch (connettore.getTipoConnettore()) {
 		case EMAIL:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliEmail());
 			break;
 		case FILE_SYSTEM:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliFileSystem());
 			break;
 		case WEB_SERVICE:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliWS());
 			break;
 		case REST:
-			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.getStatiNonTerminaliREST());
 			break;
 		}
 		
@@ -680,7 +637,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		List<TracciatoNotificaPagamenti> findAll = this.findAll(filter);
 		
-		if(findAll.size() >0) {
+		if(!findAll.isEmpty()) {
 			return findAll.get(0).getDataRtA();
 		}
 		
@@ -719,7 +676,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		List<TracciatoNotificaPagamenti> findAll = this.findAll(filter);
 		
-		if(findAll.size() >0) {
+		if(!findAll.isEmpty()) {
 			return findAll.get(0);
 		}
 		
@@ -831,27 +788,26 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			}
 			this.commit();
 			return baos.toByteArray();
-		} catch (SQLQueryObjectException | ExpressionException | SQLException e) {
-			this.rollback();
-			throw new ServiceException(e);
-		} catch (UtilsException | IOException e) {
-			this.rollback();
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (SQLQueryObjectException | ExpressionException | SQLException | UtilsException | IOException | NotFoundException e) {
 			this.rollback();
 			throw new ServiceException(e);
 		} finally {
 			try {
 				if(resultSet != null)
 					resultSet.close(); 
-			} catch (SQLException e) { }
+			} catch (SQLException e) { 
+				// do nothing
+			}
 			try {
 				if(prepareStatement != null)
 					prepareStatement.close();
-			} catch (SQLException e) { }
+			} catch (SQLException e) {
+				// do nothing
+			}
 			try {
 				this.setAutoCommit(true);
 			} catch (ServiceException e) {
+				// do nothing
 			}
 			
 			if(this.isAtomica()) {
@@ -865,7 +821,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
+		filter.setStati(TracciatoNotificaPagamenti.getStatiNonTerminaliREST());
 		
 		return this.count(filter);
 	}

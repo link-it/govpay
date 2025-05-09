@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * configure followRedirects = false
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
@@ -41,7 +43,7 @@ And request
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Nodo dei pagamenti in errore
 
@@ -100,8 +102,6 @@ And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza)'
 And match response.risultati[0].rt == '#notpresent'
 And match response.risultati[0].stato == 'RPT_ERRORE_INVIO_A_NODO'
 
-* callonce read('classpath:utils/govpay-op-acquisisci-verifica-transazioni-pendenti.feature')
-
 Given url pagamentiBaseurl
 And path '/rpp'
 And param idPendenza = idPendenza
@@ -135,7 +135,7 @@ And request intermediario
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -189,9 +189,7 @@ And match response ==
 """
 And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza)'
 And match response.risultati[0].rt == '#notpresent'
-And match response.risultati[0].stato == 'RPT_ATTIVATA'
-
-* callonce read('classpath:utils/govpay-op-acquisisci-verifica-transazioni-pendenti.feature')
+And match response.risultati[0].stato == 'RPT_ERRORE_INVIO_A_NODO'
 
 Given url pagamentiBaseurl
 And path '/rpp'

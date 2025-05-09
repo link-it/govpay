@@ -23,7 +23,8 @@ import it.govpay.backoffice.v1.beans.Soggetto;
 import it.govpay.model.Anagrafica;
 
 public class AnagraficaConverter {
-
+	
+	private AnagraficaConverter() {}
 
 	public static Soggetto toSoggettoRsModel(it.govpay.model.Anagrafica anagrafica) {
 		if(anagrafica == null) return null;

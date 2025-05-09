@@ -22,7 +22,7 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 import java.util.Map;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.springframework.security.core.Authentication;
 

@@ -93,11 +93,7 @@ public class FrBD extends BasicBD {
 
 			FR vo = ((JDBCFRServiceSearch)this.getFrService()).get(idFr);
 			return FrConverter.toDTO(vo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | NotFoundException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -158,13 +154,7 @@ public class FrBD extends BasicBD {
 			vo = this.getFrService().find(expr);
 
 			return FrConverter.toDTO(vo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -184,9 +174,7 @@ public class FrBD extends BasicBD {
 			id.setCodFlusso(codFlusso);
 			id.setDataOraFlusso(dataOraFlusso);
 			return this.getFrService().exists(id);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -208,11 +196,7 @@ public class FrBD extends BasicBD {
 			expr.notEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
 
 			return this.getFrService().count(expr).longValue() > 0;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -257,10 +241,10 @@ public class FrBD extends BasicBD {
 	}
 
 	public long count(FrFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 
-	private long _countSenzaLimit(FrFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(FrFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -278,7 +262,7 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(FrFilter filter) throws ServiceException {
+	private long countConLimitEngine(FrFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -301,12 +285,11 @@ public class FrBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			 */
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_FLUSSO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_FLUSSO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ACQUISIZIONE), "data_acquisizione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -314,7 +297,6 @@ public class FrBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ACQUISIZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -328,8 +310,7 @@ public class FrBD extends BasicBD {
 
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 
 			return count.longValue();
@@ -389,7 +370,6 @@ public class FrBD extends BasicBD {
 			fields.add(model.DATA_REGOLAMENTO);
 			fields.add(model.NUMERO_PAGAMENTI);
 			fields.add(model.IMPORTO_TOTALE_PAGAMENTI);
-			//			fields.add(model.XML);
 			fields.add(model.IUR);
 			fields.add(model.COD_BIC_RIVERSAMENTO);
 			fields.add(model.RAGIONE_SOCIALE_DOMINIO);
@@ -426,9 +406,7 @@ public class FrBD extends BasicBD {
 				frLst.add(FrConverter.toDTO(frVO));
 			}
 			return frLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
@@ -454,9 +432,7 @@ public class FrBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(cfIdIncasso, idIncasso));
 
 			this.getFrService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | ExpressionException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -478,9 +454,7 @@ public class FrBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(FR.model().OBSOLETO, obsoleto));
 
 			this.getFrService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -516,9 +490,7 @@ public class FrBD extends BasicBD {
 
 				this.getFrService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 			}
-		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -528,7 +500,7 @@ public class FrBD extends BasicBD {
 	}
 
 	public List<Long> getIdsFlusso(String codDominio, String codFlusso) throws ServiceException {
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new ArrayList<>();
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -547,9 +519,7 @@ public class FrBD extends BasicBD {
 			for (Object object : select) {
 				ids.add((Long) object);
 			}
-		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -587,11 +557,7 @@ public class FrBD extends BasicBD {
 				frLst.add(FrConverter.toDTO(frVO));
 			}
 			return frLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -622,11 +588,7 @@ public class FrBD extends BasicBD {
 			NonNegativeNumber count = this.getFrService().count(exp);
 			
 			return count.longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

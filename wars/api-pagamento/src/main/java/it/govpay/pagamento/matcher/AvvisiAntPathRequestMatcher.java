@@ -22,12 +22,13 @@ package it.govpay.pagamento.matcher;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -79,7 +80,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 					// id dominio e' il path in posizione 1
 					idDominio = split[0];
 					// iuv e' il path in posizione 2
-					iuv = split[1];	
+					iuv = split[1];
 				}
 			}
 
@@ -123,7 +124,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				authorizedPathMatch = true; // se il controllo e' disabilitato passo
 			}
 
-			// se ho richiesto un pdf devo sempre controllare se l'identificativo della pendenza e' tra quelli in sessione 
+			// se ho richiesto un pdf devo sempre controllare se l'identificativo della pendenza e' tra quelli in sessione
 			if(authorizedPathMatch && this.richiestoPdf(request)) {
 				if(idDominio != null && iuv != null) { // controllo presenza dei parametri di identificazione dell'avviso
 					try {
@@ -136,7 +137,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				} else { // parametri non validi
 					authorizedPathMatch = false;
 				}
-			} 
+			}
 		}
 
 		return authorizedPathMatch;
@@ -178,22 +179,22 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 				Map<String, String> listaAvvisi = null;
 				if(iuv.length() == 18) {
-					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 				} else {
 					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 				}
-				
+
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista avvisi: ["+((listaAvvisi!= null && listaAvvisi.size() > 0 )? (StringUtils.join(listaAvvisi.keySet(), ",")): "non presente")+"]");
 
 				if(listaAvvisi != null && listaAvvisi.size() > 0) {
 					if(listaAvvisi.containsKey(chiaveAvviso)) {
 						logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista avvisi, effettuo controllo uuid...");
-						Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+						Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
 
 						if(listaIdentificativi.containsKey(chiavePendenza)) {
 							Versamento versamento = listaIdentificativi.get(chiavePendenza);
-	
+
 							if(versamento.getIdSessione() != null && uuid.equals(versamento.getIdSessione())) {
 								logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+", UUID: "+uuid+"] presente in lista pendenze, autorizzazione concessa.");
 								return true;
@@ -205,7 +206,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 			if(iuv.length() == 18)
 				getAvvisoDTO.setNumeroAvviso(iuv);
-			else 
+			else
 				getAvvisoDTO.setIuv(iuv);
 			getAvvisoDTO.setIdentificativoCreazionePendenza(uuid);
 			GetAvvisoDTOResponse checkDisponibilitaAvviso = avvisiDAO.checkDisponibilitaAvviso(getAvvisoDTO, versamentiBD);
@@ -239,19 +240,19 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			String chiaveAvviso = idDominio+iuv;
 			if(session!= null) {
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
-				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+((listaIdentificativi!= null && listaIdentificativi.size() > 0 ) ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 				if(iuv.length() == 18) {
-					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 				} else {
 					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 				}
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista avvisi: ["+((listaAvvisi!= null && listaAvvisi.size() > 0 ) ? (StringUtils.join(listaAvvisi.keySet(), ",")): "non presente")+"]");
-		
+
 				if(listaAvvisi != null && listaAvvisi.size() > 0) {
 					if(listaAvvisi.containsKey(chiaveAvviso)) {
 						logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista avvisi, effettuo controllo id Pendenza...");
-						
+
 						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
 
 						if(listaIdentificativi.containsKey(chiavePendenza)) {
@@ -260,7 +261,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 						}
 					}
 				}
-				
+
 				logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] non presente in lista pendenze, effettuo controllo su DB.");
 			}
 
@@ -269,7 +270,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), idDominio);
 			if(iuv.length() == 18)
 				getAvvisoDTO.setNumeroAvviso(iuv);
-			else 
+			else
 				getAvvisoDTO.setIuv(iuv);
 			getAvvisoDTO.setFormato(FormatoAvviso.JSON);
 			GetAvvisoDTOResponse checkDisponibilitaAvviso = avvisiDAO.getAvviso(getAvvisoDTO, versamentiBD, configWrapper);
@@ -279,7 +280,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 			if(session!= null) {
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
-				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 
 				if(listaIdentificativi != null && listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
@@ -298,8 +299,18 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 		}catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile effettuare il check disponibilita' avviso: "+ e.getMessage(), e);
 		}	finally {
-			if(versamentiBD != null)
+			if(versamentiBD != null) {
+				// ripristino autocommit
+				try {
+					if(!versamentiBD.isAutoCommit() ) {
+						versamentiBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					//donothing
+				}
+				
 				versamentiBD.closeConnection();
+			}
 		}
 
 		return authorized;

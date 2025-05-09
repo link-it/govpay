@@ -24,6 +24,7 @@ import it.govpay.ec.v2.beans.UnitaOperativa;
 
 public class DominiConverter {
 	
+	private DominiConverter() {}
 	
 	public static Dominio toRsModelIndex(it.govpay.bd.model.Dominio dominio) {
 		if(dominio == null)

@@ -25,6 +25,7 @@ import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
 
 public class EntrataPrevistaConverter {
 
+	private EntrataPrevistaConverter() {}
 
 	public static EntrataPrevistaIndex toRsModelIndex(it.govpay.bd.viste.model.EntrataPrevista entrataPrevista) {
 		EntrataPrevistaIndex rsModel = new EntrataPrevistaIndex();

@@ -48,6 +48,8 @@ import it.govpay.pagamento.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v3.beans.AllegatoPendenza;
 import it.govpay.pagamento.v3.beans.Documento;
 import it.govpay.pagamento.v3.beans.LinguaSecondaria;
+import it.govpay.pagamento.v3.beans.MapEntry;
+import it.govpay.pagamento.v3.beans.Metadata;
 import it.govpay.pagamento.v3.beans.PendenzaArchivio;
 import it.govpay.pagamento.v3.beans.PendenzaPagata;
 import it.govpay.pagamento.v3.beans.ProprietaPendenza;
@@ -62,7 +64,7 @@ import it.govpay.pagamento.v3.beans.VoceDescrizioneImporto;
 import it.govpay.pagamento.v3.beans.VocePendenzaPagata;
 
 public class PendenzeConverter {
-	
+
 	public static PendenzaArchivio toPendenzaArchivioRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, UnsupportedEncodingException, IOException {
 		return toPendenzaArchivioRsModel(dto.getVersamento(), dto.getRpts(), dto.getAllegati(), user);
 	}
@@ -87,7 +89,7 @@ public class PendenzeConverter {
 				}
 			}
 		}
-		
+
 		return toPendenzaArchivioRsModel(rpt , versamento, versamento.getAllegati(), user);
 	}
 
@@ -111,7 +113,7 @@ public class PendenzeConverter {
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		if(versamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
-		
+
 		StatoPendenza statoPendenza = null;
 
 		switch(versamento.getStatoVersamento()) {
@@ -127,9 +129,9 @@ public class PendenzeConverter {
 			break;
 		default:
 			break;
-		
+
 		}
-		
+
 		if(versamento.isAnomalo())
 			statoPendenza = StatoPendenza.ANOMALA;
 
@@ -158,7 +160,7 @@ public class PendenzeConverter {
 		// Ciclo i singoli versamenti per inserire le voci
 		if(versamento.getSingoliVersamenti() != null) {
 			for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
-	
+
 				// Di ogni voce cerco, se esiste, la riscossione associata
 				int indiceDati = sv.getIndiceDati() == null ? 0 : sv.getIndiceDati().intValue();
 				Pagamento pagamento = null;
@@ -258,7 +260,7 @@ public class PendenzeConverter {
 		//		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-
+		rsModel.setMetadata(toMetadataRsModel(singoloVersamento.getMetadataPagoPA()));
 
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
@@ -333,6 +335,7 @@ public class PendenzeConverter {
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
 			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
+			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
 		}
 
 		return rsModel;
@@ -451,5 +454,28 @@ public class PendenzeConverter {
 		}
 
 		return soggetto;
+	}
+
+	public static Metadata toMetadataRsModel(it.govpay.core.beans.tracciati.Metadata metadata) {
+		Metadata rsModel = null;
+		if(metadata != null) {
+			rsModel = new Metadata();
+
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<MapEntry> mapEntriesRsModel = new ArrayList<>();
+
+				for (it.govpay.core.beans.tracciati.MapEntry mapEntry : metadata.getMapEntries()) {
+					MapEntry mapEntryRsModel = new MapEntry();
+					mapEntryRsModel.setKey(mapEntry.getKey());
+					mapEntryRsModel.setValue(mapEntry.getValue());
+
+					mapEntriesRsModel.add(mapEntryRsModel);
+				}
+
+				rsModel.setMapEntries(mapEntriesRsModel);
+			}
+		}
+
+		return rsModel;
 	}
 }

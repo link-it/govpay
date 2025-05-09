@@ -6,16 +6,17 @@ Background:
 
 Scenario: Rendicontazioni
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
 * call sleep(1000)
 * def dataInizioFR = getDateTime()
 * call sleep(1000)
 
-* call read('classpath:utils/workflow/modello1/v1/modello1-bunch-pagamenti-v3.feature')
+* call read('classpath:utils/workflow/modello1/v1/modello1-bunch-pagamenti-v3-no-conf.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio

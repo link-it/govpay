@@ -29,5 +29,5 @@ public class ListaUnitaOperative extends Lista<UnitaOperativa> {
 	public ListaUnitaOperative(List<UnitaOperativa> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
-	
+
 }

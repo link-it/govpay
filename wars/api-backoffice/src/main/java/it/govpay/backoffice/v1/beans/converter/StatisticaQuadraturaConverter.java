@@ -21,11 +21,7 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import java.util.Map.Entry;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -34,9 +30,23 @@ import it.govpay.backoffice.v1.beans.StatisticaQuadratura;
 import it.govpay.backoffice.v1.beans.StatisticaQuadraturaRendicontazione;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.core.utils.UriBuilderUtils;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 public class StatisticaQuadraturaConverter {
+	
+	private static final String PARAM_IUV = "iuv";
+	private static final String PARAM_DATA_RENDICONTAZIONE_A = "dataRendicontazioneA";
+	private static final String PARAM_DATA_RENDICONTAZIONE_DA = "dataRendicontazioneDa";
+	private static final String PARAM_DATA_ORA_FLUSSO_A = "dataOraFlussoA";
+	private static final String PARAM_DATA_ORA_FLUSSO_DA = "dataOraFlussoDa";
+	private static final String PARAM_DIVISIONE = "divisione";
+	private static final String PARAM_DIREZIONE = "direzione";
+	private static final String PARAM_ID_FLUSSO = "idFlusso";
 
+	private StatisticaQuadraturaConverter() {}
 
 	public static StatisticaQuadratura toRsModelIndex(it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione statistica) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -58,14 +68,6 @@ public class StatisticaQuadraturaConverter {
 			rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(statistica.getTipoVersamento(configWrapper)));
 		if(statistica.getUo(configWrapper) != null)
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModelIndex(statistica.getUo(configWrapper)));
-
-//		if(statistica.getTipo() != null) {
-//			if(statistica.getTipo().equals(TipoPagamento.ENTRATA)) {
-//				rsModel.setTipo(TipoRiscossione.ENTRATA);
-//			} else {
-//				rsModel.setTipo(TipoRiscossione.MBT);
-//			}
-//		}
 
 		return rsModel;
 	}
@@ -109,40 +111,41 @@ public class StatisticaQuadraturaConverter {
 
 
 		if(statistica.getCodFlusso() != null) {
-			parametri.add("idFlusso", statistica.getCodFlusso());
+			parametri.add(PARAM_ID_FLUSSO, statistica.getCodFlusso());
 		} else {
-			if(queryParameters.containsKey("idFlusso"))
-				parametri.addAll("idFlusso", queryParameters.get("idFlusso"));
+			if(queryParameters.containsKey(PARAM_ID_FLUSSO))
+				parametri.addAll(PARAM_ID_FLUSSO, queryParameters.get(PARAM_ID_FLUSSO));
 		}
 
 		if(statistica.getDirezione() != null) {
-			parametri.add("direzione", statistica.getDirezione());
+			parametri.add(PARAM_DIREZIONE, statistica.getDirezione());
 		} else {
-			if(queryParameters.containsKey("direzione"))
-				parametri.addAll("direzione", queryParameters.get("direzione"));
+			if(queryParameters.containsKey(PARAM_DIREZIONE))
+				parametri.addAll(PARAM_DIREZIONE, queryParameters.get(PARAM_DIREZIONE));
 		}
 
 		if(statistica.getDivisione() != null) {
-			parametri.add("divisione", statistica.getDivisione());
+			parametri.add(PARAM_DIVISIONE, statistica.getDivisione());
 		} else {
-			if(queryParameters.containsKey("divisione"))
-				parametri.addAll("divisione", queryParameters.get("divisione"));
+			if(queryParameters.containsKey(PARAM_DIVISIONE))
+				parametri.addAll(PARAM_DIVISIONE, queryParameters.get(PARAM_DIVISIONE));
 		}
 
-		if(queryParameters.containsKey("dataOraFlussoDa"))
-			parametri.addAll("dataOraFlussoDa", queryParameters.get("dataOraFlussoDa"));
-		if(queryParameters.containsKey("dataOraFlussoA"))
-			parametri.addAll("dataOraFlussoA", queryParameters.get("dataOraFlussoA"));
-		if(queryParameters.containsKey("dataRendicontazioneDa"))
-			parametri.addAll("dataRendicontazioneDa", queryParameters.get("dataRendicontazioneDa"));
-		if(queryParameters.containsKey("dataRendicontazioneA"))
-			parametri.addAll("dataRendicontazioneA", queryParameters.get("dataRendicontazioneA"));
-		if(queryParameters.containsKey("iuv"))
-			parametri.addAll("iuv", queryParameters.get("iuv"));
+		if(queryParameters.containsKey(PARAM_DATA_ORA_FLUSSO_DA))
+			parametri.addAll(PARAM_DATA_ORA_FLUSSO_DA, queryParameters.get(PARAM_DATA_ORA_FLUSSO_DA));
+		if(queryParameters.containsKey(PARAM_DATA_ORA_FLUSSO_A))
+			parametri.addAll(PARAM_DATA_ORA_FLUSSO_A, queryParameters.get(PARAM_DATA_ORA_FLUSSO_A));
+		if(queryParameters.containsKey(PARAM_DATA_RENDICONTAZIONE_DA))
+			parametri.addAll(PARAM_DATA_RENDICONTAZIONE_DA, queryParameters.get(PARAM_DATA_RENDICONTAZIONE_DA));
+		if(queryParameters.containsKey(PARAM_DATA_RENDICONTAZIONE_A))
+			parametri.addAll(PARAM_DATA_RENDICONTAZIONE_A, queryParameters.get(PARAM_DATA_RENDICONTAZIONE_A));
+		if(queryParameters.containsKey(PARAM_IUV))
+			parametri.addAll(PARAM_IUV, queryParameters.get(PARAM_IUV));
 
 		// aggiungo tutti i parametri
-		for (String key : parametri.keySet()) {
-			List<String> list = parametri.get(key);
+		for (Entry<String, List<String>> entry : parametri.entrySet()) {
+			String key = entry.getKey();
+			List<String> list = entry.getValue();
 			uriBuilder = uriBuilder.queryParam(key, list.toArray(new Object[list.size()]));
 		}
 

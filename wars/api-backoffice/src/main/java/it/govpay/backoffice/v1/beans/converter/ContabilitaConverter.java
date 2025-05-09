@@ -34,6 +34,8 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class ContabilitaConverter {
 
+	private ContabilitaConverter() {}
+
 	public static Contabilita toRsModel(String contabilitaJson) throws IOException {
 		if(contabilitaJson == null)
 			return null;
@@ -45,16 +47,12 @@ public class ContabilitaConverter {
 
 
 	public static List<QuotaContabilita> toRsModel(List<it.govpay.model.QuotaContabilita> dto) {
-		if(dto != null) {
-			List<QuotaContabilita> rsModel = new ArrayList<>();
-			for (it.govpay.model.QuotaContabilita contabilita : dto) {
-				rsModel.add(toRsModel(contabilita));
-			}
-
-			return rsModel;
+		List<QuotaContabilita> rsModel = new ArrayList<>();
+		for (it.govpay.model.QuotaContabilita contabilita : dto) {
+			rsModel.add(toRsModel(contabilita));
 		}
 
-		return null;
+		return rsModel;
 	}
 
 	public static QuotaContabilita toRsModel(it.govpay.model.QuotaContabilita dto) {
@@ -76,7 +74,9 @@ public class ContabilitaConverter {
 	public static Contabilita toRsModel(it.govpay.model.Contabilita dto) {
 		Contabilita rsModel = new Contabilita();
 
-		rsModel.setQuote(toRsModel(dto.getQuote()));
+		if(dto.getQuote() != null) {
+			rsModel.setQuote(toRsModel(dto.getQuote()));
+		}
 		rsModel.setProprietaCustom(dto.getProprietaCustom());
 
 		return rsModel;
@@ -94,22 +94,20 @@ public class ContabilitaConverter {
 
 
 	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
-		if(dto != null) {
-			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<>();
-			for (QuotaContabilita contabilita : dto) {
-				rsModel.add(toDTO(contabilita));
-			}
-
-			return rsModel;
+		List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<>();
+		for (QuotaContabilita contabilita : dto) {
+			rsModel.add(toDTO(contabilita));
 		}
 
-		return null;
+		return rsModel;
 	}
 
 	public static it.govpay.model.Contabilita toDTO(Contabilita dto)  {
 		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
 
-		rsModel.setQuote(toDTO(dto.getQuote()));
+		if(dto.getQuote() != null) {
+			rsModel.setQuote(toDTO(dto.getQuote()));
+		}
 		rsModel.setProprietaCustom(dto.getProprietaCustom());
 
 

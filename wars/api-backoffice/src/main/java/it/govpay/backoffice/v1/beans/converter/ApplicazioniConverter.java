@@ -42,6 +42,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -51,6 +52,8 @@ import it.govpay.model.TipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ApplicazioniConverter {
+	
+	private ApplicazioniConverter() {}
 
 	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, Authentication user) throws NotAuthorizedException, CodificaInesistenteException {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
@@ -86,7 +89,7 @@ public class ApplicazioniConverter {
 				if(tipiVersamentoAutorizzati == null)
 					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-				if(tipiVersamentoAutorizzati.size() > 0) {
+				if(!tipiVersamentoAutorizzati.isEmpty()) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 				}
 
@@ -104,16 +107,15 @@ public class ApplicazioniConverter {
 
 			if(applicazionePost.getDomini() != null && !applicazionePost.getDomini().isEmpty()) {
 				for (Object object : applicazionePost.getDomini()) {
-					if(object instanceof String) {
-						String idDominio = (String) object;
+					if(object instanceof String idDominio) {
 						if(idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
 							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 
 							if(dominiAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-							if(dominiAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori");
+							if(!dominiAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_GLI_ENTI_CREDITORI);
 							}
 
 							appAuthDominiAll = true;
@@ -121,16 +123,15 @@ public class ApplicazioniConverter {
 							break;
 						}
 						domini.add(DominiConverter.getDominioCommons(idDominio));
-					} else if(object instanceof DominioProfiloPost) {
-						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+					} else if(object instanceof DominioProfiloPost dominioProfiloPost) {
 						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
 							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 
 							if(dominiAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-							if(dominiAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori");
+							if(!dominiAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_GLI_ENTI_CREDITORI);
 							}
 
 							appAuthDominiAll = true;
@@ -156,8 +157,8 @@ public class ApplicazioniConverter {
 							if(dominiAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-							if(dominiAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori");
+							if(!dominiAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_GLI_ENTI_CREDITORI);
 							}
 
 							appAuthDominiAll = true;
@@ -198,19 +199,19 @@ public class ApplicazioniConverter {
 			}
 		}
 
-		if(applicazionePost.getApiPagamenti()) {
+		if(Boolean.TRUE.equals(applicazionePost.getApiPagamenti())) {
 			Acl acl = AclConverter.getAclAPI(Servizio.API_PAGAMENTI, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);
 		}
 
-		if(applicazionePost.getApiPendenze()) {
+		if(Boolean.TRUE.equals(applicazionePost.getApiPendenze())) {
 			Acl acl = AclConverter.getAclAPI(Servizio.API_PENDENZE, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);
 		}
 
-		if(applicazionePost.getApiRagioneria()) {
+		if(Boolean.TRUE.equals(applicazionePost.getApiRagioneria())) {
 			Acl acl = AclConverter.getAclAPI(Servizio.API_RAGIONERIA, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);
@@ -338,7 +339,7 @@ public class ApplicazioniConverter {
 			}
 		}
 
-		if(applicazione.getUtenza().getRuoli() != null && applicazione.getUtenza().getRuoli().size() > 0) {
+		if(applicazione.getUtenza().getRuoli() != null && !applicazione.getUtenza().getRuoli().isEmpty()) {
 			List<Ruolo> ruoli = new ArrayList<>();
 
 			for (String idRuolo : applicazione.getUtenza().getRuoli()) {
@@ -351,7 +352,7 @@ public class ApplicazioniConverter {
 		return rsModel;
 	}
 
-	public static ApplicazioneIndex toRsModelIndex(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static ApplicazioneIndex toRsModelIndex(it.govpay.bd.model.Applicazione applicazione) {
 		ApplicazioneIndex rsModel = new ApplicazioneIndex();
 		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
 

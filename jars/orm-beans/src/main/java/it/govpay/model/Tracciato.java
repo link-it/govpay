@@ -23,6 +23,10 @@ import java.util.Date;
 
 public class Tracciato extends BasicModel {
 
+	public enum StatoTracciatoType {
+		ANNULLATO, NUOVO, IN_CARICAMENTO, CARICAMENTO_OK, CARICAMENTO_KO, STAMPATO;
+	}
+	
 	/**
 	 * 
 	 */
@@ -136,7 +140,7 @@ public class Tracciato extends BasicModel {
 	
 	public enum TIPO_TRACCIATO { PENDENZA }
 	
-	public enum FORMATO_TRACCIATO { CSV, JSON, XML};
+	public enum FORMATO_TRACCIATO { CSV, JSON, XML}
 	
 	private TIPO_TRACCIATO tipo;
 	private STATO_ELABORAZIONE stato;

@@ -1,6 +1,6 @@
 .. _integrazione_pagamentiente:
 
-.. INFO::
+.. NOTE::
    In questa sezione viene descritto il nuovo processo di pagamento
    ad iniziativa Ente tramite il Modello Unico introdotto dalle SANP 3.2. 
    Restano disponibili i servizi che realizzano il precedente processo 
@@ -44,8 +44,7 @@ Avvio del Pagamento
 Al termine della fase di predisposizione del pagamento, il portale
 dispone di un carrello di pendenze identificate dagli estremi degli 
 avvisi ad esse associati. Per avviare il pagamento è sufficiente 
-effettuare una richiesta alle :ref:`API Checkout di pagoPA https://docs.pagopa.it/sanp/appendici/primitive#ec-checkout-api`_
-ottenendo la redirezione al portale di pagamento.
+effettuare una richiesta alle `API Checkout di pagoPA <https://docs.pagopa.it/sanp/appendici/primitive#ec-checkout-api>`_ ottenendo la redirezione al portale di pagamento.
 
 .. DANGER::
    Attualmente il servizio Checkout consente di pagare un solo
@@ -57,21 +56,80 @@ avvio della transazione
 Esito del Pagamento
 -------------------
 
-Al ritorno sul Portale di Pagamento, al termine delle operazioni,
-il portale deve verificare l'effettivo esito del pagamento. 
+Al ritorno sul Portale di Pagamento, al termine delle operazioni, il portale deve verificare l'effettivo esito del pagamento. 
+Invocando le API Pagamenti di GovPay, si ottiene la lista delle ricevute di pagamento dell'avviso individuato:
 
-Invocando le API Pagamenti di GovPay, in particolare il servizio `GET /ricevute/{idDominio}/{iuv}`, 
-si ottiene la lista delle ricevute di pagamento dell'avviso 
-individuato
+   `GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}`
 
-.. INFO::
+Dove:
+
+- idDominio: codice fiscale ente creditore (fisso 05754381001);
+- iuv: identificativo univoco di versamento (si ottiene eliminando le prime tre cifre dal numero avviso)idA2A;
+
+In risposta si ottiene l’elenco delle transazioni di pagamento che corrispondono ai criteri di ricerca.
+Nel caso fossero presenti piu’ tentativi di pagamento il servizio ordina i risultati per data decrescente.
+
+.. NOTE::
    Il modello unico pagoPA prevede che le ricevute siano emesse
    solo in caso di pagamento completato con successo.
 
-E' possibile infine stampare la versione PDF di una ricevuta invocando
-la risorsa `GET /ricevute/{idDominio}/{iuv}/{idRicevuta}` impostando l'header HTTP 
+Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}** per scaricare la lista delle ricevute. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890** e lo iuv sia **10000000000000001**.
+
+.. code-block:: json
+      :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}*
+	
+      GET https://demo.govcloud.it/govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio=01234567890&iuv=10000000000000001
+
+      HTTP 200 OK
+      
+      {
+         "numRisultati":1,
+         "numPagine":1,
+         "risultatiPerPagina":25,
+         "pagina":1,
+         "risultati":[
+            {
+               "dominio":{
+                  "idDominio":"01234567890",
+                  "ragioneSociale":"Ente Creditore"
+               },
+               "iuv":"10000000000000001",
+               "idRicevuta":"100000000000902038186",
+               "data":"2025-02-21T17:25:11",
+               "esito":"ESEGUITO"
+            }
+         ]
+      }
+	
+E' possibile infine stampare la versione PDF di una ricevuta utilizzando la risorsa `GET /ricevute/{idDominio}/{iuv}/{idRicevuta}` impostando l'header HTTP 
 `Accept: application/pdf`
 
-Si ricorda inoltre che GovPay notifica le ricevute di pagamento acquisite
-all'applicativo gestionale tramite le API Ente. Questo consente di evitare
-onerosi sistemi di polling per l'acquisizione.
+   `GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}
+   Accept: application/pdf|application/json`
+
+Dove:
+
+   - idDominio: codice fiscale ente creditore (fisso 05754381001)
+   - iuv: identificativo univoco di versamento 
+   - idRicevuta: identificativo della ricevuta
+   - Header HTTP Accept: consente di scaricare l’avviso di pagamento in diversi formati. Per scaricare la ricevuta in formato pdf impostare il valore: ‘Accept: application/pdf’.
+
+Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}** per scaricare la ricevuta in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001**, l'idRicevuta sia **100000000000902038186**.
+
+.. code-block:: json
+      :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}*
+
+      GET https://demo.govcloud.it/govpay/backend/api/ragioneria/rs/basic/v3/ricevute/01234567890/10000000000000001/100000000000902038186
+      Accept:application/pdf
+
+      HTTP/1.1 200 OK
+      content-disposition: attachment; filename="01234567890_10000000000000001_100000000000902038186.pdf"
+      Content-Type: application/pdf
+      
+      ---[pdf della ricevuta]--- 
+
+.. NOTE::
+   Si ricorda inoltre che GovPay notifica le ricevute di pagamento acquisite all'applicativo gestionale tramite le API Ente.
+   Questo consente di evitare onerosi sistemi di polling per l'acquisizione.
+
+

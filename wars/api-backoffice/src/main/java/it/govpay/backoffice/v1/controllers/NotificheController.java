@@ -19,16 +19,10 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -50,23 +44,24 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 
 
 public class NotificheController extends BaseController {
 
-     public NotificheController(String nomeServizio,Logger log) {
+	public NotificheController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-     }
+	}
 
-
-
-    public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
-    	String methodName = "findNotifiche";
+	public Response findNotifiche(Authentication user, UriInfo uriInfo, Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
+		String methodName = "findNotifiche";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.setMaxRisultati(maxRisultati);
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
 
@@ -83,61 +78,50 @@ public class NotificheController extends BaseController {
 
 			if(stato != null) {
 				StatoNotifica statoNotifica = StatoNotifica.fromValue(stato);
-				if(statoNotifica != null)
-				switch (statoNotifica) {
-				case ANNULLATA:
-					listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.ANNULLATA);
-					break;
-				case DA_SPEDIRE:
-					listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.DA_SPEDIRE);
-					break;
-				case SPEDITA:
-					listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.SPEDITO);
-					break;
+				if(statoNotifica != null) {
+					switch (statoNotifica) {
+					case ANNULLATA:
+						listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.ANNULLATA);
+						break;
+					case DA_SPEDIRE:
+						listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.DA_SPEDIRE);
+						break;
+					case SPEDITA:
+						listaNotificheDTO.setStato(it.govpay.model.Notifica.StatoSpedizione.SPEDITO);
+						break;
+					}
 				}
 			}
 
 			if(tipo != null) {
 				TipoNotifica tipoNotifica = TipoNotifica.fromValue(tipo);
-				if(tipoNotifica != null)
-				switch (tipoNotifica) {
-				case ANNULLAMENTO:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ANNULLAMENTO);
-					break;
-				case ATTIVAZIONE:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ATTIVAZIONE);
-					break;
-				case FALLIMENTO:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.FALLIMENTO);
-					break;
-				case RICEVUTA:
-					listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.RICEVUTA);
-					break;
+				if(tipoNotifica != null) {
+					switch (tipoNotifica) {
+					case ANNULLAMENTO:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ANNULLAMENTO);
+						break;
+					case ATTIVAZIONE:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.ATTIVAZIONE);
+						break;
+					case FALLIMENTO:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.FALLIMENTO);
+						break;
+					case RICEVUTA:
+						listaNotificheDTO.setTipo(it.govpay.model.Notifica.TipoNotifica.RICEVUTA);
+						break;
+					}
 				}
 			}
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, Costanti.PARAM_DATA_DA);
 				listaNotificheDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, Costanti.PARAM_DATA_A);
 				listaNotificheDTO.setDataA(dataADate);
 			}
-
-//			// Autorizzazione sui domini
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaNotificheDTO.setIdDomini(idDomini);
-//			// autorizzazione sui tipi pendenza
-//			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
-//			if(idTipiVersamento == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-//			}
-//			listaNotificheDTO.setIdTipiVersamento(idTipiVersamento);
 
 			// INIT DAO
 
@@ -157,17 +141,15 @@ public class NotificheController extends BaseController {
 			ListaNotifiche response = new ListaNotifiche(results, this.getServicePath(uriInfo),
 					listaNotificheDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
-    }
+	}
 
 
 }
-
-

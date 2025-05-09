@@ -37,15 +37,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.AllegatiBD;
 import it.govpay.bd.pagamento.DocumentiBD;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.Iuv;
-import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.TipoVersamento;
 
 public class Versamento extends it.govpay.model.Versamento {
@@ -58,7 +55,6 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Applicazione applicazione;
 	private transient Dominio dominio;
 	private transient UnitaOperativa uo;
-	private transient Iuv iuv;
 	private transient TipoVersamento tipoVersamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	private transient Documento documento;
@@ -68,7 +64,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
 
-	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
+	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) {
 		if(this.singoliVersamenti == null) {
 			this.singoliVersamenti = new ArrayList<>();
 		}
@@ -142,6 +138,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.dominio;
@@ -163,36 +160,12 @@ public class Versamento extends it.govpay.model.Versamento {
 		return this.rpts;
 	}
 
-	public Iuv getIuv(BDConfigWrapper configWrapper) throws ServiceException {
-		if(this.iuv == null) {
-			IuvBD iuvBD = new IuvBD(configWrapper);
-			try {
-				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-			} catch (NotFoundException e) {
-				// Iuv non assegnato.
-			}
-		}
-		return this.iuv;
-	}
-
-	public Iuv getIuv(BasicBD bd) throws ServiceException {
-		if(this.iuv == null) {
-			IuvBD iuvBD = new IuvBD(bd);
-			iuvBD.setAtomica(false); // connessione deve essere gia' aperta
-			try {
-				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-			} catch (NotFoundException e) {
-				// Iuv non assegnato.
-			}
-		}
-		return this.iuv;
-	}
-
 	public TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipoVersamento == null) {
 			try {
 				this.tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, this.getIdTipoVersamento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.tipoVersamento;
@@ -204,6 +177,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, this.getIdTipoVersamentoDominio());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.tipoVersamentoDominio;
@@ -223,6 +197,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.documento = documentiBD.getDocumento(this.getIdDocumento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.documento;
@@ -235,6 +210,7 @@ public class Versamento extends it.govpay.model.Versamento {
 			try {
 				this.documento = documentiBD.getDocumento(this.getIdDocumento());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.documento;

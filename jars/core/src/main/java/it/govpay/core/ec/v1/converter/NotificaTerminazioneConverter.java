@@ -44,7 +44,7 @@ public class NotificaTerminazioneConverter extends NotificaConverter {
 			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1)));
 		}
 		// elenco pagamenti
-		if(pagamenti != null && pagamenti.size() > 0) {
+		if(pagamenti != null && !pagamenti.isEmpty()) {
 			List<Riscossione> riscossioni = new ArrayList<>();
 			int indice = 1;
 			String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());

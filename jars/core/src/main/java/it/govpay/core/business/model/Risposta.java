@@ -26,7 +26,6 @@ import java.util.Set;
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPTRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStornoRisposta;
 
 
 public class Risposta  {
@@ -48,11 +47,6 @@ public class Risposta  {
 		this.listaErroriRPT = r.getListaErroriRPT() != null ? r.getListaErroriRPT().getFault() : null;
 		this.faultBean = r.getFault();
 	}
-	
-	public Risposta(NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno) {
-		this.esito = nodoInviaRichiestaStorno.getEsito();
-		this.faultBean = nodoInviaRichiestaStorno.getFault();
-	}
 
 	public String getEsito() {
 		return this.esito;
@@ -66,23 +60,23 @@ public class Risposta  {
 		if(this.faultBean != null)
 			return this.faultBean;
 		
-		if(this.listaErroriRPT != null && this.listaErroriRPT.size() > 0) {
+		if(this.listaErroriRPT != null && !this.listaErroriRPT.isEmpty()) {
 			
 			if(this.listaErroriRPT.size() == 1)
 				return this.listaErroriRPT.get(0);
 		
-			Set<String> codici = new HashSet<String>();
-			Set<String> ids = new HashSet<String>();
-			Set<String> faultStrings = new HashSet<String>();
-			Set<String> descrizioni = new HashSet<String>();
-			String descrizione = "";
+			Set<String> codici = new HashSet<>();
+			Set<String> ids = new HashSet<>();
+			Set<String> faultStrings = new HashSet<>();
+			Set<String> descrizioni = new HashSet<>();
+			StringBuilder descrizione = new StringBuilder();
 			
 			for(FaultBean fb : this.listaErroriRPT) {
 				codici.add(fb.getFaultCode());
 				faultStrings.add(fb.getFaultString());
 				ids.add(fb.getFaultString());
 				descrizioni.add(fb.getDescription());
-				descrizione += toString(fb);
+				descrizione.append(toString(fb));
 			}
 				
 			FaultBean fbx = new FaultBean();
@@ -105,7 +99,7 @@ public class Risposta  {
 			if(descrizioni.size() == 1)
 				fbx.setDescription(descrizioni.iterator().next());
 			else
-				fbx.setDescription(descrizione);
+				fbx.setDescription(descrizione.toString());
 			
 			return fbx;
 		}		
@@ -114,24 +108,24 @@ public class Risposta  {
 	}
 	
 	public String getLog() {
-		String log = "Ricevuto esito " + this.esito;
+		StringBuilder log = new StringBuilder("Ricevuto esito " + this.esito);
 		
 		if(this.faultBean != null || this.listaErroriRPT != null) {
-			log += " con FaultBean ";
+			log.append(" con FaultBean ");
 		}
 		
 		if(this.faultBean != null)
-			log += "\n" + toString(this.faultBean);
+			log.append("\n" + toString(this.faultBean));
 		
 		if(this.listaErroriRPT != null) {
 			for(FaultBean fb : this.listaErroriRPT)
-				log += "\n" + toString(fb);
+				log.append("\n" + toString(fb));
 		}
-		return log;
+		return log.toString();
 	}
 	
 	private String toString(FaultBean faultBean) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if(faultBean != null) {
 			
 			if(faultBean.getSerial() != null)

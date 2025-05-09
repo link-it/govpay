@@ -31,17 +31,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Versione della stazione
  */
 public enum VersioneStazione {
-  
-  
-  
-  
+
+
+
+
   V1("V1"),
-  
-  
+
+
   V2("V2");
-  
-  
-  
+
+
+
 
   private String value;
 

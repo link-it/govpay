@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -57,6 +52,9 @@ import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 public class SondeController extends BaseController{
 
@@ -64,10 +62,10 @@ public class SondeController extends BaseController{
 		super(nomeServizio, log);
 	}
 
-	public Response findSonde(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
+	public Response findSonde(Authentication user, UriInfo uriInfo) {
 		String methodName = "findSonde";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		BasicBD bd = null;
 		try{
 			ListaSonde response = null;
@@ -115,19 +113,19 @@ public class SondeController extends BaseController{
 			}
 
 			response = new ListaSonde(risultati, this.getServicePath(uriInfo), (long) risultati.size(), null, null, null);
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
-	public Response getSonda(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String id) {
+	public Response getSonda(Authentication user, String id) {
 		String methodName = "getSonda";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 		BasicBD bd = null;
 		try{
 
@@ -174,7 +172,7 @@ public class SondeController extends BaseController{
 						log.error("Impossibile acquisire lo stato della sonda", t);
 					}
 				}
-			} catch(Exception e) {
+			} catch(ServiceException e) {
 				log.error("Errore durante la verifica della sonda " + id, e);
 				throw new Exception("Errore durante la verifica della sonda " + id);
 			} finally {
@@ -182,11 +180,11 @@ public class SondeController extends BaseController{
 			}
 
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(methodName, e, transactionId);
 		} finally {
 			this.logContext(ContextThreadLocal.get());
 		}
@@ -219,7 +217,7 @@ public class SondeController extends BaseController{
 			long num = -1;
 			RptBD rptBD = new RptBD(bd);
 			rptBD.setAtomica(false); // connessione condivisa
-			num = rptBD.countRptScadute(null, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins());
+			num = rptBD.countRptScadute(null, GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins());
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
 		if(Costanti.CHECK_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI.equals(nome)) {

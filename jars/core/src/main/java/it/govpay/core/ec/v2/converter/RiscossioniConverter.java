@@ -30,7 +30,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 import it.govpay.ec.v2.beans.Riscossione;
 import it.govpay.ec.v2.beans.StatoRiscossione;
 import it.govpay.ec.v2.beans.TipoRiscossione;
@@ -38,16 +37,18 @@ import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 
 public class RiscossioniConverter {
+	
+	private RiscossioniConverter() {}
 
-	public static Riscossione toRsModel(it.govpay.bd.viste.model.Pagamento dto) throws IOException, ValidationException, UnsupportedEncodingException {
+	public static Riscossione toRsModel(it.govpay.bd.viste.model.Pagamento dto) throws IOException, UnsupportedEncodingException {
 		return toRsModel(dto.getPagamento(), dto.getVersamento());
 	}
 	
-	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input) throws IOException, ValidationException, UnsupportedEncodingException {
+	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input) throws IOException, UnsupportedEncodingException {
 		return toRsModel(input, null);
 	}
 	
-	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input, Versamento versamento) throws ValidationException, UnsupportedEncodingException, IOException {
+	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input, Versamento versamento) throws UnsupportedEncodingException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {

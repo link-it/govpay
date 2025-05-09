@@ -39,6 +39,7 @@ public class Tracciato extends it.govpay.model.Tracciato {
 				if(this.getIdOperatore()!=null)
 					this.operatore = AnagraficaManager.getOperatore(configWrapper, this.getIdOperatore());
 			} catch(NotFoundException e) {
+				// donothing
 			}
 		}
 		return this.operatore;

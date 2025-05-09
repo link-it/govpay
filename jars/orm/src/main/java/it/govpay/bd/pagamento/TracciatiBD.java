@@ -112,10 +112,10 @@ public class TracciatiBD extends BasicBD {
 	}
 	
 	public long count(TracciatoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(TracciatoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(TracciatoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -133,7 +133,7 @@ public class TracciatiBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(TracciatoFilter filter) throws ServiceException {
+	private long countConLimitEngine(TracciatoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -156,12 +156,11 @@ public class TracciatiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			 */
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CARICAMENTO), "data_caricamento");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -169,7 +168,6 @@ public class TracciatiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CARICAMENTO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -183,8 +181,7 @@ public class TracciatiBD extends BasicBD {
 
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 
 			return count.longValue();
@@ -219,7 +216,6 @@ public class TracciatiBD extends BasicBD {
 
 			eseguiRicerca(model, tracciatoFetch, idMappingResolutionBehaviour, lstTracciatoVO, fields, pagExpr);
 
-			//			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Tracciato tracciatoVO: lstTracciatoVO) {
 				lst.add(TracciatoConverter.toDTO(tracciatoVO));
 			}
@@ -234,17 +230,6 @@ public class TracciatiBD extends BasicBD {
 			}
 		}
 	}
-
-//	public void update(Tracciato tracciato) throws ServiceException {
-//		try {
-//			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
-//			this.getTracciatoService().update(this.getTracciatoService().convertToId(vo), vo);
-//		} catch (NotImplementedException e) {
-//			throw new ServiceException(e);
-//		} catch (NotFoundException e) {
-//			throw new ServiceException(e);
-//		}
-//	}
 	
 	public void updateBeanDati(Tracciato tracciato) throws ServiceException {
 		try {
@@ -283,9 +268,7 @@ public class TracciatiBD extends BasicBD {
 	private void updateBeanDati(IdTracciato idTracciato, String beanDati) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, beanDati));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -310,9 +293,7 @@ public class TracciatiBD extends BasicBD {
 	private void updateZipStampe(IdTracciato idTracciato, byte[] zipStampe) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().ZIP_STAMPE, zipStampe));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -325,7 +306,6 @@ public class TracciatiBD extends BasicBD {
 			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 
-			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
 			List<UpdateField> listaUpdateFields = new ArrayList<>();
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().FILE_NAME_ESITO, tracciato.getFileNameEsito()));
@@ -335,9 +315,7 @@ public class TracciatiBD extends BasicBD {
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
 
 			this.getTracciatoService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -354,7 +332,6 @@ public class TracciatiBD extends BasicBD {
 			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 
-			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
 			List<UpdateField> listaUpdateFields = new ArrayList<>();
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato().name()));
@@ -363,9 +340,7 @@ public class TracciatiBD extends BasicBD {
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().ZIP_STAMPE, tracciato.getZipStampe()));
 
 			this.getTracciatoService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -411,17 +386,15 @@ public class TracciatiBD extends BasicBD {
 			prepareStatement.setLong(idx ++, tracciato.getId());
 
 			prepareStatement.executeUpdate();
-		} catch (SQLException e) {
-			throw new ServiceException(e);
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			try {
 				if(prepareStatement != null)
 					prepareStatement.close();
-			} catch (SQLException e) { }
+			} catch (SQLException e) { 
+				//donothing
+			}
 			
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -466,17 +439,15 @@ public class TracciatiBD extends BasicBD {
 			prepareStatement.setLong(idx ++, tracciato.getId());
 
 			prepareStatement.executeUpdate();
-		} catch (SQLException e) {
-			throw new ServiceException(e);
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			try {
 				if(prepareStatement != null)
 					prepareStatement.close();
-			} catch (SQLException e) { }
+			} catch (SQLException e) { 
+				// donothing
+			}
 
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -530,7 +501,7 @@ public class TracciatiBD extends BasicBD {
 			}
 		}
 
-		if(list.size() <=0)
+		if(list.isEmpty())
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
 
 		if(list.size() > 1)
@@ -575,8 +546,7 @@ public class TracciatiBD extends BasicBD {
 		CustomField idTracciatoCustomField = new CustomField("id", Long.class, "id", converter.toTable(model));
 		expr.equals(idTracciatoCustomField, idTracciato);
 
-		IPaginatedExpression pagExpr = this.getTracciatoService().toPaginatedExpression(expr);
-		return pagExpr;
+		return this.getTracciatoService().toPaginatedExpression(expr);
 	}
 
 	private List<IField> getListaFieldsRicerca(boolean includiRawRichiesta, boolean includiRawEsito, boolean includiZipStampe,
@@ -600,9 +570,6 @@ public class TracciatiBD extends BasicBD {
 		if(includiRawEsito) {
 			fields.add(model.RAW_ESITO);	
 		}
-//		if(includiZipStampe) {
-//			fields.add(model.ZIP_STAMPE);
-//		}
 		fields.add(new CustomField("id_operatore", Long.class, "id_operatore", converter.toTable(model)));
 		return fields;
 	}
@@ -613,7 +580,7 @@ public class TracciatiBD extends BasicBD {
 		filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
 		filter.setStati(Arrays.asList(STATO_ELABORAZIONE.ELABORAZIONE, STATO_ELABORAZIONE.IN_STAMPA));
 		
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
 }

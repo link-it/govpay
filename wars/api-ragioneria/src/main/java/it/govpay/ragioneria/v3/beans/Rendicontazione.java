@@ -23,52 +23,52 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class Rendicontazione   {
 
-  @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
+  @Schema(example = "RF23567483937849450550875", requiredMode = RequiredMode.REQUIRED, description = "Identificativo univoco di versamento")
  /**
    * Identificativo univoco di versamento
   **/
   private String iuv = null;
 
-  @Schema(example = "1234acdc", required = true, description = "Identificativo univoco di riscossione")
+  @Schema(example = "1234acdc", requiredMode = RequiredMode.REQUIRED, description = "Identificativo univoco di riscossione")
  /**
    * Identificativo univoco di riscossione
   **/
   private String iur = null;
 
-  @Schema(example = "1", required = true, description = "Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.")
+  @Schema(example = "1", requiredMode = RequiredMode.REQUIRED, description = "Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.")
  /**
    * Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
   **/
   private BigDecimal indice = null;
 
-  @Schema(example = "10.01", required = true, description = "Importo rendicontato.")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo rendicontato.")
  /**
    * Importo rendicontato.
   **/
   private BigDecimal importo = null;
 
-  @Schema(example = "0", required = true, description = "Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT ")
+  @Schema(example = "0", requiredMode = RequiredMode.REQUIRED, description = "Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT ")
  /**
    * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT
   **/
   private BigDecimal esito = null;
 
-  @Schema(example = "Mon Dec 31 01:00:00 CET 2018", required = true, description = "Data di esito")
+  @Schema(example = "Mon Dec 31 01:00:00 CET 2018", requiredMode = RequiredMode.REQUIRED, description = "Data di esito")
  /**
    * Data di esito
   **/
   private Date data = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private StatoRendicontazione stato = null;
 
   @Schema(description = "")

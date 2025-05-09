@@ -44,6 +44,7 @@ public class Notifica {
 	private static Logger log = LoggerWrapperFactory.getLogger(Notifica.class);
 
 	public Notifica() {
+		//donothing
 	}
 
 	public boolean inserisciNotifica(it.govpay.bd.model.Notifica notifica, BasicBD bd) throws ServiceException {
@@ -57,8 +58,8 @@ public class Notifica {
 			
 			// la versione V2 delle api client prevede solamente l'invio delle notifiche di tipo ricevuta
 			if(!tipo.equals(TipoNotifica.RICEVUTA) && !applicazione.getConnettoreIntegrazione().getVersione().equals(Versionabile.Versione.GP_REST_01)) {
-				log.debug(MessageFormat.format("Inserimento notifica RPT[{0}] di tipo [{1}] non effettuato, la versione [{2}] del connettore integrazione per l''applicazione [{3}] non prevede la spedizione di questa tipo di notifica.",
-						notifica.getRptKey(), tipo, applicazione.getConnettoreIntegrazione().getVersione(), applicazione.getCodApplicazione()));
+				log.debug("Inserimento notifica RPT[{}] di tipo [{}] non effettuato, la versione [{}] del connettore integrazione per l''applicazione [{}] non prevede la spedizione di questa tipo di notifica.",
+						notifica.getRptKey(), tipo, applicazione.getConnettoreIntegrazione().getVersione(), applicazione.getCodApplicazione());
 				return false;
 			}
 			
@@ -71,10 +72,10 @@ public class Notifica {
 			}
 			
 			notificheBD.insertNotifica(notifica);
-			log.debug(MessageFormat.format("Inserimento notifica RPT[{0}] effettuato, procedo allo scheduling per la spedizione verso l''applicazione [{1}].",	notifica.getRptKey(), applicazione.getCodApplicazione()));
+			log.debug("Inserimento notifica RPT[{}] effettuato, procedo allo scheduling per la spedizione verso l''applicazione [{}].",	notifica.getRptKey(), applicazione.getCodApplicazione());
 			return true;
 		} else {
-			log.debug(MessageFormat.format("Inserimento notifica RPT[{0}] non effettuato, la configurazione dell''applicazione [{1}] non prevede un connettore di notifica.", notifica.getRptKey(), applicazione.getCodApplicazione()));
+			log.debug("Inserimento notifica RPT[{}] non effettuato, la configurazione dell''applicazione [{}] non prevede un connettore di notifica.", notifica.getRptKey(), applicazione.getCodApplicazione());
 			return false;
 		}
 	}
@@ -84,7 +85,7 @@ public class Notifica {
 		NotificheBD notificheBD = new NotificheBD(configWrapper);
 		List<it.govpay.bd.model.Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset, limit, codApplicazione);
 		
-		if(notifiche.size() == 0) {
+		if(notifiche.isEmpty()) {
 			return new ArrayList<>();
 		}
 		
@@ -120,7 +121,7 @@ public class Notifica {
 				break;
 			case FALLIMENTO:
 			case ANNULLAMENTO:
-				log.warn(MessageFormat.format("Notifica RPT[{0}] di tipo [{1}] non verra'' spedita verso l''applicazione.",	notifica.getRptKey(), notifica.getTipo()));
+				log.warn("Notifica RPT[{}] di tipo [{}] non verra'' spedita verso l''applicazione.",	notifica.getRptKey(), notifica.getTipo());
 				notificheDaAnnullare.add(notifica);
 				break;
 			}
@@ -148,7 +149,7 @@ public class Notifica {
 					case FALLIMENTO:
 					case ANNULLAMENTO:
 						// non dovrei passare mai qua dentro
-						log.warn(MessageFormat.format("Notifica RPT[{0}] di tipo [{1}] non verra'' spedita verso l''applicazione.", notifica.getRptKey(),	notifica.getTipo()));
+						log.warn("Notifica RPT[{}] di tipo [{}] non verra'' spedita verso l''applicazione.", notifica.getRptKey(),	notifica.getTipo());
 						break;
 					}
 					

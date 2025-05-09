@@ -21,21 +21,21 @@ package it.govpay.rs.v1.exception;
 
 import java.util.Map;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 
 import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.FaultBean.CategoriaEnum;
 
 /***
  * CodiceEccezione
- *  
+ *
  * @author pintori
  *
  */
 public class CodiceEccezione {
-	
+
 	public static final CodiceEccezione RICHIESTA_NON_VALIDA = new CodiceEccezione(400, CategoriaEnum.RICHIESTA, "Richiesta non correttamente formata");
 	public static final CodiceEccezione AUTENTICAZIONE = new CodiceEccezione(401, CategoriaEnum.AUTORIZZAZIONE, "Autenticazione richiesta.");
 	public static final CodiceEccezione AUTORIZZAZIONE = new CodiceEccezione(403, CategoriaEnum.AUTORIZZAZIONE, "Richiesta non autorizzata.");
@@ -111,7 +111,7 @@ public class CodiceEccezione {
 		FaultBean faultBean = this.toFaultBean(e);
 		return setFaultBeanAsEntity(Response.status(this.code), faultBean).type(MediaType.APPLICATION_JSON);
 	}
-	
+
 	public ResponseBuilder setFaultBeanAsEntity(ResponseBuilder rb, FaultBean faultBean) {
 		return rb.entity(faultBean);
 	}
@@ -128,52 +128,52 @@ public class CodiceEccezione {
 	public Response toFaultResponse(Exception e) {
 		return this.toFaultResponseBuilder(e).build();
 	}
-	public javax.ws.rs.WebApplicationException toException(ResponseBuilder responseBuilder){
-		return new javax.ws.rs.WebApplicationException(responseBuilder.build());
+	public jakarta.ws.rs.WebApplicationException toException(ResponseBuilder responseBuilder){
+		return new jakarta.ws.rs.WebApplicationException(responseBuilder.build());
 	}
-	public javax.ws.rs.WebApplicationException toException(ResponseBuilder responseBuilder, Map<String, String> headers){
+	public jakarta.ws.rs.WebApplicationException toException(ResponseBuilder responseBuilder, Map<String, String> headers){
 		if(headers!=null && !headers.isEmpty()) {
 			headers.keySet().stream().forEach(k -> {
 				responseBuilder.header(k, headers.get(k));
 			});
 		}
-		return new javax.ws.rs.WebApplicationException(responseBuilder.build());
+		return new jakarta.ws.rs.WebApplicationException(responseBuilder.build());
 	}
-	public javax.ws.rs.WebApplicationException toException(Response response){
+	public jakarta.ws.rs.WebApplicationException toException(Response response){
 		// Aggiunta eccezione nel costruttore, in modo che cxf chiami la classe WebApplicationExceptionMapper
-		return new javax.ws.rs.WebApplicationException(new Exception(response.getEntity().toString()),response);
+		return new jakarta.ws.rs.WebApplicationException(new Exception(response.getEntity().toString()),response);
 	}
-	public javax.ws.rs.WebApplicationException toException(){
+	public jakarta.ws.rs.WebApplicationException toException(){
 		return this.toException(true);
 	}
-	public javax.ws.rs.WebApplicationException toException(boolean addFaultBean){
+	public jakarta.ws.rs.WebApplicationException toException(boolean addFaultBean){
 		Response r = this.toFaultResponse(addFaultBean);
 		return this.toException(r);
 	}
-	public javax.ws.rs.WebApplicationException toException(String dettaglio){
+	public jakarta.ws.rs.WebApplicationException toException(String dettaglio){
 		Response r = this.toFaultResponse(dettaglio);
 		return this.toException(r);
 	}
-	public javax.ws.rs.WebApplicationException toException(Exception e){
+	public jakarta.ws.rs.WebApplicationException toException(Exception e){
 		Response r = this.toFaultResponse(e);
 		return this.toException(r);
 	}
-	public void throwException(ResponseBuilder responseBuilder) throws javax.ws.rs.WebApplicationException{
+	public void throwException(ResponseBuilder responseBuilder) throws jakarta.ws.rs.WebApplicationException{
 		throw this.toException(responseBuilder);
 	}
-	public void throwException(Response response) throws javax.ws.rs.WebApplicationException{
+	public void throwException(Response response) throws jakarta.ws.rs.WebApplicationException{
 		throw this.toException(response);
 	}
-	public void throwException() throws javax.ws.rs.WebApplicationException{
+	public void throwException() throws jakarta.ws.rs.WebApplicationException{
 		throw this.toException();
 	}
-	public void throwException(boolean addFaultBean) throws javax.ws.rs.WebApplicationException{
+	public void throwException(boolean addFaultBean) throws jakarta.ws.rs.WebApplicationException{
 		throw toException(addFaultBean);
 	}
-	public void throwException(String dettaglio) throws javax.ws.rs.WebApplicationException{
+	public void throwException(String dettaglio) throws jakarta.ws.rs.WebApplicationException{
 		throw toException(dettaglio);
 	}
-	public void throwException(Exception e) throws javax.ws.rs.WebApplicationException{
+	public void throwException(Exception e) throws jakarta.ws.rs.WebApplicationException{
 		throw toException(e);
 	}
 

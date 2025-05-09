@@ -61,14 +61,14 @@ public abstract class JSONSerializable {
 	}
 	
 	public static <T> T parse(String jsonString, Class<T> t) throws IOException  {
-		it.govpay.core.utils.serialization.SerializationConfig serializationConfig = new it.govpay.core.utils.serialization.SerializationConfig();
+		it.govpay.core.utils.serialization.GovPaySerializationConfig serializationConfig = new it.govpay.core.utils.serialization.GovPaySerializationConfig();
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		serializationConfig.setIgnoreNullValues(true);
 		serializationConfig.setFailOnNumbersForEnums(true);
 		return parse(jsonString, t, serializationConfig);
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t, it.govpay.core.utils.serialization.SerializationConfig serializationConfig) throws IOException  {
+	public static <T> T parse(String jsonString, Class<T> t, it.govpay.core.utils.serialization.GovPaySerializationConfig serializationConfig) throws IOException  {
 		try {
 			IDeserializer deserializer = new JsonJacksonDeserializer(serializationConfig);
 			

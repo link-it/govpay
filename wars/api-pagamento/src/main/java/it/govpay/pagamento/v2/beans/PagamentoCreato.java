@@ -21,9 +21,6 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -35,19 +32,19 @@ import it.govpay.core.beans.JSONSerializable;
 "idSession",
 })
 public class PagamentoCreato extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
+
   @JsonProperty("redirect")
   private String redirect = null;
-  
+
   @JsonProperty("idSession")
   private String idSession = null;
-  
+
   /**
    * identificativo del pagamento
    **/
@@ -132,7 +129,7 @@ public class PagamentoCreato extends JSONSerializable {
     return Objects.hash(id, location, redirect, idSession);
   }
 
-  public static PagamentoCreato parse(String json) throws it.govpay.core.exceptions.IOException { 
+  public static PagamentoCreato parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, PagamentoCreato.class);
   }
 
@@ -145,7 +142,7 @@ public class PagamentoCreato extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PagamentoCreato {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");
     sb.append("    redirect: ").append(toIndentedString(redirect)).append("\n");

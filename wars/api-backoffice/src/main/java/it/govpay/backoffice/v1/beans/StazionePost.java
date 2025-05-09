@@ -42,13 +42,13 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
 
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonIgnore
   private VersioneStazione versioneEnum = null;
-  
+
   @JsonProperty("versione")
   private String versione = null;
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -95,7 +95,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   public void setVersioneEnum(VersioneStazione versione) {
     this.versioneEnum = versione;
   }
-  
+
   /**
    **/
   public StazionePost versione(String versione) {
@@ -143,7 +143,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazionePost {\n");
-    
+
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
@@ -168,13 +168,13 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("abilitato", this.abilitato).notNull();
 		vf.getValidator("versione", this.versione).notNull();
-		
+
 		// valore versione non valido
 		VersioneStazione versioneStazione = VersioneStazione.fromValue(this.getVersione());
 		if(versioneStazione == null) {
 			throw new ValidationException("Codifica inesistente per versione. Valore fornito [" + this.getVersione() + "] valori possibili " + ArrayUtils.toString(VersioneStazione.values()));
 		}
-		
+
 		if(versioneStazione.equals(VersioneStazione.V1)) {
 			vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
 		} else {

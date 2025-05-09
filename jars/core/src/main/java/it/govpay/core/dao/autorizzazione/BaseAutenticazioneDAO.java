@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.utils.LogUtils;
 
 public class BaseAutenticazioneDAO extends BaseDAO {
 	
@@ -148,6 +149,6 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 		
 		sb.append(msg);
 		
-		this.log.debug(sb.toString());
+		LogUtils.logDebug(log, sb.toString());
 	}
 }

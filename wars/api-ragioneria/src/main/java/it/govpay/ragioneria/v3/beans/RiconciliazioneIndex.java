@@ -22,25 +22,25 @@ package it.govpay.ragioneria.v3.beans;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class RiconciliazioneIndex extends TipoRiferimentoRiconciliazione  {
 
-  @Schema(example = "12345", required = true, description = "Identificativo della riconciliazione assegnato da GovPay")
+  @Schema(example = "12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo della riconciliazione assegnato da GovPay")
  /**
    * Identificativo della riconciliazione assegnato da GovPay
   **/
   private String id = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Dominio dominio = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private StatoRiconciliazione stato = null;
 
   @Schema(description = "Dettaglio dello stato riconciliazione")
@@ -55,7 +55,7 @@ public class RiconciliazioneIndex extends TipoRiferimentoRiconciliazione  {
   **/
   private BigDecimal importo = null;
 
-  @Schema(required = true, description = "Data di esecuzione della riconciliazione")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data di esecuzione della riconciliazione")
  /**
    * Data di esecuzione della riconciliazione
   **/

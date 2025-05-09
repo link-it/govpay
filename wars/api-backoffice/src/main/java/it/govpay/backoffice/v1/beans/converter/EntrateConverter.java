@@ -29,6 +29,8 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.exceptions.ValidationException;
 
 public class EntrateConverter {
+	
+	private EntrateConverter() {}
 
 	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, Authentication user) throws ValidationException {
 		PutEntrataDTO entrataDTO = new PutEntrataDTO(user);
@@ -43,7 +45,7 @@ public class EntrateConverter {
 
 			// valore tipo contabilita non valido
 			if(TipoContabilita.fromValue(entrataPost.getTipoContabilita()) == null) {
-				throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + entrataPost.getTipoContabilita() + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+				throw new ValidationException("tipoContabilita", entrataPost.getTipoContabilita(), ArrayUtils.toString(TipoContabilita.values()));
 			}
 
 			entrataPost.setTipoContabilitaEnum(TipoContabilita.fromValue(entrataPost.getTipoContabilita()));

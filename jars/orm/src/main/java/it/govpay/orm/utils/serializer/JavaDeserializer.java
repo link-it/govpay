@@ -17,9 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
-import java.io.InputStream;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 /**     
  * Deserializer of beans with java
@@ -29,12 +31,11 @@ import java.io.InputStream;
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JavaDeserializer extends AbstractDeserializer {
+public class JavaDeserializer extends AbstractDeserializerWithFactory {
 
 	@Override
-	protected Object _xmlToObj(InputStream is, Class<?> c) throws Exception {
-		org.openspcoop2.utils.serialization.JavaDeserializer deserializer = new org.openspcoop2.utils.serialization.JavaDeserializer();
-		return deserializer.readObject(is, c);
+	protected SERIALIZATION_TYPE getSERIALIZATION_TYPE() {
+		return SERIALIZATION_TYPE.JAVA;
 	}
 		
 }

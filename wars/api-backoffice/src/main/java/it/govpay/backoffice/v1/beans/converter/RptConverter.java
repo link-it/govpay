@@ -31,6 +31,7 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class RptConverter {
 
+	private RptConverter() {}
 
 	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, IOException  {
 		return toRsModel(rpt, false);

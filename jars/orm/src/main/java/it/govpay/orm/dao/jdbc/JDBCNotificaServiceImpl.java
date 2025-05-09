@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
@@ -31,7 +33,7 @@ import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
 
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -43,7 +45,6 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
 import it.govpay.orm.Notifica;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCNotificaServiceImpl
@@ -104,23 +105,6 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 			}
 		}
 
-		// Object _rr
-		Long id_rr = null;
-		it.govpay.orm.IdRr idLogic_rr = null;
-		idLogic_rr = notifica.getIdRr();
-		if(idLogic_rr!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rr = ((JDBCRRServiceSearch)(this.getServiceManager().getRRServiceSearch())).findTableId(idLogic_rr, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rr = idLogic_rr.getId();
-				if(id_rr==null || id_rr<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object notifica
 		sqlQueryObjectInsert.addInsertTable(this.getNotificaFieldConverter().toTable(Notifica.model()));
@@ -133,7 +117,6 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getNotificaFieldConverter().toColumn(Notifica.model().TENTATIVI_SPEDIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
-		sqlQueryObjectInsert.addInsertField("id_rr","?");
 
 		// Insert notifica
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getNotificaFetch().getKeyGeneratorObject(Notifica.model());
@@ -146,8 +129,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(notifica.getDataProssimaSpedizione(),Notifica.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(notifica.getTentativiSpedizione(),Notifica.model().TENTATIVI_SPEDIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rr,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
 		);
 		notifica.setId(id);
 
@@ -228,22 +210,6 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 			}
 		}
 
-		// Object _notifica_rr
-		Long id_notifica_rr = null;
-		it.govpay.orm.IdRr idLogic_notifica_rr = null;
-		idLogic_notifica_rr = notifica.getIdRr();
-		if(idLogic_notifica_rr!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_notifica_rr = ((JDBCRRServiceSearch)(this.getServiceManager().getRRServiceSearch())).findTableId(idLogic_notifica_rr, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_notifica_rr = idLogic_notifica_rr.getId();
-				if(id_notifica_rr==null || id_notifica_rr<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 
 		// Object notifica
@@ -272,16 +238,10 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_rr","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			lstObjects_notifica.add(new JDBCObject(id_notifica_applicazione, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_notifica.add(new JDBCObject(id_notifica_rpt, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_notifica.add(new JDBCObject(id_notifica_rr, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_notifica.add(new JDBCObject(tableId, Long.class));
@@ -298,7 +258,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getNotificaFieldConverter().toTable(Notifica.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -308,7 +268,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getNotificaFieldConverter().toTable(Notifica.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -318,7 +278,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getNotificaFieldConverter().toTable(Notifica.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
@@ -329,7 +289,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getNotificaFieldConverter().toTable(Notifica.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -340,7 +300,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getNotificaFieldConverter().toTable(Notifica.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -351,7 +311,7 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getNotificaFieldConverter().toTable(Notifica.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
@@ -410,6 +370,9 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
 	
+		if(id==null){
+			throw new ServiceException("Id is null");
+		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
@@ -472,5 +435,13 @@ public class JDBCNotificaServiceImpl extends JDBCNotificaServiceSearchImpl
 	@Override
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
+	}
+	
+	@Override
+	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
+	
+		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
+																							sql,param);
+	
 	}
 }

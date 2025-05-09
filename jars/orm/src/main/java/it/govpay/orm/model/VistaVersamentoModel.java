@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaVersamento;
@@ -89,8 +91,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -108,6 +110,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DOC_DESCRIZIONE = new Field("docDescrizione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -163,8 +167,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -182,6 +186,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DOC_DESCRIZIONE = new ComplexField(father,"docDescrizione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -320,6 +326,10 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public IField DOC_DESCRIZIONE = null;
 	 
 	public IField PROPRIETA = null;
+	 
+	public IField DATA_ULTIMA_MODIFICA_ACA = null;
+	 
+	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
 	 
 
 	@Override

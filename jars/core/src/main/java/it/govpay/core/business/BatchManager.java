@@ -93,6 +93,12 @@ public class BatchManager {
 				return false;
 			}
 		} finally {
+			// ripristino autocommit
+			// ripristino autocommit
+			if(!batchBD.isAutoCommit() ) {
+				batchBD.setAutoCommit(true);
+			}
+			
 			// chiusura connessione
 			batchBD.closeConnection();
 		} 
@@ -192,6 +198,16 @@ public class BatchManager {
 			log.error(MessageFormat.format("Errore nella rimozione del semaforo di concorrenza per il batch {}", codBatch), se);
 		} finally {
 			if(batchBD != null) {
+				// ripristino autocommit
+				try {
+					// ripristino autocommit
+					if(!batchBD.isAutoCommit() ) {
+						batchBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					// donothing
+				}
+				
 				// chiusura connessione
 				batchBD.closeConnection();
 			}
@@ -246,6 +262,16 @@ public class BatchManager {
 		} catch (NotFoundException e) {
 			log.error(MessageFormat.format("Errore nell''aggiornamento del semaforo di concorrenza per il batch {}", codBatch), e);
 		}  finally {
+			// ripristino autocommit
+			try {
+				// ripristino autocommit
+				if(!batchBD.isAutoCommit() ) {
+					batchBD.setAutoCommit(true);
+				}
+			} catch (ServiceException e) {
+				// donothing
+			}
+			
 			// chiusura connessione
 			batchBD.closeConnection();
 		}

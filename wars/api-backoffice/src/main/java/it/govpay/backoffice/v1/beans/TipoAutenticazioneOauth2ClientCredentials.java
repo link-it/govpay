@@ -33,19 +33,19 @@ import it.govpay.core.exceptions.IOException;
 "scope",
 })
 public class TipoAutenticazioneOauth2ClientCredentials extends JSONSerializable {
-  
+
   @JsonProperty("clientId")
   private String clientId = null;
-  
+
   @JsonProperty("clientSecret")
   private String clientSecret = null;
-  
+
   @JsonProperty("urlTokenEndpoint")
   private String urlTokenEndpoint = null;
-  
+
   @JsonProperty("scope")
   private String scope = null;
-  
+
   /**
    * Identificativo dell'applicazione da inviare all'authorization server
    **/
@@ -131,7 +131,7 @@ public class TipoAutenticazioneOauth2ClientCredentials extends JSONSerializable 
   }
 
   public static TipoAutenticazioneOauth2ClientCredentials parse(String json) throws IOException {
-    return (TipoAutenticazioneOauth2ClientCredentials) parse(json, TipoAutenticazioneOauth2ClientCredentials.class);
+    return parse(json, TipoAutenticazioneOauth2ClientCredentials.class);
   }
 
   @Override
@@ -143,7 +143,7 @@ public class TipoAutenticazioneOauth2ClientCredentials extends JSONSerializable 
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneOauth2ClientCredentials {\n");
-    
+
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    clientSecret: ").append(toIndentedString(clientSecret)).append("\n");
     sb.append("    urlTokenEndpoint: ").append(toIndentedString(urlTokenEndpoint)).append("\n");

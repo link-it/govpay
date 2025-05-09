@@ -130,7 +130,7 @@ public class Documento extends it.govpay.core.beans.JSONSerializable {
   }
 
   public static Documento parse(String json) throws IOException {
-    return (Documento) parse(json, Documento.class);
+    return parse(json, Documento.class);
   }
 
   @Override

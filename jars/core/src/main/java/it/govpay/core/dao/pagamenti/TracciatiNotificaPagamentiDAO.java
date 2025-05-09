@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.beans.IField;
@@ -51,36 +51,32 @@ import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoNotificaPagamentiDTO;
 import it.govpay.core.dao.pagamenti.exception.TracciatoNonTrovatoException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.orm.dao.jdbc.converter.TracciatoNotificaPagamentiFieldConverter;
 import it.govpay.orm.model.TracciatoNotificaPagamentiModel;
 
 public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 
 	public TracciatiNotificaPagamentiDAO() {
+		super();
 	}
 	
-	public TracciatoNotificaPagamenti leggiTracciato(LeggiTracciatoNotificaPagamentiDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public TracciatoNotificaPagamenti leggiTracciato(LeggiTracciatoNotificaPagamentiDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		TracciatiNotificaPagamentiBD tracciatoBD = null;
 
 		try {
 			tracciatoBD = new TracciatiNotificaPagamentiBD(configWrapper);
-			TracciatoNotificaPagamenti tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.getIdentificativo(), leggiTracciatoDTO.isIncludiRaw());
-			return tracciato;
-
+			return tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.getIdentificativo(), leggiTracciatoDTO.isIncludiRaw());
 		} catch (NotFoundException e) {
 			throw new TracciatoNonTrovatoException(e.getMessage(), e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(tracciatoBD != null)
-				tracciatoBD.closeConnection();
+			tracciatoBD.closeConnection();
 		}
 	}
 	
-	public StreamingOutput leggiBlobTracciato(Long idTracciato, String identificativo, List<Long> idDomini, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public StreamingOutput leggiBlobTracciato(Long idTracciato, String identificativo, List<Long> idDomini, IField field) throws ServiceException {
 
 		try {
 			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -106,7 +102,7 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			StreamingOutput zipStream = new StreamingOutput() {
+			return new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
 					PreparedStatement prepareStatement = null;
@@ -144,29 +140,33 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 						try {
 							if(resultSet != null)
 								resultSet.close(); 
-						} catch (SQLException e) { }
+						} catch (SQLException e) {
+							//donothing
+						}
 						try {
 							if(prepareStatement != null)
 								prepareStatement.close();
-						} catch (SQLException e) { }
+						} catch (SQLException e) { 
+							//donothing
+						}
 						
 						if(bd != null) {
 							try {
-								bd.setAutoCommit(true);
+								if(!bd.isAutoCommit()) {
+									bd.setAutoCommit(true);
+								}
 							} catch (ServiceException e) {
+								//donothing
 							}
 							bd.closeConnection();
 						}
 					}
 				}
 			};
-			return zipStream;
-
-		} catch (SQLQueryObjectException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
+			// donthing
 		}
 	}
 }

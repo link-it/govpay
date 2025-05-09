@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 
 public class IncassoUtils {
 	
+	private IncassoUtils() {}
+	
 	private static Pattern patternSingolo = Pattern.compile("RF[SB].([0-9A-Za-z\\-_]+)");
 	private static Pattern patternCumulativo = Pattern.compile("PUR.LGPE-RIVERSAMENTO.(TXT.[0-9]{1}.)?URI.([0-9A-Za-z\\-_]+)");
 	private static Pattern patternIDF = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d[0-9A-Za-z_]*-\\S*");

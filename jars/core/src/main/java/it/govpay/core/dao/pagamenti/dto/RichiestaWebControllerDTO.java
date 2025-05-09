@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.NameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
+
 
 public class RichiestaWebControllerDTO {
 

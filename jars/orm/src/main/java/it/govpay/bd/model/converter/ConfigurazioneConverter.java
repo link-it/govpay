@@ -27,6 +27,8 @@ import it.govpay.bd.model.Configurazione;
 import it.govpay.core.exceptions.IOException;
 
 public class ConfigurazioneConverter {
+	
+	private ConfigurazioneConverter() {}
 
 	public static Configurazione toDTO(List<it.govpay.orm.Configurazione> voList) {
 		Configurazione dto = new Configurazione();

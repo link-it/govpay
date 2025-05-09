@@ -57,19 +57,19 @@ public class PagamentiBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
-	public PagamentoFilter newFilter() throws ServiceException {
+	public PagamentoFilter newFilter() {
 		return new PagamentoFilter(this.getVistaPagamentoServiceSearch());
 	}
 	
-	public PagamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public PagamentoFilter newFilter(boolean simpleSearch) {
 		return new PagamentoFilter(this.getVistaPagamentoServiceSearch(),simpleSearch);
 	}
 
 	public long count(PagamentoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(PagamentoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(PagamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -87,7 +87,7 @@ public class PagamentiBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(PagamentoFilter filter) throws ServiceException {
+	private long countConLimitEngine(PagamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -107,15 +107,13 @@ public class PagamentiBD extends BasicBD {
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ACQUISIZIONE), "data_acquisizione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -123,7 +121,6 @@ public class PagamentiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ACQUISIZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -137,8 +134,7 @@ public class PagamentiBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();

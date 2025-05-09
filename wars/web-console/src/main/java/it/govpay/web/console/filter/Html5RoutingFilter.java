@@ -21,14 +21,14 @@ package it.govpay.web.console.filter;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class Html5RoutingFilter implements Filter {
 
@@ -46,17 +46,22 @@ public class Html5RoutingFilter implements Filter {
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String queryString = httpRequest.getQueryString();
         if (!path.contains(".")) {
-        	 // Se la richiesta non contiene un'estensione, reindirizza al percorso HTML5 compatibile con l'app Angular
-            String redirectPath = httpRequest.getContextPath() + "/#" + path;
-            if (queryString != null && !queryString.isEmpty()) {
-                redirectPath += "?" + queryString; // Aggiungi la query string al percorso di reindirizzamento
-            }
+        	String redirectPath = getRedirectPath(httpRequest, path, queryString);
             httpResponse.sendRedirect(redirectPath);
         } else {
             // Altrimenti, continua il normale flusso di richiesta
             chain.doFilter(request, response);
         }
     }
+
+	private String getRedirectPath(HttpServletRequest httpRequest, String path, String queryString) {
+		// Se la richiesta non contiene un'estensione, reindirizza al percorso HTML5 compatibile con l'app Angular
+		String redirectPath = httpRequest.getContextPath() + "/#" + path;
+		if (queryString != null && !queryString.isEmpty()) {
+		    redirectPath += "?" + queryString; // Aggiungi la query string al percorso di reindirizzamento
+		}
+		return redirectPath;
+	}
 
     @Override
     public void destroy() {

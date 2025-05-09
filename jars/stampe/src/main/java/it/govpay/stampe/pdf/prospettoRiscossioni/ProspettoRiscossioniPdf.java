@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -56,19 +56,21 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 public class ProspettoRiscossioniPdf {
 
-	private static ProspettoRiscossioniPdf _instance = null;
+	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
+	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
+	private static ProspettoRiscossioniPdf instance = null;
 	private static JAXBContext jaxbContext = null;
 
-	public static ProspettoRiscossioniPdf getInstance() {
-		if(_instance == null)
+	public static synchronized ProspettoRiscossioniPdf getInstance() {
+		if(instance == null)
 			init();
 
-		return _instance;
+		return instance;
 	}
 
 	public static synchronized void init() {
-		if(_instance == null)
-			_instance = new ProspettoRiscossioniPdf();
+		if(instance == null)
+			instance = new ProspettoRiscossioniPdf();
 		
 
 		if(jaxbContext == null) {
@@ -80,7 +82,7 @@ public class ProspettoRiscossioniPdf {
 		}
 	}
 
-	public ProspettoRiscossioniPdf() {
+	private ProspettoRiscossioniPdf() {
 		
 	}
 	
@@ -103,14 +105,14 @@ public class ProspettoRiscossioniPdf {
 		try {
 			// leggo il template file jasper da inizializzare 
 			if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
-				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).debug("Utilizzo il template esterno: ["+jasperFile.getAbsolutePath()+"].");
+				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).debug("Utilizzo il template esterno: [{}].", jasperFile.getAbsolutePath());
 				isTemplate = new FileInputStream(jasperFile);
 				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
 				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
 			} else {
 				
 				if(jasperFile != null) 
-					LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+					LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato {} non esiste. Verra utilizzato il template di default.", jasperFile.getAbsolutePath());
 				
 				String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
 				if(!jasperTemplateFilename.startsWith("/"))
@@ -121,11 +123,11 @@ public class ProspettoRiscossioniPdf {
 			
 			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
 			
-			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
-                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty(PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY,
+                    PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		
 			JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME), ProspettoRiscossioniInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
@@ -159,7 +161,7 @@ public class ProspettoRiscossioniPdf {
 	
 	public JRDataSource creaXmlDataSource(Logger log,ProspettoRiscossioniInput input) throws UtilsException, JRException, JAXBException {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME), ProspettoRiscossioniInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);

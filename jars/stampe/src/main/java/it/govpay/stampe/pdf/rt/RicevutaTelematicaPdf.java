@@ -26,10 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -53,19 +53,21 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class RicevutaTelematicaPdf{
 	
 	
-	private static RicevutaTelematicaPdf _instance = null;
+	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
+	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
+	private static RicevutaTelematicaPdf instance = null;
 	private static JAXBContext jaxbContext = null;
 
-	public static RicevutaTelematicaPdf getInstance() {
-		if(_instance == null)
+	public static synchronized RicevutaTelematicaPdf getInstance() {
+		if(instance == null)
 			init();
 
-		return _instance;
+		return instance;
 	}
 
 	public static synchronized void init() {
-		if(_instance == null)
-			_instance = new RicevutaTelematicaPdf();
+		if(instance == null)
+			instance = new RicevutaTelematicaPdf();
 		
 
 		if(jaxbContext == null) {
@@ -77,7 +79,7 @@ public class RicevutaTelematicaPdf{
 		}
 	}
 
-	public RicevutaTelematicaPdf() {
+	private RicevutaTelematicaPdf() {
 		// donothing
 	}
 	
@@ -112,16 +114,16 @@ public class RicevutaTelematicaPdf{
 			
 			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
 			
-			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
-                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty(PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY,
+                    PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
-			log.trace("RicevutaTelematicaInput: " + new String(byteArray));
+			log.trace("RicevutaTelematicaInput: {}", new String(byteArray));
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 				
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);

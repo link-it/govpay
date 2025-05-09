@@ -10,6 +10,8 @@ Background:
 * def esitoVerificaRPT = read('msg/verifica-response-ok.json')
 * configure followRedirects = false
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Attivazione RPT con importo errato dovuto precaricato
 
 * call read('classpath:utils/pa-carica-avviso.feature')

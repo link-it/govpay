@@ -46,6 +46,8 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class TracciatiConverter {
 	
+	private TracciatiConverter() {}
+	
 	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws IOException, ValidationException, GovPayException { 
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 

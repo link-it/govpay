@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BatchConverter {
+	
+	private BatchConverter() {}
 
 	public static it.govpay.model.Batch toDTO(it.govpay.orm.Batch vo) {
 		Batch dto = new Batch();

@@ -28,13 +28,15 @@ import it.govpay.stampe.pdf.quietanzaPagamento.utils.QuietanzaPagamentoPropertie
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 
 public class GovpayStampe {
+	
+	private GovpayStampe() {}
 
 	/**
 	 * Inizializza l'intero modulo delle stampe
 	 * @param govpayResourceDir
 	 * @throws Exception
 	 */
-	public synchronized static void init(Logger log, String govpayResourceDir) throws ConfigException {
+	public static synchronized void init(Logger log, String govpayResourceDir) throws ConfigException {
 		AvvisoPagamentoProperties.newInstance(govpayResourceDir);
 		RicevutaTelematicaProperties.newInstance(govpayResourceDir);
 		ProspettoRiscossioniProperties.newInstance(govpayResourceDir);

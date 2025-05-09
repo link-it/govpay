@@ -27,6 +27,8 @@ import it.govpay.backoffice.v1.beans.TipoPromemoria;
 import it.govpay.bd.model.Promemoria;
 
 public class PromemoriaConverter {
+	
+	private PromemoriaConverter() {}
 
 	public static PromemoriaIndex toRsModelIndex(Promemoria promemoria) {
 		PromemoriaIndex rsModel = new PromemoriaIndex();
@@ -61,8 +63,7 @@ public class PromemoriaConverter {
 			case SCADENZA:
 				rsModel.setTipo(TipoPromemoria.SCADENZA_AVVISO_PAGAMENTO);
 				break;
-			case RICEVUTA:
-			case RICEVUTA_NO_RPT:
+			case RICEVUTA, RICEVUTA_NO_RPT:
 				rsModel.setTipo(TipoPromemoria.RICEVUTA_TELEMATICA);
 				break;
 			}

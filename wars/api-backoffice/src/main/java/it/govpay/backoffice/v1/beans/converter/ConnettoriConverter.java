@@ -30,6 +30,8 @@ import it.govpay.model.Versionabile;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoriConverter {
+	
+	private ConnettoriConverter() {}
 
 	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.Connector connector) throws CodificaInesistenteException {
 		Connettore connettore = new Connettore();
@@ -129,7 +131,7 @@ public class ConnettoriConverter {
 		.clientSecret(connettore.getOauth2ClientCredentialsClientSecret())
 		.scope(connettore.getOauth2ClientCredentialsScope())
 		.urlTokenEndpoint(connettore.getOauth2ClientCredentialsUrlTokenEndpoint());
-		
+
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
 			case CLIENT:

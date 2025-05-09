@@ -20,6 +20,8 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,10 +45,10 @@ public class Rpt extends BasicModel{
 	
 	public static final String CCP_NA = "n/a";
 	
-	public static final List<StatoRpt> stati_pendenti;
+	private static final List<StatoRpt> stati_pendenti;
 	
 	static {
-		stati_pendenti = new ArrayList<Rpt.StatoRpt>();
+		stati_pendenti = new ArrayList<>();
 		stati_pendenti.add(StatoRpt.RPT_PARCHEGGIATA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_ATTIVATA);
 		stati_pendenti.add(StatoRpt.RPT_RICEVUTA_NODO);
@@ -61,6 +63,10 @@ public class Rpt extends BasicModel{
 		stati_pendenti.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA);
 		stati_pendenti.add(StatoRpt.RT_ERRORE_INVIO_A_PA);
 		stati_pendenti.add(StatoRpt.INTERNO_NODO);
+	}
+	
+	public static List<StatoRpt> getStatiPendenti() {
+		return stati_pendenti;
 	}
 	
 	public enum FirmaRichiesta {
@@ -88,7 +94,7 @@ public class Rpt extends BasicModel{
 					return p;
 			}
 			
-			throw new CodificaInesistenteException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per FirmaRichiesta. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(FirmaRichiesta.values())));
 		}
 	}
 	
@@ -113,19 +119,18 @@ public class Rpt extends BasicModel{
 
 		public static EsitoPagamento toEnum(String codifica) throws CodificaInesistenteException {
 			try {
-				int codifica2 = Integer.parseInt(codifica);
-				return toEnum(codifica2);
+				return toEnum(new BigInteger(codifica));
 			} catch (NumberFormatException e) {
-				throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+				throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoPagamento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoPagamento.values())));
 			}
 		}
 
-		public static EsitoPagamento toEnum(int codifica) throws CodificaInesistenteException {
+		public static EsitoPagamento toEnum(BigInteger codifica) throws CodificaInesistenteException {
 			for(EsitoPagamento p : EsitoPagamento.values()){
-				if(p.getCodifica() == codifica)
+				if(p.getCodifica() == codifica.intValue())
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoPagamento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoPagamento.values())));
 		}
 	}
 	
@@ -179,7 +184,10 @@ public class Rpt extends BasicModel{
 		SANP_230,
 		
 		RPTV2_RTV1,
-		RPTV1_RTV2
+		RPTV1_RTV2,
+		RPTSANP230_RTV2
+		
+		
 		;
 		
 		public static VersioneRPT toEnum(String s) {

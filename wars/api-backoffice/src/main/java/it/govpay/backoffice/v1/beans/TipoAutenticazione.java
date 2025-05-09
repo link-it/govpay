@@ -136,28 +136,28 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 
   @JsonProperty("headerName")
   private String headerName = null;
-  
+
   @JsonProperty("headerValue")
   private String headerValue = null;
-  
+
   @JsonProperty("apiId")
   private String apiId = null;
-  
+
   @JsonProperty("apiKey")
   private String apiKey = null;
-  
+
   @JsonProperty("clientId")
   private String clientId = null;
-  
+
   @JsonProperty("clientSecret")
   private String clientSecret = null;
-  
+
   @JsonProperty("urlTokenEndpoint")
   private String urlTokenEndpoint = null;
-  
+
   @JsonProperty("scope")
   private String scope = null;
-  
+
 	/**
 	 **/
 	public TipoAutenticazione username(String username) {
@@ -586,7 +586,7 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 	public void validate() throws ValidationException {
 
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		// validazione credenziali oatuh2 CC
 		if(this.clientId != null || this.clientSecret != null || this.urlTokenEndpoint != null) {
 			vf.getValidator("clientId", this.clientId).notNull().minLength(1).maxLength(255);
@@ -612,16 +612,16 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 						vf.getValidator("tipo", this.tipo).notNull();
 						vf.getValidator("tsLocation", this.tsLocation).notNull().minLength(1).maxLength(255);
 						vf.getValidator("tsPassword", this.tsPassword).notNull().minLength(1).maxLength(255);
-					
+
 						vf.getValidator("tsType", this.tsType).notNull();
 						if(KeystoreType.fromValue(this.tsType) == null){
 							throw new ValidationException("Codifica inesistente per tsType. Valore fornito [" + this.tsType + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
 						}
-						
+
 						vf.getValidator("sslType", this.sslType).notNull();
 						if(SslConfigType.fromValue(this.sslType) == null)
 							throw new ValidationException("Codifica inesistente per sslType. Valore fornito [" + this.sslType + "] valori possibili " + ArrayUtils.toString(SslConfigType.values()));
-						
+
 						if(this.tipo.equals(TipoEnum.CLIENT)) {
 							vf.getValidator("ksLocation", this.ksLocation).notNull().minLength(1).maxLength(255);
 							vf.getValidator("ksPassword", this.ksPassword).notNull().minLength(1).maxLength(255);
@@ -629,7 +629,7 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 							if(KeystoreType.fromValue(this.ksType) == null){
 								throw new ValidationException("Codifica inesistente per ksType. Valore fornito [" + this.ksType + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
 							}
-							
+
 							vf.getValidator("ksPKeyPasswd", this.ksPKeyPasswd).notNull().minLength(1).maxLength(255);
 						}
 					}

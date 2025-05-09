@@ -22,8 +22,6 @@ package it.govpay.pagamento.v2.beans;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -34,19 +32,19 @@ import it.govpay.core.beans.JSONSerializable;
 "dettaglio",
 })
 public class Segnalazione extends JSONSerializable {
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   /**
    **/
   public Segnalazione data(Date data) {
@@ -140,7 +138,7 @@ public class Segnalazione extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Segnalazione {\n");
-    
+
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

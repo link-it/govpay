@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.9-SNAPSHOT</version>
+		<version>3.8.0</version>
 	</parent>
 
 	<artifactId>client-api-ente</artifactId>
@@ -32,30 +32,30 @@
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-jaxrs</artifactId>
-			<scope>provided</scope>			
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-client</artifactId>
-			<scope>provided</scope>	
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-xml-provider</artifactId>
+			<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+			<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-		</dependency>
-		
+
 	</dependencies>
 
 	<build>
@@ -68,56 +68,5 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-<!-- 		<plugins> -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>io.swagger.codegen.v3</groupId> -->
-<!-- 				<artifactId>swagger-codegen-maven-plugin</artifactId> -->
-<!-- 				<version>${swagger-codegen-maven-plugin.version}</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<goals> -->
-<!-- 							<goal>generate</goal> -->
-<!-- 						</goals> -->
-<!-- 						<id>generate-sources-rendicontazione</id> -->
-<!-- 						<phase>generate-sources</phase> -->
-<!-- 						<configuration> -->
-<!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-rendicontazioni-ec-v1.yaml</inputSpec> -->
-<!-- 							<language>jaxrs-cxf</language> -->
-<!-- 							<configOptions> -->
-<!-- 								<dateLibrary>joda</dateLibrary> -->
-<!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
-<!-- 								<apiPackage>it.govpay.ec.rendicontazioni.v1</apiPackage> -->
-<!-- 								<invokerPackage>it.govpay.ec.rendicontazioni.v1.client</invokerPackage> -->
-<!-- 								<modelPackage>it.govpay.ec.rendicontazioni.v1.beans</modelPackage> -->
-<!-- 							</configOptions> -->
-<!-- 							<output>${project.basedir}</output> -->
-<!-- 							<generateApiTests>false</generateApiTests> -->
-<!-- 							<generateModelTests>false</generateModelTests> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 					<execution> -->
-<!-- 						<goals> -->
-<!-- 							<goal>generate</goal> -->
-<!-- 						</goals> -->
-<!-- 						<id>generate-sources</id> -->
-<!-- 						<phase>generate-sources</phase> -->
-<!-- 						<configuration> -->
-<!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-ec-v1.yaml</inputSpec> -->
-<!-- 							<language>jaxrs-cxf</language> -->
-<!-- 							<configOptions> -->
-<!-- 								<dateLibrary>joda</dateLibrary> -->
-<!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
-<!-- 								<apiPackage>it.govpay.ec.v1</apiPackage> -->
-<!-- 								<invokerPackage>it.govpay.ec.v1.client</invokerPackage> -->
-<!-- 								<modelPackage>it.govpay.ec.v1.beans</modelPackage> -->
-<!-- 							</configOptions> -->
-<!-- 							<output>${project.basedir}</output> -->
-<!-- 							<generateApiTests>false</generateApiTests> -->
-<!-- 							<generateModelTests>false</generateModelTests> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
-<!-- 		</plugins> -->
 	</build>
 </project>

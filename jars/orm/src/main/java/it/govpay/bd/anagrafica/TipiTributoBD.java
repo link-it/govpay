@@ -86,9 +86,7 @@ public class TipiTributoBD extends BasicBD {
 			}
 			
 			return TipoTributoConverter.toDTO(((JDBCTipoTributoServiceSearch)this.getTipoTributoService()).get(id));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -117,9 +115,7 @@ public class TipiTributoBD extends BasicBD {
 			expr.equals(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, codTributo);
 			
 			return TipoTributoConverter.toDTO( this.getTipoTributoService().find(expr));
-		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -149,11 +145,7 @@ public class TipiTributoBD extends BasicBD {
 			this.getTipoTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
 			this.emitAudit(tributo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | UtilsException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -198,10 +190,10 @@ public class TipiTributoBD extends BasicBD {
 	}
 
 	public long count(TipoTributoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(TipoTributoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(TipoTributoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -218,7 +210,7 @@ public class TipiTributoBD extends BasicBD {
 		}
 	}
 	
-	private long _countConLimit(TipoTributoFilter filter) throws ServiceException {
+	private long countConLimitEngine(TipoTributoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -241,12 +233,12 @@ public class TipiTributoBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_TRIBUTO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_TRIBUTO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_TRIBUTO, true));
+//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_TRIBUTO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -254,7 +246,7 @@ public class TipiTributoBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_TRIBUTO, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_TRIBUTO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -268,8 +260,7 @@ public class TipiTributoBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -292,9 +283,7 @@ public class TipiTributoBD extends BasicBD {
 			}
 			
 			return TipoTributoConverter.toDTOList(this.getTipoTributoService().findAll(filter.toPaginatedExpression()));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
+		} catch (NotImplementedException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

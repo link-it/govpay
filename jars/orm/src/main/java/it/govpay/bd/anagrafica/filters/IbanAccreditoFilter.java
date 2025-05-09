@@ -71,7 +71,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			boolean addAnd = false;
 			IExpression expr = this.newExpression();

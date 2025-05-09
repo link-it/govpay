@@ -33,6 +33,8 @@ import it.govpay.orm.IdApplicazione;
 
 
 public class PagamentoPortaleConverter {
+	
+	private PagamentoPortaleConverter() {}
 
 	public static List<PagamentoPortale> toDTO(List<it.govpay.orm.PagamentoPortale> singoliPagamenti) {
 		List<PagamentoPortale> dto = new ArrayList<>();

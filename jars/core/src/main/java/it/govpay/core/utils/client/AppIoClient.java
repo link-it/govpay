@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -37,6 +37,7 @@ import org.openspcoop2.utils.service.context.server.ServerInfoRequest;
 import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
+import org.springframework.http.MediaType;
 
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.IOException;
@@ -50,18 +51,24 @@ import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import it.govpay.model.Connettore;
-import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.Giornale;
 
 public class AppIoClient extends BasicClientCORE {
 
+	private static final String HEADER_LOCATION = "Location";
+	private static final String PATH_PROFILES_FISCAL_CODE = "/profiles/{fiscal_code}";
+	private static final String PATH_MESSAGES = "/messages";
+	private static final String STATUS_LINE = "Status-line";
+	private static final String REQUEST_PATH = "RequestPath";
+	private static final String HTTP_METHOD = "HTTP-Method";
+	private static final String SUBSCRIPTION_KEY = "SubscriptionKey";
+
 	private static Logger log = LoggerWrapperFactory.getLogger(AppIoClient.class);
 	private AppIoAPIClient apiClient = null;
 
-	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException { 
-		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, getConnettore(appIo), eventoCtx); 
+	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException {
+		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, appIo, eventoCtx);
 
 		this.apiClient = new AppIoAPIClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
@@ -78,8 +85,8 @@ public class AppIoClient extends BasicClientCORE {
 	}
 
 	public LimitedProfile getProfile(String fiscalCode, String appIOAPIKey, String swaggerOperationId) throws ApiException {
-		ApiKeyAuth SubscriptionKey = (ApiKeyAuth) this.apiClient.getAuthentication("SubscriptionKey");
-		SubscriptionKey.setApiKey(appIOAPIKey);
+		ApiKeyAuth subscriptionKey = (ApiKeyAuth) this.apiClient.getAuthentication(SUBSCRIPTION_KEY);
+		subscriptionKey.setApiKey(appIOAPIKey);
 
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
@@ -100,7 +107,7 @@ public class AppIoClient extends BasicClientCORE {
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
 
 			// create path and map variables
-			String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode)) : "/profiles/{fiscal_code}";
+			String localVarPath = fiscalCode != null ? PATH_PROFILES_FISCAL_CODE.replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode)) : PATH_PROFILES_FISCAL_CODE;
 
 			// Url Completa che viene invocata
 			String urlString = this.url.toExternalForm();
@@ -119,29 +126,29 @@ public class AppIoClient extends BasicClientCORE {
 			}
 
 			// query params
-			List<Pair> localVarQueryParams = new ArrayList<Pair>();
-			Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-			Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+			List<Pair> localVarQueryParams = new ArrayList<>();
+			Map<String, String> localVarHeaderParams = new HashMap<>();
+			Map<String, Object> localVarFormParams = new HashMap<>();
 
-			final String[] localVarAccepts = { "application/json" };
+			final String[] localVarAccepts = { MediaType.APPLICATION_JSON_VALUE };
 			final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
 
 			final String[] localVarContentTypes = { };
 			final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
 
 			// Salvataggio content type ed header con l'apikey
-			dumpRequest.getHeaders().put(SubscriptionKey.getParamName(), SubscriptionKey.getApiKey());
+			dumpRequest.getHeaders().put(subscriptionKey.getParamName(), subscriptionKey.getApiKey());
 			dumpRequest.setPayload("".getBytes());
 
-			dumpRequest.getHeaders().put("HTTP-Method", httpMethodEnum.name());
-			dumpRequest.getHeaders().put("RequestPath", urlString);
+			dumpRequest.getHeaders().put(HTTP_METHOD, httpMethodEnum.name());
+			dumpRequest.getHeaders().put(REQUEST_PATH, urlString);
 
 			this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
 
-			dumpResponse.getHeaders().put("HTTP-Method", httpMethodEnum.name());
-			dumpResponse.getHeaders().put("RequestPath", urlString);
+			dumpResponse.getHeaders().put(HTTP_METHOD, httpMethodEnum.name());
+			dumpResponse.getHeaders().put(REQUEST_PATH, urlString);
 
-			String[] localVarAuthNames = new String[] { "SubscriptionKey" };
+			String[] localVarAuthNames = new String[] { SUBSCRIPTION_KEY };
 
 			GenericType<LimitedProfile> localVarReturnType = new GenericType<LimitedProfile>() {};
 			LimitedProfile limitedProfile = apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
@@ -151,16 +158,14 @@ public class AppIoClient extends BasicClientCORE {
 
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-					//					if(key == null)
-					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-					//					else 
-					if(responseHeaders.get(key).size() == 1)
+					if(responseHeaders.get(key).size() == 1) {
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
-					else
+					}else {
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
+					}
 				}
 			}
-			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
+			dumpResponse.getHeaders().put(STATUS_LINE, ""+responseCode);
 
 			try {
 				String msgRes = ConverterUtils.toJSON(limitedProfile);
@@ -175,25 +180,28 @@ public class AppIoClient extends BasicClientCORE {
 			Map<String, List<String>> responseHeaders = e.getResponseHeaders();
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-					//					if(key == null)
-					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-					//					else 
-					if(responseHeaders.get(key).size() == 1)
+					if(responseHeaders.get(key).size() == 1) {
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
-					else
+					}else {
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
+					}
 				}
 			}
-			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			dumpResponse.getHeaders().put(STATUS_LINE, ""+responseCode);
+			String messaggio = e.getResponseBody();
+			if(messaggio == null) {
+				messaggio = e.getMessage();
+			}
+
+			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
 			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
 			if(msg != null && msg.length > 0) dumpResponse.setPayload(msg);
 			if(log.isTraceEnabled() && headerFields != null) {
-				StringBuffer sb = new StringBuffer();
-				for(String key : headerFields.keySet()) { 
+				StringBuilder sb = new StringBuilder();
+				for(String key : headerFields.keySet()) {
 					sb.append("\n\t" + key + ": " + headerFields.get(key));
 				}
 				sb.append("\n" + new String(msg));
@@ -204,8 +212,8 @@ public class AppIoClient extends BasicClientCORE {
 	}
 
 	public MessageCreated postMessage(NewMessage messageWithCF, String appIOAPIKey, String swaggerOperationId) throws ApiException {
-		ApiKeyAuth SubscriptionKey = (ApiKeyAuth) apiClient.getAuthentication("SubscriptionKey");
-		SubscriptionKey.setApiKey(appIOAPIKey);
+		ApiKeyAuth subscriptionKey = (ApiKeyAuth) apiClient.getAuthentication(SUBSCRIPTION_KEY);
+		subscriptionKey.setApiKey(appIOAPIKey);
 
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
@@ -219,7 +227,7 @@ public class AppIoClient extends BasicClientCORE {
 		byte[] msg = null;
 		try {
 			// create path and map variables
-			String localVarPath = "/messages";
+			String localVarPath = PATH_MESSAGES;
 
 			IContext ctx = ContextThreadLocal.get();
 
@@ -237,14 +245,14 @@ public class AppIoClient extends BasicClientCORE {
 			serverInfoRequest.setHttpRequestMethod(HttpRequestMethod.POST);
 
 			// query params
-			List<Pair> localVarQueryParams = new ArrayList<Pair>();
-			Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-			Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+			List<Pair> localVarQueryParams = new ArrayList<>();
+			Map<String, String> localVarHeaderParams = new HashMap<>();
+			Map<String, Object> localVarFormParams = new HashMap<>();
 
-			final String[] localVarAccepts = { "application/json" };
+			final String[] localVarAccepts = { MediaType.APPLICATION_JSON_VALUE };
 			final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
 
-			final String[] localVarContentTypes = { "application/json" };
+			final String[] localVarContentTypes = { MediaType.APPLICATION_JSON_VALUE };
 			final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
 
 			String jsonBody = null;
@@ -252,24 +260,24 @@ public class AppIoClient extends BasicClientCORE {
 				jsonBody = ConverterUtils.toJSON(messageWithCF);
 			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di richiesta per il giornale eventi: " + e.getMessage(), e);
-			} 
+			}
 
 			// Salvataggio content type ed header con l'apikey
 			dumpRequest.setContentType(localVarContentTypes[0]);
-			dumpRequest.getHeaders().put(SubscriptionKey.getParamName(), SubscriptionKey.getApiKey());
+			dumpRequest.getHeaders().put(subscriptionKey.getParamName(), subscriptionKey.getApiKey());
 
 
 			dumpRequest.setPayload(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
 
-			dumpRequest.getHeaders().put("HTTP-Method", httpMethodEnum.name());
-			dumpRequest.getHeaders().put("RequestPath", urlString);
+			dumpRequest.getHeaders().put(HTTP_METHOD, httpMethodEnum.name());
+			dumpRequest.getHeaders().put(REQUEST_PATH, urlString);
 
 			this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
 
-			dumpResponse.getHeaders().put("HTTP-Method", httpMethodEnum.name());
-			dumpResponse.getHeaders().put("RequestPath", urlString);
+			dumpResponse.getHeaders().put(HTTP_METHOD, httpMethodEnum.name());
+			dumpResponse.getHeaders().put(REQUEST_PATH, urlString);
 
-			String[] localVarAuthNames = new String[] { "SubscriptionKey" };
+			String[] localVarAuthNames = new String[] { SUBSCRIPTION_KEY };
 
 			GenericType<MessageCreated> localVarReturnType = new GenericType<MessageCreated>() {};
 			MessageCreated createdMessage = apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, messageWithCF, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
@@ -279,16 +287,14 @@ public class AppIoClient extends BasicClientCORE {
 
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-					//					if(key == null)
-					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-					//					else 
-					if(responseHeaders.get(key).size() == 1)
+					if(responseHeaders.get(key).size() == 1) {
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
-					else
+					}else {
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
+					}
 				}
 			}
-			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
+			dumpResponse.getHeaders().put(STATUS_LINE, ""+responseCode);
 
 			try {
 				String msgRes = ConverterUtils.toJSON(createdMessage);
@@ -303,25 +309,28 @@ public class AppIoClient extends BasicClientCORE {
 			Map<String, List<String>> responseHeaders = e.getResponseHeaders();
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-					//					if(key == null)
-					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-					//					else 
-					if(responseHeaders.get(key).size() == 1)
+					if(responseHeaders.get(key).size() == 1) {
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
-					else
+					}else {
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
+					}
 				}
 			}
-			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			dumpResponse.getHeaders().put(STATUS_LINE, ""+responseCode);
+			String messaggio = e.getResponseBody();
+			if(messaggio == null) {
+				messaggio = e.getMessage();
+			}
+
+			msg = messaggio != null ? messaggio.getBytes() : new byte[]{};
 			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
 			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
 			if(msg != null && msg.length > 0) dumpResponse.setPayload(msg);
 			if(log.isTraceEnabled() && headerFields != null) {
-				StringBuffer sb = new StringBuffer();
-				for(String key : headerFields.keySet()) { 
+				StringBuilder sb = new StringBuilder();
+				for(String key : headerFields.keySet()) {
 					sb.append("\n\t" + key + ": " + headerFields.get(key));
 				}
 				sb.append("\n" + new String(msg));
@@ -332,22 +341,11 @@ public class AppIoClient extends BasicClientCORE {
 	}
 
 	public String getMessageLocation() {
-		return this.apiClient.getResponseHeaders().containsKey("Location") ? this.apiClient.getResponseHeaders().get("Location").get(0) : "";
+		return this.apiClient.getResponseHeaders().containsKey(HEADER_LOCATION) ? this.apiClient.getResponseHeaders().get(HEADER_LOCATION).get(0) : "";
 	}
-
 
 	@Override
 	public String getOperationId() {
 		return this.operationID;
-	}
-
-	private static Connettore getConnettore(AppIOBatch appIo) {
-		Connettore connettore = new Connettore();
-
-		connettore.setUrl(appIo.getUrl());
-		connettore.setTipoAutenticazione(EnumAuthType.NONE);
-		connettore.setAzioneInUrl(false);
-
-		return connettore;
 	}
 }

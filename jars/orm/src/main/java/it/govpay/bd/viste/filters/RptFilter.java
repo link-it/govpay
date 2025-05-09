@@ -91,7 +91,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -365,9 +365,9 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
+	public IExpression toSimpleSearchExpressionEngine() throws ServiceException {
 		try {
-			IExpression newExpression = super._toSimpleSearchExpression();
+			IExpression newExpression = super.toSimpleSearchExpressionEngine();
 			
 			if(this.idVersamento != null){
 				IExpression newExpressionVersamento = this.newExpression();

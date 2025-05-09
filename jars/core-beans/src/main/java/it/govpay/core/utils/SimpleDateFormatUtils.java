@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -243,5 +244,19 @@ public class SimpleDateFormatUtils {
 		LocalDate date = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE));
         LocalTime time = LocalTime.of(c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), c.get(Calendar.MILLISECOND));
 		return LocalDateTime.of(date, time);
+	}
+	
+	public static Date toDate(LocalDate dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		return Date.from(dateToConvert.atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant());
+	}
+	
+	public static Date toDate(OffsetDateTime dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		return Date.from(dateToConvert.toInstant());
 	}
 }

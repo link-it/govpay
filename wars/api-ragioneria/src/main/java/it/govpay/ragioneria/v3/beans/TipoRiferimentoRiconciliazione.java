@@ -19,15 +19,15 @@
  */
 package it.govpay.ragioneria.v3.beans;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class TipoRiferimentoRiconciliazione  implements OneOfTipoRiferimentoRiconciliazione  {
 
-	@Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "")
+	@Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String idFlussoRendicontazione = null;
 	 /**
 	   * Get idFlussoRendicontazione
@@ -48,7 +48,7 @@ public class TipoRiferimentoRiconciliazione  implements OneOfTipoRiferimentoRico
 	    return this;
 	  }
 
-	  @Schema(example = "RF23567483937849450550875", required = true, description = "")
+	  @Schema(example = "RF23567483937849450550875", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String iuv = null;
 	 /**
 	   * Get iuv

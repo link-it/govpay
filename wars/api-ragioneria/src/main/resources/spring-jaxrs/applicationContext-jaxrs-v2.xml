@@ -18,8 +18,8 @@
     <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
 
     <!--  Jackson Provider for JSON/XML -->
-    <b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
-    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+    <b:bean id="jacksonJsonProvider" class="it.govpay.core.jaxrs.JacksonJsonProviderCustomized"/>
+    <b:bean id="jacksonXmlProvider" class="it.govpay.core.jaxrs.JacksonXmlProviderCustomized"/>
     
     <!-- FaultBean Exception Mapper -->
     <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
@@ -173,6 +173,29 @@
 		</jaxrs:features>
     </jaxrs:server>
     <!-- API_KEY_END -->
+    
+    <!-- OAUTH2_START -->
+    <jaxrs:server id="apiRagioneriaOauth2V2" address="/oauth2/v2/">
+        <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
+			   	<ref bean="flussiRendicontazioneV2" />
+			   	<ref bean="riconciliazioniV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="riscossioniV2" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV2" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- OAUTH2_END -->
     
         <!-- DEFAULT_START -->
     <jaxrs:server id="apiRagioneriaDEFAULTV2" address="/v2/">

@@ -33,6 +33,8 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Contabilita;
+import it.govpay.ec.v1.beans.MapEntry;
+import it.govpay.ec.v1.beans.Metadata;
 import it.govpay.ec.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.ProprietaPendenza;
@@ -45,6 +47,8 @@ import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
+	
+	private VerificaConverter() {}
 	
 	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
@@ -60,7 +64,7 @@ public class VerificaConverter {
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
 		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
 		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
-		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
+		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
 		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
@@ -131,6 +135,7 @@ public class VerificaConverter {
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setContabilita(contabilitaToStringDTO(vocePendenza.getContabilita()));
 				sv.setCodDominio(vocePendenza.getIdDominio());
+				sv.setMetadata(toMetadataDTO(vocePendenza.getMetadata()));
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -308,5 +313,28 @@ public class VerificaConverter {
 		}
 		
 		return allegatiDTO;
+	}
+	
+	public static it.govpay.core.beans.tracciati.Metadata toMetadataDTO(Metadata metadata) {
+		it.govpay.core.beans.tracciati.Metadata dto = null;
+		if(metadata != null) {
+			dto = new it.govpay.core.beans.tracciati.Metadata();
+			
+			if(metadata.getMapEntries() != null && !metadata.getMapEntries().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.MapEntry> mapEntriesDto = new ArrayList<>();
+				
+				for (MapEntry mapEntry : metadata.getMapEntries()) {
+					it.govpay.core.beans.tracciati.MapEntry mapEntryDto = new it.govpay.core.beans.tracciati.MapEntry();
+					mapEntryDto.setKey(mapEntry.getKey());
+					mapEntryDto.setValue(mapEntry.getValue());
+				
+					mapEntriesDto.add(mapEntryDto);
+				}
+				
+				dto.setMapEntries(mapEntriesDto);
+			}
+		}
+
+		return dto;
 	}
 }

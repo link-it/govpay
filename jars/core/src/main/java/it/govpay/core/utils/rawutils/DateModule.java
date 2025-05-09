@@ -19,8 +19,9 @@
  */
 package it.govpay.core.utils.rawutils;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -30,10 +31,12 @@ public class DateModule extends SimpleModule {
 
 	public DateModule() {
         super();
-        addSerializer(DateTime.class, new DateTimeSerializer());
+        addSerializer(LocalTime.class, new DateTimeSerializer());
         addSerializer(LocalDate.class, new LocalDateSerializer());
-        addDeserializer(DateTime.class, new DateTimeDeserializer());
+        addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+        addDeserializer(LocalTime.class, new DateTimeDeserializer());
         addDeserializer(LocalDate.class, new LocalDateDeserializer());
+        addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
     }
 }
 

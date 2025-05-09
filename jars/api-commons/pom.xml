@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.9-SNAPSHOT</version>
+		<version>3.8.0</version>
 	</parent>
 
 	<artifactId>api-commons</artifactId>
@@ -24,12 +24,11 @@
 			<artifactId>core</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>javax.ws.rs</groupId>
-		    <artifactId>javax.ws.rs-api</artifactId>
-		    <version>2.0</version>
-		    <scope>provided</scope>
+		    <groupId>jakarta.ws.rs</groupId>
+		    <artifactId>jakarta.ws.rs-api</artifactId>
+		    <version>3.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -38,8 +37,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -57,7 +56,12 @@
 			<groupId>io.swagger.parser.v3</groupId>
 			<artifactId>swagger-parser</artifactId>
 		</dependency>
-		
+
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>io.swagger.parser.v3</groupId>
 			<artifactId>swagger-parser-core</artifactId>
@@ -90,54 +94,54 @@
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.medsea.mimeutil</groupId>
 			<artifactId>mime-util</artifactId>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-rest</artifactId>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-openapi</artifactId>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-xml2json</artifactId>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-mime</artifactId>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-io</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
+		    <groupId>jakarta.mail</groupId>
+		    <artifactId>jakarta.mail-api</artifactId>
 		</dependency>
-		
+
 		<dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
         </dependency>
-        
+
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-features-logging</artifactId>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>

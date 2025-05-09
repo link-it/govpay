@@ -21,10 +21,10 @@ package it.govpay.ragioneria.v1.controller;
 
 import java.text.MessageFormat;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class ProfiloController extends BaseController {
      public Response profiloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
      	String methodName = "profiloGET";
  		String transactionId = ContextThreadLocal.get().getTransactionId();
- 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+ 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
  		try{
  			UtentiDAO utentiDAO = new UtentiDAO();
 
@@ -54,7 +54,7 @@ public class ProfiloController extends BaseController {
 
  			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
- 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+ 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
  			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
 
  		}catch (Exception e) {
@@ -65,5 +65,3 @@ public class ProfiloController extends BaseController {
      }
 
 }
-
-

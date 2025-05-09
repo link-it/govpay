@@ -230,6 +230,13 @@ components:
       schema:
         type: boolean
         default: false
+    numeroAvviso:
+      name: numeroAvviso
+      in: query
+      description: "Numero identificativo dell'avviso pagoPA"
+      required: false
+      schema: 
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/NumeroAvviso'
     ordinamento:
       name: ordinamento
       in: query

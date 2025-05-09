@@ -44,6 +44,8 @@ import it.govpay.orm.VistaVersamentoNonRendicontato;
 
 
 public class VersamentoNonRendicontatoConverter {
+	
+	private VersamentoNonRendicontatoConverter() {}
 
 	public static VersamentoNonRendicontato toDTO(it.govpay.orm.VistaVersamentoNonRendicontato vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		VersamentoNonRendicontato dto = new VersamentoNonRendicontato();
@@ -63,6 +65,7 @@ public class VersamentoNonRendicontatoConverter {
 			singoloVersamento.setIndiceDati(vo.getSngIndiceDati()); 
 			singoloVersamento.setDescrizioneCausaleRPT(vo.getSngDescrizioneCausaleRPT());
 			singoloVersamento.setContabilita(vo.getSngContabilita());
+			singoloVersamento.setMetadata(vo.getSngMetadata());
 	
 			dto.setSingoloVersamento(singoloVersamento);
 		}
@@ -125,7 +128,7 @@ public class VersamentoNonRendicontatoConverter {
 			versamento.setCodBundlekey(vo.getVrsCodBundlekey()); 
 			versamento.setDatiAllegati(vo.getVrsDatiAllegati());
 			if(vo.getVrsIncasso() != null) {
-				versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+				versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE));
 			}
 			versamento.setAnomalie(vo.getVrsAnomalie());
 	
@@ -145,19 +148,8 @@ public class VersamentoNonRendicontatoConverter {
 			versamento.setIdSessione(vo.getVrsIdSessione());
 	
 			versamento.setDataPagamento(vo.getVrsDataPagamento());
-			if(vo.getVrsImportoPagato() != null)
-				versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato())); 
-			if(vo.getVrsImportoIncassato() != null)
-				versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-			if(vo.getVrsStatoPagamento() != null)
-				versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-			versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-	
-			versamento.setDataPagamento(vo.getVrsDataPagamento());
-			if(vo.getVrsImportoPagato() != null)
-				versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato()));
-			if(vo.getVrsImportoIncassato() != null)
-				versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
+			versamento.setImportoPagato(vo.getVrsImportoPagato()); 
+			versamento.setImportoIncassato(vo.getVrsImportoIncassato());
 			if(vo.getVrsStatoPagamento() != null)
 				versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 			versamento.setIuvPagamento(vo.getVrsIuvPagamento());
@@ -175,12 +167,8 @@ public class VersamentoNonRendicontatoConverter {
 					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 					versamento.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-//					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-//					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 					versamento.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-//					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-//					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else {
 					versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 				}
@@ -205,8 +193,7 @@ public class VersamentoNonRendicontatoConverter {
 			pagamento.setImportoPagato(BigDecimal.valueOf(vo.getPagImportoPagato()));
 			pagamento.setDataAcquisizione(vo.getPagDataAcquisizione());
 			pagamento.setDataPagamento(vo.getPagDataPagamento());
-			if(vo.getPagCommissioniPsp() != null)
-				pagamento.setCommissioniPsp(BigDecimal.valueOf(vo.getPagCommissioniPsp()));
+			pagamento.setCommissioniPsp(vo.getPagCommissioniPsp());
 			if(vo.getPagTipoAllegato() != null)
 				pagamento.setTipoAllegato(TipoAllegato.valueOf(vo.getPagTipoAllegato()));
 			pagamento.setAllegato(vo.getPagAllegato());
@@ -216,8 +203,7 @@ public class VersamentoNonRendicontatoConverter {
 			pagamento.setDatiRevoca(vo.getPagDatiRevoca());
 			pagamento.setEsitoRevoca(vo.getPagEsitoRevoca());
 			pagamento.setDatiEsitoRevoca(vo.getPagDatiEsitoRevoca());
-			if(vo.getPagImportoRevocato() != null)
-				pagamento.setImportoRevocato(BigDecimal.valueOf(vo.getPagImportoRevocato()));
+			pagamento.setImportoRevocato(vo.getPagImportoRevocato());
 			if(vo.getPagStato() != null)
 				pagamento.setStato(Stato.valueOf(vo.getPagStato()));
 	
