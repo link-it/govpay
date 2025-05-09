@@ -2129,37 +2129,6 @@ export class UtilService {
       }
   }
 
-  public static navToIuv(numeroAvviso: any) {
-      try {
-          if (numeroAvviso == null) {
-              return null;
-          }
-
-          if (numeroAvviso.length !== 18) {
-              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: Consentite 18 cifre trovate [${numeroAvviso.length}].`);
-          }
-
-          if (!/^\d+$/.test(numeroAvviso)) {
-              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: non è in formato numerico.`);
-          }
-
-          if (numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
-              return numeroAvviso.substring(3);
-          } else if (numeroAvviso.startsWith("1")) { // '1' + reference(17)
-              return numeroAvviso.substring(1);
-          } else if (numeroAvviso.startsWith("2")) { // '2' + ref(15) + check(2)
-              return numeroAvviso.substring(1);
-          } else if (numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
-              return numeroAvviso.substring(1);
-          } else {
-              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: prima cifra non è [0|1|2|3]`);
-          }
-      } catch (error) {
-          //console.error(error.message); // Facoltativo, log dell'errore per debugging
-          return numeroAvviso; // Restituisci il valore di input in caso di errore
-      }
-  }
-
   /**
    * Caricamenti asincroni
    */
