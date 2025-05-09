@@ -64,7 +64,7 @@ echo "commit message: ${COMMIT_MSG}"
 #COMMIT_MSG_TRIMMED="$(printf '%s' "$COMMIT_MSG" | xargs)"
 COMMIT_MSG_TRIMMED="$(printf '%s' "$COMMIT_MSG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
 echo "commit message trimmed: [${COMMIT_MSG_TRIMMED}]"
-if [[ "$COMMIT_MSG_TRIMMED" == 'Preparazione rilascio '* && "$CURRENT_BRANCH" == "master" ]]; then
+if [[ "$COMMIT_MSG_TRIMMED" == 'Predisposto rilascio '* && "$CURRENT_BRANCH" == "master" ]]; then
     echo "Versione in fase di rilascio; salvo le evidenze dei test ..."
     DIR_VERSIONE_GOVPAY_IN_RILASCIO=/opt/apache-tomcat-govpay-vulnerabilita/webapps/govpay-releases/${VERSIONE_GOVPAY_IN_RILASCIO}_${DATA_VERSIONE_GOVPAY_IN_RILASCIO}
     echo "Versione in fase di rilascio: [${VERSIONE_GOVPAY_IN_RILASCIO}]"
