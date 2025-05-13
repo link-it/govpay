@@ -80,6 +80,9 @@ public class Costanti {
 	public static final String PARAM_ID_ENTRATA = "idEntrata";
 	public static final String PARAM_IBAN_ACCREDITO = "ibanAccredito";
 	
+	/** NOMI FIELD */
+	public static final String FIELD_ID_DOMINIO = "idDominio";
+	
 	
 	/** NOMI HEADERS */
 	public static final String HEADER_NAME_CONTENT_DISPOSITION = "content-disposition";
@@ -105,6 +108,7 @@ public class Costanti {
 	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_GLI_ENTI_CREDITORI = "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori";
 	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA = "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza";
 	public static final String MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_OPERATORE_A_TUTTI_GLI_ENTI_CREDITORI = "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori";
+	public static final String MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE = "Errore durante il log dell'operazione: ";
 	
 	/** COSTANTI PATH */
 	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/"+"{0}";
@@ -114,5 +118,6 @@ public class Costanti {
 	public static final String MSG_VALIDATION_EXCEPTION_VALORE_FORNITO = ". Valore fornito [";
 	public static final String MSG_VALIDATION_EXCEPTION_VALORI_POSSIBILI = "] valori possibili " ;
 	public static final String MSG_VALIDATION_EXCEPTION_SUFFIX = "" ;
+	public static final String LABEL_TIPO_TRASFORMAZIONE = "tipo trasformazione";
 	
 }

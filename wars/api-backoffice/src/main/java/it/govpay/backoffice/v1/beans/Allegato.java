@@ -62,14 +62,13 @@ public class Allegato extends it.govpay.core.beans.JSONSerializable {
 		}
 
 		public static TipoEnum fromCodifica(String codifica) {
-			switch (codifica) {
-			case "BD":
+			if(codifica.equals("BD")) {
 				return MARCA_DA_BOLLO;
-			case "ES":
+			} else if (codifica.equals("ES")) {
 				return ESITO_PAGAMENTO;
-
+			} else {
+				return null;
 			}
-			return null;
 		}
 
 		public static TipoEnum fromValue(String text) {

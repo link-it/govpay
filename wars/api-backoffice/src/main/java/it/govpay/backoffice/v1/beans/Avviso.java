@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.exceptions.IOException;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
@@ -145,11 +146,11 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
 	  }
 
   }
-  public void setStato(String stato) throws Exception{
+  public void setStato(String stato) throws CodificaInesistenteException{
 	  if(stato != null) {
 		  this.stato = StatoEnum.fromValue(stato);
 		  if(this.stato == null)
-			  throw new Exception("valore ["+stato+"] non ammesso per la property stato");
+			  throw new CodificaInesistenteException("valore ["+stato+"] non ammesso per la property stato");
 	  }
   }
 
