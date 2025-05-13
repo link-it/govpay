@@ -23,9 +23,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
 
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.IContext;
@@ -33,6 +30,7 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.exceptions.StartupException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -41,18 +39,15 @@ import it.govpay.core.utils.LabelAvvisiProperties;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.StartupUtils;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 public class InitListener implements ServletContextListener{
 
-	private static Logger log = null;
-	private static boolean initialized = false;
+	private Logger log = null;
 	private String warName = "GovPay-API-Backoffice";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_JSON;
 	private String dominioAnagraficaManager = "it.govpay.cache.anagrafica.backoffice";
-
-	public static boolean isInitialized() {
-		return InitListener.initialized;
-	}
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -69,19 +64,19 @@ public class InitListener implements ServletContextListener{
 			log = LoggerWrapperFactory.getLogger("boot");
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
 		} catch (StartupException e) {
-			log.error("Inizializzazione fallita", e);
+			LogUtils.logError(log, "Inizializzazione fallita", e);
 			try {
 				ctx.getApplicationLogger().log();
 			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
+				LogUtils.logError(log, Costanti.MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE+e1.getMessage(), e1);
 			}
 			throw e;
-		} catch (Exception e) {
-			log.error("Inizializzazione fallita", e);
+		} catch (NullPointerException e) {
+			LogUtils.logError(log, "Inizializzazione fallita", e);
 			try {
 				ctx.getApplicationLogger().log();
 			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
+				LogUtils.logError(log, Costanti.MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE+e1.getMessage(), e1);
 			}
 			throw new StartupException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
 		}
@@ -89,11 +84,10 @@ public class InitListener implements ServletContextListener{
 		try {
 			ctx.getApplicationLogger().log();
 		} catch (UtilsException e) {
-			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
+			log.error(Costanti.MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE+e.getMessage(), e);
 		}
 
 		LogUtils.logInfo(log, "Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
-		initialized = true;
 	}
 
 

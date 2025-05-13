@@ -64,6 +64,7 @@ import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
@@ -910,7 +911,7 @@ public class DominiConverter {
 
 			if(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione() != null  && tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getDefinizione() != null && tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo() != null) {
 				if(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 
 				Object definizione = tipoPendenzaRequest.getPortaleBackoffice().getTrasformazione().getDefinizione();
@@ -991,7 +992,7 @@ public class DominiConverter {
 				}
 
 				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1030,7 +1031,7 @@ public class DominiConverter {
 				}
 
 				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1065,7 +1066,7 @@ public class DominiConverter {
 
 
 				if(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getAvvisaturaMail().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 		}
@@ -1080,7 +1081,7 @@ public class DominiConverter {
 				&& tipoPendenzaRequest.getTracciatoCsv().getRisposta() != null) {
 			tipoVersamentoDominio.setTracciatoCsvTipoCustom(tipoPendenzaRequest.getTracciatoCsv().getTipo());
 			if(tipoPendenzaRequest.getTracciatoCsv().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getTracciatoCsv().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getTracciatoCsv().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getTracciatoCsv().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 
 			tipoVersamentoDominio.setTracciatoCsvIntestazioneCustom(tipoPendenzaRequest.getTracciatoCsv().getIntestazione());
@@ -1123,7 +1124,7 @@ public class DominiConverter {
 				}
 
 				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1157,7 +1158,7 @@ public class DominiConverter {
 				}
 
 				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 
@@ -1192,7 +1193,7 @@ public class DominiConverter {
 
 
 				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo()) == null) {
-					throw new ValidationException("tipo trasformazione", tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+					throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
 		}

@@ -46,6 +46,7 @@ import it.govpay.backoffice.v1.beans.TemplatePromemoriaRicevutaBase;
 import it.govpay.backoffice.v1.beans.TemplatePromemoriaScadenza;
 import it.govpay.backoffice.v1.beans.TipoTemplateTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
@@ -131,7 +132,7 @@ public class ConfigurazioniConverter {
 		dto.setTipo(tracciatoCsv.getTipo());
 
 		if(tracciatoCsv.getTipo() != null && TipoTemplateTrasformazione.fromValue(tracciatoCsv.getTipo()) == null) {
-			throw new ValidationException("tipo trasformazione", tracciatoCsv.getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+			throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, tracciatoCsv.getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 		}
 
 		dto.setIntestazione(tracciatoCsv.getIntestazione());
@@ -250,7 +251,7 @@ public class ConfigurazioniConverter {
 			promemoriaAvviso.setAllegaPdf(avvisaturaMail.getPromemoriaAvviso().getAllegaPdf());
 			promemoriaAvviso.setTipo(avvisaturaMail.getPromemoriaAvviso().getTipo());
 			if(avvisaturaMail.getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(avvisaturaMail.getPromemoriaAvviso().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", avvisaturaMail.getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, avvisaturaMail.getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 			promemoriaAvviso.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaAvviso().getMessaggio())));
 			promemoriaAvviso.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaAvviso().getOggetto()));
@@ -265,7 +266,7 @@ public class ConfigurazioniConverter {
 			promemoriaRicevuta.setAllegaPdf(avvisaturaMail.getPromemoriaRicevuta().getAllegaPdf());
 			promemoriaRicevuta.setTipo(avvisaturaMail.getPromemoriaRicevuta().getTipo());
 			if(avvisaturaMail.getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(avvisaturaMail.getPromemoriaRicevuta().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", avvisaturaMail.getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, avvisaturaMail.getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 			promemoriaRicevuta.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaRicevuta().getMessaggio())));
 			promemoriaRicevuta.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaRicevuta().getOggetto()));
@@ -281,7 +282,7 @@ public class ConfigurazioniConverter {
 			}
 			promemoriaScadenza.setTipo(avvisaturaMail.getPromemoriaScadenza().getTipo());
 			if(avvisaturaMail.getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(avvisaturaMail.getPromemoriaScadenza().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", avvisaturaMail.getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, avvisaturaMail.getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 			promemoriaScadenza.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaScadenza().getMessaggio())));
 			promemoriaScadenza.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaScadenza().getOggetto()));
@@ -302,7 +303,7 @@ public class ConfigurazioniConverter {
 
 			promemoriaAvviso.setTipo(avvisaturaAppIo.getPromemoriaAvviso().getTipo());
 			if(avvisaturaAppIo.getPromemoriaAvviso().getTipo() != null && TipoTemplateTrasformazione.fromValue(avvisaturaAppIo.getPromemoriaAvviso().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", avvisaturaAppIo.getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, avvisaturaAppIo.getPromemoriaAvviso().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 			promemoriaAvviso.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaAvviso().getMessaggio())));
 			promemoriaAvviso.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaAvviso().getOggetto()));
@@ -316,7 +317,7 @@ public class ConfigurazioniConverter {
 			promemoriaRicevuta.setSoloEseguiti(avvisaturaAppIo.getPromemoriaRicevuta().getSoloEseguiti());
 			promemoriaRicevuta.setTipo(avvisaturaAppIo.getPromemoriaRicevuta().getTipo());
 			if(avvisaturaAppIo.getPromemoriaRicevuta().getTipo() != null && TipoTemplateTrasformazione.fromValue(avvisaturaAppIo.getPromemoriaRicevuta().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", avvisaturaAppIo.getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, avvisaturaAppIo.getPromemoriaRicevuta().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 			promemoriaRicevuta.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaRicevuta().getMessaggio())));
 			promemoriaRicevuta.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaRicevuta().getOggetto()));
@@ -332,7 +333,7 @@ public class ConfigurazioniConverter {
 			}
 			promemoriaScadenza.setTipo(avvisaturaAppIo.getPromemoriaScadenza().getTipo());
 			if(avvisaturaAppIo.getPromemoriaScadenza().getTipo() != null && TipoTemplateTrasformazione.fromValue(avvisaturaAppIo.getPromemoriaScadenza().getTipo()) == null) {
-				throw new ValidationException("tipo trasformazione", avvisaturaAppIo.getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
+				throw new ValidationException(Costanti.LABEL_TIPO_TRASFORMAZIONE, avvisaturaAppIo.getPromemoriaScadenza().getTipo(), ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 			promemoriaScadenza.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaScadenza().getMessaggio())));
 			promemoriaScadenza.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaScadenza().getOggetto()));

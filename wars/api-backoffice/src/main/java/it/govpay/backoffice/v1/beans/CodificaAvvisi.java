@@ -153,11 +153,8 @@ public void validate() throws ValidationException {
 
 		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
 
-		if(this.generazioneIuvInterna.booleanValue()) {
-
-			// regExpIuv obbligatoria se generazioneIuvInterna e' selezionato
-			if(this.regExpIuv == null)
-				throw new ValidationException("Il campo regExpIuv non puo' essere vuoto quando e' selezionato il campo generazioneIuvInterna.");
+		if(this.generazioneIuvInterna.booleanValue() && this.regExpIuv == null) {
+			throw new ValidationException("Il campo regExpIuv non puo' essere vuoto quando e' selezionato il campo generazioneIuvInterna.");
 		}
 
 		if(this.regExpIuv != null)

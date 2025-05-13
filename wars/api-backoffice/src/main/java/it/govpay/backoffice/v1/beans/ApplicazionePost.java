@@ -26,6 +26,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
@@ -353,6 +354,29 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		vf.getValidator("servizioIntegrazione", this.servizioIntegrazione).validateFields();
 		vf.getValidator("acl", this.acl).validateObjects();
 
+		validaDomini(validatoreId);
+
+		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
+			for (String idTipoPendenza : this.tipiPendenza) {
+				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) &&
+						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
+					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
+			}
+		}
+
+		if(this.ruoli != null && !this.ruoli.isEmpty()) {
+			for (String idRuolo : this.ruoli) {
+				validatoreId.validaIdRuolo("ruoli", idRuolo);
+			}
+		}
+
+		vf.getValidator("abilitato", this.abilitato).notNull();
+		vf.getValidator("apiPagamenti", this.apiPagamenti).notNull();
+		vf.getValidator("apiPendenze", this.apiPendenze).notNull();
+		vf.getValidator("apiRagioneria", this.apiRagioneria).notNull();
+	}
+
+	private void validaDomini(ValidatoreIdentificativi validatoreId) throws ValidationException {
 		if(this.domini != null && !this.domini.isEmpty()) {
 
 			for (Object object : this.domini) {
@@ -366,8 +390,8 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 					java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
 
 					DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
-					if(map.containsKey("idDominio"))
-						dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
+					if(map.containsKey(Costanti.FIELD_ID_DOMINIO))
+						dominioProfiloPost.setIdDominio((String) map.get(Costanti.FIELD_ID_DOMINIO));
 					if(map.containsKey("unitaOperative")) {
 						Object objectUnita = map.get("unitaOperative");
 
@@ -390,7 +414,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 					}
 
 					if(dominioProfiloPost.getIdDominio() == null)
-						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
+						validatoreId.validaIdDominio(Costanti.FIELD_ID_DOMINIO, dominioProfiloPost.getIdDominio());
 
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
@@ -399,25 +423,6 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 				}
 			}
 		}
-
-		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
-			for (String idTipoPendenza : this.tipiPendenza) {
-				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) &&
-						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
-					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
-			}
-		}
-
-		if(this.ruoli != null && !this.ruoli.isEmpty()) {
-			for (String idRuolo : this.ruoli) {
-				validatoreId.validaIdRuolo("ruoli", idRuolo);
-			}
-		}
-
-		vf.getValidator("abilitato", this.abilitato).notNull();
-		vf.getValidator("apiPagamenti", this.apiPagamenti).notNull();
-		vf.getValidator("apiPendenze", this.apiPendenze).notNull();
-		vf.getValidator("apiRagioneria", this.apiRagioneria).notNull();
 	}
 }
 
