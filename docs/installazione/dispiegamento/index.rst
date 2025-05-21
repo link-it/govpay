@@ -77,10 +77,3 @@ Per abilitare/disabilitare ulteriori modalità di autenticazione, rispetto a que
 	- la configurazione di spring contiene già il codice necessario a tutte le modalità di autenticazione. I vari commenti individuano i blocchi di codice che gestiscono ciascuna modalità eventualmente inclusa in blocchi commentati. Rimuovendo i commenti o impostandoli se ne determina l'abilitazione o disabilitazione.
 
 Eventuali modifiche richiedono il riavvio dell'applicazione per renderle operative. Per i dettagli sulle modalità di autenticazione supportate si faccia riferimento alla sezione :ref:`integrazione_autenticazione`.
-
-.. _inst_troubleshooting:
-
-Troubleshooting
---------------------------
-
-In caso di deploy su versioni non supportate di WildFly è possibile incorrere nell'errore `Caused by: org.jboss.modules.ModuleNotFoundException: jdk.unsupported` in fase di deploy. Un efficace workaround è quello di registrare un modulo fittizio come suggerito in `https://stackoverflow.com/a/68318243`_
