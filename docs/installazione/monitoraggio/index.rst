@@ -136,4 +136,10 @@ con la seguente semantica:
 |                                   | check                             |
 +-----------------------------------+-----------------------------------+
 | tipo                              | Tipologia di check:               |
+|                                   |                                   |
+|                                   | Batch: elaborazioni in esecuzione |
+|                                   |                                   |
+|                                   | Coda: numero degli elementi       |
+|                                   | attualmente in coda               |
+|                                   |                                   |
 +-----------------------------------+-----------------------------------+
