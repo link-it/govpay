@@ -18,8 +18,8 @@ Produzione dell'installer dai sorgenti
 
 La compilazione dei sorgenti richiede:
 
-- Maven 3.5 o successivo
-- Java 1.8 o successivo
+- Maven 3.8 o successivo
+- Java 21
 
 L'installer può essere prodotto con la seguente procedura:
 
@@ -78,11 +78,11 @@ contesto di installazione nell'ambiente di esercizio.
 
 Devono essere inserite le seguenti informazioni:
 
--  **Application Server:** selezionare uno degli application server proposti
 -  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
-   -  **file di configurazione personalizzati**
-   -  **loghi dei psp**
+ -  **file di configurazione personalizzati**
+ -  **file di configurazione Log4j personalizzati**
+ -  **file di configurazione di Spring Security personalizzati**
 
 -  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per inserire i diversi file di tracciamento prodotti.
 -  **Visualizza Impostazioni Avanzate**: opzioni per abilitare funzionalità avanzate del prodotto, saranno visualizzate in un passaggio più avanti.
@@ -91,11 +91,7 @@ Devono essere inserite le seguenti informazioni:
 Riferimenti Accesso GovPay
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Questo passaggio prevede che vengano inseriti i dati per l'accesso all'istanza di GovPay e le credenziali del cruscotto di gestione:
-
--  **Protocollo di Trasporto:** indicare il protocollo di trasporto attivo (HTTP | HTTPS)
--  **Nome Host o IP:** inserire l'hostname tramite il quale saranno raggiungibili i servizi di GovPay (ad esempio la console di monitoraggio).
--  **Porta:** indicare la porta
+Questo passaggio prevede che vengano inserite le credenziali del cruscotto di gestione:
 
 Credenziali dell'utente amministratore:
 
@@ -133,14 +129,25 @@ l'accesso al database di esercizio di GovPay.
 -  **Username**: l’utente con diritti di lettura/scrittura sul database
    sopra indicato.
 -  **Password**: la password dell’utente del database.
--  **Nome modulo driver postgres**: il nome del modulo con cui è stato deployato il driver JDBC in wildfly
-
-.. note::
-    Il nome del modulo driver viene richiesto sono in caso di istallazione su PostgreSQL
    
 .. note::
     Non è necessario che il database e l'utente indicato esistano in questa fase. Potranno essere creati nella successiva fase di dispiegamento purché i dati relativi coincidano con i valori inseriti in questi campi del wizard.
 
+Servizi Backoffice
+~~~~~~~~~~~~~~~~~~
+
+Nella schermata "Servizi Backoffice" si devono inserire i riferimenti alle BaseURL delle risorse utilizzate dal cruscotto.
+
+.. figure:: ../_images/INS07_ConfigurazioneServiziCruscotto.png
+   :alt: Pagina relativa alle baseURL dei servizi utilizzati dal cruscotto
+   :align: center
+   :name: InstallazioneConfigurazioneServiziCruscotto
+   
+   Configurazione Servizi Cruscotto
+
+
+-  **Base path risorse statiche console**: BaseURL dove il cruscotto ricerca le risorse statiche
+-  **Base path API Backoffice**: BaseURL delle API-Backoffice
 
 Configurazioni Avanzate
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -154,7 +161,7 @@ La schermata "Configurazioni Avanzate" è presente solo se nel passaggio "Inform
    
    Configurazioni Avanzate
    
-Configurazione Spring Security
+**Configurazione Spring Security**
 
 -  **Usa file di configurazione esterni:** opzione che abilita i file di configurazione esterni di Spring per l'accesso alle funzionalità avanzate, come la configurazione delle modalità di autenticazione (:ref:`inst_dispiegamento_auth`).
 
