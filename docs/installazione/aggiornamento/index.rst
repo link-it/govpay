@@ -48,8 +48,15 @@ specificati tramite Cruscotto di Backoffice nella configurazione delle Applicazi
 Aggiornamento da versioni precedenti la 3.7
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-La distribuzione standard di GovPay prevede il seguente stack applicativo seguente:
+La distribuzione standard di GovPay prevede il seguente stack applicativo:
 
 - Java 11
 - Wildfly 26
 
+Aggiornamento da versioni precedenti la 3.8
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La distribuzione standard di GovPay dalla versione 3.8.0 prevede il seguente stack applicativo:
+
+- Java 21
+- Tomcat 10/11
