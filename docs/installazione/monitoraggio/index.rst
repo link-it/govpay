@@ -7,61 +7,6 @@ Per consentire l'integrazione con i sistemi di monitoraggio, GovPay
 mette a disposizione servizi interrogabili per verificare il
 funzionamento del sistema.
 
-I servizi di monitoraggio sono di due tipi:
-
--  Monitoraggio Domini
-
-   per verificare l'esito delle ultime comunicazioni con il Nodo dei
-   Pagamenti, relativamente ad uno specifico dominio.
-
--  Monitoraggio GovPay
-
-   per verificare il funzionamento delle singole componenti del
-   prodotto.
-
-Monitoraggio domini
--------------------
-
-Viene esposto un servizio di monitoraggio per dominio che fornisce
-indicazioni di stato inerenti l'esito delle interazioni con il Nodo dei
-Pagamenti. Il servizio si interroga con la seguente chiamata HTTP:
-
-GET /govpay/frontend/api/pagopa/rs/check/{id_dominio} HTTP/1.1
-
-Accept: application/json
-
-in ritorno si ha un messaggio con questo formato:
-
-{
-
-"ultimo_aggiornamento":null,
-
-"codice_stato":1,
-
-"operazione_eseguita":null,
-
-"errore_rilevato":"STATO NON VERIFICATO"
-
-}
-
-con la seguente semantica:
-
-+-----------------------------------+-----------------------------------+
-| ultimo_aggiornamento              | Data dell'ultimo aggiornamento    |
-|                                   | dello stato                       |
-+-----------------------------------+-----------------------------------+
-| codice_stato                      | 0: ok                             |
-|                                   |                                   |
-|                                   | 1: stato non verificato           |
-|                                   |                                   |
-|                                   | 2: fail                           |
-+-----------------------------------+-----------------------------------+
-| operazione_eseguita               | Operazione richiesta al nodo che  |
-|                                   | ha aggiornato lo stato            |
-+-----------------------------------+-----------------------------------+
-| errore_rilevato                   | Dettaglio dell'errore riscontrato |
-+-----------------------------------+-----------------------------------+
-
 Monitoraggio GovPay
 -------------------
 
@@ -69,37 +14,71 @@ Sono implementati dei check sui servizi gestiti da GovPay per
 verificarne il corretto funzionamento. Lo stato dei check è consultabile
 tramite servizi REST.
 
- GET /govpay/frontend/api/pagopa/rs/check/sonda/
+ GET /govpay-api-backoffice/rs/basic/v1/sonde
 
 Il servizio restituisce una panoramica dei check attivi sul sistema e
 del loro stato attuale. Per ciascuno è possibile acquisirne il
 dettaglio:
 
-GET /govpay/frontend/api/pagopa/rs/check/sonda/{nome}
+ GET /govpay-api-backoffice/rs/basic/v1/sonde/{id}
 
-dove *nome* può assumere i seguenti valori:
+dove *id* può assumere i seguenti valori:
 
-+--------------+-----------------------------------------------------------+
-| update-psp   | Check del servizio di aggiornamento PSP                   |
-+--------------+-----------------------------------------------------------+
-| update-rnd   | Check del servizio di acquisizione flussi rendicontazione |
-+--------------+-----------------------------------------------------------+
-| update-pnd   | Check del servizio di risoluzione pagamenti pendenti      |
-+--------------+-----------------------------------------------------------+
-| update-ntfy  | Check del servizio di spedizione notifiche                |
-+--------------+-----------------------------------------------------------+
-| update-conto | Check del servizio di generazione estratti conto          |
-+--------------+-----------------------------------------------------------+
-| check-ntfy   | Check della coda di notifiche da spedire                  |
-+--------------+-----------------------------------------------------------+
++---------------------------------+-------------------------------------------------+
+| check-db                        | Controllo operativita' del database             |
++---------------------------------+-------------------------------------------------+
+| check-ntfy                      | Coda notifiche                                  |
++---------------------------------+-------------------------------------------------+
+| check-tracciati                 | Coda Tracciati pendenze                         |
++---------------------------------+-------------------------------------------------+
+| spedizione-promemoria           | Stato spedizione promemoria                     |
++---------------------------------+-------------------------------------------------+
+| check-promemoria                | Coda spedizione promemoria                      |
++---------------------------------+-------------------------------------------------+
+| check-ntfy-appio                | Coda notifiche AppIO                            |
++---------------------------------+-------------------------------------------------+
+| check-gestione-promemoria       | Coda elaborazione promemoria                    |
++---------------------------------+-------------------------------------------------+
+| check-elab-trac-notif-pag       | Coda tracciati notifica pagamenti               |
++---------------------------------+-------------------------------------------------+
+| check-spedizione-trac-notif-pag | Coda spedizione tracciati notifica pagamenti    |
++---------------------------------+-------------------------------------------------+
+| check-riconciliazioni           | Coda elaborazione riconciliazioni               |
++---------------------------------+-------------------------------------------------+
+| check-rpt-scadute               | Numero RPT SANP 2.4 scadute da chiudere         |
++---------------------------------+-------------------------------------------------+
+| check-recupero-rt               | Numero RT mancanti                              |
++---------------------------------+-------------------------------------------------+
+| spedizione-trac-notif-pag       | Stato spedizione tracciati notifica pagamenti   |
++---------------------------------+-------------------------------------------------+
+| elaborazione-trac-notif-pag     | Stato elaborazione tracciati notifica pagamenti |
++---------------------------------+-------------------------------------------------+
+| riconciliazioni                 | Stato elaborazione riconciliazioni              |
++---------------------------------+-------------------------------------------------+
+| caricamento-tracciati           | Stato caricamento tracciati pendenze            |
++---------------------------------+-------------------------------------------------+
+| update-rnd                      | Acquisizione rendicontazioni                    |
++---------------------------------+-------------------------------------------------+
+| gestione-promemoria             | Stato elaborazione promemoria                   |
++---------------------------------+-------------------------------------------------+
+| update-ntfy-appio               | Stato spedizione notifiche AppIO                |
++---------------------------------+-------------------------------------------------+
+| update-ntfy                     | Stato spedizione notifiche                      |
++---------------------------------+-------------------------------------------------+
+| rpt-scadute                     | Stato chiusura RPT SANP 2.4 scadute             |
++---------------------------------+-------------------------------------------------+
+| recupero-rt                     | Recupero RT mancanti                            |
++---------------------------------+-------------------------------------------------+
 
 in ritorno si ha un messaggio con questo formato:
 
 {
 
- "nome":"check-ntfy",
+ "id":"check-ntfy",
 
- "stato":0,
+ "nome":"Coda notifiche",
+
+ "stato":"ok",
 
  "descrizioneStato":null,
 
@@ -113,7 +92,7 @@ in ritorno si ha un messaggio con questo formato:
 
  "sogliaErrorValue":100,
 
- "dataUltimoCheck":1489673880116,
+ "dataUltimoCheck":"2025-05-21T11:46:33.104+0200",
 
  "tipo":"Coda"
 
@@ -122,21 +101,23 @@ in ritorno si ha un messaggio con questo formato:
 con la seguente semantica:
 
 +-----------------------------------+-----------------------------------+
-| Nome                              | Identificativo della check        |
+| id                                | Identificativo della sonda        |
++-----------------------------------+-----------------------------------+
+| nome                              | Denominazione della sonda         |
 +-----------------------------------+-----------------------------------+
 | stato                             | null: stato non verificato        |
 |                                   |                                   |
-|                                   | 0: ok                             |
+|                                   | ok                                |
 |                                   |                                   |
-|                                   | 1: warning                        |
+|                                   | warning                           |
 |                                   |                                   |
-|                                   | 2: error                          |
+|                                   | error                             |
 +-----------------------------------+-----------------------------------+
 | descrizioneStato                  | Descrizione informativa sullo     |
 |                                   | stato assunto dal check           |
 +-----------------------------------+-----------------------------------+
 | durataStato                       | Tempo in millisecondi in cui il   |
-|                                   | check è nello stato attuale      |
+|                                   | check è nello stato attuale       |
 +-----------------------------------+-----------------------------------+
 | sogliaWarn                        | Soglia di Warning in forma        |
 |                                   | descrittiva                       |
@@ -155,4 +136,10 @@ con la seguente semantica:
 |                                   | check                             |
 +-----------------------------------+-----------------------------------+
 | tipo                              | Tipologia di check:               |
+|                                   |                                   |
+|                                   | Batch: elaborazioni in esecuzione |
+|                                   |                                   |
+|                                   | Coda: numero degli elementi       |
+|                                   | attualmente in coda               |
+|                                   |                                   |
 +-----------------------------------+-----------------------------------+
