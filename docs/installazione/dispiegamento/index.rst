@@ -26,16 +26,14 @@ effettuati i seguenti passi:
 
    -  **psql -h <hostname> -d <database> -U <username> -f sql/gov_pay.sql**
 
-5. Copiare il file **datasource/govpay-ds.xml**, contenente la
-   definizione del datasource, nella directory
-   **<JBOSS_HOME>/standalone/deployments** dell'application server.
-6. Copiare le applicazioni presenti nella directory **archivi** nella
-   directory **<JBOSS_HOME>/standalone/deployments** dell'application server.
-7. Installare il DriverJDBC, relativo al tipo di RDBMS indicato in fase
-   di setup, come modulo dell'application server.
-8. Editare i datasources installati al **punto 5** sostituendo la
-   keyword **NOME_DRIVER_JDBC.jar** con il nome del modulo corrispondente
-   al driver jdbc.
+5. Copiare la porzione di file xml contenuta in **datasource/context.datasource.xml** all'interno del file
+   **<TOMCAT_HOME>/conf/context.xml** dell'application server.
+6. Copiare la porzione di file xml contenuta in **datasource/server.datasource.xml** all'interno del file
+   **<TOMCAT_HOME>/conf/server.xml** dell'application server.
+7. Copiare le applicazioni presenti nella directory **archivi** nella
+   directory **<TOMCAT_HOME>/webapps** dell'application server.
+8. Installare il DriverJDBC, relativo al tipo di RDBMS indicato in fase
+   di setup nella directory **<TOMCAT_HOME>/lib** dell'application server.
 9. Verificare che la directory di lavoro e quella di log di GovPay,
    inserite in fase di configurazione, esistano o altrimenti crearle con
    permessi tali da consentire la scrittura all’utente di esecuzione del
@@ -49,7 +47,7 @@ effettuati i seguenti passi:
 	- **user.timezone="Europe/Rome"**
 
 12. Avviare l'application server (ad esempio su Linux con il comando
-    **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
+    **<TOMCAT_HOME>/bin/catalina.sh start** oppure utilizzando il relativo
     service).
 
 
