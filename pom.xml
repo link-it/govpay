@@ -119,7 +119,7 @@
 		<spring.version>6.2.7</spring.version>
 
 		<!-- Spring Security -->
-		<spring.security.version>6.4.5</spring.security.version>
+		<spring.security.version>6.4.6</spring.security.version>
 
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>3.2.12</spring.ldap.version>
@@ -1690,7 +1690,7 @@
 	        <plugin>
 	            <groupId>com.github.spotbugs</groupId>
 	            <artifactId>spotbugs-maven-plugin</artifactId>
-	            <version>4.8.6.0</version>
+	            <version>4.9.3.0</version>
 	            <configuration>
 	            	<!-- abilita insieme XML e HTML -->
     				<xmlOutput>true</xmlOutput>
@@ -1699,7 +1699,7 @@
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>
 	                        <artifactId>findsecbugs-plugin</artifactId>
-	                        <version>1.12.0</version>
+	                        <version>1.14.0</version>
 	                    </plugin>
 	                </plugins>
 	            </configuration>
