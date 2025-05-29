@@ -4,10 +4,10 @@ import { Injectable } from '@angular/core';
 export class FormService {
 
   //Pattern validatori
-  public static VAL_CODICE_FISCALE: string = '\\w{6}\\d{2}\\w{1}\\d{2}\\w{1}\\d{3}\\w{1}';
+  public static VAL_CODICE_FISCALE: string = '[A-Za-z]{6}[0-9LMNPQRSTUVlmnpqrstuv]{2}[ABCDEHLMPRSTabcdehlmprst][0-9LMNPQRSTUVlmnpqrstuv]{2}[A-Za-z][0-9LMNPQRSTUVlmnpqrstuv]{3}[A-Za-z]';
   public static VAL_PARTITA_IVA: string = '\\d{11}';
-  public static VAL_CF_PI: string = '(\\w{6}\\d{2}\\w{1}\\d{2}\\w{1}\\d{3}\\w{1}|\\d{11})';
-
+  public static VAL_CF_PI: string = '([A-Za-z]{6}[0-9LMNPQRSTUVlmnpqrstuv]{2}[ABCDEHLMPRSTabcdehlmprst][0-9LMNPQRSTUVlmnpqrstuv]{2}[A-Za-z][0-9LMNPQRSTUVlmnpqrstuv]{3}[A-Za-z]|\\d{11})';
+  
   public static FORM_PH_SELECT: string = 'Seleziona';
 
   //FORM_LABEL
