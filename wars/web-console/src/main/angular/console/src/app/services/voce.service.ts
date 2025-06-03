@@ -89,6 +89,7 @@ export class Voce {
   public static DATI_CUSTOM: string = 'Dati Custom';
   public static DATI_PAGO_PA: string = 'Dati pagoPA';
   public static DEBITORE: string = 'Debitore';
+  public static DEBITORE_WARNING_CF_INVALID_MESSAGE: string = 'Codice fiscale non valido';
   public static DEFAULT: string = 'Predefinito';
   public static DEFINIZIONE: string = 'Definizione';
   public static DEFINIZIONI: string = 'Definizioni';

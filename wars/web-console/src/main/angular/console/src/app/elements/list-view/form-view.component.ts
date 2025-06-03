@@ -38,7 +38,7 @@ export class FormViewComponent implements OnInit, AfterViewInit {
       if(field.required && !field.dependency) {
         _validators.push(Validators.required);
       }
-      field.pattern?_validators.push(Validators.pattern(field.pattern)):null;
+      (field.pattern && !field.warning)?_validators.push(Validators.pattern(field.pattern)):null;
       let _default = (field.type != UtilService.DATE_PICKER)?'':undefined;
       controls[field.id+'_ctrl'] = new FormControl(_default, (_validators.length != 0)?_validators:null);
       UtilService.DASHBOARD_LINKS_PARAMS.params.forEach((item) => {
