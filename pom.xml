@@ -141,6 +141,7 @@
 		<commons.pool2.version>2.12.1</commons.pool2.version>
 		<commons.net.version>3.11.1</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
+		<commons.beanutils.version>1.11.0</commons.beanutils.version>
 
 		<!-- xmlsec -->
 		<xmlsec.version>4.0.3</xmlsec.version>
@@ -1470,6 +1471,12 @@
 	            <artifactId>commons-net</artifactId>
 	            <version>${commons.net.version}</version>
            </dependency>
+           
+           <dependency>
+			    <groupId>commons-beanutils</groupId>
+			    <artifactId>commons-beanutils</artifactId>
+			    <version>${commons.beanutils.version}</version>
+			</dependency>
 
            <!-- Base64 Java8 migration -->
            <dependency>
