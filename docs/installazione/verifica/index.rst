@@ -12,38 +12,42 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
 
 2.1 **Frontend:**
 
-      -  **/govpay/frontend/web/connector**
+      -  **/govpay-web-connector**
 
          **web application per la gestione delle redirezioni durante i
          flussi di pagamento**
 
-      -  **/govpay/frontend/api/pagamento**
+      -  **/govpay-api-pagamento**
 
          **api per l'esecuzione dei pagamenti da parte del debitore**
 
-      -  **/govpay/frontend/api/pagopa**
+      -  **/govpay-api-pagopa**
 
          **api per la gestione del colloquio con la piattaforma centrale
          pagoPA**
 
 2.2 **Backend:**
 
-      -  **/govpay/backend/api/pendenze**
+      -  **/govpay-api-pendenze**
 
          **api per la gestione dell'archivio dei pagamenti in attesa
          (pendenze, pagamenti, ecc.)**
 
-      -  **/govpay/backend/api/ragioneria**
+      -  **/govpay-api-ragioneria**
 
          **api relative ai servizi di riconciliazione degli incassi con
          le pendenze/pagamenti di origine**
 
-      -  **/govpay/backend/api/backoffice**
+      -  **/govpay-api-jppapdp**
+
+         **api relative ai servizi esposti per le comunicazioni con la piattaforma PagoPA Maggioli**
+
+      -  **/govpay-api-backoffice**
 
          **api relative ai servizi di configurazione della piattaforma
-         (domini, applicazioni, operatori, ecc.)**
+         (domini, applicazioni, operatori, ecc.)**    
 
-      -  **/govpay/backend/gui/backoffice**
+      -  **/govpay-console**
 
          **web application che corrisponde al cruscotto di gestione e
          monitoraggio di GovPay**
@@ -51,14 +55,14 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
 3. Verificare che i servizi esposti da GovPay verso pagoPA siano
    raggiungibili verificando sul browser le seguenti URL:
    
--  http://<hostname>:<port>/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice?wsdl
--  http://<hostname>:<port>/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice?wsdl
+-  http://<hostname>:<port>/govpay-api-pagopa/PagamentiTelematiciCCPservice?wsdl
+-  http://<hostname>:<port>/govpay-api-pagopa/PagamentiTelematiciRTservice?wsdl
 
 4. Verificare che la **govpayConsole**, l’applicazione web per la
    gestione della configurazione e monitoraggio di GovPay, sia
    accessibile tramite browser all’indirizzo:
 
-   -  **http://<hostname>:<port>/govpay/backend/gui/backoffice**
+   -  **http://<hostname>:<port>/govpay-console**
 
    In caso di corretto funzionamento verrà visualizzata la pagina di
    autenticazione per l'accesso alla console.

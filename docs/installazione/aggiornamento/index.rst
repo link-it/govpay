@@ -48,8 +48,40 @@ specificati tramite Cruscotto di Backoffice nella configurazione delle Applicazi
 Aggiornamento da versioni precedenti la 3.7
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-La distribuzione standard di GovPay prevede il seguente stack applicativo seguente:
+La distribuzione standard di GovPay prevede il seguente stack applicativo:
 
 - Java 11
 - Wildfly 26
+
+Aggiornamento da versioni precedenti la 3.8
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La distribuzione standard di GovPay dalla versione 3.8.0 prevede il seguente stack applicativo:
+
+- Java 21
+- Tomcat 10/11
+
+I servizi sono esposti utilizzando nuove BaseUrl, di seguito il mapping con le vecchie versioni:
+
++---------------------------------+-------------------------------------------------+
+| 3.7.x                           |  3.8.0                                          |
++---------------------------------+-------------------------------------------------+
+| /govpay/frontend/api/pagopa     | /govpay-api-pagopa                              |
++---------------------------------+-------------------------------------------------+
+| /govpay/frontend/api/pagamento  | /govpay-api-pagamento                           |
++---------------------------------+-------------------------------------------------+
+| /govpay/frontend/api/user       | /govpay-api-user                                |
++---------------------------------+-------------------------------------------------+
+| /govpay/frontend/web/connector  | /govpay-web-connector                           |
++---------------------------------+-------------------------------------------------+
+| /govpay/backend/api/pendenze    | /govpay-api-pendenze                            |
++---------------------------------+-------------------------------------------------+
+| /govpay/backend/api/ragioneria  | /govpay-api-ragioneria                          |
++---------------------------------+-------------------------------------------------+
+| /govpay/backend/api/jppapdp     | /govpay-api-jppapdp                             |
++---------------------------------+-------------------------------------------------+
+| /govpay/backend/api/backoffice  | /govpay-api-backoffice                          |
++---------------------------------+-------------------------------------------------+
+| /govpay/backend/gui/backoffice  | /govpay-console                                 |
++---------------------------------+-------------------------------------------------+
 
