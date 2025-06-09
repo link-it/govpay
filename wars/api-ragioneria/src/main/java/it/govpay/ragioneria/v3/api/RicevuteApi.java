@@ -74,7 +74,7 @@ public interface RicevuteApi  {
     @Produces({ "application/json", "application/pdf" })
     @Operation(summary = "Acquisizione di una ricevuta di avvenuto pagamento pagoPA", tags={ "Ricevute" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "201", description = "ricevuta di pagamento acquisita", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevuta.class))),
+        @ApiResponse(responseCode = "200", description = "ricevuta di pagamento acquisita", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Ricevuta.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
