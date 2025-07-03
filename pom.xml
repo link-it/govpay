@@ -1189,6 +1189,12 @@
   				<artifactId>jackson-dataformat-yaml</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency>
+	        
+	        <dependency>
+			    <groupId>com.fasterxml.jackson.datatype</groupId>
+			    <artifactId>jackson-datatype-joda</artifactId>
+			    <version>${jackson.version}</version>
+			</dependency>
 
 			<!-- Jersey -->
 			<dependency>
