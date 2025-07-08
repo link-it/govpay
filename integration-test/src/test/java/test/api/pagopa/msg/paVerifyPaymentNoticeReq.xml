@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <ns6:paVerifyPaymentNoticeReq xmlns:ns6="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd" xmlns:ns2="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" xmlns:ns3="http://ws.pagamenti.telematici.gov/ppthead" xmlns:ns4="http://www.digitpa.gov.it/schemas/2011/Pagamenti/Revoche/" xmlns:ns5="http://ws.pagamenti.telematici.gov/" xmlns:ns7="http://pagopa-api.pagopa.gov.it/node/nodeForPsp.xsd">
+            <idPA>#(idDominio)</idPA>
+            <idBrokerPA>#(idIntermediario)</idBrokerPA>
+            <idStation>#(idStazione)</idStation>
+            <qrCode>
+                <fiscalCode>#(idDominio)</fiscalCode>
+                <noticeNumber>#(numeroAvviso)</noticeNumber>
+            </qrCode>
+        </ns6:paVerifyPaymentNoticeReq>
+    </soap:Body>
+</soap:Envelope>
