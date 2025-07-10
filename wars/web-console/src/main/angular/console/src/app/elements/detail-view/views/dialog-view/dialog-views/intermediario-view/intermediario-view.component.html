@@ -24,7 +24,7 @@
         <input matInput [placeholder]="voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKey_ctrl" autocomplete="off">
       </mat-form-field>
       <!-- SSL Config -->
-      <link-ssl-config #sslConfig [fGroup]="fGroup" [json]="json?.servizioPagoPa?.auth" [required]="true"></link-ssl-config>
+      <link-ssl-config #sslConfig [fGroup]="fGroup.get('sslAuthPagoPa')" [json]="json?.servizioPagoPa?.auth" [required]="true"></link-ssl-config>
       <p class="color-gray pt-2 mt-3 mb-2">Servizio recupero RT</p>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <input #urlRecuperoRTctrl matInput [placeholder]="voce.URL" formControlName="urlRecuperoRT_ctrl" autocomplete="off" 
@@ -34,7 +34,7 @@
         <input matInput [placeholder]="voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKeyRecuperoRT_ctrl" autocomplete="off" [required]="_isSubscriptionKeyRecuperoRTRequired">
       </mat-form-field>
       <!-- SSL Config -->
-      <link-ssl-config #sslConfigRecuperoRT [fGroup]="fGroup" [json]="json?.servizioPagoPaRecuperoRT?.auth" [required]="true"></link-ssl-config>
+      <link-ssl-config #sslConfigRecuperoRT [fGroup]="fGroup.get('sslAuthPagoPaRecuperoRT')" [json]="json?.servizioPagoPaRecuperoRT?.auth" [required]="true"></link-ssl-config>
     </mat-card>
   </div>
   <div class="col-12 col-lg-2"></div>

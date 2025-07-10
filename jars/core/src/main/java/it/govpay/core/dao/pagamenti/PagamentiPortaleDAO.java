@@ -165,8 +165,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
 				Versamento versamentoModel = null;
-				if(v instanceof it.govpay.core.beans.commons.Versamento) {
-					it.govpay.core.beans.commons.Versamento versamento = (it.govpay.core.beans.commons.Versamento) v;
+				if(v instanceof it.govpay.core.beans.commons.Versamento versamento) {
 					ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 					versamentoModel = versamentoBusiness.chiediVersamento(versamento);
 					versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
@@ -184,16 +183,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						}
 
 					}
-				}  else if(v instanceof RefVersamentoAvviso) {
-					String idDominio = ((RefVersamentoAvviso)v).getIdDominio();
-					String cfToCheck = ((RefVersamentoAvviso)v).getIdDebitore();
+				}  else if(v instanceof RefVersamentoAvviso refVersamentoAvviso) {
+					String idDominio = refVersamentoAvviso.getIdDominio();
+					String cfToCheck = refVersamentoAvviso.getIdDebitore();
 					try {
 						Dominio dominio = AnagraficaManager.getDominio(configWrapper, idDominio);
 
 						if(!dominio.isAbilitato())
 							throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
-						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v);
+						versamentoModel = versamentoBusiness.chiediVersamento(refVersamentoAvviso);
 
 						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	
 						if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -203,11 +202,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}catch(NotFoundException e) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
 					}
-				}  else if(v instanceof RefVersamentoPendenza) {
+				}  else if(v instanceof RefVersamentoPendenza refVersamentoPendenza) {
 					// controllo se le pendenze richieste siano a disposizione in sessione altrimenti assumo che siano dei dovuti gia' caricati
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-						String idA2A = ((RefVersamentoPendenza)v).getIdA2A();
-						String idPendenza = ((RefVersamentoPendenza)v).getIdPendenza();
+						String idA2A = refVersamentoPendenza.getIdA2A();
+						String idPendenza = refVersamentoPendenza.getIdPendenza();
 
 						if(pagamentiPortaleDTO.getListaPendenzeDaSessione() != null && pagamentiPortaleDTO.getListaPendenzeDaSessione().containsKey((idA2A+idPendenza))) {
 							ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", idA2A, idPendenza);
@@ -228,16 +227,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							}
 							log.debug("RefVersamentoPendenza [idA2A:{}, idPendenza: {}] letto dalla lista identificativi in sessione", idA2A, idPendenza);
 						} else {
-							versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
+							versamentoModel = versamentoBusiness.chiediVersamento(refVersamentoPendenza);
 						}
 					} else {
 						// applicazioni
-						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
+						versamentoModel = versamentoBusiness.chiediVersamento(refVersamentoPendenza);
 					}
-				} else if(v instanceof RefVersamentoModello4) {
-					String idDominio = ((RefVersamentoModello4)v).getIdDominio();
-					String idTipoVersamento = ((RefVersamentoModello4)v).getIdTipoPendenza();
-					String dati = ((RefVersamentoModello4)v).getDati();
+				} else if(v instanceof RefVersamentoModello4 refVersamentoModello4) {
+					String idDominio = refVersamentoModello4.getIdDominio();
+					String idTipoVersamento = refVersamentoModello4.getIdTipoPendenza();
+					String dati = refVersamentoModello4.getDati();
 
 					Dominio dominio = null;
 					try {
@@ -437,7 +436,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					// Esecuizione della chiamata verso PagoPA
 					try {
-						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione(), email);
+						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), versamenti, email);
 
 						Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 						Giornale giornale = configurazione.getGiornale();
@@ -634,8 +633,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	}
 
 	private void impostaSeveritaErrore(PagamentoPortale pagamentoPortale, Exception e) {
-		if(e instanceof GovPayException) {
-			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) e).getCodEsito()));
+		if(e instanceof GovPayException govPayException) {
+			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(govPayException.getCodEsito()));
 		} else {
 			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(new GovPayException(e).getCodEsito()));
 		}

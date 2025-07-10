@@ -87,7 +87,7 @@ public class MessaggiPagoPARptUtils {
 		if(xmlRpt == null) {
 			PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 			Versamento versamento = rpt.getVersamento(configWrapper);
-			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentRes(paSendRTReq, rpt, versamento);
+			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentRes(paSendRTReq, versamento);
 			
 		} else {
 			paGetPaymentRes = JaxbUtils.toPaGetPaymentResRPT(xmlRpt, false);
@@ -124,7 +124,7 @@ public class MessaggiPagoPARptUtils {
 		if(xmlRpt == null) {
 			PaSendRTV2Request paSendRTReq = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 			Versamento versamento = rpt.getVersamento(configWrapper);
-			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentV2Response(paSendRTReq, rpt, versamento);
+			paGetPaymentRes = MessaggiPagoPAUtils.ricostruisciPaGetPaymentV2Response(paSendRTReq, versamento);
 			
 		} else {
 			paGetPaymentRes = JaxbUtils.toPaGetPaymentV2ResponseRPT(xmlRpt, false);

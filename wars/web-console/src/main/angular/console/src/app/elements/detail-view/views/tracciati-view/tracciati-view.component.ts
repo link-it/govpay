@@ -164,6 +164,12 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
     const _tmpDC = _json.dataOraCaricamento?moment(_json.dataOraCaricamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
     this.info.extraInfo = [];
     this.info.extraInfo.push({ label: Voce.DATA_CARICAMENTO,  value: _tmpDC });
+	if(_json.stato){
+		this.info.extraInfo.push({ label: Voce.STATO,  value: UtilService.STATI_TRACCIATO[_json.stato] });
+	}
+	if(_json.descrizioneStato){
+		this.info.extraInfo.push({ label: Voce.DESCRIZIONE_STATO,  value: _json.descrizioneStato });
+	}
     this.info.extraInfo.push({ label: Voce.RICHIESTA_STAMPA_AVVISI+': ', value: UtilService.ABILITA[(_json.stampaAvvisi || false).toString()] });
     if((UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) ||
       (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) ||

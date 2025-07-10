@@ -116,10 +116,7 @@ public class MessaggiPagoPAUtils {
 
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(tvRpt.getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
-		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
-//		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
-//		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
 		toDatiSingoloVersamento(data, datiVersamento);
 
 		ctRpt.setDatiVersamento(datiVersamento);
@@ -185,10 +182,7 @@ public class MessaggiPagoPAUtils {
 
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(tvRpt.getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
-		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
-//		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
-//		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
 		toDatiSingoloVersamentoV2(data, datiVersamento);
 		ctRpt.setDatiVersamento(datiVersamento);
 
@@ -259,7 +253,6 @@ public class MessaggiPagoPAUtils {
 				ctDatiSingoloPagamentoRT.setAllegatoRicevuta(ctAllegatoRicevuta );
 			}
 			ctDatiSingoloPagamentoRT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
-//			ctDatiSingoloPagamentoRT.setCommissioniApplicatePA(null);
 			ctDatiSingoloPagamentoRT.setCommissioniApplicatePSP(receipt.getFee());
 			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(DateUtils.toLocalDate(receipt.getPaymentDateTime()));
 			ctDatiSingoloPagamentoRT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
@@ -323,7 +316,6 @@ public class MessaggiPagoPAUtils {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = new CtDatiSingoloPagamentoRT();
 //			ctDatiSingoloPagamentoRT.setAllegatoRicevuta(null);  // non presente
 			ctDatiSingoloPagamentoRT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
-//			ctDatiSingoloPagamentoRT.setCommissioniApplicatePA(null);
 			ctDatiSingoloPagamentoRT.setCommissioniApplicatePSP(receipt.getFee());
 			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(DateUtils.toLocalDate(receipt.getPaymentDateTime()));
 			ctDatiSingoloPagamentoRT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
@@ -381,7 +373,7 @@ public class MessaggiPagoPAUtils {
 		return soggettoDebitore;
 	}
 
-	public static PaGetPaymentRes ricostruisciPaGetPaymentRes(PaSendRTReq paSendRTReq, Rpt rpt, Versamento versamento) {
+	public static PaGetPaymentRes ricostruisciPaGetPaymentRes(PaSendRTReq paSendRTReq, Versamento versamento) {
 		if(paSendRTReq == null) return null;
 
 		CtReceipt receipt = paSendRTReq.getReceipt();
@@ -408,7 +400,7 @@ public class MessaggiPagoPAUtils {
 		return paGetPaymentRes;
 	}
 
-	public static PaGetPaymentV2Response ricostruisciPaGetPaymentV2Response(PaSendRTV2Request paSendRTV2Request, Rpt rpt, Versamento versamento) throws ServiceException {
+	public static PaGetPaymentV2Response ricostruisciPaGetPaymentV2Response(PaSendRTV2Request paSendRTV2Request, Versamento versamento) throws ServiceException {
 		if(paSendRTV2Request == null) return null;
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -436,30 +428,7 @@ public class MessaggiPagoPAUtils {
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 
 			for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
-				CtTransferPAReceiptV2 ctTransferPAReceiptV2 = datiSingoliPagamenti.get(indice);
-				CtTransferPAV2 ctTransferPAV2 = new CtTransferPAV2();
-
-				ctTransferPAV2.setCompanyName(ctTransferPAReceiptV2.getCompanyName());
-				ctTransferPAV2.setFiscalCodePA(ctTransferPAReceiptV2.getFiscalCodePA());
-				ctTransferPAV2.setIBAN(ctTransferPAReceiptV2.getIBAN());
-				ctTransferPAV2.setIdTransfer(ctTransferPAReceiptV2.getIdTransfer());
-				ctTransferPAV2.setMetadata(ctTransferPAReceiptV2.getMetadata());
-				ctTransferPAV2.setRemittanceInformation(ctTransferPAReceiptV2.getRemittanceInformation());
-				if(ctTransferPAReceiptV2.getMBDAttachment() != null) {
-					SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
-
-					CtRichiestaMarcaDaBollo marcaBollo = new CtRichiestaMarcaDaBollo();
-					if(singoloVersamento.getHashDocumento() != null)
-						marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
-					marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-					if(singoloVersamento.getTipoBollo() != null)
-						marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
-					else
-						marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
-					ctTransferPAV2.setRichiestaMarcaDaBollo(marcaBollo);
-				}
-				ctTransferPAV2.setTransferAmount(ctTransferPAReceiptV2.getTransferAmount());
-				ctTransferPAV2.setTransferCategory(ctTransferPAReceiptV2.getTransferCategory());
+				CtTransferPAV2 ctTransferPAV2 = toCtTransferPAV2(datiSingoliPagamenti, singoliVersamenti, indice);
 
 				ctTransferListPAV2.getTransfer().add(ctTransferPAV2 );
 			}
@@ -473,5 +442,34 @@ public class MessaggiPagoPAUtils {
 		paGetPaymentV2Response.setOutcome(StOutcome.OK);
 
 		return paGetPaymentV2Response;
+	}
+
+	private static CtTransferPAV2 toCtTransferPAV2(List<CtTransferPAReceiptV2> datiSingoliPagamenti,
+			List<SingoloVersamento> singoliVersamenti, int indice) {
+		CtTransferPAReceiptV2 ctTransferPAReceiptV2 = datiSingoliPagamenti.get(indice);
+		CtTransferPAV2 ctTransferPAV2 = new CtTransferPAV2();
+
+		ctTransferPAV2.setCompanyName(ctTransferPAReceiptV2.getCompanyName());
+		ctTransferPAV2.setFiscalCodePA(ctTransferPAReceiptV2.getFiscalCodePA());
+		ctTransferPAV2.setIBAN(ctTransferPAReceiptV2.getIBAN());
+		ctTransferPAV2.setIdTransfer(ctTransferPAReceiptV2.getIdTransfer());
+		ctTransferPAV2.setMetadata(ctTransferPAReceiptV2.getMetadata());
+		ctTransferPAV2.setRemittanceInformation(ctTransferPAReceiptV2.getRemittanceInformation());
+		if(ctTransferPAReceiptV2.getMBDAttachment() != null) {
+			SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
+
+			CtRichiestaMarcaDaBollo marcaBollo = new CtRichiestaMarcaDaBollo();
+			if(singoloVersamento.getHashDocumento() != null)
+				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
+			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+			if(singoloVersamento.getTipoBollo() != null)
+				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			else
+				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
+			ctTransferPAV2.setRichiestaMarcaDaBollo(marcaBollo);
+		}
+		ctTransferPAV2.setTransferAmount(ctTransferPAReceiptV2.getTransferAmount());
+		ctTransferPAV2.setTransferCategory(ctTransferPAReceiptV2.getTransferCategory());
+		return ctTransferPAV2;
 	}
 }

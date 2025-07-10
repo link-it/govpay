@@ -57,6 +57,12 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
     _dettaglio.push(new Dato({ label: Voce.ESITO, value: this.json.esito }));
     _dettaglio.push(new Dato({ label: Voce.SOTTOTIPO_ESITO, value: this.json.sottotipoEsito }));
     _dettaglio.push(new Dato({ label: Voce.DETTAGLIO_ESITO, value: UtilService.defaultDisplay({ value: this.json?this.json.dettaglioEsito:null }) }));
+	if(this.json.clusterId){
+		_dettaglio.push(new Dato({ label: Voce.CLUSTER_ID, value: this.json.clusterId }));
+	}
+	if(this.json.transactionId){
+			_dettaglio.push(new Dato({ label: Voce.TRANSACTION_ID, value: this.json.transactionId }));
+		}
     _dettaglio.push(new Dato({ label: Voce.ID_DOMINIO, value: this.json.idDominio }));
     _dettaglio.push(new Dato({ label: Voce.IUV, value: this.json.iuv }));
     _dettaglio.push(new Dato({ label: Voce.CCP, value: this.json.ccp }));

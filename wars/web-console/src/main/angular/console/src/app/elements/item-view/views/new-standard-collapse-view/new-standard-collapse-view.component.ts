@@ -97,16 +97,21 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
                 if(item.ibanAppoggio){
                 this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio, type: 'string' });
               }
-              if (item.contabilita && item.contabilita.quote) {
-                this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: item.contabilita.quote, type: 'quote' });
-              }
-              // Metadata
-              if (item.metadata && item.metadata.mapEntries) {
-                const _mapEntries = item.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
-                this._elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
-              }
             }
-          }
+          } else {
+			this._elenco.push({ label: Voce.ID_BOLLO, value: item.tipoBollo , type: 'string' });
+			this._elenco.push({ label: Voce.PROVINCIA, value: item.provinciaResidenza, type: 'string'  });
+			this._elenco.push({ label: Voce.HASH_DOCUMENTO, value: item.hashDocumento });
+		  }
+		  // contabilita'
+		  if (item.contabilita && item.contabilita.quote) {
+              this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: item.contabilita.quote, type: 'quote' });
+            }
+            // Metadata
+            if (item.metadata && item.metadata.mapEntries) {
+              const _mapEntries = item.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
+              this._elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+            }
         }
       }
     }
@@ -128,9 +133,6 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
           if(entrata.ibanAppoggio){
             this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: entrata.ibanAppoggio, type: 'string' });
           }
-          if (this.info.item.contabilita && this.info.item.contabilita.quote) {
-            this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: this.info.item.contabilita.quote, type: 'quote' });
-          }
         }
       }.bind(this),
       (error) => {
@@ -151,10 +153,6 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
             let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[entrata.tipoContabilita];
             this._elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, entrata.codiceContabilita], '/'), type: 'string' });
           }
-          // this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: entrata.ibanAccredito, type: 'string' });
-          // if(entrata.ibanAppoggio){
-          //   this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: entrata.ibanAppoggio, type: 'string' });
-          // }
           if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
             this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: vocePendenza.contabilita.quote, type: 'quote' });
           }

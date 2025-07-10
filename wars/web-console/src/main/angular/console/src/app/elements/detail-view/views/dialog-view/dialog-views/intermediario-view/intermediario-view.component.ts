@@ -12,7 +12,7 @@ import { SslConfigComponent } from '../../../ssl-config/ssl-config.component';
 })
 export class IntermediarioViewComponent  implements IFormComponent, OnInit, AfterViewInit {
   @ViewChild('sslConfig') sslConfig: SslConfigComponent;
-  @ViewChild('sslConfig') sslConfigRecuperoRT: SslConfigComponent;
+  @ViewChild('sslConfigRecuperoRT') sslConfigRecuperoRT: SslConfigComponent;
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
@@ -33,6 +33,9 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     this.fGroup.addControl('subscriptionKey_ctrl', new FormControl('', []));
 	this.fGroup.addControl('urlRecuperoRT_ctrl', new FormControl('', []));
     this.fGroup.addControl('subscriptionKeyRecuperoRT_ctrl', new FormControl('', []));
+	// Nuovi FormGroup dedicati per i due componenti SSL
+	this.fGroup.addControl('sslAuthPagoPa', new FormGroup({}));
+	this.fGroup.addControl('sslAuthPagoPaRecuperoRT', new FormGroup({}));
   }
 
   ngAfterViewInit() {

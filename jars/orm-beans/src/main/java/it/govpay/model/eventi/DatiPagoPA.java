@@ -21,9 +21,6 @@ package it.govpay.model.eventi;
 
 import java.io.Serializable;
 
-import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
-
 public class DatiPagoPA implements Serializable{
 
 	/**
