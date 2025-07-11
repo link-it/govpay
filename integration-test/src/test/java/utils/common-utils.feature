@@ -41,6 +41,10 @@ Scenario:
 			if(param.api == 'ragioneria') {
 				return govpay_api_ragioneria_url + '/rs/' + param.autenticazione + '/' + param.versione;
 			}
+			
+			if(param.api == 'pagopa') {
+				return govpay_api_pagopa_url;
+			}
 		
 			return '';
 			

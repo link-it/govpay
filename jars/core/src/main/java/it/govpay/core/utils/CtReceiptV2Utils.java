@@ -258,7 +258,7 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 					// 2024-11-04 recupero RT: il servizio rest di recupero RT restituisce sempre una paSendRT2, e' necessario controlare se la RPT e' una SANP_230
 					if(!rpt.getVersione().equals(versioneRPTAttesa)) {
 						
-						if(rpt.getVersione().equals(VersioneRPT.SANP_240)) {
+						if(rpt.getVersione().equals(VersioneRPT.SANP_240) || rpt.getVersione().equals(VersioneRPT.RPTV1_RTV2)) {
 							// indico che questa transazione e' ibrida
 							rpt.setVersione(VersioneRPT.RPTV1_RTV2);
 							
@@ -373,6 +373,8 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 			rpt.setDenominazioneAttestante(pspCompanyName);
 			rpt.setCodPsp(idPSP);
 			rpt.setCodCanale(idChannel);
+			// aggiorno rpt con il tipoversamento ricevuto in risposta
+			rpt.setTipoVersamento(ctReceipt.getPaymentMethod());
 
 			if(update) {
 				// Aggiorno l'RPT con i dati dell'RT

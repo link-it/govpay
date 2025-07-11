@@ -28,7 +28,7 @@ import it.govpay.core.exceptions.ConfigException;
 
 public class CSVSerializerProperties {
 	
-	private static final String propertiesPath = "/csv_serializer.properties";
+	private static final String PROPERTIES_PATH = "/csv_serializer.properties";
 
 	
 	private static CSVSerializerProperties instance;
@@ -38,14 +38,14 @@ public class CSVSerializerProperties {
 		this.reader = new Properties();
 		java.io.InputStream properties = null;
 		try{  
-			properties = CSVSerializerProperties.class.getResourceAsStream(CSVSerializerProperties.propertiesPath);
+			properties = CSVSerializerProperties.class.getResourceAsStream(CSVSerializerProperties.PROPERTIES_PATH);
 			if(properties==null){
-				throw new ConfigException("Properties "+CSVSerializerProperties.propertiesPath+" not found");
+				throw new ConfigException("Properties "+CSVSerializerProperties.PROPERTIES_PATH+" not found");
 			}
 			this.reader.load(properties);
 			properties.close();
 		}catch(IOException e) {
-			LogUtils.logError(log, "Riscontrato errore durante la lettura del file '"+CSVSerializerProperties.propertiesPath+"': "+e.getMessage(),e);
+			LogUtils.logError(log, "Riscontrato errore durante la lettura del file '"+CSVSerializerProperties.PROPERTIES_PATH+"': "+e.getMessage(),e);
 			try{
 				properties.close();
 			}catch(Exception er){

@@ -29,7 +29,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
@@ -87,8 +86,7 @@ public class RptConverter {
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
 		dto.setCodPsp(vo.getCodPsp());
-		if(vo.getTipoVersamento() != null)
-			dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
+		dto.setTipoVersamento(vo.getTipoVersamento());
 		if(vo.getTipoIdentificativoAttestante() != null)
 			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());

@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.ws.rs.core.HttpHeaders;
-//import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import jakarta.xml.ws.handler.MessageContext;
 
@@ -70,7 +68,7 @@ public class GpContext extends ApplicationContext {
 	private EventoContext eventoCtx;
 	
 	// Mappa da utilizzare all'interno delle trasformazioni si puo' utilizzare per salvare dei dati all'interno dei template e utilizzarli dopo la fine della trasformazione.
-	private Hashtable<String, Object> ctx = new Hashtable<String, Object>();
+	private Hashtable<String, Object> ctx = new Hashtable<>();
 	
 	public Hashtable<String, Object> getContext() {
 		return this.ctx;

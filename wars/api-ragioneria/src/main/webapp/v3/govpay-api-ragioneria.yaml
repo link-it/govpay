@@ -252,7 +252,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdRicevuta'
       responses:
-        '201':
+        '200':
           description: ricevuta di pagamento acquisita
           content:
             application/json:

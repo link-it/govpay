@@ -1,14 +1,14 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.8.x/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/3.8.x/)
-[![Docker](https://github.com/link-it/govpay/blob/3.8.x/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
-[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.8.x)](https://govpay.readthedocs.io/it/latest/?badge=3.8.x)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/3.8.x/LICENSE)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/master/)
+[![Docker](https://github.com/link-it/govpay/blob/master/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
+[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=master)](https://govpay.readthedocs.io/it/latest/?badge=master)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/master/LICENSE)
 
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
 ## Documentazione
 
-- [Read the docs](https://govpay.readthedocs.io/it/3.8.x/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/3.8.x/))
+- [Read the docs](https://govpay.readthedocs.io/it/master/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/master/))
 
 ## Contatti
 

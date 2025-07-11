@@ -484,7 +484,7 @@
                         <mat-form-field class="w-100" color="accent" [formGroup]="appIOBatchForm">
                           <input matInput [placeholder]="Voce.TTL" pattern="[0-9]+" formControlName="appIOBatchTTL_ctrl">
                         </mat-form-field>
-                        <link-ssl-config #sslConfig [fGroup]="appIOBatchForm" [json]="json.appIOBatch.auth" [required]="!!_appIOBatchAbilitato.value"></link-ssl-config>
+                        <link-ssl-config #sslConfig [fGroup]="appIOBatchForm" [json]="json?.appIOBatch?.auth" [required]="!!_appIOBatchAbilitato.value"></link-ssl-config>
                       </div>
                     </form>
                   </div>

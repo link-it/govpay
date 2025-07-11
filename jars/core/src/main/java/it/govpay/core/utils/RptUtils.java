@@ -127,7 +127,7 @@ public class RptUtils {
 		datiPagoPA.setErogatore(it.govpay.model.Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
-		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
+		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento().getCodifica()+"");
 		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
 		datiPagoPA.setCodDominio(rpt.getCodDominio());
 		eventoContext.setDatiPagoPA(datiPagoPA);

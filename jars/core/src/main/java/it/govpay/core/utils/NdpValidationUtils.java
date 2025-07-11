@@ -28,6 +28,10 @@ import it.govpay.core.utils.RtUtils.EsitoValidazione;
 
 public class NdpValidationUtils {
 	
+	protected NdpValidationUtils() { 
+		// static only
+	}
+	
 	public static void validaSemantica(CtEnteBeneficiario rpt, CtEnteBeneficiario rt, EsitoValidazione esito) {
 		valida(rpt.getDenominazioneBeneficiario(), rt.getDenominazioneBeneficiario(), esito, "DenominazioneBeneficiario non corrisponde", false);
 		valida(rpt.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco(), rt.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco(), esito, "IdentificativoUnivocoBeneficiario non corrisponde", true);

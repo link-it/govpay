@@ -38,6 +38,7 @@ export class Voce {
   public static BASIC: string = 'HTTP Basic';
   public static BIC_ACCREDITO: string = 'BIC accredito';
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
+  public static BOLLO: string = 'Marca da bollo telematica';
 
   public static CANALE: string = 'Canale';
   public static CAP: string = 'Cap';
@@ -48,6 +49,7 @@ export class Voce {
   public static CBILL: string = 'CBill';
   public static CCP: string = 'CCP';
   public static CIVICO: string = 'Numero civico';
+  public static CLUSTER_ID: string = 'Cluster ID';
   public static CODICE: string = 'Codice';
   public static CODICE_CONTABILITA: string = 'Codice contabilità';
   public static CODICE_FISCALE: string = 'Codice fiscale';
@@ -128,7 +130,7 @@ export class Voce {
   public static HEADER_NAME: string = 'Nome Header';
   public static HEADER_VALUE: string = 'Valore';
   public static HTTP_HEADER: string = 'HTTP Header';
-  public static PAYLOAD: string = 'Payload';
+  public static HASH_DOCUMENTO: string = 'Hash Documento';
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
@@ -243,6 +245,7 @@ export class Voce {
   public static PASSWORD: string = 'Password';
   public static PASSWORD_INVALID_MESSAGE: string = 'La password deve contenere almeno una minuscola, una maiuscola, un numero, un carattere speciale e deve essere almeno di 8 caratteri';
   public static PATH: string = 'Path';
+  public static PAYLOAD: string = 'Payload';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
   public static PENDENZE: string = 'Pendenze';
@@ -309,6 +312,7 @@ export class Voce {
   public static TIPO_TEMPLATE: string = 'Tipo template';
   public static TIPO_VERSAMENTO: string = 'Tipo versamento';
   public static TIPOLOGIA: string = 'Tipologia';
+  public static TRANSACTION_ID: string = 'ID Transazione';
   public static TRASFORMATORE: string = 'Trasformatore';
   public static TRASFORMATORE_PREDEFINITO: string = 'Trasformatore (Default)';
   public static TRASFORMAZIONE: string = 'Trasformazione';
@@ -340,6 +344,7 @@ export class Voce {
   public static VERSIONE_ZIP: string = 'Versione ZIP';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';
+  public static VOCE: string = 'Voce';
 
   public static WEB: string = 'Sito web';
   public static WEB_SITE: string = 'Indirizzo web';

@@ -2540,7 +2540,7 @@
 			<xsd:element name="codCanale" type="String35" minOccurs="0" />
 			<xsd:element name="codPsp" type="String35" minOccurs="0" />
 			<xsd:element name="codIntermediarioPsp" type="String35" minOccurs="0" />
-			<xsd:element name="tipoVersamento" type="String4" minOccurs="0" />
+			<xsd:element name="tipoVersamento" type="String35" minOccurs="0" />
 			<xsd:element name="tipoIdentificativoAttestante" type="String1" minOccurs="0" />
 			<xsd:element name="identificativoAttestante" type="String35" minOccurs="0" />
 			<xsd:element name="denominazioneAttestante" type="String70" minOccurs="0" />
@@ -3559,7 +3559,7 @@
 			<xsd:element name="codCanale" type="String35" minOccurs="0" />
 			<xsd:element name="codPsp" type="String35" minOccurs="0" />
 			<xsd:element name="codIntermediarioPsp" type="String35" minOccurs="0" />
-			<xsd:element name="tipoVersamento" type="String4" minOccurs="0" />
+			<xsd:element name="tipoVersamento" type="String35" minOccurs="0" />
 			<xsd:element name="tipoIdentificativoAttestante" type="String1" minOccurs="0" />
 			<xsd:element name="identificativoAttestante" type="String35" minOccurs="0" />
 			<xsd:element name="denominazioneAttestante" type="String70" minOccurs="0" />

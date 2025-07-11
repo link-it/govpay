@@ -106,10 +106,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
       this.info.extraInfo.push({label: Voce.TIPO_PENDENZA + ': ', value: _json.tipoPendenza.descrizione});
     }
-    // DEPRECATED
-    // if(_json.tassonomiaAvviso) {
-    //   this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
-    // }
     if(_json.tassonomia) {
       this.info.extraInfo.push({ label: Voce.TASSONOMIA_ENTE+': ', value: _json.tassonomia });
     }
@@ -172,19 +168,26 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     }
     //Dettaglio importi
     this._paymentsSum = 0;
-    this.importi = _json.voci.map(function(item) {
+    this.importi = _json.voci.map(function(item, index) {
       let _std = new NewStandardCollapse();
-      _std.titolo = new Dato({ value: item.descrizione });
+	  let _description = item.descrizione;
+	  if (!item.descrizione || item.descrizione.trim() === '') {
+		if(item.tipoBollo) {
+			 _description = Voce.BOLLO;
+		  } else {
+			_description = Voce.VOCE + ' '+(index +1);		
+		  }
+	  } else {
+		_description = item.descrizione;
+	  }
+	  
+      _std.titolo = new Dato({ value: _description });
       _std.elenco = [];
       const lbls: string[] = [];
       const vals: string[] = [];
       if(item.idVocePendenza) {
         lbls.push(Voce.ID);
         vals.push(item.idVocePendenza);
-      }
-      if(item.tipoBollo) {
-        lbls.push(Voce.ID_BOLLO);
-        vals.push(item.tipoBollo);
       }
       if(item.dominio && item.dominio.ragioneSociale) {
         lbls.push(Voce.ENTE_CREDITORE);
@@ -196,7 +199,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         _std.elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, item.codiceContabilita ], '/') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
         _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
-      }
+      } else { // informazioni bollo
+		_std.elenco.push({ label: Voce.ID_BOLLO, value: item.tipoBollo });
+		_std.elenco.push({ label: Voce.PROVINCIA, value: item.provinciaResidenza });
+		_std.elenco.push({ label: Voce.HASH_DOCUMENTO, value: item.hashDocumento });
+	  }
       _std.importo = this.us.currencyFormat(item.importo);
       _std.stato = item.stato;
       this._paymentsSum += UtilService.defaultDisplay({ value: item.importo, text: 0 });
@@ -377,10 +384,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
               _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
             }
             if(item.datiPagoPA.tipoVersamento) {
-              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+			let _tipoVersamento = UtilService.TIPI_VERSAMENTO[item.datiPagoPA.tipoVersamento] ? UtilService.TIPI_VERSAMENTO[item.datiPagoPA.tipoVersamento] : item.datiPagoPA.tipoVersamento;
+              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: _tipoVersamento });
             }
             if(item.datiPagoPA.modelloPagamento) {
-              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: UtilService.MODELLI_PAGAMENTO[item.datiPagoPA.modelloPagamento] });
             }
             if(item.datiPagoPA.idDominio) {
               _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });

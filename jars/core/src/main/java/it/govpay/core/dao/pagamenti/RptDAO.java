@@ -460,6 +460,7 @@ public class RptDAO extends BaseDAO{
 
 		RptBD rptBD = null;
 		NdpException ndpException = null;
+		GpContext appContext = (GpContext) (ContextThreadLocal.get()).getApplicationContext();
 		try {
 			rptBD = new RptBD(configWrapper); 
 			// 1 decodifica messaggio ingresso
@@ -476,6 +477,9 @@ public class RptDAO extends BaseDAO{
 				String idDominio = receipt.getFiscalCode();
 				String iuv = receipt.getCreditorReferenceId();
 				String ccp = receipt.getReceiptId();
+				appContext.getEventoCtx().setCodDominio(idDominio);
+				appContext.getEventoCtx().setIuv(iuv);
+				appContext.getEventoCtx().setCcp(ccp);
 				
 				CtReceiptV2Utils.acquisisciRT(idDominio, iuv, paSendRTV2RequestRT, false, true);
 				
@@ -507,6 +511,9 @@ public class RptDAO extends BaseDAO{
 					String idDominio = receipt.getFiscalCode();
 					String iuv = receipt.getCreditorReferenceId();
 					String ccp = receipt.getReceiptId();
+					appContext.getEventoCtx().setCodDominio(idDominio);
+					appContext.getEventoCtx().setIuv(iuv);
+					appContext.getEventoCtx().setCcp(ccp);
 					
 					CtReceiptUtils.acquisisciRT(idDominio, iuv, paSendRTReq, false, true);
 					
@@ -538,6 +545,9 @@ public class RptDAO extends BaseDAO{
 					String idDominio = ctRicevutaTelematica.getEnteBeneficiario().getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco();
 					String iuv = ctRicevutaTelematica.getDatiPagamento().getIdentificativoUnivocoVersamento();
 					String ccp = ctRicevutaTelematica.getDatiPagamento().getCodiceContestoPagamento();
+					appContext.getEventoCtx().setCodDominio(idDominio);
+					appContext.getEventoCtx().setIuv(iuv);
+					appContext.getEventoCtx().setCcp(ccp);
 					
 					RtUtils.acquisisciRT(idDominio, iuv, ccp, rtNonDecodificata, false, true);
 					
@@ -592,6 +602,9 @@ public class RptDAO extends BaseDAO{
 				singoloVersamento.getTipoContabilita(configWrapper);
 				singoloVersamento.getTributo(configWrapper);
 			}
+			
+			appContext.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {

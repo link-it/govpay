@@ -38,7 +38,7 @@ public class CheckoutUtils {
 	
 	private CheckoutUtils() {}
 	
-	public static CartRequest createCartRequest(Logger log, BDConfigWrapper configWrapper,  String returnUrl, List<Versamento> versamenti, String codiceConvenzione, String email) throws ServiceException, UnsupportedEncodingException{
+	public static CartRequest createCartRequest(Logger log, BDConfigWrapper configWrapper,  String returnUrl, List<Versamento> versamenti, String email) throws ServiceException, UnsupportedEncodingException{
 		CartRequest cartRequest = new CartRequest();
 		
 		log.debug("=== Richiesta Modello 1 SANP 3.2.1 ===");

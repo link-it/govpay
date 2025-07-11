@@ -29,4 +29,5 @@
 	<property name="antinstaller_govpay_backend_gui_base_path" value="/govpay-console/" />
 	<property name="antinstaller_govpay_backend_api_form_base_url" value="/govpay-api-backoffice/rs/form/v1" />
     <property name="antinstaller_govpay_backend_api_public_base_url" value="/govpay-api-backoffice/public" />
+	<property name="antinstaller_govpay_backend_gui_config_js_path" value="assets/Config.js" />
 </project>

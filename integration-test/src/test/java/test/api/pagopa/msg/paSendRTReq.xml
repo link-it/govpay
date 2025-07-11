@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soap:Envelope
+	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<ns6:paSendRTReq
+			xmlns:ns2="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"
+			xmlns:ns3="http://ws.pagamenti.telematici.gov/ppthead"
+			xmlns:ns4="http://www.digitpa.gov.it/schemas/2011/Pagamenti/Revoche/"
+			xmlns:ns5="http://ws.pagamenti.telematici.gov/"
+			xmlns:ns6="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd"
+			xmlns:ns7="http://pagopa-api.pagopa.gov.it/node/nodeForPsp.xsd">
+			<idPA>#(idDominio)</idPA>
+            <idBrokerPA>#(idIntermediario)</idBrokerPA>
+            <idStation>#(idStazione)</idStation>
+			<receipt>
+				<receiptId>#(receiptId)</receiptId>
+				<noticeNumber>#(numeroAvviso)</noticeNumber>
+				<fiscalCode>#(idDominio)</fiscalCode>
+				<outcome>OK</outcome>
+				<creditorReferenceId>#(iuv)</creditorReferenceId>
+				<paymentAmount>#(importo)</paymentAmount>
+				<description>#(causale)</description>
+				<companyName>Ente Creditore Test</companyName>
+				<debtor>
+					<uniqueIdentifier>
+						<entityUniqueIdentifierType>F</entityUniqueIdentifierType>
+						<entityUniqueIdentifierValue>RSSMRA30A01H501I</entityUniqueIdentifierValue>
+					</uniqueIdentifier>
+					<fullName>Mario Rossi</fullName>
+					<e-mail>mario.rossi@testmail.it</e-mail>
+				</debtor>
+				<transferList>
+					<transfer>
+						<idTransfer>1</idTransfer>
+						<transferAmount>#(importo)</transferAmount>
+						<fiscalCodePA>#(idDominio)</fiscalCodePA>
+						<IBAN>#(ibanAccredito)</IBAN>
+						<remittanceInformation>/RFB/#(iuv)/#(importo)/TXT/Diritti e segreteria</remittanceInformation>
+						<transferCategory>9/SEGRETERIA</transferCategory>
+					</transfer>
+				</transferList>
+				<idPSP>GovPAYPsp1</idPSP>
+				<pspFiscalCode>22222222222</pspFiscalCode>
+				<PSPCompanyName>Banco di Ponzi S.p.A.</PSPCompanyName>
+				<idChannel>GovPAYPsp1_PO</idChannel>
+				<channelDescription>PO</channelDescription>
+				<paymentMethod>bancomat</paymentMethod>
+				<fee>1.00</fee>
+				<paymentDateTime>2025-07-03T21:02:48</paymentDateTime>
+				<applicationDate>2025-07-03</applicationDate>
+				<transferDate>2025-07-03</transferDate>
+			</receipt>
+		</ns6:paSendRTReq>
+	</soap:Body>
+</soap:Envelope>

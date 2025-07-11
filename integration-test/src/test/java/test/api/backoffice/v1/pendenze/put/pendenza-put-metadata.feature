@@ -185,10 +185,12 @@ And match response.risultati[0].datiPagoPA ==
 """
 {
 	"idCanale": "GovPAYPsp1_PO",
-	"tipoVersamento":"PO",
+	"tipoVersamento":"bancomat",
 	"idDominio" : "#(''+idDominio)",
 	"idIntermediario" : "#(''+idIntermediario)",
-	"idStazione" : "#(''+idStazione)"
+	"idStazione" : "#(''+idStazione)",
+	"idPsp" : "GovPAYPsp1", 
+	"modelloPagamento" : "UNICO"
 }
 """
 
@@ -236,11 +238,8 @@ And match response.risultati[1] ==
 And match response.risultati[1].datiPagoPA == 
 """
 {
-	"idPsp": "##null",
 	"idIntermediarioPsp": "##null",
-	"idCanale": "##null",
-	"tipoVersamento":"PO",
-	"modelloPagamento": "4",
+	"modelloPagamento": "UNICO",
 	"idDominio" : "#(''+idDominio)",
 	"idIntermediario" : "#(''+idIntermediario)",
 	"idStazione" : "#(''+idStazione)"
@@ -291,11 +290,8 @@ And match response.risultati[2] ==
 And match response.risultati[2].datiPagoPA == 
 """
 {
-	"idPsp": "##null",
 	"idIntermediarioPsp": "##null",
-	"idCanale": "##null",
-	"tipoVersamento":"PO",
-	"modelloPagamento": "4",
+	"modelloPagamento": "UNICO",
 	"idDominio" : "#(''+idDominio)",
 	"idIntermediario" : "#(''+idIntermediario)",
 	"idStazione" : "#(''+idStazione)"

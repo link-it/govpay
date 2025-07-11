@@ -75,7 +75,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
      *
      */
     @Override
-	public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String numeroAvviso) {
+	public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idRicevuta, String numeroAvviso) {
     	this.buildContext();
     	Authentication user = this.getUser();
         String methodName = "findRicevute";
@@ -105,6 +105,9 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)
 				listaRptDTO.setIuv(iuv);
+			if (idRicevuta != null) {
+				listaRptDTO.setCcp(idRicevuta);
+			}
 			if(numeroAvviso != null) {
 				listaRptDTO.setIuv(IuvUtils.toIuv(numeroAvviso));
 			}

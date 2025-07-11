@@ -29,7 +29,6 @@ import java.net.URISyntaxException;
 import java.util.Properties;
 
 import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.StringUtils;

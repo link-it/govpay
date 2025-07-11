@@ -139,7 +139,9 @@ And match response.risultati[0].datiPagoPA ==
 	"tipoVersamento":"PO",
 	"idDominio" : "#(''+idDominio)",
 	"idIntermediario" : "#(''+idIntermediario)",
-	"idStazione" : "#(''+idStazione)"
+	"idStazione" : "#(''+idStazione)",
+	"idPsp" : "GovPAYPsp1", 
+	"modelloPagamento" : "4"
 }
 """
 
