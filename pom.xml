@@ -125,7 +125,7 @@
 		<spring.ldap.version>3.3.1</spring.ldap.version>
 
 		<!-- nimbus-jose-jwt version -->
-		<nimbus-jose-jwt.version>9.48</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
 
 		<!-- joda time -->
 		<joda-time.version>2.14.0</joda-time.version>
@@ -137,7 +137,7 @@
 		<commons.io.version>2.19.0</commons.io.version>
 		<commons.text.version>1.13.1</commons.text.version>
 		<commons.lang.version>2.6</commons.lang.version>
-		<commons.lang3.version>3.17.0</commons.lang3.version>
+		<commons.lang3.version>3.18.0</commons.lang3.version>
 		<commons.pool2.version>2.12.1</commons.pool2.version>
 		<commons.net.version>3.11.1</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
@@ -843,6 +843,10 @@
 						<groupId>org.yaml</groupId>
 						<artifactId>snakeyaml</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>commons-lang3</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 
@@ -1382,6 +1386,10 @@
 		    		<exclusion>
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.nimbusds</groupId>
+						<artifactId>nimbus-jose-jwt</artifactId>
 					</exclusion>
 			    </exclusions>
 			</dependency>
