@@ -47,7 +47,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test -Dkarate.options="classpath:test/api/backoffice/v1/eventi/pagopa" -Dtest=test.workflow.WorkflowTest' 
+        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test -Dkarate.options="classpath:test/api/backoffice/v1/applicazioni" -Dtest=test.workflow.WorkflowTest' 
       }
       post {
         always {
@@ -77,8 +77,7 @@ pipeline {
 	    sh """
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.login=$SONAR_CLOUD_TOKEN \\
-	    	-Dsonar.java.source=21 \\ 
-	    	-Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML}
+	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML}
 	       """
 	  }
 	  post {
