@@ -39,8 +39,6 @@ public class OperazioniDAO extends BaseDAO{
 	public static final String ACQUISIZIONE_RENDICONTAZIONI = "acquisizioneRendicontazioni";
 	public static final String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
 	public static final String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
-	public static final String GENERAZIONE_AVVISI_PAGAMENTO = "generaAvvisiPagamento";
-	public static final String ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO = "attivazioneGenerazioneAvvisiPagamento";
 	public static final String ELABORAZIONE_TRACCIATI_PENDENZE = "elaborazioneTracciatiPendenze";
 	public static final String SPEDIZIONE_PROMEMORIA = "spedizionePromemoria";
 	public static final String SPEDIZIONE_NOTIFICHE_APP_IO = "spedizioneNotificheAppIO";
@@ -73,10 +71,6 @@ public class OperazioniDAO extends BaseDAO{
 				esitoOperazione = it.govpay.core.business.Operazioni.spedizionePromemoria(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(GESTIONE_PROMEMORIA)){
 				esitoOperazione = it.govpay.core.business.Operazioni.gestionePromemoria(ctx);
-			} else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO) ||
-					leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
-				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
-				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 				esitoOperazione = "Elaborazione Tacciati schedulata";
@@ -121,8 +115,6 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE_APP_IO));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_PROMEMORIA));
 			results.add(new LeggiOperazioneDTOResponse(RESET_CACHE_ANAGRAFICA));
-			results.add(new LeggiOperazioneDTOResponse(GENERAZIONE_AVVISI_PAGAMENTO));
-			results.add(new LeggiOperazioneDTOResponse(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_PENDENZE));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));

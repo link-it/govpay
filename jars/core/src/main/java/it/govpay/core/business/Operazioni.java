@@ -112,7 +112,6 @@ public class Operazioni{
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
-	private static boolean eseguiGenerazioneAvvisi;
 	private static boolean eseguiElaborazioneTracciati = true;
 	
 	private static boolean eseguiElaborazioneTracciatiNotificaPagamenti;
@@ -169,18 +168,6 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiInvioNotificheAppIO() {
 		return eseguiInvioNotificheAppIO;
-	}
-
-	public static synchronized void setEseguiGenerazioneAvvisi() {
-		eseguiGenerazioneAvvisi = true;
-	}
-
-	public static synchronized void resetEseguiGenerazioneAvvisi() {
-		eseguiGenerazioneAvvisi = false;
-	}
-
-	public static synchronized boolean getEseguiGenerazioneAvvisi() {
-		return eseguiGenerazioneAvvisi;
 	}
 
 	public static synchronized void setEseguiElaborazioneTracciati() {
