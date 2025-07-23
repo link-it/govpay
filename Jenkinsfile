@@ -78,7 +78,7 @@ pipeline {
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
 	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML} \\
-	    	-Dsonar.nodejs.executable=/opt/nodejs/node-v22.14.0/bin
+	    	-Dsonar.nodejs.executable=/opt/nodejs/node-v22.14.0/bin/node
 	       """
 	  }
 	  post {
