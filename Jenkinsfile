@@ -75,7 +75,7 @@ pipeline {
           JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
            """
         sh """
-        	binaries=$(find . -type d -path "*/target/classes" | paste -sd ":" -)
+        	binaries=\$(find . -type d -path "*/target/classes" | paste -sd ":" -)
            """
 	    sh """
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
