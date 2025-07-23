@@ -74,11 +74,14 @@ pipeline {
 	
           JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
            """
+        sh """
+        	binaries=$(find . -type d -path "*/target/classes" | paste -sd ":" -)
+           """
 	    sh """
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
 	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML} \\
-	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node
+	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node -Dsonar.sources=. -Dsonar.java.binaries=$binaries
 	       """
 	  }
 	  post {
