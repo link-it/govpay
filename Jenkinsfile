@@ -76,8 +76,8 @@ pipeline {
            """
 	    sh """
 	    	GOVPAY_BINARIES=\$(find . -type d -path "*/target/classes" | paste -sd ":" -)
-	    	GOVPAY_SOURCES=\$(find . -type d -path "*/src/main/java" | paste -sd , -)
-	    	GOVPAY_TESTS=\$(find . -type d -path "*/src/test/java" | paste -sd , -)
+	    	GOVPAY_SOURCES=\$(find . -type d -path "*/src/main/java" | paste -sd ":" -)
+	    	GOVPAY_TESTS=\$(find . -type d -path "*/src/test/java" | paste -sd ":" -)
 	    	
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
