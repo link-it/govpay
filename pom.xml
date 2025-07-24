@@ -88,7 +88,7 @@
 		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
 
 		<!-- op2 -->
-		<openspcoop2.version>3.4.0</openspcoop2.version>
+		<openspcoop2.version>3.4.1</openspcoop2.version>
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
