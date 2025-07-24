@@ -75,18 +75,10 @@ pipeline {
           JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
            """
 	    sh """
-	    	GOVPAY_BINARIES=\$(find . -type d -path "*/target/classes" | paste -sd ":" -)
-	    	
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
 	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML} \\
-	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node \\
-	    	-Dsonar.sources=jars/api-commons/src/main/java,jars/appio-beans/src/main/java,jars/orm-beans/src/main/java,jars/client-api-ente/src/main/java,jars/xml-adapters/src/main/java,\\
-        	jars/core-beans/src/main/java,jars/jppapdp-beans/src/main/java,jars/pagopa-beans/src/main/java,jars/core/src/main/java,jars/stampe/src/main/java,jars/orm/src/main/java,\\
-        	wars/api-user/src/main/java,wars/api-pagamento/src/main/java,wars/web-console/src/main/java,wars/api-backoffice/src/main/java,wars/api-pendenze/src/main/java,\\
-        	wars/api-pagopa/src/main/java,wars/web-connector/src/main/java,wars/api-ragioneria/src/main/java,wars/api-jppapdp/src/main/java \\
-        	-Dsonar.java.binaries=\$GOVPAY_BINARIES \\
-	    	-Dsonar.exclusions=**/*.gitignore,**/.git/**,**/*.md,**/test/**,**/build-wrapper-dump.json
+	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node
 	       """
 	  }
 	  post {
