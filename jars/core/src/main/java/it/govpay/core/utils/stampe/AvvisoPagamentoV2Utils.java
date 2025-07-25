@@ -558,7 +558,7 @@ public class AvvisoPagamentoV2Utils {
 
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
 		}
 		
