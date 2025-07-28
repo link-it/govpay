@@ -83,6 +83,7 @@ import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
@@ -94,6 +95,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.CaricamentoTracciatoThread;
 import it.govpay.core.utils.thread.CreaStampeTracciatoThread;
@@ -160,7 +162,7 @@ public class Tracciati {
 				throw new CodificaInesistenteException("formato non supportato."); 
 			}
 		} catch(Throwable e) {
-			log.error(MessageFormat.format("Errore durante l''elaborazione del tracciato {0} [{1}]: {2}", formato, tracciato.getId(), e.getMessage()), e);
+			LogUtils.logError(log, MessageFormat.format("Errore durante l''elaborazione del tracciato {0} [{1}]: {2}", formato, tracciato.getId(), e.getMessage()), e);
 			tracciatiBD.rollback();
 
 			// aggiorno lo stato in errore altrimenti continua a ciclare
@@ -260,7 +262,7 @@ public class Tracciati {
 					caricamentoResponse.setNumero(linea + 1);
 					caricamentoResponse.setTipo(TipoOperazioneType.ADD);
 					caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-					caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+					caricamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
 					caricamentoResponse.setDescrizioneEsito(e.getMessage());
 					
 					FaultBean respKo = new FaultBean();
@@ -335,7 +337,7 @@ public class Tracciati {
 				request.setLinea(beanDati.getNumAddTotali() + linea + 1);
 				request.setOperatore(tracciato.getOperatore(configWrapper));
 	
-				AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, tracciatiBD);
+				AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request);
 	
 				tracciatiBD.setAutoCommit(false);
 	
@@ -413,7 +415,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -422,7 +424,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -431,7 +433,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -440,7 +442,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -467,7 +469,7 @@ public class Tracciati {
 						underlyingConnection = wrappedConnection;
 					}
 				} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					log.error(MessageFormat.format("Errore durante la lettura dell''oggetto connessione: {0}", e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format("Errore durante la lettura dell''oggetto connessione: {0}", e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 	
@@ -490,13 +492,11 @@ public class Tracciati {
 	
 					oututStreamDestinazione = obj.getOutputStream();
 				} catch (SQLException e) {
-					log.error(MessageFormat.format("Errore durante la creazione dell''outputstream: {0}", e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format("Errore durante la creazione dell''outputstream: {0}", e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
-			case DB2:
-			case DEFAULT:
-			case DERBY:
+			case DB2, DEFAULT, DERBY:
 			default:
 				throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 			}
@@ -869,7 +869,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -878,7 +878,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -887,7 +887,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -896,7 +896,7 @@ public class Tracciati {
 					blobStampe = tracciatiBD.getConnection().createBlob();
 					oututStreamDestinazione = blobStampe.setBinaryStream(1);
 				} catch (SQLException e) {
-					log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_LA_CREAZIONE_DEL_BLOB_0, e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
@@ -924,7 +924,7 @@ public class Tracciati {
 					}
 					
 				} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					log.error(MessageFormat.format("Errore durante la lettura dell''oggetto connessione: {0}", e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format("Errore durante la lettura dell''oggetto connessione: {0}", e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 
@@ -947,13 +947,11 @@ public class Tracciati {
 
 					oututStreamDestinazione = obj.getOutputStream();
 				} catch (SQLException e) {
-					log.error(MessageFormat.format("Errore durante la creazione dell''outputstream: {0}", e.getMessage()), e);
+					LogUtils.logError(log, MessageFormat.format("Errore durante la creazione dell''outputstream: {0}", e.getMessage()), e);
 					throw new ServiceException(e);
 				}
 				break;
-			case DB2:
-			case DEFAULT:
-			case DERBY:
+			case DB2, DEFAULT, DERBY:
 			default:
 				throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 			}
@@ -1104,18 +1102,13 @@ public class Tracciati {
 	private void salvaZipStampeTracciato(TracciatiBD tracciatiBD, Tracciato tracciato, Long oid, Blob blobStampe,
 			TipiDatabase tipoDatabase) throws ServiceException {
 		switch (tipoDatabase) {
-		case MYSQL:
-		case ORACLE:
-		case SQLSERVER:
-		case HSQL:
+		case MYSQL, ORACLE, SQLSERVER, HSQL:
 			tracciatiBD.updateFineElaborazioneStampeBlob(tracciato,blobStampe);
 			break;
 		case POSTGRESQL:
 			tracciatiBD.updateFineElaborazioneStampeOid(tracciato,oid);
 			break;
-		case DB2:
-		case DEFAULT:
-		case DERBY:
+		case DB2, DEFAULT, DERBY:
 		default:
 			throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 		}
@@ -1152,8 +1145,7 @@ public class Tracciati {
 				case DEL:
 					esitiAnnullamenti.add(EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta())));
 					break;
-				case INC:
-				case N_V:
+				case INC, N_V:
 				default:
 					break;
 				}
@@ -1212,8 +1204,7 @@ public class Tracciati {
 				String idA2A = "-";
 				String idPendenza = "-";
 				switch (operazione.getTipoOperazione()) {
-				case ADD:
-				case DEL:
+				case ADD, DEL:
 					EsitoOperazionePendenza risposta = null;
 					Applicazione applicazione =null;
 					Versamento versamento = null;
@@ -1245,8 +1236,7 @@ public class Tracciati {
 						bw.write((MessageFormat.format("Pendenza [IdA2A:{0}, Id:{1}] inserita con esito ''{2}'': scrittura dell''esito sul file csv conclusa con con errore.\n", idA2A, idPendenza, (operazione.getStato()))));
 					}
 					break;
-				case INC:
-				case N_V:
+				case INC, N_V:
 				default:
 					break;
 				}

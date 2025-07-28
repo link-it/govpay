@@ -161,4 +161,105 @@ And request tracciato
 When method post
 Then status 400
 
+Scenario: Annullamento tracciato  
+
+* def idPendenza = getCurrentTimeMillis()
+* def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.json')
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati'
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 3
+Then match response.numeroOperazioniEseguite == 3
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+* def tracciatoDel = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-annullamenti.json')
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati'
+And headers basicAutenticationHeader
+And request tracciatoDel
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 3
+Then match response.numeroOperazioniEseguite == 3
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+# verifico stato pendenze
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, (idPendenza + '-0')
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.stato == 'ANNULLATA'
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, (idPendenza + '-1')
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.stato == 'ANNULLATA'
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, (idPendenza + '-2')
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.stato == 'ANNULLATA'
+
+
+
+
 
