@@ -75,3 +75,25 @@ Examples:
 | applicazione_nonAuth.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A2 | 403 | errore_auth.json |
 | applicazione_nonAuth.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 403 | errore_auth.json |
 | applicazione_nonAuth.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A2 | 403 | errore_auth.json |
+
+Scenario: Lettura dettaglio riconciliazione non presente
+
+* def applicazione = read('msg/applicazione_star.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeBaseurl
+And path '/incassi', idDominio, 'XXX'
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 404
+* match response == { categoria: 'OPERAZIONE', codice: '404000', descrizione: 'Risorsa non trovata', dettaglio: '#notnull' }
+

@@ -56,3 +56,24 @@ Examples:
 | operatore_star.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 200 | riconciliazione-cumulativa-response.json |
 | operatore_star.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A2 | 200 | riconciliazione-cumulativa-response.json |
 
+Scenario: Lettura dettaglio riconciliazione non presente
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'operatori', 'RSSMRA30A01H501I'
+And headers gpAdminBasicAutenticationHeader
+And request read('msg/operatore_star.json')
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeBaseurl
+And path '/incassi', idDominio, 'XXX'
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 404
+* match response == { categoria: 'OPERAZIONE', codice: '404000', descrizione: 'Risorsa non trovata', dettaglio: '#notnull' }
+
+
