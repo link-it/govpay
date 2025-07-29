@@ -90,7 +90,7 @@ public class VersamentoFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Versamento.model().DEBITORE_IDENTIFICATIVO);
 		this.listaFieldSimpleSearch.add(Versamento.model().COD_VERSAMENTO_ENTE);
-		this.listaFieldSimpleSearch.add(Versamento.model().IUV.IUV);
+		this.listaFieldSimpleSearch.add(Versamento.model().IUV_VERSAMENTO);
 	}
 
 	@Override

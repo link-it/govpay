@@ -160,13 +160,6 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_richiesta";
 			}
 		}
-		if(field.equals(VistaVersamento.model().IUV.IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
-			}else{
-				return "iuv";
-			}
-		}
 		if(field.equals(VistaVersamento.model().IMPORTO_TOTALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".importo_totale";
@@ -667,9 +660,6 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
 			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
-		if(field.equals(VistaVersamento.model().IUV.IUV)){
-			return this.toTable(VistaVersamento.model().IUV, returnAlias);
-		}
 		if(field.equals(VistaVersamento.model().IMPORTO_TOTALE)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
@@ -907,9 +897,6 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
-		}
-		if(model.equals(VistaVersamento.model().IUV)){
-			return "iuv";
 		}
 		if(model.equals(VistaVersamento.model().ID_DOCUMENTO)){
 			return "documenti";

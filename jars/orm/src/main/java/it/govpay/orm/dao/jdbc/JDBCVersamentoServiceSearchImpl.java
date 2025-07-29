@@ -596,10 +596,6 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
 			}
 		}
-		if(obj.getIuv()!=null &&
-				imgSaved.getIuv()!=null){
-			obj.getIuv().setId(imgSaved.getIuv().getId());
-		}
 		if(obj.getIdDocumento()!=null &&
 				imgSaved.getIdDocumento()!=null){
 			obj.getIdDocumento().setId(imgSaved.getIdDocumento().getId());
@@ -710,13 +706,6 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_DOCUMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_documento="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(Versamento.model().IUV,false)){
-			String versamenti = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
-			String iuv = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().IUV);
-			sqlQueryObject.addWhereCondition(versamenti+".id_applicazione="+iuv+".id_applicazione");
-			sqlQueryObject.addWhereCondition(versamenti+".cod_versamento_ente="+iuv+".cod_versamento_ente");
 		}
 
 		if(expression.inUseModel(Versamento.model().ID_PAGAMENTO_PORTALE,false)){
@@ -872,12 +861,6 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
-			));
-
-		// Versamento.model().IUV
-		mapTableToPKColumn.put(converter.toTable(Versamento.model().IUV),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().IUV))
 			));
 
 		// Versamento.model().ID_DOCUMENTO

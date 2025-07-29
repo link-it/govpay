@@ -600,10 +600,6 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
 			}
 		}
-		if(obj.getIuv()!=null &&
-				imgSaved.getIuv()!=null){
-			obj.getIuv().setId(imgSaved.getIuv().getId());
-		}
 		if(obj.getIdOperazione()!=null &&
 				imgSaved.getIdOperazione()!=null){
 			obj.getIdOperazione().setId(imgSaved.getIdOperazione().getId());
@@ -700,13 +696,6 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
 			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(VistaVersamento.model().IUV,false)){
-			String versamenti = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
-			String iuv = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().IUV);
-			sqlQueryObject.addWhereCondition(versamenti+".id_applicazione="+iuv+".id_applicazione");
-			sqlQueryObject.addWhereCondition(versamenti+".cod_versamento_ente="+iuv+".cod_versamento_ente");
 		}
 
 		if(expression.inUseModel(VistaVersamento.model().ID_PAGAMENTO_PORTALE,false)){
@@ -859,12 +848,6 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
-			));
-
-		// VistaVersamento.model().IUV
-		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().IUV),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().IUV))
 			));
 
 		// VistaVersamento.model().ID_OPERAZIONE
