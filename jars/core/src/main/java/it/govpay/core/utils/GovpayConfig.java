@@ -214,9 +214,12 @@ public class GovpayConfig {
 	private Properties risorseCustomBaseURLProperties;
 
 	private boolean verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
+	
+	private String warName = Costanti.GOVPAY.toLowerCase();
 
 	public GovpayConfig(InputStream is, String warName) throws IOException {
 		// Default values:
+		this.warName = warName;
 		this.dimensionePoolThreadNotifica = 10;
 		this.dimensionePoolThreadNotificaAppIo = 10;
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
@@ -348,14 +351,14 @@ public class GovpayConfig {
 					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 
 				File log4j2ConfigFile = null;
-				if(StringUtils.isNotBlank(warName)) {
-					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + warName + "-"+ LOG4J2_XML_FILE_NAME);
-					LoggerWrapperFactory.getLogger("boot").info("Ricerco configurazione log4j specifica per il war {} nel file: {}", warName , log4j2ConfigFile.toURI());
+				if(StringUtils.isNotBlank(this.warName)) {
+					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + this.warName + "-"+ LOG4J2_XML_FILE_NAME);
+					LoggerWrapperFactory.getLogger("boot").info("Ricerco configurazione log4j specifica per il war {} nel file: {}", this.warName , log4j2ConfigFile.toURI());
 				}
 
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
-					LoggerWrapperFactory.getLogger("boot").info("Configurazione log4j specifica per il war {} non presente, ricerco configurazione unica esterna nel file: {}", warName , log4j2ConfigFile.toURI());
+					LoggerWrapperFactory.getLogger("boot").info("Configurazione log4j specifica per il war {} non presente, ricerco configurazione unica esterna nel file: {}", this.warName , log4j2ConfigFile.toURI());
 				}
 
 				if(log4j2ConfigFile.exists()) {
@@ -664,105 +667,6 @@ public class GovpayConfig {
 			this.readTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, 10000);
 
-			String connectTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.connectionTimeout", this.props, false, log);
-			try{
-				this.connectionTimeoutPagoPA = Integer.parseInt(connectTimeoutPagoPAString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.pagopa.connectionTimeout\" impostata con valore di default 10000");
-				this.connectionTimeoutPagoPA = 10000;
-			}
-
-			String readTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.readTimeout", this.props, false, log);
-			try{
-				this.readTimeoutPagoPA = Integer.parseInt(readTimeoutPagoPAString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.pagopa.readTimeout\" impostata con valore di default 180000");
-				this.readTimeoutPagoPA = 180000;
-			}
-
-			String connectionRequestTimeoutPagoPAString = getProperty("it.govpay.client.pagopa.connectionRequestTimeout", this.props, false, log);
-			try{
-				this.connectionRequestTimeoutPagoPA = Integer.parseInt(connectionRequestTimeoutPagoPAString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.pagopa.connectionTimeout\" impostata con valore di default 180000");
-				this.connectionRequestTimeoutPagoPA = 10000;
-			}
-
-			String connectTimeoutEnteString = getProperty("it.govpay.client.ente.connectionTimeout", this.props, false, log);
-			try{
-				this.connectionTimeoutEnte = Integer.parseInt(connectTimeoutEnteString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.ente.connectionTimeout\" impostata con valore di default 10000");
-				this.connectionTimeoutEnte = 10000;
-			}
-
-			String readTimeoutEnteString = getProperty("it.govpay.client.ente.readTimeout", this.props, false, log);
-			try{
-				this.readTimeoutEnte = Integer.parseInt(readTimeoutEnteString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.ente.readTimeout\" impostata con valore di default 180000");
-				this.readTimeoutEnte = 180000;
-			}
-
-			String connectionRequestTimeoutEnteString = getProperty("it.govpay.client.ente.connectionRequestTimeout", this.props, false, log);
-			try{
-				this.connectionRequestTimeoutEnte = Integer.parseInt(connectionRequestTimeoutEnteString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.ente.connectionTimeout\" impostata con valore di default 180000");
-				this.connectionRequestTimeoutEnte = 10000;
-			}
-
-			String connectTimeoutAppIOString = getProperty("it.govpay.client.appio.connectionTimeout", this.props, false, log);
-			try{
-				this.connectionTimeoutAppIO = Integer.parseInt(connectTimeoutAppIOString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.appio.connectionTimeout\" impostata con valore di default 10000");
-				this.connectionTimeoutAppIO = 10000;
-			}
-
-			String readTimeoutAppIOString = getProperty("it.govpay.client.appio.readTimeout", this.props, false, log);
-			try{
-				this.readTimeoutAppIO = Integer.parseInt(readTimeoutAppIOString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.appio.readTimeout\" impostata con valore di default 180000");
-				this.readTimeoutAppIO = 180000;
-			}
-
-			String connectionRequestTimeoutAppIOString = getProperty("it.govpay.client.appio.connectionRequestTimeout", this.props, false, log);
-			try{
-				this.connectionRequestTimeoutAppIO = Integer.parseInt(connectionRequestTimeoutAppIOString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.appio.connectionTimeout\" impostata con valore di default 180000");
-				this.connectionRequestTimeoutAppIO = 10000;
-			}
-
-			String connectTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.connectionTimeout", this.props, false, log);
-			try{
-				this.connectionTimeoutMaggioliJPPA = Integer.parseInt(connectTimeoutMaggioliJPPAString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.maggioli.connectionTimeout\" impostata con valore di default 10000");
-				this.connectionTimeoutMaggioliJPPA = 10000;
-			}
-
-			String readTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.readTimeout", this.props, false, log);
-			try{
-				this.readTimeoutMaggioliJPPA = Integer.parseInt(readTimeoutMaggioliJPPAString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.maggioli.readTimeout\" impostata con valore di default 180000");
-				this.readTimeoutMaggioliJPPA = 180000;
-			}
-
-			String connectionRequestTimeoutMaggioliJPPAString = getProperty("it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, log);
-			try{
-				this.connectionRequestTimeoutMaggioliJPPA = Integer.parseInt(connectionRequestTimeoutMaggioliJPPAString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.client.maggioli.connectionTimeout\" impostata con valore di default 180000");
-				this.connectionRequestTimeoutMaggioliJPPA = 10000;
-			}
-
-
-
-
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
 				this.aggiornamentoValiditaMandatorio = true;
@@ -894,17 +798,29 @@ public class GovpayConfig {
 				File resourceDirFile = new File(escape(this.resourceDir));
 				if(!resourceDirFile.isDirectory())
 					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
-
+				
 				File log4j2ConfigFile = null;
 				if(this.log4j2Config != null) {
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifico esistenza configurazione log4j: {}", this.log4j2Config);
 					log4j2ConfigFile = new File(this.log4j2Config);
 				}
-
+				
+				if((log4j2ConfigFile == null || !log4j2ConfigFile.exists()) && StringUtils.isNotBlank(this.warName)) {
+					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + this.warName + "-"+ LOG4J2_XML_FILE_NAME);
+					LoggerWrapperFactory.getLogger("boot").info("Ricerco configurazione log4j specifica per il war {} nel file: {}", this.warName , log4j2ConfigFile.toURI());
+				}
+				
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
-					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifica esistenza configurazione log4j: {}, file non presente.", this.log4j2Config);
+					LoggerWrapperFactory.getLogger("boot").info("Configurazione log4j specifica per il war {} non presente, ricerco configurazione unica esterna nel file: {}", this.warName , log4j2ConfigFile.toURI());
 				}
+
+
+
+//				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
+//					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+//					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifica esistenza configurazione log4j: {}, file non presente.", this.log4j2Config);
+//				}
 
 				if(log4j2ConfigFile.exists()) {
 					this.log4j2Config = log4j2ConfigFile.toURI();

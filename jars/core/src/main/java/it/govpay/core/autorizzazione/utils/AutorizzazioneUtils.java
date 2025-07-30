@@ -70,17 +70,17 @@ public class AutorizzazioneUtils {
 			return null;
 
 		Object object = authentication.getPrincipal();
-		if(object instanceof GovpayLdapUserDetails)
-			return (GovpayLdapUserDetails) object;
+		if(object instanceof GovpayLdapUserDetails govpayLdapUserDetails)
+			return govpayLdapUserDetails;
 		
-		if(object instanceof GovpayLdapOauth2Details)
-			return ((GovpayLdapOauth2Details) object).toGovpayLdapUserDetails();
+		if(object instanceof GovpayLdapOauth2Details govpayLdapOauth2Details)
+			return govpayLdapOauth2Details.toGovpayLdapUserDetails();
 		
-		if(object instanceof GovpayLdapOidcOauth2Details)
-			return ((GovpayLdapOidcOauth2Details) object).toGovpayLdapUserDetails();
+		if(object instanceof GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details)
+			return govpayLdapOidcOauth2Details.toGovpayLdapUserDetails();
 		
-		if(object instanceof GovPayLdapJwt)
-			return ((GovPayLdapJwt) object).toGovpayLdapUserDetails();
+		if(object instanceof GovPayLdapJwt govPayLdapJwt)
+			return govPayLdapJwt.toGovpayLdapUserDetails();
 		
 		return null;
 	}
@@ -90,20 +90,20 @@ public class AutorizzazioneUtils {
 			return null;
 
 		Object principalObj = authentication.getPrincipal();
-		if(principalObj instanceof GovpayLdapUserDetails)
-			return ((GovpayLdapUserDetails) principalObj).getIdentificativo();
+		if(principalObj instanceof GovpayLdapUserDetails govpayLdapUserDetails)
+			return govpayLdapUserDetails.getIdentificativo();
 
-		if(principalObj instanceof UserDetails)
-			return ((UserDetails) principalObj).getUsername();
+		if(principalObj instanceof UserDetails userDetails)
+			return userDetails.getUsername();
 		
-		if(principalObj instanceof GovpayLdapOauth2Details)
-			return ((GovpayLdapOauth2Details) principalObj).getIdentificativo();
+		if(principalObj instanceof GovpayLdapOauth2Details govpayLdapOauth2Details)
+			return govpayLdapOauth2Details.getIdentificativo();
 		
-		if(principalObj instanceof GovpayLdapOidcOauth2Details)
-			return ((GovpayLdapOidcOauth2Details) principalObj).getIdentificativo();
+		if(principalObj instanceof GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details)
+			return govpayLdapOidcOauth2Details.getIdentificativo();
 		
-		if(principalObj instanceof GovPayLdapJwt)
-			return ((GovPayLdapJwt) principalObj).getIdentificativo();
+		if(principalObj instanceof GovPayLdapJwt govPayLdapJwt)
+			return govPayLdapJwt.getIdentificativo();
 
 		return null;
 	}
@@ -113,29 +113,29 @@ public class AutorizzazioneUtils {
 			return null;
 		
 		Object principalObj = authentication.getPrincipal();
-		if(principalObj instanceof GovpayLdapUserDetails) {
-			Operatore operatore = ((GovpayLdapUserDetails) principalObj).getOperatore();
+		if(principalObj instanceof GovpayLdapUserDetails govpayLdapUserDetails) {
+			Operatore operatore = govpayLdapUserDetails.getOperatore();
 			if(operatore != null) {
 				return operatore.getId();
 			}
 		}
 		
-		if(principalObj instanceof GovpayLdapOauth2Details) {
-			Operatore operatore = ((GovpayLdapOauth2Details) principalObj).getOperatore();
+		if(principalObj instanceof GovpayLdapOauth2Details govpayLdapOauth2Details) {
+			Operatore operatore = govpayLdapOauth2Details.getOperatore();
 			if(operatore != null) {
 				return operatore.getId();
 			}
 		}
 		
-		if(principalObj instanceof GovpayLdapOidcOauth2Details) {
-			Operatore operatore = ((GovpayLdapOidcOauth2Details) principalObj).getOperatore();
+		if(principalObj instanceof GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details) {
+			Operatore operatore = govpayLdapOidcOauth2Details.getOperatore();
 			if(operatore != null) {
 				return operatore.getId();
 			}
 		}
 		
-		if(principalObj instanceof GovPayLdapJwt) {
-			Operatore operatore = ((GovPayLdapJwt) principalObj).getOperatore();
+		if(principalObj instanceof GovPayLdapJwt govPayLdapJwt) {
+			Operatore operatore = govPayLdapJwt.getOperatore();
 			if(operatore != null) {
 				return operatore.getId();
 			}

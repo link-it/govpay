@@ -115,7 +115,7 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 		this.ldapUserDetailsImpl = ldapUserDetailsImpl;
 	}
 	public boolean isAbilitato() {
-		return this.utenza != null ? this.utenza.isAbilitato() : false;
+		return this.utenza != null && this.utenza.isAbilitato();
 	}
 	
 	public String getMessaggioUtenzaDisabilitata() {
