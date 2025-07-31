@@ -46,6 +46,7 @@ function() {
 			govpay_api_jppapdp_url : 'http://localhost:8080/govpay-api-jppapdp',
 			govpay_api_user_url : 'http://localhost:8080/govpay-api-user',
 			govpay_web_connector_url : 'http://localhost:8080/govpay-web-connector',
+			smtpsym_url: 'http://localhost:8025/api',
 	};
 	
 	if (env == 'wildfly') {
