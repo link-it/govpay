@@ -20,6 +20,7 @@
 package it.govpay.user.v1.authentication.handler;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,6 +39,7 @@ import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.authentication.preauth.filter.SessionPrincipalExtractorPreAuthFilter;
 import it.govpay.rs.v1.exception.CodiceEccezione;
@@ -86,10 +88,12 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 				this.debug(ctx.getTransactionId(), "Utente autorizzato ma URL di Redirect non indicata, restituisco 200 OK.");
 				return Response.status(Status.OK).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 			} else {
+				URI redirectUri = verificaRedirectURL(redirectURL);
+				
 				this.debug(ctx.getTransactionId(), "Utente autorizzato redirect verso la URL ["+ redirectURL +"].");
-				return Response.seeOther(new URI(redirectURL)).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
+				return Response.seeOther(redirectUri).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 			}
-		}catch (Exception e) {
+		}catch (URISyntaxException | UtilsException e) {
 			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);
 		} finally {
 			if(ctx != null)
@@ -98,6 +102,15 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 				} catch (UtilsException e) {
 					log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
 				}
+		}
+	}
+
+	private URI verificaRedirectURL(String redirectURL) throws URISyntaxException {
+		try {
+			return new URI(redirectURL);
+		} catch (URISyntaxException e) {
+			LogUtils.logError(log, "La URL di redirect indicata non e' valida" + e.getMessage(), e);
+			throw e;
 		}
 	}
 
