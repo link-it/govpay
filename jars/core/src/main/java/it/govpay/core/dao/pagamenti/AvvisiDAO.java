@@ -58,6 +58,8 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -116,11 +118,11 @@ public class AvvisiDAO extends BaseDAO{
 							if(versamentoFromSession.getId()==null)
 								versamentoFromSession.setId(versamentoLetto.getId());
 			
-							ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_AGGIORAMENTO_OK, versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
 						}
 					} catch (NotFoundException e) {
 						versamentiBD.insertVersamento(versamentoFromSession);
-						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_INSERIMENTO_OK, versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
 						LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) inserito", versamentoFromSession.getCodVersamentoEnte(),versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
 		
 						// avvio il batch di gestione dei promemoria
@@ -128,12 +130,11 @@ public class AvvisiDAO extends BaseDAO{
 					}
 					if(doCommit) versamentiBD.commit();
 				} catch (Exception e) {
-					if(doCommit) {
-						if(versamentiBD != null)
-							versamentiBD.rollback();
+					if(doCommit && versamentiBD != null) {
+						versamentiBD.rollback();
 					}
-					if(e instanceof GovPayException)
-						throw (GovPayException) e;
+					if(e instanceof GovPayException govPayException)
+						throw govPayException;
 					else 
 						throw new GovPayException(e);
 				}

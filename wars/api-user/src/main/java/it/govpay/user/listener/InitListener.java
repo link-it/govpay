@@ -27,7 +27,6 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
@@ -41,6 +40,7 @@ import it.govpay.core.utils.LabelAvvisiProperties;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.StartupUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 
 public class InitListener implements ServletContextListener{
 
@@ -70,28 +70,16 @@ public class InitListener implements ServletContextListener{
 			log = LoggerWrapperFactory.getLogger("boot");
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
 		} catch (StartupException e) {
-			log.error("Inizializzazione fallita", e);
-			try {
-				ctx.getApplicationLogger().log();
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
-			}
+			LogUtils.logError(log, "Inizializzazione fallita", e);
+			MessaggioDiagnosticoUtils.log(log, ctx);
 			throw e;
 		} catch (Exception e) {
-			log.error("Inizializzazione fallita", e);
-			try {
-				ctx.getApplicationLogger().log();
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
-			}
+			LogUtils.logError(log, "Inizializzazione fallita", e);
+			MessaggioDiagnosticoUtils.log(log, ctx);
 			throw new StartupException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
 		}
 
-		try {
-			ctx.getApplicationLogger().log();
-		} catch (UtilsException e) {
-			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
-		}
+		MessaggioDiagnosticoUtils.log(log, ctx);
 
 		LogUtils.logInfo(log, "Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
 		initialized = true;

@@ -40,6 +40,7 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.authentication.preauth.filter.SessionPrincipalExtractorPreAuthFilter;
 import it.govpay.rs.v1.exception.CodiceEccezione;
@@ -96,12 +97,7 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 		}catch (URISyntaxException | UtilsException e) {
 			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);
 		} finally {
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
-				}
+			MessaggioDiagnosticoUtils.log(log, ctx);
 		}
 	}
 

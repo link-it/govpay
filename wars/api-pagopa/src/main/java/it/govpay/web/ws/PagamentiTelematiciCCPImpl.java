@@ -20,6 +20,8 @@
 package it.govpay.web.ws;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,8 +121,11 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
@@ -152,6 +157,33 @@ wsdlLocation="/wsdl/PaPerNodoPagamentoPsp.wsdl")
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
+	private static final String MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_ESITO = "Verifica RPT completata con esito {}";
+	private static final String MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO = "Verifica RPT completata con successo";
+	private static final String MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV = "Ricevuto check sonda pagoPA per il dominio [{}] e NAV [{}]";
+	private static final String MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO = "Versamento aggiornato da Ente. Verifica stato {}";
+	private static final String MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE = "Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione: {}]";
+	private static final String MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE = "Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione: {}]";
+	private static final String MSG_LOG_VERIFICA_STATO_VERSAMENTO_DOPO_PROCEDURA_DI_AGGIORNAMENTO = "Verifica stato versamento dopo procedura di aggiornamento: {}";
+	private static final String MSG_LOG_AUTENTICAZIONE_RICHIESTA = "Autenticazione richiesta.";
+	private static final String MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_CONCLUSA = "Transazione di avvio pagamento conclusa";
+	private static final String MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_ATTIVATA = "Transazione di avvio pagamento attivata";
+	private static final String MSG_LOG_COSTRUZIONE_DELLA_RPT = "Costruzione della RPT.";
+	private static final String MSG_LOG_VERSAMENTO_PAGABILE = "Versamento pagabile.";
+	private static final String MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI = "Versamento non presente in base dati";
+	private static final String MSG_LOG_VERSAMENTO_ACQUISITO = "Versamento acquisito";
+	private static final String MSG_LOG_VERIFICA_VERSAMENTO = "Verifica versamento.";
+	private static final String MSG_LOG_DOMINIO_VERIFICATO = "Dominio verificato: {}";
+	private static final String MSG_LOG_VERIFICA_DOMINIO = "Verifica dominio.";
+	private static final String MSG_LOG_INTERMEDIARIO_VERIFICATO = "Intermediario verificato: {}";
+	private static final String MSG_LOG_VERIFICA_INTERMEDIARIO = "Verifica intermediario.";
+	private static final String MSG_LOG_RICHIESTA_AUTENTICATA = "Richiesta autenticata.";
+	
+	private static final String MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO = "Autorizzazione fallita: principal non fornito";
+	
+	private static final String FAULT_MSG_NESSUNA_DESCRIZIONE = "<Nessuna descrizione>";
+	
+	private static final String MSG_NESSUNA_CAUSALE = "[-- Nessuna causale --]";
+
 	@Resource
 	WebServiceContext wsCtxt;
 
@@ -160,7 +192,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	@Override
 	public PaaAttivaRPTRisposta paaAttivaRPT(PaaAttivaRPT bodyrichiesta, IntestazionePPT header) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		
 		String codIntermediario = header.getIdentificativoIntermediarioPA();
 		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
@@ -186,27 +218,21 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		appContext.getTransaction().setTo(to);
 
-		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
-		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-		appContext.getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getIdentificativoPSP()));
-		appContext.getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getIdentificativoCanalePSP()));
-		try {
-			ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
-		} catch (UtilsException e) {
-			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-		}
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, bodyrichiesta.getIdentificativoPSP()));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, bodyrichiesta.getIdentificativoCanalePSP()));
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA);
 
-//		BasicBD bd = null;
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
-		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
+		log.info("Ricevuta richiesta di attiva RPT [{}][{}][{}][{}][{}]", codIntermediario, codStazione, codDominio, iuv, ccp);
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodStazione(codStazione);
 		datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 		datiPagoPA.setErogatore(codIntermediario);
 		datiPagoPA.setCodIntermediario(codIntermediario);
-//		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaAttivaRPT.name());
 		datiPagoPA.setCodPsp(bodyrichiesta.getIdentificativoPSP());
 		datiPagoPA.setCodIntermediarioPsp(bodyrichiesta.getIdentificativoIntermediarioPSP());
 		datiPagoPA.setCodPsp(bodyrichiesta.getIdentificativoPSP());
@@ -222,18 +248,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
-			log.debug("Autenticazione richiesta.");
+			log.debug(MSG_LOG_AUTENTICAZIONE_RICHIESTA);
 			
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 			
-			log.debug("Richiesta autenticata.");
+			log.debug(MSG_LOG_RICHIESTA_AUTENTICATA);
 			
-			log.debug("Verifica intermediario.");
+			log.debug(MSG_LOG_VERIFICA_INTERMEDIARIO);
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -245,14 +271,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
-			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
+			log.debug(MSG_LOG_INTERMEDIARIO_VERIFICATO, intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -260,16 +286,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			log.debug("Verifica dominio.");
+			log.debug(MSG_LOG_VERIFICA_DOMINIO);
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			log.debug("Dominio verificato: " + dominio.getCodDominio());
+			log.debug(MSG_LOG_DOMINIO_VERIFICATO, dominio.getCodDominio());
 
-			log.debug("Verifica versamento.");
+			log.debug(MSG_LOG_VERIFICA_VERSAMENTO);
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -290,11 +316,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
-					log.debug("Versamento acquisito");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO);
 
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERIFICA_STATO_VERSAMENTO_DOPO_PROCEDURA_DI_AGGIORNAMENTO, versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -312,7 +338,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 				} catch (NotFoundException e) {
-					log.debug("Versamento non presente in base dati");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI);
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -320,16 +346,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 					}
 					
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 
-					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO, versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -347,8 +373,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 							}
 						}
 					}
-					log.debug("Versamento pagabile.");
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_PAGABILE);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE_OK, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
@@ -416,15 +442,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.", codDominio);
 			}
 
-			log.debug("Costruzione della RPT.");
+			log.debug(MSG_LOG_COSTRUZIONE_DELLA_RPT);
 			// Creazione dell'RPT
 			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP());
 			log.debug("RPT predisposta.");
-			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ATTIVAZIONE, rpt.getCodMsgRichiesta());
 
 			rptBD = null;
 			try {
-				log.debug("Transazione di avvio pagamento attivata");
+				log.debug(MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_ATTIVATA);
 				rptBD = new RptBD(configWrapper);
 				
 				rptBD.setupConnection(configWrapper.getTransactionID());
@@ -516,7 +542,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				} 
 	
 				rptBD.commit();
-				log.debug("Transazione di avvio pagamento conclusa");
+				log.debug(MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_CONCLUSA);
 				rptBD.disableSelectForUpdate();
 			} catch (NdpException | ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
@@ -540,18 +566,17 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			PaaTipoDatiPagamentoPA datiPagamento =  new PaaTipoDatiPagamentoPA();
 			datiPagamento.setImportoSingoloVersamento(versamento.getImportoTotale());
 			if(versamento.getCausaleVersamento() != null) {
-				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
-					datiPagamento.setCausaleVersamento(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
+				if(versamento.getCausaleVersamento() instanceof CausaleSemplice causaleSemplice) {
+					datiPagamento.setCausaleVersamento(causaleSemplice.getCausale());
 				}
 
-				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
+				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni causaleSpezzoni) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
+					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(causaleSpezzoni.getSpezzoni());
 				}
 
-				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
+				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati causale) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
 					for(int i=0; i < causale.getSpezzoni().size(); i++) {
 						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
 						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
@@ -574,17 +599,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaAttivaRPTRisposta(esito);
-			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_OK, datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
 			appContext.getEventoCtx().setEsito(Esito.OK);
 			log.debug("Attivazione RPT completata con successo");
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
@@ -592,15 +613,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
 			
-			log.debug("Attivazione RPT completata con esito " + appContext.getEventoCtx().getEsito());
+			log.debug("Attivazione RPT completata con esito {}", appContext.getEventoCtx().getEsito());
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -615,7 +632,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaaVerificaRPTRisposta paaVerificaRPT(PaaVerificaRPT bodyrichiesta, IntestazionePPT header) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		String codIntermediario = header.getIdentificativoIntermediarioPA();
 		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
 		String codDominio = header.getIdentificativoDominio();
@@ -641,18 +658,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		appContext.getTransaction().setTo(to);
 
-		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
-		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-		appContext.getRequest().addGenericProperty(new Property("codPsp", psp));
-		try {
-			ctx.getApplicationLogger().log("ccp.ricezioneVerifica");
-		} catch (UtilsException e) {
-			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-		}
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, psp));
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA);
 
 
-		log.info("Ricevuta richiesta di verifica RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
+		log.info("Ricevuta richiesta di verifica RPT [{}][{}][{}][{}][{}]", codIntermediario, codStazione, codDominio, iuv, ccp);
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -660,7 +673,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 		appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 		datiPagoPA.setCodDominio(codDominio);
-//		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaVerificaRPT.name());
 		datiPagoPA.setCodPsp(psp);
 		datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP.getCodifica());
 		datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
@@ -669,18 +681,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-			log.debug("Autenticazione richiesta.");
+			log.debug(MSG_LOG_AUTENTICAZIONE_RICHIESTA);
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 			
-			log.debug("Richiesta autenticata.");
+			log.debug(MSG_LOG_RICHIESTA_AUTENTICATA);
 			
-			log.debug("Verifica intermediario.");
+			log.debug(MSG_LOG_VERIFICA_INTERMEDIARIO);
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -692,14 +704,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
-			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
+			log.debug(MSG_LOG_INTERMEDIARIO_VERIFICATO, intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -707,16 +719,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			log.debug("Verifica dominio.");
+			log.debug(MSG_LOG_VERIFICA_DOMINIO);
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			log.debug("Dominio verificato: " + dominio.getCodDominio());
+			log.debug(MSG_LOG_DOMINIO_VERIFICATO, dominio.getCodDominio());
 
-			log.debug("Verifica versamento.");
+			log.debug(MSG_LOG_VERIFICA_VERSAMENTO);
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -724,16 +736,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv, true);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-				ctx.getApplicationLogger().log("ccp.iuvPresente", versamento.getCodVersamentoEnte());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_PRESENTE, versamento.getCodVersamentoEnte());
 			}catch (NotFoundException e) {
 				applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper, dominio,iuv,false); 
 				
 				if(applicazioneGestisceIuv == null) {
-					ctx.getApplicationLogger().log("ccp.iuvNonPresenteNoAppGestireIuv");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_NON_PRESENTE_NO_APP_GESTIRE_IUV);
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
 				appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
-				ctx.getApplicationLogger().log("ccp.iuvNonPresente", applicazioneGestisceIuv.getCodApplicazione());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione());
 			}
 			
 			try {
@@ -741,11 +753,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
-					log.debug("Versamento acquisito");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO);
 
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERIFICA_STATO_VERSAMENTO_DOPO_PROCEDURA_DI_AGGIORNAMENTO, versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -764,7 +776,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 				} catch (NotFoundException e) {
-					log.debug("Versamento non presente in base dati");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI);
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -773,17 +785,17 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 
-					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO, versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -802,8 +814,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								
 						}
 					}
-					log.debug("Versamento pagabile.");
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_PAGABILE);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE_OK,applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
@@ -867,18 +879,17 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagamento.setImportoSingoloVersamento(versamento.getImportoTotale());
 
 			if(versamento.getCausaleVersamento() != null) {
-				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
-					datiPagamento.setCausaleVersamento(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
+				if(versamento.getCausaleVersamento() instanceof CausaleSemplice causaleSemplice) {
+					datiPagamento.setCausaleVersamento(causaleSemplice.getCausale());
 				}
 
-				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
+				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni causaleSpezzoni) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
+					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(causaleSpezzoni.getSpezzoni());
 				}
 
-				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
+				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati causale) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
 					for(int i=0; i < causale.getSpezzoni().size(); i++) {
 						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
 						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
@@ -901,34 +912,24 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaVerificaRPTRisposta(esito);
-			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
 			appContext.getEventoCtx().setEsito(Esito.OK);
-			log.debug("Verifica RPT completata con successo");
+			log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO);
 		} catch (NdpException e) {
-//			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
-			log.debug("Verifica RPT completata con esito " + appContext.getEventoCtx().getEsito());			
+			log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_ESITO, appContext.getEventoCtx().getEsito());			
 		} catch (Exception e) {
-//			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -943,7 +944,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-//		String idDominio = requestBody.getIdPA();
 		
 		CtReceipt receipt = requestBody.getReceipt();
 		
@@ -966,21 +966,17 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		appContext.getTransaction().setTo(to);
 
-		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
 		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
-		try {
-			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
-		} catch (UtilsException e) {
-			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-		}
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RICEZIONE_RT);
 
-		log.info("Ricevuta richiesta paSendRT [" + codDominio + "][" + iuv + "][" + ccp + "]");
+		log.info("Ricevuta richiesta paSendRT [{}][{}][{}]", codDominio, iuv, ccp);
 		PaSendRTRes response = new PaSendRTRes();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -997,8 +993,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("rt.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 
 			Intermediario intermediario = null;
@@ -1012,7 +1008,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("rt.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
@@ -1049,8 +1045,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			if(rpt.getIdPagamentoPortale() != null)
 				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
-			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
-			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
+			appContext.getResponse().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ESITO_PAGAMENTO, rpt.getEsitoPagamento().toString()));
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_RT_OK);
 
 			datiPagoPA.setCodPsp(requestBody.getReceipt().getIdPSP());
 			datiPagoPA.setCodCanale(requestBody.getReceipt().getIdChannel());
@@ -1058,17 +1054,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setTipoVersamento(requestBody.getReceipt().getPaymentMethod());
 
 			response.setOutcome(StOutcome.OK);
-			ctx.getApplicationLogger().log("rt.ricezioneOk");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_OK);
 			appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("rt.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
@@ -1077,12 +1069,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 		} catch (Exception e) {
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("rt.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
@@ -1120,10 +1108,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	*/
 	@Override
 	public PaVerifyPaymentNoticeRes paVerifyPaymentNotice(PaVerifyPaymentNoticeReq requestBody) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		//String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -1153,15 +1140,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 			appContext.getTransaction().setTo(to);
 
-			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneVerifica");
-			} catch (UtilsException e) {
-				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			}
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+			
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA);
 		
-			log.info("Ricevuta richiesta paVerifyPaymentNotice [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + numeroAvviso + "]");
+			log.info("Ricevuta richiesta paVerifyPaymentNotice [{}][{}][{}][{}]", codIntermediario, codStazione, codDominio, numeroAvviso);
 
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
@@ -1176,13 +1160,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 			
-			log.debug("Richiesta autenticata.");
+			log.debug(MSG_LOG_RICHIESTA_AUTENTICATA);
 			
-			log.debug("Verifica intermediario.");
+			log.debug(MSG_LOG_VERIFICA_INTERMEDIARIO);
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -1194,14 +1178,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
-			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
+			log.debug(MSG_LOG_INTERMEDIARIO_VERIFICATO, intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -1209,16 +1193,27 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			log.debug("Verifica dominio.");
+			log.debug(MSG_LOG_VERIFICA_DOMINIO);
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			log.debug("Dominio verificato: " + dominio.getCodDominio());
+			log.debug(MSG_LOG_DOMINIO_VERIFICATO, dominio.getCodDominio());
 
-			log.debug("Verifica versamento.");
+			log.debug(MSG_LOG_VERIFICA_VERSAMENTO);
+
+			// controllo se e' un nav della sonda pagoPA
+			if(IuvUtils.isNavSondaPagoPA(numeroAvviso)) {
+				log.debug(MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV, codDominio, numeroAvviso);
+				response = creaRispostaOkSondaPagoPA(dominio);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, "0", "", MSG_NESSUNA_CAUSALE);
+				appContext.getEventoCtx().setEsito(Esito.OK);
+				log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO);
+				return response;
+			}
+			
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -1226,16 +1221,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv, true);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-				ctx.getApplicationLogger().log("ccp.iuvPresente", versamento.getCodVersamentoEnte());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_PRESENTE, versamento.getCodVersamentoEnte());
 			}catch (NotFoundException e) {
 				applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper, dominio,iuv,false); 
 				
 				if(applicazioneGestisceIuv == null) {
-					ctx.getApplicationLogger().log("ccp.iuvNonPresenteNoAppGestireIuv");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_NON_PRESENTE_NO_APP_GESTIRE_IUV);
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
 				appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
-				ctx.getApplicationLogger().log("ccp.iuvNonPresente", applicazioneGestisceIuv.getCodApplicazione());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione());
 			}
 		
 			try {
@@ -1243,31 +1238,28 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
-					log.debug("Versamento acquisito]");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO);
 
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERIFICA_STATO_VERSAMENTO_DOPO_PROCEDURA_DI_AGGIORNAMENTO, versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
-					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
-							PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
-							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti().get(0).getId());
-							if(pagamenti.isEmpty())
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
-							else {
-								Pagamento pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Iur:" + pagamento.getIur() + "]", codDominio);
-							}
-								
+					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) 
+							&& (versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE))) {
+						PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
+						List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti().get(0).getId());
+						if(pagamenti.isEmpty())
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+						else {
+							Pagamento pagamento = pagamenti.get(0);
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Iur:" + pagamento.getIur() + "]", codDominio);
 						}
 					}
 
 				} catch (NotFoundException e) {
-					log.debug("Versamento non presente in base dati");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI);
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -1276,36 +1268,33 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO, versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
-					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
-							PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
-							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti().get(0).getId());
-							if(pagamenti.isEmpty())
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
-							else {
-								Pagamento pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Iur:" + pagamento.getIur() + "]", codDominio);
-							}
-								
+					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) 
+							&& (versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE))) {
+						PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
+						List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti().get(0).getId());
+						if(pagamenti.isEmpty())
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+						else {
+							Pagamento pagamento = pagamenti.get(0);
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Iur:" + pagamento.getIur() + "]", codDominio);
 						}
 					}
-					log.debug("Versamento pagabile.");
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_PAGABILE);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE_OK, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
@@ -1342,8 +1331,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				response.setOfficeName(versamento.getUo(configWrapper).getAnagrafica().getRagioneSociale());
 			}
 			if(versamento.getCausaleVersamento() != null) {
-				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
-					response.setPaymentDescription(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
+				if(versamento.getCausaleVersamento() instanceof CausaleSemplice causaleSemplice) {
+					response.setPaymentDescription(causaleSemplice.getCausale());
 				}
 
 			} else {
@@ -1362,21 +1351,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			ctPaymentOptionDescriptionPA.setDetailDescription(versamento.getCausaleVersamento().getSimple());
 			ctPaymentOptionDescriptionPA.setDueDate(DateUtils.toLocalDate(versamento.getDataValidita()));
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
-//			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA);
 			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
 
 			response.setPaymentList(paymentList);
-			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
 			appContext.getEventoCtx().setEsito(Esito.OK);
-			log.debug("Verifica RPT completata con successo");
+			log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO);
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneVerificaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
@@ -1384,15 +1368,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
 			
-			log.debug("Verifica RPT completata con esito " + appContext.getEventoCtx().getEsito());
+			log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_ESITO, appContext.getEventoCtx().getEsito());
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneVerificaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -1404,10 +1384,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaGetPaymentRes paGetPayment(PaGetPaymentReq requestBody) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-//		String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -1439,20 +1418,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 			appContext.getTransaction().setTo(to);
 	
-			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
-			appContext.getRequest().addGenericProperty(new Property("codPsp", "non previsto per paGetPayment"));
-			appContext.getRequest().addGenericProperty(new Property("codCanale", "non previsto per paGetPayment"));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, "non previsto per paGetPayment"));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, "non previsto per paGetPayment"));
 			
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
-			} catch (UtilsException e) {
-				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA);
 
 		
-			log.info("Ricevuta richiesta paGetPayment [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
+			log.info("Ricevuta richiesta paGetPayment [{}][{}][{}][{}][{}][{}]", codIntermediario, codStazione, codDominio, iuv, ccp, numeroAvviso);
 	
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
@@ -1468,13 +1443,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 			
-			log.debug("Richiesta autenticata.");
+			log.debug(MSG_LOG_RICHIESTA_AUTENTICATA);
 			
-			log.debug("Verifica intermediario.");
+			log.debug(MSG_LOG_VERIFICA_INTERMEDIARIO);
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -1486,14 +1461,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
-			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
+			log.debug(MSG_LOG_INTERMEDIARIO_VERIFICATO, intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -1501,16 +1476,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			log.debug("Verifica dominio.");
+			log.debug(MSG_LOG_VERIFICA_DOMINIO);
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			log.debug("Dominio verificato: " + dominio.getCodDominio());
+			log.debug(MSG_LOG_DOMINIO_VERIFICATO, dominio.getCodDominio());
 
-			log.debug("Verifica versamento.");
+			log.debug(MSG_LOG_VERIFICA_VERSAMENTO);
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -1536,11 +1511,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
-					log.debug("Versamento acquisito");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO);
 
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERIFICA_STATO_VERSAMENTO_DOPO_PROCEDURA_DI_AGGIORNAMENTO, versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -1558,7 +1533,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 				} catch (NotFoundException e) {
-					log.debug("Versamento non presente in base dati");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI);
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -1566,15 +1541,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 					}
 					
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO, versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1592,8 +1567,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 							}
 						}
 					}
-					log.debug("Versamento pagabile.");
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_PAGABILE);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE_OK, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
@@ -1629,10 +1604,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			RptBD rptBD = new RptBD(configWrapper);
 
 			// Creazione dell'RPT
-			log.debug("Costruzione della RPT.");
+			log.debug(MSG_LOG_COSTRUZIONE_DELLA_RPT);
 			Rpt rpt = new CtPaymentPABuilder().buildCtPaymentPA(requestBody,versamento, iuv, ccp, numeroAvviso);
 
-			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ATTIVAZIONE, rpt.getCodMsgRichiesta());
 
 			// annullo tutte le RPT esistenti modello 3 in stato pendente per la coppia coddominio/iuv 
 			it.govpay.core.business.Rpt rptBusiness = new it.govpay.core.business.Rpt();
@@ -1640,7 +1615,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			rptBD = null;
 			try {
-				log.debug("Transazione di avvio pagamento attivata");
+				log.debug(MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_ATTIVATA);
 				rptBD = new RptBD(configWrapper);
 				
 				rptBD.setupConnection(configWrapper.getTransactionID());
@@ -1671,10 +1646,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				if(schedulaThreadInvio)
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 				log.info("RPT inviata correttamente al nodo");
-				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK);
 	
 				rptBD.commit();
-				log.debug("Transazione di avvio pagamento conclusa");
+				log.debug(MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_CONCLUSA);
 				rptBD.disableSelectForUpdate();
 			} catch (ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
@@ -1694,19 +1669,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			response.setOutcome(StOutcome.OK);
 
-			PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), true);
-			response.setData(paGetPaymentRes_RPT.getData()); 
+			PaGetPaymentRes paGetPaymentResRPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), true);
+			response.setData(paGetPaymentResRPT.getData()); 
 			
-			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_OK, versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
@@ -1715,12 +1686,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -1737,13 +1704,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	}
 
 	private <T> T buildRisposta(NdpException e, T risposta) {
-		if(risposta instanceof PaaAttivaRPTRisposta) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
-				log.warn("Errore in Attiva RPT: " + e.getMessage(), e);
-			} else {
-				log.info("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaaAttivaRPTRisposta r = (PaaAttivaRPTRisposta) risposta;
+		if(risposta instanceof PaaAttivaRPTRisposta r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "Attiva RPT");
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
 			esito.setEsito("KO");
 			FaultBean fault = new FaultBean();
@@ -1755,13 +1717,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setPaaAttivaRPTRisposta(esito);
 		}
 
-		if(risposta instanceof PaaVerificaRPTRisposta) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
-				log.warn("Errore in Verifica RPT: " + e.getMessage(), e);
-			} else {
-				log.info("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaaVerificaRPTRisposta r = (PaaVerificaRPTRisposta) risposta;
+		if(risposta instanceof PaaVerificaRPTRisposta r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "Verifica RPT");
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
 			esito.setEsito("KO");
 			FaultBean fault = new FaultBean();
@@ -1773,13 +1730,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setPaaVerificaRPTRisposta(esito);
 		}
 		
-		if(risposta instanceof PaVerifyPaymentNoticeRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
-				log.warn("Errore in PaVerifyPaymentNotice: " + e.getMessage(), e);
-			} else {
-				log.info("Rifiutata PaVerifyPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaVerifyPaymentNoticeRes r = (PaVerifyPaymentNoticeRes) risposta;
+		if(risposta instanceof PaVerifyPaymentNoticeRes r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "PaVerifyPaymentNotice");
 			r.setOutcome(StOutcome.KO);
 			CtFaultBean fault = new CtFaultBean();
 			fault.setId(e.getCodDominio());
@@ -1789,13 +1741,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setFault(fault);
 		}
 
-		if(risposta instanceof PaGetPaymentRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
-				log.warn("Errore in PaGetPayment: " + e.getMessage(), e);
-			} else {
-				log.info("Rifiutata PaGetPayment con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaGetPaymentRes r = (PaGetPaymentRes) risposta;
+		if(risposta instanceof PaGetPaymentRes r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "PaGetPayment");
 			r.setOutcome(StOutcome.KO);
 			CtFaultBean fault = new CtFaultBean();
 			fault.setId(e.getCodDominio());
@@ -1805,13 +1752,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setFault(fault);
 		}
 		
-		if(risposta instanceof PaSendRTRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
-			} else {
-				log.info("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaSendRTRes r = (PaSendRTRes) risposta;
+		if(risposta instanceof PaSendRTRes r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "PaSendRT");
 			r.setOutcome(StOutcome.KO);
 			CtFaultBean fault = new CtFaultBean();
 			fault.setId(e.getCodDominio());
@@ -1821,13 +1763,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setFault(fault);
 		}
 		
-		if(risposta instanceof PaSendRTV2Response) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
-			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaSendRTV2Response r = (PaSendRTV2Response) risposta;
+		if(risposta instanceof PaSendRTV2Response r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "PaSendRTV2");
 			r.setOutcome(StOutcome.KO);
 			CtFaultBean fault = new CtFaultBean();
 			fault.setId(e.getCodDominio());
@@ -1837,13 +1774,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setFault(fault);
 		}
 		
-		if(risposta instanceof PaGetPaymentV2Response) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
-			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaGetPaymentV2Response r = (PaGetPaymentV2Response) risposta;
+		if(risposta instanceof PaGetPaymentV2Response r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "PaGetPaymentV2");
 			r.setOutcome(StOutcome.KO);
 			CtFaultBean fault = new CtFaultBean();
 			fault.setId(e.getCodDominio());
@@ -1853,61 +1785,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			r.setFault(fault);
 		}
 		
-		if(risposta instanceof PaDemandPaymentNoticeResponse) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
-			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaDemandPaymentNoticeResponse r = (PaDemandPaymentNoticeResponse) risposta;
-			r.setOutcome(StOutcome.KO);
-			CtFaultBean fault = new CtFaultBean();
-			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFaultCode());
-			fault.setFaultString(e.getFaultString());
-			fault.setDescription(e.getDescrizione());
-			r.setFault(fault);
-		}
-		
-		if(risposta instanceof PaSendRTV2Response) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRTV2: " + e.getMessage(), e);
-			} else {
-				log.warn("Rifiutata PaSendRTV2 con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaSendRTV2Response r = (PaSendRTV2Response) risposta;
-			r.setOutcome(StOutcome.KO);
-			CtFaultBean fault = new CtFaultBean();
-			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFaultCode());
-			fault.setFaultString(e.getFaultString());
-			fault.setDescription(e.getDescrizione());
-			r.setFault(fault);
-		}
-		
-		if(risposta instanceof PaGetPaymentV2Response) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaGetPaymentV2: " + e.getMessage(), e);
-			} else {
-				log.warn("Rifiutata PaGetPaymentV2 con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaGetPaymentV2Response r = (PaGetPaymentV2Response) risposta;
-			r.setOutcome(StOutcome.KO);
-			CtFaultBean fault = new CtFaultBean();
-			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFaultCode());
-			fault.setFaultString(e.getFaultString());
-			fault.setDescription(e.getDescrizione());
-			r.setFault(fault);
-		}
-		
-		if(risposta instanceof PaDemandPaymentNoticeResponse) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaDemandPaymentNotice: " + e.getMessage(), e);
-			} else {
-				log.warn("Rifiutata PaDemandPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
-			}
-			PaDemandPaymentNoticeResponse r = (PaDemandPaymentNoticeResponse) risposta;
+		if(risposta instanceof PaDemandPaymentNoticeResponse r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "PaDemandPaymentNotice");
 			r.setOutcome(StOutcome.KO);
 			CtFaultBean fault = new CtFaultBean();
 			fault.setId(e.getCodDominio());
@@ -1920,13 +1799,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		return risposta;
 	}
 
-
-
 	@Override
 	public PaSendRTV2Response paSendRTV2(PaSendRTV2Request requestBody) {
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-//		String idDominio = requestBody.getIdPA();
 		
 		CtReceiptV2 receipt = requestBody.getReceipt();
 		
@@ -1949,21 +1825,17 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		appContext.getTransaction().setTo(to);
 
-		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
 		appContext.getEventoCtx().setCcp(receipt.getReceiptId());
 
-		try {
-			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
-		} catch (UtilsException e) {
-			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-		}
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RICEZIONE_RT);
 
-		log.info("Ricevuta richiesta paSendRTV2 [" + codDominio + "][" + iuv + "][" + ccp + "]");
+		log.info("Ricevuta richiesta paSendRTV2 [{}][{}][{}]", codDominio, iuv, ccp);
 		PaSendRTV2Response response = new PaSendRTV2Response();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -1980,8 +1852,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("rt.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 
 			Intermediario intermediario = null;
@@ -1995,7 +1867,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("rt.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
@@ -2032,8 +1904,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			if(rpt.getIdPagamentoPortale() != null)
 				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
-			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
-			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
+			appContext.getResponse().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ESITO_PAGAMENTO, rpt.getEsitoPagamento().toString()));
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_RT_OK);
 
 			datiPagoPA.setCodPsp(requestBody.getReceipt().getIdPSP());
 			datiPagoPA.setCodCanale(requestBody.getReceipt().getIdChannel());
@@ -2041,17 +1913,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setTipoVersamento(requestBody.getReceipt().getPaymentMethod());
 
 			response.setOutcome(StOutcome.OK);
-			ctx.getApplicationLogger().log("rt.ricezioneOk");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_OK);
 			appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("rt.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
@@ -2060,12 +1928,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 		} catch (Exception e) {
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("rt.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
@@ -2080,10 +1944,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaGetPaymentV2Response paGetPaymentV2(PaGetPaymentV2Request requestBody) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-//		String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -2115,20 +1978,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 			appContext.getTransaction().setTo(to);
 	
-			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
-			appContext.getRequest().addGenericProperty(new Property("codPsp", "non previsto per paGetPaymentV2"));
-			appContext.getRequest().addGenericProperty(new Property("codCanale", "non previsto per paGetPaymentV2"));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, "non previsto per paGetPaymentV2"));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, "non previsto per paGetPaymentV2"));
 			
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
-			} catch (UtilsException e) {
-				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA);
 
 		
-			log.info("Ricevuta richiesta paGetPaymentV2 [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
+			log.info("Ricevuta richiesta paGetPaymentV2 [{}][{}][{}][{}][{}][{}]", codIntermediario, codStazione, codDominio, iuv, ccp, numeroAvviso);
 	
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
@@ -2144,13 +2003,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
-				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
-				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_NO_AUTORIZZAZIONE);
+				throw new NotAuthorizedException(MSG_ERRORE_AUTORIZZAZIONE_FALLITA_PRINCIPAL_NON_FORNITO);
 			}
 			
-			log.debug("Richiesta autenticata.");
+			log.debug(MSG_LOG_RICHIESTA_AUTENTICATA);
 			
-			log.debug("Verifica intermediario.");
+			log.debug(MSG_LOG_VERIFICA_INTERMEDIARIO);
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -2162,14 +2021,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
-						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ERRORE_AUTORIZZAZIONE, principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
 				}
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
-			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
+			log.debug(MSG_LOG_INTERMEDIARIO_VERIFICATO, intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -2177,16 +2036,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			log.debug("Verifica dominio.");
+			log.debug(MSG_LOG_VERIFICA_DOMINIO);
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			log.debug("Dominio verificato: " + dominio.getCodDominio());
+			log.debug(MSG_LOG_DOMINIO_VERIFICATO, dominio.getCodDominio());
 
-			log.debug("Verifica versamento.");
+			log.debug(MSG_LOG_VERIFICA_VERSAMENTO);
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -2212,11 +2071,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
-					log.debug("Versamento acquisito");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO);
 
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERIFICA_STATO_VERSAMENTO_DOPO_PROCEDURA_DI_AGGIORNAMENTO, versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -2234,7 +2093,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 				} catch (NotFoundException e) {
-					log.debug("Versamento non presente in base dati");
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI);
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -2242,15 +2101,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 					}
 					
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
+					log.debug(MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE, applicazioneGestisceIuv.getCodApplicazione());
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
+					log.debug(MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO, versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -2268,8 +2127,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 							}
 						}
 					}
-					log.debug("Versamento pagabile.");
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug(MSG_LOG_VERSAMENTO_PAGABILE);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_VERSAMENTO_IUV_NON_PRESENTE_OK, applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
@@ -2301,10 +2160,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			RptBD rptBD = new RptBD(configWrapper);
 
 			// Creazione dell'RPT
-			log.debug("Costruzione della RPT.");
+			log.debug(MSG_LOG_COSTRUZIONE_DELLA_RPT);
 			Rpt rpt = new CtPaymentPAV2Builder().buildCtPaymentPAV2(requestBody,versamento, iuv, ccp, numeroAvviso);
 
-			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_ATTIVAZIONE, rpt.getCodMsgRichiesta());
 
 			// annullo tutte le RPT esistenti modello 3 in stato pendente per la coppia coddominio/iuv 
 			it.govpay.core.business.Rpt rptBusiness = new it.govpay.core.business.Rpt();
@@ -2312,7 +2171,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			rptBD = null;
 			try {
-				log.debug("Transazione di avvio pagamento attivata");
+				log.debug(MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_ATTIVATA);
 				rptBD = new RptBD(configWrapper);
 				
 				rptBD.setupConnection(configWrapper.getTransactionID());
@@ -2342,10 +2201,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				if(schedulaThreadInvio)
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 				log.info("RPT inviata correttamente al nodo");
-				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK);
 	
 				rptBD.commit();
-				log.debug("Transazione di avvio pagamento conclusa");
+				log.debug(MSG_LOG_TRANSAZIONE_DI_AVVIO_PAGAMENTO_CONCLUSA);
 				rptBD.disableSelectForUpdate();
 			} catch (ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
@@ -2365,19 +2224,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			response.setOutcome(StOutcome.OK);
 
-			PaGetPaymentV2Response paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), true);
-			response.setData(paGetPaymentRes_RPT.getData()); 
+			PaGetPaymentV2Response paGetPaymentResRPT = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), true);
+			response.setData(paGetPaymentResRPT.getData()); 
 			
-			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_OK, versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
@@ -2386,12 +2241,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -2417,13 +2268,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		try {
 			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
 		} catch (Exception e) {
-			response = this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			try {
-				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			this.buildRisposta(e, codDominio, response);
+			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -2439,5 +2286,34 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	@Override
 	public PaaInviaRTRisposta paaInviaRT(PaaInviaRT bodyrichiesta, IntestazionePPT header) {
 		return PaaInviaRTRispostaConverter.toPaaInviaRTRisposta_CCP(PagamentiTelematiciRTImpl.paaInviaRTImpl(PaaInviaRTConverter.toPaaInviaRT_RT(bodyrichiesta), header, log));
+	}
+	
+	public static void logFault(Logger log, NdpException e, String operation) {
+		if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			String warnMsg = MessageFormat.format("Errore in {0}: {1}", operation, e.getMessage());
+			log.warn(warnMsg, e);
+		} else {
+			log.warn("Rifiutata {} con Fault {}: {}", operation, e.getFaultString(), ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+		}
+	}
+	
+	public static PaVerifyPaymentNoticeRes creaRispostaOkSondaPagoPA(Dominio dominio) {
+		PaVerifyPaymentNoticeRes response = new PaVerifyPaymentNoticeRes();
+		
+		response.setOutcome(StOutcome.OK);
+		response.setFiscalCodePA(dominio.getCodDominio());
+		response.setCompanyName(dominio.getRagioneSociale());
+
+		CtPaymentOptionsDescriptionListPA paymentList = new CtPaymentOptionsDescriptionListPA();
+		CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
+		StAmountOption stAmountOption = StAmountOption.EQ;
+		ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
+		ctPaymentOptionDescriptionPA.setAmount(BigDecimal.ZERO);
+		ctPaymentOptionDescriptionPA.setAllCCP(false);
+		paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
+
+		response.setPaymentList(paymentList);
+		
+		return response;
 	}
 }

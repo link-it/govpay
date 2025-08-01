@@ -277,7 +277,7 @@ public class Operazioni{
 				log.info("Eseguo Batch Recupero RT: operazione in corso su altro nodo. Richiesta interrotta.");
 				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
-		} catch (ServiceException | IOException | UtilsException e) {
+		} catch (ServiceException | IOException e) {
 			log.error("Recupero RT fallito", e);
 			aggiornaSondaKO(configWrapper, BATCH_RECUPERO_RT, e);
 			return "Recupero RT fallito#" + e;

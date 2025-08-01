@@ -35,6 +35,8 @@ import it.govpay.core.utils.GovpayConfig;
  *
  */
 public class Log4JUtils {
+	
+	private Log4JUtils() {/*static only*/}
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Log4JUtils.class);
 	private static URL log4j2XmlFile;
@@ -56,17 +58,17 @@ public class Log4JUtils {
 			
 			if(log4j2Config != null) {
 				LoggerWrapperFactory.setLogConfiguration(new File(log4j2Config));
-				log.info("Caricata configurazione di log4j: " + log4j2Config.toString());
+				log.info("Caricata configurazione di log4j: {}", log4j2Config);
 			} else {
 				LoggerWrapperFactory.setLogConfiguration(log4j2XmlFile);
-				log.info("Caricata configurazione di log4j: " + log4j2XmlFile.toString());
+				log.info("Caricata configurazione di log4j: {}", log4j2XmlFile);
 			}
-		} catch (Throwable e) { 
+		} catch (UtilsException e) { 
 			log.error("Errore durante il reload del log4j: " + e.getMessage(), e);
 			
 			try {
 				LoggerWrapperFactory.setLogConfiguration(log4j2XmlFile);
-				log.info("La configurazione esterna indicata non e' valida, caricata configurazione default log4j: " + log4j2XmlFile.toString());
+				log.info("La configurazione esterna indicata non e' valida, caricata configurazione default log4j: {}", log4j2XmlFile);
 			} catch (UtilsException e1) {
 				log.error("Errore durante il reload del log4j: " + e1.getMessage(), e1);
 			}

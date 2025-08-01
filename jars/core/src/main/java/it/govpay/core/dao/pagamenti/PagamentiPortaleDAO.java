@@ -105,6 +105,8 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.CheckoutClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
@@ -152,8 +154,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			appContext.getPagamentoCtx().setCodSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
 			appContext.getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 
-			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
-			ctx.getApplicationLogger().log("ws.autorizzazione");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_WS_RICEVUTA_RICHIESTA);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_WS_AUTORIZZAZIONE);
 
 			String nome = null;
 			List<IdVersamento> idVersamento = new ArrayList<>();
@@ -166,7 +168,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
 				Versamento versamentoModel = null;
 				if(v instanceof it.govpay.core.beans.commons.Versamento versamento) {
-					ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_ACQUISIZIONE_VERSAMENTO, versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 					versamentoModel = versamentoBusiness.chiediVersamento(versamento);
 					versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
 
@@ -209,7 +211,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						String idPendenza = refVersamentoPendenza.getIdPendenza();
 
 						if(pagamentiPortaleDTO.getListaPendenzeDaSessione() != null && pagamentiPortaleDTO.getListaPendenzeDaSessione().containsKey((idA2A+idPendenza))) {
-							ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", idA2A, idPendenza);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_ACQUISIZIONE_VERSAMENTO, idA2A, idPendenza);
 							versamentoModel = pagamentiPortaleDTO.getListaPendenzeDaSessione().get((idA2A+idPendenza));
 							versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
 
@@ -524,7 +526,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					canale = new Canale(pagamentiPortaleDTO.getIdentificativoIntermediarioPSP(), pagamentiPortaleDTO.getIdentificativoPSP(), pagamentiPortaleDTO.getIdentificativoCanale(), pagamentiPortaleDTO.getTipoVersamento(), null);
 				}
 
-				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(),
+				rpts = rptBD.avviaTransazione(versamenti, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(),
 						pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale, pagamentiPortaleDTO.getCodiceConvenzione());
 				Rpt rpt = rpts.get(0);
 
@@ -562,7 +564,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				response.setIdCarrelloRpt(rpt.getIdTransazioneRpt());
 			}catch(GovPayException e) {
-				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(e, transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(e, transazioneResponse, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_WS_RICEVUTA_RICHIESTA_KO, log);
 				for(Versamento versamentoModel: versamenti) {
 					if(versamentoModel.getId() != null) {
 						IdVersamento idV = new IdVersamento();
@@ -582,7 +584,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				throw new GovPayException(e, pagamentoPortale);
 			} catch (Exception e) {
-				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(new GovPayException(e), transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(new GovPayException(e), transazioneResponse, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_WS_RICEVUTA_RICHIESTA_KO, log);
 				for(Versamento versamentoModel: versamenti) {
 					if(versamentoModel.getId() != null) {
 						IdVersamento idV = new IdVersamento();
@@ -938,11 +940,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				break;
 			}
 
-			try {
-				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito(), response.getDescrizioneEsito(), response.getDettaglioEsito());
-			} catch (UtilsException e1) {
-				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), codMsgDiagnostico, response.getCodEsito(), response.getDescrizioneEsito(), response.getDettaglioEsito());
 
 		} else {
 			if(faultBean.getId().contains("NodoDeiPagamentiSPC")) 

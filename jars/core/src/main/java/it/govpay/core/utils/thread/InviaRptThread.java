@@ -61,6 +61,8 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
@@ -68,15 +70,9 @@ import it.govpay.model.configurazione.Giornale;
 
 public class InviaRptThread implements Runnable {
 
-	private static final String MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_KEY = "pagamento.invioRptAttivata";
-	private static final String MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_R_TRICEVUTA_KEY = "pagamento.invioRptAttivataRTricevuta";
-	private static final String MSG_DIANGOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_KO_KEY = "pagamento.invioRptAttivataKo";
-	private static final String MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK_KEY = "pagamento.invioRptAttivataOk";
 	private static final String ERROR_MSG_ERRORE_LA_SLEEP_PER_RISPETTARE_IL_TIMEOUT_INVIO_RPT_MODELLO3_COD_MSG_RICHIESTA_0_COD_DOMINIO_1_IUV_2_CCP_3 = "Errore la sleep per rispettare il timeout InvioRPT Modello3 [CodMsgRichiesta: {0}, CodDominio: {1},IUV: {2},CCP: {3}]";
 	private static final String ERROR_MSG_ERRORE_NELLA_SPEDIZIONE_DELLA_RPT_COD_MSG_RICHIESTA_0_COD_DOMINIO_1_IUV_2_CCP_3 = "Errore nella spedizione della RPT [CodMsgRichiesta: {0}, CodDominio: {1},IUV: {2},CCP: {3}]";
 	private static final String ERROR_MSG_ERRORE_INIT_CLIENT_SPEDIZIONE_DELLA_RPT_COD_MSG_RICHIESTA_0_COD_DOMINIO_1_IUV_2_CCP_3 = "Errore durante la init del client di spedizione della RPT [CodMsgRichiesta: {0}, CodDominio: {1},IUV: {2},CCP: {3}]";
-	private static final String MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY = "pagamento.invioRptAttivataFail";
-	private static final String ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0 = "Errore durante il log dell''operazione: {0}";
 	private static final String ERROR_MSG_RISPOSTA_PAGO_PA_KO_PRIVO_DI_FAULT_BEAN = "Risposta pagoPA KO privo di FaultBean";
 	private Rpt rpt;
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
@@ -115,11 +111,11 @@ public class InviaRptThread implements Runnable {
 			log.info("Id Server: [{}]", operationId);
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: {}, CodDominio: {},IUV: {},CCP: {}]", this.rpt.getCodMsgRichiesta(), this.rpt.getCodDominio(), this.rpt.getIuv(), this.rpt.getCcp());
 
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.rpt.getCcp()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, this.rpt.getCodDominio()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, this.rpt.getIuv()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, this.rpt.getCcp()));
 
-			ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_KEY);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_KEY);
 
 			// salvataggio id Rpt/ versamento/ pagamento
 			eventoCtx.setCodDominio(this.rpt.getCodDominio());
@@ -158,7 +154,7 @@ public class InviaRptThread implements Runnable {
 			if(this.rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 				// E' arrivata l'RT nel frattempo. Non aggiornare.
 				log.info("RPT inviata, ma nel frattempo e' arrivata l'RT. Non aggiorno lo stato");
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_R_TRICEVUTA_KEY);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_R_TRICEVUTA_KEY);
 				return;
 			}
 			
@@ -193,7 +189,7 @@ public class InviaRptThread implements Runnable {
 				else
 					rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null,null);
 				log.warn("RPT [CodMsgRichiesta: {}, CodDominio: {},IUV: {},CCP: {}] rifiutata dal nodo con fault: {}", this.rpt.getCodMsgRichiesta(), this.rpt.getCodDominio(), this.rpt.getIuv(), this.rpt.getCcp(), descrizione);
-				ctx.getApplicationLogger().log(MSG_DIANGOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_KO_KEY, fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIANGOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_KO_KEY, fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 				if(client != null) {
 					eventoCtx.setSottotipoEsito(fb.getFaultCode());
 					eventoCtx.setEsito(Esito.KO);
@@ -218,7 +214,7 @@ public class InviaRptThread implements Runnable {
 				if(schedulaThreadInvio)
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 				log.info("RPT [CodMsgRichiesta: {}, CodDominio: {},IUV: {},CCP: {}] inviata correttamente al nodo", this.rpt.getCodMsgRichiesta(), this.rpt.getCodDominio(), this.rpt.getIuv(), this.rpt.getCcp());
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK_KEY);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK_KEY);
 				eventoCtx.setEsito(Esito.OK);
 			} 
 		} catch (ClientException e) {
@@ -228,16 +224,12 @@ public class InviaRptThread implements Runnable {
 				eventoCtx.setEsito(Esito.FAIL);
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 			}	
-			try {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
-			} catch (UtilsException e1) {
-				LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
-		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | NotificaException | IOException e) {
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
+		} catch (NotFoundException | ServiceException | GovPayException | NotificaException | IOException e) {
 			LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_NELLA_SPEDIZIONE_DELLA_RPT_COD_MSG_RICHIESTA_0_COD_DOMINIO_1_IUV_2_CCP_3, this.rpt.getCodMsgRichiesta(), this.rpt.getCodDominio(), this.rpt.getIuv(), this.rpt.getCcp()), e);
 			if(client != null) {
-				if(e instanceof GovPayException) {
-					eventoCtx.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+				if(e instanceof GovPayException govPayException) {
+					eventoCtx.setSottotipoEsito(govPayException.getCodEsito().toString());
 				} else {
 					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 				}
@@ -245,11 +237,7 @@ public class InviaRptThread implements Runnable {
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 				eventoCtx.setException(e);
 			}	
-			try {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
-			} catch (UtilsException e1) {
-				LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
 			try {
 			if(rptBD != null && !rptBD.isClosed() && !rptBD.isAutoCommit()) 
 				rptBD.rollback();
@@ -267,11 +255,7 @@ public class InviaRptThread implements Runnable {
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 				eventoCtx.setException(e);
 			}	
-			try {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
-			} catch (UtilsException e1) {
-				LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
 		} catch (ClientInitializeException e) {
 			LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_INIT_CLIENT_SPEDIZIONE_DELLA_RPT_COD_MSG_RICHIESTA_0_COD_DOMINIO_1_IUV_2_CCP_3, this.rpt.getCodMsgRichiesta(), this.rpt.getCodDominio(), this.rpt.getIuv(), this.rpt.getCcp()), e);
 			if(eventoCtx != null) {
@@ -280,11 +264,7 @@ public class InviaRptThread implements Runnable {
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 				eventoCtx.setException(e);
 			}	
-			try {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
-			} catch (UtilsException e1) {
-				LogUtils.logError(log, MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_FAIL_KEY, e.getMessage());
 		} finally {
 			if(rptBD != null) {
 				

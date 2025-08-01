@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -41,31 +40,26 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.thread.RecuperaRTThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Intermediario;
 
 public class Ricevute {
 
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_AVVIO_KEY = "recuperoRT.avvio";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_CONCLUSIONE_KEY = "recuperoRT.conclusione";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_ACQUISIZIONE_LISTA_RENDICONTAZIONI_KEY = "recuperoRT.acquisizioneListaRendicontazioni";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_LISTA_RENDICONTAZIONI_GOVPAY_OK_KEY = "recuperoRT.listaRendicontazioniGovPayOk";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_DOMINIO_OK_KEY = "recuperoRT.dominioOk";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_NON_CONFIGURATO_KEY = "recuperoRT.nonConfigurato";
-	
 	private static Logger log = LoggerWrapperFactory.getLogger(Ricevute.class);
 
 	public Ricevute() {
 		// donothing
 	}
 
-	public String recuperoRT() throws ServiceException, IOException, UtilsException {
+	public String recuperoRT() throws ServiceException, IOException {
 		IContext ctx = ContextThreadLocal.get();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		List<String> response = new ArrayList<>();
 		try {
-			ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_AVVIO_KEY);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_AVVIO_KEY);
 			StazioniBD stazioniBD = new StazioniBD(configWrapper);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 			DominiBD dominiBD = new DominiBD(configWrapper);
@@ -81,7 +75,7 @@ public class Ricevute {
 					filter.setCodStazione(stazione.getCodStazione());
 					List<Dominio> lstDomini = dominiBD.findAll(filter);
 
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_ACQUISIZIONE_LISTA_RENDICONTAZIONI_KEY, stazione.getCodStazione());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_ACQUISIZIONE_LISTA_RENDICONTAZIONI_KEY, stazione.getCodStazione());
 					log.debug("Recupero RT [CodStazione: {}]", stazione.getCodStazione());
 
 					if(lstDomini.isEmpty()) {
@@ -94,7 +88,7 @@ public class Ricevute {
 						
 						List<Rendicontazione> rendicontazioniSenzaPagamento = rendicontazioniBD.getRendicontazioniSenzaPagamento(codDominio, numeroGiorniSoglia);
 						
-						ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_LISTA_RENDICONTAZIONI_GOVPAY_OK_KEY, codDominio, rendicontazioniSenzaPagamento.size() + "");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_LISTA_RENDICONTAZIONI_GOVPAY_OK_KEY, codDominio, rendicontazioniSenzaPagamento.size() + "");
 						
 						if(rendicontazioniSenzaPagamento.isEmpty()) {
 							log.debug("Recupero RT per il Dominio [{}] completato, non sono state trovate RT da recuperare.", codDominio);
@@ -118,19 +112,19 @@ public class Ricevute {
 							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_RECUPERO_RT);
 							log.info("Processi di recupero RT per il Dominio [{}] terminati.", codDominio);
 							
-							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_DOMINIO_OK_KEY, codDominio);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_DOMINIO_OK_KEY, codDominio);
 						}
 					}
 					
 				} else {
 					// servizion non configurato
 					log.warn("Recupero RT per la stazione [{}] dell'Intermediario [{}] non configurato.", stazione.getCodStazione(), intermediario.getCodIntermediario());
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_NON_CONFIGURATO_KEY, intermediario.getCodIntermediario(), stazione.getCodStazione());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_NON_CONFIGURATO_KEY, intermediario.getCodIntermediario(), stazione.getCodStazione());
 				}
 			}
 			
-			ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_CONCLUSIONE_KEY);
-		} catch (UtilsException | ServiceException | IOException e) {
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_CONCLUSIONE_KEY);
+		} catch (ServiceException | IOException e) {
 			logError(e);
 			throw e;
 		}

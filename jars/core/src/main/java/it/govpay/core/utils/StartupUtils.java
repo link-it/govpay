@@ -58,6 +58,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.StartupException;
 import it.govpay.core.utils.logger.Log4JUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
@@ -182,12 +183,9 @@ public class StartupUtils {
 			ContextThreadLocal.set(ctx);
 		} catch (Exception e) {
 			LogUtils.logError(log, "Errore durante predisposizione del contesto: {}, {}", e.getMessage(), e);
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e1) {
-					LogUtils.logError(log, "Errore durante predisposizione del contesto:  {}, {}", e1.getMessage(), e1);
-				}
+			if(ctx != null){
+				MessaggioDiagnosticoUtils.log(log, ctx);
+			}
 			throw new StartupException(MessageFormat.format(MSG_ERRORE_INIZIALIZZAZIONE_DI_GOVPAY_FALLITA, versioneGovPay, e.getMessage()), e);
 		}
 

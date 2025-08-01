@@ -23,7 +23,6 @@ package it.govpay.core.business;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -38,6 +37,8 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Iuv.TipoIUV;
 
 public class Iuv {
@@ -48,7 +49,7 @@ public class Iuv {
 		// donothing
 	}
 
-	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, BasicBD bd) throws GovPayException, ServiceException, UtilsException {
+	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, BasicBD bd) throws GovPayException, ServiceException {
 
 		// Build prefix
 		IContext ctx = ContextThreadLocal.get();
@@ -76,7 +77,7 @@ public class Iuv {
 					try {
 						Long.parseLong(prefix);
 					} catch (NumberFormatException e) {
-						ctx.getApplicationLogger().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", appContext.getPagamentoCtx().getAllIuvPropsString(applicazione));
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_GENERAZIONE_IUV_PREFIX_FAIL, dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", appContext.getPagamentoCtx().getAllIuvPropsString(applicazione));
 						throw new GovPayException(EsitoOperazione.VER_028,prefix, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), dominio.getIuvPrefix());
 					}
 				}
@@ -85,7 +86,7 @@ public class Iuv {
 				throw new GovPayException("Generazione di IUV di tipo ISO11694 non supportata. Verificare la configurazione.", EsitoOperazione.INTERNAL);
 			}
 
-			ctx.getApplicationLogger().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_GENERAZIONE_IUV_OK, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 
 			log.debug("Generazione dello IUV di tipo [{}] per il versamento [Id: {}, IdA2A: {}, IdDominio: {}] completata IUV: [{}].", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio(), iuv.getIuv());
 
@@ -107,9 +108,9 @@ public class Iuv {
 		return TipoIUV.NUMERICO;
 	}
 
-	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) throws UtilsException {
+	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) {
 		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode())) {
-			ContextThreadLocal.get().getApplicationLogger().log("iuv.checkIUVNumericoWarn", dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_CHECK_IUV_NUMERICO_WARN, dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
 		}
 	}
 

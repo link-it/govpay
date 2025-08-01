@@ -80,6 +80,8 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotificaException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -162,23 +164,19 @@ public class RtUtils extends NdpValidationUtils {
 		if(esitoPagamento != null) {
 			String name = esitoPagamento.name();
 			switch (esitoPagamento) {
-			case DECORRENZA_TERMINI_PARZIALE:
-			case PAGAMENTO_ESEGUITO:
-			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+			case DECORRENZA_TERMINI_PARZIALE, PAGAMENTO_ESEGUITO, PAGAMENTO_PARZIALMENTE_ESEGUITO:
 				if(rt.getDatiSingoloPagamento().size() != rpt.getDatiSingoloVersamento().size()) {
 					esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
 					return;
 				}
 				break;
-			case DECORRENZA_TERMINI:
-			case PAGAMENTO_NON_ESEGUITO:
-				if(rt.getDatiSingoloPagamento().size() != 0 && rt.getDatiSingoloPagamento().size() != rpt.getDatiSingoloVersamento().size()) {
+			case DECORRENZA_TERMINI, PAGAMENTO_NON_ESEGUITO:
+				if(!rt.getDatiSingoloPagamento().isEmpty() && rt.getDatiSingoloPagamento().size() != rpt.getDatiSingoloVersamento().size()) {
 					esito.addErrore(MessageFormat.format("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo {0}", name), true);
 					return;
 				}
 				break;
-			case IN_CORSO:
-			case RIFIUTATO:
+			case IN_CORSO, RIFIUTATO:
 				//Stati interni. Non possono essere stati dell'RPT
 				break;
 			}
@@ -406,30 +404,25 @@ public class RtUtils extends NdpValidationUtils {
 				//EsitoPagamento nuovoEsitoPagamento = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento())
 				
 				switch (rpt.getEsitoPagamento()) {
-				case IN_CORSO:
-				case PAGAMENTO_NON_ESEGUITO:
-				case DECORRENZA_TERMINI:
-				case RIFIUTATO:
+				case IN_CORSO, PAGAMENTO_NON_ESEGUITO, DECORRENZA_TERMINI, RIFIUTATO:
 					break;
-				case DECORRENZA_TERMINI_PARZIALE:
-				case PAGAMENTO_ESEGUITO:
-				case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+				case DECORRENZA_TERMINI_PARZIALE, PAGAMENTO_ESEGUITO, PAGAMENTO_PARZIALMENTE_ESEGUITO:
 					throw new NdpException(FaultPa.PAA_RT_DUPLICATA, MessageFormat.format("Aggiornamento di RT in pagamenti con esito {0} non supportata.", rpt.getEsitoPagamento()), rpt.getCodDominio());
 				}
 			}
 			
 			if(esito.validato && !esito.errori.isEmpty()) {
 				if(recupero)
-					ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_VALIDAZIONE_RT_WARN, esito.getDiagnostico());
 				else 
-					ctx.getApplicationLogger().log("pagamento.validazioneRtWarn", esito.getDiagnostico());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_VALIDAZIONE_RT_WARN, esito.getDiagnostico());
 			} 
 			
 			if (!esito.validato) {
 				if(recupero)
-					ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtFail", esito.getDiagnostico());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_VALIDAZIONE_RT_FAIL, esito.getDiagnostico());
 				else 
-					ctx.getApplicationLogger().log("pagamento.validazioneRtFail", esito.getDiagnostico());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_VALIDAZIONE_RT_FAIL, esito.getDiagnostico());
 				
 				rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 				rpt.setDescrizioneStato(esito.getFatal());
@@ -449,15 +442,15 @@ public class RtUtils extends NdpValidationUtils {
 			log.info("Acquisizione RT per un importo di {}", paymentAmount);
 			
 			if(recupero) {
-				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", receiptId));
-				appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", paymentAmount.toString()));
-				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", rptEsito.toString()));
-				ctx.getApplicationLogger().log("rt.rtRecuperoAcquisizione");
+				appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_MESSAGGIO_RICEVUTA, receiptId));
+				appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IMPORTO, paymentAmount.toString()));
+				appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_ESITO_PAGAMENTO, rptEsito.toString()));
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RT_RECUPERO_ACQUISIZIONE);
 			} else {
-				appContext.getRequest().addGenericProperty(new Property("codMessaggioRicevuta", receiptId));
-				appContext.getRequest().addGenericProperty(new Property("importo", paymentAmount.toString()));
-				appContext.getRequest().addGenericProperty(new Property("codEsitoPagamento", rptEsito.toString()));
-				ctx.getApplicationLogger().log("rt.acquisizione");
+				appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_MESSAGGIO_RICEVUTA, receiptId));
+				appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IMPORTO, paymentAmount.toString()));
+				appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_ESITO_PAGAMENTO, rptEsito.toString()));
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE);
 			}
 			
 			rpt.setCodMsgRicevuta(receiptId);
@@ -570,14 +563,14 @@ public class RtUtils extends NdpValidationUtils {
 							LogUtils.logWarn(log, irregolarita);
 						}
 						if(recupero)
-							ctx.getApplicationLogger().log("pagamento.recuperoRtAcquisizionePagamentoAnomalo", iur, StringUtils.join(anomalie,"\n"));
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_ACQUISIZIONE_PAGAMENTO_ANOMALO, iur, StringUtils.join(anomalie,"\n"));
 						else 
-							ctx.getApplicationLogger().log("pagamento.acquisizionePagamentoAnomalo", iur, StringUtils.join(anomalie,"\n"));
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_PAGAMENTO_ANOMALO, iur, StringUtils.join(anomalie,"\n"));
 						
 						irregolare = true;
 						
 					}
-					ctx.getApplicationLogger().log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE_PAGAMENTO, pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 					versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 					pagamentiBD.insertPagamento(pagamento);
 					
@@ -586,7 +579,7 @@ public class RtUtils extends NdpValidationUtils {
 					}
 				}
 				else {
-					ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_AGGIORNAMENTO_PAGAMENTO, pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 					pagamentiBD.updatePagamento(pagamento);
 				}
 				
@@ -611,7 +604,7 @@ public class RtUtils extends NdpValidationUtils {
 				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 			}
 			
-			ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE_OK, versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 			log.info("RT Dominio[{}], IUV[{}], CCP [{}] acquisita con successo.", codDominio, iuv, ccp);
 			
 			return rpt;
@@ -653,13 +646,13 @@ public class RtUtils extends NdpValidationUtils {
 	}
 	
 	public static Pagamento creaNuovoPagamento(String iuv, String receiptId, IContext ctx, BDConfigWrapper configWrapper,
-			Date dataPagamento, Rpt rpt, BigDecimal transferAmount, int idTransfer, SingoloVersamento singoloVersamento, BigDecimal commissioniApplicatePSP) throws ServiceException, UtilsException {
+			Date dataPagamento, Rpt rpt, BigDecimal transferAmount, int idTransfer, SingoloVersamento singoloVersamento, BigDecimal commissioniApplicatePSP) throws ServiceException {
 		return creaNuovoPagamento(iuv, receiptId, ctx, configWrapper, dataPagamento, rpt, transferAmount, idTransfer, singoloVersamento, commissioniApplicatePSP, null);
 	}
 
 	public static Pagamento creaNuovoPagamento(String iuv, String receiptId, IContext ctx, BDConfigWrapper configWrapper,
 			Date dataPagamento, Rpt rpt, BigDecimal transferAmount, int idTransfer, SingoloVersamento singoloVersamento, BigDecimal commissioniApplicatePSP,
-			Dominio dominioSingoloVersamento) throws ServiceException, UtilsException {
+			Dominio dominioSingoloVersamento) throws ServiceException {
 		Pagamento pagamento = new Pagamento();
 		if(singoloVersamento.getIdTributo() != null && singoloVersamento.getTributo(configWrapper).getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)) {
 			pagamento.setTipo(TipoPagamento.MBT);
@@ -669,7 +662,7 @@ public class RtUtils extends NdpValidationUtils {
 					pagamento.setTipo(TipoPagamento.ENTRATA);
 				} else {
 					pagamento.setTipo(TipoPagamento.ENTRATA_PA_NON_INTERMEDIATA);
-					ctx.getApplicationLogger().log("pagamento.entrataPaNonIntermediata", dominioSingoloVersamento.getCodDominio(), iuv, receiptId, transferAmount.toString());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ENTRATA_PA_NON_INTERMEDIATA, dominioSingoloVersamento.getCodDominio(), iuv, receiptId, transferAmount.toString());
 				}
 			} else {
 				pagamento.setTipo(TipoPagamento.ENTRATA);
@@ -694,8 +687,7 @@ public class RtUtils extends NdpValidationUtils {
 			Versamento versamento, VersamentiBD versamentiBD, String iuvPagamento, BigDecimal totalePagato,
 			Date dataPagamento, boolean updateAnomalo) throws ServiceException, NotificaException {
 		switch (versamento.getStatoVersamento()) {
-		case PARZIALMENTE_ESEGUITO:
-		case ESEGUITO:
+		case PARZIALMENTE_ESEGUITO, ESEGUITO:
 			// aggiornamento informazioni pagamento, stato promemoria e avvisatura
 			versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO
 					, true, null, true, null, true, null, versamento.getStatoVersamento(), versamento.getDescrizioneStato(), updateAnomalo, versamento.isAnomalo());
@@ -749,8 +741,7 @@ public class RtUtils extends NdpValidationUtils {
 		switch (rpt.getEsitoPagamento()) {
 		case PAGAMENTO_ESEGUITO:
 			switch (versamento.getStatoVersamento()) {
-				case ANNULLATO:
-				case NON_ESEGUITO:
+				case ANNULLATO, NON_ESEGUITO:
 					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
 					if(irregolare) {
 						versamento.setAnomalo(true);
@@ -767,11 +758,9 @@ public class RtUtils extends NdpValidationUtils {
 					updateAnomalo = true;
 			}
 			break;
-		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-		case DECORRENZA_TERMINI_PARZIALE:
+		case PAGAMENTO_PARZIALMENTE_ESEGUITO, DECORRENZA_TERMINI_PARZIALE:
 			switch (versamento.getStatoVersamento()) {
-				case ANNULLATO:
-				case NON_ESEGUITO:
+				case ANNULLATO, NON_ESEGUITO:
 					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
 					if(irregolare) {
 						versamento.setAnomalo(true);
@@ -788,11 +777,9 @@ public class RtUtils extends NdpValidationUtils {
 					updateAnomalo = true;						
 			}
 			break;
-		case DECORRENZA_TERMINI:
-		case PAGAMENTO_NON_ESEGUITO:
+		case DECORRENZA_TERMINI, PAGAMENTO_NON_ESEGUITO:
 			break;
-		case IN_CORSO:
-		case RIFIUTATO:
+		case IN_CORSO, RIFIUTATO:
 			// Stati interni. Non possono essere stati RPT forniti dal Nodo
 			break;
 		default:

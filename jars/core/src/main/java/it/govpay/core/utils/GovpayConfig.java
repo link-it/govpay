@@ -215,6 +215,8 @@ public class GovpayConfig {
 
 	private boolean verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
 	
+	private List<String> navSondaPagoPA;
+	
 	private String warName = Costanti.GOVPAY.toLowerCase();
 
 	public GovpayConfig(InputStream is, String warName) throws IOException {
@@ -334,6 +336,8 @@ public class GovpayConfig {
 		this.risorseCustomBaseURLProperties = new Properties();
 
 		this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = false;
+		
+		this.navSondaPagoPA = new ArrayList<>();
 
 		// Recupero il property all'interno dell'EAR
 		this.props = new Properties[2];
@@ -784,6 +788,14 @@ public class GovpayConfig {
 			String verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.verificaPendenzaMandatoria.enabled", this.props, false, log);
 			if(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString != null && Boolean.valueOf(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString))
 				this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = true;
+			
+			String navSondaPagoPAS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
+			if(StringUtils.isNotEmpty(navSondaPagoPAS)) {
+				String[] split = navSondaPagoPAS.split(",");
+				if(split != null && split.length > 0) {
+					this.navSondaPagoPA = Arrays.asList(split);
+				}
+			}
 
 		} catch (PropertyNotFoundException | InvalidPropertyException e) {
 			LogUtils.logError(log, MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
@@ -1341,4 +1353,8 @@ public class GovpayConfig {
 	public boolean isVerificaPendenzaMandatoriaInAcquisizioneRendicontazioni() {
 		return verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
 	}
+	
+	public List<String> getNavSondaPagoPA() {
+        return navSondaPagoPA;
+    }
 }

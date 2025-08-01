@@ -65,6 +65,8 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.Versamento.StatoPagamento;
@@ -74,7 +76,7 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 public class Versamento  {
 
 	private static final String ECCEZIONE_NON_SPECIFICATA = "- Non specificata -";
-	private static final String LOG_KEY_VERSAMENTO_ANNULLA_KO = "versamento.annullaKo";
+	
 	private static Logger log = LoggerWrapperFactory.getLogger(Versamento.class);
 
 	public Versamento() {
@@ -102,9 +104,9 @@ public class Versamento  {
 		try {
 			Dominio dominio = versamento.getDominio(configWrapper);
 			Applicazione applicazione = versamento.getApplicazione(configWrapper);
-			ctx.getApplicationLogger().log("versamento.validazioneSemantica", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 			VersamentoUtils.validazioneSemantica(versamento);
-			ctx.getApplicationLogger().log("versamento.validazioneSemanticaOk", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 			if(bd == null) {
 				versamentiBD = new VersamentiBD(configWrapper);
@@ -135,9 +137,9 @@ public class Versamento  {
 					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
 
-				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamento", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, log);
-				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamentoOk", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				// controllo se sono stati aggiornati dei campi significativi per l'ACA
 				boolean aggiornaDataUltimaModificaACA = VersamentoUtils.comunicaAggiornamentoPendenzaAllArchivioCentralizzato(versamento, versamentoLetto);
@@ -162,7 +164,7 @@ public class Versamento  {
 					if(versamento.getId()==null)
 						versamento.setId(versamentoLetto.getId());
 	
-					ctx.getApplicationLogger().log("versamento.aggioramentoOk", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_AGGIORAMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 	
 					log.info("Versamento ({}) dell'applicazione ({}) aggiornato", versamento.getCodVersamentoEnte(), applicazione.getCodApplicazione());
 				} else {
@@ -300,7 +302,7 @@ public class Versamento  {
 
 				if(salvataggioSuDB) {
 					versamentiBD.insertVersamento(versamento);
-					ctx.getApplicationLogger().log("versamento.inserimentoOk", applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_INSERIMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 					log.info("Versamento ({}) dell''applicazione ({}) inserito", versamento.getCodVersamentoEnte(), applicazione.getCodApplicazione());
 	
 					// avvio il batch di gestione dei promemoria
@@ -376,9 +378,9 @@ public class Versamento  {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		if(!appContext.hasCorrelationId()) appContext.setCorrelationId(annullaVersamentoDTO.getCodApplicazione() + annullaVersamentoDTO.getCodVersamentoEnte());
-		appContext.getRequest().addGenericProperty(new Property("codApplicazione", annullaVersamentoDTO.getCodApplicazione()));
-		appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", annullaVersamentoDTO.getCodVersamentoEnte()));
-		ctx.getApplicationLogger().log("versamento.annulla");
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_APPLICAZIONE, annullaVersamentoDTO.getCodApplicazione()));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_VERSAMENTO_ENTE, annullaVersamentoDTO.getCodVersamentoEnte()));
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_ANNULLA);
 
 		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
 			throw new NotAuthorizedException(MessageFormat.format("Applicazione chiamante [{0}] non e'' proprietaria del versamento", annullaVersamentoDTO.getApplicazione().getCodApplicazione()));
@@ -406,7 +408,7 @@ public class Versamento  {
 				// Se è già annullato non devo far nulla.
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 					log.info("Versamento ({}) dell''applicazione ({}) gia' annullato. Aggiornamento non necessario.",	versamentoLetto.getCodVersamentoEnte(), codApplicazione);
-					ctx.getApplicationLogger().log("versamento.annullaOk");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_ANNULLA_OK);
 					return;
 				}
 
@@ -419,7 +421,7 @@ public class Versamento  {
 					versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null);
 					versamentiBD.updateVersamento(versamentoLetto);
 					log.info("Versamento ({}) dell'applicazione ({}) annullato.", versamentoLetto.getCodVersamentoEnte(), codApplicazione);
-					ctx.getApplicationLogger().log("versamento.annullaOk");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_ANNULLA_OK);
 					return;
 				}
 
@@ -454,18 +456,16 @@ public class Versamento  {
 		}
 	}
 
-	private void handleAnnullamentoException(IContext ctx, Exception e) throws GovPayException, NotAuthorizedException, UtilsException {
-		if(e instanceof GovPayException) {
-			GovPayException gpe = (GovPayException) e;
-			ctx.getApplicationLogger().log(LOG_KEY_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
+	private void handleAnnullamentoException(IContext ctx, Exception e) throws GovPayException, NotAuthorizedException {
+		if(e instanceof GovPayException gpe) {
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
 			throw (GovPayException) e;
-		} else if(e instanceof NotAuthorizedException) { 
-			NotAuthorizedException nae = (NotAuthorizedException) e;
-			ctx.getApplicationLogger().log(LOG_KEY_VERSAMENTO_ANNULLA_KO, "NOT_AUTHORIZED", nae.getDetails(), nae.getMessage() != null ? nae.getMessage() : ECCEZIONE_NON_SPECIFICATA);
+		} else if(e instanceof NotAuthorizedException nae) { 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_ANNULLA_KO, "NOT_AUTHORIZED", nae.getDetails(), nae.getMessage() != null ? nae.getMessage() : ECCEZIONE_NON_SPECIFICATA);
 			throw nae;
 		} else {
 			GovPayException gpe = new GovPayException(e);
-			ctx.getApplicationLogger().log(LOG_KEY_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
 			throw gpe;
 		}
 	}
@@ -498,7 +498,7 @@ public class Versamento  {
 		VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 
 		if(codApplicazione != null && codVersamentoEnte != null) {
-			ctx.getApplicationLogger().log("rpt.acquisizioneVersamentoRef", codApplicazione, codVersamentoEnte);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_ACQUISIZIONE_VERSAMENTO_REF, codApplicazione, codVersamentoEnte);
 			Applicazione applicazione = null;
 			try {
 				applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
@@ -520,7 +520,7 @@ public class Versamento  {
 
 		// Versamento per riferimento codDominio/iuv
 		if(codDominio != null && iuv != null) {
-			ctx.getApplicationLogger().log("rpt.acquisizioneVersamentoRefIuv", codDominio, iuv);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_ACQUISIZIONE_VERSAMENTO_REF_IUV, codDominio, iuv);
 
 			Dominio dominio = null;
 			try {
@@ -558,7 +558,7 @@ public class Versamento  {
 
 		// Versamento per riferimento codApplicazione/bundlekey
 		if(codApplicazione != null && bundlekey != null) {
-			ctx.getApplicationLogger().log("rpt.acquisizioneVersamentoRefBundle", codApplicazione, bundlekey, (codDominio != null ? codDominio : GpContext.NOT_SET), (codUnivocoDebitore != null ? codUnivocoDebitore : GpContext.NOT_SET));
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_ACQUISIZIONE_VERSAMENTO_REF_BUNDLE, codApplicazione, bundlekey, (codDominio != null ? codDominio : GpContext.NOT_SET), (codUnivocoDebitore != null ? codUnivocoDebitore : GpContext.NOT_SET));
 			try {
 				versamentoModel = versamentiBD.getVersamentoByBundlekey(AnagraficaManager.getApplicazione(configWrapper, codApplicazione).getId(), bundlekey, codDominio, codUnivocoDebitore);
 			} catch (NotFoundException e) {
