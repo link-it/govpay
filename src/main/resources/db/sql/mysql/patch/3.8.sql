@@ -820,21 +820,36 @@ DROP table iuv;
 CREATE INDEX idx_versamenti_stati ON versamenti(stato_versamento, stato_pagamento);
 CREATE INDEX idx_pagamenti_tipo_stato_id ON pagamenti(tipo, stato, id_singolo_versamento);
 
+-- UPDATE versamenti v
+-- SET v.stato_pagamento = 'INCASSATO'
+-- WHERE v.id NOT IN (
+--    SELECT DISTINCT v1.id
+--    FROM versamenti v1
+--    JOIN singoli_versamenti sv ON v1.id = sv.id_versamento
+--    JOIN pagamenti p ON sv.id = p.id_singolo_versamento
+--    WHERE p.tipo = 'ENTRATA' AND p.stato = 'PAGATO'
+-- )
+-- AND v.stato_pagamento != 'INCASSATO'
+-- AND v.stato_versamento = 'ESEGUITO';
+
 UPDATE versamenti v
-SET v.stato_pagamento = 'INCASSATO'
-WHERE v.id NOT IN (
+LEFT JOIN (
     SELECT DISTINCT v1.id
     FROM versamenti v1
     JOIN singoli_versamenti sv ON v1.id = sv.id_versamento
     JOIN pagamenti p ON sv.id = p.id_singolo_versamento
     WHERE p.tipo = 'ENTRATA' AND p.stato = 'PAGATO'
-)
-AND v.stato_pagamento != 'INCASSATO'
-AND v.stato_versamento = 'ESEGUITO';
+) AS pagati ON v.id = pagati.id
+SET v.stato_pagamento = 'INCASSATO'
+WHERE pagati.id IS NULL
+  AND v.stato_pagamento != 'INCASSATO'
+  AND v.stato_versamento = 'ESEGUITO';
+   
 
 -- Eliminazione degli indici dopo l'UPDATE
-DROP INDEX idx_versamenti_stati;
-DROP INDEX idx_pagamenti_tipo_stato_id;
+
+ALTER TABLE versamenti DROP INDEX idx_versamenti_stati;
+ALTER TABLE pagamenti DROP INDEX idx_pagamenti_tipo_stato_id;
 
 
 -- 20/03/2025 Indice mancante tabella rpt
