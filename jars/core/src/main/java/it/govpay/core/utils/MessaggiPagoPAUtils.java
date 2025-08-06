@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -175,7 +176,12 @@ public class MessaggiPagoPAUtils {
 			if(ctTransferPA.getRichiestaMarcaDaBollo() != null) {
 				CtDatiMarcaBolloDigitale datiMarcaBolloDigitale = new CtDatiMarcaBolloDigitale();
 				
-				datiMarcaBolloDigitale.setHashDocumento(new String(ctTransferPA.getRichiestaMarcaDaBollo().getHashDocumento()));
+				byte[] hashBytes = ctTransferPA.getRichiestaMarcaDaBollo().getHashDocumento();
+
+				// Conversione del digest in stringa Base64 per l'inserimento XML
+				String digestBase64 = Base64.getEncoder().encodeToString(hashBytes);
+				
+				datiMarcaBolloDigitale.setHashDocumento(digestBase64);
 				datiMarcaBolloDigitale.setProvinciaResidenza(ctTransferPA.getRichiestaMarcaDaBollo().getProvinciaResidenza());
 				datiMarcaBolloDigitale.setTipoBollo(ctTransferPA.getRichiestaMarcaDaBollo().getTipoBollo());
 				
