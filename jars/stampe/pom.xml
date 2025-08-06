@@ -107,10 +107,6 @@
 					<groupId>org.apache.commons</groupId>
    					<artifactId>commons-lang3</artifactId>
 				</exclusion>
-<!-- 				<exclusion> -->
-<!-- 					<artifactId>bcprov-jdk14</artifactId> -->
-<!-- 					<groupId>bouncycastle</groupId> -->
-<!-- 				</exclusion> -->
 			</exclusions>
 		</dependency>
 		
@@ -139,7 +135,16 @@
 					<groupId>org.jfree</groupId>
   					<artifactId>jfreechart</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>commons-beanutils</groupId>
+		    		<artifactId>commons-beanutils</artifactId>
+				</exclusion>
 		    </exclusions>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
 		</dependency>
 
 		<dependency>

@@ -32,7 +32,7 @@
 			<properties>
 				<javaVersion>11</javaVersion>
 				<!-- cxf -->
-				<cxf.version>3.6.5</cxf.version>
+				<cxf.version>3.6.7</cxf.version>
 				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 				<jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
 			</properties>
@@ -72,27 +72,28 @@
 		<spring.version>5.3.39</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.8.15</spring.security.version>
+		<spring.security.version>5.8.16</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.4</spring.ldap.version>
 		
 		<!-- nimbus-jose-jwt version -->
-		<nimbus-jose-jwt.version>9.39.3</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
 		
 		<!-- joda time -->
-		<joda-time.version>2.10</joda-time.version>
+		<joda-time.version>2.14.0</joda-time.version>
 
 		<!-- Commons -->
 		<commons-jcs-core.version>2.2.1</commons-jcs-core.version>
-		<commons.csv.version>1.11.0</commons.csv.version>
-		<commons.codec.version>1.17.0</commons.codec.version>
-		<commons.io.version>2.16.1</commons.io.version>
-		<commons.text.version>1.12.0</commons.text.version>
+		<commons.csv.version>1.14.0</commons.csv.version>
+		<commons.codec.version>1.18.0</commons.codec.version>
+		<commons.io.version>2.19.0</commons.io.version>
+		<commons.text.version>1.13.1</commons.text.version>
 		<commons.lang.version>2.6</commons.lang.version>
-		<commons.lang3.version>3.14.0</commons.lang3.version>
-		<commons.pool2.version>2.12.0</commons.pool2.version>
+		<commons.lang3.version>3.18.0</commons.lang3.version>
+		<commons.pool2.version>2.12.1</commons.pool2.version>
 		<commons.email.version>1.6.0</commons.email.version>
+		<commons.beanutils.version>1.11.0</commons.beanutils.version>
 		
 		<!-- xmlsec -->
 		<xmlsec.version>2.3.4</xmlsec.version>
@@ -216,7 +217,7 @@
         
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
-		<owasp.plugin.version>12.1.0</owasp.plugin.version>
+		<owasp.plugin.version>12.1.3</owasp.plugin.version>
 		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnAnyVulnerability>false</owasp.plugin.failBuildOnAnyVulnerability>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
@@ -1478,6 +1479,12 @@
 					<artifactId>javassist</artifactId>
 				    <version>${javassist.version}</version>
 				</dependency>
+				
+				<dependency>
+				    <groupId>commons-beanutils</groupId>
+				    <artifactId>commons-beanutils</artifactId>
+				    <version>${commons.beanutils.version}</version>
+				</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -1588,13 +1595,13 @@
 	        <plugin>
 	            <groupId>com.github.spotbugs</groupId>
 	            <artifactId>spotbugs-maven-plugin</artifactId>
-	            <version>4.8.6.0</version>
+	            <version>4.9.3.2</version>
 	            <configuration>
 	                <plugins>
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>
 	                        <artifactId>findsecbugs-plugin</artifactId>
-	                        <version>1.12.0</version>
+	                        <version>1.14.0</version>
 	                    </plugin>
 	                </plugins>
 	            </configuration>
