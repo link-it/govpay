@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -260,8 +261,10 @@ public class CtPaymentPAV2Builder {
 				}
 			} else { // MBT
 				CtRichiestaMarcaDaBollo marcaBollo = new CtRichiestaMarcaDaBollo();
-				if(singoloVersamento.getHashDocumento() != null)
-					marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
+				if(singoloVersamento.getHashDocumento() != null) {
+					byte[] hashBytes = Base64.getDecoder().decode(singoloVersamento.getHashDocumento());
+					marcaBollo.setHashDocumento(hashBytes);
+				}
 				marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 				if(singoloVersamento.getTipoBollo() != null)
 					marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
