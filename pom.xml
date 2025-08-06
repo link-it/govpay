@@ -68,11 +68,12 @@
 		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
-		<spring.gov4j.version>5.3.39-gov4j-1</spring.gov4j.version>
+		<spring.gov4j.version>5.3.39-gov4j-2</spring.gov4j.version>
 		<spring.version>5.3.39</spring.version>
 		
 		<!-- Spring Security -->
 		<spring.security.version>5.8.16</spring.security.version>
+		<spring.security.gov4j.version>5.8.16-gov4j-1</spring.security.gov4j.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.4</spring.ldap.version>
@@ -1178,9 +1179,19 @@
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-expression</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-security-crypto</artifactId>
+					</exclusion>
 				</exclusions>
             </dependency>
             
+            <dependency>
+            	<groupId>org.springframework.security</groupId>
+            	<artifactId>spring-security-crypto</artifactId>
+            	<version>${spring.security.gov4j.version}</version>
+        	</dependency>
+                        
             <dependency>
             	<groupId>org.springframework.security</groupId>
             	<artifactId>spring-security-core</artifactId>
@@ -1625,6 +1636,10 @@
 			<id>linkit-thirdparty</id>
 			<url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
 		</repository>
+		<repository>
+			<id>maven2-linkit-thirdparty</id>
+			<url>https://repo1.maven.org/maven2/org/gov4j/thirdparty/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -1638,6 +1653,10 @@
         <pluginRepository>
             <id>linkit-thirdparty</id>
             <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>maven2-linkit-thirdparty</id>
+            <url>https://repo1.maven.org/maven2/org/gov4j/thirdparty/</url>
         </pluginRepository>
 	</pluginRepositories>
 </project>
