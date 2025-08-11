@@ -157,7 +157,7 @@ And match response == read('msg/pendenza-get.json')
 
 # svuota cache messaggi
 * call read('classpath:utils/smtpsym-leggi-messaggi.feature')
-* match response.count > 0
+* assert response.items.length > 0
 And match response.items[0].Content.Headers.To[0] == pendenzaPut.soggettoPagatore.email
 
 # svuota cache messaggi
@@ -230,7 +230,7 @@ And match response ==
 
 # svuota cache messaggi
 * call read('classpath:utils/smtpsym-leggi-messaggi.feature')
-* match response.count > 0
+* assert response.items.length > 0
 And match response.items[0].Content.Headers.To[0] == pendenzaPut.soggettoPagatore.email
 
 # svuota cache messaggi
