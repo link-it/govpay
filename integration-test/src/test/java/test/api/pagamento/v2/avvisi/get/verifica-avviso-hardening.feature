@@ -137,6 +137,7 @@ And match response == pendenzaCreataMSG
 * def uuidPendenza = response.UUID
 
 # * configure cookies = null
+* configure cookies = {}
 
 Scenario: Verifica avviso ok con recaptcha
 
