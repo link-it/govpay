@@ -170,8 +170,8 @@
 		</dependency>
 
         <dependency>
-			<groupId>org.openspcoop2.utils</groupId>
-            <artifactId>openspcoop2_utils-core</artifactId>
+			<groupId>org.gov4j.govway</groupId>
+            <artifactId>openspcoop2_utils-base</artifactId>
         </dependency>
 
 		<dependency>

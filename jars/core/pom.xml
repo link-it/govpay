@@ -138,79 +138,74 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-logger</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-transport</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-csv</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-sonde</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-date</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-resources</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-service</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-regexp</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-mail</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-random</artifactId>
 		</dependency>
 
 		<dependency>
-    		<groupId>org.openspcoop2.utils</groupId>
+    		<groupId>org.gov4j.govway</groupId>
 		    <artifactId>openspcoop2_utils-json</artifactId>
 		</dependency>
-
-		 <dependency>
-         	<groupId>commons-lang</groupId>
-         	<artifactId>commons-lang</artifactId>
-		 </dependency>
 
 		<!-- SPRING -->
 		<dependency>

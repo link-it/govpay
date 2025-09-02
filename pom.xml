@@ -12,6 +12,10 @@
 			<id>govpay-ear</id>
 			<properties>
 				<javaVersion>21</javaVersion>
+				
+				<!-- versioni jar -->
+				<!-- angus-mail-->
+				<angus-mail.version>2.0.4</angus-mail.version>
 			</properties>
 			<modules>
 				<module>jars</module>
@@ -62,7 +66,8 @@
 				<web-console-tomcat-war-name>govpay-console</web-console-tomcat-war-name>
 
 				<!-- versioni jar -->
-				<angus-mail.version>2.0.3</angus-mail.version>
+				<!-- angus-mail-->
+				<angus-mail.version>2.0.4</angus-mail.version>
 			</properties>
 			<modules>
 				<module>jars</module>
@@ -88,44 +93,42 @@
 		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
 
 		<!-- op2 -->
-		<openspcoop2.version>3.4.1</openspcoop2.version>
+		<openspcoop2.version>3.4.2</openspcoop2.version>
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
 		<logger.version>2.25.0</logger.version>
 
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.69</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.71</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.6.16</swagger.version>
-		<swagger.v3.version>2.2.34</swagger.v3.version>
-		<swagger.parser.v3.version>2.1.30</swagger.parser.v3.version>
-		<snakeyaml.version>2.4</snakeyaml.version>
+		<swagger.v3.version>2.2.36</swagger.v3.version>
+		<swagger.parser.v3.version>2.1.32</swagger.parser.v3.version>
+		<snakeyaml.version>2.5</snakeyaml.version>
 		<guava.version>33.4.8-jre</guava.version>
 
 		<!-- cxf -->
-		<cxf.version>4.1.2</cxf.version>
+		<cxf.version>4.1.3</cxf.version>
 		<cxf.xjc.runtime.version>4.1.0</cxf.xjc.runtime.version>
 
-		<!-- angus-mail-->
-		<angus-mail.version>1.1.0</angus-mail.version>
-
 		<!-- jackson -->
-		<jackson.version>2.19.1</jackson.version>
+		<jackson.version>2.20.0</jackson.version>
+		<jackson-annotations.version>2.20</jackson-annotations.version>
 
 		<!-- Jersey -->
-		<jersey.version>3.1.7</jersey.version>
+		<jersey.version>3.1.11</jersey.version>
 
 		<!-- Spring -->
-		<spring.version>6.2.8</spring.version>
+		<spring.version>6.2.10</spring.version>
 
 		<!-- Spring Security -->
-		<spring.security.version>6.5.1</spring.security.version>
+		<spring.security.version>6.5.3</spring.security.version>
 
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>3.3.1</spring.ldap.version>
+		<spring.ldap.version>3.3.3</spring.ldap.version>
 
 		<!-- nimbus-jose-jwt version -->
-		<nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.4.2</nimbus-jose-jwt.version>
 
 		<!-- joda time -->
 		<joda-time.version>2.14.0</joda-time.version>
@@ -133,18 +136,17 @@
 		<!-- Commons -->
 		<commons-jcs-core.version>3.2.1</commons-jcs-core.version>
 		<commons.csv.version>1.14.0</commons.csv.version>
-		<commons.codec.version>1.18.0</commons.codec.version>
-		<commons.io.version>2.19.0</commons.io.version>
-		<commons.text.version>1.13.1</commons.text.version>
-		<commons.lang.version>2.6</commons.lang.version>
+		<commons.codec.version>1.19.0</commons.codec.version>
+		<commons.io.version>2.20.0</commons.io.version>
+		<commons.text.version>1.14.0</commons.text.version>
 		<commons.lang3.version>3.18.0</commons.lang3.version>
 		<commons.pool2.version>2.12.1</commons.pool2.version>
-		<commons.net.version>3.11.1</commons.net.version>
+		<commons.net.version>3.12.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
 		<commons.beanutils.version>1.11.0</commons.beanutils.version>
 
 		<!-- xmlsec -->
-		<xmlsec.version>4.0.3</xmlsec.version>
+		<xmlsec.version>4.0.4</xmlsec.version>
 
 		<!-- freemarker -->
 		<freemarker.version>2.3.34</freemarker.version>
@@ -191,8 +193,8 @@
 
 		<!-- Json Path -->
 		<json-path.version>2.9.0</json-path.version>
-		<json-smart.version>2.5.2</json-smart.version>
-		<accessors-smart.version>2.5.2</accessors-smart.version>
+		<json-smart.version>2.6.0</json-smart.version>
+		<accessors-smart.version>2.6.0</accessors-smart.version>
 
 		<!-- Base64 java8 migration class. -->
         <!-- Questo artefatto antico deve essere incluso nel pom perchè i progetti client generati
@@ -215,15 +217,15 @@
         <!-- Groovy -->
         <groovy.version>2.4.21</groovy.version>
         <!-- xmlgraphics-commons -->
-        <xmlgraphics.commons.version>2.10</xmlgraphics.commons.version>
+        <xmlgraphics.commons.version>2.11</xmlgraphics.commons.version>
         <!-- xmlgraphics-batik-bridge -->
-        <batik-bridge.version>1.17</batik-bridge.version>
+        <batik-bridge.version>1.19</batik-bridge.version>
         <!-- com.google.zxing.javase -->
         <com.google.zxing.javase.version>3.5.3</com.google.zxing.javase.version>
         <!-- dynamicreports-core -->
         <dynamicreports-core.version>6.20.1</dynamicreports-core.version>
         <!-- jasperreports -->
-        <jasperreports.version>6.21.4</jasperreports.version>
+        <jasperreports.version>6.21.5</jasperreports.version>
         <!-- barcode4j -->
         <barcode4j.version>2.1</barcode4j.version>
         <!-- ant version -->
@@ -507,12 +509,6 @@
 			</dependency>
 
 			<dependency>
-        		<groupId>commons-lang</groupId>
-        		<artifactId>commons-lang</artifactId>
-        		<version>${commons.lang.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.apache.commons</groupId>
     			<artifactId>commons-lang3</artifactId>
 				<version>${commons.lang3.version}</version>
@@ -526,188 +522,188 @@
 
 			<!-- dipendenze openspcoop -->
 			<dependency>
-				<groupId>org.openspcoop2</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_generic-project</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json date resources jmx mime jaxrs io service -->
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
-				<artifactId>openspcoop2_utils-core</artifactId>
+				<groupId>org.gov4j.govway</groupId>
+				<artifactId>openspcoop2_utils-base</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-beans</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-json</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-serialization</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-jaxb</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-cache</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-sql</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-jdbc</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-datasource</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-xml</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-id</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-logger</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-transport</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-csv</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-sonde</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-rest</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-openapi</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-xml2json</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-date</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-resources</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-jmx</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-mime</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-jaxrs</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-io</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-service</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-certificate</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-regexp</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-mail</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-crypt</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.openspcoop2.utils</groupId>
+				<groupId>org.gov4j.govway</groupId>
 				<artifactId>openspcoop2_utils-random</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
@@ -854,6 +850,22 @@
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.v3.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-jaxrs2-jakarta</artifactId>
+				<version>${swagger.v3.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>					
+					</exclusion>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+						<artifactId>jackson-jakarta-rs-json-provider</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
@@ -1046,6 +1058,10 @@
 						<groupId>io.swagger.core.v3</groupId>
 	            		<artifactId>swagger-jaxrs2</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>io.swagger.core.v3</groupId>
+						<artifactId>swagger-jaxrs2-jakarta</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 
@@ -1161,7 +1177,7 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
-				<version>${jackson.version}</version>
+				<version>${jackson-annotations.version}</version>
 			</dependency>
 
 			<dependency>
@@ -1173,6 +1189,12 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
 				<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+				<artifactId>jackson-jakarta-rs-json-provider</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 
@@ -1617,6 +1639,12 @@
 					<artifactId>javassist</artifactId>
 				    <version>${javassist.version}</version>
 				</dependency>
+				
+				<dependency>
+					<groupId>org.yaml</groupId>
+					<artifactId>snakeyaml</artifactId>
+					<version>${snakeyaml.version}</version>
+				</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -1625,7 +1653,7 @@
 			<plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-dependency-plugin</artifactId>
-			    <version>3.3.0</version>
+			    <version>3.8.1</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -1647,7 +1675,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.2.1</version>
 				<executions>
 					<execution>
 						<phase>initialize</phase>
@@ -1664,7 +1692,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+				<version>3.14.0</version>
 				<configuration>
 					<source>21</source>
 					<target>21</target>
@@ -1673,7 +1701,7 @@
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>2.2.6</version>
 				<executions>
 					<execution>
 						<id>get-the-git-infos</id>
@@ -1711,7 +1739,7 @@
 	        <plugin>
 	            <groupId>com.github.spotbugs</groupId>
 	            <artifactId>spotbugs-maven-plugin</artifactId>
-	            <version>4.9.3.2</version>
+	            <version>4.9.4.0</version>
 	            <configuration>
 	            	<!-- abilita insieme XML e HTML -->
     				<xmlOutput>true</xmlOutput>
@@ -1732,7 +1760,7 @@
             <plugin>
 		      <groupId>org.sonarsource.scanner.maven</groupId>
 		      <artifactId>sonar-maven-plugin</artifactId>
-		      <version>5.1.0.4751</version>
+		      <version>5.2.0.4988</version>
 		    </plugin>
 		</plugins>
 	</build>
@@ -1741,31 +1769,5 @@
 			<id>jaspersoft-repo</id>
 			<url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
 		</repository>
-		<repository>
-			<id>linkit-releases</id>
-			<url>https://maven.link.it/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>linkit-snapshot</id>
-			<url>https://maven.link.it/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>linkit-thirdparty</id>
-			<url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
-		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-            <id>linkit-releases</id>
-            <url>https://maven.link.it/content/repositories/public/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>linkit-snapshot</id>
-            <url>https://maven.link.it/content/repositories/snapshots/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>linkit-thirdparty</id>
-            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
-        </pluginRepository>
-	</pluginRepositories>
 </project>

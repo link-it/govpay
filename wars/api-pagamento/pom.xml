@@ -73,7 +73,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
 
