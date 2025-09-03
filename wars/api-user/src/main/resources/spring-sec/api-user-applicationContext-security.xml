@@ -11,6 +11,10 @@
         <global-method-security secured-annotations="enabled">
         </global-method-security>
         
+        <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		</b:bean>
+        
         <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
     		<b:property name="allowUrlEncodedSlash" value="true"/>
     		<b:property name="allowUrlEncodedPercent" value="true"/>
