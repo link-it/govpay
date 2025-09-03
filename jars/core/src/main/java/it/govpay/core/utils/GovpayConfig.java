@@ -789,7 +789,7 @@ public class GovpayConfig {
 			if(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString != null && Boolean.valueOf(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString))
 				this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = true;
 			
-			String navSondaPagoPAS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
+			String navSondaPagoPAS = getProperty("it.govpay.pagoPA.sonda.nav", props, false, log);
 			if(StringUtils.isNotEmpty(navSondaPagoPAS)) {
 				String[] split = navSondaPagoPAS.split(",");
 				if(split != null && split.length > 0) {

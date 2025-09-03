@@ -160,6 +160,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	private static final String MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_ESITO = "Verifica RPT completata con esito {}";
 	private static final String MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO = "Verifica RPT completata con successo";
 	private static final String MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV = "Ricevuto check sonda pagoPA per il dominio [{}] e NAV [{}]";
+	private static final String MSG_LOG_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV_COMPLETATO = "Check sonda pagoPA per il dominio [{}] e NAV [{}] completato";
 	private static final String MSG_LOG_VERSAMENTO_AGGIORNATO_DA_ENTE_VERIFICA_STATO = "Versamento aggiornato da Ente. Verifica stato {}";
 	private static final String MSG_LOG_VERSAMENTO_ACQUISITO_DA_ENTE_AGGIORNO_PER_VERIFICA_SCADENZA_COD_APPLICAZIONE = "Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione: {}]";
 	private static final String MSG_LOG_VERSAMENTO_NON_PRESENTE_IN_BASE_DATI_PROCEDO_ALL_ACQUISIZIONE_COD_APPLICAZIONE = "Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione: {}]";
@@ -1207,10 +1208,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			// controllo se e' un nav della sonda pagoPA
 			if(IuvUtils.isNavSondaPagoPA(numeroAvviso)) {
 				log.debug(MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV, codDominio, numeroAvviso);
-				response = creaRispostaOkSondaPagoPA(dominio);
+				NdpException e = new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				response = creaRispostaSondaPagoPA(e);
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, "0", "", MSG_NESSUNA_CAUSALE);
 				appContext.getEventoCtx().setEsito(Esito.OK);
-				log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO);
+				log.debug(MSG_LOG_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV_COMPLETATO, codDominio, numeroAvviso);
 				return response;
 			}
 			
@@ -2297,22 +2299,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 	}
 	
-	public static PaVerifyPaymentNoticeRes creaRispostaOkSondaPagoPA(Dominio dominio) {
+	public static PaVerifyPaymentNoticeRes creaRispostaSondaPagoPA(NdpException e) {
 		PaVerifyPaymentNoticeRes response = new PaVerifyPaymentNoticeRes();
 		
-		response.setOutcome(StOutcome.OK);
-		response.setFiscalCodePA(dominio.getCodDominio());
-		response.setCompanyName(dominio.getRagioneSociale());
-
-		CtPaymentOptionsDescriptionListPA paymentList = new CtPaymentOptionsDescriptionListPA();
-		CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
-		StAmountOption stAmountOption = StAmountOption.EQ;
-		ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
-		ctPaymentOptionDescriptionPA.setAmount(BigDecimal.ZERO);
-		ctPaymentOptionDescriptionPA.setAllCCP(false);
-		paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
-
-		response.setPaymentList(paymentList);
+		
+		logFault(PagamentiTelematiciCCPImpl.log, e, "PaVerifyPaymentNotice");
+		response.setOutcome(StOutcome.KO);
+		CtFaultBean fault = new CtFaultBean();
+		fault.setId(e.getCodDominio());
+		fault.setFaultCode(e.getFaultCode());
+		fault.setFaultString(e.getFaultString());
+		fault.setDescription(e.getDescrizione());
+		response.setFault(fault);
 		
 		return response;
 	}
