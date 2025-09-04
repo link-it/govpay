@@ -35,6 +35,7 @@ Examples:
 | [ "datoAllegato1" , "datoAllegato2" ] |
 | [ 10 , 20 ] |
 | [ datoAllegato1: 10 , datoAllegato2: 20 ] |
+| { "datoAllegato1": 10 , "datoAllegato2": 20 } |
 
 Scenario Outline: Caricamento pendenza con dati allegati nella voce
 
@@ -63,3 +64,4 @@ Examples:
 | [ "datoAllegato1" , "datoAllegato2" ] |
 | [ 10 , 20 ] |
 | [ datoAllegato1: 10 , datoAllegato2: 20 ] |
+| { "datoAllegato1": 10 , "datoAllegato2": 20 } |

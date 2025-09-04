@@ -221,6 +221,12 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         const _mapEntries = item.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
         _std.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
       }
+	  // dati allegati
+	  if(item.datiAllegati) {
+	  		const _datiAllegati = item.datiAllegati;
+			_std.elenco.push({ label: Voce.DATI_CUSTOM, value: _datiAllegati, type: 'allegati' });
+	  	}
+	  
       p.jsonP = item;
       p.model = _std;
       p.type = UtilService.NEW_STANDARD_COLLAPSE;
@@ -285,7 +291,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
 		}
     }
 	if(_json.datiAllegati) {
-		this.datiAllegati = _json.datiAllegati;
+		this.datiAllegati =  _json.datiAllegati;
 	}
 	
 	this._isVisualizzaPersonalizzazioni = _json.proprieta || _json.datiAllegati;

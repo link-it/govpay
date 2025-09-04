@@ -126,12 +126,6 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
     if(_pendenza.dataPagamento) {
       this.info.extraInfo.push({ label: Voce.DATA_PAGAMENTO+': ', value: moment(_pendenza.dataPagamento).format('DD/MM/YYYY') });
     }
-    // if(_json.dataValidita) {
-    //   this.info.extraInfo.push({ label: Voce.VALIDITA+': ', value: moment(_json.dataValidita).format('DD/MM/YYYY') });
-    // }
-    // if(_json.dataScadenza) {
-    //   this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
-    // }
 
     // Dettaglio importi
     if (versione620) {
