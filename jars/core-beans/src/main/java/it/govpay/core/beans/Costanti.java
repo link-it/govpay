@@ -44,6 +44,27 @@ public class Costanti {
 	public static final String HEADER_NAME_OUTPUT_TRANSACTION_ID = "X-Govpay-IdTransazione";
 
 	public static final String GOVPAY = "GovPay";
+	
+	/** COSTANTI NOMI WAR */
+	
+	public static final String WAR_NAME_WEB_CONNECTOR = "GovPay-Web-Connector";
+	public static final String WAR_NAME_API_BACKOFFICE = "GovPay-API-Backoffice";
+	public static final String WAR_NAME_API_PAGOPA = "GovPay-API-PagoPA";
+	public static final String WAR_NAME_API_PAGAMENTO = "GovPay-API-Pagamento";
+	public static final String WAR_NAME_API_PENDENZE = "GovPay-API-Pendenze";
+	public static final String WAR_NAME_API_RAGIONERIA = "GovPay-API-Ragioneria";
+	public static final String WAR_NAME_API_USER = "GovPay-API-User";
+	public static final String WAR_NAME_API_JPPAPDP = "GovPay-API-JppaPdP";
+	
+	/** COSTANTI NOMI CACHE ANAGRAFICA */
+	public static final String NOME_DOMINIO_CACHE_WEB_CONNECTOR = "it.govpay.cache.anagrafica.wc";
+	public static final String NOME_DOMINIO_CACHE_API_BACKOFFICE = "it.govpay.cache.anagrafica.backoffice";
+	public static final String NOME_DOMINIO_CACHE_API_PAGOPA = "it.govpay.cache.anagrafica.core";
+	public static final String NOME_DOMINIO_CACHE_API_PAGAMENTO = "it.govpay.cache.anagrafica.pagamento";
+	public static final String NOME_DOMINIO_CACHE_API_PENDENZE = "it.govpay.cache.anagrafica.pendenze";
+	public static final String NOME_DOMINIO_CACHE_API_RAGIONERIA = "it.govpay.cache.anagrafica.ragioneria";
+	public static final String NOME_DOMINIO_CACHE_API_USER = "it.govpay.cache.anagrafica.user";
+	public static final String NOME_DOMINIO_CACHE_API_JPPAPDP = "it.govpay.cache.anagrafica.jppapdp";
 
 
 	/** COSTANTI OPERAZIONI VERIFICA PENDENZA*/
@@ -79,6 +100,9 @@ public class Costanti {
     public static final String PARAM_NUMERO_DOCUMENTO = "numeroDocumento";
 	public static final String PARAM_ID_ENTRATA = "idEntrata";
 	public static final String PARAM_IBAN_ACCREDITO = "ibanAccredito";
+	public static final String PARAM_ESITO = "esito";
+	public static final String PARAM_ID_PAGAMENTO = "idPagamento";
+	public static final String PARAM_ID_SESSION = "idSession";
 
 	/** NOMI FIELD */
 	public static final String FIELD_ID_DOMINIO = "idDominio";

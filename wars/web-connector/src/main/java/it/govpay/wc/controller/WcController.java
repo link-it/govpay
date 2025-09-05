@@ -21,13 +21,14 @@ package it.govpay.wc.controller;
 
 import java.net.URI;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.WebControllerDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
-import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.validator.CostantiValidazione;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import jakarta.ws.rs.core.Response;
 
 public class WcController  extends BaseController {
@@ -41,13 +42,9 @@ public class WcController  extends BaseController {
 		String transactionId = this.context.getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName); 
 		try{
-			if(StringUtils.isBlank(idSession)) {
-				throw new ValidationException("Parametro 'idSession' obbligatorio.");
-			}
-			
-			if(StringUtils.isBlank(esito)) {
-				throw new ValidationException("Parametro 'esito' obbligatorio.");
-			}
+			ValidatoreIdentificativi validatoreIdentificativi = ValidatoreIdentificativi.newInstance();
+			validatoreIdentificativi.validaParametroObbligatorio(Costanti.PARAM_ID_SESSION, idSession, CostantiValidazione.PATTERN_GENERICO, 1, 512);
+			validatoreIdentificativi.validaParametroObbligatorio(Costanti.PARAM_ESITO, esito, CostantiValidazione.PATTERN_GENERICO, 1, 512);
 			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
 			redirectDaPspDTO.setEsito(esito);

@@ -132,7 +132,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
-		Logger log = LoggerWrapperFactory.getLogger(WebControllerDAO.class);
+		Logger log = LoggerWrapperFactory.getLogger(PagamentiPortaleDAO.class);
 
 		IContext ctx = ContextThreadLocal.get();
 

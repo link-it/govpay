@@ -33,6 +33,17 @@ public class ValidatoreIdentificativi {
 	public static ValidatoreIdentificativi newInstance() {
 		return new ValidatoreIdentificativi();
 	}
+	
+	public StringValidator validaParametroObbligatorio(String parameterName, String parameterValue, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
+		return validaParametro(parameterName, parameterValue, pattern, minLength, maxLength, true);
+	}
+	public StringValidator validaParametroOpzionale(String parameterName, String parameterValue, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
+		return validaId(parameterName, parameterValue, pattern, minLength, maxLength, false);
+	}
+	
+	public StringValidator validaParametro(String parameterName, String parameterValue, String pattern, Integer minLength, Integer maxLength, boolean obbligatorio) throws ValidationException {
+		return validaId(parameterName, parameterValue, pattern, minLength, maxLength, obbligatorio);
+	}
 
 	public void validaIdIntermediario(String idIntermediario) throws ValidationException {
 		this.validaIdIntermediario("idIntermediario", idIntermediario);
