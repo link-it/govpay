@@ -115,6 +115,7 @@ public class Costanti {
 	public static final String HEADER_NAME_CONTENT_TYPE = "Content-Type";
 	public static final String HEADER_NAME_CACHE_CONTROL = "CacheControl";
 	public static final String HEADER_NAME_X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+	public static final String HEADER_NAME_X_FORWARDED_FOR = "X-Forwarded-For";
 
 	/** ALTRE COSTANTI */
 	public static final String MEDIA_TYPE_APPLICATION_PDF = "application/pdf";

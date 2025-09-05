@@ -33,7 +33,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import it.govpay.core.beans.Costanti;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaCostanti;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaResponse;
@@ -92,7 +95,7 @@ public class ReCaptchaValidator {
 	}
 
 
-	public boolean validateCaptcha(HttpServletRequest request) throws ReCaptchaInvalidException, ReCaptchaScoreNonValidoException, ReCaptchaUnavailableException, ReCaptchaParametroResponseInvalidException {
+	public boolean validateCaptcha(HttpServletRequest request) throws ReCaptchaInvalidException, ReCaptchaScoreNonValidoException, ReCaptchaUnavailableException, ReCaptchaParametroResponseInvalidException, ValidationException {
 		String reCaptchaResponse = getCaptchaResponse(request);
 		if (!responseSanityCheck(reCaptchaResponse)) {
             throw new ReCaptchaParametroResponseInvalidException("Il parametro '"+this.captchaSettings.getGoogleCatpcha().getResponseParameter()+"' e' vuoto o contiene caratteri non validi.");
@@ -154,7 +157,7 @@ public class ReCaptchaValidator {
 	}
 
 
-	private String getCaptchaResponse(HttpServletRequest request) {
+	private String getCaptchaResponse(HttpServletRequest request) throws ValidationException {
 		String reCaptchaResponse = request.getParameter(this.captchaSettings.getGoogleCatpcha().getResponseParameter());
 
 		// se non ricevo l'header come parametro provo a cercarlo come header
@@ -162,6 +165,9 @@ public class ReCaptchaValidator {
 			reCaptchaResponse = request.getHeader(this.captchaSettings.getGoogleCatpcha().getResponseParameter());
 		}
 
+		ValidatoreIdentificativi validatoreIdentificativi = ValidatoreIdentificativi.newInstance();
+		validatoreIdentificativi.validaParametroOpzionale(this.captchaSettings.getGoogleCatpcha().getResponseParameter(), reCaptchaResponse, 1, null);
+		
 		return reCaptchaResponse;
 	}
 
@@ -172,8 +178,11 @@ public class ReCaptchaValidator {
     }
 
 
-    private String getClientIP(HttpServletRequest request) {
-        final String xfHeader = request.getHeader("X-Forwarded-For");
+    private String getClientIP(HttpServletRequest request) throws ValidationException {
+        final String xfHeader = request.getHeader(Costanti.HEADER_NAME_X_FORWARDED_FOR);
+        ValidatoreIdentificativi validatoreIdentificativi = ValidatoreIdentificativi.newInstance();
+		validatoreIdentificativi.validaParametroOpzionale(Costanti.HEADER_NAME_X_FORWARDED_FOR, xfHeader, 1, null);
+        
         if (xfHeader == null) {
             return request.getRemoteAddr();
         }

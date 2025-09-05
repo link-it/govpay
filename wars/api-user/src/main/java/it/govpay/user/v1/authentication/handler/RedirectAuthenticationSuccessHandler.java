@@ -22,12 +22,6 @@ package it.govpay.user.v1.authentication.handler;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -38,12 +32,20 @@ import org.springframework.security.core.Authentication;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
+import it.govpay.core.utils.validator.CostantiValidazione;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.rs.v1.authentication.preauth.filter.SessionPrincipalExtractorPreAuthFilter;
 import it.govpay.rs.v1.exception.CodiceEccezione;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultAuthenticationSuccessHandler{
 
@@ -78,6 +80,7 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 			gpContext.getEventoCtx().setIdTransazione(ctx.getTransactionId());
 
 			String redirectURL =  request.getParameter(RedirectAuthenticationSuccessHandler.REDIRECT_URL_PARAMETER_NAME);
+			
 
 			if(request.getSession() != null) {
 				HttpSession session = request.getSession();
@@ -94,17 +97,19 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 				this.debug(ctx.getTransactionId(), "Utente autorizzato redirect verso la URL ["+ redirectURL +"].");
 				return Response.seeOther(redirectUri).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 			}
-		}catch (URISyntaxException | UtilsException e) {
+		}catch (URISyntaxException | UtilsException | ValidationException e) {
 			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);
 		} finally {
 			MessaggioDiagnosticoUtils.log(log, ctx);
 		}
 	}
 
-	private URI verificaRedirectURL(String redirectURL) throws URISyntaxException {
+	private URI verificaRedirectURL(String redirectURL) throws URISyntaxException, ValidationException {
 		try {
+			ValidatoreIdentificativi validatoreIdentificativi = ValidatoreIdentificativi.newInstance();
+			validatoreIdentificativi.validaParametroOpzionale(RedirectAuthenticationSuccessHandler.REDIRECT_URL_PARAMETER_NAME, redirectURL, 1, null);
 			return new URI(redirectURL);
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException | ValidationException e) {
 			LogUtils.logError(log, "La URL di redirect indicata non e' valida" + e.getMessage(), e);
 			throw e;
 		}

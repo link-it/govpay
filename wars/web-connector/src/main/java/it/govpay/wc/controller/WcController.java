@@ -27,7 +27,6 @@ import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.WebControllerDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
-import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import jakarta.ws.rs.core.Response;
 
@@ -43,8 +42,8 @@ public class WcController  extends BaseController {
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName); 
 		try{
 			ValidatoreIdentificativi validatoreIdentificativi = ValidatoreIdentificativi.newInstance();
-			validatoreIdentificativi.validaParametroObbligatorio(Costanti.PARAM_ID_SESSION, idSession, CostantiValidazione.PATTERN_GENERICO, 1, 512);
-			validatoreIdentificativi.validaParametroObbligatorio(Costanti.PARAM_ESITO, esito, CostantiValidazione.PATTERN_GENERICO, 1, 512);
+			validatoreIdentificativi.validaParametroObbligatorio(Costanti.PARAM_ID_SESSION, idSession, 1, 512);
+			validatoreIdentificativi.validaParametroObbligatorio(Costanti.PARAM_ESITO, esito, 1, 512);
 			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
 			redirectDaPspDTO.setEsito(esito);
