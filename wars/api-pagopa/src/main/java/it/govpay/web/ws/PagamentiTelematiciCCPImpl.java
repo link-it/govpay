@@ -157,6 +157,9 @@ wsdlLocation="/wsdl/PaPerNodoPagamentoPsp.wsdl")
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
+	private static final String PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT_V2 = "non previsto per paGetPaymentV2";
+	private static final String PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT = "non previsto per paGetPayment";
+	private static final String PARAMETRO_NON_PREVISTO_PER_PA_VERIFY_PAYMENT_NOTICE = "non previsto per paVerifyPaymentNotice";
 	private static final String MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_ESITO = "Verifica RPT completata con esito {}";
 	private static final String MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO = "Verifica RPT completata con successo";
 	private static final String MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV = "Ricevuto check sonda pagoPA per il dominio [{}] e NAV [{}]";
@@ -1143,6 +1146,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, PARAMETRO_NON_PREVISTO_PER_PA_VERIFY_PAYMENT_NOTICE));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, PARAMETRO_NON_PREVISTO_PER_PA_VERIFY_PAYMENT_NOTICE));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, PARAMETRO_NON_PREVISTO_PER_PA_VERIFY_PAYMENT_NOTICE));
 			
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA);
 		
@@ -1423,8 +1429,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
-			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, "non previsto per paGetPayment"));
-			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, "non previsto per paGetPayment"));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT));
 			
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA);
 
@@ -1983,8 +1989,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
-			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, "non previsto per paGetPaymentV2"));
-			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, "non previsto per paGetPaymentV2"));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP, PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT_V2));
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CANALE, PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT_V2));
 			
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA);
 

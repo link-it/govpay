@@ -301,7 +301,7 @@ public class VersamentoUtils {
 						LogUtils.logDebug(log, "Aggiorno dal servizio applicativo dell'Ente: {}", versamento.getApplicazione(configWrapper));
 						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, log);
 						LogUtils.logDebug(log, "Aggiornamento completato");
-					} catch (ClientException | VersamentoSconosciutoException e) {
+					} catch (VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
 							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
@@ -316,7 +316,7 @@ public class VersamentoUtils {
 						}
 						
 						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
-					} catch (ClientInitializeException e) {
+					} catch (ClientInitializeException | ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
 							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);

@@ -202,6 +202,11 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_VERIFICA_SCADUTO_KEY = "verifica.Scaduto";
 	public static final String MSG_DIAGNOSTICO_VERIFICA_FAIL_KEY = "verifica.Fail";
 	public static final String MSG_DIAGNOSTICO_VERIFICA_VALIDITA_KEY = "verifica.validita";
+	public static final String MSG_DIAGNOSTICO_JPPAPDP_ERRORE_AUTORIZZAZIONE = "jppapdp.erroreAutorizzazione";
+	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_OK = "jppapdp.ricezioneRecuperaRTOk";
+	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_PARAMETRI = "jppapdp.ricezioneRecuperaRTParametri";
+	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT = "jppapdp.ricezioneRecuperaRT";
+	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO = "jppapdp.ricezioneRecuperaRTKo";
 	
 	public static final String PROPERTY_COD_CANALE = "codCanale";
 	public static final String PROPERTY_COD_PSP = "codPsp";
