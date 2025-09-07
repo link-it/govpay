@@ -43,7 +43,7 @@ public class LogUtils {
 	public static void logDebug(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
-				extracted(params);
+				sanitizeForLog(params);
 				
 				log.debug(msg, params);
 			} else {
@@ -65,7 +65,7 @@ public class LogUtils {
 	public static void logInfo(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
-				extracted(params);
+				sanitizeForLog(params);
 				
 				log.info(msg, params);
 			} else {
@@ -87,7 +87,7 @@ public class LogUtils {
 	public static void logWarn(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
-				extracted(params);
+				sanitizeForLog(params);
 				
 				log.warn(msg, params);
 			} else {
@@ -115,7 +115,7 @@ public class LogUtils {
 	public static void logError(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
-				extracted(params);
+				sanitizeForLog(params);
 				
 				log.error(msg, params);
 			} else {
@@ -124,7 +124,7 @@ public class LogUtils {
 		}
 	}
 
-	private static void extracted(Object... params) {
+	private static void sanitizeForLog(Object... params) {
 		for (int i = 0; i < params.length; i++) {
 			if (params[i] instanceof String data) {
 				params[i] = data.replaceAll("[\n\r]", "_");
@@ -135,7 +135,7 @@ public class LogUtils {
 	public static void logTrace(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
-				extracted(params);
+				sanitizeForLog(params);
 				
 				log.trace(msg, params);
 			} else {

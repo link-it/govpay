@@ -960,6 +960,7 @@ public class PendenzeDAO extends BaseDAO{
 			if(codUo != null) {
 				try {
 					uo = AnagraficaManager.getUnitaOperativa(configWrapper, dominio.getId(), codUo);
+					codUo = uo.getCodUo();
 				} catch (NotFoundException e1) {
 					throw new UnitaOperativaNonTrovataException("Unita' Operativa ["+codUo+"] inesistente per il Dominio ["+codDominio+"].", e1);
 				}
