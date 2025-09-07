@@ -316,7 +316,18 @@ public class VersamentoUtils {
 						}
 						
 						log.warn(MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
-					} catch (ClientInitializeException | ClientException e) {
+					} catch (ClientInitializeException e) {
+						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
+							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
+							throw new GovPayException(e);
+						}
+						
+						LogUtils.logError(log, MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
+					} catch (ClientException e) {
+						// AAA Verifica codice errore e gestione TODO
+						
+						
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
 							LogUtils.logError(log, MessageFormat.format(ERROR_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_TRUE_AGGIORNAMENTO_TERMINATO_CON_ERRORE_0, e.getMessage()),e);
