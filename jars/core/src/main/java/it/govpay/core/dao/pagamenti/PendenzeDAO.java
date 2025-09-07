@@ -960,7 +960,6 @@ public class PendenzeDAO extends BaseDAO{
 			if(codUo != null) {
 				try {
 					uo = AnagraficaManager.getUnitaOperativa(configWrapper, dominio.getId(), codUo);
-					codUo = uo.getCodUo();
 				} catch (NotFoundException e1) {
 					throw new UnitaOperativaNonTrovataException("Unita' Operativa ["+codUo+"] inesistente per il Dominio ["+codDominio+"].", e1);
 				}
@@ -1014,7 +1013,7 @@ public class PendenzeDAO extends BaseDAO{
 			log.debug("Json di input dopo validazione e trasformazione: [{}]", json);
 
 			if(codApplicazione != null) {
-				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
+				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, uo.getCodUo(), codApplicazione, json);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
 
@@ -1022,8 +1021,8 @@ public class PendenzeDAO extends BaseDAO{
 				pendenzaPost.setIdDominio(codDominio);
 				pendenzaPost.setIdTipoPendenza(codTipoVersamento);
 				// sovrascrivo il codUO solo se mi e' stato passato nella URL di richiesta
-				if(codUo != null) {
-					pendenzaPost.setIdUnitaOperativa(codUo);
+				if(uo.getCodUo() != null) {
+					pendenzaPost.setIdUnitaOperativa(uo.getCodUo());
 				}
 
 				new PendenzaPostValidator(pendenzaPost).validate();
