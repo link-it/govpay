@@ -43,6 +43,12 @@ public class LogUtils {
 	public static void logDebug(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
+				for (int i = 0; i < params.length; i++) {
+					if (params[i] instanceof String data) {
+						params[i] = data.replaceAll("[\n\r]", "_");
+					}
+				}
+				
 				log.debug(msg, params);
 			} else {
 				log.debug(msg);
@@ -63,6 +69,12 @@ public class LogUtils {
 	public static void logInfo(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
+				for (int i = 0; i < params.length; i++) {
+					if (params[i] instanceof String data) {
+						params[i] = data.replaceAll("[\n\r]", "_");
+					}
+				}
+				
 				log.info(msg, params);
 			} else {
 				log.info(msg);
@@ -83,6 +95,12 @@ public class LogUtils {
 	public static void logWarn(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
+				for (int i = 0; i < params.length; i++) {
+					if (params[i] instanceof String data) {
+						params[i] = data.replaceAll("[\n\r]", "_");
+					}
+				}
+				
 				log.warn(msg, params);
 			} else {
 				log.warn(msg);
@@ -125,6 +143,12 @@ public class LogUtils {
 	public static void logTrace(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
+				for (int i = 0; i < params.length; i++) {
+					if (params[i] instanceof String data) {
+						params[i] = data.replaceAll("[\n\r]", "_");
+					}
+				}
+				
 				log.trace(msg, params);
 			} else {
 				log.trace(msg);
