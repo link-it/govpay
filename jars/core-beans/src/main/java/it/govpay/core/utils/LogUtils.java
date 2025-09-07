@@ -109,6 +109,12 @@ public class LogUtils {
 	public static void logError(Logger log, String msg, Object ... params) {
 		if(log != null) {
 			if(params != null && params.length > 0) {
+				for (int i = 0; i < params.length; i++) {
+					if (params[i] instanceof String data) {
+						params[i] = data.replaceAll("[\n\r]", "_");
+					}
+				}
+				
 				log.error(msg, params);
 			} else {
 				log.error(msg);
