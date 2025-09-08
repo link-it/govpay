@@ -33,6 +33,7 @@ import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.dao.operazioni.exception.OperazioneNonTrovataException;
+import it.govpay.core.utils.LogUtils;
 
 public class OperazioniDAO extends BaseDAO{
 	
@@ -52,7 +53,7 @@ public class OperazioniDAO extends BaseDAO{
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
 		
-		log.info("Richiesta operazione [{}]...", leggiOperazioneDTO.getIdOperazione());
+		LogUtils.logInfo(log, "Richiesta operazione [{}]...", leggiOperazioneDTO.getIdOperazione());
 		
 		try {
 			IContext ctx = ContextThreadLocal.get();
