@@ -103,6 +103,8 @@ public class Costanti {
 	public static final String PARAM_ESITO = "esito";
 	public static final String PARAM_ID_PAGAMENTO = "idPagamento";
 	public static final String PARAM_ID_SESSION = "idSession";
+	public static final String PARAM_IUV = "iuv";
+	public static final String PARAM_CCP = "ccp";
 
 	/** NOMI FIELD */
 	public static final String FIELD_ID_DOMINIO = "idDominio";
