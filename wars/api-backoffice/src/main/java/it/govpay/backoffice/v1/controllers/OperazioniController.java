@@ -34,7 +34,6 @@ import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.operazioni.OperazioniDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
-import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -62,21 +61,12 @@ public class OperazioniController extends BaseController {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
-			// Parametri - > DTO Input
-
-			ListaOperazioniDTO listaOperazioniDTO = new ListaOperazioniDTO(user);
-			listaOperazioniDTO.setLimit(risultatiPerPagina);
-			listaOperazioniDTO.setPagina(pagina);
-
-			if(ordinamento != null)
-				listaOperazioniDTO.setOrderBy(ordinamento);
 			// INIT DAO
-
 			OperazioniDAO operazioniDAO = new OperazioniDAO();
 
 			// CHIAMATA AL DAO
 
-			ListaOperazioniDTOResponse listaOperazioniDTOResponse = operazioniDAO.listaOperazioni(listaOperazioniDTO);
+			ListaOperazioniDTOResponse listaOperazioniDTOResponse = operazioniDAO.listaOperazioni();
 
 			// CONVERT TO JSON DELLA RISPOSTA
 

@@ -30,7 +30,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
-import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.dao.operazioni.exception.OperazioneNonTrovataException;
 import it.govpay.core.utils.LogUtils;
@@ -91,7 +90,7 @@ public class OperazioniDAO extends BaseDAO{
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
 			
-			log.info("Operazione [{}] completata con esito [{}]", leggiOperazioneDTO.getIdOperazione(), esitoOperazione);
+			LogUtils.logInfo(log, "Operazione [{}] completata con esito [{}]", leggiOperazioneDTO.getIdOperazione(), esitoOperazione);
 			
 			response.setDescrizioneStato(esitoOperazione);
 			response.setStato(0);
@@ -102,7 +101,7 @@ public class OperazioniDAO extends BaseDAO{
 		return response;
 	}
 
-	public ListaOperazioniDTOResponse listaOperazioni(ListaOperazioniDTO listaOperazioniDTO) {
+	public ListaOperazioniDTOResponse listaOperazioni() {
 		BasicBD bd = null;
 		
 		try {
