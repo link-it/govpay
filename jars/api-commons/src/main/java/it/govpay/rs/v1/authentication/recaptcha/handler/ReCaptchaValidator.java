@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
@@ -102,7 +104,10 @@ public class ReCaptchaValidator {
         }
 
 		// "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s"
-		String payload = String.format(CaptchaCostanti.PAYLOAD_TEMPLATE, this.captchaSettings.getGoogleCatpcha().getSecretKey(), reCaptchaResponse, getClientIP(request));
+		String payload = String.format(CaptchaCostanti.PAYLOAD_TEMPLATE,
+				URLEncoder.encode(this.captchaSettings.getGoogleCatpcha().getSecretKey(), StandardCharsets.UTF_8),
+				URLEncoder.encode(reCaptchaResponse, StandardCharsets.UTF_8),
+				URLEncoder.encode(getClientIP(request), StandardCharsets.UTF_8));
 
 		StringBuilder sbUrl = new StringBuilder();
 		sbUrl.append(this.captchaSettings.getGoogleCatpcha().getServerURL());
