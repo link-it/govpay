@@ -439,7 +439,7 @@ public class RtUtils extends NdpValidationUtils {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), codDominio);
 			}
 			
-			log.info("Acquisizione RT per un importo di {}", paymentAmount);
+			LogUtils.logInfo(log, "Acquisizione RT per un importo di {}", paymentAmount);
 			
 			if(recupero) {
 				appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_MESSAGGIO_RICEVUTA, receiptId));
@@ -605,7 +605,7 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE_OK, versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
-			log.info("RT Dominio[{}], IUV[{}], CCP [{}] acquisita con successo.", codDominio, iuv, ccp);
+			LogUtils.logInfo(log, "RT Dominio[{}], IUV[{}], CCP [{}] acquisita con successo.", codDominio, iuv, ccp);
 			
 			return rpt;
 		}  catch (JAXBException | SAXException e) {
@@ -696,7 +696,7 @@ public class RtUtils extends NdpValidationUtils {
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 			Promemoria promemoria = null;
 			if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato())) {
-				log.debug("Schedulazione invio ricevuta di pagamento in corso...");
+				LogUtils.logDebug(log, "Schedulazione invio ricevuta di pagamento in corso...");
 				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
 				try {
 					promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(configWrapper));
@@ -706,9 +706,9 @@ public class RtUtils extends NdpValidationUtils {
 						PromemoriaBD promemoriaBD2 = new PromemoriaBD(rptBD);
 						promemoriaBD2.setAtomica(false); // condivisione della connessione;
 						promemoriaBD2.insertPromemoria(promemoria);
-						log.debug("Inserimento promemoria Pendenza[{}] effettuato.", versamento.getCodVersamentoEnte());
+						LogUtils.logDebug(log, "Inserimento promemoria Pendenza[{}] effettuato.", versamento.getCodVersamentoEnte());
 					}
-					log.debug("Creazione promemoria completata: {}",msg);
+					LogUtils.logDebug(log, "Creazione promemoria completata: {}",msg);
 				} catch (JAXBException | SAXException e) {
 					LogUtils.logError(log, "Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
 				}
@@ -716,13 +716,13 @@ public class RtUtils extends NdpValidationUtils {
 			
 			//schedulo l'invio della notifica APPIO
 			if(Boolean.TRUE.equals(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato())) {
-				log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
+				LogUtils.logDebug(log, "Creo notifica avvisatura ricevuta tramite App IO..."); 
 				NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
-				log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
+				LogUtils.logDebug(log, "Creazione notifica avvisatura ricevuta tramite App IO completata.");
 				NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(rptBD);
 				notificheAppIoBD.setAtomica(false); // riuso connessione
 				notificheAppIoBD.insertNotifica(notificaAppIo);
-				log.debug("Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
+				LogUtils.logDebug(log, "Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
 			}
 			break;
 		default:
