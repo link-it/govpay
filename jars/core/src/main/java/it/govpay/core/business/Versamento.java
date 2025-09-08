@@ -168,7 +168,7 @@ public class Versamento  {
 	
 					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_AGGIORAMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 	
-					LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) aggiornato", versamento.getCodVersamentoEnte(), applicazione.getCodApplicazione());
+					LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) aggiornato", versamentoLetto.getCodVersamentoEnte(), applicazione.getCodApplicazione());
 				} else {
 					if(versamento.getId()==null)
 						versamento.setId(versamentoLetto.getId());
