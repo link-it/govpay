@@ -99,7 +99,7 @@ public abstract class AbstractBasicAuthenticationEntryPoint extends BasicAuthent
 				if(!list.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (Object object : list) {
-						if(sb.length() > 0)
+						if(!sb.isEmpty())
 							sb.append(", ");
 
 						sb.append(object);

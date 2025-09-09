@@ -105,6 +105,7 @@ public class Costanti {
 	public static final String PARAM_ID_SESSION = "idSession";
 	public static final String PARAM_IUV = "iuv";
 	public static final String PARAM_CCP = "ccp";
+	public static final String PARAM_ID_TOKEN_HINT = "id_token_hint";
 
 	/** NOMI FIELD */
 	public static final String FIELD_ID_DOMINIO = "idDominio";
@@ -118,6 +119,7 @@ public class Costanti {
 	public static final String HEADER_NAME_CACHE_CONTROL = "CacheControl";
 	public static final String HEADER_NAME_X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
 	public static final String HEADER_NAME_X_FORWARDED_FOR = "X-Forwarded-For";
+	public static final String HEADER_NAME_X_ID_TOKEN = "X-ID-Token";
 
 	/** ALTRE COSTANTI */
 	public static final String MEDIA_TYPE_APPLICATION_PDF = "application/pdf";

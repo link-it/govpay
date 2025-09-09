@@ -64,6 +64,9 @@ export class AuthViewComponent implements OnInit {
         (response: any) => {
           this._clearStorage();
           window.localStorage.setItem(UtilService.STORAGE_VAR.TOKEN, response[this.OAUTH2Config.TOKEN_KEY]);
+		  if(response['id_token']) {
+		  	window.localStorage.setItem(UtilService.STORAGE_VAR.ID_TOKEN, response['id_token']);
+			}
           this._isLoading = false;
           this.router.navigate(['/dashboard']);
         },
@@ -81,5 +84,6 @@ export class AuthViewComponent implements OnInit {
     window.localStorage.removeItem(UtilService.STORAGE_VAR.STATE);
     window.localStorage.removeItem(UtilService.STORAGE_VAR.CODE_VERIFIER);
     window.localStorage.removeItem(UtilService.STORAGE_VAR.CODE_CHALLENGE);
+	window.localStorage.removeItem(UtilService.STORAGE_VAR.ID_TOKEN);
   }
 }

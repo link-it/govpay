@@ -33,6 +33,9 @@ export class GovpayService {
       (_response) => {
         this.updateSpinner(false);
         UtilService.cleanUser();
+		if(UtilService.isOAuth2()){
+			window.location.href = _response.body.logoutUrl;
+		}
       },
       (error) => {
         this.updateSpinner(false);
@@ -243,7 +246,6 @@ export class GovpayService {
     this.updateSpinner(true);
     let _headers = new HttpHeaders();
     _headers = _headers.set('Content-Type', 'application/json');
-
     return this.http.get(UtilService.LogoutByTOA(), { headers: _headers, observe: 'response' });
   }
 

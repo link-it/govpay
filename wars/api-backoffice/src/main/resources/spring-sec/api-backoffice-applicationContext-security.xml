@@ -411,8 +411,8 @@
         <b:bean id="oauth2AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.oauth2.server.entrypoint.BearerTokenAuthenticationEntryPoint" />
         
         <b:bean id="logoutSuccessHandlerOAuth2" class="it.govpay.rs.v1.authentication.oauth2.handler.CustomOAuth2LogoutSuccessHandler" >
-        	<constructor-arg value="${OAUTH2_LOGOUT_URI}"/>
-    		<constructor-arg value="${OAUTH2_POST_LOGOUT_REDIRECT_URI}"/>
+        	<b:constructor-arg value="${OAUTH2_LOGOUT_URI}"/>
+    		<b:constructor-arg value="${OAUTH2_POST_LOGOUT_REDIRECT_URI}"/>
         </b:bean>
         
         <b:bean id="userDetailServiceUtenzeOAuth2" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >

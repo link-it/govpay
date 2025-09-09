@@ -708,7 +708,8 @@ export class UtilService {
     TOKEN: 'TOKEN',
     STATE: 'STATE',
     CODE_VERIFIER: 'CODE_VERIFIER',
-    CODE_CHALLENGE: 'CODE_CHALLENGE'
+    CODE_CHALLENGE: 'CODE_CHALLENGE',
+	ID_TOKEN: 'ID_TOKEN'
   };
 
   constructor(private message: MatSnackBar, private dialog: MatDialog, private http: HttpClient) { }
@@ -783,10 +784,15 @@ export class UtilService {
       _root = UtilService.IAM.LOGOUT_SERVICE;
     }
     if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2) {
-      _root = UtilService.OAUTH2.LOGOUT_SERVICE;
+	   const idToken = window.localStorage.getItem(UtilService.STORAGE_VAR.ID_TOKEN);
+      _root = UtilService.OAUTH2.LOGOUT_SERVICE + (idToken ? '?id_token_hint=' + idToken : '');
     }
     return _root;
   }
+  
+  public static isOAuth2(): boolean {
+	return (!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2);
+	}
 
   public static cacheUser(profilo: any) {
     UtilService.PROFILO_UTENTE = profilo;
@@ -795,6 +801,7 @@ export class UtilService {
 
   public static cleanUser() {
     window.localStorage.removeItem(UtilService.STORAGE_VAR.TOKEN);
+	window.localStorage.removeItem(UtilService.STORAGE_VAR.ID_TOKEN);
     UtilService.PROFILO_UTENTE = null;
     UtilService.profiloUtenteBehavior.next(null);
   }
