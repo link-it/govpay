@@ -173,7 +173,7 @@ public class Versamento  {
 					if(versamento.getId()==null)
 						versamento.setId(versamentoLetto.getId());
 					
-					LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) aggiornato in memoria", versamento.getCodVersamentoEnte(), applicazione.getCodApplicazione());
+					LogUtils.logInfo(log, "Versamento ({}) dell'applicazione ({}) aggiornato in memoria", versamentoLetto.getCodVersamentoEnte(), applicazione.getCodApplicazione());
 				}
 			} catch (NotFoundException e) {
 				if(versamento.getNumeroAvviso()!=null) {
