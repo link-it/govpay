@@ -252,6 +252,8 @@ public class RtUtils extends NdpValidationUtils {
 
 	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 		
+		String iuvForLog = LogUtils.sanitizeForLog(iuv);
+		String ccpForLog = LogUtils.sanitizeForLog(ccp);
 		LogUtils.logInfo(log, "Acquisizione RT Dominio[{}], IUV[{}], CCP [{}] in corso", codDominio, iuv, ccp);
 		RptBD rptBD = null; 
 		try {

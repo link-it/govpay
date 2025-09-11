@@ -156,7 +156,7 @@ public class LogUtils {
 		}
 	}
 
-	private static void sanitizeForLog(Object... params) {
+	public static void sanitizeForLog(Object... params) {
 		for (int i = 0; i < params.length; i++) {
 			if (params[i] instanceof String data) {
 				params[i] = sanitizeForLog(data);
@@ -164,7 +164,7 @@ public class LogUtils {
 		}
 	}
 	
-	private static String sanitizeForLog(String data) {
+	public static String sanitizeForLog(String data) {
 		if (data != null) {
 			return data.replaceAll("[\n\r]", "_");
 		} else {
