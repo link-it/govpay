@@ -254,7 +254,7 @@ public class RtUtils extends NdpValidationUtils {
 		
 		String iuvForLog = LogUtils.sanitizeForLog(iuv);
 		String ccpForLog = LogUtils.sanitizeForLog(ccp);
-		LogUtils.logInfo(log, "Acquisizione RT Dominio[{}], IUV[{}], CCP [{}] in corso", codDominio, iuv, ccp);
+		LogUtils.logInfo(log, "Acquisizione RT Dominio[{}], IUV[{}], CCP [{}] in corso", codDominio, iuvForLog, ccpForLog);
 		RptBD rptBD = null; 
 		try {
 			IContext ctx = ContextThreadLocal.get();
