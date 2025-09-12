@@ -52,7 +52,8 @@ public class OperazioniDAO extends BaseDAO{
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
 		
-		LogUtils.logInfo(log, "Richiesta operazione [{}]...", leggiOperazioneDTO.getIdOperazione());
+		String idOperazioneForLog = LogUtils.sanitizeForLog(leggiOperazioneDTO.getIdOperazione());
+		LogUtils.logInfo(log, "Richiesta operazione [{}]...", idOperazioneForLog);
 		
 		try {
 			IContext ctx = ContextThreadLocal.get();
@@ -90,7 +91,7 @@ public class OperazioniDAO extends BaseDAO{
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
 			
-			LogUtils.logInfo(log, "Operazione [{}] completata con esito [{}]", leggiOperazioneDTO.getIdOperazione(), esitoOperazione);
+			LogUtils.logInfo(log, "Operazione [{}] completata con esito [{}]", idOperazioneForLog, esitoOperazione);
 			
 			response.setDescrizioneStato(esitoOperazione);
 			response.setStato(0);
