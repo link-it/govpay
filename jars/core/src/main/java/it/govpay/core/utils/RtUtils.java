@@ -607,7 +607,7 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE_OK, versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
-			LogUtils.logInfo(log, "RT Dominio[{}], IUV[{}], CCP [{}] acquisita con successo.", codDominio, iuv, ccp);
+			LogUtils.logInfo(log, "RT Dominio[{}], IUV[{}], CCP [{}] acquisita con successo.", codDominio, iuvForLog, ccpForLog);
 			
 			return rpt;
 		}  catch (JAXBException | SAXException e) {
