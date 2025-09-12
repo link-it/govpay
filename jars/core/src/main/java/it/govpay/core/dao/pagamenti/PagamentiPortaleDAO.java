@@ -88,7 +88,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.GovPayException.FaultBean;
+import it.govpay.core.exceptions.FaultBean;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;

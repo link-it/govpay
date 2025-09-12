@@ -61,7 +61,6 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.EventoUtils;
-import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -401,7 +400,7 @@ public class Rpt {
 						inviaCarrelloRPTEventoCtx.setSottotipoEsito(risposta.getFaultBean().getFaultCode());
 						inviaCarrelloRPTEventoCtx.setEsito(Esito.KO);
 					}
-					throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
+					throw new GovPayException(Rpt.toFaultBean(risposta.getFaultBean()));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
@@ -618,5 +617,21 @@ public class Rpt {
 				rptBD.closeConnection();
 			}
 		}
+	}
+	
+	public static it.govpay.core.exceptions.FaultBean toFaultBean(FaultBean faultBean) {
+		if(faultBean == null) return null;
+		
+		it.govpay.core.exceptions.FaultBean toRet = new it.govpay.core.exceptions.FaultBean();
+		
+		toRet.setDescription(faultBean.getDescription());
+		toRet.setFaultCode(faultBean.getFaultCode());
+		toRet.setFaultString(faultBean.getFaultString());
+		toRet.setId(faultBean.getId());
+		toRet.setOriginalDescription(faultBean.getOriginalDescription());
+		toRet.setOriginalFaultCode(faultBean.getOriginalFaultCode());
+		toRet.setOriginalFaultString(faultBean.getOriginalFaultString());
+		toRet.setSerial(faultBean.getSerial());
+		return toRet;
 	}
 }
