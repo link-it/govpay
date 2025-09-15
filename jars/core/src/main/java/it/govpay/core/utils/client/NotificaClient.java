@@ -46,7 +46,6 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.LogUtils;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
@@ -333,6 +332,9 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 	}
 	
 	public String getRptKey() {
-		return RptUtils.getRptKey(this.rpt);
+		if(this.rpt != null) {
+			return this.rpt.getRptKey();
+		}
+		return "";
 	}
 }

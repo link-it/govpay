@@ -131,4 +131,7 @@ public class Rpt extends it.govpay.model.Rpt{
 		this.pagamentoPortale = pagamentoPortale;
 	}
 
+	public String getRptKey() {
+		return this.getCodDominio() + "@" + this.getIuv() + "@" + this.getCcp();
+	}
 }

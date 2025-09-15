@@ -68,7 +68,6 @@ import it.govpay.core.utils.CtReceiptUtils;
 import it.govpay.core.utils.CtReceiptV2Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
 import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
@@ -163,7 +162,7 @@ public class RptDAO extends BaseDAO{
 			}
 			
 			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException("Ricevuta ["+RptUtils.getRptKey(rpt)+"] non trovata.");
+				throw new RicevutaNonTrovataException("Ricevuta ["+ rpt.getRptKey() +"] non trovata.");
 
 			if(leggiRicevutaDTO.getFormato().equals(FormatoRicevuta.PDF)) {
 				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica();

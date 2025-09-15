@@ -26,7 +26,6 @@ import java.util.Date;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -49,6 +48,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
+import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -57,7 +57,6 @@ import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
@@ -126,7 +125,7 @@ public class InviaRptThread implements Runnable {
 			if(this.pagamentoPortale != null)
 				eventoCtx.setIdPagamento(this.pagamentoPortale.getIdSessione());
 
-			RptUtils.popolaEventoCooperazione(this.rpt, this.intermediario, this.stazione, eventoCtx);
+			GiornaleEventi.popolaEventoCooperazione(this.rpt, this.intermediario, this.stazione, eventoCtx);
 			
 			client = new it.govpay.core.utils.client.NodoClient(this.intermediario, operationId, this.giornale, eventoCtx);
 			

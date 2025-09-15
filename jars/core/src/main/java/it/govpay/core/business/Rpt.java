@@ -460,7 +460,7 @@ public class Rpt {
 						if(rpt.getPagamentoPortale() != null)
 							inviaCarrelloRPTEventoCtx.setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
 
-						RptUtils.popolaEventoCooperazione(rpt, intermediario, stazione, inviaCarrelloRPTEventoCtx); 
+						GiornaleEventi.popolaEventoCooperazione(rpt, intermediario, stazione, inviaCarrelloRPTEventoCtx); 
 
 						if(rpt.getFaultCode() != null)
 							inviaCarrelloRPTEventoCtx.setSottotipoEsito(rpt.getFaultCode());
