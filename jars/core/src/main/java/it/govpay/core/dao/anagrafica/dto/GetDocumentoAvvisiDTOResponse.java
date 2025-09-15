@@ -36,7 +36,7 @@ public class GetDocumentoAvvisiDTOResponse {
 	private boolean found;
 	private Applicazione applicazione;
 	
-	public GetDocumentoAvvisiDTOResponse() {
+	public GetDocumentoAvvisiDTOResponse() { /* Costruttore vuoto */
 	}
 
 	public byte[] getDocumentoPdf() {

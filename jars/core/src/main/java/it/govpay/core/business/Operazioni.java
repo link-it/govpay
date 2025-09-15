@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.SondaException;
@@ -72,7 +71,8 @@ import it.govpay.model.configurazione.MailBatch;
 public class Operazioni{
 	
 	private Operazioni() {}
-
+	
+	private static final String LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO = "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
 	private static final String OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA = "Operazione in corso su altro nodo. Richiesta interrotta.";
 	private static final String ERROR_MSG_AGGIORNAMENTO_SONDA_FALLITO_0 = "Aggiornamento sonda fallito: {0}";
 	private static final String ERROR_MSG_SONDA_0_NON_TROVATA = "Sonda [{0}] non trovata";
@@ -496,8 +496,8 @@ public class Operazioni{
 			batch.setAggiornamento(newDate);
 			batchBD.update(batch);
 			AnagraficaManager.aggiornaDataReset(newDate);
-			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
-			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+			log.info(LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO);	
+			return LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO;
 		} catch (Exception e) {
 			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
 			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
@@ -521,12 +521,12 @@ public class Operazioni{
 			batchBD.update(batch);
 			AnagraficaManager.cleanCache();
 			BasicClientCORE.cleanCache();
-			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
+			log.info(LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO);	
 			
 			Log4JUtils.reloadLog4j();
 			log.info("Reload Log4J completato.");
 			
-			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+			return LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO;
 		} catch (Exception e) {
 			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
 			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
@@ -592,7 +592,7 @@ public class Operazioni{
 				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
 			}
 			((SondaBatch)sonda).aggiornaStatoSonda(true,  new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
-		} catch (Throwable t) {
+		} catch (SondaException | ServiceException t) {
 			log.warn("Errore nell''aggiornamento della sonda OK: {}", t.getMessage());
 		}
 		finally {
@@ -629,7 +629,7 @@ public class Operazioni{
 				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
 			}
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), MessageFormat.format("Il batch e'' stato interrotto con errore: {0}", e.getMessage()), con, bd.getJdbcProperties().getDatabase());
-		} catch (Throwable t) {
+		} catch (SondaException | ServiceException t) {
 			log.warn("Errore nell'aggiornamento della sonda KO: {}", t.getMessage());
 		} finally {
 			if(bd != null) {
@@ -665,7 +665,7 @@ public class Operazioni{
 				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
 			}
 			return sonda;
-		} catch (Throwable t) {
+		} catch (SondaException | ServiceException t) {
 			log.warn(MessageFormat.format("Errore nella lettura della sonda [{0}]: {1}", nome, t.getMessage()));
 			return null;
 		}

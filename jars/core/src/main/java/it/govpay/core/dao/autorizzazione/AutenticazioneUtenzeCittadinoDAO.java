@@ -19,6 +19,7 @@
  */
 package it.govpay.core.dao.autorizzazione;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +39,12 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.commons.exception.UtenzaNonAutorizzataException;
 
 public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
+
+	private static final String LOG_MSG_CARICAMENTO_INFORMAZIONI_DEL_CITTADINO_0_COMPLETATO = "Caricamento informazioni del cittadino [{0}] completato.";
+	private static final String LOG_MSG_CARICAMENTO_INFORMAZIONI_DEL_CITTADINO_0_IN_CORSO = "Caricamento informazioni del cittadino [{0}] in corso...";
 
 	public AutenticazioneUtenzeCittadinoDAO() {
 		super();
@@ -55,14 +60,14 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		
 		if(this.leggiUtenzaDaSessione) {
 			Map<String, Object> attributeValues = new HashMap<>();
-			if(token.getDetails() instanceof GovpayWebAuthenticationDetails) {
-				attributeValues = ((GovpayWebAuthenticationDetails) token.getDetails()).getAttributesValues();
+			if(token.getDetails() instanceof GovpayWebAuthenticationDetails govpayWebAuthenticationDetails) {
+				attributeValues = govpayWebAuthenticationDetails.getAttributesValues();
 			}
 			return this.loadUserDetailsFromSessionEngine(username, token.getAuthorities(),attributeValues );
 		} else {
 			Map<String, List<String>> headerValues = new HashMap<>();
-			if(token.getDetails() instanceof GovpayWebAuthenticationDetails) {
-				headerValues = ((GovpayWebAuthenticationDetails) token.getDetails()).getHeaderValues();
+			if(token.getDetails() instanceof GovpayWebAuthenticationDetails govpayWebAuthenticationDetails) {
+				headerValues = govpayWebAuthenticationDetails.getHeaderValues();
 			}
 			return this.loadUserDetailsEngine(username, token.getAuthorities(),headerValues);
 		}
@@ -82,13 +87,13 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
-			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_CARICAMENTO_INFORMAZIONI_DEL_CITTADINO_0_IN_CORSO, username));
 			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
-			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_CARICAMENTO_INFORMAZIONI_DEL_CITTADINO_0_COMPLETATO, username));
 			return userDetailFromUtenzaCittadino;
 		} catch(ServiceException e){
-			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
 			// donothing
 		}
@@ -102,17 +107,17 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		try {
 			GovpayLdapUserDetails userDetailFromSession = (GovpayLdapUserDetails) attributeValues.get(AuthorizationManager.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME);
 			if(userDetailFromSession == null)
-				throw new RuntimeException("Dati utenza ["+username+"] non presenti in sessione.");
+				throw new UtenzaNonAutorizzataException("Dati utenza ["+username+"] non presenti in sessione.");
 			
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
-			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_CARICAMENTO_INFORMAZIONI_DEL_CITTADINO_0_IN_CORSO, username));
 			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
-			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_CARICAMENTO_INFORMAZIONI_DEL_CITTADINO_0_COMPLETATO, username));
 			return userDetailFromUtenzaCittadino;
 		} catch(ServiceException e){
-			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
 			// donothing
 		}

@@ -155,9 +155,9 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 	 * if this attribute should be ignored.
 	 */
 	protected GrantedAuthority createAuthority(Object role) {
-		if (role instanceof String) {
+		if (role instanceof String roleString) {
 			if (this.convertToUpperCase) {
-				role = ((String) role).toUpperCase();
+				role = roleString.toUpperCase();
 			}
 			return new SimpleGrantedAuthority(this.rolePrefix + role);
 		}
