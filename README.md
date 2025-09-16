@@ -1,3 +1,4 @@
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=link-it_govpay)](https://sonarcloud.io/summary/new_code?id=link-it_govpay)
 [![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/master/)
 [![Docker](https://github.com/link-it/govpay/blob/master/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
 [![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=master)](https://govpay.readthedocs.io/it/latest/?badge=master)
