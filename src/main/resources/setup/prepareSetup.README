@@ -8,6 +8,6 @@ Versione Tomcat
 Versione Wildfly
 
 1. Compila GovPay utilizzando il filtro "installer_template_wildfly" (mvn -Denv=installer_template_wildfly clean install -P govpay-ear)
-2. Avvia lo script prepareSetup.sh tomcat
+2. Avvia lo script prepareSetup.sh ear
 3. spostarsi nella directory target/govpay-installer-VERSIONE
 4. eseguire l'installer (sh install.sh o cmd install.cmd)

@@ -12,6 +12,10 @@
                 secured-annotations="enabled">
         </global-method-security>
         
+        <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		</b:bean>
+        
         <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
     		<b:property name="allowUrlEncodedSlash" value="true"/>
     		<b:property name="allowUrlEncodedPercent" value="true"/>
@@ -64,11 +68,11 @@
         	<ldap-authentication-provider 
         			server-ref="defaultLdapServer" 
         			user-context-mapper-ref="ldapUserDetailsContextMapper"
-        			user-dn-pattern="USER-DN-PATTERN"
-        			user-search-filter="USER-SEARCH-FILTER"
-        			user-search-base="USER-SEARCH-BASE"
-        			group-search-base="GROUP-SEARCH-BASE"
-					group-search-filter="GROUP-SEARCH-FILTER"
+        			user-dn-pattern="${LDAP_USER_DN_PATTERN}"
+        			user-search-filter="${LDAP_USER_SEARCH_FILTER}"
+        			user-search-base="${LDAP_USER_SEARCH_BASE}"
+        			group-search-base="${LDAP_GROUP_SEARCH_BASE}"
+					group-search-filter="${LDAP_GROUP_SEARCH_FILTER}"
         			>
         	</ldap-authentication-provider>
         </authentication-manager>
@@ -257,7 +261,7 @@
         
         <b:bean id="govpayJwtAuthenticationConverter" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtAuthenticationConverter">
         	<b:property name="userDetailService" ref="userDetailServiceUtenzeOAuth2"/>
-        	<b:property name="principalClaimName" value="NOME_CLAIM_PRINCIPAL" />
+        	<b:property name="principalClaimName" value="${OAUTH2_NOME_CLAIM_PRINCIPAL}" />
         </b:bean>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/oauth2/v2/**">
@@ -265,7 +269,7 @@
                 <intercept-url pattern="/rs/oauth2/v2/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
 	       		<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
-	       			<jwt jwk-set-uri="JWK_SET_URI" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       			<jwt jwk-set-uri="${OAUTH2_JWK_SET_URI}" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
 	       		</oauth2-resource-server>
                 <headers>
                         <content-type-options disabled="true"/>

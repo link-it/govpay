@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 
 /***
@@ -44,7 +45,8 @@ public abstract class AbstractTask {
 
 	protected Logger log;
 	protected String name;
-	public AbstractTask(Logger log, String name) {
+	
+	protected AbstractTask(Logger log, String name) {
 		this.log = log;
 		this.name = name;
 	}
@@ -90,12 +92,6 @@ public abstract class AbstractTask {
 	}
 	
 	protected void logContext(IContext ctx) {
-		if(ctx != null) {
-			try {
-				ctx.getApplicationLogger().log();
-			} catch (UtilsException e) {
-				 this.log.error("Errore durante il log di chiusura operazione: "+e.getMessage(),e);
-			}
-		}
+		MessaggioDiagnosticoUtils.log(log, ctx);
 	} 
 }

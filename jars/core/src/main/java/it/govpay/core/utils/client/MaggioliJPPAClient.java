@@ -22,7 +22,6 @@ package it.govpay.core.utils.client;
 import jakarta.xml.bind.JAXBElement;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -36,6 +35,8 @@ import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.configurazione.Giornale;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRichiestaStandard;
@@ -74,7 +75,7 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 		this.operationID = operationID;
 	}
 
-	public CtRispostaStandard send(String azione, byte[] body) throws ClientException, UtilsException {
+	public CtRispostaStandard send(String azione, byte[] body) throws ClientException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) {
@@ -92,7 +93,7 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 		} else 
 			appContext.getTransaction().getLastServer().setEndpoint(urlString);
 		
-		ctx.getApplicationLogger().log("jppapdp_client.invioRichiesta");
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA);
 
 		try {
 			byte[] response = super.sendSoap(azione, body, this.isAzioneInUrl);
@@ -101,18 +102,18 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 			}
 			JAXBElement<?> jaxbElement = MaggioliJPPAUtils.toJaxbJPPAPdPInternal(response, null);
 			CtRispostaStandard r = (CtRispostaStandard) jaxbElement.getValue();
-			ctx.getApplicationLogger().log("jppapdp_client.invioRichiestaOk");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA_OK);
 			return r;
 		} catch (ClientException e) {
-			ctx.getApplicationLogger().log("jppapdp_client.invioRichiestaKo", e.getMessage());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA_KO, e.getMessage());
 			throw e;
 		} catch (Exception e) {
-			ctx.getApplicationLogger().log("jppapdp_client.invioRichiestaKo", "Errore interno");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA_KO, "Errore interno");
 			throw new ClientException("Messaggio di risposta dal Servizio Maggioli JPPA non valido", e);
 		}
 	}
 	
-	public CtRispostaStandard maggioliJPPAInviaEsitoPagamentoRichiesta(CtRichiestaStandard richiestaStandard) throws ClientException, UtilsException {
+	public CtRispostaStandard maggioliJPPAInviaEsitoPagamentoRichiesta(CtRichiestaStandard richiestaStandard) throws ClientException {
 		byte [] body = MaggioliJPPAUtils.getBody(true, objectFactory.createInviaEsitoPagamentoRichiesta(richiestaStandard), null);
 		this.setTipoEventoCustom(Azione.maggioliInviaEsitoPagamento.toString());
 		return this.send(SOAP_ACTION_INVIA_ESITO_PAGAMENTO, body);

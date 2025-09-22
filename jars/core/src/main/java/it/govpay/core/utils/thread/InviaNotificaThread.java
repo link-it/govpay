@@ -55,6 +55,8 @@ import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -114,31 +116,31 @@ public class InviaNotificaThread implements Runnable {
 			String operationId = appContext.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, url, versione);
 			
 			if(this.rpt.getCodCarrello() != null) {
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CARRELLO, rpt.getCodCarrello()));
 			} 
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.rpt.getCcp()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, this.dominio.getCodDominio()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, this.rpt.getIuv()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, this.rpt.getCcp()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_TIPO_NOTIFICA, tipoNotifica.name().toLowerCase()));
 			
 			switch (tipoNotifica) {
 			case ATTIVAZIONE:
-				ctx.getApplicationLogger().log("notifica.rpt");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RPT);
 				break;
 			case ANNULLAMENTO:
-				ctx.getApplicationLogger().log("notifica.annullamentoRpt");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_ANNULLAMENTO_RPT);
 				break;
 			case FALLIMENTO:
-				ctx.getApplicationLogger().log("notifica.fallimentoRpt");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_FALLIMENTO_RPT);
 				break;
 			case RICEVUTA:
-				ctx.getApplicationLogger().log("notifica.rt");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RT);
 				break;
 			}
 			 
 			LogUtils.logInfo(log, "Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.rptKey +"] all'applicazione [CodApplicazione: " + this.applicazione.getCodApplicazione() + "]");
 			if(connettoreNotifica == null || connettoreNotifica.getUrl() == null) {
-				ctx.getApplicationLogger().log("notifica.annullata");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_ANNULLATA);
 				LogUtils.logInfo(log, "Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(configWrapper);
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
@@ -147,7 +149,7 @@ public class InviaNotificaThread implements Runnable {
 				return;
 			}
 			
-			ctx.getApplicationLogger().log("notifica.spedizione");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_SPEDIZIONE);
 			
 			// salvataggio id Rpt/ versamento/ pagamento
 			eventoCtx.setCodDominio(this.rpt.getCodDominio());
@@ -172,19 +174,19 @@ public class InviaNotificaThread implements Runnable {
 			switch (tipoNotifica) {
 			case ATTIVAZIONE:
 				if(rpt.getCodCarrello() != null) {
-					ctx.getApplicationLogger().log("notifica.carrellook");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_CARRELLOOK);
 				} else {
-					ctx.getApplicationLogger().log("notifica.rptok");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RPTOK);
 				}
 				break;
 			case ANNULLAMENTO:
-				ctx.getApplicationLogger().log("notifica.annullamentoRptok");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_ANNULLAMENTO_RPTOK);
 				break;
 			case FALLIMENTO:
-				ctx.getApplicationLogger().log("notifica.fallimentoRptok");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_FALLIMENTO_RPTOK);
 				break;
 			case RICEVUTA:
-				ctx.getApplicationLogger().log("notifica.rtok");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RTOK);
 				break;
 			}
 			 
@@ -200,10 +202,10 @@ public class InviaNotificaThread implements Runnable {
 				LogUtils.logError(log, "Errore nella consegna della notifica", e);
 			
 			if(eventoCtx != null) {
-				if(e instanceof GovPayException) {
-					eventoCtx.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
-				} else if(e instanceof ClientException) {
-					eventoCtx.setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				if(e instanceof GovPayException govPayException) {
+					eventoCtx.setSottotipoEsito(govPayException.getCodEsito().toString());
+				} else if(e instanceof ClientException clientException) {
+					eventoCtx.setSottotipoEsito(clientException.getResponseCode() + "");
 				} else {
 					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 				}
@@ -227,38 +229,38 @@ public class InviaNotificaThread implements Runnable {
 					switch (tipoNotifica) {
 					case ATTIVAZIONE:
 						if(rpt.getCodCarrello() != null) {
-							ctx.getApplicationLogger().log("notifica.carrelloko", e.getMessage());
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_CARRELLOKO, e.getMessage());
 						} else {
-							ctx.getApplicationLogger().log("notifica.rptko", e.getMessage());
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RPTKO, e.getMessage());
 						}
 						break;
 					case ANNULLAMENTO:
-						ctx.getApplicationLogger().log("notifica.annullamentoRptko", e.getMessage());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_ANNULLAMENTO_RPTKO, e.getMessage());
 						break;
 					case FALLIMENTO:
-						ctx.getApplicationLogger().log("notifica.fallimentoRptko", e.getMessage());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_FALLIMENTO_RPTKO, e.getMessage());
 						break;
 					case RICEVUTA:
-						ctx.getApplicationLogger().log("notifica.rtko", e.getMessage());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RTKO, e.getMessage());
 						break;
 					}
 				} else {
 					switch (tipoNotifica) {
 					case ATTIVAZIONE:
 						if(rpt.getCodCarrello() != null) {
-							ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_CARRELLO_RETRYKO, e.getMessage(), prossima.toString());
 						} else {
-							ctx.getApplicationLogger().log("notifica.rptRetryko", e.getMessage(), prossima.toString());
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RPT_RETRYKO, e.getMessage(), prossima.toString());
 						}
 						break;
 					case ANNULLAMENTO:
-						ctx.getApplicationLogger().log("notifica.annullamentoRptRetryko", e.getMessage(), prossima.toString());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_ANNULLAMENTO_RPT_RETRYKO, e.getMessage(), prossima.toString());
 						break;
 					case FALLIMENTO:
-						ctx.getApplicationLogger().log("notifica.fallimentoRptRetryko", e.getMessage(), prossima.toString());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_FALLIMENTO_RPT_RETRYKO, e.getMessage(), prossima.toString());
 						break;
 					case RICEVUTA:
-						ctx.getApplicationLogger().log("notifica.rtRetryko", e.getMessage(), prossima.toString());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_RT_RETRYKO, e.getMessage(), prossima.toString());
 						break;
 					}
 				}

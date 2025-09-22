@@ -57,6 +57,12 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
     _dettaglio.push(new Dato({ label: Voce.ESITO, value: this.json.esito }));
     _dettaglio.push(new Dato({ label: Voce.SOTTOTIPO_ESITO, value: this.json.sottotipoEsito }));
     _dettaglio.push(new Dato({ label: Voce.DETTAGLIO_ESITO, value: UtilService.defaultDisplay({ value: this.json?this.json.dettaglioEsito:null }) }));
+	if(this.json.clusterId){
+		_dettaglio.push(new Dato({ label: Voce.CLUSTER_ID, value: this.json.clusterId }));
+	}
+	if(this.json.transactionId){
+			_dettaglio.push(new Dato({ label: Voce.TRANSACTION_ID, value: this.json.transactionId }));
+		}
     _dettaglio.push(new Dato({ label: Voce.ID_DOMINIO, value: this.json.idDominio }));
     _dettaglio.push(new Dato({ label: Voce.IUV, value: this.json.iuv }));
     _dettaglio.push(new Dato({ label: Voce.CCP, value: this.json.ccp }));
@@ -67,7 +73,8 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
       _dettaglioPA.push(new Dato({label: Voce.ID_PSP, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idPsp })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_CANALE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idCanale })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO_PSP, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediarioPsp })}));
-      _dettaglioPA.push(new Dato({label: Voce.TIPO_VERSAMENTO, value: UtilService.defaultDisplay({ value: UtilService.TIPI_VERSAMENTO[this.json.datiPagoPA.tipoVersamento] })}));
+      let _tipoVersamento = UtilService.TIPI_VERSAMENTO[this.json.datiPagoPA.tipoVersamento] ? UtilService.TIPI_VERSAMENTO[this.json.datiPagoPA.tipoVersamento] : this.json.datiPagoPA.tipoVersamento;
+      _dettaglioPA.push(new Dato({label: Voce.TIPO_VERSAMENTO, value: UtilService.defaultDisplay({ value: _tipoVersamento })}));
       _dettaglioPA.push(new Dato({label: Voce.MODELLO_PAGAMENTO, value: UtilService.defaultDisplay({ value: UtilService.MODELLI_PAGAMENTO[this.json.datiPagoPA.modelloPagamento] })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediario })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_STAZIONE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idStazione })}));

@@ -222,4 +222,8 @@ public class IuvUtils {
 		}
 		return false;
 	}
+	
+	public static boolean isNavSondaPagoPA(String numeroAvviso) {
+        return GovpayConfig.getInstance().getNavSondaPagoPA().contains(numeroAvviso);
+	}
 }

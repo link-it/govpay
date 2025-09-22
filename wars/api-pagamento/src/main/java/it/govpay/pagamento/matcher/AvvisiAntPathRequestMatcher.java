@@ -46,6 +46,7 @@ import it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestM
 
 public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher {
 
+	private static final String HEADER_NAME_ACCEPT = "Accept";
 	private static final Log logger = LogFactory.getLog(AvvisiAntPathRequestMatcher.class);
 	private static final String PARAMETER_UUID = "UUID";
 
@@ -99,7 +100,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 					if(uuid != null) {
 						logger.debug("Parametro "+PARAMETER_UUID+" trovato, controllo disponibilita' avviso nel sistema...");
 						if(idDominio != null && iuv != null) {
-							authorizedUUID = authorizedPathMatch && checkDirittiAvviso(request, idDominio, iuv, uuid); //se hai diritto di vedere la risorsa passi altrimenti controllo il captcha
+							authorizedUUID = checkDirittiAvviso(request, idDominio, iuv, uuid); //se hai diritto di vedere la risorsa passi altrimenti controllo il captcha
 						} else { // parametri non validi
 							authorizedUUID = false;
 						}
@@ -114,7 +115,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				// 2. Controllo del captcha se UUID = null oppure se non ho passato il controllo con UUID
 				if(!authorizedUUID) {
 					logger.debug("Applico controllo tramite validazione ReCaptcha...");
-					authorizedPathMatch = authorizedPathMatch && this.applicaControlloReCaptcha(request, setting);
+					authorizedPathMatch = this.applicaControlloReCaptcha(request, setting);
 					logger.debug("Controllo tramite validazione ReCaptcha completato.");
 				}
 
@@ -129,7 +130,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				if(idDominio != null && iuv != null) { // controllo presenza dei parametri di identificazione dell'avviso
 					try {
 						logger.debug("Richiesto avviso in formato pdf, controllo identificativi in sessione...");
-						authorizedPathMatch = authorizedPathMatch && checkDirittiAvvisoSessione(request, idDominio, iuv);
+						authorizedPathMatch = checkDirittiAvvisoSessione(request, idDominio, iuv);
 					}catch(Throwable e) {
 						logger.error("Errore durante il check disponibilita' avviso: " + e.getMessage(), e);
 						authorizedPathMatch = false;
@@ -144,12 +145,12 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 	}
 
 	private boolean richiestoPdf(HttpServletRequest request) {
-		String acceptH = request.getHeader("Accept");
+		String acceptH = request.getHeader(HEADER_NAME_ACCEPT);
 		if(acceptH == null) {
-			acceptH = request.getHeader("Accept".toUpperCase());
+			acceptH = request.getHeader(HEADER_NAME_ACCEPT.toUpperCase());
 		}
 		if(acceptH == null) {
-			acceptH = request.getHeader("Accept".toLowerCase());
+			acceptH = request.getHeader(HEADER_NAME_ACCEPT.toLowerCase());
 		}
 		if(acceptH == null) {
 			acceptH = "";

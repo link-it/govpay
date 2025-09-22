@@ -3,7 +3,8 @@
 	   <notes><![CDATA[
 	   file name: openspcoop2_utils-crypt-3.2.1.jar
 	   La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' nel processamento del file 'screenshot_sync' del componente 'Filename Handler'.
-	   La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato.	   
+	   La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato.	
+	   La libreria viene utilizzata solo dall'installer e non dal runtime.   
 	   ]]></notes>
 	   <sha1>0777799291977dcbeffe51d4b35e5b475b0cf5be</sha1>
 	   <cpe>cpe:/a:utils_project:utils</cpe>

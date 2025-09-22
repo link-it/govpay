@@ -28,7 +28,7 @@ public class RedirectException extends Exception{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String location;
+	private final String location;
 	
 	public RedirectException(String location) {
 		super();

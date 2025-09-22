@@ -27,14 +27,14 @@ import org.openspcoop2.utils.crypt.ICrypt;
 import org.slf4j.Logger;
 
 public class CryptoUtils {
+	
+	private CryptoUtils() {
+		// static only
+	}
 
 	private static Logger log = LoggerWrapperFactory.getLogger(CryptoUtils.class);
 
 	private static final boolean ABILITA_DEBUG_INFO_CIFRATURA = false;
-
-	public static void main(String[] args) {
-
-	}
 
 	public static String cryptPw(String plainPw) throws UtilsException {
 		ICrypt crypt = getDefaultCrypt();
@@ -50,8 +50,7 @@ public class CryptoUtils {
 
 
 	private static ICrypt getDefaultCrypt() {
-		ICrypt crypt = CryptFactory.getCrypt(CryptType.SHA2_BASED_UNIX_CRYPT_SHA512);
-		return crypt;
+		return CryptFactory.getCrypt(CryptType.SHA2_BASED_UNIX_CRYPT_SHA512);
 	}
 
 	public static boolean checkPw(String plainPw, String encodedPw) {

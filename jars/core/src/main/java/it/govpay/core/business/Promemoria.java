@@ -119,7 +119,7 @@ public class Promemoria {
 	
 
 	public Promemoria() {
-		this.senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_NET, log);
+		this.senderCommonsMail = SenderFactory.newSender(SenderType.JAKARTA_MAIL, log);
 
 		Configurazione configurazioneBD = new Configurazione();
 		try {

@@ -56,6 +56,8 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.RecuperaRTNodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Intermediario;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.eventi.DatiPagoPA;
@@ -63,13 +65,8 @@ import it.govpay.model.eventi.DatiPagoPA;
 public class RecuperaRTThread implements Runnable {
 	
 	private static final String MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2 = "Errore durante il recupero della ricevuta [CodDominio: {0}, IUV: {1}, IUR: {2}]: {3}";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_AVVIO_KEY = "recuperoRT.avvioThread";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_OK_KEY = "recuperoRT.Ok";
-	private static final String MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY = "recuperoRT.Fail";
-
 	private static final String ERROR_MSG_ERRORE_NEL_RECUPERO_RT_COD_DOMINIO_IUR = "Errore nel recupero della ricevuta [CodDominio: {0}, IUV: {1}, Iur: {2}]";
 	private static final String ERROR_MSG_ERRORE_INIT_CLIENT_RECUPERO_RT_COD_DOMINIO_IUR = "Errore durante la init del client di recupero RT [CodDominio: {0}, IUV: {1}, Iur: {2}]";
-	private static final String ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0 = "Errore durante il log dell''operazione: {0}";
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(RecuperaRTThread.class);
 	private Rendicontazione rendicontazione;
@@ -117,11 +114,11 @@ public class RecuperaRTThread implements Runnable {
 			log.info("Id Server: [{}]", operationId);
 			log.info("Recupero RT da PagoPA [CodDominio: {}, IUV: {}, IUR: {}]", codDominio, iuv, iur);
 
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", codDominio));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", iuv));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", iur));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, iur));
 
-			cctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_AVVIO_KEY, codDominio, iur);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_AVVIO_THREAD_KEY, codDominio, iur);
 
 			// salvataggio dati transazione
 			eventoCtx.setCodDominio(codDominio);
@@ -143,7 +140,7 @@ public class RecuperaRTThread implements Runnable {
 			log.info("Recupero RT da PagoPA [CodDominio: {}, IUV: {}, IUR: {}], completato con successo", codDominio, iuv, iur);
 			eventoCtx.setEsito(Esito.OK);
 			this.esitoOperazione = "Ricevuta [CodDominio: "+codDominio+", IUR: "+iur+"] recuperata con successo.";
-			cctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_OK_KEY);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_OK_KEY);
 		} catch (ClientException e) {
 			this.errore = true;
 			this.esitoOperazione = MessageFormat.format(MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2, codDominio, iuv, iur, e.getMessage());
@@ -153,11 +150,7 @@ public class RecuperaRTThread implements Runnable {
 				eventoCtx.setEsito(Esito.FAIL);
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 			}	
-			try {
-				cctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
-			} catch (UtilsException e1) {
-				log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
 		} catch (NdpException e) {
 			this.errore = true;
 			this.esitoOperazione = MessageFormat.format(MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2, codDominio, iuv, iur, e.getMessage());
@@ -172,18 +165,14 @@ public class RecuperaRTThread implements Runnable {
 				eventoCtx.setSottotipoEsito(e.getFaultCode());
 				eventoCtx.setException(e);
 			}	
-			try {
-				cctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
-			} catch (UtilsException e1) {
-				log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
 		} catch (ServiceException | GovPayException | UtilsException | IOException e) {
 			this.errore = true;
 			this.esitoOperazione = MessageFormat.format(MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2, codDominio, iuv, iur, e.getMessage());
 			log.error(MessageFormat.format(ERROR_MSG_ERRORE_NEL_RECUPERO_RT_COD_DOMINIO_IUR, codDominio, iuv, iur), e);
 			if(client != null) {
-				if(e instanceof GovPayException) {
-					eventoCtx.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+				if(e instanceof GovPayException govPayException) {
+					eventoCtx.setSottotipoEsito(govPayException.getCodEsito().toString());
 				} else {
 					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 				}
@@ -191,11 +180,7 @@ public class RecuperaRTThread implements Runnable {
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 				eventoCtx.setException(e);
 			}	
-			try {
-				cctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
-			} catch (UtilsException e1) {
-				log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
 		} catch (ClientInitializeException e) {
 			this.errore = true;
 			this.esitoOperazione = MessageFormat.format(MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2, codDominio, iuv, iur, e.getMessage());
@@ -206,11 +191,7 @@ public class RecuperaRTThread implements Runnable {
 				eventoCtx.setDescrizioneEsito(e.getMessage());
 				eventoCtx.setException(e);
 			}	
-			try {
-				cctx.getApplicationLogger().log(MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
-			} catch (UtilsException e1) {
-				log.error(MessageFormat.format(ERROR_MSG_ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE_0, e.getMessage()), e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
 		} finally {
 			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
 				try {

@@ -51,7 +51,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VistaVersamento",VistaVersamento.class));
-		this.IUV = new it.govpay.orm.model.IuvSearchModel(new Field("iuv",it.govpay.orm.IuvSearch.class,"VistaVersamento",VistaVersamento.class));
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -127,7 +126,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VistaVersamento",VistaVersamento.class));
-		this.IUV = new it.govpay.orm.model.IuvSearchModel(new ComplexField(father,"iuv",it.govpay.orm.IuvSearch.class,"VistaVersamento",VistaVersamento.class));
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -208,8 +206,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
-	 
-	public it.govpay.orm.model.IuvSearchModel IUV = null;
 	 
 	public IField IMPORTO_TOTALE = null;
 	 

@@ -55,9 +55,11 @@ import org.xml.sax.SAXException;
 
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.core.beans.GovPayExceptionProperties;
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.StartupException;
 import it.govpay.core.utils.logger.Log4JUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
@@ -75,7 +77,8 @@ public class StartupUtils {
 	public static synchronized IContext startup(Logger log, String warName, String govpayVersion, String buildVersion,
 			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, String tipoServizioGovpay,
 			InputStream mappingSeveritaErroriPropertiesIS,
-			InputStream avvisiLabelPropertiesIS) throws StartupException {
+			InputStream avvisiLabelPropertiesIS,
+			InputStream govpayExceptionPropertiesIS) throws StartupException {
 
 		IContext ctx = null;
 		String versioneGovPay = getGovpayVersion(warName, govpayVersion, buildVersion);
@@ -166,6 +169,15 @@ public class StartupUtils {
 			} catch (IOException | ConfigException e) {
 				throw new StartupException(MessageFormat.format(MSG_ERRORE_INIZIALIZZAZIONE_DI_GOVPAY_FALLITA, versioneGovPay, e.getMessage()), e);
 			}
+			
+			// GovPay Exception Properties
+			try {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				IOUtils.copy(govpayExceptionPropertiesIS, baos);
+				GovPayExceptionProperties.newInstance(new ByteArrayInputStream(baos.toByteArray()));
+			} catch (IOException | ConfigException e) {
+				throw new StartupException(MessageFormat.format(MSG_ERRORE_INIZIALIZZAZIONE_DI_GOVPAY_FALLITA, versioneGovPay, e.getMessage()), e);
+			}
 		}
 		try {
 			GpContextFactory factory = new GpContextFactory();
@@ -182,12 +194,9 @@ public class StartupUtils {
 			ContextThreadLocal.set(ctx);
 		} catch (Exception e) {
 			LogUtils.logError(log, "Errore durante predisposizione del contesto: {}, {}", e.getMessage(), e);
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e1) {
-					LogUtils.logError(log, "Errore durante predisposizione del contesto:  {}, {}", e1.getMessage(), e1);
-				}
+			if(ctx != null){
+				MessaggioDiagnosticoUtils.log(log, ctx);
+			}
 			throw new StartupException(MessageFormat.format(MSG_ERRORE_INIZIALIZZAZIONE_DI_GOVPAY_FALLITA, versioneGovPay, e.getMessage()), e);
 		}
 

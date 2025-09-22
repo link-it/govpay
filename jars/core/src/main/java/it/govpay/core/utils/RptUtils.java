@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.IContext;
 
 import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
@@ -36,7 +35,6 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -44,7 +42,6 @@ import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Intermediario;
-import it.govpay.model.eventi.DatiPagoPA;
 
 public class RptUtils {
 
@@ -96,7 +93,7 @@ public class RptUtils {
 			Intermediario intermediario, 
 			Stazione stazione, 
 			List<Rpt> rpts, 
-			String codiceConvenzione) throws ClientException, UtilsException {
+			String codiceConvenzione) throws ClientException {
 		it.govpay.core.business.model.Risposta risposta = null;
 		NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
 		inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCodCanale());
@@ -116,21 +113,6 @@ public class RptUtils {
 		inviaCarrelloRpt.setCodiceConvenzione(codiceConvenzione);
 		risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
 		return risposta;
-	}
-
-	public static void popolaEventoCooperazione(Rpt rpt, Intermediario intermediario, Stazione stazione, EventoContext eventoContext) {
-		DatiPagoPA datiPagoPA = new DatiPagoPA();
-		datiPagoPA.setCodCanale(rpt.getCodCanale());
-		datiPagoPA.setCodPsp(rpt.getCodPsp());
-		datiPagoPA.setCodStazione(stazione.getCodStazione());
-		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
-		datiPagoPA.setErogatore(it.govpay.model.Evento.NDP);
-		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
-		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
-		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
-		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
-		datiPagoPA.setCodDominio(rpt.getCodDominio());
-		eventoContext.setDatiPagoPA(datiPagoPA);
 	}
 
 	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException, IOException {

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -555,9 +556,9 @@ public abstract class BasicClientCORE {
 				try {
 					// elimino la possibilita' di avere due '/'
 					path = path.startsWith("/") ? path.substring(1) : path;
-					this.url = new URL(location.concat(path));
+					this.url = new URI(location.concat(path)).toURL();
 					LogUtils.logDebug(log, "La richiesta sara' spedita alla URL: [{}].", this.url);
-				} catch (MalformedURLException e) {
+				} catch (MalformedURLException | URISyntaxException e) {
 					responseCode = 500;
 					throw new ClientException("Url di connessione malformata: " + location.concat(path), e, responseCode);
 				}
@@ -569,15 +570,13 @@ public abstract class BasicClientCORE {
 
 			this.getEventoCtx().setUrl(this.url.toExternalForm());
 
-			if(this.debug)
+			if(this.debug) {
 				LogUtils.logDebug(log, "Creazione URL [{}]...", location);
+				LogUtils.logInfo(log, "Creazione connessione alla URL [{}]...", location);
+			}
 
 			// Keep-alive
 			ConnectionKeepAliveStrategy keepAliveStrategy = null; //new ConnectionKeepAliveStrategyCustom()
-
-			// Creazione Connessione
-			if(this.debug)
-				log.info("Creazione connessione alla URL [{}]...", location);
 
 			// creazione client
 			HttpClient httpClient = buildHttpClient(keepAliveStrategy, this.sslContextFactory, BasicClientCORE.USE_POOL, this.serverID, this.connettore);

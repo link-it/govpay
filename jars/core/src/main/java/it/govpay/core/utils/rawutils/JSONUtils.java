@@ -148,7 +148,7 @@ public class JSONUtils extends AbstractUtils {
 		if(internalMapper==null){
 			initMapper();
 		}
-		if(writer==null){
+		if(writer==null && internalMapper!=null){
 			writer = internalMapper.writer();
 		}
 	}
@@ -164,7 +164,7 @@ public class JSONUtils extends AbstractUtils {
 		if(internalMapper==null){
 			initMapper();
 		}
-		if(writerPrettyPrint==null){
+		if(writerPrettyPrint==null && internalMapper!=null){
 			writerPrettyPrint = internalMapper.writer().withDefaultPrettyPrinter();
 		}
 	}

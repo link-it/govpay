@@ -29,67 +29,20 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
-import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.UrlUtils;
 
 public class WebControllerDAO extends BaseDAO{
 
-	private static final String ESITO = "esito";
-	public static final String OK = "OK";
-
 	public WebControllerDAO() {
 		super();
 	}
-
-	public RichiestaWebControllerDTOResponse gestisciRichiestaWebController(RichiestaWebControllerDTO aggiornaPagamentiPortaleDTO) throws ServiceException, PagamentoPortaleNonTrovatoException{
-		RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = new RichiestaWebControllerDTOResponse();
-
-		IContext ctx = ContextThreadLocal.get();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		PagamentiPortaleBD pagamentiPortaleBD = null;
-
-		try {
-			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
-			PagamentoPortale pagamentoPortale = null;
-
-			try {
-				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(aggiornaPagamentiPortaleDTO.getIdSessione());
-			}catch(NotFoundException e) {
-				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione ["+aggiornaPagamentiPortaleDTO.getIdSessione()+"]");
-			}
-
-			String urlRitorno = pagamentoPortale.getUrlRitorno();
-			
-			switch (pagamentoPortale.getCodiceStato()) {
-			case PAGAMENTO_FALLITO:
-				urlRitorno = UrlUtils.addParameter(urlRitorno, ESITO,"FAIL");
-				aggiornaPagamentiPortaleDTOResponse.setLocation(urlRitorno);
-				break;
-			case PAGAMENTO_ESEGUITO:
-			case PAGAMENTO_IN_ATTESA_DI_ESITO:
-			case PAGAMENTO_NON_ESEGUITO:
-			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-				urlRitorno = UrlUtils.addParameter(urlRitorno, ESITO,pagamentoPortale.getPspEsito());
-				aggiornaPagamentiPortaleDTOResponse.setLocation(urlRitorno);
-				break;
-			case PAGAMENTO_IN_CORSO_AL_PSP:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getPspRedirectUrl());
-				break;
-			}
-		}finally {
-			pagamentiPortaleBD.closeConnection();
-		}
-
-		return aggiornaPagamentiPortaleDTOResponse;
-	}
-
 
 	public RedirectDaPspDTOResponse gestisciRedirectPsp(RedirectDaPspDTO redirectDaPspDTO) throws GovPayException, ServiceException, PagamentoPortaleNonTrovatoException {
 		RedirectDaPspDTOResponse redirectDaPspDTOResponse = new RedirectDaPspDTOResponse();
@@ -107,20 +60,16 @@ public class WebControllerDAO extends BaseDAO{
 				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione Psp ["+redirectDaPspDTO.getIdSession()+"]");
 			}
 
-			switch (pagamentoPortale.getCodiceStato()) {
-			case PAGAMENTO_IN_CORSO_AL_PSP:
+			if(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP.equals(pagamentoPortale.getCodiceStato())) {
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 				pagamentoPortale.setPspEsito(redirectDaPspDTO.getEsito()); 
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-				break;
-			default:
-				break;
 			}
 			String urlRitorno = pagamentoPortale.getUrlRitorno();
 			
 			if(urlRitorno != null) {
-				urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
-				urlRitorno = UrlUtils.addParameter(urlRitorno , ESITO,redirectDaPspDTO.getEsito());
+				urlRitorno = UrlUtils.addParameter(urlRitorno, Costanti.PARAM_ID_PAGAMENTO, pagamentoPortale.getIdSessione());
+				urlRitorno = UrlUtils.addParameter(urlRitorno , Costanti.PARAM_ESITO, redirectDaPspDTO.getEsito());
 				redirectDaPspDTOResponse.setLocation(urlRitorno);
 			} else {
 				throw new GovPayException("Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + pagamentoPortale.getIdSessione(), EsitoOperazione.PAG_013, pagamentoPortale.getIdSessione());
@@ -131,7 +80,4 @@ public class WebControllerDAO extends BaseDAO{
 
 		return redirectDaPspDTOResponse;
 	}
-
-
-
 }

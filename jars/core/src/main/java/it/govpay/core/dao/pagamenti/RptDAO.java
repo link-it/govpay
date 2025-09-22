@@ -68,8 +68,9 @@ import it.govpay.core.utils.CtReceiptUtils;
 import it.govpay.core.utils.CtReceiptV2Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RtUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.eventi.DatiPagoPA;
@@ -78,6 +79,7 @@ import jakarta.xml.bind.JAXBException;
 
 public class RptDAO extends BaseDAO{
 	
+	private static final String MSG_NESSUNA_DESCRIZIONE = "<Nessuna descrizione>";
 	private static final String PATH_BLOCCANTE = "/bloccante";
 	private static final String PATH_RT = "/rt";
 
@@ -160,7 +162,7 @@ public class RptDAO extends BaseDAO{
 			}
 			
 			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException("Ricevuta ["+RptUtils.getRptKey(rpt)+"] non trovata.");
+				throw new RicevutaNonTrovataException("Ricevuta ["+ rpt.getRptKey() +"] non trovata.");
 
 			if(leggiRicevutaDTO.getFormato().equals(FormatoRicevuta.PDF)) {
 				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica();
@@ -345,15 +347,11 @@ public class RptDAO extends BaseDAO{
 						throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 					}
 					
-					appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
-					appContext.getRequest().addGenericProperty(new Property("codDominio", idDominio));
-					appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+					appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
+					appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, idDominio));
+					appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
 					
-					try {
-						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.ricezioneRt");
-					} catch (UtilsException e) {
-						log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-					}
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RICEZIONE_RT);
 					
 					DatiPagoPA datiPagoPA = new DatiPagoPA();
 					datiPagoPA.setCodStazione(null);
@@ -379,21 +377,17 @@ public class RptDAO extends BaseDAO{
 						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true);
 						
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
-						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.acquisizioneRtOk");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_RT_OK);
 						datiPagoPA.setCodCanale(rpt.getCodCanale());
 						datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 						
 						appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 						appContext.getEventoCtx().setEsito(Esito.OK);
 						
-						(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneOk");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_OK);
 					}catch (NdpException e) {
-						String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
-						try {
-							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", e.getFaultCode(), e.getFaultString(), faultDescription);
-						} catch (UtilsException e1) {
-							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-						}
+						String faultDescription = e.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : e.getDescrizione(); 
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, e.getFaultCode(), e.getFaultString(), faultDescription);
 						if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 							appContext.getEventoCtx().setEsito(Esito.FAIL);
 						else 
@@ -405,12 +399,8 @@ public class RptDAO extends BaseDAO{
 						throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 					} catch (ServiceException | UtilsException | GovPayException e) {
 						NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, idDominio, e.getMessage(), e);
-						String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
-						try {
-							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", ndpe.getFaultCode(), ndpe.getFaultString(), faultDescription);
-						} catch (UtilsException e1) {
-							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-						}
+						String faultDescription = ndpe.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : ndpe.getDescrizione(); 
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, ndpe.getFaultCode(), ndpe.getFaultString(), faultDescription);
 						appContext.getEventoCtx().setSottotipoEsito(ndpe.getFaultCode());
 						appContext.getEventoCtx().setEsito(Esito.FAIL);
 						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
@@ -460,6 +450,7 @@ public class RptDAO extends BaseDAO{
 
 		RptBD rptBD = null;
 		NdpException ndpException = null;
+		GpContext appContext = (GpContext) (ContextThreadLocal.get()).getApplicationContext();
 		try {
 			rptBD = new RptBD(configWrapper); 
 			// 1 decodifica messaggio ingresso
@@ -476,6 +467,9 @@ public class RptDAO extends BaseDAO{
 				String idDominio = receipt.getFiscalCode();
 				String iuv = receipt.getCreditorReferenceId();
 				String ccp = receipt.getReceiptId();
+				appContext.getEventoCtx().setCodDominio(idDominio);
+				appContext.getEventoCtx().setIuv(iuv);
+				appContext.getEventoCtx().setCcp(ccp);
 				
 				CtReceiptV2Utils.acquisisciRT(idDominio, iuv, paSendRTV2RequestRT, false, true);
 				
@@ -490,11 +484,11 @@ public class RptDAO extends BaseDAO{
 				}
 			} catch (ServiceException | UtilsException | GovPayException e) {
 				NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
-				String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+				String faultDescription = ndpe.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : ndpe.getDescrizione(); 
 				LogUtils.logError(log, faultDescription,e);
 				throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 			} catch (NdpException e) {
-				String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+				String faultDescription = e.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : e.getDescrizione(); 
 				LogUtils.logError(log, faultDescription,e);
 				throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 			}
@@ -507,6 +501,9 @@ public class RptDAO extends BaseDAO{
 					String idDominio = receipt.getFiscalCode();
 					String iuv = receipt.getCreditorReferenceId();
 					String ccp = receipt.getReceiptId();
+					appContext.getEventoCtx().setCodDominio(idDominio);
+					appContext.getEventoCtx().setIuv(iuv);
+					appContext.getEventoCtx().setCcp(ccp);
 					
 					CtReceiptUtils.acquisisciRT(idDominio, iuv, paSendRTReq, false, true);
 					
@@ -521,11 +518,11 @@ public class RptDAO extends BaseDAO{
 					}
 				} catch (ServiceException | UtilsException | GovPayException e) {
 					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
-					String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+					String faultDescription = ndpe.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : ndpe.getDescrizione(); 
 					LogUtils.logError(log, faultDescription,e);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 				} catch (NdpException e) {
-					String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+					String faultDescription = e.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : e.getDescrizione(); 
 					LogUtils.logError(log, faultDescription,e);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 				}
@@ -538,6 +535,9 @@ public class RptDAO extends BaseDAO{
 					String idDominio = ctRicevutaTelematica.getEnteBeneficiario().getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco();
 					String iuv = ctRicevutaTelematica.getDatiPagamento().getIdentificativoUnivocoVersamento();
 					String ccp = ctRicevutaTelematica.getDatiPagamento().getCodiceContestoPagamento();
+					appContext.getEventoCtx().setCodDominio(idDominio);
+					appContext.getEventoCtx().setIuv(iuv);
+					appContext.getEventoCtx().setCcp(ccp);
 					
 					RtUtils.acquisisciRT(idDominio, iuv, ccp, rtNonDecodificata, false, true);
 					
@@ -552,11 +552,11 @@ public class RptDAO extends BaseDAO{
 					}
 				} catch (ServiceException | UtilsException | GovPayException e) {
 					NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), null, e);
-					String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+					String faultDescription = ndpe.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : ndpe.getDescrizione(); 
 					LogUtils.logError(log, faultDescription,e);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 				} catch (NdpException e) {
-					String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+					String faultDescription = e.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : e.getDescrizione(); 
 					LogUtils.logError(log, faultDescription,e);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 				}
@@ -567,7 +567,7 @@ public class RptDAO extends BaseDAO{
 					LogUtils.logError(log, "La ricevuta di pagamento caricata non e' in un formato valido");
 					throw new UnprocessableEntityException("La ricevuta di pagamento caricata non e' in un formato valido");
 				} else {
-					String faultDescription = ndpException.getDescrizione() == null ? "<Nessuna descrizione>" : ndpException.getDescrizione(); 
+					String faultDescription = ndpException.getDescrizione() == null ? MSG_NESSUNA_DESCRIZIONE : ndpException.getDescrizione(); 
 					LogUtils.logError(log, faultDescription, ndpException);
 					throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 				}
@@ -592,6 +592,9 @@ public class RptDAO extends BaseDAO{
 				singoloVersamento.getTipoContabilita(configWrapper);
 				singoloVersamento.getTributo(configWrapper);
 			}
+			
+			appContext.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {

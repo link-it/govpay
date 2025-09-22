@@ -24,6 +24,7 @@ import java.io.IOException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -32,39 +33,87 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class Html5RoutingFilter implements Filter {
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Inizializzazione del filtro (se necessario)
-    }
+	private static final String HEADER_NAME_X_FORWARDED_PREFIX = "X-Forwarded-Prefix";
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        // Verifica se la richiesta è per un file o una directory esistente
-        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        String queryString = httpRequest.getQueryString();
-        if (!path.contains(".")) {
-        	String redirectPath = getRedirectPath(httpRequest, path, queryString);
-            httpResponse.sendRedirect(redirectPath);
-        } else {
-            // Altrimenti, continua il normale flusso di richiesta
-            chain.doFilter(request, response);
-        }
-    }
-
-	private String getRedirectPath(HttpServletRequest httpRequest, String path, String queryString) {
-		// Se la richiesta non contiene un'estensione, reindirizza al percorso HTML5 compatibile con l'app Angular
-		String redirectPath = httpRequest.getContextPath() + "/#" + path;
-		if (queryString != null && !queryString.isEmpty()) {
-		    redirectPath += "?" + queryString; // Aggiungi la query string al percorso di reindirizzamento
-		}
-		return redirectPath;
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		// Inizializzazione del filtro (se necessario)
 	}
 
-    @Override
-    public void destroy() {
-        // Operazioni di chiusura (se necessario)
-    }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+
+		HttpServletRequest  req  = (HttpServletRequest)  request;
+		HttpServletResponse resp = (HttpServletResponse) response;
+
+		// Informazioni impostate nel rewrite di Tomcat
+		
+		// (URI esterna prima del rewrite interno) ---
+		String origUri = (String) req.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
+		
+		// Se non c’è forward, prelevo dalla request
+		if (origUri == null) {  
+			origUri = req.getRequestURI(); 
+		}
+		
+		// (Context esterno prima del rewrite interno) ---
+		String origContext  = (String) req.getAttribute(RequestDispatcher.FORWARD_CONTEXT_PATH);
+		// Se non c’è forward, prelevo dalla request
+		if (origContext == null) {
+			origContext = req.getContextPath();
+		}
+		
+		// (QueryString esterna prima del rewrite interno) ---
+		String origQuery = (String) req.getAttribute(RequestDispatcher.FORWARD_QUERY_STRING);
+		// Se non c’è forward, prelevo dalla request
+		if (origQuery == null || origQuery.isEmpty()) {
+			origQuery = req.getQueryString();
+		}
+
+		// Informazioni impostate dal frontend apache.
+		
+		// Leggi X-Forwarded-Prefix (se Apache lo imposta) ---
+		String xfPrefix = req.getHeader(HEADER_NAME_X_FORWARDED_PREFIX);
+
+		// Calcolo path della risorsa richiesta
+		String path = origUri.substring(origContext.length());
+
+		// Se non è una risorsa statica o file (cioè non contiene un “.”)
+		if (!path.contains(".")) {
+			// Calcolo prefix da usare per il redirect
+			String prefix = getRedirectPrefix(origUri, xfPrefix, path);
+
+			// Costruisco il redirect finale
+			String redirectPath =  getRedirectPath(prefix, path, origQuery);
+			resp.sendRedirect(redirectPath);
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
+
+	private String getRedirectPrefix(String origUri, String xfPrefix, String path) {
+		String prefix;
+		// Scegli il prefix esterno:
+		if (xfPrefix != null && !xfPrefix.isEmpty()) {
+			prefix = xfPrefix;
+		} else {
+			// Parte di URI prima di ‘path’
+			prefix = origUri.substring(0, origUri.length() - path.length());
+		}
+		return prefix;
+	}
+	
+	private String getRedirectPath(String prefix, String path, String queryString) {
+		StringBuilder redirect = new StringBuilder(prefix).append("/#").append(path);
+		if (queryString != null && !queryString.isEmpty()) {
+			redirect.append("?").append(queryString);
+		}
+		return redirect.toString();
+	}
+
+	@Override
+	public void destroy() {
+		// Operazioni di chiusura (se necessario)
+	}
 }

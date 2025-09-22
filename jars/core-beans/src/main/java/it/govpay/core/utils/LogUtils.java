@@ -32,6 +32,8 @@ public class LogUtils {
 	
 	public static void logDebugException(Logger log, String msg, Exception e) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(e != null) {
 				log.debug(msg, e);
 			} else {
@@ -42,7 +44,11 @@ public class LogUtils {
 
 	public static void logDebug(Logger log, String msg, Object ... params) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(params != null && params.length > 0) {
+				sanitizeForLog(params);
+				
 				log.debug(msg, params);
 			} else {
 				log.debug(msg);
@@ -52,6 +58,8 @@ public class LogUtils {
 
 	public static void logInfoException(Logger log, String msg, Exception e) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(e != null) {
 				log.info(msg, e);
 			} else {
@@ -62,7 +70,11 @@ public class LogUtils {
 
 	public static void logInfo(Logger log, String msg, Object ... params) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(params != null && params.length > 0) {
+				sanitizeForLog(params);
+				
 				log.info(msg, params);
 			} else {
 				log.info(msg);
@@ -72,6 +84,8 @@ public class LogUtils {
 
 	public static void logWarnException(Logger log, String msg, Exception e) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(e != null) {
 				log.warn(msg, e);
 			} else {
@@ -82,7 +96,11 @@ public class LogUtils {
 
 	public static void logWarn(Logger log, String msg, Object ... params) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(params != null && params.length > 0) {
+				sanitizeForLog(params);
+				
 				log.warn(msg, params);
 			} else {
 				log.warn(msg);
@@ -92,12 +110,16 @@ public class LogUtils {
 	
 	public static void logError(Logger log, String msg) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			log.error(msg);
 		}
 	}
 
 	public static void logError(Logger log, String msg, Exception e) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(e != null) {
 				log.error(msg, e);
 			} else {
@@ -108,7 +130,11 @@ public class LogUtils {
 	
 	public static void logError(Logger log, String msg, Object ... params) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(params != null && params.length > 0) {
+				sanitizeForLog(params);
+				
 				log.error(msg, params);
 			} else {
 				log.error(msg);
@@ -118,7 +144,11 @@ public class LogUtils {
 
 	public static void logTrace(Logger log, String msg, Object ... params) {
 		if(log != null) {
+			msg = sanitizeForLog(msg);
+			
 			if(params != null && params.length > 0) {
+				sanitizeForLog(params);
+				
 				log.trace(msg, params);
 			} else {
 				log.trace(msg);
@@ -126,4 +156,19 @@ public class LogUtils {
 		}
 	}
 
+	public static void sanitizeForLog(Object... params) {
+		for (int i = 0; i < params.length; i++) {
+			if (params[i] instanceof String data) {
+				params[i] = sanitizeForLog(data);
+			}
+		}
+	}
+	
+	public static String sanitizeForLog(String data) {
+		if (data != null) {
+			return data.replaceAll("[\n\r]", "_");
+		} else {
+			return null;
+		}
+	}
 }

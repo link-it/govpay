@@ -52,7 +52,7 @@ import java.util.Date;
 import jakarta.xml.bind.DatatypeConverter;
 
 public final class DataTypeAdapterCXF {
-    private static final String PATTERN_OFFSET = ".*[+-]\\d{2}:\\d{2}$";
+	private static final String PATTERN_OFFSET = ".*([+-]\\d{2}:\\d{2}|Z)$";
 	private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER;
     static {
     	LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
@@ -93,13 +93,12 @@ public final class DataTypeAdapterCXF {
         
         // Verifica se la stringa termina con un offset nel formato +HH:mm o -HH:mm
         if (value.matches(PATTERN_OFFSET)) {
-            // La stringa contiene offset: uso ISO_OFFSET_DATE
-            OffsetDateTime odt = OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE);
-            return odt.toLocalDate();
-        } else {
-            // La stringa non contiene offset: uso ISO_LOCAL_DATE
-            return LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+        	// Rimuove l'offset se presente
+            value = value.replaceFirst("([+-]\\d{2}:\\d{2}|Z)$", "");
         }
+
+        // La stringa non contiene offset: uso ISO_LOCAL_DATE
+        return LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
 	public static String printLocalDate(LocalDate value) {

@@ -31,22 +31,17 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.StampaConverter;
-import it.govpay.bd.pagamento.filters.StampaFilter;
 import it.govpay.model.Stampa;
 import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.jdbc.JDBCStampaServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.StampaFieldConverter;
-import it.govpay.orm.model.StampaModel;
 
 public class StampeBD extends BasicBD{
 
@@ -65,101 +60,7 @@ public class StampeBD extends BasicBD{
 	public StampeBD(BDConfigWrapper configWrapper) {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
-
-	public StampaFilter newFilter() {
-		return new StampaFilter(this.getStampaService());
-	}
-
-	public StampaFilter newFilter(boolean simpleSearch) {
-		return new StampaFilter(this.getStampaService(),simpleSearch);
-	}
 	
-	public long count(StampaFilter filter) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-			
-			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
-			
-			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			
-			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			StampaModel model = it.govpay.orm.Stampa.model();
-			/*
-			SELECT count(distinct id) 
-				FROM
-				  (
-				  SELECT versamenti.id
-				  FROM versamenti
-				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
-				  LIMIT K
-				  ) a
-				)
-			*/
-			
-			sqlQueryObjectInterno.addFromTable(converter.toTable(model.DATA_CREAZIONE));
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "id");
-			sqlQueryObjectInterno.setANDLogicOperator(true);
-			
-			// creo condizioni
-			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
-			// preparo parametri
-			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
-			
-			sqlQueryObjectInterno.setLimit(limitInterno);
-			
-			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
-			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
-			
-			String sql = sqlQueryObjectDistinctID.createSQLQuery();
-			List<Class<?>> returnTypes = new ArrayList<>();
-			returnTypes.add(Long.class); // Count
-			
-			List<List<Object>> nativeQuery = this.getStampaService().nativeQuery(sql, returnTypes, parameters);
-			
-			Long count = 0L;
-			for (List<Object> row : nativeQuery) {
-				count = BasicBD.getValueOrNull(row.get(0), Long.class);
-			}
-			
-			return count.longValue();
-		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			return 0;
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	public List<Stampa> findAll(StampaFilter filter) throws ServiceException {
-		try {
-			List<Stampa> stampeLst = new ArrayList<>();
-			
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-				filter.setExpressionConstructor(this.getStampaService());
-			}
-
-			List<it.govpay.orm.Stampa> stampeVOLst = this.getStampaService().findAll(filter.toPaginatedExpression()); 
-			for(it.govpay.orm.Stampa incassoVO: stampeVOLst) {
-				stampeLst.add(StampaConverter.toDTO(incassoVO));
-			}
-			return stampeLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
 	public Stampa getStampa(long id) throws ServiceException , NotFoundException{
 		try {
 			if(this.isAtomica()) {
@@ -278,23 +179,6 @@ public class StampeBD extends BasicBD{
 			it.govpay.orm.Stampa vo = StampaConverter.toVO(stampa);
 			this.getStampaService().create(vo);
 			stampa.setId(vo.getId());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-	
-	public void deleteStampa(Stampa stampa) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-			
-			it.govpay.orm.Stampa vo = StampaConverter.toVO(stampa);
-			this.getStampaService().delete(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {

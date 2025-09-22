@@ -19,17 +19,15 @@
  */
 package it.govpay.core.utils;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.ws.rs.core.HttpHeaders;
-//import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
-import jakarta.xml.ws.handler.MessageContext;
 
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
 import org.openspcoop2.utils.logger.beans.context.core.AbstractTransaction;
@@ -44,6 +42,7 @@ import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.logger.beans.context.core.Service;
 import org.openspcoop2.utils.logger.constants.context.FlowMode;
 import org.openspcoop2.utils.logger.constants.context.Result;
+import org.openspcoop2.utils.service.context.IContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
@@ -55,7 +54,14 @@ import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Versionabile.Versione;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.xml.ws.handler.MessageContext;
 
+/**
+ * @author Pintori Giuliano (giuliano.pintori@link.it)
+ * @author  $Author: pintori $
+ *
+ */
 public class GpContext extends ApplicationContext {
 
 	public static final String UNKNOWN = "<Unknown>";
@@ -70,7 +76,7 @@ public class GpContext extends ApplicationContext {
 	private EventoContext eventoCtx;
 	
 	// Mappa da utilizzare all'interno delle trasformazioni si puo' utilizzare per salvare dei dati all'interno dei template e utilizzarli dopo la fine della trasformazione.
-	private Hashtable<String, Object> ctx = new Hashtable<String, Object>();
+	private Hashtable<String, Object> ctx = new Hashtable<>();
 	
 	public Hashtable<String, Object> getContext() {
 		return this.ctx;

@@ -243,6 +243,7 @@ public class RppController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio(Costanti.PARAM_ID_DOMINIO, idDominio);
+			validatoreId.validaParametroObbligatorio(Costanti.PARAM_IUV, iuv, 1, null);
 
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);

@@ -19,6 +19,7 @@
  */
 package it.govpay.core.dao.autorizzazione;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,9 +46,12 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.commons.exception.UtenzaNonAutorizzataException;
 import it.govpay.core.utils.LogUtils;
 
 public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
+
+	private static final String LOG_MSG_UTENZA_0_NON_TROVATA = "Utenza [{0}] non trovata.";
 
 	public AutenticazioneUtenzeRegistrateDAO() {
 		super();
@@ -63,8 +67,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 
 		if(this.leggiUtenzaDaSessione) {
 			Map<String, Object> attributeValues = new HashMap<>();
-			if(token.getDetails() instanceof GovpayWebAuthenticationDetails) {
-				attributeValues = ((GovpayWebAuthenticationDetails) token.getDetails()).getAttributesValues();
+			if(token.getDetails() instanceof GovpayWebAuthenticationDetails govpayWebAuthenticationDetails) {
+				attributeValues = govpayWebAuthenticationDetails.getAttributesValues();
 			}
 			try {
 				return this.loadUserDetailsFromSessionEngine(username, token.getAuthorities(),attributeValues );
@@ -73,8 +77,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			}
 		} else {
 			Map<String, List<String>> headerValues = new HashMap<>();
-			if(token.getDetails() instanceof GovpayWebAuthenticationDetails) {
-				headerValues = ((GovpayWebAuthenticationDetails) token.getDetails()).getHeaderValues();
+			if(token.getDetails() instanceof GovpayWebAuthenticationDetails govpayWebAuthenticationDetails) {
+				headerValues = govpayWebAuthenticationDetails.getHeaderValues();
 			}
 			try {
 				return this.loadUserDetailsEngine(username, token.getAuthorities(), headerValues);
@@ -107,7 +111,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		String transactionId = UUID.randomUUID().toString();
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
-			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
+			this.debug(transactionId,MessageFormat.format("Lettura delle informazioni per l''utenza [{0}] in corso...", username));
 
 			try {
 				if(this.isCheckSubject()) {
@@ -117,11 +121,11 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 				}
 			}  catch(NotFoundException e){
 				if(!this.isUserAutoSignup()) {				
-					throw new it.govpay.core.exceptions.NotFoundException("Utenza "+username+" non trovata.",e);
+					throw new it.govpay.core.exceptions.NotFoundException(MessageFormat.format("Utenza {0} non trovata.", username),e);
 				}
 
 				// autocensimento utenza
-				this.debug(transactionId,"Autocensimento Utenza ["+username+"]...");
+				this.debug(transactionId,MessageFormat.format("Autocensimento Utenza [{0}]...", username));
 				OperatoriBD operatoriBD = new OperatoriBD(configWrapper);
 				Operatore operatore = new Operatore();
 				String nome = username.length() > 35 ? username.substring(0, 35) : username;
@@ -146,17 +150,17 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 
 			}
 
-			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
+			this.debug(transactionId,MessageFormat.format("Utenza [{0}] trovata, lettura del dettaglio in corso...", username));
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, configWrapper, this.getApiName(), this.getAuthType());
 			userDetails.setIdTransazioneAutenticazione(transactionId);
-			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
+			this.debug(transactionId,MessageFormat.format("Utenza [{0}] trovata, lettura del dettaglio completata.", username));
 			return userDetails;
 		} catch(it.govpay.core.exceptions.NotFoundException e){
-			this.debug(transactionId,"Utenza ["+username+"] non trovata.");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_UTENZA_0_NON_TROVATA, username));
 			throw e;
 		} catch(ServiceException e){
 			LogUtils.logError(log, "Errore Interno: " +e.getMessage(),e);
-			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile autenticare l'utenza", e);
 		}	finally {
 			// donothing
 		}
@@ -171,10 +175,10 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		try {
 			GovpayLdapUserDetails userDetailFromSession = (GovpayLdapUserDetails) attributeValues.get(AuthorizationManager.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME);
 			if(userDetailFromSession == null)
-				throw new RuntimeException("Dati utenza ["+username+"] non presenti in sessione.");
+				throw new UtenzaNonAutorizzataException(MessageFormat.format("Dati utenza [{0}] non presenti in sessione.", username));
 
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
-			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
+			this.debug(transactionId,MessageFormat.format("Lettura delle informazioni per l''utenza [{0}] in corso...", username));
 			UtenzeBD utenzeBD = new UtenzeBD(configWrapper);
 
 			boolean exists = false;
@@ -187,16 +191,16 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			if(!exists)
 				throw new it.govpay.core.exceptions.NotFoundException("Utenza "+username+" non trovata.");
 
-			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
+			this.debug(transactionId,MessageFormat.format("Utenza [{0}] trovata, lettura del dettaglio in corso...", username));
 			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
-			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
+			this.debug(transactionId,MessageFormat.format("Utenza [{0}] trovata, lettura del dettaglio completata.", username));
 			return userDetailFromUtenzaCittadino;
 		} catch(it.govpay.core.exceptions.NotFoundException e){
-			this.debug(transactionId,"Utenza ["+username+"] non trovata.");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_UTENZA_0_NON_TROVATA, username));
 			throw e;
 		} catch(ServiceException e){
-			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
 			// donothing
 		}
@@ -208,7 +212,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		String transactionId = UUID.randomUUID().toString();
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
-			this.debug(transactionId,"Lettura delle informazioni per l'utenza ldap ["+username+"] in corso...");
+			this.debug(transactionId,MessageFormat.format("Lettura delle informazioni per l''utenza ldap [{0}] in corso...", username));
 			UtenzeBD utenzeBD = new UtenzeBD(configWrapper);
 
 			boolean exists = false;
@@ -219,18 +223,18 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 				exists = utenzeBD.existsByPrincipal(username);
 
 			if(!exists)
-				throw new it.govpay.core.exceptions.NotFoundException("Utenza ldap "+username+" non trovata.");
+				throw new it.govpay.core.exceptions.NotFoundException(MessageFormat.format("Utenza ldap {0} non trovata.", username));
 
-			this.debug(transactionId,"Utenza ldap ["+username+"] trovata, lettura del dettaglio in corso...");
+			this.debug(transactionId,MessageFormat.format("Utenza ldap [{0}] trovata, lettura del dettaglio in corso...", username));
 			GovpayLdapUserDetails userDetailFromUtenzaLdap = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetail, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaLdap.setIdTransazioneAutenticazione(transactionId);
-			this.debug(transactionId,"Utenza ldap ["+username+"] trovata, lettura del dettaglio completata.");
+			this.debug(transactionId,MessageFormat.format("Utenza ldap [{0}] trovata, lettura del dettaglio completata.", username));
 			return userDetailFromUtenzaLdap;
 		} catch(it.govpay.core.exceptions.NotFoundException e){
-			this.debug(transactionId,"Utenza ["+username+"] non trovata.");
+			this.debug(transactionId,MessageFormat.format(LOG_MSG_UTENZA_0_NON_TROVATA, username));
 			throw e;
 		} catch(Exception e){
-			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
 		}	finally {
 			// donothing
 		}

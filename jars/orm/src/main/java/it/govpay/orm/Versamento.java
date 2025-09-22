@@ -44,7 +44,6 @@ import java.io.Serializable;
  * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}iuv-search" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="statoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
@@ -125,7 +124,6 @@ import java.io.Serializable;
   	"idUo",
   	"idApplicazione",
   	"idPagamentoPortale",
-  	"iuv",
   	"importoTotale",
   	"statoVersamento",
   	"descrizioneStato",
@@ -256,14 +254,6 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
 
   public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
     this.idPagamentoPortale = idPagamentoPortale;
-  }
-
-  public IuvSearch getIuv() {
-    return this.iuv;
-  }
-
-  public void setIuv(IuvSearch iuv) {
-    this.iuv = iuv;
   }
 
   public double getImportoTotale() {
@@ -783,9 +773,6 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
 
   @XmlElement(name="idPagamentoPortale",required=true,nillable=false)
   protected IdPagamentoPortale idPagamentoPortale;
-
-  @XmlElement(name="iuv",required=false,nillable=false)
-  protected IuvSearch iuv;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoTotale",required=true,nillable=false)

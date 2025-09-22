@@ -38,6 +38,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.commons.exception.UtenzaNonAutorizzataException;
 
 public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication>, AuthenticationDetailsSource<HttpServletRequest, Authentication> {	
 
@@ -62,7 +63,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 
 	@Override
 	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
-		return this._loadUserDetailsFromLdapUserDetail(username, userDetail.getAuthorities(), userDetail);
+		return this.loadUserDetailsFromLdapUserDetailEngine(username, userDetail.getAuthorities(), userDetail);
 	}
 
 	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) {
@@ -75,13 +76,13 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] completato.");
 			return userDetailFromUtenzaAnonima;
 		} catch(ServiceException e){
-			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
 		}	finally {
 			// donothing
 		}
 	}
 	
-	private UserDetails _loadUserDetailsFromLdapUserDetail(String username, Collection<? extends GrantedAuthority> authFromPreauth, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
+	private UserDetails loadUserDetailsFromLdapUserDetailEngine(String username, Collection<? extends GrantedAuthority> authFromPreauth, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
 		Map<String, Object> attributeValues = new HashMap<>();
 		
 		try {
@@ -93,7 +94,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ldap ["+username+"] completato.");
 			return userDetailFromUtenzaLdap;
 		} catch(Exception e){
-			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
+			throw new UtenzaNonAutorizzataException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
 		}	finally {
 			// donothing
 		}

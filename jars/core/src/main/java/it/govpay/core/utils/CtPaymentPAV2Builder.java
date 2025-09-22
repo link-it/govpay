@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class CtPaymentPAV2Builder {
 				iuv,
 				ccp,
 				numeroavviso,
-				TipoVersamento.ATTIVATO_PRESSO_PSP,
+				null,
 				ModelloPagamento.ATTIVATO_PRESSO_PSP,
 				StAutenticazioneSoggetto.N_A.value(),
 				null
@@ -102,7 +103,7 @@ public class CtPaymentPAV2Builder {
 		rpt.setDataMsgRichiesta(new Date());
 		rpt.setDescrizioneStato(null);
 		rpt.setId(null);
-		rpt.setTipoVersamento(tipoVersamento);
+		rpt.setTipoVersamento(tipoVersamento != null ? tipoVersamento.getCodifica() : null);
 		rpt.setIdVersamento(versamento.getId());
 		rpt.setVersamento(versamento);
 		rpt.setIuv(iuv);
@@ -260,8 +261,10 @@ public class CtPaymentPAV2Builder {
 				}
 			} else { // MBT
 				CtRichiestaMarcaDaBollo marcaBollo = new CtRichiestaMarcaDaBollo();
-				if(singoloVersamento.getHashDocumento() != null)
-					marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
+				if(singoloVersamento.getHashDocumento() != null) {
+					byte[] hashBytes = Base64.getDecoder().decode(singoloVersamento.getHashDocumento());
+					marcaBollo.setHashDocumento(hashBytes);
+				}
 				marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 				if(singoloVersamento.getTipoBollo() != null)
 					marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());

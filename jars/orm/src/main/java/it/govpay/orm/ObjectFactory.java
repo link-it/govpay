@@ -94,13 +94,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdContoAccredito }
-     */
-    public IdContoAccredito createIdContoAccredito() {
-        return new IdContoAccredito();
-    }
-
-    /**
      * Create an instance of {@link FR }
      */
     public FR createFR() {
@@ -448,13 +441,6 @@ public class ObjectFactory {
      */
     public IdUtenza createIdUtenza() {
         return new IdUtenza();
-    }
-
-    /**
-     * Create an instance of {@link IuvSearch }
-     */
-    public IuvSearch createIuvSearch() {
-        return new IuvSearch();
     }
 
     /**

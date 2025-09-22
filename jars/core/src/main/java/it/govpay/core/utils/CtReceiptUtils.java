@@ -68,6 +68,8 @@ import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.RtUtils.EsitoValidazione;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
@@ -117,7 +119,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		for (int i = 0; i < ctPaymentPA.getTransferList().getTransfer().size(); i++) {
 
 			CtTransferPA singoloVersamento = ctPaymentPA.getTransferList().getTransfer().get(i);
-			CtTransferPA singoloPagamento = null; 
+			CtTransferPA singoloPagamento = null;
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty()) {
 				singoloPagamento = ctReceipt.getTransferList().getTransfer().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, (i+1), esito);
@@ -175,7 +177,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		String receiptId = ctReceipt.getReceiptId();
 
 		log.info("Acquisizione RT Dominio[{}], IUV[{}], ReceiptID [{}] in corso", codDominio, iuv, receiptId);
-		RptBD rptBD = null; 
+		RptBD rptBD = null;
 		try {
 			IContext ctx = ContextThreadLocal.get();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -185,7 +187,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			BigDecimal paymentAmount = ctReceipt.getPaymentAmount();
 			Date dataPagamento = ctReceipt.getPaymentDateTime() != null ? DateUtils.toJavaDate(ctReceipt.getPaymentDateTime()) : new Date();
 			StOutcome ctReceiptOutcome = ctReceipt.getOutcome();
-			it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
+			it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
 			String pspFiscalCode = ctReceipt.getPspFiscalCode();
 			String pspCompanyName = ctReceipt.getPSPCompanyName();
 			String idPSP = ctReceipt.getIdPSP();
@@ -207,22 +209,22 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			Rpt rpt = null;
 			Long idPagamentoPortale = null;
 			VersioneRPT versioneRPTAttesa = it.govpay.model.Rpt.VersioneRPT.SANP_240;
-			try { 
+			try {
 				List<Rpt> listaTransazioniPerDominioIuv = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null);
-				
+
 				if(listaTransazioniPerDominioIuv.isEmpty()) { // replico il comportamento della vecchia getRpt, se non trovo transazioni devo acquisire la ricevuta ricostruendo la transazione
 					throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"] corrisponde ai parametri indicati.");
 				}
-				
+
 				// verifico che la ricevuta receitId non sia gia' stata acquisita.
 				for (Rpt rpt2 : listaTransazioniPerDominioIuv) {
 					if(rpt2.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt2.getCcp().equals(receiptId)) {
-						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, receiptId, 
+						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, receiptId,
 								SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt2.getDataMsgRicevuta())), rpt2.getCodDominio());
 					}
 				}
 
-				// Faccio adesso la select for update, altrimenti in caso di 
+				// Faccio adesso la select for update, altrimenti in caso di
 				// ricezione di due RT afferenti allo stesso carrello di pagamento
 				// vado in deadlock tra la getRpt precedente e la findAll seguente
 
@@ -237,7 +239,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 				}
 
-				PaGetPaymentRes ctRpt = null; 
+				PaGetPaymentRes ctRpt = null;
 				PaGetPaymentV2Response ctRptV2 = null;
 
 				// Validazione Semantica
@@ -272,16 +274,16 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 				if(esito.validato && !esito.errori.isEmpty()) {
 					if(recupero)
-						ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
-					else 
-						ctx.getApplicationLogger().log("pagamento.validazioneRtWarn", esito.getDiagnostico());
-				} 
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_VALIDAZIONE_RT_WARN, esito.getDiagnostico());
+					else
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_VALIDAZIONE_RT_WARN, esito.getDiagnostico());
+				}
 
 				if (!esito.validato) {
 					if(recupero)
-						ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtFail", esito.getDiagnostico());
-					else 
-						ctx.getApplicationLogger().log("pagamento.validazioneRtFail", esito.getDiagnostico());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_VALIDAZIONE_RT_FAIL, esito.getDiagnostico());
+					else
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_VALIDAZIONE_RT_FAIL, esito.getDiagnostico());
 
 					rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 					rpt.setDescrizioneStato(esito.getFatal());
@@ -309,20 +311,20 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				log.info("Acquisizione RT per un importo di {}", paymentAmount);
 
 				if(recupero) {
-					appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", receiptId));
-					appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", paymentAmount.toString()));
-					appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", rptEsito.toString()));
-					ctx.getApplicationLogger().log("rt.rtRecuperoAcquisizione");
+					appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_MESSAGGIO_RICEVUTA, receiptId));
+					appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IMPORTO, paymentAmount.toString()));
+					appContext.getTransaction().getLastServer().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_ESITO_PAGAMENTO, rptEsito.toString()));
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RT_RECUPERO_ACQUISIZIONE);
 				} else {
-					appContext.getRequest().addGenericProperty(new Property("codMessaggioRicevuta", receiptId));
-					appContext.getRequest().addGenericProperty(new Property("importo", paymentAmount.toString()));
-					appContext.getRequest().addGenericProperty(new Property("codEsitoPagamento", rptEsito.toString()));
-					ctx.getApplicationLogger().log("rt.acquisizione");
+					appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_MESSAGGIO_RICEVUTA, receiptId));
+					appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IMPORTO, paymentAmount.toString()));
+					appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_ESITO_PAGAMENTO, rptEsito.toString()));
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE);
 				}
 			} catch (NotFoundException e) {
 				// devo fare un insert e non un'update
 				update = false;
-				// Per la funzionalita' standin, se non trovo una RPT salvata allora creo una entry a partire dai dati delle RT e procedo con l'acquisizione della ricevuta. 
+				// Per la funzionalita' standin, se non trovo una RPT salvata allora creo una entry a partire dai dati delle RT e procedo con l'acquisizione della ricevuta.
 				try {
 					rpt = ricostruisciRPT(codDominio, iuv, ctRt, TipoVersamento.ATTIVATO_PRESSO_PSP, ModelloPagamento.ATTIVATO_PRESSO_PSP, configWrapper, versamentiBD);
 				} catch (NotFoundException e1) {
@@ -346,6 +348,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			rpt.setDenominazioneAttestante(pspCompanyName);
 			rpt.setCodPsp(idPSP);
 			rpt.setCodCanale(idChannel);
+			// aggiorno rpt con il tipoversamento ricevuto in risposta
+			rpt.setTipoVersamento(ctReceipt.getPaymentMethod());
 
 			if(update) {
 				// Aggiorno l'RPT con i dati dell'RT
@@ -363,7 +367,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			pagamentiBD.setAtomica(false); // condivisione della connessione
 
 			boolean irregolare = false;
-			String irregolarita = null; 
+			String irregolarita = null;
 
 			String iuvPagamento = rpt.getIuv();
 			BigDecimal totalePagato = BigDecimal.ZERO;
@@ -446,14 +450,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 							log.warn(irregolarita);
 						}
 						if(recupero)
-							ctx.getApplicationLogger().log("pagamento.recuperoRtAcquisizionePagamentoAnomalo", receiptId, StringUtils.join(anomalie,"\n"));
-						else 
-							ctx.getApplicationLogger().log("pagamento.acquisizionePagamentoAnomalo", receiptId, StringUtils.join(anomalie,"\n"));
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_ACQUISIZIONE_PAGAMENTO_ANOMALO, receiptId, StringUtils.join(anomalie,"\n"));
+						else
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_PAGAMENTO_ANOMALO, receiptId, StringUtils.join(anomalie,"\n"));
 
 						irregolare = true;
 
 					}
-					ctx.getApplicationLogger().log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE_PAGAMENTO, pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 					versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 					pagamentiBD.insertPagamento(pagamento);
 
@@ -462,7 +466,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					}
 				}
 				else {
-					ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_AGGIORNAMENTO_PAGAMENTO, pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 					pagamentiBD.updatePagamento(pagamento);
 				}
 
@@ -471,7 +475,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			rpt.setPagamenti(pagamenti);
 
-			boolean updateAnomalo = RtUtils.impostaNuovoStatoVersamento(rpt, versamento, irregolare, irregolarita);	
+			boolean updateAnomalo = RtUtils.impostaNuovoStatoVersamento(rpt, versamento, irregolare, irregolarita);
 
 			RtUtils.schedulazionePromemoriaENotificaAppIO(rptBD, configWrapper, rpt, idPagamentoPortale, versamento, versamentiBD, iuvPagamento,
 					totalePagato, dataPagamento, updateAnomalo);
@@ -487,7 +491,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 			}
 
-			ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_ACQUISIZIONE_OK, versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 			log.info("RT Dominio[{}], IUV[{}], ReceiptID [{}] acquisita con successo.", codDominio, iuv, receiptId);
 
 			return rpt;
@@ -513,7 +517,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				if(!rptBD.isAutoCommit() ) {
 					rptBD.setAutoCommit(true);
 				}
-				
+
 				rptBD.closeConnection();
 			}
 		}
@@ -535,7 +539,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		rpt.setCodDominio(codDominio);
 		rpt.setIuv(iuv);
 		rpt.setCodStazione(dominio.getStazione().getCodStazione());
-		
+
 		rpt.setCodMsgRichiesta(receiptId);
 		rpt.setDataMsgRichiesta(paymentDateTime != null ? paymentDateTime : new Date());
 		rpt.setCcp(receiptId);
@@ -547,7 +551,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
 		rpt.setDescrizioneStato(null);
 		rpt.setId(null);
-		rpt.setTipoVersamento(tipoVersamento);
+		rpt.setTipoVersamento(tipoVersamento != null ? tipoVersamento.getCodifica() : null);
 		rpt.setModelloPagamento(modelloPagamento);
 		rpt.setCallbackURL(null);
 		rpt.setCodSessione(null);
@@ -593,7 +597,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		for (int i = 0; i < ctPaymentPA.getTransferList().getTransfer().size(); i++) {
 
 			CtTransferPAV2 singoloVersamento = ctPaymentPA.getTransferList().getTransfer().get(i);
-			CtTransferPA singoloPagamento = null; 
+			CtTransferPA singoloPagamento = null;
 			if(!ctReceipt.getTransferList().getTransfer().isEmpty()) {
 				singoloPagamento = ctReceipt.getTransferList().getTransfer().get(i);
 				validaSemanticaSingoloVersamento(singoloVersamento, singoloPagamento, (i+1), esito);

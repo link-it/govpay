@@ -172,9 +172,9 @@ components:
         pattern: '(^([0-9A-Za-z]){1,35}$)'
       example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'  
     idRicevuta:
-      name: iuv
+      name: idRicevuta
       in: query
-      description: Identificativo del versamento
+      description: Identificativo della ricevuta
       required: false
       schema:
         type: string    

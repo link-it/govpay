@@ -31,17 +31,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Modello di pagamento
  */
 public enum ModelloPagamento {
-
+  
 
 
 
   ENTE("Pagamento ad iniziativa Ente"),
 
 
-  PSP("Pagamento ad iniziativa PSP");
-
-
-
+  PSP("Pagamento ad iniziativa PSP"),
+  
+  
+  MODELLO_UNICO("Modello unico");
+  
+  
+  
 
   private String value;
 

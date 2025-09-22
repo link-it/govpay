@@ -305,8 +305,7 @@ public class AvvisoPagamentoV2Utils {
 					if(secondaLinguaScelta != null)
 						rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
 					break;
-				case RIDOTTO:
-				case SCONTATO:
+				case RIDOTTO, SCONTATO:
 					throw new InvalidSwitchValueException("Il tipo soglia ["+versamento.getTipoSoglia()+"] indicato per la rata ["+rata.getNumeroRata()+"] non e' valido negli avvisi di pagamento V2");
 				}
 				
@@ -429,8 +428,7 @@ public class AvvisoPagamentoV2Utils {
 					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI, versamento.getGiorniSoglia()));
 				}
 				break;
-			case RIDOTTO:
-			case SCONTATO:
+			case RIDOTTO, SCONTATO:
 				throw new InvalidSwitchValueException("Il tipo soglia ["+versamento.getTipoSoglia()+"] indicato per la rata ["+rata.getNumeroRata()+"] non e' valido negli avvisi di pagamento V2");
 			}
 			
@@ -560,7 +558,7 @@ public class AvvisoPagamentoV2Utils {
 
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
 		}
 		
@@ -572,7 +570,7 @@ public class AvvisoPagamentoV2Utils {
 			sb.append("Tel: ").append(anagraficaUO.getTelefono());
 			sb.append(" - ");
 			line2=true;
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
 			sb.append("Tel: ").append(anagraficaDominio.getTelefono());
 			sb.append(" - ");
 			line2=true;
@@ -581,7 +579,7 @@ public class AvvisoPagamentoV2Utils {
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getFax())){
 			sb.append("Fax: ").append(anagraficaUO.getFax());
 			line2=true;
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
 			sb.append("Fax: ").append(anagraficaDominio.getFax());
 			line2=true;
 		}
@@ -593,7 +591,9 @@ public class AvvisoPagamentoV2Utils {
 				sb.append("pec: ").append(anagraficaUO.getPec());
 			} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
 				sb.append("email: ").append(anagraficaUO.getEmail());
-			} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+			}
+		} else if(anagraficaDominio != null) { 
+			if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
 				sb.append("pec: ").append(anagraficaDominio.getPec());
 			} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
 				sb.append("email: ").append(anagraficaDominio.getEmail());

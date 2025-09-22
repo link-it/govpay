@@ -164,7 +164,7 @@ When method get
 Then status 200
 
 
-@ModelloUnicoV2Nalformata
+@ModelloUnicoV2Malformata
 Scenario: Ricevuta per una transazione SANP 2.4.0, ricevuta malformata
 
 # Configurazione dell'applicazione

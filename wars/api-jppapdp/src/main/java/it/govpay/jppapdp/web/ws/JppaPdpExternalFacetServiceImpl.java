@@ -36,7 +36,6 @@ import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
@@ -63,6 +62,8 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.jppapdp.beans.utils.JaxbUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -86,12 +87,8 @@ wsdlLocation="/wsdl/jppapdp-ws-external.wsdl")
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesEndpoint {
 
-	private static final String JPPAPDP_RICEZIONE_RECUPERA_RT_KO = "jppapdp.ricezioneRecuperaRTKo";
-
 	private static final String ERRORE_DURANTE_L_ESECUZIONE_DEL_METODO_IMPOSTA_DATA_OPERAZIONE = "Errore durante l'esecuzione del metodo impostaDataOperazione: ";
-
 	private static final String NESSUNA_DESCRIZIONE = "<Nessuna descrizione>";
-
 	private static final String ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE = "Errore durante il log dell'operazione: ";
 
 	@Resource
@@ -129,11 +126,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 		response.setOperazione(StOperazione.RECUPERA_RT);
 		try {
 			
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRT");
-			} catch (UtilsException e) {
-				log.error(ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE + e.getMessage(),e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT);
 			log.info("Ricevuta richiesta RecuperaRT per il Dominio [{}]", codDominio);
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -158,7 +151,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			if(!authOk) {
 				GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 				String principal = details.getIdentificativo(); 
-				ctx.getApplicationLogger().log("jppapdp.erroreAutorizzazione", principal);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_ERRORE_AUTORIZZAZIONE, principal);
 				throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per il servizio Maggioli JPPA (" + principalMaggioli + ").");
 			}
 
@@ -183,11 +176,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
 			
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTParametri");
-			} catch (UtilsException e) {
-				log.error(ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE + e.getMessage(),e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_PARAMETRI);
 
 			// lettura RPT
 			RptBD rptBD = new RptBD(configWrapper);
@@ -210,7 +199,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 //				response.setXmlDettaglioRisposta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRisposta +  MaggioliJPPAUtils.CDATA_TOKEN_END)
 				response.setXmlDettaglioRisposta(  xmlDettaglioRisposta );
 				response.setEsito(StEsito.OK);
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTOk");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_OK);
 				appContext.getEventoCtx().setEsito(Esito.OK);
 			} catch (NotFoundException e) {
 				log.error("Lettura RT [{}][{}][{}] completata con errore: RPT non trovata.", codDominio, iuv, ccp);
@@ -228,11 +217,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			log.error("Errore di autorizzazione rilevato: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? NESSUNA_DESCRIZIONE : e.getDetails(); 
 			errore = CategoriaEnum.AUTORIZZAZIONE.name();
-			try {
-				ctx.getApplicationLogger().log(JPPAPDP_RICEZIONE_RECUPERA_RT_KO, CategoriaEnum.AUTORIZZAZIONE.name(), e.getMessage(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error(ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE + e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO, CategoriaEnum.AUTORIZZAZIONE.name(), e.getMessage(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito("FAIL");
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -254,11 +239,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			log.error("Errore di operazione rilevato: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? NESSUNA_DESCRIZIONE : e.getDetails(); 
 			errore = CategoriaEnum.RICHIESTA.name();
-			try {
-				ctx.getApplicationLogger().log(JPPAPDP_RICEZIONE_RECUPERA_RT_KO, CategoriaEnum.RICHIESTA.name(), e.getMessage(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error(ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE + e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO, CategoriaEnum.RICHIESTA.name(), e.getMessage(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito("FAIL");
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -276,16 +257,12 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			messaggio.setCodice(CategoriaEnum.RICHIESTA.name());
 			messaggio.setDescrizione(faultDescription); 
 			response.getMessaggi().getMessaggio().add(messaggio );
-		} catch (DatatypeConfigurationException | UtilsException | ServiceException | 
+		} catch (DatatypeConfigurationException | ServiceException | 
 				SAXException | JAXBException | ValidationException | XMLStreamException | IOException | it.govpay.core.exceptions.IOException e) {
 			log.error("Errore durante l'esecuzione della procedura di recupero RT: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? NESSUNA_DESCRIZIONE : e.getMessage(); 
 			errore = FaultPa.PAA_SYSTEM_ERROR.name();
-			try {
-				ctx.getApplicationLogger().log(JPPAPDP_RICEZIONE_RECUPERA_RT_KO, FaultPa.PAA_SYSTEM_ERROR.name(), FaultPa.PAA_SYSTEM_ERROR.getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error(ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE + e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO, FaultPa.PAA_SYSTEM_ERROR.name(), FaultPa.PAA_SYSTEM_ERROR.getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito("FAIL");
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);

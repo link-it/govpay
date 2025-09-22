@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.8.0</version>
+		<version>3.8.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -125,6 +125,11 @@
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
@@ -133,79 +138,74 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-logger</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-transport</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-csv</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-sonde</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-date</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-resources</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-service</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-regexp</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-mail</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-random</artifactId>
 		</dependency>
 
 		<dependency>
-    		<groupId>org.openspcoop2.utils</groupId>
+    		<groupId>org.gov4j.govway</groupId>
 		    <artifactId>openspcoop2_utils-json</artifactId>
 		</dependency>
-
-		 <dependency>
-         	<groupId>commons-lang</groupId>
-         	<artifactId>commons-lang</artifactId>
-		 </dependency>
 
 		<!-- SPRING -->
 		<dependency>
@@ -269,6 +269,11 @@
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-oauth2-resource-server</artifactId>
 	    </dependency>
+	    
+	    <dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.cxf</groupId>

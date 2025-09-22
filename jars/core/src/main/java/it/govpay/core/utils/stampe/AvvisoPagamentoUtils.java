@@ -303,7 +303,8 @@ public class AvvisoPagamentoUtils {
 		RataAvviso rata1 = getRata(v1, input, sdfDataScadenza);
 		RataAvviso rata2 = getRata(v2, input, sdfDataScadenza);
 
-		RataAvviso rataScontato = null, rataRidotto = null ;
+		RataAvviso rataScontato = null;
+		RataAvviso rataRidotto = null ;
 
 		if(rata1.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
 			rataRidotto = rata1;
@@ -364,7 +365,7 @@ public class AvvisoPagamentoUtils {
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina2);
 		}
 
-		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
+		while(!versamenti.isEmpty() && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
 			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -562,7 +563,7 @@ public class AvvisoPagamentoUtils {
 
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
 		}
 
@@ -574,7 +575,7 @@ public class AvvisoPagamentoUtils {
 			sb.append("Tel: ").append(anagraficaUO.getTelefono());
 			sb.append(" - ");
 			line2=true;
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
 			sb.append("Tel: ").append(anagraficaDominio.getTelefono());
 			sb.append(" - ");
 			line2=true;
@@ -583,23 +584,26 @@ public class AvvisoPagamentoUtils {
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getFax())){
 			sb.append("Fax: ").append(anagraficaUO.getFax());
 			line2=true;
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
 			sb.append("Fax: ").append(anagraficaDominio.getFax());
 			line2=true;
 		}
 
 		if(line2) sb.append("<br/>");
 
-		if(anagraficaUO != null)
+		if(anagraficaUO != null) {
 			if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
 				sb.append("pec: ").append(anagraficaUO.getPec());
 			} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
 				sb.append("email: ").append(anagraficaUO.getEmail());
-			} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+			} 
+		}else if(anagraficaDominio != null){ 
+			if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
 				sb.append("pec: ").append(anagraficaDominio.getPec());
 			} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
 				sb.append("email: ").append(anagraficaDominio.getEmail());
 			}
+		}
 
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.

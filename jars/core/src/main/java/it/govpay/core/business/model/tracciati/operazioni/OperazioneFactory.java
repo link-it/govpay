@@ -63,6 +63,11 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class OperazioneFactory {
 	
+	private static final String FAULT_CODE_400000 = "400000";
+	private static final String FAULT_CODE_500000 = "500000";
+	private static final String FAULT_ERRORE_INTERNO = "Errore Interno";
+	private static final String FAULT_RICHIESTA_NON_VALIDA = "Richiesta non valida";
+	
 	private static Logger log = LoggerWrapperFactory.getLogger(OperazioneFactory.class);
 
 	public CaricamentoResponse caricaVersamento(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) throws ServiceException {
@@ -148,14 +153,14 @@ public class OperazioneFactory {
 		} catch(Throwable e) {
 			log.error("Si e' verificato un errore durante il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+			caricamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
 			caricamentoResponse.setDescrizioneEsito(e.getMessage());
 			
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("500000");
-			respKo.setDescrizione("Errore Interno");
-			respKo.setDettaglio("Errore Interno");
+			respKo.setCodice(FAULT_CODE_500000);
+			respKo.setDescrizione(FAULT_ERRORE_INTERNO);
+			respKo.setDettaglio(FAULT_ERRORE_INTERNO);
 			caricamentoResponse.setFaultBean(respKo);
 		}
 
@@ -241,7 +246,7 @@ public class OperazioneFactory {
 		} catch(GovPayException e) {
 			LogUtils.logDebug(log, "Impossibile eseguire il caricamento linea ("+request.getLinea()+"): "+ e.getMessage(),e);
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+			caricamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
 			caricamentoResponse.setEsito(e.getCodEsito().name());
 			caricamentoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " + e.getMessage());
 			
@@ -268,8 +273,8 @@ public class OperazioneFactory {
 			
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
-			respKo.setCodice("400000");
-			respKo.setDescrizione("Richiesta non valida");
+			respKo.setCodice(FAULT_CODE_400000);
+			respKo.setDescrizione(FAULT_RICHIESTA_NON_VALIDA);
 			respKo.setDettaglio(e.getMessage());
 			caricamentoResponse.setFaultBean(respKo);
 		} catch(Throwable e) {
@@ -280,9 +285,9 @@ public class OperazioneFactory {
 			
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("500000");
-			respKo.setDescrizione("Errore Interno");
-			respKo.setDettaglio("Errore Interno");
+			respKo.setCodice(FAULT_CODE_500000);
+			respKo.setDescrizione(FAULT_ERRORE_INTERNO);
+			respKo.setDettaglio(FAULT_ERRORE_INTERNO);
 			caricamentoResponse.setFaultBean(respKo);
 		}
 
@@ -310,7 +315,7 @@ public class OperazioneFactory {
 		return statoPendenza;
 	}
 	
-	public AnnullamentoResponse annullaVersamento(AnnullamentoRequest request, BasicBD basicBD) throws ServiceException {
+	public AnnullamentoResponse annullaVersamento(AnnullamentoRequest request) {
 
 
 		AnnullamentoResponse annullamentoResponse = new AnnullamentoResponse();
@@ -327,12 +332,12 @@ public class OperazioneFactory {
 			versamento.annullaVersamento(annullaVersamentoDTO);
 
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
-			annullamentoResponse.setEsito("DEL_OK");
+			annullamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_OK);
 			annullamentoResponse.setDescrizioneEsito("Versamento [CodApplicazione:" + request.getCodApplicazione() + " Id:" + request.getCodVersamentoEnte() + "] eliminato con successo");
 		} catch(GovPayException e) {
 			LogUtils.logDebug(log, "Impossibile eseguire l'annullamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			annullamentoResponse.setEsito("DEL_KO");
+			annullamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
 			annullamentoResponse.setEsito(e.getCodEsito().name());
 			annullamentoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " +e.getMessage());
 			
@@ -354,7 +359,7 @@ public class OperazioneFactory {
 		} catch(NotAuthorizedException e) {
 			LogUtils.logDebug(log, "Impossibile eseguire l'annullamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			annullamentoResponse.setEsito("DEL_KO");
+			annullamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
 			annullamentoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
 			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
 			
@@ -367,7 +372,7 @@ public class OperazioneFactory {
 		} catch (UtilsException e) {
 			LogUtils.logDebug(log, "Impossibile eseguire l'annullamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			annullamentoResponse.setEsito("DEL_KO");
+			annullamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
 			annullamentoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
 			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
 			
@@ -511,7 +516,7 @@ public class OperazioneFactory {
 				versamento.annullaVersamento(annullaVersamentoDTO);
 
 				operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
-				operazioneResponse.setEsito("DEL_OK");
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_OK);
 				operazioneResponse.setDescrizioneEsito("Versamento [CodApplicazione:" + annullamento.getIdA2A() + " Id:" + annullamento.getIdPendenza() + "] eliminato con successo");
 			}
 			
@@ -551,8 +556,8 @@ public class OperazioneFactory {
 			
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
-			respKo.setCodice("400000");
-			respKo.setDescrizione("Richiesta non valida");
+			respKo.setCodice(FAULT_CODE_400000);
+			respKo.setDescrizione(FAULT_RICHIESTA_NON_VALIDA);
 			respKo.setDettaglio(e.getMessage());
 			operazioneResponse.setFaultBean(respKo);
 		} catch(Throwable e) {
@@ -566,9 +571,9 @@ public class OperazioneFactory {
 			
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("500000");
-			respKo.setDescrizione("Errore Interno");
-			respKo.setDettaglio("Errore Interno");
+			respKo.setCodice(FAULT_CODE_500000);
+			respKo.setDescrizione(FAULT_ERRORE_INTERNO);
+			respKo.setDettaglio(FAULT_ERRORE_INTERNO);
 			operazioneResponse.setFaultBean(respKo);
 		}
 

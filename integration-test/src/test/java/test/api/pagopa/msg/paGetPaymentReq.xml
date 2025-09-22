@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soapenv:Envelope
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:tns="http://pagopa-api.pagopa.gov.it/paForNode"
+	xmlns:common="http://pagopa-api.pagopa.gov.it/xsd/common-types/v1.0.0/"
+	xmlns:pafn="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd">
+	<soapenv:Body>
+		<pafn:paGetPaymentReq>
+			<idPA>#(idDominio)</idPA>
+            <idBrokerPA>#(idIntermediario)</idBrokerPA>
+            <idStation>#(idStazione)</idStation>
+            <qrCode>
+                <fiscalCode>#(idDominio)</fiscalCode>
+                <noticeNumber>#(numeroAvviso)</noticeNumber>
+            </qrCode>
+			<amount>#(importo)</amount>
+			<paymentNote>#(causale)</paymentNote>
+			<transferType>PAGOPA</transferType>
+		</pafn:paGetPaymentReq>
+	</soapenv:Body>
+</soapenv:Envelope>

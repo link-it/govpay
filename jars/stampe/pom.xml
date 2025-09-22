@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.8.0</version>
+		<version>3.8.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>stampe</artifactId>
@@ -100,7 +100,16 @@
 					<groupId>net.sf.barcode4j</groupId>
    					<artifactId>barcode4j</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>commons-beanutils</groupId>
+		    		<artifactId>commons-beanutils</artifactId>
+				</exclusion>
 		    </exclusions>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
 		</dependency>
 
 		<dependency>
@@ -161,8 +170,8 @@
 		</dependency>
 
         <dependency>
-			<groupId>org.openspcoop2.utils</groupId>
-            <artifactId>openspcoop2_utils-core</artifactId>
+			<groupId>org.gov4j.govway</groupId>
+            <artifactId>openspcoop2_utils-base</artifactId>
         </dependency>
 
 		<dependency>

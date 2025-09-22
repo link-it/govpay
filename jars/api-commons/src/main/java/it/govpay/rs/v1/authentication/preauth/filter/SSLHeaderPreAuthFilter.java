@@ -124,23 +124,21 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 	}
 
 	private String decodificaCarattereReplace(String input) {
-		if(input!=null){
-			if(StringUtils.isNotEmpty(input)) {
-				if("\\t".equals(input)) {
-					return "\t";
-				}
-				else if("\\r".equals(input)) {
-					return "\r";
-				}
-				else if("\\n".equals(input)) {
-					return "\n";
-				}
-				else if("\\r\\n".equals(input)) {
-					return "\r\n";
-				}
-				else if("\\s".equals(input)) {
-					return " "; // viene codificato in spazio
-				}
+		if(StringUtils.isNotEmpty(input)) {
+			if("\\t".equals(input)) {
+				return "\t";
+			}
+			else if("\\r".equals(input)) {
+				return "\r";
+			}
+			else if("\\n".equals(input)) {
+				return "\n";
+			}
+			else if("\\r\\n".equals(input)) {
+				return "\r\n";
+			}
+			else if("\\s".equals(input)) {
+				return " "; // viene codificato in spazio
 			}
 		}
 

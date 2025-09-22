@@ -19,13 +19,7 @@
  */
 package it.govpay.backoffice.v1.authentication.handler;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.springframework.security.core.Authentication;
@@ -38,8 +32,13 @@ import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.exception.CodiceEccezione;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultAuthenticationSuccessHandler{
 
@@ -71,12 +70,7 @@ public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.se
 		}catch (Exception e) {
 			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);
 		} finally {
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					LoggerWrapperFactory.getLogger(getClass()).error("Errore durante il log dell'operazione: "+e.getMessage(), e);
-				}
+			MessaggioDiagnosticoUtils.log(LoggerWrapperFactory.getLogger(getClass()), ctx);
 		}
 	}
 }

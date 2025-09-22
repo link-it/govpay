@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.8.0</version>
+		<version>3.8.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>pagopa-beans</artifactId>
@@ -93,6 +93,21 @@
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
        		<artifactId>swagger-jaxrs2</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-jaxrs2-jakarta</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+			<artifactId>jackson-jakarta-rs-json-provider</artifactId>
 		</dependency>
 
 	</dependencies>

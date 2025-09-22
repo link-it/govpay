@@ -21,10 +21,7 @@ package it.govpay.core.utils.client;
 
 import java.io.ByteArrayOutputStream;
 
-import jakarta.xml.bind.JAXBElement;
-
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -47,11 +44,14 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
+import jakarta.xml.bind.JAXBElement;
 
 public class NodoClient extends BasicClientCORE {
 
@@ -78,7 +78,7 @@ public class NodoClient extends BasicClientCORE {
 		this.operationID = operationID;
 	}
 
-	public Risposta send(String azione, byte[] body) throws ClientException, UtilsException {
+	public Risposta send(String azione, byte[] body) throws ClientException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) {
@@ -96,7 +96,7 @@ public class NodoClient extends BasicClientCORE {
 		} else 
 			appContext.getTransaction().getLastServer().setEndpoint(urlString);
 		
-		ctx.getApplicationLogger().log("ndp_client.invioRichiesta");
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA);
 
 		try {
 			byte[] response = super.sendSoap(azione, body, this.isAzioneInUrl);
@@ -109,22 +109,22 @@ public class NodoClient extends BasicClientCORE {
 				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
 				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
 				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
-				ctx.getApplicationLogger().log("ndp_client.invioRichiestaFault", faultCode, faultString, faultDescription);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_FAULT, faultCode, faultString, faultDescription);
 			} else {
-				ctx.getApplicationLogger().log("ndp_client.invioRichiestaOk");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_OK);
 			}
 			return r;
 		} catch (ClientException e) {
-			ctx.getApplicationLogger().log("ndp_client.invioRichiestaKo", e.getMessage());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_KO, e.getMessage());
 			throw e;
 		} catch (Exception e) {
-			ctx.getApplicationLogger().log("ndp_client.invioRichiestaKo", "Errore interno");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_KO, "Errore interno");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 
 	}
 
-	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws ClientException, UtilsException {
+	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws ClientException {
 		IntestazionePPT intestazione = new IntestazionePPT();
 		intestazione.setCodiceContestoPagamento(rpt.getCcp());
 		intestazione.setIdentificativoDominio(rpt.getCodDominio());
@@ -137,7 +137,7 @@ public class NodoClient extends BasicClientCORE {
 		return (NodoInviaRPTRisposta) response;
 	}
 
-	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws ClientException, UtilsException {
+	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws ClientException {
 		IntestazioneCarrelloPPT intestazione = new IntestazioneCarrelloPPT();
 		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
 		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
@@ -147,13 +147,13 @@ public class NodoClient extends BasicClientCORE {
 		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
-	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws ClientException, UtilsException {
+	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione) throws ClientException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
 		Risposta response = this.send(EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE.toString(), body);
 		return (NodoChiediElencoFlussiRendicontazioneRisposta) response;
 	}
 
-	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws ClientException, UtilsException {
+	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione) throws ClientException {
 		byte [] body = this.getBody(true, objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
 		Risposta response = this.send(EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE.toString(), body);
 		return (NodoChiediFlussoRendicontazioneRisposta) response;

@@ -216,7 +216,8 @@ export class UtilService {
     0: 'Immediato',
     1: 'Immediato multibeneficiario',
     2: 'Differito',
-    4: 'Attivato presso Psp'
+    4: 'Attivato presso Psp',
+    UNICO: 'Modello unico'
   };
 
   //TIPOLOGIE CATEGORIA EVENTO
@@ -297,7 +298,7 @@ export class UtilService {
 
   //REUSE FOR SOCKET NOTIFICATION
   public static HasSocketNotification: boolean = false;
-  
+
   // Lingua secondaria
   public static LINGUE_SECONDARIE: any = {
       'false': 'Nessuna',
@@ -707,7 +708,8 @@ export class UtilService {
     TOKEN: 'TOKEN',
     STATE: 'STATE',
     CODE_VERIFIER: 'CODE_VERIFIER',
-    CODE_CHALLENGE: 'CODE_CHALLENGE'
+    CODE_CHALLENGE: 'CODE_CHALLENGE',
+	ID_TOKEN: 'ID_TOKEN'
   };
 
   constructor(private message: MatSnackBar, private dialog: MatDialog, private http: HttpClient) { }
@@ -782,10 +784,15 @@ export class UtilService {
       _root = UtilService.IAM.LOGOUT_SERVICE;
     }
     if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2) {
-      _root = UtilService.OAUTH2.LOGOUT_SERVICE;
+	   const idToken = window.localStorage.getItem(UtilService.STORAGE_VAR.ID_TOKEN);
+      _root = UtilService.OAUTH2.LOGOUT_SERVICE + (idToken ? '?id_token_hint=' + idToken : '');
     }
     return _root;
   }
+  
+  public static isOAuth2(): boolean {
+	return (!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2);
+	}
 
   public static cacheUser(profilo: any) {
     UtilService.PROFILO_UTENTE = profilo;
@@ -794,6 +801,7 @@ export class UtilService {
 
   public static cleanUser() {
     window.localStorage.removeItem(UtilService.STORAGE_VAR.TOKEN);
+	window.localStorage.removeItem(UtilService.STORAGE_VAR.ID_TOKEN);
     UtilService.PROFILO_UTENTE = null;
     UtilService.profiloUtenteBehavior.next(null);
   }
@@ -1831,7 +1839,7 @@ export class UtilService {
                   eventType: 'idA2A-async-load' } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
-                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
+                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI, warning: true, warning_message: Voce.DEBITORE_WARNING_CF_INVALID_MESSAGE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
                       values: this.statiPendenza(), showTooltip: false }),
           // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
@@ -1848,7 +1856,7 @@ export class UtilService {
       case UtilService.PAGAMENTI:
         _list = [
           new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT,
-            pattern: FormService.VAL_CF_PI }),
+            pattern: FormService.VAL_CF_PI, warning: true, warning_message: Voce.DEBITORE_WARNING_CF_INVALID_MESSAGE }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
@@ -1991,7 +1999,7 @@ export class UtilService {
                   eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
-                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
+                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI, warning: true, warning_message: Voce.DEBITORE_WARNING_CF_INVALID_MESSAGE }),
           new FormInput({ id: 'dataRtDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
           new FormInput({ id: 'dataRtA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
@@ -2097,7 +2105,7 @@ export class UtilService {
     }
     return result;
   }
-  
+
   public static navToIuv(numeroAvviso: any) {
       try {
           if (numeroAvviso == null) {

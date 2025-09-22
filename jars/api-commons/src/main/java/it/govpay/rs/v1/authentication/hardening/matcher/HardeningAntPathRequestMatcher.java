@@ -38,6 +38,7 @@ import org.springframework.util.StringUtils;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Configurazione;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaInvalidException;
@@ -201,6 +202,8 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			logger.error("Controllo ReCaptcha terminato con errore, configurazione del servizio non valida: " + e.getMessage(), e);
 		}catch(ReCaptchaParametroResponseInvalidException | ReCaptchaUnavailableException | ReCaptchaScoreNonValidoException | ReCaptchaInvalidException e) {
 			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
+		} catch (ValidationException e) {
+			logger.error("Controllo ReCaptcha terminato con errore, parametri utilizzati per la richiesta non validi: " + e.getMessage(), e);
 		}
 		return authorized;
 	}

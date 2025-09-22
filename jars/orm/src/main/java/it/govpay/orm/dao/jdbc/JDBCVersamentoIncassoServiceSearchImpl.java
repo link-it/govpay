@@ -580,10 +580,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 				imgSaved.getIdPagamentoPortale()!=null){
 			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
 		}
-		if(obj.getIuv()!=null &&
-				imgSaved.getIuv()!=null){
-			obj.getIuv().setId(imgSaved.getIuv().getId());
-		}
 	}
 
 	@Override
@@ -672,13 +668,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
 			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(VersamentoIncasso.model().IUV,false)){
-			String versamenti = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String iuv = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().IUV);
-			sqlQueryObject.addWhereCondition(versamenti+".id_applicazione="+iuv+".id_applicazione");
-			sqlQueryObject.addWhereCondition(versamenti+".cod_versamento_ente="+iuv+".cod_versamento_ente");
 		}
 
 		if(expression.inUseModel(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE,false)){
@@ -802,12 +791,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE))
-			));
-
-		// VersamentoIncasso.model().IUV
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().IUV),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().IUV))
 			));
 
         return mapTableToPKColumn;

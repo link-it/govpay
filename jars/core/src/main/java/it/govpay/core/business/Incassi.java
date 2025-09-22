@@ -66,6 +66,8 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
@@ -82,10 +84,7 @@ import it.govpay.model.eventi.DatiPagoPA;
 
 public class Incassi {
 
-	private static final String MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA = "incasso.frAnomala";
-	private static final String MSG_DIAGNOSTICO_INCASSO_SINTASSI = "incasso.sintassi";
 	private static final String ERROR_MSG_RISCONTRATO_ERRORE_DURANTE_IL_PARSING_DELLA_CAUSALE = "Riscontrato errore durante il parsing della causale";
-	private static final String MSG_DIAGNOSTICO_INCASSO_DUPLICATO = "incasso.duplicato";
 	private static final String ERROR_MSG_IL_DOMINIO_0_INDICATO_NELLA_RICHIESTA_NON_RISULTA_CENSITO_IN_ANAGRAFICA_GOV_PAY = "Il dominio {0} indicato nella richiesta non risulta censito in anagrafica GovPay.";
 	private static Logger log = LoggerWrapperFactory.getLogger(Incassi.class);
 
@@ -100,28 +99,28 @@ public class Incassi {
 
 		try {
 			IContext ctx = ContextThreadLocal.get();
-			ctx.getApplicationLogger().log("incasso.richiesta");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_RICHIESTA);
 
 			// Validazione dati obbligatori
 			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
 
 			if(!iuvIdFlussoSet && richiestaIncasso.getCausale() == null) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale mancante");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 
 			if(!iuvIdFlussoSet && richiestaIncasso.getCausale().length() > 512) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale troppo lunga");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale troppo lunga");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
 
 			if(richiestaIncasso.getCodDominio() == null) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "dominio mancante");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "dominio mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio cod_dominio");
 			}
 
 			if(richiestaIncasso.getImporto() == null) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "importo mancante");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "importo mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
 			}
 
@@ -130,7 +129,7 @@ public class Incassi {
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, richiestaIncasso.getCodDominio());
 			} catch (NotFoundException e) {
-				ctx.getApplicationLogger().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DOMINIO_INESISTENTE, richiestaIncasso.getCodDominio());
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, MessageFormat.format(ERROR_MSG_IL_DOMINIO_0_INDICATO_NELLA_RICHIESTA_NON_RISULTA_CENSITO_IN_ANAGRAFICA_GOV_PAY, richiestaIncasso.getCodDominio()));
 			}
 
@@ -139,7 +138,7 @@ public class Incassi {
 				try {
 					AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), richiestaIncasso.getIbanAccredito());
 				} catch (NotFoundException e) {
-					ctx.getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IBAN_INESISTENTE, richiestaIncasso.getIbanAccredito());
 					throw new IncassiException(FaultType.IBAN_INESISTENTE, MessageFormat.format(ERROR_MSG_IL_DOMINIO_0_INDICATO_NELLA_RICHIESTA_NON_RISULTA_CENSITO_IN_ANAGRAFICA_GOV_PAY, richiestaIncasso.getCodDominio()));
 				}
 			}
@@ -165,7 +164,7 @@ public class Incassi {
 				}
 
 				if(iuv == null && idf==null) {
-					ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_CAUSALE_NON_VALIDA, causale);
 					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
 				}
 			} 
@@ -182,34 +181,34 @@ public class Incassi {
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!iuvIdFlussoSet) {
 					if(!causale.trim().equalsIgnoreCase(incasso.getCausale())) {
-						ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "causale");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "causale");
 						throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("La causale inviata è diversa dall''originale [{0}]", incasso.getCausale()));
 					}
 				}else {
 					if(iuv != null) {
 						if(!iuv.trim().equals(incasso.getIuv())) {
-							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "iuv");
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "iuv");
 							throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso già registrato con iuv diverso: {0}", incasso.getIuv()));
 						}
 					}
 
 					if(idf != null) {
 						if(!idf.trim().equals(incasso.getIdFlussoRendicontazione())) {
-							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "idf");
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "idf");
 							throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con id flusso rendicontazione diverso: {0}",	incasso.getIdFlussoRendicontazione()));
 						}
 					}
 				}
 				if(richiestaIncasso.getSct() != null && !richiestaIncasso.getSct().equals(incasso.getSct())) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "sct");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "sct");
 					throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con sct diverso: {0}", incasso.getSct()));
 				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "dominio");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "dominio");
 					throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con dominio diverso: {0}", incasso.getCodDominio()));
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "importo");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "importo");
 					throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con importo diverso: {0}", incasso.getImporto()));
 				}
 
@@ -241,10 +240,10 @@ public class Incassi {
 
 					LogUtils.logDebug(log, "Validazione riconciliazione per riversamento Singolo [Dominio:{}, Iuv: {}] completata con successo.",	richiestaIncasso.getCodDominio(), iuv);
 				} catch (NotFoundException nfe) {
-					ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IUV_NON_TROVATO, iuv);
 					throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, MessageFormat.format("Lo IUV {0} estratto dalla causale di incasso non identifica alcun pagamento per il creditore {1}", iuv, richiestaIncasso.getCodDominio()));
 				} catch (MultipleResultException mre) {
-					ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, richiestaIncasso.getCodDominio());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IUV_PAGAMENTI_MULTIPLI, iuv, richiestaIncasso.getCodDominio());
 					throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, MessageFormat.format("Lo IUV {0} estratto dalla causale di incasso identifica piu'' di un pagamento per il creditore {1}",	iuv, richiestaIncasso.getCodDominio()));
 				}
 			}
@@ -270,22 +269,22 @@ public class Incassi {
 
 
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
-						ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA, idf);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA, idf);
 						throw new IncassiException(FaultType.FR_ANOMALA, MessageFormat.format("Il flusso di rendicontazione [IdFlusso:{0}] identificato dalla causale di incasso risulta avere delle anomalie", idf));
 					}
 
 					// Verifica importo pagato con l'incassato
 					if(fr.getImportoTotalePagamenti().doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
-						ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IMPORTO_ERRATO, fr.getImportoTotalePagamenti().doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
 						throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di rendicontazione [{0}] non corrisponde all''importo del riversamento [{1}]", fr.getImportoTotalePagamenti().doubleValue(), richiestaIncasso.getImporto()));
 					}
 					LogUtils.logDebug(log, "Validazione riconciliazione per riversamento cumulativo [Dominio:{}, IdFlusso: {}] completata con successo.",	richiestaIncasso.getCodDominio(), idf);
 				} catch (NotFoundException nfe) {
-					ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IDF_NON_TROVATO, idf);
 					throw new IncassiException(FaultType.IDF_NON_TROVATO, MessageFormat.format("L''identificativo {0} estratto dalla causale di incasso non identifica alcun flusso di rendicontazione", idf));
 				} 
 			}	
-		}catch (ServiceException | UtilsException e) {
+		}catch (ServiceException e) {
 			throw new GovPayException(e);
 		} finally {
 			if(incassiBD != null)
@@ -460,10 +459,10 @@ public class Incassi {
 				pagamenti.add(pagamento);
 				LogUtils.logDebug(log, "Ricerca riconciliazione per riversamento Singolo [Dominio:{}, Iuv: {}] completata.", codDomino, iuv);
 			} catch (NotFoundException nfe) {
-				ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IUV_NON_TROVATO, iuv);
 				throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, MessageFormat.format("Lo IUV {0} estratto dalla causale di incasso non identifica alcun pagamento per il creditore {1}", iuv, incasso.getCodDominio()));
 			} catch (MultipleResultException mre) {
-				ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, incasso.getCodDominio());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IUV_PAGAMENTI_MULTIPLI, iuv, incasso.getCodDominio());
 				throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, MessageFormat.format("Lo IUV {0} estratto dalla causale di incasso identifica piu'' di un pagamento per il creditore {1}",	iuv, incasso.getCodDominio()));
 			}
 
@@ -480,13 +479,13 @@ public class Incassi {
 				richiestaIncassoResponse.setFr(fr);
 				LogUtils.logDebug(log, "Ricerca flusso per riversamento cumulativo [Dominio:{}, IdFlusso: {}] completata.", codDomino, idf);
 				if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA, idf);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA, idf);
 					throw new IncassiException(FaultType.FR_ANOMALA, MessageFormat.format("Il flusso di rendicontazione {0} identificato dalla causale di incasso risulta avere delle anomalie", idf));
 				}
 
 				// Verifica importo pagato con l'incassato
 				if(fr.getImportoTotalePagamenti().doubleValue() != incasso.getImporto().doubleValue()) {
-					ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", incasso.getImporto().doubleValue() + "");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IMPORTO_ERRATO, fr.getImportoTotalePagamenti().doubleValue() + "", incasso.getImporto().doubleValue() + "");
 					throw new IncassiException(FaultType.IMPORTO_ERRATO, MessageFormat.format("L''importo del flusso di rendicontazione [{0}] non corrisponde all''importo del riversamento [{1}]", fr.getImportoTotalePagamenti().doubleValue(), incasso.getImporto()));
 				}
 
@@ -605,7 +604,7 @@ public class Incassi {
 								log.debug("Inserimento su DB notifica avvisatura ricevuta di pagamento senza RPT tramite App IO completata.");
 							}
 						} catch (MultipleResultException e) {
-							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA, idf);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_FR_ANOMALA, idf);
 							throw new IncassiException(FaultType.FR_ANOMALA, MessageFormat.format("La rendicontazione [Dominio:{0} Iuv:{1} Iur:{2} Indice:{3}] non identifica univocamente un pagamento", fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati()));
 						}
 					} else {
@@ -621,7 +620,7 @@ public class Incassi {
 					pagamenti.add(pagamento);
 				}
 			} catch (NotFoundException nfe) {
-				ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IDF_NON_TROVATO, idf);
 				throw new IncassiException(FaultType.IDF_NON_TROVATO, MessageFormat.format("L''identificativo {0} estratto dalla causale di incasso non identifica alcun flusso di rendicontazione", idf));
 			} 
 		}
@@ -629,7 +628,7 @@ public class Incassi {
 		// Verifica stato dei pagamenti da incassare 
 		for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 			if(Stato.INCASSATO.equals(pagamento.getStato())) {
-				ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_PAGAMENTO_GIA_INCASSATO, pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
 				throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, MessageFormat.format("Uno dei pagamenti [Dominio:{0} Iuv:{1} Iur:{2}] risulta gia'' riconciliato.", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur()));
 			}
 		}
@@ -688,7 +687,7 @@ public class Incassi {
 		List<Evento> listaEventi = new ArrayList<>();
 		try {
 			IContext ctx = ContextThreadLocal.get();
-			ctx.getApplicationLogger().log("incasso.richiesta");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_RICHIESTA);
 			GpContext gpContext = (GpContext) ctx.getApplicationContext();
 
 
@@ -696,22 +695,22 @@ public class Incassi {
 			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
 
 			if(!iuvIdFlussoSet && richiestaIncasso.getCausale() == null) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale mancante");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 
 			if(!iuvIdFlussoSet && richiestaIncasso.getCausale().length() > 512) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale troppo lunga");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "causale troppo lunga");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
 
 			if(richiestaIncasso.getCodDominio() == null) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "dominio mancante");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "dominio mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio cod_dominio");
 			}
 
 			if(richiestaIncasso.getImporto() == null) {
-				ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_SINTASSI, "importo mancante");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_SINTASSI, "importo mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
 			}
 
@@ -720,7 +719,7 @@ public class Incassi {
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, richiestaIncasso.getCodDominio());
 			} catch (NotFoundException e) {
-				ctx.getApplicationLogger().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DOMINIO_INESISTENTE, richiestaIncasso.getCodDominio());
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, MessageFormat.format(ERROR_MSG_IL_DOMINIO_0_INDICATO_NELLA_RICHIESTA_NON_RISULTA_CENSITO_IN_ANAGRAFICA_GOV_PAY, richiestaIncasso.getCodDominio()));
 			}
 
@@ -729,7 +728,7 @@ public class Incassi {
 				try {
 					AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), richiestaIncasso.getIbanAccredito());
 				} catch (NotFoundException e) {
-					ctx.getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_IBAN_INESISTENTE, richiestaIncasso.getIbanAccredito());
 					throw new IncassiException(FaultType.IBAN_INESISTENTE, MessageFormat.format("Il conto {0} indicato nella richiesta non risulta censito in anagrafica GovPay.", richiestaIncasso.getIbanAccredito()));
 				}
 
@@ -763,7 +762,7 @@ public class Incassi {
 				}
 
 				if(iuv == null && idf==null) {
-					ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_CAUSALE_NON_VALIDA, causale);
 					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, MessageFormat.format("La causale dell''operazione di incasso non e'' conforme alle specifiche AgID (SACIV 1.2.1): {0}", causale));
 				}
 			} else {
@@ -801,34 +800,34 @@ public class Incassi {
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!iuvIdFlussoSet) {
 					if(!causale.trim().equalsIgnoreCase(incasso.getCausale())) {
-						ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "causale");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "causale");
 						throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("La causale inviata è diversa dall''originale [{0}]", incasso.getCausale()));
 					}
 				}else {
 					if(iuv != null) {
 						if(!iuv.trim().equals(incasso.getIuv())) {
-							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "iuv");
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "iuv");
 							throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso già registrato con iuv diverso: {0}", incasso.getIuv()));
 						}
 					}
 
 					if(idf != null) {
 						if(!idf.trim().equals(incasso.getIdFlussoRendicontazione())) {
-							ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "idf");
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "idf");
 							throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con id flusso rendicontazione diverso: {0}",	incasso.getIdFlussoRendicontazione()));
 						}
 					}
 				}
 				if(richiestaIncasso.getSct() != null && !richiestaIncasso.getSct().equals(incasso.getSct())) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "sct");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "sct");
 					throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con sct diverso: {0}", incasso.getSct()));
 				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "dominio");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "dominio");
 					throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con dominio diverso: {0}", incasso.getCodDominio()));
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
-					ctx.getApplicationLogger().log(MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "importo");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_INCASSO_DUPLICATO, "importo");
 					throw new IncassiException(FaultType.DUPLICATO, MessageFormat.format("Incasso gia'' registrato con importo diverso: {0}", incasso.getImporto()));
 				}				
 				richiestaIncassoResponse.setIncasso(incasso);

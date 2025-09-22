@@ -51,7 +51,7 @@
 	          <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">Payload:</div>
 	          <div class="col-12 col-sm-8">
 	          	<div class="border p-2" style="height: 240px;overflow: auto;" *ngIf="datiAllegati">
-		          	<pre>{{ datiAllegati }}</pre>
+		          	<pre>{{ datiAllegati | json }}</pre>
 		          </div>
 	          </div>
 	        </div>

@@ -29,7 +29,7 @@ tags:
   - name: Verifica pendenze
   - name: Notifica ricevute
 paths:
-  '/avvisi/{idDomino}/{numeroAvviso}':
+  '/avvisi/{idDominio}/{numeroAvviso}':
     get:
       operationId: getAvviso
       summary: Verifica di una pendenza da avviso
@@ -111,7 +111,7 @@ paths:
           $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
         '500':
           $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable' 
-  '/pendenze/{idDomino}/{idTipoPendenza}':
+  '/pendenze/{idDominio}/{idTipoPendenza}':
     post:
       operationId: verifyPendenzaMod4
       summary: Acquisizione di una pendenza con dati custom

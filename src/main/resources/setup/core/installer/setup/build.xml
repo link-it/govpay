@@ -201,13 +201,14 @@
 
 	<target name="setup_sql">
 		<copy file="${sql}/${antinstaller_tipo_database}/gov_pay.sql" todir="${tmp_dir}"/>
+		<copy file="${sql}/${antinstaller_tipo_database}/init.sql" todir="${tmp_dir}"/>
 		<concat destfile="${tmp_dir}/gov_pay.sql" append="yes" >
 			<header filtering="no" trimleading="yes">
 
 -- Init
                 
 			</header>
-			<filelist dir="${sql}" files="init.sql"/>
+			<filelist dir="${tmp_dir}" files="init.sql"/>
 		</concat>
                 <antcall target="sql_settings">
                         <param name="file" value="${tmp_dir}/gov_pay.sql"/>

@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.2'
+publiccodeYmlVersion: '0.4.0'
 applicationSuite: GovStar
 categories:
   - payment-gateway
@@ -51,7 +51,6 @@ description:
         verticali di contabilità
       - Profilazione degli operatori di cruscotto
       - Plugin di integrazione ad applicativi di terze parti
-    genericName: Gateway di integrazione a pagoPA
     longDescription: |
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
       l'adesione a pagoPA necessari alla realizzazione di pagamenti, dovuti o
@@ -157,10 +156,6 @@ description:
       (APKappa)
     shortDescription: Gateway di integrazione alla piattaforma di pagamento pagoPA.
 developmentStatus: stable
-inputTypes:
-  - text/xml
-  - application/json
-  - text/csv
 intendedAudience:
   scope:
     - government
@@ -193,18 +188,8 @@ maintenance:
       email: nardi@link.it
       name: Lorenzo Nardi
       phone: '+39050504639'
-  contractors:
-    - name: Link.it
-      until: '2025-12-31'
-      website: 'https://www.link.it'
   type: community
 name: GovPay
-outputTypes:
-  - text/xml
-  - application/json
-  - application/zip
-  - text/csv
-  - application/pdf
 platforms:
   - web
 releaseDate: '2025-05-10'

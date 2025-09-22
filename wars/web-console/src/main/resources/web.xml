@@ -10,6 +10,10 @@
 	<filter-mapping>
 		<filter-name>Html5RoutingFilter</filter-name>
 		<url-pattern>/authCallback</url-pattern>
+		<!-- dispatch su richiesta iniziale -->
+  		<dispatcher>REQUEST</dispatcher>
+  		<!-- dispatch anche quando Tomcat fa un forward interno -->
+  		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
 
 	<error-page>

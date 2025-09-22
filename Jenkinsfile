@@ -42,6 +42,7 @@ pipeline {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
         sh 'sudo systemctl start wildfly-26.1.3.Final@ndpsym tomcat_govpay'
+        sh 'sudo docker start mailhog'
 	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }
@@ -52,6 +53,7 @@ pipeline {
       post {
         always {
 			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym tomcat_govpay'
+			sh 'sudo docker stop mailhog'
             junit 'integration-test/target/surefire-reports/*.xml'
             sh 'tar -cvf ./integration-test/target/surefire-reports.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
             sh 'gzip ./integration-test/target/surefire-reports.tar'
@@ -75,9 +77,12 @@ pipeline {
           JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
            """
 	    sh """
-	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar -Dsonar.projectKey=GovPay -Dsonar.token=$GOVPAY_SONAR_TOKEN \\
-	    	-Dsonar.login=$GOVPAY_SONAR_USER -Dsonar.password=$GOVPAY_SONAR_PWD \\
-	    	 -Dsonar.host.url=http://localhost:9000 -Dsonar.coverage.jacoco.xmlReportPaths=${JACOCO_XML}
+	    	XML_REPORT=\$(pwd)/${JACOCO_XML}
+	    
+	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
+	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
+	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=\${XML_REPORT} \\
+	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node
 	       """
 	  }
 	  post {

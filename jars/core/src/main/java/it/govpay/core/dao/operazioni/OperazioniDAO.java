@@ -30,17 +30,15 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
-import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.dao.operazioni.exception.OperazioneNonTrovataException;
+import it.govpay.core.utils.LogUtils;
 
 public class OperazioniDAO extends BaseDAO{
 	
 	public static final String ACQUISIZIONE_RENDICONTAZIONI = "acquisizioneRendicontazioni";
 	public static final String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
 	public static final String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
-	public static final String GENERAZIONE_AVVISI_PAGAMENTO = "generaAvvisiPagamento";
-	public static final String ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO = "attivazioneGenerazioneAvvisiPagamento";
 	public static final String ELABORAZIONE_TRACCIATI_PENDENZE = "elaborazioneTracciatiPendenze";
 	public static final String SPEDIZIONE_PROMEMORIA = "spedizionePromemoria";
 	public static final String SPEDIZIONE_NOTIFICHE_APP_IO = "spedizioneNotificheAppIO";
@@ -54,7 +52,8 @@ public class OperazioniDAO extends BaseDAO{
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
 		
-		log.info("Richiesta operazione [{}]...", leggiOperazioneDTO.getIdOperazione());
+		String idOperazioneForLog = LogUtils.sanitizeForLog(leggiOperazioneDTO.getIdOperazione());
+		LogUtils.logInfo(log, "Richiesta operazione [{}]...", idOperazioneForLog);
 		
 		try {
 			IContext ctx = ContextThreadLocal.get();
@@ -73,10 +72,6 @@ public class OperazioniDAO extends BaseDAO{
 				esitoOperazione = it.govpay.core.business.Operazioni.spedizionePromemoria(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(GESTIONE_PROMEMORIA)){
 				esitoOperazione = it.govpay.core.business.Operazioni.gestionePromemoria(ctx);
-			} else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO) ||
-					leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
-				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
-				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 				esitoOperazione = "Elaborazione Tacciati schedulata";
@@ -96,7 +91,7 @@ public class OperazioniDAO extends BaseDAO{
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
 			
-			log.info("Operazione [{}] completata con esito [{}]", leggiOperazioneDTO.getIdOperazione(), esitoOperazione);
+			LogUtils.logInfo(log, "Operazione [{}] completata con esito [{}]", idOperazioneForLog, esitoOperazione);
 			
 			response.setDescrizioneStato(esitoOperazione);
 			response.setStato(0);
@@ -107,7 +102,7 @@ public class OperazioniDAO extends BaseDAO{
 		return response;
 	}
 
-	public ListaOperazioniDTOResponse listaOperazioni(ListaOperazioniDTO listaOperazioniDTO) {
+	public ListaOperazioniDTOResponse listaOperazioni() {
 		BasicBD bd = null;
 		
 		try {
@@ -121,8 +116,6 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE_APP_IO));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_PROMEMORIA));
 			results.add(new LeggiOperazioneDTOResponse(RESET_CACHE_ANAGRAFICA));
-			results.add(new LeggiOperazioneDTOResponse(GENERAZIONE_AVVISI_PAGAMENTO));
-			results.add(new LeggiOperazioneDTOResponse(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_PENDENZE));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));
