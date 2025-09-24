@@ -43,6 +43,17 @@ La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' ne
 
 La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato, inoltre non viene utilizzata a runtime ma solo per l'esecuzione dell'installer.
 
+CVE-2025-10492
+=============
+
+file name: jasperreports-6.21.5.jar
+
+La vulnerabilità rilevata si riferisce alla funzione di deserializzazione presente nella libreria Jaspersoft.
+
+GovPay non carica né deserializza modelli/report provenienti dagli utenti (JRXML/.jasper) ma solo i template interni.
+Per quanto riguarda i dati di input si tratta sempre di dati interni a GovPay.
+Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
+
 
 Test di copertura funzionale
 ****************************
