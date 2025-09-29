@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -272,8 +273,12 @@ public class Rendicontazioni {
 							TipoIdRendicontazione idRendicontazione = new TipoIdRendicontazione();
 							idRendicontazione.setDataOraFlusso(flussoRendicontazione.getDataOraFlusso());
 							idRendicontazione.setIdentificativoFlusso(flussoRendicontazione.getIdentificativoFlusso());
-							flussiDaPagoPA.add(new RendicontazioneScaricata(idRendicontazione, flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco(), xmlfile));
-						} catch (Exception e) {
+							String codDominioFlussoRendicontazioneDaFileSystem = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
+							LogUtils.logInfo(log, "Aggiungo Flusso di Rendicontazione da fileSystem: [{}, {}, {}]", codDominioFlussoRendicontazioneDaFileSystem, 
+									idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+							// Aggiungo la rendicontazione in testa alla lista per processarla prima di quelle da nodo 
+							flussiDaPagoPA.add(0, new RendicontazioneScaricata(idRendicontazione, codDominioFlussoRendicontazioneDaFileSystem, xmlfile));
+						} catch (JAXBException| SAXException | IOException e) {
 							LogUtils.logError(log, MessageFormat.format("Impossibile acquisire il flusso di rendicontazione da file: {0}", xmlfile.getAbsolutePath()), e);
 						}
 					}
@@ -291,17 +296,18 @@ public class Rendicontazioni {
 				for(RendicontazioneScaricata rnd : flussiDaPagoPA) {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
 					// Controllo che il flusso non sia su db
+					LocalDateTime idRendicontazioneDataOraFlusso = idRendicontazione.getDataOraFlusso();
 					try {
-						LogUtils.logDebug(log, "Verifico presenza del flusso [{}, {}, {}]", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						LogUtils.logDebug(log, "Verifico presenza del flusso [{}, {}, {}]", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazioneDataOraFlusso);
 						// Uso la GET perche' la exists risulta buggata con la data nella tupla di identificazione
-						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), DateUtils.toJavaDate(idRendicontazione.getDataOraFlusso()));
-						LogUtils.logDebug(log, "Flusso di rendicontazione [{}, {}, {}] gia'' acquisito", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), DateUtils.toJavaDate(idRendicontazioneDataOraFlusso));
+						LogUtils.logDebug(log, "Flusso di rendicontazione [{}, {}, {}] gia' acquisito", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazioneDataOraFlusso);
 						// C'e' gia. Se viene da file, lo elimino
 						if(rnd.getFrFile() != null) {
 							try {
 								boolean delete = rnd.getFrFile().delete();
 								if(!delete) {
-									log.warn("Il file di flusso {} non e'' stato eliminato.", rnd.getFrFile().getName());
+									log.warn("Il file di flusso {} non e' stato eliminato.", rnd.getFrFile().getName());
 								}
 							} catch (Exception e) {
 								LogUtils.logError(log, MessageFormat.format("Impossibile eliminare il file di flusso gia'' presente: {0}", rnd.getFrFile().getName()), e);
@@ -309,11 +315,11 @@ public class Rendicontazioni {
 						}
 					} catch (NotFoundException e) {
 						// Flusso originale, lo aggiungo ma controllo che non sia gia' nella lista di quelli da aggiungere
-						long timeMillis = DateUtils.toJavaDate( idRendicontazione.getDataOraFlusso() ).getTime();
-						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + timeMillis)) {
-							LogUtils.logInfo(log, "Flusso di rendicontazione [{}, {}, {}] da acquisire", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						long dataOraFlussoMillis = idRendicontazioneDataOraFlusso != null ? DateUtils.toJavaDate( idRendicontazioneDataOraFlusso ).getTime() : 0;
+						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + dataOraFlussoMillis)) {
+							LogUtils.logInfo(log, "Flusso di rendicontazione [{}, {}, {}] da acquisire", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazioneDataOraFlusso);
 							flussiDaAcquisire.add(rnd);
-							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + timeMillis);
+							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + dataOraFlussoMillis);
 						}
 					}
 				}
@@ -335,11 +341,12 @@ public class Rendicontazioni {
 
 					try {
 						byte[] tracciato = null;
+						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_STAZIONE, stazione.getCodStazione()));
+						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ID_FLUSSO, idRendicontazione.getIdentificativoFlusso()));
+						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, rnd.getCodDominio()));
+						
 						if(rnd.getFrFile() == null) {
 							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE);
-							appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_STAZIONE, stazione.getCodStazione()));
-							appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ID_FLUSSO, idRendicontazione.getIdentificativoFlusso()));
-							appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, rnd.getCodDominio()));
 
 							NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
 							richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
@@ -452,7 +459,7 @@ public class Rendicontazioni {
 						codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
 						fr.setCodPsp(codPsp);
 						fr.setRagioneSocialePsp(ragioneSocialePsp);
-						LogUtils.logDebug(log, "Identificativo PSP estratto dall''identificativo flusso: {}", codPsp);
+						LogUtils.logDebug(log, "Identificativo PSP estratto dall'identificativo flusso: {}", codPsp);
 						appContext.getRequest().addGenericProperty(new Property("codPsp", codPsp));
 
 						Dominio dominio = null;
@@ -469,6 +476,7 @@ public class Rendicontazioni {
 								appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, "null"));
 							}
 							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_DOMINIO_NON_CENSITO);
+							LogUtils.logWarn(log, "Il dominio [{}] del flusso di rendicontazione non e' censito", codDominio);
 						}
 
 						BigDecimal totaleImportiRendicontati = BigDecimal.ZERO;
@@ -537,6 +545,7 @@ public class Rendicontazioni {
 								// Pagamento non trovato. Devo capire se ce' un errore.
 
 								// controllo se lo IUV e' interno, se non lo e' salto tutta la parte di acquisizione
+								// Se dominio e' null viene considerato non intermediato
 								if(!IuvUtils.isIuvInterno(dominio, iuv)) {
 									LogUtils.logDebug(log, "IUV {} appartenente ad un Dominio {} non intermediato, salto acquisizione.", iuv, codDominio);
 									rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
@@ -715,22 +724,23 @@ public class Rendicontazioni {
 
 							// Controllo se c'e' gia' un'altra versione
 							try {
+								LogUtils.logDebug(log, "Verifica esistenza versione precedente del flusso [{}].", fr.getCodFlusso());
 								Fr frEsistente = frBD.getFr(fr.getCodDominio(), fr.getCodFlusso());
 
 								// Ok, c'e' gia' una versione in DB. Vedo e' la data e' precedente o successiva
 								if(frEsistente.getDataFlusso().before(fr.getDataFlusso())) {
 
 									// Flusso su DB vecchio. Lo aggiorno come obsoleto e aggiungo il nuovo
-									LogUtils.logInfo(log, "Trovata versione precedente [{}] da marcare come obsoleta.", fr.getCodFlusso());
+									LogUtils.logInfo(log, "Trovata versione precedente del flusso [{}] da marcare come obsoleta.", fr.getCodFlusso());
 									frBD.updateObsoleto(frEsistente.getId(), true);
 									isAggiornamento=true;
 								} else {
 									// Flusso su DB gia' recente. Lascio tutto fare e inserisco quello nuovo come obsoleto.
-									LogUtils.logInfo(log, "Trovata versione successiva [{}]. Il nuovo flusso viene marcato come obsoleto.", fr.getCodFlusso());
+									LogUtils.logInfo(log, "Trovata versione successiva del flusso [{}]. Il nuovo flusso viene marcato come obsoleto.", fr.getCodFlusso());
 									fr.setObsoleto(true);
 								}
 							} catch (NotFoundException e) {
-								LogUtils.logDebug(log, "Nessuna versione alternativa [{}].", fr.getCodFlusso());
+								LogUtils.logDebug(log, "Nessuna versione alternativa del flusso [{}].", fr.getCodFlusso());
 							}
 
 							frBD.insertFr(fr);
