@@ -307,6 +307,19 @@
         
         <!-- OAUTH2_START
         
+        <b:bean id="nimbusJwtDecoderBuilder" class="org.springframework.security.oauth2.jwt.NimbusJwtDecoder" factory-method="withJwkSetUri">
+		    <b:constructor-arg value="${OAUTH2_JWK_SET_URI}"/>
+		</b:bean>
+		
+		<b:bean id="govpayJwtValidator" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtValidators" factory-method="createDefaultWithIssuerAndAudience">
+			<b:constructor-arg value="${OAUTH2_VALORE_CLAIM_ISS}"/>
+  			<b:constructor-arg value="${OAUTH2_VALORE_CLAIM_AUD}"/>
+		</b:bean>
+		
+		<b:bean id="customJwtDecoder" factory-bean="nimbusJwtDecoderBuilder" factory-method="build">
+			<b:property name="jwtValidator" ref="govpayJwtValidator"/>
+		</b:bean>
+        
         <b:bean id="oauth2AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.oauth2.server.entrypoint.BearerTokenAuthenticationEntryPoint" />
         
         <b:bean id="logoutSuccessHandlerOAuth2" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
@@ -329,7 +342,7 @@
                 <intercept-url pattern=".*" access="isFullyAuthenticated()" />		
                 
                	<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
-	       			<jwt jwk-set-uri="${OAUTH2_JWK_SET_URI}" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       			<jwt decoder-ref="customJwtDecoder" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
 	       		</oauth2-resource-server>
 
                 <headers>
