@@ -97,6 +97,9 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
 			String wwwAuthenticate = computeWWWAuthenticateHeaderValue(parameters);
 			response.addHeader(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
 			response.setStatus(status.value());
+			
+			// aggiungo body json
+			AbstractBasicAuthenticationEntryPoint.fillResponse(response, CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException), this.timeZone);
 			return;
 		}
 		
