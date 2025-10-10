@@ -2,11 +2,14 @@
 <b:beans xmlns="http://www.springframework.org/schema/security"
         xmlns:b="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:util="http://www.springframework.org/schema/util"
         xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/security
-        http://www.springframework.org/schema/security/spring-security.xsd">
+        http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
         
         <global-method-security
                 secured-annotations="enabled">
@@ -306,16 +309,30 @@
         API_KEY_END -->
         
         <!-- OAUTH2_START
-        
+
         <b:bean id="nimbusJwtDecoderBuilder" class="org.springframework.security.oauth2.jwt.NimbusJwtDecoder" factory-method="withJwkSetUri">
 		    <b:constructor-arg value="${OAUTH2_JWK_SET_URI}"/>
 		</b:bean>
-		
-		<b:bean id="govpayJwtValidator" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtValidators" factory-method="createDefaultWithIssuerAndAudience">
-			<b:constructor-arg value="${OAUTH2_VALORE_CLAIM_ISS}"/>
-  			<b:constructor-arg value="${OAUTH2_VALORE_CLAIM_AUD}"/>
+
+		<util:map id="oauth2ClaimValidationRules" map-class="java.util.HashMap"
+		          key-type="java.lang.String"
+		          value-type="java.util.Collection">
+		    <b:entry key="iss">
+		        <util:list value-type="java.lang.String">
+		            <b:value>${OAUTH2_VALORE_CLAIM_ISS}</b:value>
+		        </util:list>
+		    </b:entry>
+		    <b:entry key="aud">
+		        <util:list value-type="java.lang.String">
+		            <b:value>${OAUTH2_VALORE_CLAIM_AUD}</b:value>
+		        </util:list>
+		    </b:entry>
+		</util:map>
+
+		<b:bean id="govpayJwtValidator" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtValidators" factory-method="createDefaultWithClaims">
+  			<b:constructor-arg ref="oauth2ClaimValidationRules"/>
 		</b:bean>
-		
+
 		<b:bean id="customJwtDecoder" factory-bean="nimbusJwtDecoderBuilder" factory-method="build">
 			<b:property name="jwtValidator" ref="govpayJwtValidator"/>
 		</b:bean>
