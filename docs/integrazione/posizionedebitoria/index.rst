@@ -10,7 +10,7 @@ Gestione di una posizione debitoria
 Caricamento di una posizione debitoria
 --------------------------------------
 
-Il caricamento di una posizione debitoria su GovPay si realizza tramite tramite chiamata alle API Pendenze:
+Il caricamento di una posizione debitoria su GovPay si realizza tramite chiamata alle API Pendenze:
 
 	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false]`
 
@@ -63,6 +63,99 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 		"pdf":"...BASE64..."
 	}
 
+Aggornamento di una posizione debitoria
+---------------------------------------
+
+L'aggiornamento di una posizione debitoria su GovPay si realizza tramite chiamata alle API Pendenze:
+
+	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false]`
+
+Dove:
+
+- idA2A: codice identificativo dell’applicativo chiamante assegnato in sede di onboarding;
+- idPendenza: codice identificativo della pendenza nel dominio dell’applicativo chiamante;
+- stampaAvviso: parametro opzionale che indica se includere l’avviso di pagamento in formato pdf all’interno del messaggio di risposta.
+
+In risposta si ottengono i riferimenti all’avviso associato alla pendenza e la stampa in formato pdf.
+
+Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per aggiornare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
+
+.. code-block:: json
+	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
+
+	PUT https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	{
+		"idDominio":"01234567890",
+		"idTipoPendenza":"TICKET",
+		"soggettoPagatore":
+		{
+			"tipo":"F",
+			"identificativo":"RSSMRA30A01H501I",
+			"anagrafica":"Mario Rossi",
+			"email":"mario@dimostrativo.it"
+		},
+		"causale":"Prestazione n.ABC-001",
+		"importo":145.01,
+		"voci":
+		[
+			{
+				"idVocePendenza":"ABC-001-1100",
+				"importo":145.01,
+				"descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+				"ibanAccredito":"IT02L1234512345123456789012",
+				"tipoContabilita":"ALTRO",
+				"codiceContabilita":"1100"
+			}
+		]
+	}
+
+.. code-block:: json
+	:caption: Risposta *PUT /pendenze/{idA2A}/{id_pendenza}*
+	
+	HTTP 200 OK
+	{
+		"idDominio":"01234567890",
+		"numeroAvviso":"001110000000000164"
+		"pdf":"...BASE64..."
+	}
+
+Annullamento di una posizione debitoria
+---------------------------------------
+
+Una posizione debitoria in stato **NON ESEGUITA** può essere annullata tramite chiamata alle API Pendenze:
+
+	`PATCH /pendenze/{idA2A}/{idPendenza}`
+
+Dove:
+
+- idA2A: codice identificativo dell’applicativo chiamante assegnato in sede di onboarding;
+- idPendenza: codice identificativo della pendenza nel dominio dell’applicativo chiamante;
+
+In risposta si ottiene **200 OK** quando l'operazione viene eseguita con successo.
+
+Il seguente esempio mostra l'invocazione della **PATCH /pendenze/{idA2A}/{id_pendenza}** per annullare la pendenza. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
+
+.. code-block:: json
+	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
+
+	PATCH https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	[
+	   {
+	      "op":"REPLACE",
+	      "path":"/stato",
+	      "value":"ANNULLATA"
+	   },
+	   {
+	      "op":"REPLACE",
+	      "path":"/descrizioneStato",
+	      "value":"Pendenza annullata il 2025-05-21"
+	   }
+	]
+
+.. code-block:: json
+	:caption: Risposta *PATCH /pendenze/{idA2A}/{id_pendenza}*
+	
+	HTTP 200 OK
 
 Download avviso di pagamento
 ----------------------------

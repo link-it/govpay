@@ -74,7 +74,7 @@ public class VersamentoNonRendicontatoConverter {
 		if(vo.getVrsCodVersamentoEnte() != null) {
 			versamento = new Versamento();
 	
-			versamento.setId(vo.getId());
+			versamento.setId(vo.getVrsId());
 			versamento.setIdApplicazione(vo.getVrsIdApplicazione().getId());
 	
 			if(vo.getVrsIdUo() != null)
