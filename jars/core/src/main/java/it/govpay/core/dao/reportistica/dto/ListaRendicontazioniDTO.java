@@ -36,7 +36,7 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	}
 	
 	private FiltroRendicontazioni filtro;
-	private List<GROUP_BY> groupBy = new ArrayList<ListaRendicontazioniDTO.GROUP_BY>();
+	private List<GROUP_BY> groupBy = new ArrayList<>();
 	
 	public FiltroRendicontazioni getFiltro() {
 		return filtro;

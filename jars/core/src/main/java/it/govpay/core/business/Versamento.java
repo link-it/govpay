@@ -372,7 +372,7 @@ public class Versamento  {
 		
 	}
 
-	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException, UtilsException {
+	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException {
 		LogUtils.logInfo(log, "Richiesto annullamento per il Versamento ({}) dell''applicazione ({})", annullaVersamentoDTO.getCodVersamentoEnte(), annullaVersamentoDTO.getCodApplicazione());
 
 		IContext ctx = ContextThreadLocal.get();

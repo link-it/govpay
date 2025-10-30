@@ -96,8 +96,8 @@ public class PendenzeController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdApplicazione("idA2A", idA2A);
-			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			validatoreId.validaIdApplicazione(Costanti.PARAM_ID_A2A, idA2A);
+			validatoreId.validaIdPendenza(Costanti.PARAM_ID_PENDENZA, idPendenza);
 
 			// filtro sull'applicazione
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
@@ -166,7 +166,7 @@ public class PendenzeController extends BaseController {
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		String methodName = "pendenzeGET";
 		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
+			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
@@ -207,11 +207,6 @@ public class PendenzeController extends BaseController {
 			}
 
 			// filtro sull'applicazione e' ignorato, un'applicazione vede solo le sue pendenze
-//			if(idA2A != null) {
-//				validatoreId.validaIdApplicazione("idA2A", idA2A);
-//				listaPendenzeDTO.setIdA2A(idA2A);
-//			}
-			// filtro sull'applicazione
 			listaPendenzeDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione());
 
 			if(idDebitore != null)
@@ -233,13 +228,6 @@ public class PendenzeController extends BaseController {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPendenzeDTO.setDataA(dataADate);
 			}
-
-			// Autorizzazione sulle UO
-//			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
-//			if(uoAutorizzate == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-//			}
-//			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
 
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
@@ -296,8 +284,8 @@ public class PendenzeController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdApplicazione("idA2A", idA2A);
-			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			validatoreId.validaIdApplicazione(Costanti.PARAM_ID_A2A, idA2A);
+			validatoreId.validaIdPendenza(Costanti.PARAM_ID_PENDENZA, idPendenza);
 
 			// filtro sull'applicazione
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
@@ -372,8 +360,8 @@ public class PendenzeController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdApplicazione("idA2A", idA2A);
-			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			validatoreId.validaIdApplicazione(Costanti.PARAM_ID_A2A, idA2A);
+			validatoreId.validaIdPendenza(Costanti.PARAM_ID_PENDENZA, idPendenza);
 
 			// filtro sull'applicazione
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {

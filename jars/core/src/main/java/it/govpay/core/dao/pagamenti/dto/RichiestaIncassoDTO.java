@@ -153,34 +153,34 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	public Incasso toIncassoModel() throws IncassiException {
 		// Validazione della causale
 		boolean iuvIdFlussoSet = this.getIuv() != null || this.getIdFlusso() != null;
-		String causale = this.getCausale();
-		String iuv = null;
+		String causaleTmp = this.getCausale();
+		String iuvToSet = null;
 		String idf = null;
 		
 		// Se non mi e' stato passato uno IUV o un idFlusso, lo cerco nella causale
 		if(!iuvIdFlussoSet) {
 			try {
-				if(causale != null) {
-					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
-					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
+				if(causaleTmp != null) {
+					iuvToSet = IncassoUtils.getRiferimentoIncassoSingolo(causaleTmp);
+					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causaleTmp);
 				} 
 			} catch (Throwable e) {
-				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA,"Riscontrato errore durante il parsing della causale: " + causale);
+				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA,"Riscontrato errore durante il parsing della causale: " + causaleTmp);
 			}
 			
-			if(iuv == null && idf==null) {
-				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+			if(iuvToSet == null && idf==null) {
+				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causaleTmp);
 			}		
 		} else {
-			iuv = this.getIuv();
+			iuvToSet = this.getIuv();
 			idf = this.getIdFlusso();
 			// causale puo' essere null
-		//	causale = iuv != null ? iuv : idf;
-		//	this.setCausale(causale);
+		//	causale = iuv != null ? iuv : idf
+		//	this.setCausale(causale)
 		}
 		
 		// OVERRIDE TRN NUOVA GESTIONE
-		this.setTrn(iuv != null ? iuv : idf);
+		this.setTrn(iuvToSet != null ? iuvToSet : idf);
 		
 		Incasso incasso = new Incasso();
 		incasso.setCausale(this.getCausale());
@@ -195,7 +195,7 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 		incasso.setApplicazione(this.getApplicazione());
 		incasso.setOperatore(this.getOperatore());
 		incasso.setSct(this.getSct());
-		incasso.setIuv(iuv);
+		incasso.setIuv(iuvToSet);
 		incasso.setIdFlussoRendicontazione(idf);
 		incasso.setIdRiconciliazione(this.getIdRiconciliazione());
 		incasso.setStato(StatoIncasso.NUOVO);

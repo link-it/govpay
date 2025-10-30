@@ -148,7 +148,7 @@ public class QuietanzaPagamentoPdf {
 				
 				return JasperExportManager.getInstance(defaultJasperReportsContext).exportToPdf(jasperPrint);
 			}finally {
-				
+				//donothing
 			}
 		}finally {
 			if(isTemplate != null)

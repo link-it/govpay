@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -68,7 +69,7 @@ public class QuietanzaPagamento {
 			QuietanzaPagamentoProperties quietanzaPagamentoProperties = QuietanzaPagamentoProperties.getInstance();
 			Dominio dominio = versamento.getDominio(configWrapper);
 			String codDominio = dominio.getCodDominio();
-			QuietanzaPagamentoInput input = fromRendicontazione(dominio, rendicontazione, pagamento, singoloVersamento, versamento, fr, configWrapper);
+			QuietanzaPagamentoInput input = fromRendicontazione(dominio, rendicontazione, pagamento, singoloVersamento, versamento, fr);
 			
 			File jasperFile = null; 
 			if(GovpayConfig.getInstance().getTemplateQuietanzaPagamento() != null) {
@@ -83,7 +84,7 @@ public class QuietanzaPagamento {
 		}
 	}
 
-	private QuietanzaPagamentoInput fromRendicontazione(Dominio dominio, Rendicontazione rendicontazione, Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento, Fr fr, BDConfigWrapper configWrapper) throws Exception{
+	private QuietanzaPagamentoInput fromRendicontazione(Dominio dominio, Rendicontazione rendicontazione, Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento, Fr fr) throws UnsupportedEncodingException {
 		QuietanzaPagamentoInput input = new QuietanzaPagamentoInput();
 
 		this.impostaAnagraficaEnteCreditore(dominio, input);
@@ -134,7 +135,7 @@ public class QuietanzaPagamento {
 		return elencoVoci;
 	}
 
-	private void impostaAnagraficaEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) throws ServiceException {
+	private void impostaAnagraficaEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) {
 		String codDominio = dominio.getCodDominio();
 
 		input.setEnteDenominazione(dominio.getRagioneSociale());
@@ -146,7 +147,7 @@ public class QuietanzaPagamento {
 		this.impostaIndirizzoEnteCreditore(dominio, input);
 	}
 
-	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) throws ServiceException {
+	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) {
 		Anagrafica anagraficaEnteCreditore = dominio.getAnagrafica();
 		if(anagraficaEnteCreditore != null) {
 			String indirizzo = StringUtils.isNotEmpty(anagraficaEnteCreditore.getIndirizzo()) ? anagraficaEnteCreditore.getIndirizzo() : "";

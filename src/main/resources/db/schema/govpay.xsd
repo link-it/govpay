@@ -2512,7 +2512,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:element name="Rendicontazione" type="Rendicontazione"/>
 	<xsd:complexType name="Rendicontazione">
 		<xsd:annotation>
 			<xsd:appinfo>
@@ -2532,6 +2531,9 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rnd_fk_pagamenti">
 							<linkit:sql-table-index-column name="id_pagamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_data">
+							<linkit:sql-table-index-field name="data" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>

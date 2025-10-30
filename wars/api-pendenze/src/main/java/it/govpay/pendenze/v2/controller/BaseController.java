@@ -153,28 +153,28 @@ public abstract class BaseController {
 
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 
-		if(e instanceof UnprocessableEntityException) {
-			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
+		if(e instanceof UnprocessableEntityException unprocessableEntityException) {
+			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, unprocessableEntityException,transactionId);
 		}
 
-		if(e instanceof BaseExceptionV1) {
-			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
+		if(e instanceof BaseExceptionV1 baseExceptionV1) {
+			return this.handleBaseException(uriInfo, httpHeaders, methodName, baseExceptionV1,transactionId);
 		}
 
-		if(e instanceof RedirectException) {
-			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
+		if(e instanceof RedirectException redirectException) {
+			return this.handleRedirectException(uriInfo, httpHeaders, methodName, redirectException,transactionId);
 		}
 
-		if(e instanceof GovPayException) {
-			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
+		if(e instanceof GovPayException govPayException) {
+			return this.handleGovpayException(uriInfo, httpHeaders, methodName, govPayException,transactionId);
 		}
 
-		if(e instanceof ValidationException) {
-			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+		if(e instanceof ValidationException validationException) {
+			return this.handleValidationException(uriInfo, httpHeaders, methodName, validationException,transactionId);
 		}
 
-		if(e instanceof IOException) {
-			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		if(e instanceof IOException ioException) {
+			return this.handleIOException(uriInfo, httpHeaders, methodName, ioException,transactionId);
 		}
 
 		this.logError("Errore interno durante "+methodName+": " + e.getMessage(), e);
