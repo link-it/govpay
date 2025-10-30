@@ -36,7 +36,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 	
 	private FiltroRiscossioni filtro;
-	private List<GROUP_BY> groupBy = new ArrayList<ListaRiscossioniDTO.GROUP_BY>();
+	private List<GROUP_BY> groupBy = new ArrayList<>();
 	
 	public FiltroRiscossioni getFiltro() {
 		return filtro;

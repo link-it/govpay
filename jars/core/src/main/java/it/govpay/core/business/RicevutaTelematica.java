@@ -291,7 +291,7 @@ public class RicevutaTelematica {
 		}
 		
 		if(datiPagamento.getPspFiscalCode() != null){
-			if(sbIstitutoAttestante.length() > 0) {
+			if(!sbIstitutoAttestante.isEmpty()) {
 				sbIstitutoAttestante.append(", ");
 			}
 			sbIstitutoAttestante.append(datiPagamento.getPspFiscalCode());
@@ -422,7 +422,7 @@ public class RicevutaTelematica {
 		}
 		
 		if(datiPagamento.getPspFiscalCode() != null){
-			if(sbIstitutoAttestante.length() > 0) {
+			if(!sbIstitutoAttestante.isEmpty()) {
 				sbIstitutoAttestante.append(", ");
 			}
 			sbIstitutoAttestante.append(datiPagamento.getPspFiscalCode());

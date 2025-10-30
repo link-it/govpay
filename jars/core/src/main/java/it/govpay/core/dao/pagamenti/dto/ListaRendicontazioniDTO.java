@@ -35,7 +35,10 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 		super(user);
 		this.addSortField("data", VistaRendicontazione.model().RND_DATA);
 		this.addSortField("idFlusso", VistaRendicontazione.model().FR_COD_FLUSSO);
+		this.addSortField("iuv", VistaRendicontazione.model().RND_IUV);
+		this.addSortField("iur", VistaRendicontazione.model().RND_IUR);
 		this.addDefaultSort(VistaRendicontazione.model().RND_DATA,SortOrder.DESC);
+		this.addDefaultSort(VistaRendicontazione.model().RND_IUV,SortOrder.ASC);
 	}
 	
 	private Date dataAcquisizioneFlussoDa;

@@ -1068,6 +1068,7 @@ CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
 CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
+CREATE INDEX idx_rnd_data ON rendicontazioni (data);
 
 
 
