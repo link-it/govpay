@@ -26,14 +26,12 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
-import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.Avviso;
@@ -368,19 +366,6 @@ public class OperazioneFactory {
 			respKo.setCodice(e.getCode());
 			respKo.setDescrizione(e.getMessage());
 			respKo.setDettaglio(e.getDetails());
-			annullamentoResponse.setFaultBean(respKo);
-		} catch (UtilsException e) {
-			LogUtils.logDebug(log, "Impossibile eseguire l'annullamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
-			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			annullamentoResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
-			annullamentoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
-			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
-			
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(FaultBean.CategoriaEnum.INTERNO);
-			respKo.setCodice(EsitoOperazione.INTERNAL.name());
-			respKo.setDescrizione(e.getMessage());
-			respKo.setDettaglio(e.getMessage());
 			annullamentoResponse.setFaultBean(respKo);
 		}
 		return annullamentoResponse;
