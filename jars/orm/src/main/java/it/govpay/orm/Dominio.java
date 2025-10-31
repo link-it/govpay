@@ -55,6 +55,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreMaggioliJPPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="tassonomiaPagoPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="scaricaFr" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -87,7 +88,8 @@ import java.io.Serializable;
   	"codConnettoreHyperSicAPK",
   	"codConnettoreMaggioliJPPA",
   	"intermediato",
-  	"tassonomiaPagoPA"
+  	"tassonomiaPagoPA",
+  	"scaricaFr"
   }
 )
 
@@ -264,6 +266,18 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implemen
     this.tassonomiaPagoPA = tassonomiaPagoPA;
   }
 
+  public boolean isScaricaFr() {
+    return this.scaricaFr;
+  }
+
+  public boolean getScaricaFr() {
+    return this.scaricaFr;
+  }
+
+  public void setScaricaFr(boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.DominioModel modelStaticInstance = null;
@@ -361,5 +375,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implemen
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tassonomiaPagoPA",required=false,nillable=false)
   protected java.lang.String tassonomiaPagoPA;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="scaricaFr",required=true,nillable=false)
+  protected boolean scaricaFr;
 
 }

@@ -66,4 +66,4 @@ Examples:
 | tassonomiaPagoPA | dominio.tassonomiaPagoPA | '00' |  'tassonomiaPagoPA' |
 | tassonomiaPagoPA | dominio.tassonomiaPagoPA | '13' |  'tassonomiaPagoPA' |
 | tassonomiaPagoPA | dominio.tassonomiaPagoPA | loremIpsum |  'tassonomiaPagoPA' |
-
+| scaricaFr | dominio.scaricaFr | 'boh' |  'scaricaFr' |

@@ -55,6 +55,7 @@ import it.govpay.core.exceptions.IOException;
 "servizioMaggioliJPPA",
 "intermediato",
 "tassonomiaPagoPA",
+"scaricaFr",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -149,7 +150,10 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("tassonomiaPagoPA")
   private TassonomiaPagoPADominio tassonomiaPagoPA = null;
-
+  
+  @JsonProperty("scaricaFr")
+  private Boolean scaricaFr = null;
+  
   @JsonProperty("idDominio")
   private String idDominio = null;
 
@@ -624,6 +628,22 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Indica se devono essere scaricati i flussi di rendicontazione per l'EC
+   **/
+  public Dominio scaricaFr(Boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+    return this;
+  }
+
+  @JsonProperty("scaricaFr")
+  public Boolean ScaricaFr() {
+    return scaricaFr;
+  }
+  public void setScaricaFr(Boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public Dominio idDominio(String idDominio) {
@@ -737,6 +757,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(servizioMaggioliJPPA, dominio.servizioMaggioliJPPA) &&
         Objects.equals(intermediato, dominio.intermediato) &&
         Objects.equals(tassonomiaPagoPA, dominio.tassonomiaPagoPA) &&
+        Objects.equals(scaricaFr, dominio.scaricaFr) &&
         Objects.equals(idDominio, dominio.idDominio) &&
         Objects.equals(unitaOperative, dominio.unitaOperative) &&
         Objects.equals(contiAccredito, dominio.contiAccredito) &&
@@ -792,6 +813,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
     sb.append("    servizioMaggioliJPPA: ").append(toIndentedString(servizioMaggioliJPPA)).append("\n");
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
+    sb.append("    scaricaFr: ").append(toIndentedString(scaricaFr)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

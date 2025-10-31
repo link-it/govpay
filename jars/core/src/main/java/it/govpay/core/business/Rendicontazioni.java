@@ -243,6 +243,7 @@ public class Rendicontazioni {
 
 				DominioFilter filter = dominiBD.newFilter();
 				filter.setCodStazione(stazione.getCodStazione());
+				filter.setScaricaFr(Boolean.TRUE);
 				List<Dominio> lstDomini = dominiBD.findAll(filter);
 
 				// La lista deve essere richiesta per dominio visto che pagoPA non garantisce l'univocita globale per idFlusso

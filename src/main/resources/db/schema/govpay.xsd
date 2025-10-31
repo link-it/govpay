@@ -570,6 +570,7 @@
 			<xsd:element name="codConnettoreMaggioliJPPA" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 			<xsd:element name="tassonomiaPagoPA" type="String35" minOccurs="0"/>
+			<xsd:element name="scaricaFr" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

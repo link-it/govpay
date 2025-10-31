@@ -60,6 +60,7 @@ public class DominioConverter {
 		dto.setConnettoreMaggioliJPPA(connettoreMaggioliJPPA);
 		dto.setIntermediato(vo.isIntermediato());
 		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
+		dto.setScaricaFr(vo.isScaricaFr());
 		return dto;
 	}
 
@@ -116,6 +117,7 @@ public class DominioConverter {
 		
 		vo.setIntermediato(dto.isIntermediato());
 		vo.setTassonomiaPagoPA(dto.getTassonomiaPagoPA());
+		vo.setScaricaFr(dto.isScaricaFr());
 		
 		return vo;
 	}

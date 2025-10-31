@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.45.0"
+  version: "1.46.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5098,6 +5098,7 @@ components:
        - gln
        - stazione
        - abilitato
+       - scaricaFr
       properties:
         ragioneSociale:
           type: string
@@ -5210,6 +5211,10 @@ components:
           example: true
         tassonomiaPagoPA:
           $ref: '#/components/schemas/tassonomiaPagoPADominio'
+        scaricaFr:
+          type: boolean
+          description: Indica se devono essere scaricati i flussi di rendicontazione per l'EC
+          example: true
     dominioIndex:
       type: object
       allOf:
@@ -7876,69 +7881,6 @@ components:
         subscriptionKey:
           type: string
           example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
-    connettoreNotificaPagamenti:
-      type: object
-      required:
-        - abilitato
-        - tipoConnettore
-        - intervalloCreazioneTracciato
-      properties:
-        abilitato:
-          type: boolean
-          description: Indica se il connettore e' abilitato
-          example: true
-        codiceIPA:
-          type: string
-          description: Codice IPA
-        tipoConnettore:
-          type: string
-          enum:
-            - 'WEBSERVICE'
-            - 'EMAIL'
-            - 'FILESYSTEM'
-        versioneCsv:
-          type: string
-          enum:
-            - '1.0'
-          description: Versione del CSV prodotto.
-        webServiceUrl:
-          type: string
-          description: Dati di integrazione al servizio web tracciati
-        webServiceAuth:
-          $ref: '#/components/schemas/tipoAutenticazione'
-        emailIndirizzi:
-          type: array
-          items:
-            type: string
-          description: Indirizzi Email al quale verra' spedito il tracciato
-        emailSubject:
-          type: string
-          description: Subject da inserire nella mail
-        emailAllegato:
-          type: boolean
-          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
-        downloadBaseUrl:
-          type: string
-          description: URL base del link dove scaricare il tracciato
-        fileSystemPath:
-          type: string
-          description: Path nel quale verra' salvato il tracciato
-        tipiPendenza:
-          type: array
-          description: tipi pendenza da includere nel tracciato
-          items:
-            type: object
-            oneOf:
-              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
-              - type: string
-                description: identificativo tipo pendenza
-                example:
-                  SEGRETERIA
-        intervalloCreazioneTracciato:
-          type: integer
-          format: int32
-          example: 24
-          description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiMyPivot:
       type: object
       required:
@@ -8445,71 +8387,6 @@ components:
           example:
             - R
             - W
-    tracciato:
-      type: object
-      required:
-        - id
-        - codDominio
-        - tipo
-        - stato
-        - dataCaricamento
-      properties:
-        id:
-          type: integer
-          format: int64
-          description:
-            Identificativo numerico del tracciato
-          example:
-            123456
-        codDominio:
-          type: string
-          description:
-            Dominio creatore al tracciato
-          example:
-            AV
-        tipo:
-          type: string
-          description:
-            Tipo di tracciato
-          example:
-            AV
-        stato:
-          type: string
-          description:
-            Stato del tracciato
-          example:
-            ELABORAZIONE
-        descrizioneStato:
-          type: string
-          description:
-            Descrizione dello stato del tracciato
-          example:
-            Errore di connessione al server SFTP
-        dataCaricamento:
-          type: string
-          format: date-time
-          description: Data di caricamento del tracciato
-          example: '2018-12-31T12:50:00Z'
-        dataCompletamento:
-          type: string
-          format: date-time
-          description: Data di completamento del caricamento del tracciato
-          example: '2018-12-31T12:50:00Z'
-        beanDati:
-          type: object
-          description: Dati applicativi del tracciato
-        filenameRichiesta:
-          type: string
-          description:
-            Nome del file di richiesta del tracciato
-          example:
-            80002870923_02315520920_20180710_00_AV.zip
-        filenameEsito:
-          type: string
-          description:
-            Nome del file di esito del tracciato
-          example:
-            80002870923_02315520920_20180710_00_AV_ACK.zip
     eventoIndex:
       type: object
       required:

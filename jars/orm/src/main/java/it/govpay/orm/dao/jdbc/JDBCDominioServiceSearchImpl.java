@@ -169,6 +169,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			fields.add(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA);
 			fields.add(Dominio.model().INTERMEDIATO);
 			fields.add(Dominio.model().TASSONOMIA_PAGO_PA);
+			fields.add(Dominio.model().SCARICA_FR);
 
 			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));
 			fields.add(new CustomField("id_applicazione_default", Long.class, "id_applicazione_default", this.getDominioFieldConverter().toTable(Dominio.model())));

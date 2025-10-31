@@ -128,6 +128,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BOOLEAN NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
+	scarica_fr BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT,

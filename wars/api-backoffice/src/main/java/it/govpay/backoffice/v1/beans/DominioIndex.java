@@ -54,6 +54,7 @@ import it.govpay.core.exceptions.IOException;
 "servizioMaggioliJPPA",
 "intermediato",
 "tassonomiaPagoPA",
+"scaricaFr",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -148,7 +149,10 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("tassonomiaPagoPA")
   private TassonomiaPagoPADominio tassonomiaPagoPA = null;
-
+  
+  @JsonProperty("scaricaFr")
+  private Boolean scaricaFr = null;
+  
   @JsonProperty("idDominio")
   private String idDominio = null;
 
@@ -623,6 +627,22 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Indica se devono essere scaricati i flussi di rendicontazione per l'EC
+   **/
+  public DominioIndex scaricaFr(Boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+    return this;
+  }
+
+  @JsonProperty("scaricaFr")
+  public Boolean ScaricaFr() {
+    return scaricaFr;
+  }
+  public void setScaricaFr(Boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public DominioIndex idDominio(String idDominio) {
@@ -740,6 +760,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(servizioMaggioliJPPA, dominioIndex.servizioMaggioliJPPA) &&
         Objects.equals(intermediato, dominioIndex.intermediato) &&
         Objects.equals(tassonomiaPagoPA, dominioIndex.tassonomiaPagoPA) &&
+        Objects.equals(scaricaFr, dominioIndex.scaricaFr) &&
         Objects.equals(idDominio, dominioIndex.idDominio) &&
         Objects.equals(unitaOperative, dominioIndex.unitaOperative) &&
         Objects.equals(contiAccredito, dominioIndex.contiAccredito) &&
@@ -795,6 +816,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    servizioMaggioliJPPA: ").append(toIndentedString(servizioMaggioliJPPA)).append("\n");
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
+    sb.append("    scaricaFr: ").append(toIndentedString(scaricaFr)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

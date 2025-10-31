@@ -131,6 +131,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR(255) COMMENT 'Identificativo connettore maggioli jppa',
 	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	tassonomia_pago_pa VARCHAR(35) COMMENT 'Tassonomia PagoPA ente creditore',
+	scarica_fr BOOLEAN NOT NULL COMMENT 'Indica se scaricare i flussi di rendicontazione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT COMMENT 'Riferimento alla stazione',

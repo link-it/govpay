@@ -130,6 +130,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BIT NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
+	scarica_fr BIT NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT,

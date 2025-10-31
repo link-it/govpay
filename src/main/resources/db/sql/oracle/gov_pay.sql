@@ -195,6 +195,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR2(255 CHAR),
 	intermediato NUMBER NOT NULL,
 	tassonomia_pago_pa VARCHAR2(35 CHAR),
+	scarica_fr NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER,

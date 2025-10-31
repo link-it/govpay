@@ -50,6 +50,8 @@ public class Dominio extends BasicModel {
 	private boolean intermediato;
 	
 	private String tassonomiaPagoPA;
+	
+	private boolean scaricaFr;
 
 	@Override
 	public Long getId() {
@@ -210,6 +212,14 @@ public class Dominio extends BasicModel {
 
 	public void setTassonomiaPagoPA(String tassonomiaPagoPA) {
 		this.tassonomiaPagoPA = tassonomiaPagoPA;
+	}
+
+	public boolean isScaricaFr() {
+		return scaricaFr;
+	}
+
+	public void setScaricaFr(boolean scaricaFr) {
+		this.scaricaFr = scaricaFr;
 	}
 	
 }
