@@ -195,6 +195,27 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "fr_obsoleto";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_data_ora_pubblicazione";
+			}else{
+				return "fr_data_ora_pubblicazione";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_data_ora_aggiornamento";
+			}else{
+				return "fr_data_ora_aggiornamento";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_REVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_revisione";
+			}else{
+				return "fr_revisione";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".rnd_iuv";
@@ -974,6 +995,15 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().FR_OBSOLETO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_REVISIONE)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){

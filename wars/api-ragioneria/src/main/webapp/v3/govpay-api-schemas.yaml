@@ -219,7 +219,22 @@ components:
           type: string
           format: date-time
           description: "Data dell'operazione di riversamento fondi"
-          example: '2020-12-31 10:27:27.903'        
+          example: '2020-12-31 10:27:27.903'
+        dataOraPubblicazione:
+          type: string
+          format: date-time
+          description: "Data di pubblicazione del flusso di rendicontazione"
+          example: '2020-12-31 10:27:27.903'
+        dataOraAggiornamento:
+          type: string
+          format: date-time
+          description: "Data di aggiornamento del flusso di rendicontazione"
+          example: '2020-12-31 10:27:27.903'
+        revisione:
+          type: integer
+          format: int64
+          description: "Numero di revisione del flusso di rendicontazione"
+          example: 1
         idPsp:
           type: string
           description: Identificativo dell'istituto mittente

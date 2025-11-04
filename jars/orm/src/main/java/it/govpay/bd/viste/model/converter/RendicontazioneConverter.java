@@ -74,6 +74,10 @@ public class RendicontazioneConverter {
 		fr.setRagioneSocialeDominio(vo.getFrRagioneSocialeDominio());
 		fr.setRagioneSocialePsp(vo.getFrRagioneSocialePsp());
 		fr.setObsoleto(vo.getFrObsoleto());
+		fr.setDataOraPubblicazione(vo.getFrDataOraPubblicazione());
+		fr.setDataOraAggiornamento(vo.getFrDataOraAggiornamento());
+		if(vo.getFrRevisione() != null)
+			fr.setRevisione(vo.getFrRevisione().longValue());
 
 		dto.setFr(fr);
 

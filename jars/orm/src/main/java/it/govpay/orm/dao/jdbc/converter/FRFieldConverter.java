@@ -356,6 +356,27 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "obsoleto";
 			}
 		}
+		if(field.equals(FR.model().DATA_ORA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ora_pubblicazione";
+			}else{
+				return "data_ora_pubblicazione";
+			}
+		}
+		if(field.equals(FR.model().DATA_ORA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ora_aggiornamento";
+			}else{
+				return "data_ora_aggiornamento";
+			}
+		}
+		if(field.equals(FR.model().REVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".revisione";
+			}else{
+				return "revisione";
+			}
+		}
 		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_rendicontazione";
@@ -504,6 +525,15 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().OBSOLETO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().DATA_ORA_PUBBLICAZIONE)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().DATA_ORA_AGGIORNAMENTO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().REVISIONE)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.11.0"
+  version: "2.12.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -846,7 +846,22 @@ components:
           type: string
           format: date-time
           description: Data dell'operazione di riversamento fondi
-          example: '2020-12-31 10:27:27.903Z'        
+          example: '2020-12-31 10:27:27.903Z'
+        dataOraPubblicazione:
+          type: string
+          format: date-time
+          description: Data di pubblicazione del flusso di rendicontazione
+          example: '2020-12-31 10:27:27.903Z'
+        dataOraAggiornamento:
+          type: string
+          format: date-time
+          description: Data di aggiornamento del flusso di rendicontazione
+          example: '2020-12-31 10:27:27.903Z'
+        revisione:
+          type: integer
+          format: int64
+          description: Numero di revisione del flusso di rendicontazione
+          example: 1
         idPsp:
           type: string
           description: Identificativo dell'istituto mittente

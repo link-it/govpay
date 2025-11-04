@@ -101,6 +101,9 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_PUBBLICAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_AGGIORNAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().REVISIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_incasso","?");
 
 		// Insert fr
@@ -122,6 +125,9 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRagioneSocialePsp(),FR.model().RAGIONE_SOCIALE_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRagioneSocialeDominio(),FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getObsoleto(),FR.model().OBSOLETO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraPubblicazione(),FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraAggiornamento(),FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRevisione(),FR.model().REVISIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class)
 		);
 		fr.setId(id);
@@ -225,6 +231,12 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		lstObjects_fr.add(new JDBCObject(fr.getRagioneSocialeDominio(), FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getObsoleto(), FR.model().OBSOLETO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_PUBBLICAZIONE,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getDataOraPubblicazione(), FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_AGGIORNAMENTO,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getDataOraAggiornamento(), FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().REVISIONE,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getRevisione(), FR.model().REVISIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_incasso","?");
 		}

@@ -62,6 +62,24 @@ public class FlussoRendicontazioneIndex   {
   **/
   private Date dataRegolamento = null;
 
+  @Schema(description = "Data di pubblicazione del flusso di rendicontazione")
+ /**
+   * Data di pubblicazione del flusso di rendicontazione
+  **/
+  private Date dataOraPubblicazione = null;
+
+  @Schema(description = "Data di aggiornamento del flusso di rendicontazione")
+ /**
+   * Data di aggiornamento del flusso di rendicontazione
+  **/
+  private Date dataOraAggiornamento = null;
+
+  @Schema(example = "1", description = "Numero di revisione del flusso di rendicontazione")
+ /**
+   * Numero di revisione del flusso di rendicontazione
+  **/
+  private Long revisione = null;
+
   @Schema(example = "ABI-12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo dell'istituto mittente")
  /**
    * Identificativo dell'istituto mittente
@@ -189,6 +207,62 @@ public class FlussoRendicontazioneIndex   {
 
   public FlussoRendicontazioneIndex dataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
+    return this;
+  }
+
+ /**
+   * Data di pubblicazione del flusso di rendicontazione
+   * @return dataOraPubblicazione
+  **/
+  @JsonProperty("dataOraPubblicazione")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  public Date getDataOraPubblicazione() {
+    return dataOraPubblicazione;
+  }
+
+  public void setDataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+  }
+
+  public FlussoRendicontazioneIndex dataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+    return this;
+  }
+
+ /**
+   * Data di aggiornamento del flusso di rendicontazione
+   * @return dataOraAggiornamento
+  **/
+  @JsonProperty("dataOraAggiornamento")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  public Date getDataOraAggiornamento() {
+    return dataOraAggiornamento;
+  }
+
+  public void setDataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+  }
+
+  public FlussoRendicontazioneIndex dataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+    return this;
+  }
+
+ /**
+   * Numero di revisione del flusso di rendicontazione
+   * @return revisione
+  **/
+  @JsonProperty("revisione")
+  public Long getRevisione() {
+    return revisione;
+  }
+
+  public void setRevisione(Long revisione) {
+    this.revisione = revisione;
+  }
+
+  public FlussoRendicontazioneIndex revisione(Long revisione) {
+    this.revisione = revisione;
     return this;
   }
 
@@ -339,6 +413,9 @@ public class FlussoRendicontazioneIndex   {
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
+    sb.append("    dataOraPubblicazione: ").append(toIndentedString(dataOraPubblicazione)).append("\n");
+    sb.append("    dataOraAggiornamento: ").append(toIndentedString(dataOraAggiornamento)).append("\n");
+    sb.append("    revisione: ").append(toIndentedString(revisione)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
     sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");

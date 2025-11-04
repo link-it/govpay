@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.46.0"
+  version: "1.47.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -7399,6 +7399,21 @@ components:
           format: date-time
           description: Data dell'operazione di riversamento fondi
           example: '2020-12-31 10:27:27.903Z'
+        dataOraPubblicazione:
+          type: string
+          format: date-time
+          description: Data di pubblicazione del flusso di rendicontazione
+          example: '2020-12-31 10:27:27.903Z'
+        dataOraAggiornamento:
+          type: string
+          format: date-time
+          description: Data di aggiornamento del flusso di rendicontazione
+          example: '2020-12-31 10:27:27.903Z'
+        revisione:
+          type: integer
+          format: int64
+          description: Numero di revisione del flusso di rendicontazione
+          example: 1
         idPsp:
           type: string
           description: Identificativo del psp che ha emesso la rendicontazione

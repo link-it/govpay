@@ -33,6 +33,9 @@ import it.govpay.core.beans.JSONSerializable;
 "dataFlusso",
 "trn",
 "dataRegolamento",
+"dataOraPubblicazione",
+"dataOraAggiornamento",
+"revisione",
 "idPsp",
 "bicRiversamento",
 "idDominio",
@@ -55,6 +58,17 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("dataRegolamento")
   private Date dataRegolamento = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataOraPubblicazione")
+  private Date dataOraPubblicazione = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataOraAggiornamento")
+  private Date dataOraAggiornamento = null;
+
+  @JsonProperty("revisione")
+  private Long revisione = null;
 
   @JsonProperty("idPsp")
   private String idPsp = null;
@@ -139,6 +153,54 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   }
   public void setDataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
+  }
+
+  /**
+   * Data di pubblicazione del flusso di rendicontazione
+   **/
+  public FlussoRendicontazioneIndex dataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+    return this;
+  }
+
+  @JsonProperty("dataOraPubblicazione")
+  public Date getDataOraPubblicazione() {
+    return dataOraPubblicazione;
+  }
+  public void setDataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+  }
+
+  /**
+   * Data di aggiornamento del flusso di rendicontazione
+   **/
+  public FlussoRendicontazioneIndex dataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+    return this;
+  }
+
+  @JsonProperty("dataOraAggiornamento")
+  public Date getDataOraAggiornamento() {
+    return dataOraAggiornamento;
+  }
+  public void setDataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+  }
+
+  /**
+   * Numero di revisione del flusso di rendicontazione
+   **/
+  public FlussoRendicontazioneIndex revisione(Long revisione) {
+    this.revisione = revisione;
+    return this;
+  }
+
+  @JsonProperty("revisione")
+  public Long getRevisione() {
+    return revisione;
+  }
+  public void setRevisione(Long revisione) {
+    this.revisione = revisione;
   }
 
   /**
@@ -264,6 +326,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
         Objects.equals(dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
         Objects.equals(trn, flussoRendicontazioneIndex.trn) &&
         Objects.equals(dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
+        Objects.equals(dataOraPubblicazione, flussoRendicontazioneIndex.dataOraPubblicazione) &&
+        Objects.equals(dataOraAggiornamento, flussoRendicontazioneIndex.dataOraAggiornamento) &&
+        Objects.equals(revisione, flussoRendicontazioneIndex.revisione) &&
         Objects.equals(idPsp, flussoRendicontazioneIndex.idPsp) &&
         Objects.equals(bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
         Objects.equals(idDominio, flussoRendicontazioneIndex.idDominio) &&
@@ -275,7 +340,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
+    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, dataOraPubblicazione, dataOraAggiornamento, revisione, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -296,6 +361,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
+    sb.append("    dataOraPubblicazione: ").append(toIndentedString(dataOraPubblicazione)).append("\n");
+    sb.append("    dataOraAggiornamento: ").append(toIndentedString(dataOraAggiornamento)).append("\n");
+    sb.append("    revisione: ").append(toIndentedString(revisione)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
     sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");

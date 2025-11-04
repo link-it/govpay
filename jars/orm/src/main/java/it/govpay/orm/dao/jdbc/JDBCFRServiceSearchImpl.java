@@ -188,6 +188,10 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				fields.add(FR.model().RAGIONE_SOCIALE_DOMINIO);
 				fields.add(FR.model().RAGIONE_SOCIALE_PSP);
 				fields.add(FR.model().OBSOLETO);
+				fields.add(FR.model().DATA_ORA_PUBBLICAZIONE);
+				fields.add(FR.model().DATA_ORA_AGGIORNAMENTO);
+				fields.add(FR.model().REVISIONE);
+
 				fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
                 List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -252,6 +256,9 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_PSP,true));
 	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_DOMINIO,true));
 	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_PUBBLICAZIONE,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_AGGIORNAMENTO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().REVISIONE,true));
 	 				sqlQueryObjectGet_fr.addWhereCondition("id=?");
 
 	 				// Get fr

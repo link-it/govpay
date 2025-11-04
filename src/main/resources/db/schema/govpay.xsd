@@ -3081,7 +3081,6 @@
 		<xsd:sequence>
 			<xsd:element name="codPsp" type="String35"/>
 			<xsd:element name="codDominio" type="String35"/>
-
 			<xsd:element name="codFlusso" type="String35"/>
 			<xsd:element name="stato" type="String35"/>
 			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0">
@@ -3100,7 +3099,7 @@
 			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="codBicRiversamento" type="String35" minOccurs="0"/>
-			<xsd:element name="xml" type="xsd:base64Binary"/>
+			<xsd:element name="xml" type="xsd:base64Binary" minOccurs="0"/>
 
 			<xsd:element name="idSingoloVersamento" type="id-singolo-versamento" minOccurs="0">
 				<xsd:annotation>
@@ -3132,6 +3131,9 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
+			<xsd:element name="dataOraPubblicazione" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataOraAggiornamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="revisione" type="xsd:integer" minOccurs="0"/>
 
 			<xsd:element name="idRendicontazione" type="id-rendicontazione" minOccurs="0">
 				<xsd:annotation>
@@ -3191,6 +3193,9 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
+			<xsd:element name="frDataOraPubblicazione" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="frDataOraAggiornamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="frRevisione" type="xsd:integer" minOccurs="0"/>
 			<xsd:element name="rndIuv" type="String35"/>
 			<xsd:element name="rndIur" type="String35"/>
 			<xsd:element name="rndIndiceDati" type="xsd:positiveInteger" minOccurs="0"/>

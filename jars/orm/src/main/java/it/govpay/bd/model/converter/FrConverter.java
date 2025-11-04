@@ -50,6 +50,10 @@ public class FrConverter {
 		dto.setDataAcquisizione(vo.getDataAcquisizione());
 		dto.setDataFlusso(vo.getDataOraFlusso());
 		dto.setDataRegolamento(vo.getDataRegolamento());
+		dto.setDataOraPubblicazione(vo.getDataOraPubblicazione());
+		dto.setDataOraAggiornamento(vo.getDataOraAggiornamento());
+		if(vo.getRevisione() != null)
+			dto.setRevisione(vo.getRevisione().longValue());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
 		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
@@ -74,6 +78,10 @@ public class FrConverter {
 		vo.setDataAcquisizione(dto.getDataAcquisizione());
 		vo.setDataOraFlusso(dto.getDataFlusso());
 		vo.setDataRegolamento(dto.getDataRegolamento());
+		vo.setDataOraPubblicazione(dto.getDataOraPubblicazione());
+		vo.setDataOraAggiornamento(dto.getDataOraAggiornamento());
+		if(dto.getRevisione() != null)
+			vo.setRevisione(java.math.BigInteger.valueOf(dto.getRevisione()));
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
 		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti());

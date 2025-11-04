@@ -88,6 +88,12 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_dominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "fr_obsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType()));
+				setParameter(object, "setFrDataOraPubblicazione", VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_data_ora_pubblicazione", VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE.getFieldType()));
+				setParameter(object, "setFrDataOraAggiornamento", VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_data_ora_aggiornamento", VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO.getFieldType()));
+				setParameter(object, "setFrRevisione", VistaRendicontazione.model().FR_REVISIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_revisione", VistaRendicontazione.model().FR_REVISIONE.getFieldType()));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_iuv", VistaRendicontazione.model().RND_IUV.getFieldType()));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),
@@ -316,6 +322,12 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"frRagioneSocialeDominio"));
 				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
 					this.getObjectFromMap(map,"frObsoleto"));
+				setParameter(object, "setFrDataOraPubblicazione", VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"frDataOraPubblicazione"));
+				setParameter(object, "setFrDataOraAggiornamento", VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"frDataOraAggiornamento"));
+				setParameter(object, "setFrRevisione", VistaRendicontazione.model().FR_REVISIONE.getFieldType(),
+					this.getObjectFromMap(map,"frRevisione"));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					this.getObjectFromMap(map,"rndIuv"));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),

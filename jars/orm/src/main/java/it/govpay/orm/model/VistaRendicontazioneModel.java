@@ -60,6 +60,9 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_RAGIONE_SOCIALE_PSP = new Field("frRagioneSocialePsp",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_RAGIONE_SOCIALE_DOMINIO = new Field("frRagioneSocialeDominio",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_OBSOLETO = new Field("frObsoleto",Boolean.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_DATA_ORA_PUBBLICAZIONE = new Field("frDataOraPubblicazione",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_DATA_ORA_AGGIORNAMENTO = new Field("frDataOraAggiornamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_REVISIONE = new Field("frRevisione",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUV = new Field("rndIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUR = new Field("rndIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_INDICE_DATI = new Field("rndIndiceDati",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -179,6 +182,9 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_RAGIONE_SOCIALE_PSP = new ComplexField(father,"frRagioneSocialePsp",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"frRagioneSocialeDominio",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_OBSOLETO = new ComplexField(father,"frObsoleto",Boolean.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_DATA_ORA_PUBBLICAZIONE = new ComplexField(father,"frDataOraPubblicazione",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_DATA_ORA_AGGIORNAMENTO = new ComplexField(father,"frDataOraAggiornamento",java.util.Date.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_REVISIONE = new ComplexField(father,"frRevisione",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUV = new ComplexField(father,"rndIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUR = new ComplexField(father,"rndIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_INDICE_DATI = new ComplexField(father,"rndIndiceDati",java.math.BigInteger.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -312,6 +318,12 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 	public IField FR_RAGIONE_SOCIALE_DOMINIO = null;
 	 
 	public IField FR_OBSOLETO = null;
+	 
+	public IField FR_DATA_ORA_PUBBLICAZIONE = null;
+	 
+	public IField FR_DATA_ORA_AGGIORNAMENTO = null;
+	 
+	public IField FR_REVISIONE = null;
 	 
 	public IField RND_IUV = null;
 	 
