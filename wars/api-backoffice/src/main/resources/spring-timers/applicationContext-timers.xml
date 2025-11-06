@@ -84,8 +84,8 @@
         
         <!-- Check RecuperoRT viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchRecuperoRTCheck" method="exec" cron="0/5 * * * * ?" />
-        <!-- RecuperoRT viene eseguito tutti i giorni ogni ora -->
-        <task:scheduled ref="batchChiusuraRptScadute" method="exec" cron="0 0 * * * ?" />
+        <!-- RecuperoRT viene eseguito tutti i giorni ogni mezzora -->
+        <task:scheduled ref="batchRecuperoRT" method="exec" cron="0 0/30 * * * ?" />
         
     </task:scheduled-tasks>
  
