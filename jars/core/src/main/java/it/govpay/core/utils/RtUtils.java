@@ -314,8 +314,9 @@ public class RtUtils extends NdpValidationUtils {
 			
 			if(!acquisizioneDaCruscotto) {
 				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
+					String dataMsgRicevutaString = rpt.getDataMsgRicevuta() != null ? SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt.getDataMsgRicevuta()) : "N.D.";
 					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, ccp, 
-							SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt.getDataMsgRicevuta())), rpt.getCodDominio());
+							dataMsgRicevutaString), rpt.getCodDominio());
 				}
 			}
 			

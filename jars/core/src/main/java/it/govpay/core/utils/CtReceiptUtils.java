@@ -219,8 +219,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				// verifico che la ricevuta receitId non sia gia' stata acquisita.
 				for (Rpt rpt2 : listaTransazioniPerDominioIuv) {
 					if(rpt2.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt2.getCcp().equals(receiptId)) {
+						String dataMsgRicevutaString = rpt2.getDataMsgRicevuta() != null ? SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt2.getDataMsgRicevuta()) : "N.D.";
 						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, receiptId,
-								SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt2.getDataMsgRicevuta())), rpt2.getCodDominio());
+								dataMsgRicevutaString), rpt2.getCodDominio());
 					}
 				}
 

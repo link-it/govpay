@@ -22,6 +22,8 @@
 	  "logo": "#ignore",
 	  "abilitato": "#notnull",
 	  "autStampaPosteItaliane": "#ignore",
+	  "intermediato": "#ignore",
+	  "scaricaFr": "#ignore",
 	  "area": "#ignore",
 	  "unitaOperative": "#ignore",
 	  "contiAccredito": "#ignore",

@@ -217,7 +217,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			}
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
-				byte[] response = it.govpay.core.utils.FrUtils.getXml(leggiRendicontazioneDTOResponse.getFr());
+				byte[] response = it.govpay.core.utils.FrUtils.getXml(leggiRendicontazioneDTOResponse.getFr(), leggiRendicontazioneDTOResponse.getRendicontazioni());
 				this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
 			} else {

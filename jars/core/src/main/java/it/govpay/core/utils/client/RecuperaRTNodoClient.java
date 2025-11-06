@@ -83,7 +83,8 @@ public class RecuperaRTNodoClient extends BasicClientCORE {
 		String path = MessageFormat.format(RECUPERO_RT_OPERATION_PATH, codDominio, iur);
 		log.debug("Recupero RT da PagoPA [CodDominio: {}, IUR: {}], Path [{}]", codDominio, iur, path);		
 		try {
-			String jsonResponse = new String(this.getJson(path, headerProperties, swaggerOperationID));
+			byte[] bytes = this.getJson(path, headerProperties, swaggerOperationID);
+			String jsonResponse = new String(bytes != null ? bytes : new byte[] {});
 			
 			// configurazione custom del parsing
 			it.govpay.core.utils.serialization.GovPaySerializationConfig serializationConfig = new it.govpay.core.utils.serialization.GovPaySerializationConfig();

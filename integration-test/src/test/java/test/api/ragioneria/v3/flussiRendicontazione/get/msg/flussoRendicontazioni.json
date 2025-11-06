@@ -13,6 +13,7 @@
   "numeroPagamenti": "#number",
   "importoTotale":"#? isImportoConDueDecimali(_)",
   "stato" : "#notnull",
+  "revisione": "#number",
   "segnalazioni": "##[]",
   "rendicontazioni": "#[] rendicontazioneSchema"
 }

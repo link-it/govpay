@@ -127,6 +127,15 @@ public class JaxbUtils {
 		return root.getValue();
 	}
 	
+	public static byte[] toByte(FlussoRiversamento fr) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbFrContext.createMarshaller();
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		jaxbMarshaller.marshal(fr, baos);
+		return baos.toByteArray();
+	}
+
 	public static FlussoRiversamento toFR(byte[] fr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbFrContext.createUnmarshaller();

@@ -282,7 +282,13 @@ public class RendicontazioniBD extends BasicBD {
 			exp.and();
 			exp.equals(model.IUV, iuv);
 			exp.equals(model.IUR, iur);
-			exp.equals(model.INDICE_DATI, indiceDati);
+			
+			if(indiceDati != null) {
+				IExpression orIndiceDati = this.getRendicontazioneService().newExpression();
+				orIndiceDati.equals(model.INDICE_DATI, indiceDati).or().isNull(model.INDICE_DATI);
+				exp.and(orIndiceDati);
+			}
+			
 			exp.equals(model.STATO, stato.toString());
 			
 			CustomField cf = new  CustomField(CF_ID_PAGAMENTO, Long.class, CF_ID_PAGAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
