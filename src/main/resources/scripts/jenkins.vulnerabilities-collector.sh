@@ -4,7 +4,9 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 echo "Branch corrente: $CURRENT_BRANCH"
 CURRENT_COMMIT=$(git rev-parse HEAD)
 echo "Commit reference: $CURRENT_COMMIT"
-DIR_VERSIONE_GOVPAY_VERIFICATA=/opt/apache-tomcat-govpay-vulnerabilita/webapps/govpay-testsuite/${CURRENT_BRANCH}/${CURRENT_COMMIT}
+CURRENT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+echo "Versione corrente: $CURRENT_VERSION"
+DIR_VERSIONE_GOVPAY_VERIFICATA=/opt/apache-tomcat-govpay-vulnerabilita/webapps/govpay-testsuite/${CURRENT_BRANCH}/${CURRENT_VERSION}/${CURRENT_COMMIT}
 echo "Directory dove vengono salvate le evidenze dell'esecuzione corrente della testsuite: [${DIR_VERSIONE_GOVPAY_VERIFICATA}]"
 sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}"
 
@@ -52,28 +54,43 @@ sudo su -c "cp target/jacoco.csv ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/csv/
 sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/html"
 sudo su -c "cp -r target/jacoco-html/* ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/html/"
 
-sudo su -c "chown -R tomcat:tomcat ${DIR_VERSIONE_GOVPAY_VERIFICATA}/"
-
-VERSIONE_GOVPAY_IN_RILASCIO=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-echo "Versione in rilascio: ${VERSIONE_GOVPAY_IN_RILASCIO}"
-DATA_VERSIONE_GOVPAY_IN_RILASCIO=$(date '+%Y_%m_%d')
-echo "Data rilascio: ${DATA_VERSIONE_GOVPAY_IN_RILASCIO}"
+echo "Leggo commit message..."
 COMMIT_MSG="$(git log -1 --pretty=%B)"
 echo "commit message: ${COMMIT_MSG}"
-#COMMIT_MSG_TRIMMED="$(echo -e "$COMMIT_MSG" | xargs)"
-#COMMIT_MSG_TRIMMED="$(printf '%s' "$COMMIT_MSG" | xargs)"
 COMMIT_MSG_TRIMMED="$(printf '%s' "$COMMIT_MSG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
 echo "commit message trimmed: [${COMMIT_MSG_TRIMMED}]"
-if [[ "$COMMIT_MSG_TRIMMED" == 'Predisposto rilascio '* && "$CURRENT_BRANCH" == "master" ]]; then
-    echo "Versione in fase di rilascio; salvo le evidenze dei test ..."
-    DIR_VERSIONE_GOVPAY_IN_RILASCIO=/opt/apache-tomcat-govpay-vulnerabilita/webapps/govpay-releases/${VERSIONE_GOVPAY_IN_RILASCIO}_${DATA_VERSIONE_GOVPAY_IN_RILASCIO}
-    echo "Versione in fase di rilascio: [${VERSIONE_GOVPAY_IN_RILASCIO}]"
+
+echo "Creo file metadati build..."
+BUILD_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+cat > /tmp/build-metadata.json <<EOF
+{
+  "version": "${CURRENT_VERSION}",
+  "branch": "${CURRENT_BRANCH}",
+  "commit": "${CURRENT_COMMIT}",
+  "commitMessage": "${COMMIT_MSG_TRIMMED}",
+  "buildTimestamp": "${BUILD_TIMESTAMP}",
+  "buildDate": "$(date '+%Y-%m-%d')",
+  "buildTime": "$(date '+%H:%M:%S')"
+}
+EOF
+sudo su -c "cp /tmp/build-metadata.json ${DIR_VERSIONE_GOVPAY_VERIFICATA}/build-metadata.json"
+rm /tmp/build-metadata.json
+
+sudo su -c "chown -R tomcat:tomcat ${DIR_VERSIONE_GOVPAY_VERIFICATA}/"
+
+DATA_VERSIONE_GOVPAY_IN_RILASCIO=$(date '+%Y_%m_%d')
+echo "Data rilascio: ${DATA_VERSIONE_GOVPAY_IN_RILASCIO}"
+
+if [[ "$CURRENT_BRANCH" == "master" ]]; then
+    echo "Build sul branch master; salvo le evidenze dei test nella directory releases ..."
+    DIR_VERSIONE_GOVPAY_IN_RILASCIO=/opt/apache-tomcat-govpay-vulnerabilita/webapps/govpay-releases/${CURRENT_VERSION}/${DATA_VERSIONE_GOVPAY_IN_RILASCIO}
+    echo "Versione: [${CURRENT_VERSION}]"
     echo "Directory dove vengono salvate le evidenze: [${DIR_VERSIONE_GOVPAY_IN_RILASCIO}]"
-    sudo su -c "mkdir ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}"
-    sudo su -c "cp -r /opt/apache-tomcat-govpay-vulnerabilita/webapps/govpay-testsuite/${CURRENT_BRANCH}/${CURRENT_COMMIT}/* ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}/"
+    sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}"
+    sudo su -c "cp -r ${DIR_VERSIONE_GOVPAY_VERIFICATA}/* ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}/"
 	sudo su -c "rm -f ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}/WEB-INF/web.xml"
     sudo su -c "rmdir ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}/WEB-INF"
     sudo su -c "chown -R tomcat:tomcat ${DIR_VERSIONE_GOVPAY_IN_RILASCIO}/"
 else
-	echo "Versione non in rilascio"
+	echo "Build non sul branch master; le evidenze sono salvate solo nella directory testsuite"
 fi

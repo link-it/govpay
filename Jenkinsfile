@@ -5,12 +5,29 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '2', artifactNumToKeepStr: '2'))
   }
   environment {
+    // Rileva il branch Git corrente
+    GIT_BRANCH_NAME = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+
     JACOCO_EXEC    = "/tmp/jacoco.exec"
     JACOCO_XML     = "target/jacoco.xml"
     JACOCO_HTML    = "target/jacoco-html"
     JACOCO_CSV     = "target/jacoco.csv"
   }
   stages {
+    stage('info') {
+      steps {
+        script {
+          echo "================================"
+          echo "Pipeline Build Information"
+          echo "================================"
+          echo "Git Branch: ${env.GIT_BRANCH_NAME}"
+          echo "Build Number: ${env.BUILD_NUMBER}"
+          echo "Job Name: ${env.JOB_NAME}"
+          echo "Workspace: ${env.WORKSPACE}"
+          echo "================================"
+        }
+      }
+    }
     stage('cleanup') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
@@ -78,11 +95,12 @@ pipeline {
            """
 	    sh """
 	    	XML_REPORT=\$(pwd)/${JACOCO_XML}
-	    
+
 	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
 	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=\${XML_REPORT} \\
-	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node
+	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node \\
+	    	-Dsonar.qualitygate.wait=true
 	       """
 	  }
 	  post {
