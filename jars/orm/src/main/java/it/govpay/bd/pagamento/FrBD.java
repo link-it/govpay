@@ -375,6 +375,9 @@ public class FrBD extends BasicBD {
 			fields.add(model.RAGIONE_SOCIALE_DOMINIO);
 			fields.add(model.RAGIONE_SOCIALE_PSP);
 			fields.add(model.OBSOLETO);
+			fields.add(model.DATA_ORA_PUBBLICAZIONE);
+			fields.add(model.DATA_ORA_AGGIORNAMENTO);
+			fields.add(model.REVISIONE);
 			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", converter.toTable(model)));
 
 			List<Map<String, Object>> returnMap = this.getFrService().select(filter.toPaginatedExpression(), fields.toArray(new IField[fields.size()]));
