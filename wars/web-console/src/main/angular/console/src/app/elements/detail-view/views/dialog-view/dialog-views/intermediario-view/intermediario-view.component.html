@@ -35,6 +35,37 @@
       </mat-form-field>
       <!-- SSL Config -->
       <link-ssl-config #sslConfigRecuperoRT [fGroup]="fGroup.get('sslAuthPagoPaRecuperoRT')" [json]="json?.servizioPagoPaRecuperoRT?.auth" [required]="true"></link-ssl-config>
+      <p class="color-gray pt-2 mt-3 mb-2">Servizio ACA</p>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input #urlACActrl matInput [placeholder]="voce.URL" formControlName="urlACA_ctrl" autocomplete="off"
+        (keyup)="_onACAUrlChange($event.target, 'subscriptionKeyACA_ctrl')">
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput [placeholder]="voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKeyACA_ctrl" autocomplete="off" [required]="_isSubscriptionKeyACARequired">
+      </mat-form-field>
+      <!-- SSL Config -->
+      <link-ssl-config #sslConfigACA [fGroup]="fGroup.get('sslAuthPagoPaACA')" [json]="json?.servizioPagoPaACA?.auth" [required]="true"></link-ssl-config>
+      <!-- Servizio GPD - NASCOSTO
+      <p class="color-gray pt-2 mt-3 mb-2">Servizio GPD</p>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input #urlGPDctrl matInput [placeholder]="voce.URL" formControlName="urlGPD_ctrl" autocomplete="off"
+        (keyup)="_onGPDUrlChange($event.target, 'subscriptionKeyGPD_ctrl')">
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput [placeholder]="voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKeyGPD_ctrl" autocomplete="off" [required]="_isSubscriptionKeyGPDRequired">
+      </mat-form-field>
+      <link-ssl-config #sslConfigGPD [fGroup]="fGroup.get('sslAuthPagoPaGPD')" [json]="json?.servizioPagoPaGPD?.auth" [required]="true"></link-ssl-config>
+      -->
+      <p class="color-gray pt-2 mt-3 mb-2">Servizio FR</p>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input #urlFRctrl matInput [placeholder]="voce.URL" formControlName="urlFR_ctrl" autocomplete="off"
+        (keyup)="_onFRUrlChange($event.target, 'subscriptionKeyFR_ctrl')">
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput [placeholder]="voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKeyFR_ctrl" autocomplete="off" [required]="_isSubscriptionKeyFRRequired">
+      </mat-form-field>
+      <!-- SSL Config -->
+      <link-ssl-config #sslConfigFR [fGroup]="fGroup.get('sslAuthPagoPaFR')" [json]="json?.servizioPagoPaFR?.auth" [required]="true"></link-ssl-config>
     </mat-card>
   </div>
   <div class="col-12 col-lg-2"></div>

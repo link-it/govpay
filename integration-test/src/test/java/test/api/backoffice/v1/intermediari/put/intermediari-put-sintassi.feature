@@ -189,3 +189,72 @@ Examples:
 | denominazione | intermediarioOauth2ClientCredentialsAuth.denominazione | null |  'denominazione' |
 
 
+Scenario Outline: servizioPagoPaACA.<field> non valida
+
+* def intermediarioACA = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-ACA.json')
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioACA
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| url | intermediarioACA.servizioPagoPaACA.url | null |  'url' |
+| url | intermediarioACA.servizioPagoPaACA.url | 'htttttttp://aaa.it' |  'url' |
+| subscriptionKey | intermediarioACA.servizioPagoPaACA.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioACA.servizioPagoPaACA.subscriptionKey | loremIpsum |  'subscriptionKey' |
+
+
+Scenario Outline: servizioPagoPaGPD.<field> non valida
+
+* def intermediarioGPD = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-GPD.json')
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioGPD
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| url | intermediarioGPD.servizioPagoPaGPD.url | null |  'url' |
+| url | intermediarioGPD.servizioPagoPaGPD.url | 'htttttttp://aaa.it' |  'url' |
+| subscriptionKey | intermediarioGPD.servizioPagoPaGPD.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioGPD.servizioPagoPaGPD.subscriptionKey | loremIpsum |  'subscriptionKey' |
+
+
+Scenario Outline: servizioPagoPaFR.<field> non valida
+
+* def intermediarioFR = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-FR.json')
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioFR
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| url | intermediarioFR.servizioPagoPaFR.url | null |  'url' |
+| url | intermediarioFR.servizioPagoPaFR.url | 'htttttttp://aaa.it' |  'url' |
+| subscriptionKey | intermediarioFR.servizioPagoPaFR.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioFR.servizioPagoPaFR.subscriptionKey | loremIpsum |  'subscriptionKey' |
+
+

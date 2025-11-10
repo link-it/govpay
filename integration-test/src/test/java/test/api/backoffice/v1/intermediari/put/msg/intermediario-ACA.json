@@ -1,0 +1,12 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
+	},
+	"servizioPagoPaACA": {
+		"url": '#(ndpsym_url + "/pagopa/api/v1/notices")',
+		"subscriptionKey" : "ACA123456"
+	},
+	"abilitato": true
+}

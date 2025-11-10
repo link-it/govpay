@@ -90,6 +90,27 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_recupero_rt";
 			}
 		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_aca";
+			}else{
+				return "cod_connettore_aca";
+			}
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_GPD)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_gpd";
+			}else{
+				return "cod_connettore_gpd";
+			}
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_FR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_fr";
+			}else{
+				return "cod_connettore_fr";
+			}
+		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_connettore_ftp";
@@ -145,6 +166,15 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_RECUPERO_RT)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_ACA)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_GPD)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_FR)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){

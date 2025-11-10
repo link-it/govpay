@@ -1,0 +1,12 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
+	},
+	"servizioPagoPaFR": {
+		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
+		"subscriptionKey" : "FR123456"
+	},
+	"abilitato": true
+}

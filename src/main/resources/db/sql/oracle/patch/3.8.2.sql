@@ -149,3 +149,9 @@ CREATE VIEW v_rendicontazioni_ext AS
      LEFT JOIN rpt on pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
 
+
+-- 10/11/2025 Aggiunti nuovi connettori PagoPA all'intermediario (ACA, GPD, FR)
+ALTER TABLE intermediari ADD cod_connettore_aca VARCHAR2(35 CHAR);
+ALTER TABLE intermediari ADD cod_connettore_gpd VARCHAR2(35 CHAR);
+ALTER TABLE intermediari ADD cod_connettore_fr VARCHAR2(35 CHAR);
+
