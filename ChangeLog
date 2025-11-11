@@ -1,0 +1,678 @@
+2025-11-10  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole, GovPayApiBackoffice]
+	Risolto Bug #815
+	Aggiunta possibilita' di configurare da cruscotto i servizi pagoPA per ACA e Acquisizione FR.
+
+2025-11-07  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #821
+	Aggiunta funzionalita' per ricostruire il tracciato xml quando l'xml non e' presente sul db.
+	Corretti test in errore. Aggiunti campi mancanti nella query lista.
+
+2025-11-07  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità
+	Aggiunta gestione del fallimento del quality gate.
+	Migliorata gestione del salvataggio delle evidenze,  aggiunta versione del rilascio e data.
+
+2025-11-06  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug
+	Corretto nome del batch recuperoRT all'interno del file applicationContext-timers.xml.
+	Cambiata schedulazione da una volta all'ora ad una volta ogni mezzora.
+
+2025-11-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM]
+	Aggiunta funzionalità #821
+	Aggiunte colonne dataOraPubblicazione,  dataOraAggiornamento e revisione alla tabella FR.
+	Eliminato vincolo obbligatorieta' della colonna xml della tabella FR.
+
+2025-10-31  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, GovPayConsole, GovPayApiBackoffice]
+	Aggiunta funzionalità #820
+	Aggiunta gestione del campo scaricaFr che indica se scaricare i flussi di rendicontazione per un EC.
+	Aggiunto campo al db,  alle API-Backoffice.
+	Aggiunta possibilita' di visualizzarlo e configurarlo sul cruscotto di gestione.
+	Aggiunti test di verifica di configurazione.
+
+2025-10-30  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM, Database]
+	Risolto Bug #819
+	Vista rendicontazioni restituisce risultati multipli.
+	Aggiunto alla lista degli ordinamenti di default per la vista rendicontazioni anche quello per iuv.
+	Aggiunto supporto per ordinamento da API per iuv,  iur.
+	Aggiunto indice sulla data delle rendicontazioni.
+	Aggiunte patch db per versione 3.8.2.
+
+2025-10-28  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM]
+	Risolto Bug #818
+	Campo pendenzaTipo mancante nella lista RPT ottenuta tramite la vista v_rpt_versamenti.
+	Aggiunto campo mancante versamenti.tipo all'elenco dei field della vista v_rpt_versamenti.
+	Corretti set versamento.id nei converter delle viste.
+
+2025-10-10  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiCommons]
+	Aggiunta funzionalità #816
+	Aggiunto validatore generico per ogni tipo di claim JWT.
+	Mantenuti come default i validatori di iss e aud.
+
+2025-10-09  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiCommons]
+	Aggiunta funzionalità #816
+	Aggiunta possibilita' di verificare issuer e audience del token JWT OAuth2.
+
+2025-09-29  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #815
+	Verificato corretto funzionamento della procedura di acquisizione rendicontazioni in caso di dominio non censito in base dati.
+	Il problema era gia' stato corretto durante gli sviluppi della versione 3.8.1.
+	Aggiunti log per maggiori informazioni sul flusso gestito.
+	Corretto diagnostico non valido in caso di dominio non intermediato.
+
+2025-09-24  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.2-SNAPSHOT
+
+2025-09-23  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Risolto Bug
+	Corretto errore di autenticazione nell'utilizzo dei servizi Ossindex per la verifica delle vulnerabilita'.
+
+2025-09-23  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.1
+
+2025-09-22  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Risolto Bug
+	Gestita vulnerabilita' CVE-2025-10492 come falso positivo.
+
+2025-09-18  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug
+	Correzione messaggi eccezione govpayException.
+
+2025-09-18  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiCommons]
+	Risolto Bug
+	Correzioni allo schema API-Ente V2.
+
+2025-09-17  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Risolto Bug
+	Risoluzione vulnerabilita' delle librerie spring e spring-security.
+	Risoluzione errori testsuite dovuti ai messaggi errati delle GovPayException.
+
+2025-09-16  Giuliano Pintori <pintori@link.it>
+
+	* [Build, IntegrationTest]
+	Aggiunta funzionalità
+	Attivita' di rilascio 3.8.1.
+	Ripristinata esecuzione completa della testsuite.
+	Aggiunto badge quality gate sonar.
+
+2025-09-09  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Risolto Bug
+	Risolto problema CORS durante la logout oauth2 federata.
+
+2025-09-05  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug
+	Corretto messaggio errore attivazione pagamento se servizio di verifica va in timeout.
+	Corretto messaggio diagnostico verifica pendenza.
+	Risoluzione segnalazioni sicurezza sonar.
+	Risoluzione segnalazioni codice duplicato.
+	Eliminato codice non utilizzato dal servizio WebController.
+	Aggiunta validazione generica dei parametri.
+
+2025-09-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Risolto Bug #796
+	Corretta visualizzazione dei dati custom di una pendenza.
+
+2025-09-03  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #798
+	Aggiunto supporto per la valorizzazione dei placeholder da variabile d'ambiente per le configurazioni di sicurezza dei servizi.
+
+2025-09-03  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagopa]
+	Aggiunta funzionalità #792
+	Aggiunta ottimizzazione della chiamata paVerifyPaymentNotice che intercetta le chiamate della sonda pagoPA
+	evitando accessi al DB e ai servizi di verifica dell'applicativo.
+	Aggiunti test per la verifica del check della sonda pagoPA.
+
+2025-09-02  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Risolto Bug #791
+	Aggiornate librerie op2 ed eliminazione dipendenza commons-lang per la risoluzione della vulnerabilita' 2025-48924.
+	Aggiornate librerie terze parti.
+
+2025-08-14  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità #795
+	Aggiunta action per la validazione file publiccode.yml.
+	Risolti errori di validazione del file publiccode.yml.
+
+2025-08-06  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagopa]
+	Risolto Bug #793
+	Corretta valorizzazione hashDocumento della marca da bollo per la primitiva paGetPaymentV2.
+	Corretta funzione di retrocompatibilita' messaggi V1.
+	Aggiunto test di verifica dell'hashdocumento.
+
+2025-07-31  Giuliano Pintori <pintori@link.it>
+
+	* [IntegrationTest]
+	Aggiunta funzionalità #791
+	Aggiunti test per verifica spedizione promemoria con server mail su docker.
+	Aggiunto test verifica spedizione ricevuta pagamento via mail.
+	Aumentata copertura codice API-Pagamento.
+	Eliminato codice non utilizzato.
+
+2025-07-24  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #790
+	Corretto problema invio mail con allegati utilizzando le librerie jakarta-mail.
+
+2025-07-08  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #786
+	Corretto errore nella decodifica di un campo xsddate che contiene un offset.
+
+2025-07-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #785
+	Aggiunta possibilita' di indicare un file di configurazione della console esterno al war.
+
+2025-07-04  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità #784
+	Aggiunta dipendenza mancante jackson-datatype-joda.
+	Aggiunta licenza per la libreria jackson-datatype-joda-2.18.3.
+
+2025-06-24  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Risolto Bug #783
+	Corretto filtro per gestire il redirect della authCallback in presenza di un frontend.
+
+2025-06-09  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice]
+	Risolto Bug
+	Corretto response code del servizio di dettaglio ricevuta.
+	Corretto esempio json ricevuta.
+
+2025-06-03  Alfonso Tatarelli <a.tatarelli@gmail.com>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #781
+	Aggiunta possibilità di configurare la validazione pattern di un campo come warning.
+
+2025-05-29  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #781
+	Aggiornato pattern validazione del campo debitore per supportare i cf omocodici.
+
+2025-05-29  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità
+	Avanzamento versione spring-security 6.4.6.
+
+2025-05-29  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.1-SNAPSHOT
+
+2025-04-18  Alfonso Tatarelli <a.tatarelli@gmail.com>
+
+	* [GovPayConsole]
+	Risolto Bug #772
+	Risoluzione vulnerabilità console: aggiornato "papaparse" alla versione 5.5.2.
+
+2025-04-09  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug
+	Corretto problema gestione pendenze per dominio non intermediato in fase di acquisizione delle rendicontazioni.
+	Corretto errore interruzione acquisizione flusso rendicontazione in caso di errore in acquisizione pendenza da servizio di verifica.
+
+2025-04-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #770
+	Aggiunta data tentativo di pagamento per transazione V2 nel dettaglio pendenza.
+	Corretta deserializzazione date con offset.
+
+2025-03-26  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayStampe]
+	Risolto Bug
+	Corretto errore nella stampa avvisi.
+
+2025-03-24  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug
+	Aggiunto idDominio ai dati salvati dal GDE nella ricerca flussi rendicontazione.
+	Corretta colonna indice da utilizzare in caso di ricerca ricevute.
+
+2025-03-19  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.0
+
+2025-03-17  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice]
+	Risolto Bug #758
+	Corretti messaggi errore Ricevuta gia' presente.
+
+2025-03-17  Alfonso Tatarelli <a.tatarelli@gmail.com>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #758
+	Aggiunta al cruscotto la possibilità di caricare le ricevute.
+
+2025-02-24  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiRagioneria]
+	Aggiunta funzionalità #767
+	Aggiunta possibilita' di scaricare la RT in formato pdf nelle API-Ragioneria V3.
+
+2025-01-27  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice]
+	Risolto Bug #766
+	Parametro idFlusso case insensitive per la ricerca dei flussi di rendicontazione delle API-Backoffice.
+
+2025-01-03  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #753
+	Corretto errore configurazione intermediario con servizio recupero RT non definito.
+
+2024-12-16  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagamento]
+	Aggiunta funzionalità #762
+	Aggiunta possibilita' di personalizzare la url dei servizi all'interno delle risorse json.
+
+2024-12-12  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, Database]
+	Risolto Bug #759
+	Corretto algoritmo per decidere quando una pendenza passa in stato riconciliata.
+	Aggiunte istruzioni per correggere lo stato delle pendenze riconciliate che contengono voci MBT o altro intermediario.
+
+2024-12-10  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiCommons]
+	Aggiunta funzionalità #761
+	Aggiunta autenticazione Oauth2 ai servizi erogati da GovPay.
+
+2024-12-05  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, IntegrationTest]
+	Risolto Bug #758
+	Corretta procedura acquisizione ricevute.
+	Aggiunti test per la verifica del caricamento delle ricevute SANP 2.3.0.
+
+2024-12-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #760
+	Corretti refusi nei messaggi di errore delle rendicontazioni.
+
+2024-11-26  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice]
+	Aggiunta funzionalità #758
+	Aggiunta nuova operazione POST /ricevute allo schema API-Backoffice.
+
+2024-11-22  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, IntegrationTest]
+	Aggiunta funzionalità #753
+	Aggiornato schema FlussoRiversamento_1_0_4.xsd per gestire le rendicontazioni di pagamenti effettuati tramite standin.
+	Aggiunto case test per verificare acquisizione rendicontazioni per pagamenti tramite standin.
+	Aggiunto case test per la gestione del recupero di una RT Modello1.
+
+2024-11-21  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.7.9-SNAPSHOT
+
+2024-11-19  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #731
+	Completata rimozione generazione IUV non numerici.
+
+2024-11-14  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, GovPayORM, IntegrationTest]
+	Aggiunta funzionalità #753
+	Integrate le nuove API Rest di recupero Ricevute.
+	Rivisto check che decide se la rendicontazione appartiene ad un dominio esterno.
+	Esclusa la procedura che tenta il recupero tramite le vecchie API SOAP.
+	Aggiunta possibilita' di configurare nell'intermediario la connessione verso il servizio di recupero ricevute.
+	Eliminata tabella RR non piu' usata.
+	Aggiunta funzione BD per leggere le rendicontazioni senza pagamento.
+	Aggiunta struttura batch recupero rt.
+	Aggiunti test case per la verifica della configurazione dell'intermediario.
+	Completato merge della issue #603 con l'eliminazione della tabella IUV.
+
+2024-10-29  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.7.8
+
+2024-10-28  Giuliano Pintori <pintori@link.it>
+
+	* [IntegrationTest, Build]
+	Aggiunta funzionalità #748
+	Corretta gestione streaming su tomcat con db postgresql.
+	Corretta gestione dipendenze jar mancanti su tomcat.
+	Spostati timers all'interno del war backoffice.
+	Aggiunto shutdown risorse per tutti i war.
+	Corretti file di configurazione della testsuite per esecuzione su tomcat.
+	Aggiunta classe con reader utenze tomcat.
+
+2024-10-02  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice]
+	Risolto Bug #742
+	Aggiunto filtro per idDominio al servizio /rendicontazioni del backoffice.
+	Corretto errore impostazione filtro per dominio associato nella ricerca degli FR.
+
+2024-09-25  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole, GovPayCore]
+	Risolto Bug #745
+	Corretta gestione del filtro IUV/NAV nella schermata del giornale degli eventi.
+	Corretta procedura per la decisione dell'operazione di verifica da utilizzare nel caso in cui sia impostata la proprieta' che vincola l'operazione ma non i parametri necessari.
+
+2024-09-24  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagopa, Build]
+	Risolto Bug
+	Risolte segnalazioni dipendenze librerie spring-expression e spring-web.
+	Corretti errori nei placeholder dei messaggi diagnostici per paGetPayment e paSendRT.
+	Corretto errore placeholder messaggio diagnostico errore in inoltro pendenza modello 4.
+
+2024-09-17  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #741
+	Eliminato errore in fase di init del connettore.
+
+2024-09-13  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #741
+	Aggiunta possibilita' di configurare diversi timeout per i diversi connettori.
+
+2024-09-03  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #738
+	Impostato valore di default per il parametro indiceDati quando non presente nella rendicontazione originale.
+
+2024-08-15  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità #720
+	Aggiornate licenze terze parti.
+
+2024-08-10  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità #725
+	Aggiunta esecuzione plugin spotbugs.
+	Aggiornato maven.
+	Aggiornato jenkinsfile per visualizzazione risultati scan dipendenze.
+
+2024-08-08  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagamento]
+	Aggiunta funzionalità #734
+	Aggiunta generazione di iuv e nav per le pendenze che non li hanno prima dell'invio al checkout.
+
+2024-07-30  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagamento]
+	Aggiunta funzionalità #734
+	Aggiunta possibilita' di invocare il checkout ed avere in risposta il json o il redirect.
+
+2024-07-29  Giuliano Pintori <pintori@link.it>
+
+	* [Installer]
+	Aggiunta funzionalità #720
+	Aggiornate librerie installer.
+	Eliminate librerie installer non necessarie.
+	Corretti script dopo aggiornamento nomi jar.
+
+2024-07-26  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità #720 #725
+	Aggiornato plugin owasp. Risolte segnalazioni dopo scan.
+	Aggiornata versione cxf dopo esecuzione plugin owasp.
+
+2024-07-26  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole, GovPayCore, GovPayStampe]
+	Risolto Bug #728
+	Aggiunta label 'Anomala' mancante per le pendenze.
+	Aggiunta informazione Descrizione Stato nel dettaglio pendenza in stato anomala.
+	Rilasciato vincolo per il quale non veniva generato un numero avviso per pendenze con pagamento di MBT.
+	Eliminata stampa del pdf per le pendenze con MBT.
+
+2024-07-17  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug #727 #720
+	Corretto campo utilizzato per validare lo schema utilizzato per validare i portali backoffice e pagamento.
+	Aggiunto log per segnalare RPT rifiutata nodo.
+	Corretta validazione del template di validazione portali.
+
+2024-07-15  Giuliano Pintori <pintori@link.it>
+
+	* [Build]
+	Aggiunta funzionalità #725
+	Aggiornato plugin owasp.
+
+2024-07-11  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.7.8-SNAPSHOT
+
+2024-07-08  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayStampe, GovPayCore]
+	Risolto Bug #720
+	Corretta classe da utilizzare con la proprieta': net.sf.jasperreports.xpath.executer.factory.
+	Risolti problemi namespace marshaller stampe.
+	Corretto set proprieta' marshaller.
+
+2024-07-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM]
+	Aggiunta funzionalità #720
+	Allineato livello orm all'implementazione generata con il generatore 3.4.x.
+	Corretti tipi campi importo update versamento.
+	Corretti tipi query estrazione statistiche.
+
+2024-03-05  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.7.7-SNAPSHOT
+
+2024-02-28  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #692
+	Aggiunte voci metadata nelle voci pendenza nel dettaglio di una riconciliazione e di un flusso di rendicontazione.
+
+2024-02-20  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Risolto Bug #692
+	Corretto errore in visualizzazione delle ricevute con metadata.
+
+2024-02-19  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, IntegrationTest]
+	Aggiunta funzionalità #692
+	Aggiunta gestione dei metadata custom per tutte le API-REST.
+	Aggiunti test per il caricamento,  verifica errori di sintassi,  lettura e pagamento di una pendenza con metadati custom.
+	Aggiunti test di validazione sintattica metadata per le pendenze scaricate tramite le API-Ente.
+
+2024-02-19  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, GovPayConsole]
+	Aggiunta funzionalità #573
+	Aggiunti campi informazioni ACA ai dati restituiti dal backoffice.
+
+2024-02-15  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiCommons]
+	Aggiunta funzionalità #692
+	Aggiornati schemi yaml,  aggiunto elemento metadata.
+
+2024-02-06  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM]
+	Aggiunta funzionalità #573
+	Aggiunto supporto per memorizzare le informazioni relative all'invio delle pendenze all'archivio centralizzato avvisi.
+	Creata vista per raccogliere le pendenze da inviare.
+
+2023-12-11  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayStampe]
+	Aggiunta funzionalità #621
+	Aggiunta possibilita' di indicare una data scadenza da inserire nell'avviso di pagamento che sovrascrive quella prevista dalla normale procedura di valorizzazione basata su dataValidita,  dataScadenza e numeroGiorni impostato nelle properties.
+
+2023-11-27  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagopa]
+	Risolto Bug #652
+	Corretta valorizzazione modello di pagamento nei datiPagoPA per l'operazione PaaInviaRT.
+
+2023-11-24  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, GovPayORM]
+	Aggiunta funzionalità #652
+	Aggiunta valorizzazione del modello pagamento del giornale eventi per il modello unico.
+	Modificata definizione della colonna tipo_versamento della tabella RPT per allinearla alla definizione del pagamento V2.
+	Eliminata gestione del campo rpt.tipoVersamento come enum per gestire le stringhe libere che possono essere ricevute da PagoPA.
+	Corrette funzioni per la conversione dei messaggi nel vecchio formato.
+
+2023-11-17  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagopa]
+	Risolto Bug #652
+	Corretta valorizzazione del campo datiPagoPA.datiVersamento per le primitive paGetPayment e paGetPaymentV2.
+	Corretta valorizzazione del campo evento.datiPagoPA.tipoVersamento per le primitive PaSendRT e PaSendRTV2.
+
+2023-11-16  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #642
+	Eseguita integrazione lavoro sulla console angular nel processo di compilazione della console.
+	Eseguiti test di login tramite oauth2 con la configurazione della sicurezza da file esterni.
+
+2023-11-07  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice, GovPayConsole]
+	Aggiunta funzionalità #642
+	Aggiunta modalita' di autenticazione OAuth2 alle API-Backoffice.
+	Prima parte delle modifiche alla console per supportare l'autenticazione OAuth2 Authorization_code + PKCE.
+
+2023-10-18  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #604
+	Allineati schemi SANP 3.6.0.
+
+2023-10-16  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayStampe]
+	Risolto Bug #627
+	Corretta gestione delle risorse per la stampa condivise tra i thread di stampa.
+
+2023-10-10  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Aggiunta funzionalità #633
+	Aggiunta possibilita' di disattivare tutti i batch del sistema.
+
+2023-10-09  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiCommons]
+	Aggiunta funzionalità #631
+	Aggiunta configurazione,  utilizzo e test per l'autenticazione tramite API-Key in erogazione e fruizione.
+
+2023-08-31  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #601
+	Modificato ordine delle voci del menu'.
+	Corrette label nel dettaglio pendenza e riconciliazione.
+
+2023-08-31  Alfonso Tatarelli <a.tatarelli@gmail.com>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #601
+	Realizzata maschera di dettaglio ricevuta.
+
+2023-08-03  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #601
+	Realizzata maschera di ricerca ricevute.
+
+2023-08-02  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole]
+	Aggiunta funzionalità #592
+	Aggiunta proprieta' per pilotare la visualizzazione della voce menu' Pagamenti e dei Badge di controllo nella dashboard.
+	Il default prevede che queste funzionalita' siano nascoste.
+
+2023-08-01  Giuliano Pintori <pintori@link.it>
+
+	* [Database]
+	Aggiunta funzionalità
+	Aggiunti indici mancanti tabelle eventi ed rpt.
+
+2023-08-01  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.0-SNAPSHOT

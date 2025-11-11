@@ -26,6 +26,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
@@ -135,11 +137,10 @@ public class IuvUtils {
 	}
 	
 	public static String toNumeroAvviso(String iuv, Dominio dominio) { 
-		String iuvGenerato = iuv;
-		if(dominio.getAuxDigit() == 0)
+		String iuvGenerato = dominio.getAuxDigit() + iuv;
+		if(dominio.getAuxDigit() == 0) {
 			iuvGenerato = dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + iuv;
-		else
-			iuvGenerato = dominio.getAuxDigit() + iuv;
+		}
 		
 		return iuvGenerato;
 	}
@@ -169,9 +170,10 @@ public class IuvUtils {
 			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: prima cifra non e' [0|1|2|3]");
 	}
 	
-	public static boolean isIuvInterno(Dominio dominio, String iuv) {
+	public static boolean isIuvInterno(Logger log, Dominio dominio, String iuv) {
 
 		if(dominio == null) {
+			LogUtils.logDebug(log, "Dominio non censito, IUV:{} non interno", iuv);
 			// Se il dominio non e' censito, allora sicuramente non e' interno
 			return false;
 		}
@@ -184,25 +186,26 @@ public class IuvUtils {
 		} catch (Exception e) {
 			isNumerico = false;
 		}
+		
+		LogUtils.logDebug(log, "Dominio:{}, AuxDigit:{}, Codice segregazione:{}", dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getSegregationCode());
+		LogUtils.logDebug(log, "IUV:{}, lunghezza:{} di tipo numerico: {}", iuv, iuv.length(), (isNumerico ? "SI" : "NO"));
 
-		if(dominio.getAuxDigit() == 0) {
-			// AuxDigit 0: Ente monointermediato. 
-			// Per i pagamenti di tipo 1 e 2, se non ho trovato il pagamento e sono arrivato qui, posso assumere che non e' interno.
-			// Per i pagamenti di tipo 3, e' mio se e' di 15 cifre.
-			// Quindi controllo solo se e' numerico e di 15 cifre.
-
-			if(isNumerico && iuv.length() == 15)
-				return true;
+		// AuxDigit 0: Ente monointermediato. 
+		// Per i pagamenti di tipo 1 e 2, se non ho trovato il pagamento e sono arrivato qui, posso assumere che non e' interno.
+		// Per i pagamenti di tipo 3, e' mio se e' di 15 cifre.
+		// Quindi controllo solo se e' numerico e di 15 cifre.
+		if(dominio.getAuxDigit() == 0 && isNumerico && iuv.length() == 15) {
+			LogUtils.logDebug(log, "AuxDigit 0 -> EC Monointermediato, iuv numerico di lunghezza 15: e' interno.");
+			return true;
 		}
 		
-		if(dominio.getAuxDigit() == 1) {
-			// AuxDigit 1: Ente monointermediato. 
-			// Per i pagamenti di tipo 1 e 2, se non ho trovato il pagamento e sono arrivato qui, posso assumere che non e' interno.
-			// Per i pagamenti di tipo 3, e' mio se e' di 17 cifre.
-			// Quindi controllo solo se e' numerico e di 17 cifre.
-
-			if(isNumerico && iuv.length() == 17)
-				return true;
+		// AuxDigit 1: Ente monointermediato. 
+		// Per i pagamenti di tipo 1 e 2, se non ho trovato il pagamento e sono arrivato qui, posso assumere che non e' interno.
+		// Per i pagamenti di tipo 3, e' mio se e' di 17 cifre.
+		// Quindi controllo solo se e' numerico e di 17 cifre.
+		if(dominio.getAuxDigit() == 1 && isNumerico && iuv.length() == 17) {
+			LogUtils.logDebug(log, "AuxDigit 1 -> EC Monointermediato, iuv numerico di lunghezza 17: e' interno.");
+			return true;
 		}
 
 		if(dominio.getAuxDigit() == 3) {
@@ -213,13 +216,19 @@ public class IuvUtils {
 			// <codice segregazione (2n)><IUV base (max 13n)><IUV check digit (2n)>
 
 			// Pagamenti tipo 1 e 2 operati da GovPay
-			if(iuv.startsWith("RF") && iuv.substring(4, 6).equals(String.format("%02d", dominio.getSegregationCode())))
+			if(iuv.startsWith("RF") && iuv.substring(4, 6).equals(String.format("%02d", dominio.getSegregationCode()))) {
+				LogUtils.logDebug(log, "AuxDigit 3 -> EC Plurintermediato, iuv non numerico contenente il codice di segregazione: e' interno.");
 				return true;
+			}
 
 			// Pagamenti tipo 3
-			if(isNumerico && iuv.length() == 17 && iuv.startsWith(String.format("%02d", dominio.getSegregationCode())))
+			if(isNumerico && iuv.length() == 17 && iuv.startsWith(String.format("%02d", dominio.getSegregationCode()))) {
+				LogUtils.logDebug(log, "AuxDigit 3 -> EC Plurintermediato, iuv numerico di lunghezza 17, inizia con il codice di segregazione: e' interno.");
 				return true;
+			}
 		}
+		
+		LogUtils.logDebug(log, "IUV {} non interno.", iuv);
 		return false;
 	}
 	

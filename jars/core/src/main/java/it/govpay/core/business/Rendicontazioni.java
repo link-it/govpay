@@ -345,7 +345,7 @@ public class Rendicontazioni {
 						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_STAZIONE, stazione.getCodStazione()));
 						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ID_FLUSSO, idRendicontazione.getIdentificativoFlusso()));
 						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, rnd.getCodDominio()));
-						
+
 						if(rnd.getFrFile() == null) {
 							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE);
 
@@ -363,31 +363,14 @@ public class Rendicontazioni {
 								risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso);
 								eventoCtx.setEsito(Esito.OK);
 							} catch (ClientException e) {
-								if(eventoCtx != null) {
-									if(e instanceof ClientException clientException) {
-										eventoCtx.setSottotipoEsito(clientException.getResponseCode() + "");
-									} else {
-										eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-									}
-									eventoCtx.setEsito(Esito.FAIL);
-									eventoCtx.setDescrizioneEsito(e.getMessage());
-									eventoCtx.setException(e);
-								}
-								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-								rnd.getErrori().add(MessageFormat.format("Richiesta al nodo fallita: {0}.", e.getMessage()));
-								LogUtils.logError(log, MessageFormat.format("Richiesta flusso rendicontazione [{0}] fallita: {1}", idRendicontazione.getIdentificativoFlusso(), e.getMessage()), e);
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, e.getMessage());
+								String errore = handleClientException(e, eventoCtx, "Richiesta flusso rendicontazione",
+										idRendicontazione.getIdentificativoFlusso(), ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL);
+								rnd.getErrori().add(errore);
 								continue;
 							} catch (ClientInitializeException e) {
-								eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-								eventoCtx.setEsito(Esito.FAIL);
-								eventoCtx.setDescrizioneEsito(e.getMessage());
-								eventoCtx.setException(e);
-
-								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-								rnd.getErrori().add(MessageFormat.format("Creazione client per la richiesta al nodo fallita: {0}.", e.getMessage()));
-								LogUtils.logError(log, MessageFormat.format("Creazione client per la richiesta flusso rendicontazione [{0}] fallita: {1}", idRendicontazione.getIdentificativoFlusso(), e.getMessage()), e);
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, e.getMessage());
+								String errore = handleClientInitializeException(e, eventoCtx, "Richiesta flusso rendicontazione",
+										idRendicontazione.getIdentificativoFlusso(), ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL);
+								rnd.getErrori().add(errore);
 								continue;
 							}
 
@@ -439,6 +422,9 @@ public class Rendicontazioni {
 
 						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO);
 						appContext.getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
+
+						// decide se avviare il recupero RT per i pagamenti rendicontati
+						boolean avviaRecuperoRT = false;
 
 						Fr fr = new Fr();
 						fr.setObsoleto(false);
@@ -516,8 +502,11 @@ public class Rendicontazioni {
 							it.govpay.bd.model.Pagamento pagamento = null;
 							try {
 								pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur, indiceDati);
-
+								
 								// Pagamento trovato. Faccio i controlli semantici
+								LogUtils.logDebug(log, "Pagamento trovato [Dominio:{} Iuv:{} Iur:{} Indice:{}] - ID:{} ImportoPagato:{} ImportoRevocato:{} IdSingoloVersamento:{}",
+								  codDominio, iuv, iur, indiceDati, pagamento.getId(), pagamento.getImportoPagato(), pagamento.getImportoRevocato(), pagamento.getIdSingoloVersamento());
+
 								rendicontazione.setIdPagamento(pagamento.getId());
 
 								// imposto l'id singolo versamento
@@ -544,11 +533,12 @@ public class Rendicontazioni {
 								}
 							} catch (NotFoundException e) {
 								// Pagamento non trovato. Devo capire se ce' un errore.
+								LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] non trovato: ricerco la causa...", codDominio, iuv, iur, indiceDati);
 
 								// controllo se lo IUV e' interno, se non lo e' salto tutta la parte di acquisizione
 								// Se dominio e' null viene considerato non intermediato
-								if(!IuvUtils.isIuvInterno(dominio, iuv)) {
-									LogUtils.logDebug(log, "IUV {} appartenente ad un Dominio {} non intermediato, salto acquisizione.", iuv, codDominio);
+								if(!IuvUtils.isIuvInterno(log, dominio, iuv)) {
+									LogUtils.logInfo(log, "IUV {} appartenente ad un Dominio {} non intermediato, salto acquisizione.", iuv, codDominio);
 									rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
 									// passo alla prossima rendicontazione
 									continue;
@@ -606,7 +596,8 @@ public class Rendicontazioni {
 
 								// imposto l'id singoloversamento in funzione dell'indice dati
 								if(versamento != null) {
-									LogUtils.logInfo(log, "Trovata Pendenza [{}, {}], verra' associata alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}].", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), codDominio, iuv, iur, indiceDati);
+									LogUtils.logInfo(log, "Trovata Pendenza [{}, {}] in stato [{}], verra' associata alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}].", 
+											versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getStatoVersamento(), codDominio, iuv, iur, indiceDati);
 
 									List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 									int idxRiconciliazione = indiceDati != null ? indiceDati.intValue() : 1; // se la rendicontazione non ha l'indice dati assumo che sia 1.
@@ -617,6 +608,9 @@ public class Rendicontazioni {
 											break;
 										}
 									}
+
+									// c'e' almeno una pendenza pagata nel flusso che non ha la RT associata 
+									avviaRecuperoRT = true;
 								} else {
 									LogUtils.logInfo(log, "Non e' stata trovata nessuna pendenza corrispondente alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}]: {}.", codDominio, iuv, iur, indiceDati, erroreVerifica);
 								}
@@ -655,6 +649,7 @@ public class Rendicontazioni {
 								fr.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 							} finally {
 								//controllo che non sia gia' stata  acquisita un rendicontazione per la tupla (codDominio,iuv,iur,indiceDati), in questo caso emetto una anomalia
+								LogUtils.logInfo(log, "Controllo presenza rendicontazione duplicata all'interno del flusso: [Dominio:{} Iuv:{} Iur:{} Indice:{}]...",	codDominio, iuv, iur, indiceDati);
 								if(fr.getRendicontazioni() != null) {
 									for (Rendicontazione r2 : fr.getRendicontazioni()) {
 										if(r2.getIuv().equals(rendicontazione.getIuv())
@@ -672,6 +667,7 @@ public class Rendicontazioni {
 										}
 									}
 								}
+								LogUtils.logInfo(log, "Controllo presenza rendicontazione duplicata all'interno del flusso: [Dominio:{} Iuv:{} Iur:{} Indice:{}] completato",	codDominio, iuv, iur, indiceDati);
 
 								if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && rendicontazione.getAnomalie().isEmpty()) {
 									rendicontazione.setStato(StatoRendicontazione.OK);
@@ -679,6 +675,8 @@ public class Rendicontazioni {
 									rendicontazione.setStato(StatoRendicontazione.ANOMALA);
 									hasFrAnomalia = true;
 								}
+								
+								LogUtils.logInfo(log, "Rendicontazione: [Dominio:{} Iuv:{} Iur:{} Indice:{}] stato finale acquisizione: {}", codDominio, iuv, iur, indiceDati, rendicontazione.getStato());
 
 								fr.addRendicontazione(rendicontazione);
 							}
@@ -708,6 +706,7 @@ public class Rendicontazioni {
 							hasFrAnomalia = true;
 						}
 
+						LogUtils.logDebug(log, "Acquisizione flusso di rendicontazione {} {}, stato finale: {}", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), fr.getStato());
 
 						// Procedo al salvataggio
 						RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(configWrapper);
@@ -763,6 +762,12 @@ public class Rendicontazioni {
 							} else {
 								LogUtils.logInfo(log, "Flusso di rendicontazione acquisito con anomalie.");
 								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA);
+							}
+
+							// lancia il recupero delle ricevute.
+							if(avviaRecuperoRT) {
+								LogUtils.logInfo(log, "Sono state acquisite delle rendicontazioni per pendenze a cui manca la ricevuta, avvio recupero RT.");
+								Operazioni.setEseguiRecuperoRT();
 							}
 
 						}catch (ServiceException e) {
@@ -841,30 +846,12 @@ public class Rendicontazioni {
 				LogUtils.logDebug(log, "Richiesta elenco flussi rendicontazione per il dominio [{}] al nodo completata.", codDominio);
 			} catch (ClientException e) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				LogUtils.logError(log, MessageFormat.format("Richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", codDominio, e.getMessage()), e);
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL, e.getMessage());
-				if(eventoCtx != null) {
-					if(e instanceof ClientException clientException) {
-						eventoCtx.setSottotipoEsito(clientException.getResponseCode() + "");
-					} else {
-						eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-					}
-					eventoCtx.setEsito(Esito.FAIL);
-					eventoCtx.setDescrizioneEsito(e.getMessage());
-					eventoCtx.setException(e);
-				}
+				handleClientException(e, eventoCtx, "Richiesta elenco flussi rendicontazione",
+						codDominio, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL);
 				return flussiDaAcquisire;
 			} catch (ClientInitializeException e) {
-				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				LogUtils.logError(log, MessageFormat.format("Errore nella creazione del client per la richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", codDominio, e.getMessage()), e);
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL, e.getMessage());
-
-				if(eventoCtx != null) {
-					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-					eventoCtx.setEsito(Esito.FAIL);
-					eventoCtx.setDescrizioneEsito(e.getMessage());
-					eventoCtx.setException(e);
-				}
+				handleClientInitializeException(e, eventoCtx, "Richiesta elenco flussi rendicontazione",
+						codDominio,	ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL);
 				return flussiDaAcquisire;
 			}
 
@@ -872,11 +859,9 @@ public class Rendicontazioni {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
 				log.warn("Richiesta elenco flussi rendicontazione per il dominio [{}] fallita: {} {}", codDominio, risposta.getFault().getFaultCode(), risposta.getFault().getFaultString());
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO, risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-				if(eventoCtx != null) {
-					eventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
-					eventoCtx.setEsito(Esito.KO);
-					eventoCtx.setDescrizioneEsito(risposta.getFault().getFaultString());
-				}
+				eventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
+				eventoCtx.setEsito(Esito.KO);
+				eventoCtx.setDescrizioneEsito(risposta.getFault().getFaultString());
 				return flussiDaAcquisire;
 			} else {
 
@@ -898,7 +883,7 @@ public class Rendicontazioni {
 			LogUtils.logError(log, "Errore durante l'acquisizione dei flussi di rendicontazione", e);
 			return flussiDaAcquisire;
 		}  finally {
-			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
+			if(eventoCtx.isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
 					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
@@ -911,6 +896,69 @@ public class Rendicontazioni {
 		}
 
 		return flussiDaAcquisire;
+	}
+
+	/**
+	 * Gestisce un errore ClientException configurando l'evento e il log appropriato.
+	 *
+	 * @param e L'eccezione da gestire
+	 * @param eventoCtx Il contesto dell'evento da aggiornare
+	 * @param operazione Descrizione dell'operazione fallita (es. "Richiesta flusso rendicontazione")
+	 * @param parametri Parametri specifici dell'operazione per il log
+	 * @param ctx Context per diagnostici
+	 * @param codiceDiagnostico Codice del messaggio diagnostico
+	 * @return Messaggio di errore formattato
+	 */
+	private String handleClientException(ClientException e, EventoContext eventoCtx, String operazione, String parametri, IContext ctx, String codiceDiagnostico) {
+
+		// Aggiorna evento
+		if(eventoCtx != null) {
+			eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+			eventoCtx.setEsito(Esito.FAIL);
+			eventoCtx.setDescrizioneEsito(e.getMessage());
+			eventoCtx.setException(e);
+		}
+
+		// Log
+		String messaggioErrore = MessageFormat.format("{0} [{1}] fallita: {2}", operazione, parametri, e.getMessage());
+		LogUtils.logError(log, messaggioErrore, e);
+
+		// Diagnostico
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, codiceDiagnostico, e.getMessage());
+
+		return MessageFormat.format("{0} fallita: {1}.", operazione, e.getMessage());
+	}
+
+	/**
+	 * Gestisce un errore ClientInitializeException configurando l'evento e il log appropriato.
+	 *
+	 * @param e L'eccezione da gestire
+	 * @param eventoCtx Il contesto dell'evento da aggiornare
+	 * @param operazione Descrizione dell'operazione fallita
+	 * @param parametri Parametri specifici dell'operazione per il log
+	 * @param ctx Context per diagnostici
+	 * @param codiceDiagnostico Codice del messaggio diagnostico
+	 * @return Messaggio di errore formattato
+	 */
+	private String handleClientInitializeException(ClientInitializeException e, EventoContext eventoCtx, String operazione, String parametri, IContext ctx, String codiceDiagnostico) {
+
+		// Aggiorna evento
+		if(eventoCtx != null) {
+			eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+			eventoCtx.setEsito(Esito.FAIL);
+			eventoCtx.setDescrizioneEsito(e.getMessage());
+			eventoCtx.setException(e);
+		}
+
+		// Log
+		String messaggioErrore = MessageFormat.format("Errore nella creazione del client per {0} [{1}]: {2}",
+				operazione, parametri, e.getMessage());
+		LogUtils.logError(log, messaggioErrore, e);
+
+		// Diagnostico
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, codiceDiagnostico, e.getMessage());
+
+		return MessageFormat.format("Creazione client per {0} fallita: {1}.", operazione, e.getMessage());
 	}
 
 	public static void popolaDatiPagoPAEvento(EventoContext eventoCtx, Intermediario intermediario, Stazione stazione, Dominio dominio, String codFlusso) {

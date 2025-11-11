@@ -1,0 +1,24 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
+	},
+	"servizioPagoPaRecuperoRT": {
+		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"subscriptionKey" : "RT123456"
+	},
+	"servizioPagoPaACA": {
+		"url": '#(ndpsym_url + "/pagopa/api/v1/notices")',
+		"subscriptionKey" : "ACA123456"
+	},
+	"servizioPagoPaGPD": {
+		"url": '#(ndpsym_url + "/pagopa/gpd/api/v1/debt-positions")',
+		"subscriptionKey" : "GPD123456"
+	},
+	"servizioPagoPaFR": {
+		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
+		"subscriptionKey" : "FR123456"
+	},
+	"abilitato": true
+}
