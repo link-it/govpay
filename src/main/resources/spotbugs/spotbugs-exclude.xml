@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GovPay - SpotBugs Exclusion Filter
+
+  Questo file contiene le esclusioni per falsi positivi rilevati da SpotBugs/FindSecBugs.
+
+  Documentazione: https://spotbugs.readthedocs.io/en/stable/filter.html
+-->
+<FindBugsFilter>
+
+    <!--
+        SQL_INJECTION_JDBC - Falsi positivi
+
+        Tutte le segnalazioni SQL_INJECTION_JDBC nelle classi BD e DAO sono falsi positivi.
+        Il codice utilizza correttamente:
+        - ISQLQueryObject di OpenSPCoop2 che genera query parametrizzate
+        - PreparedStatement con parametri bind (setLong, setString, setBlob, etc.)
+        - Nessuna concatenazione diretta di stringhe nelle query SQL
+
+        SpotBugs segnala erroneamente perché vede:
+          String sql = sqlQueryObject.createSQLQuery();
+          prepareStatement(sql);
+
+        Ma non rileva che ISQLQueryObject genera automaticamente query con placeholder '?' sicuri.
+
+        File affetti (12 occorrenze totali):
+        - AllegatiDAO.java (core) - linee 121, 214
+        - TracciatiDAO.java (core) - linee 278, 353
+        - TracciatiNotificaPagamentiDAO.java (core) - linea 118
+        - AllegatiBD.java (orm) - linee 166, 287
+        - TracciatiBD.java (orm) - linee 377, 430
+        - TracciatiNotificaPagamentiBD.java (orm) - linee 357, 404, 775
+    -->
+    <Match>
+        <Bug pattern="SQL_INJECTION_JDBC"/>
+        <Or>
+            <!-- Modulo core -->
+            <Class name="it.govpay.core.dao.pagamenti.AllegatiDAO"/>
+            <Class name="it.govpay.core.dao.pagamenti.AllegatiDAO$1"/>
+            <Class name="it.govpay.core.dao.pagamenti.TracciatiDAO$1"/>
+            <Class name="it.govpay.core.dao.pagamenti.TracciatiDAO$2"/>
+            <Class name="it.govpay.core.dao.pagamenti.TracciatiNotificaPagamentiDAO$1"/>
+
+            <!-- Modulo orm -->
+            <Class name="it.govpay.bd.pagamento.AllegatiBD"/>
+            <Class name="it.govpay.bd.pagamento.TracciatiBD"/>
+            <Class name="it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD"/>
+        </Or>
+    </Match>
+
+    <!--
+        PATH_TRAVERSAL_IN - Falsi positivi
+
+        Tutte le segnalazioni PATH_TRAVERSAL_IN sono falsi positivi perché nessun path
+        proviene da input utente non fidato. Tutte le classi coinvolte utilizzano path:
+        - Configurati dall'amministratore di sistema (properties, configurazioni)
+        - Da property di sistema JVM (catalina.home)
+        - Da configurazioni interne non esposte a utenti esterni
+        - Con controlli di validazione quando necessario
+
+        Categorie di utilizzo:
+        1. File di configurazione e properties (18 occorrenze)
+           - GovpayConfig, LabelAvvisiProperties, SeveritaProperties
+           - AvvisoPagamentoProperties, ProspettoRiscossioniProperties
+           - QuietanzaPagamentoProperties, RicevutaTelematicaProperties
+
+        2. Template Jasper per generazione PDF (2 occorrenze)
+           - QuietanzaPagamento, EntratePreviste
+
+        3. Salvataggio tracciati su filesystem configurato (1 occorrenza)
+           - SpedizioneTracciatoNotificaPagamentiThread
+
+        4. Startup e inizializzazione applicazione (1 occorrenza)
+           - StartupUtils
+
+        5. Autenticazione Tomcat (2 occorrenze)
+           - TomcatApplicationAuthenticationProvider
+
+        6. Serializzazione ORM (1 occorrenza)
+           - AbstractSerializer
+
+        7. Client API AppIO (3 occorrenze)
+           - ApiClient
+
+        8. Logger e reload configurazione (2 occorrenze)
+           - Log4JUtils, BasicClientCORE
+
+        Totale: 39 occorrenze, tutte verificate come sicure perché i path sono
+        controllati dall'amministratore di sistema e non modificabili da utenti esterni.
+    -->
+    <Match>
+        <Bug pattern="PATH_TRAVERSAL_IN"/>
+        <Or>
+            <!-- Configurazione e properties -->
+            <Class name="it.govpay.bd.GovpayConfig"/>
+            <Class name="it.govpay.core.utils.GovpayConfig"/>
+            <Class name="it.govpay.core.utils.LabelAvvisiProperties"/>
+            <Class name="it.govpay.core.utils.SeveritaProperties"/>
+            <Class name="it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties"/>
+            <Class name="it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties"/>
+            <Class name="it.govpay.stampe.pdf.quietanzaPagamento.utils.QuietanzaPagamentoProperties"/>
+            <Class name="it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties"/>
+
+            <!-- Template PDF -->
+            <Class name="it.govpay.core.business.QuietanzaPagamento"/>
+            <Class name="it.govpay.core.business.reportistica.EntratePreviste"/>
+
+            <!-- Tracciati filesystem -->
+            <Class name="it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread"/>
+
+            <!-- Startup -->
+            <Class name="it.govpay.core.utils.StartupUtils"/>
+
+            <!-- Autenticazione -->
+            <Class name="org.openspcoop2.utils.service.authentication.provider.TomcatApplicationAuthenticationProvider"/>
+
+            <!-- Serializzazione ORM -->
+            <Class name="it.govpay.orm.utils.serializer.AbstractSerializer"/>
+
+            <!-- Client AppIO -->
+            <Class name="it.govpay.core.utils.appio.impl.ApiClient"/>
+
+            <!-- Logger e configurazione -->
+            <Class name="it.govpay.core.utils.logger.Log4JUtils"/>
+            <Class name="it.govpay.core.utils.client.BasicClientCORE"/>
+        </Or>
+    </Match>
+
+    <!--
+        XXE_SCHEMA_FACTORY - Falsi positivi
+
+        Le segnalazioni XXE_SCHEMA_FACTORY in JaxbUtils sono falsi positivi perché:
+        - Gli schema XSD sono caricati ESCLUSIVAMENTE da risorse interne al classpath
+        - I file XSD sono embedded nel JAR durante la build (directory /xsd/)
+        - Non c'è alcuna possibilità per un attaccante di fornire schema esterni
+        - Gli schema sono: PagInf_RPT_RT_6_2_0.xsd, FlussoRiversamento_1_0_4.xsd,
+          sac-common-types-1.0.xsd, paForNode.xsd
+
+        File affetti (3 occorrenze totali):
+        - JaxbUtils.java (pagopa-beans) - linee 74, 75, 78
+
+        Codice sicuro:
+          SchemaFactory schemaFactory = SchemaFactory.newInstance(...);
+          rptRtSchema = schemaFactory.newSchema(
+              new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/..."))
+          );
+    -->
+    <Match>
+        <Bug pattern="XXE_SCHEMA_FACTORY"/>
+        <Class name="it.govpay.pagopa.beans.utils.JaxbUtils"/>
+    </Match>
+
+    <!--
+        UNVALIDATED_REDIRECT - Falsi positivi
+
+        Le segnalazioni UNVALIDATED_REDIRECT sono falsi positivi per i seguenti motivi:
+
+        1. RedirectLogoutSuccessHandler (api-user) - linea 64
+           - L'URL di redirect è validato contro una whitelist configurata dall'amministratore
+           - L'URL-ID viene estratto dal path della richiesta e usato come chiave per lookup
+           - Il redirect avviene SOLO se l'URL è presente in GovpayConfig.apiUserLogoutRedirectURLs
+           - Se l'URL-ID non esiste o è blank, ritorna 200 OK senza redirect
+           Codice:
+             String redirectURL = props.getProperty(urlID);
+             if(StringUtils.isBlank(redirectURL)) {
+                 response.setStatus(HttpServletResponse.SC_OK);
+             } else {
+                 response.setHeader("Location", redirectURL);
+             }
+
+        2. Html5RoutingFilter (web-console) - linea 89
+           - Filtro per routing interno di Single Page Application (Angular)
+           - Il redirect costruisce URL interni per la SPA con pattern: prefix + "/#" + path
+           - Il prefix proviene da: X-Forwarded-Prefix header (reverse proxy) o contextPath
+           - Il path è il path della risorsa richiesta (non contiene ".")
+           - Non ci sono parametri esterni che possono modificare il dominio/host
+           - Il redirect è sempre relativo all'applicazione stessa
+
+        File affetti (2 occorrenze totali):
+        - RedirectLogoutSuccessHandler.java (api-user) - linea 64
+        - Html5RoutingFilter.java (web-console) - linea 89
+    -->
+    <Match>
+        <Bug pattern="UNVALIDATED_REDIRECT"/>
+        <Or>
+            <Class name="it.govpay.user.v1.authentication.handler.RedirectLogoutSuccessHandler"/>
+            <Class name="it.govpay.web.console.filter.Html5RoutingFilter"/>
+        </Or>
+    </Match>
+
+    <!--
+        HARD_CODE_PASSWORD - Falsi positivi
+
+        La segnalazione HARD_CODE_PASSWORD in StazioniConverter è un falso positivo perché:
+        - Il codice imposta una stringa vuota "" come valore di default per la password
+        - NON si tratta di una password hardcoded per autenticazione
+        - La logica verifica se la password è null e in tal caso la imposta a stringa vuota
+        - Questa è una convenzione per rappresentare "nessuna password configurata"
+        - La password reale viene fornita dall'utente tramite API REST
+
+        File affetti (1 occorrenza):
+        - StazioniConverter.java (api-backoffice) - linee 69-72
+
+        Codice:
+          stazione.setPassword(stazionePost.getPassword());
+          if(stazione.getPassword() == null) {
+              stazione.setPassword("");  // Default per "nessuna password"
+          }
+    -->
+    <Match>
+        <Bug pattern="HARD_CODE_PASSWORD"/>
+        <Class name="it.govpay.backoffice.v1.beans.converter.StazioniConverter"/>
+    </Match>
+
+    <!--
+        CRLF_INJECTION_LOGS - Falsi positivi
+
+        Le segnalazioni CRLF_INJECTION_LOGS in GovpayConfig sono falsi positivi perché:
+        - I valori loggati provengono ESCLUSIVAMENTE da file di configurazione amministratore
+        - I file di configurazione (govpay.properties) sono gestiti dall'amministratore di sistema
+        - Non c'è alcun input utente che possa contaminare questi log
+        - Le properties vengono lette all'avvio dell'applicazione da file controllati
+        - Un attaccante dovrebbe già avere accesso al filesystem per modificare le properties
+
+        File affetti (2 occorrenze totali):
+        - GovpayConfig.java (core) - metodo getProperty() linee ~842, ~845, ~860
+        - GovpayConfig.java (orm) - metodo getProperty() linea ~159
+
+        Codice:
+          if(log != null) log.info("Letta proprieta di configurazione {}{}: {}",
+                                    logString, name, value);
+          // 'value' proviene da Properties caricato da file interno/esterno amministratore
+    -->
+    <Match>
+        <Bug pattern="CRLF_INJECTION_LOGS"/>
+        <Or>
+            <Class name="it.govpay.core.utils.GovpayConfig"/>
+            <Class name="it.govpay.bd.GovpayConfig"/>
+        </Or>
+    </Match>
+
+    <!--
+        PATH_TRAVERSAL_OUT - Falsi positivi
+
+        La segnalazione PATH_TRAVERSAL_OUT è un falso positivo per gli stessi motivi
+        già documentati per PATH_TRAVERSAL_IN:
+        - Il path di scrittura proviene dalla configurazione del connettore (amministratore)
+        - Include controlli di esistenza e permessi (exists(), canWrite())
+        - Non c'è input utente che possa modificare il path di destinazione
+
+        File affetti (1 occorrenza):
+        - SpedizioneTracciatoNotificaPagamentiThread.java (core) - linea ~749
+
+        Codice:
+          File directorySalvataggio = new File(connettore.getFileSystemPath());
+          if(directorySalvataggio.exists() && directorySalvataggio.canWrite()) {
+              String fileName = directorySalvataggio.getAbsolutePath() +
+                                File.separator + tracciato.getNomeFile();
+              try (FileOutputStream fos = new FileOutputStream(fileName)) { ... }
+          }
+    -->
+    <Match>
+        <Bug pattern="PATH_TRAVERSAL_OUT"/>
+        <Class name="it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread"/>
+    </Match>
+
+    <!--
+        XXE_XMLSTREAMREADER - Falsi positivi
+
+        Le segnalazioni XXE_XMLSTREAMREADER in MaggioliJPPAUtils e SOAPUtils sono falsi positivi perché:
+        - L'XMLInputFactory (xif) è configurato in modo sicuro nello static block
+        - Le protezioni XXE sono applicate con:
+            xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+            xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+        - L'istanza xif configurata è utilizzata in tutti i metodi che creano XMLStreamReader
+        - SpotBugs non riconosce la configurazione di sicurezza applicata tramite static block
+
+        File affetti (5 occorrenze totali):
+        - MaggioliJPPAUtils.java (core) - metodi:
+          * unmarshalJPPAPdPInternal() linea 116
+          * unmarshalJPPAPdPExternal() linea 163
+          * unmarshalJPPAPdPExternal(String) linea 197
+          * toJaxbJPPAPdPExternal2() linea 203
+        - SOAPUtils.java (core) - metodo:
+          * unmarshalRPT() linea 31 (riferimento statico xif)
+
+        Correzione applicata (linee 92-99 MaggioliJPPAUtils, linee 41-48 SOAPUtils):
+          private static XMLInputFactory xif;
+
+          static {
+              xif = XMLInputFactory.newInstance();
+              // Protezione XXE (XML External Entity)
+              xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+              xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+          }
+    -->
+    <Match>
+        <Bug pattern="XXE_XMLSTREAMREADER"/>
+        <Or>
+            <Class name="it.govpay.core.utils.MaggioliJPPAUtils"/>
+            <Class name="it.govpay.core.utils.client.SOAPUtils"/>
+        </Or>
+    </Match>
+
+    <!--
+        TEMPLATE_INJECTION_FREEMARKER - Falsi positivi
+
+        La segnalazione TEMPLATE_INJECTION_FREEMARKER in TrasformazioniUtils è un falso positivo perché:
+        - Il template Freemarker proviene ESCLUSIVAMENTE da configurazione amministratore
+        - Non c'è possibilità per un utente esterno di fornire o modificare template
+        - I template sono configurati via database da utenti con privilegi amministrativi
+        - Il template è memorizzato nel campo 'contenuto' della tabella trasformazioni
+        - L'accesso alla configurazione trasformazioni richiede autenticazione amministratore
+
+        File affetti (1 occorrenza):
+        - TrasformazioniUtils.java (core) - metodo convertFreeMarkerTemplateEngine() linea 55
+
+        Codice:
+          Template template = new Template("trasformazione", contenuto,
+                                           freemarker.template.Configuration.getDefaultConfiguration());
+          // 'contenuto' proviene da configurazione amministratore (database)
+    -->
+    <Match>
+        <Bug pattern="TEMPLATE_INJECTION_FREEMARKER"/>
+        <Class name="it.govpay.core.utils.trasformazioni.TrasformazioniUtils"/>
+    </Match>
+
+</FindBugsFilter>

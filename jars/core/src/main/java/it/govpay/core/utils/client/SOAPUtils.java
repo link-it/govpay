@@ -38,7 +38,14 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class SOAPUtils {
 	
-	private static XMLInputFactory xif = XMLInputFactory.newInstance();
+	private static XMLInputFactory xif;
+
+	static {
+		xif = XMLInputFactory.newInstance();
+		// Protezione XXE (XML External Entity)
+		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+		xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+	}
 
 	public static void writeRPTMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
 		baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());

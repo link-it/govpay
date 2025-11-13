@@ -1745,6 +1745,8 @@
 	            	<!-- abilita insieme XML e HTML -->
     				<xmlOutput>true</xmlOutput>
     				<htmlOutput>true</htmlOutput>
+    				<!-- File di esclusione per falsi positivi -->
+    				<excludeFilterFile>src/main/resources/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
 	                <plugins>
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>

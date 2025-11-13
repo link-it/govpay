@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -121,6 +122,19 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+			// Protezione XXE (XML External Entity)
+			// Disabilita completamente DTD per prevenire XXE attacks
+			try {
+				factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+				factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+				factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+				factory.setXIncludeAware(false);
+				factory.setExpandEntityReferences(false);
+			} catch (ParserConfigurationException e) {
+				throw new ProviderNotFoundException("Errore durante la configurazione sicura del parser XML: " + e.getMessage());
+			}
+
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(fUsers);
 			document.getDocumentElement().normalize();
