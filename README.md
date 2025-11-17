@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://www.link.it/wp-content/uploads/2025/01/logo-govpay.svg" alt="GovPay Logo" width="200"/>
+</p>
+
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=link-it_govpay)](https://sonarcloud.io/summary/new_code?id=link-it_govpay)
 [![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/master/)
 [![Docker](https://github.com/link-it/govpay/blob/master/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
