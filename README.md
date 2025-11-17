@@ -4,7 +4,7 @@
 
 # GovPay - Porta di accesso al sistema pagoPA
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=link-it_govpay&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=link-it_govpay
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=link-it_govpay&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=link-it_govpay)
 [![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/master/)
 [![Docker](https://github.com/link-it/govpay/blob/master/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
 [![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=master)](https://govpay.readthedocs.io/it/latest/?badge=master)
