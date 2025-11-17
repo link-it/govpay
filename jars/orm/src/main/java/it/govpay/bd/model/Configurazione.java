@@ -49,6 +49,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String KEY_APP_IO_BATCH = "app_io_batch";
 	public static final String KEY_AVVISATURA_MAIL = "avvisatura_mail";
 	public static final String KEY_AVVISATURA_APP_IO = "avvisatura_app_io";
+	public static final String COD_CONNETTORE_GDE = "govpay_gde_api";
 
 
 	private Properties properties = new Properties();

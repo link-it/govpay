@@ -155,3 +155,8 @@ ALTER TABLE intermediari ADD cod_connettore_aca VARCHAR2(35 CHAR);
 ALTER TABLE intermediari ADD cod_connettore_gpd VARCHAR2(35 CHAR);
 ALTER TABLE intermediari ADD cod_connettore_fr VARCHAR2(35 CHAR);
 
+
+-- 17/11/2025 Connettore per il Microservizio GDE
+INSERT INTO connettori(cod_connettore,cod_proprieta,valore) values ('govpay_gde_api', 'ABILITATO', 0);
+
+

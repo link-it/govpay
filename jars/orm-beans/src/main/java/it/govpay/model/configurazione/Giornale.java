@@ -25,7 +25,6 @@ public class Giornale implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	private String codConnettoreGDE;
 	private GdeInterfaccia apiEnte;
 	private GdeInterfaccia apiPagamento;
 	private GdeInterfaccia apiRagioneria;
@@ -35,12 +34,6 @@ public class Giornale implements Serializable{
 	private GdeInterfaccia apiBackendIO;
 	private GdeInterfaccia apiMaggioliJPPA;
 
-	public String getCodConnettoreGDE() {
-		return codConnettoreGDE;
-	}
-	public void setCodConnettoreGDE(String codConnettoreGDE) {
-		this.codConnettoreGDE = codConnettoreGDE;
-	}
 	public GdeInterfaccia getApiEnte() {
 		return apiEnte;
 	}

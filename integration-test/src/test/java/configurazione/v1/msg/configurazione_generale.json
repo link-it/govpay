@@ -137,5 +137,8 @@
 	},
 	"appIOBatch": {
 		"abilitato": false
-	}
+	},
+	"servizioGDE" :{
+    	"abilitato": false
+    }
 }

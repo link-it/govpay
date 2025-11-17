@@ -4509,6 +4509,8 @@ components:
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
+        servizioGDE:
+          $ref: '#/components/schemas/connettoreGde'
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
         hardening:
@@ -4863,8 +4865,6 @@ components:
       required:
         - interfacce
       properties:
-        servizioGDE:
-          $ref: '#/components/schemas/connettoreGde'
         interfacce:
           $ref: '#/components/schemas/gdeInterfacce'
     gdeInterfacce:

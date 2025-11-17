@@ -107,6 +107,10 @@ public class Configurazione {
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
 		}
+		
+		if(configurazione.getServizioGDE() == null) {
+			configurazione.setServizioGDE(configurazioneDefault.getServizioGDE());
+		}
 	}
 
 	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws IOException {
@@ -146,9 +150,6 @@ public class Configurazione {
 			configurazione.getGiornale().setApiMaggioliJPPA(configurazioneDefault.getGiornale().getApiMaggioliJPPA());
 		}
 
-		if(configurazione.getGiornale().getServizioGDE() == null) {
-			configurazione.getGiornale().setServizioGDE(configurazioneDefault.getGiornale().getServizioGDE());
-		}
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
@@ -161,6 +162,11 @@ public class Configurazione {
 		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
 		configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
 		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
+		
+		Connettore servizioGDE = new Connettore();
+		servizioGDE.setAbilitato(false);
+		servizioGDE.setIdConnettore(it.govpay.bd.model.Configurazione.COD_CONNETTORE_GDE);
+		configurazione.setServizioGDE(servizioGDE);
 
 		return configurazione;
 	}
@@ -293,10 +299,6 @@ public class Configurazione {
 		apiMaggioliJPPAScritture.setLog(LogEnum.SEMPRE);
 		apiMaggioliJPPA.setScritture(apiMaggioliJPPAScritture);
 		giornale.setApiMaggioliJPPA(apiMaggioliJPPA);
-
-		Connettore servizioGDE = new Connettore();
-		servizioGDE.setAbilitato(false);
-		giornale.setServizioGDE(servizioGDE);
 
 		return giornale;
 	}

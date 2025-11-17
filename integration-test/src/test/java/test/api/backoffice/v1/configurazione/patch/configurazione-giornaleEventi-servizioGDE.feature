@@ -11,101 +11,17 @@ Background:
 [
   {
     "op": "REPLACE",
-    "path": "/giornaleEventi",
+    "path": "/servizioGDE",
     "value": {
-    	"servizioGDE": {
-    		"abilitato": false
-    	},
-    	"interfacce": {
-			"apiEnte": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiPagamento": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiRagioneria": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiBackoffice": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiPagoPA": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiPendenze": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiBackendIO": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			},
-			"apiMaggioliJPPA": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
-			}
-		}
-	}
+    	"abilitato": false
+    }
   }
 ]
 """
 
 Scenario: Configurazione servizioGDE disabilitato
 
-* set patchRequest[0].value.servizioGDE = { "abilitato": false }
+* set patchRequest[0].value = { "abilitato": false }
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -119,11 +35,11 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.giornaleEventi.servizioGDE.abilitato == false
+And match response.servizioGDE.abilitato == false
 
 Scenario: Configurazione servizioGDE abilitato con URL
 
-* set patchRequest[0].value.servizioGDE = { "abilitato": true, "url": "https://gde.pagopa.it/api/v1" }
+* set patchRequest[0].value = { "abilitato": true, "url": "https://gde.pagopa.it/api/v1" }
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -137,18 +53,17 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.giornaleEventi.servizioGDE.abilitato == true
-And match response.giornaleEventi.servizioGDE.url == "https://gde.pagopa.it/api/v1"
+And match response.servizioGDE.abilitato == true
+And match response.servizioGDE.url == "https://gde.pagopa.it/api/v1"
 
 Scenario: Configurazione servizioGDE con autenticazione HTTPBasic
 
-* set patchRequest[0].value.servizioGDE =
+* set patchRequest[0].value =
 """
 {
 	"abilitato": true,
 	"url": "https://gde.pagopa.it/api/v1",
 	"auth": {
-		"tipo": "HTTPBasic",
 		"username": "gdeuser",
 		"password": "gdepass"
 	}
@@ -167,20 +82,18 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.giornaleEventi.servizioGDE.abilitato == true
-And match response.giornaleEventi.servizioGDE.url == "https://gde.pagopa.it/api/v1"
-And match response.giornaleEventi.servizioGDE.auth.tipo == "HTTPBasic"
-And match response.giornaleEventi.servizioGDE.auth.username == "gdeuser"
+And match response.servizioGDE.abilitato == true
+And match response.servizioGDE.url == "https://gde.pagopa.it/api/v1"
+And match response.servizioGDE.auth.username == "gdeuser"
 
 Scenario: Configurazione servizioGDE con autenticazione HTTPHeader
 
-* set patchRequest[0].value.servizioGDE =
+* set patchRequest[0].value =
 """
 {
 	"abilitato": true,
 	"url": "https://gde.pagopa.it/api/v1",
 	"auth": {
-		"tipo": "HTTPHeader",
 		"headerName": "X-API-KEY",
 		"headerValue": "secret-key-123"
 	}
@@ -199,13 +112,12 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.giornaleEventi.servizioGDE.abilitato == true
-And match response.giornaleEventi.servizioGDE.auth.tipo == "HTTPHeader"
-And match response.giornaleEventi.servizioGDE.auth.headerName == "X-API-KEY"
+And match response.servizioGDE.abilitato == true
+And match response.servizioGDE.auth.headerName == "X-API-KEY"
 
 Scenario: Errore sintassi - servizioGDE abilitato senza URL
 
-* set patchRequest[0].value.servizioGDE = { "abilitato": true }
+* set patchRequest[0].value = { "abilitato": true }
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -218,7 +130,7 @@ And match response.dettaglio contains 'url'
 
 Scenario: Errore sintassi - URL non valido
 
-* set patchRequest[0].value.servizioGDE = { "abilitato": true, "url": "not-a-valid-url" }
+* set patchRequest[0].value = { "abilitato": true, "url": "htttttttp://aaa.it" }
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -231,7 +143,7 @@ And match response.dettaglio contains 'url'
 
 Scenario: Errore sintassi - campo abilitato mancante
 
-* set patchRequest[0].value.servizioGDE = { "url": "https://gde.pagopa.it/api/v1" }
+* set patchRequest[0].value = { "url": "https://gde.pagopa.it/api/v1" }
 
 Given url backofficeBaseurl
 And path 'configurazioni'

@@ -29,31 +29,12 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"servizioGDE",
 "interfacce",
 })
 public class Giornale extends JSONSerializable implements IValidable {
 
-  @JsonProperty("servizioGDE")
-  private ConnettoreGde servizioGDE = null;
-
   @JsonProperty("interfacce")
   private GdeInterfacce interfacce = null;
-
-  /**
-   **/
-  public Giornale servizioGDE(ConnettoreGde servizioGDE) {
-    this.servizioGDE = servizioGDE;
-    return this;
-  }
-
-  @JsonProperty("servizioGDE")
-  public ConnettoreGde getServizioGDE() {
-    return servizioGDE;
-  }
-  public void setServizioGDE(ConnettoreGde servizioGDE) {
-    this.servizioGDE = servizioGDE;
-  }
 
   /**
    **/
@@ -79,13 +60,12 @@ public class Giornale extends JSONSerializable implements IValidable {
       return false;
     }
     Giornale giornale = (Giornale) o;
-    return Objects.equals(servizioGDE, giornale.servizioGDE) &&
-        Objects.equals(interfacce, giornale.interfacce);
+    return Objects.equals(interfacce, giornale.interfacce);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(servizioGDE, interfacce);
+    return Objects.hash(interfacce);
   }
 
   public static Giornale parse(String json) throws IOException {
@@ -102,7 +82,6 @@ public class Giornale extends JSONSerializable implements IValidable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Giornale {\n");
 
-    sb.append("    servizioGDE: ").append(toIndentedString(servizioGDE)).append("\n");
     sb.append("    interfacce: ").append(toIndentedString(interfacce)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -122,7 +101,6 @@ public class Giornale extends JSONSerializable implements IValidable {
   @Override
  	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("servizioGDE", this.servizioGDE).validateFields();
 		vf.getValidator("interfacce", this.interfacce).notNull().validateFields();
  	}
 }

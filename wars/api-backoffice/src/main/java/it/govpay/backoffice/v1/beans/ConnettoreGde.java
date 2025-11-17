@@ -148,10 +148,9 @@ public class ConnettoreGde extends JSONSerializable implements IValidable {
     ValidatorFactory vf = ValidatorFactory.newInstance();
     vf.getValidator("abilitato", this.abilitato).notNull();
 
-    // Se abilitato, url e auth sono obbligatori
     if(Boolean.TRUE.equals(this.abilitato)) {
       vf.getValidator("url", this.url).notNull().minLength(1).maxLength(255).isUrl();
-      vf.getValidator("auth", this.auth).notNull().validateFields();
+      vf.getValidator("auth", this.auth).validateFields();
     }
   }
 }

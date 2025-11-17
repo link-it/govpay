@@ -36,6 +36,7 @@ import it.govpay.core.dao.configurazione.dto.PatchConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTOResponse;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.model.Connettore;
 import it.govpay.model.PatchOp;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
@@ -54,6 +55,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 	public static final String PATH_APP_IO_BATCH = "/appIOBatch";
 	public static final String PATH_AVVISATURA_MAIL = "/avvisaturaMail";
 	public static final String PATH_AVVISATURA_APP_IO = "/avvisaturaAppIO";
+	public static final String PATH_SERVIZO_GDE = "/servizioGDE";
 
 	public ConfigurazioneDAO() {
 		super();
@@ -126,6 +128,9 @@ public class ConfigurazioneDAO extends BaseDAO{
 				} else if(PATH_APP_IO_BATCH.equals(op.getPath())) {
 					AppIOBatch batchSpedizioneAppIo =  (AppIOBatch) op.getValue();
 					configurazione.setBatchSpedizioneAppIo(batchSpedizioneAppIo);
+				} else if(PATH_SERVIZO_GDE.equals(op.getPath())) {
+					Connettore servizioGDE = (Connettore) op.getValue(); 
+					configurazione.setServizioGDE(servizioGDE);
 				} else {
 					throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 				}

@@ -243,4 +243,25 @@ Examples:
 | appIOBatch.auth | { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: null } | 'urlTokenEndpoint' |
 
 
+Scenario Outline: <field> non valida
+
+* def configurazione_generale = read('msg/configurazione_generale.json')
+* set configurazione_generale.servizioGDE.abilitato = true
+* set configurazione_generale.<path> = <value>
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_generale
+When method post
+Then status 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '<field>'
+
+Examples:
+| path | field | value |
+| servizioGDE | servizioGDE | null |
+| servizioGDE.abilitato | abilitato | "aaaa" |
+| servizioGDE.abilitato | abilitato | null |
+| servizioGDE.url | url | 'htttttttp://aaa.it' |
 

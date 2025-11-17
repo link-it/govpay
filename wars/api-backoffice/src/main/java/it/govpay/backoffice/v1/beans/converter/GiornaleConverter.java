@@ -37,10 +37,6 @@ public class GiornaleConverter {
 	public static it.govpay.model.configurazione.Giornale getGiornaleDTO(Giornale giornalePost) throws ValidationException {
 		it.govpay.model.configurazione.Giornale giornale = new it.govpay.model.configurazione.Giornale();
 
-		if(giornalePost.getServizioGDE() != null) {
-			giornale.setServizioGDE(getConnettoreGdeDTO(giornalePost.getServizioGDE()));
-		}
-
 		GdeInterfacce interfacce = giornalePost.getInterfacce();
 
 		giornale.setApiBackoffice(getGdeInterfaccia(interfacce.getApiBackoffice()));
@@ -120,10 +116,6 @@ public class GiornaleConverter {
 
 	public static Giornale toRsModel(it.govpay.model.configurazione.Giornale giornale) {
 		Giornale rsModel = new Giornale();
-
-		if(giornale.getServizioGDE() != null) {
-			rsModel.setServizioGDE(toConnettoreGdeRsModel(giornale.getServizioGDE()));
-		}
 
 		GdeInterfacce interfacce = new GdeInterfacce();
 
