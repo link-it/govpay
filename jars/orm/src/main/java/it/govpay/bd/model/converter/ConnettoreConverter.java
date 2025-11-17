@@ -131,6 +131,14 @@ public class ConnettoreConverter {
 				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
 					dto.setVersione(Versione.toEnum(connettore.getValore()));
 				}
+
+				if(Connettore.P_ABILITA_GDE.equals(connettore.getCodProprieta())) {
+					dto.setAbilitaGDE(Boolean.parseBoolean(connettore.getValore()));
+				}
+				
+				if(Connettore.P_ABILITATO.equals(connettore.getCodProprieta())) {
+					dto.setAbilitato(Boolean.parseBoolean(connettore.getValore()));
+				}
 			}
 		}
 		return dto;
@@ -328,6 +336,18 @@ public class ConnettoreConverter {
 		vo.setCodProprieta(Connettore.P_AZIONEINURL_NAME);
 		vo.setValore(Boolean.toString(connettore.isAzioneInUrl()));
 		voList.add(vo);
+
+		it.govpay.orm.Connettore voAbilitaGDE = new it.govpay.orm.Connettore();
+		voAbilitaGDE.setCodConnettore(connettore.getIdConnettore());
+		voAbilitaGDE.setCodProprieta(Connettore.P_ABILITA_GDE);
+		voAbilitaGDE.setValore(Boolean.toString(connettore.isAbilitaGDE()));
+		voList.add(voAbilitaGDE);
+		
+		it.govpay.orm.Connettore voAbilitato = new it.govpay.orm.Connettore();
+		voAbilitato.setCodConnettore(connettore.getIdConnettore());
+		voAbilitato.setCodProprieta(Connettore.P_ABILITATO);
+		voAbilitato.setValore(Boolean.toString(connettore.isAbilitato()));
+		voList.add(voAbilitato);
 
 		return voList;
 	}

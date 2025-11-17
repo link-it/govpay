@@ -28,6 +28,7 @@ import it.govpay.backoffice.v1.beans.GdeInterfacce;
 import it.govpay.backoffice.v1.beans.GdeInterfaccia;
 import it.govpay.backoffice.v1.beans.Giornale;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.model.Connettore;
 
 public class GiornaleConverter {
 	
@@ -35,6 +36,10 @@ public class GiornaleConverter {
 
 	public static it.govpay.model.configurazione.Giornale getGiornaleDTO(Giornale giornalePost) throws ValidationException {
 		it.govpay.model.configurazione.Giornale giornale = new it.govpay.model.configurazione.Giornale();
+
+		if(giornalePost.getServizioGDE() != null) {
+			giornale.setServizioGDE(getConnettoreGdeDTO(giornalePost.getServizioGDE()));
+		}
 
 		GdeInterfacce interfacce = giornalePost.getInterfacce();
 
@@ -116,6 +121,10 @@ public class GiornaleConverter {
 	public static Giornale toRsModel(it.govpay.model.configurazione.Giornale giornale) {
 		Giornale rsModel = new Giornale();
 
+		if(giornale.getServizioGDE() != null) {
+			rsModel.setServizioGDE(toConnettoreGdeRsModel(giornale.getServizioGDE()));
+		}
+
 		GdeInterfacce interfacce = new GdeInterfacce();
 
 		interfacce.setApiBackoffice(toInterfacciaRsModel(giornale.getApiBackoffice()));
@@ -166,6 +175,30 @@ public class GiornaleConverter {
 		case SOLO_ERRORE:
 			rsModel.setDump(DumpEnum.SOLO_ERRORE);
 			break;
+		}
+
+		return rsModel;
+	}
+
+	private static it.govpay.model.Connettore getConnettoreGdeDTO(it.govpay.backoffice.v1.beans.ConnettoreGde connettoreGdePost) {
+		Connettore connettoreGde = new it.govpay.model.Connettore();
+
+		connettoreGde.setAbilitato(connettoreGdePost.getAbilitato());
+		connettoreGde.setUrl(connettoreGdePost.getUrl());
+
+		ConnettoriConverter.setAutenticazione(connettoreGde, connettoreGdePost.getAuth());
+
+		return connettoreGde;
+	}
+
+	private static it.govpay.backoffice.v1.beans.ConnettoreGde toConnettoreGdeRsModel(it.govpay.model.Connettore connettoreGde) {
+		it.govpay.backoffice.v1.beans.ConnettoreGde rsModel = new it.govpay.backoffice.v1.beans.ConnettoreGde();
+
+		rsModel.setAbilitato(connettoreGde.isAbilitato());
+		rsModel.setUrl(connettoreGde.getUrl());
+
+		if(connettoreGde.getTipoAutenticazione() != null && !connettoreGde.getTipoAutenticazione().equals(it.govpay.model.Connettore.EnumAuthType.NONE)) {
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettoreGde));
 		}
 
 		return rsModel;

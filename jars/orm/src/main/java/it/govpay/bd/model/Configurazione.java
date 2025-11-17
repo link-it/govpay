@@ -31,6 +31,7 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.Connettore;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
@@ -64,6 +65,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private AvvisaturaViaMail avvisaturaViaMail;
 	private AvvisaturaViaAppIo avvisaturaViaAppIo;
 	private AppIOBatch batchSpedizioneAppIo;
+	private Connettore servizioGDE;
 
 	public Giornale getGiornale() throws IOException {
 		if(this.giornale == null) {
@@ -217,5 +219,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 
 	public String getAvvisaturaViaAppIoJson() throws IOException {
 		return this._getJson(this.getAvvisaturaViaAppIo());
+	}
+
+	public Connettore getServizioGDE() {
+		return servizioGDE;
+	}
+
+	public void setServizioGDE(Connettore servizioGDE) {
+		this.servizioGDE = servizioGDE;
 	}
 }

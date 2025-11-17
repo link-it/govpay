@@ -4,10 +4,10 @@
 	"servizioPagoPa": {
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
-	"servizioPagoPaFR": {
-		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
-		"subscriptionKey" : "FR123456",
-		"abilitaGDE": false
+	"servizioPagoPaRecuperoRT": {
+		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"subscriptionKey" : "ABC123",
+		"abilitaGDE": true
 	},
 	"abilitato": true
 }

@@ -6,7 +6,8 @@
 	},
 	"servizioPagoPaGPD": {
 		"url": '#(ndpsym_url + "/pagopa/gpd/api/v1/debt-positions")',
-		"subscriptionKey" : "GPD123456"
+		"subscriptionKey" : "GPD123456",
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

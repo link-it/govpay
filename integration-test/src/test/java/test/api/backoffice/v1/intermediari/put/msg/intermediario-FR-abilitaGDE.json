@@ -7,7 +7,7 @@
 	"servizioPagoPaFR": {
 		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
 		"subscriptionKey" : "FR123456",
-		"abilitaGDE": false
+		"abilitaGDE": true
 	},
 	"abilitato": true
 }

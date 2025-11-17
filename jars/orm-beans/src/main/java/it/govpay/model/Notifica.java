@@ -24,7 +24,7 @@ import java.util.Date;
 public class Notifica extends BasicModel {
 	
 	public Notifica() {
-		
+		// Default constructor
 	}
 	
 	private static final long serialVersionUID = 1L;

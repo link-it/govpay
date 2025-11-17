@@ -28,13 +28,16 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"abilitato",
 "url",
 "auth",
-"subscriptionKey",
-"abilitaGDE",
 })
-public class ConnettorePagopaACA extends JSONSerializable implements IValidable{
+public class ConnettoreGde extends JSONSerializable implements IValidable {
+
+  @JsonProperty("abilitato")
+  private Boolean abilitato = null;
 
   @JsonProperty("url")
   private String url = null;
@@ -42,16 +45,26 @@ public class ConnettorePagopaACA extends JSONSerializable implements IValidable{
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
 
-  @JsonProperty("subscriptionKey")
-  private String subscriptionKey = null;
+  /**
+   * Indica se il connettore GDE e' abilitato
+   **/
+  public ConnettoreGde abilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+    return this;
+  }
 
-  @JsonProperty("abilitaGDE")
-  private Boolean abilitaGDE = false;
+  @JsonProperty("abilitato")
+  public Boolean getAbilitato() {
+    return abilitato;
+  }
+  public void setAbilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+  }
 
   /**
-   * Dati di integrazione al servizio PagoPA ACA (Avvisi di Cortesia e Attualizzazione)
+   * URL del microservizio Giornale Degli Eventi
    **/
-  public ConnettorePagopaACA url(String url) {
+  public ConnettoreGde url(String url) {
     this.url = url;
     return this;
   }
@@ -66,7 +79,7 @@ public class ConnettorePagopaACA extends JSONSerializable implements IValidable{
 
   /**
    **/
-  public ConnettorePagopaACA auth(TipoAutenticazione auth) {
+  public ConnettoreGde auth(TipoAutenticazione auth) {
     this.auth = auth;
     return this;
   }
@@ -79,37 +92,6 @@ public class ConnettorePagopaACA extends JSONSerializable implements IValidable{
     this.auth = auth;
   }
 
-  /**
-   **/
-  public ConnettorePagopaACA subscriptionKey(String subscriptionKey) {
-    this.subscriptionKey = subscriptionKey;
-    return this;
-  }
-
-  @JsonProperty("subscriptionKey")
-  public String getSubscriptionKey() {
-    return subscriptionKey;
-  }
-  public void setSubscriptionKey(String subscriptionKey) {
-    this.subscriptionKey = subscriptionKey;
-  }
-
-  /**
-   * Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
-   **/
-  public ConnettorePagopaACA abilitaGDE(Boolean abilitaGDE) {
-    this.abilitaGDE = abilitaGDE;
-    return this;
-  }
-
-  @JsonProperty("abilitaGDE")
-  public Boolean getAbilitaGDE() {
-    return abilitaGDE;
-  }
-  public void setAbilitaGDE(Boolean abilitaGDE) {
-    this.abilitaGDE = abilitaGDE;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -118,36 +100,34 @@ public class ConnettorePagopaACA extends JSONSerializable implements IValidable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ConnettorePagopaACA connettorePagopaACA = (ConnettorePagopaACA) o;
-    return Objects.equals(url, connettorePagopaACA.url) &&
-        Objects.equals(auth, connettorePagopaACA.auth) &&
-        Objects.equals(subscriptionKey, connettorePagopaACA.subscriptionKey) &&
-        Objects.equals(abilitaGDE, connettorePagopaACA.abilitaGDE);
+    ConnettoreGde connettoreGde = (ConnettoreGde) o;
+    return Objects.equals(abilitato, connettoreGde.abilitato) &&
+        Objects.equals(url, connettoreGde.url) &&
+        Objects.equals(auth, connettoreGde.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, auth, subscriptionKey, abilitaGDE);
+    return Objects.hash(abilitato, url, auth);
   }
 
-  public static ConnettorePagopaACA parse(String json) throws IOException {
-    return parse(json, ConnettorePagopaACA.class);
+  public static ConnettoreGde parse(String json) throws IOException {
+    return parse(json, ConnettoreGde.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "connettorePagopaACA";
+    return "connettoreGde";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ConnettorePagopaACA {\n");
+    sb.append("class ConnettoreGde {\n");
 
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
-    sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");
-    sb.append("    abilitaGDE: ").append(toIndentedString(abilitaGDE)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -166,9 +146,12 @@ public class ConnettorePagopaACA extends JSONSerializable implements IValidable{
   @Override
   public void validate() throws ValidationException {
     ValidatorFactory vf = ValidatorFactory.newInstance();
-    vf.getValidator("url", this.url).notNull().minLength(1).maxLength(255).isUrl();
-    vf.getValidator("auth", this.auth).validateFields();
-    vf.getValidator("subscriptionKey", this.subscriptionKey).minLength(1).maxLength(255);
-    vf.getValidator("abilitaGDE", this.abilitaGDE).notNull();
+    vf.getValidator("abilitato", this.abilitato).notNull();
+
+    // Se abilitato, url e auth sono obbligatori
+    if(Boolean.TRUE.equals(this.abilitato)) {
+      vf.getValidator("url", this.url).notNull().minLength(1).maxLength(255).isUrl();
+      vf.getValidator("auth", this.auth).notNull().validateFields();
+    }
   }
 }

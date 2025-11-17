@@ -6,7 +6,8 @@
 	},
 	"servizioPagoPaACA": {
 		"url": '#(ndpsym_url + "/pagopa/api/v1/notices")',
-		"subscriptionKey" : "ACA123456"
+		"subscriptionKey" : "ACA123456",
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

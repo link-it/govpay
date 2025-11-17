@@ -36,6 +36,7 @@ public class ConnettorePagopaGPDConverter {
 
 		connettore.setUrl(connector.getUrl());
 		connettore.setSubscriptionKeyValue(connector.getSubscriptionKey());
+		connettore.setAbilitaGDE(connector.getAbilitaGDE());
 
 		return connettore;
 	}
@@ -46,6 +47,7 @@ public class ConnettorePagopaGPDConverter {
 			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrl(connettore.getUrl());
 		rsModel.subscriptionKey(connettore.getSubscriptionKeyValue());
+		rsModel.setAbilitaGDE(connettore.isAbilitaGDE());
 
 		return rsModel;
 	}

@@ -4843,11 +4843,28 @@ components:
         risposta:
           type: object
           description: Template per la trasformazione di un record da JSON a CSV
+    connettoreGde:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il servizio GDE è abilitato
+          example: false
+        url:
+          type: string
+          description: URL del servizio GDE
+          example: https://gde.pagopa.it/api/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
     giornale:
       type: object
       required:
         - interfacce
       properties:
+        servizioGDE:
+          $ref: '#/components/schemas/connettoreGde'
         interfacce:
           $ref: '#/components/schemas/gdeInterfacce'
     gdeInterfacce:
@@ -7896,6 +7913,10 @@ components:
         subscriptionKey:
           type: string
           example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
     connettoreNotificaPagamentiMyPivot:
       type: object
       required:

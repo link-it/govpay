@@ -14,7 +14,8 @@
 		"auth": {
 			"apiId": "X-GOVPAY-AUTH",
 			"apiKey": "govpay"
-		}
+		},
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

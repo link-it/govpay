@@ -122,7 +122,7 @@ And request intermediarioBase
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set intermediarioBase.servizioPagoPaACA = { "url": '#(ndpsym_url + "/pagopa/api/v1/notices")', "subscriptionKey": "ACA123456" }
+* set intermediarioBase.servizioPagoPaACA = { "url": '#(ndpsym_url + "/pagopa/api/v1/notices")', "subscriptionKey": "ACA123456", "abilitaGDE": false }
 
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario

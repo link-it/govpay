@@ -32,6 +32,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "url",
 "auth",
 "subscriptionKey",
+"abilitaGDE",
 })
 public class ConnettorePagopaGPD extends JSONSerializable implements IValidable{
 
@@ -43,6 +44,9 @@ public class ConnettorePagopaGPD extends JSONSerializable implements IValidable{
 
   @JsonProperty("subscriptionKey")
   private String subscriptionKey = null;
+
+  @JsonProperty("abilitaGDE")
+  private Boolean abilitaGDE = false;
 
   /**
    * Dati di integrazione al servizio PagoPA GPD (Gestione Posizione Debitoria)
@@ -90,6 +94,22 @@ public class ConnettorePagopaGPD extends JSONSerializable implements IValidable{
     this.subscriptionKey = subscriptionKey;
   }
 
+  /**
+   * Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+   **/
+  public ConnettorePagopaGPD abilitaGDE(Boolean abilitaGDE) {
+    this.abilitaGDE = abilitaGDE;
+    return this;
+  }
+
+  @JsonProperty("abilitaGDE")
+  public Boolean getAbilitaGDE() {
+    return abilitaGDE;
+  }
+  public void setAbilitaGDE(Boolean abilitaGDE) {
+    this.abilitaGDE = abilitaGDE;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -101,12 +121,13 @@ public class ConnettorePagopaGPD extends JSONSerializable implements IValidable{
     ConnettorePagopaGPD connettorePagopaGPD = (ConnettorePagopaGPD) o;
     return Objects.equals(url, connettorePagopaGPD.url) &&
         Objects.equals(auth, connettorePagopaGPD.auth) &&
-        Objects.equals(subscriptionKey, connettorePagopaGPD.subscriptionKey);
+        Objects.equals(subscriptionKey, connettorePagopaGPD.subscriptionKey) &&
+        Objects.equals(abilitaGDE, connettorePagopaGPD.abilitaGDE);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, auth, subscriptionKey);
+    return Objects.hash(url, auth, subscriptionKey, abilitaGDE);
   }
 
   public static ConnettorePagopaGPD parse(String json) throws IOException {
@@ -126,6 +147,7 @@ public class ConnettorePagopaGPD extends JSONSerializable implements IValidable{
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");
+    sb.append("    abilitaGDE: ").append(toIndentedString(abilitaGDE)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -147,5 +169,6 @@ public class ConnettorePagopaGPD extends JSONSerializable implements IValidable{
     vf.getValidator("url", this.url).notNull().minLength(1).maxLength(255).isUrl();
     vf.getValidator("auth", this.auth).validateFields();
     vf.getValidator("subscriptionKey", this.subscriptionKey).minLength(1).maxLength(255);
+    vf.getValidator("abilitaGDE", this.abilitaGDE).notNull();
   }
 }

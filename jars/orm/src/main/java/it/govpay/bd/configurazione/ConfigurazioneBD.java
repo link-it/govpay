@@ -21,14 +21,18 @@ package it.govpay.bd.configurazione;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.converter.ConfigurazioneConverter;
+import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.core.exceptions.IOException;
 
 public class ConfigurazioneBD extends BasicBD {
@@ -56,7 +60,7 @@ public class ConfigurazioneBD extends BasicBD {
 			}
 			List<it.govpay.orm.Configurazione> voList = this.getConfigurazioneService().findAll(this.getConfigurazioneService().newPaginatedExpression());
 			
-			if(voList == null || voList.size() == 0)
+			if(voList == null || voList.isEmpty())
 				throw new NotFoundException("Configurazione Vuota");
 			
 			return ConfigurazioneConverter.toDTO(voList);
@@ -84,9 +88,14 @@ public class ConfigurazioneBD extends BasicBD {
 			List<it.govpay.orm.Configurazione> voList = ConfigurazioneConverter.toVOList(configurazione);
 			
 			for (it.govpay.orm.Configurazione vo : voList) {
-				log.debug("Salvataggio configurazione entry ["+vo.getNome()+"]...");
+				log.debug("Salvataggio configurazione entry [{}]...", vo.getNome());
 				this.getConfigurazioneService().create(vo);
-				log.debug("Salvataggio configurazione entry ["+vo.getNome()+"] completato...");
+				log.debug("Salvataggio configurazione entry [{}] completato.", vo.getNome());
+			}
+			
+			if(configurazione.getServizioGDE() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(configurazione.getServizioGDE());
+				this.insertConnettore(voConnettoreLst, configurazione.getGiornale().getCodConnettoreGDE());
 			}
 			
 			this.emitAudit(configurazione);
@@ -98,5 +107,20 @@ public class ConfigurazioneBD extends BasicBD {
 				this.closeConnection();
 			}
 		}
+	}
+	
+	private void insertConnettore(List<it.govpay.orm.Connettore> voConnettoreLst, String idConnettore) throws ServiceException {
+		try {
+			IExpression expDelete = this.getConnettoreService().newExpression();
+			expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, idConnettore);
+			this.getConnettoreService().deleteAll(expDelete);
+
+			for (it.govpay.orm.Connettore connettore : voConnettoreLst) {
+				this.getConnettoreService().create(connettore);
+			}
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 }

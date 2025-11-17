@@ -32,6 +32,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.model.Connettore;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
@@ -143,6 +144,10 @@ public class Configurazione {
 		
 		if(configurazione.getGiornale().getApiMaggioliJPPA() == null) {
 			configurazione.getGiornale().setApiMaggioliJPPA(configurazioneDefault.getGiornale().getApiMaggioliJPPA());
+		}
+
+		if(configurazione.getGiornale().getServizioGDE() == null) {
+			configurazione.getGiornale().setServizioGDE(configurazioneDefault.getGiornale().getServizioGDE());
 		}
 	}
 
@@ -288,6 +293,10 @@ public class Configurazione {
 		apiMaggioliJPPAScritture.setLog(LogEnum.SEMPRE);
 		apiMaggioliJPPA.setScritture(apiMaggioliJPPAScritture);
 		giornale.setApiMaggioliJPPA(apiMaggioliJPPA);
+
+		Connettore servizioGDE = new Connettore();
+		servizioGDE.setAbilitato(false);
+		giornale.setServizioGDE(servizioGDE);
 
 		return giornale;
 	}

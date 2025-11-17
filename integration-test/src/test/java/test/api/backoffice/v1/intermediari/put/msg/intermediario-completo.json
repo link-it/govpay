@@ -6,19 +6,23 @@
 	},
 	"servizioPagoPaRecuperoRT": {
 		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
-		"subscriptionKey" : "RT123456"
+		"subscriptionKey" : "RT123456",
+		"abilitaGDE": false
 	},
 	"servizioPagoPaACA": {
 		"url": '#(ndpsym_url + "/pagopa/api/v1/notices")',
-		"subscriptionKey" : "ACA123456"
+		"subscriptionKey" : "ACA123456",
+		"abilitaGDE": false
 	},
 	"servizioPagoPaGPD": {
 		"url": '#(ndpsym_url + "/pagopa/gpd/api/v1/debt-positions")',
-		"subscriptionKey" : "GPD123456"
+		"subscriptionKey" : "GPD123456",
+		"abilitaGDE": false
 	},
 	"servizioPagoPaFR": {
 		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
-		"subscriptionKey" : "FR123456"
+		"subscriptionKey" : "FR123456",
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }
