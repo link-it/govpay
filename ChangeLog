@@ -1,7 +1,13 @@
 2025-11-10  Giuliano Pintori <pintori@link.it>
 
+        * [GovPayConsole, GovPayApiBackoffice]
+        Aggiunta funzionalià #825
+        Aggiunta possibilita' di configurare da cruscotto il connettore per il microservizio GDE.servizi pagoPA per ACA e Acquisizione FR.
+
+2025-11-10  Giuliano Pintori <pintori@link.it>
+
 	* [GovPayConsole, GovPayApiBackoffice]
-	Risolto Bug #815
+	Aggiunta funzionalià #825
 	Aggiunta possibilita' di configurare da cruscotto i servizi pagoPA per ACA e Acquisizione FR.
 
 2025-11-07  Giuliano Pintori <pintori@link.it>
