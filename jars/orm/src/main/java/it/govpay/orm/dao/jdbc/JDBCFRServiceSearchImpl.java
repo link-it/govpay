@@ -193,29 +193,40 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				fields.add(FR.model().REVISIONE);
 
 				fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
+				fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFRFieldConverter().toTable(FR.model())));
                 List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
                 for(Map<String, Object> map: returnMap) {
 
                     Long idIncasso = null;
-
+                    Long idDominio = null;
+                    
                     Object idIncassoObj = map.remove("id_incasso");
 
-                    if(idIncassoObj instanceof Long)
-                            idIncasso = (Long) idIncassoObj;
+                    if(idIncassoObj instanceof Long long1)
+                            idIncasso = long1;
 
+                    Object idDominioObj = map.remove("id_dominio");
+
+                    if(idDominioObj instanceof Long long1)
+                            idDominio = long1;
 
                     FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
 
                     if(idIncasso != null) {
-                        it.govpay.orm.IdIncasso id_pagamento_incasso = new it.govpay.orm.IdIncasso();
-                        id_pagamento_incasso.setId(idIncasso);
-                        fr.setIdIncasso(id_pagamento_incasso);
+                        it.govpay.orm.IdIncasso idIncassoOrm = new it.govpay.orm.IdIncasso();
+                        idIncassoOrm.setId(idIncasso);
+                        fr.setIdIncasso(idIncassoOrm);
                     }
 
+					if (idDominio != null) {
+						it.govpay.orm.IdDominio idDominioOrm = new it.govpay.orm.IdDominio();
+						idDominioOrm.setId(idDominio);
+						fr.setIdDominio(idDominioOrm);
+					}
                     list.add(fr);
                 }
-			} catch(NotFoundException e) {}
+			} catch(NotFoundException e) {/* donothing */}
 			break;
 		case ORACLE:
 			try{
@@ -282,13 +293,26 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		 					it.govpay.orm.IdIncasso id_fr_incasso = new it.govpay.orm.IdIncasso();
 		 					id_fr_incasso.setId(idFK_fr_incasso);
 		 					fr.setIdIncasso(id_fr_incasso);
-		 				} catch(NotFoundException e) {}
+		 					
+		 					// Object _fr_dominio (recupero id)
+		 					ISQLQueryObject sqlQueryObjectGet_fr_dominio_readFkId = sqlQueryObjectGet.newSQLQueryObject();
+		 					sqlQueryObjectGet_fr_dominio_readFkId.addFromTable(this.getFRFieldConverter().toTable(it.govpay.orm.FR.model()));
+		 					sqlQueryObjectGet_fr_dominio_readFkId.addSelectField("id_dominio");
+		 					sqlQueryObjectGet_fr_dominio_readFkId.addWhereCondition("id=?");
+		 					sqlQueryObjectGet_fr_dominio_readFkId.setANDLogicOperator(true);
+		 					Long idFK_fr_dominio = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_fr_dominio_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+		 							new JDBCObject(fr.getId(),Long.class));
+
+		 					it.govpay.orm.IdDominio id_fr_dominio = new it.govpay.orm.IdDominio();
+		 					id_fr_dominio.setId(idFK_fr_dominio);
+		 					fr.setIdDominio(id_fr_dominio);
+		 				} catch(NotFoundException e) {/* donothing */}
 	 				}
 
 		        	list.add(fr);
 
 	 			}
-			} catch(NotFoundException e) {}
+			} catch(NotFoundException e) { /* donothing */ }
 		break;
 		}
 
@@ -448,7 +472,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
         								org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct),
         								expression, this.getFRFieldConverter(), FR.model(),
         								listaQuery,listaParams,returnField);
-		if(list!=null && list.size()>0){
+		if(list!=null && !list.isEmpty()){
 			return list;
 		}
 		else{
@@ -477,7 +501,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject,
         								this.getFRFieldConverter(), FR.model(),
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
-        if(list!=null && list.size()>0){
+        if(list!=null && !list.isEmpty()){
 			return list;
 		}
 		else{
@@ -699,9 +723,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
 			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
 			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
-
-			// sqlQueryObject.addFromTable(tableNameVersamenti);
-
 			sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 
 			addRendicontazioni = true;
@@ -710,10 +731,12 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		if(expression.inUseModel(FR.model().ID_INCASSO,false)){
 			String tableName2 = this.getFieldConverter().toAliasTable(FR.model().ID_INCASSO);
 			sqlQueryObject.addWhereCondition(tableNameFr+".id_incasso="+tableName2+".id");
-
 		}
 
-
+		if(expression.inUseModel(FR.model().ID_DOMINIO,false)){
+			String tableName2 = this.getFieldConverter().toAliasTable(FR.model().ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableNameFr+".id_dominio="+tableName2+".id");
+		}
 	}
 
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -805,6 +828,11 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_RENDICONTAZIONE))
 			));
 
+		// FR.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_DOMINIO))
+			));
 
 
         return mapTableToPKColumn;

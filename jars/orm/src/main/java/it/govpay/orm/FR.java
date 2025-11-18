@@ -58,6 +58,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataOraAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="revisione" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="idRendicontazione" type="{http://www.govpay.it/orm}id-rendicontazione" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -93,7 +94,8 @@ import java.io.Serializable;
   	"dataOraPubblicazione",
   	"dataOraAggiornamento",
   	"revisione",
-  	"idRendicontazione"
+  	"idRendicontazione",
+  	"idDominio"
   }
 )
 
@@ -280,6 +282,14 @@ public class FR extends org.openspcoop2.utils.beans.BaseBeanWithId implements Se
     this.idRendicontazione = idRendicontazione;
   }
 
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.FRModel modelStaticInstance = null;
@@ -385,5 +395,8 @@ public class FR extends org.openspcoop2.utils.beans.BaseBeanWithId implements Se
 
   @XmlElement(name="idRendicontazione",required=false,nillable=false)
   protected IdRendicontazione idRendicontazione;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
 }

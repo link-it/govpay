@@ -3006,6 +3006,9 @@
 						<linkit:sql-table-index name="idx_fr_data_acq">
 							<linkit:sql-table-index-field name="dataAcquisizione" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_fr_id_dominio">
+							<linkit:sql-table-index-field name="idDominio"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -3073,6 +3076,17 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Rendicontazione" object-type="Rendicontazione"
 								relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idDominio" type="id-dominio" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>

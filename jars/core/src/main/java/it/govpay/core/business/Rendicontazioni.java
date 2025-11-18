@@ -277,10 +277,16 @@ public class Rendicontazioni {
 							String codDominioFlussoRendicontazioneDaFileSystem = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
 							LogUtils.logInfo(log, "Aggiungo Flusso di Rendicontazione da fileSystem: [{}, {}, {}]", codDominioFlussoRendicontazioneDaFileSystem, 
 									idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+							// verifico che il dominio del flusso da file sia censito
+							AnagraficaManager.getDominio(configWrapper, codDominioFlussoRendicontazioneDaFileSystem);
+							
 							// Aggiungo la rendicontazione in testa alla lista per processarla prima di quelle da nodo 
 							flussiDaPagoPA.add(0, new RendicontazioneScaricata(idRendicontazione, codDominioFlussoRendicontazioneDaFileSystem, xmlfile));
 						} catch (JAXBException| SAXException | IOException e) {
 							LogUtils.logError(log, MessageFormat.format("Impossibile acquisire il flusso di rendicontazione da file: {0}", xmlfile.getAbsolutePath()), e);
+						} catch (NotFoundException e) {
+							String errore = MessageFormat.format("Dominio del flusso di rendicontazione da file non censito: {0}, il file non verra' acquisito", e.getMessage());
+							LogUtils.logError(log, errore, e);
 						}
 					}
 				} else {
@@ -451,12 +457,14 @@ public class Rendicontazioni {
 
 						Dominio dominio = null;
 						try {
-							codDominio = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
+							// prelevo il cod dominio dalla lista dei metadati, in questo modo evito evito problemi di foreign key.
+							codDominio = rnd.getCodDominio();
 							ragioneSocialeDominio = flussoRendicontazione.getIstitutoRicevente().getDenominazioneRicevente();
 							fr.setCodDominio(codDominio);
 							fr.setRagioneSocialeDominio(ragioneSocialeDominio);
 							appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
 							dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+							fr.setIdDominio(dominio.getId());
 						} catch (ServiceException | NotFoundException e) {
 							if(codDominio == null) {
 								codDominio = "????";
@@ -464,6 +472,14 @@ public class Rendicontazioni {
 							}
 							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_DOMINIO_NON_CENSITO);
 							LogUtils.logWarn(log, "Il dominio [{}] del flusso di rendicontazione non e' censito", codDominio);
+						}
+						
+						// se il dominio contenuto nel tracciato xml e' diverso da quello previsto emetto un warning
+						if(!codDominio.equals(flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco())){
+							String errorMsg = MessageFormat.format("Il dominio indicato nel flusso di rendicontazione [{0}] non corrisponde a quello previsto [{1}]",
+									flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco(),	codDominio);
+							fr.addAnomalia("007116", errorMsg);
+							LogUtils.logWarn(log, errorMsg);
 						}
 
 						BigDecimal totaleImportiRendicontati = BigDecimal.ZERO;

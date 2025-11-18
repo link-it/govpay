@@ -24,6 +24,7 @@ import java.util.List;
 
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIncasso;
 
 public class FrConverter {
@@ -62,6 +63,8 @@ public class FrConverter {
 		dto.setXml(vo.getXml());
 		if(vo.getIdIncasso() != null)
 			dto.setIdIncasso(vo.getIdIncasso().getId());
+		if(vo.getIdDominio() != null)
+			dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setRagioneSocialeDominio(vo.getRagioneSocialeDominio());
 		dto.setRagioneSocialePsp(vo.getRagioneSocialePsp());
 		dto.setObsoleto(vo.getObsoleto());
@@ -96,7 +99,13 @@ public class FrConverter {
 			idIncasso.setId(dto.getIdIncasso());
 			vo.setIdIncasso(idIncasso);
 		}
-		
+
+		if(dto.getIdDominio() != null) {
+			IdDominio idDominio = new IdDominio();
+			idDominio.setId(dto.getIdDominio());
+			vo.setIdDominio(idDominio);
+		}
+
 		vo.setRagioneSocialeDominio(dto.getRagioneSocialeDominio());
 		vo.setRagioneSocialePsp(dto.getRagioneSocialePsp());
 		return vo;

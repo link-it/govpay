@@ -391,6 +391,13 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv";
 			}
 		}
+		if(field.equals(FR.model().ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -542,6 +549,9 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
 			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
 		}
+		if(field.equals(FR.model().ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(FR.model().ID_DOMINIO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -590,6 +600,9 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(FR.model().ID_RENDICONTAZIONE)){
 			return "rendicontazioni";
+		}
+		if(model.equals(FR.model().ID_DOMINIO)){
+			return "domini";
 		}
 
 

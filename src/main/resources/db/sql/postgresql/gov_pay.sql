@@ -988,16 +988,19 @@ CREATE TABLE fr
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_fr') NOT NULL,
 	id_incasso BIGINT,
+	id_dominio BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_fr_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
 -- index
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
+CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
 
 
 
@@ -1603,6 +1606,7 @@ CREATE VIEW v_eventi_vers AS (
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
     fr.cod_dominio AS fr_cod_dominio,
+    fr.id_dominio AS fr_id_dominio,
     fr.cod_flusso AS fr_cod_flusso,
     fr.stato AS fr_stato,
     fr.descrizione_stato AS fr_descrizione_stato,

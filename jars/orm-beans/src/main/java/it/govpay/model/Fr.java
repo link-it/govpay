@@ -51,6 +51,7 @@ public class Fr extends BasicModel{
 	private byte[] xml;
 	private List<Anomalia> anomalie;
 	private Long idIncasso;
+	private Long idDominio;
 	private String ragioneSocialeDominio;
 	private String ragioneSocialePsp;
 	private Boolean obsoleto;
@@ -247,6 +248,12 @@ public class Fr extends BasicModel{
 	}
 	public void setIdIncasso(Long idIncasso) {
 		this.idIncasso = idIncasso;
+	}
+	public Long getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(Long idDominio) {
+		this.idDominio = idDominio;
 	}
 	public String getRagioneSocialeDominio() {
 		return ragioneSocialeDominio;

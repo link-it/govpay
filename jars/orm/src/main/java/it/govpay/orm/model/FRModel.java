@@ -65,6 +65,7 @@ public class FRModel extends AbstractModel<FR> {
 		this.DATA_ORA_AGGIORNAMENTO = new Field("dataOraAggiornamento",java.util.Date.class,"FR",FR.class);
 		this.REVISIONE = new Field("revisione",java.math.BigInteger.class,"FR",FR.class);
 		this.ID_RENDICONTAZIONE = new it.govpay.orm.model.IdRendicontazioneModel(new Field("idRendicontazione",it.govpay.orm.IdRendicontazione.class,"FR",FR.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
 	
 	}
 	
@@ -94,6 +95,7 @@ public class FRModel extends AbstractModel<FR> {
 		this.DATA_ORA_AGGIORNAMENTO = new ComplexField(father,"dataOraAggiornamento",java.util.Date.class,"FR",FR.class);
 		this.REVISIONE = new ComplexField(father,"revisione",java.math.BigInteger.class,"FR",FR.class);
 		this.ID_RENDICONTAZIONE = new it.govpay.orm.model.IdRendicontazioneModel(new ComplexField(father,"idRendicontazione",it.govpay.orm.IdRendicontazione.class,"FR",FR.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
 	
 	}
 	
@@ -142,6 +144,8 @@ public class FRModel extends AbstractModel<FR> {
 	public IField REVISIONE = null;
 	 
 	public it.govpay.orm.model.IdRendicontazioneModel ID_RENDICONTAZIONE = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override

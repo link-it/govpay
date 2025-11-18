@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -44,7 +45,7 @@ public class FlussiRendicontazioneConverter {
 
 	private FlussiRendicontazioneConverter() {}
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, UnsupportedEncodingException {
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, UnsupportedEncodingException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
@@ -95,7 +96,7 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static FlussoRendicontazioneIndex toRsIndexModel(it.govpay.bd.model.Fr fr) throws ServiceException {
+	public static FlussoRendicontazioneIndex toRsIndexModel(it.govpay.bd.model.Fr fr) throws ServiceException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazioneIndex rsModel = new FlussoRendicontazioneIndex();
 		rsModel.setIdFlusso(fr.getCodFlusso());
