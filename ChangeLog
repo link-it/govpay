@@ -1,4 +1,10 @@
-2025-11-10  Giuliano Pintori <pintori@link.it>
+2025-11-18  Giuliano Pintori <pintori@link.it>
+
+        * [GovPayORM]
+        Aggiunta funzionalità #821
+	Aggiunta colonna id_dominio alla tabella FR.
+
+2025-11-17  Giuliano Pintori <pintori@link.it>
 
         * [GovPayConsole, GovPayApiBackoffice]
         Aggiunta funzionalià #825
