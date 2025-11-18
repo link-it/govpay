@@ -168,6 +168,8 @@ export class UtilService {
   public static STATI_ESITO_RENDICONTAZIONI: any = {
     0: 'Pagamento eseguito',
     3: 'Pagamento revocato',
+    4: 'Pagamento eseguito Stand In',
+    8: 'Pagamento eseguito Stand In senza RPT',
     9: 'Pagamento eseguito senza RPT'
   };
 

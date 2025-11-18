@@ -80,6 +80,7 @@ export class Voce {
   public static DATA_REGOLAMENTO: string = 'Data regolamento';
   public static DATA_PUBBLICAZIONE: string = 'Data pubblicazione';
   public static DATA_RICEVUTA: string = 'Data ricevuta';
+  public static REVISIONE: string = 'Revisione';
   public static DATA_RICHIESTA: string = 'Data richiesta';
   public static DATA_RICHIESTA_PAGAMENTO: string = 'Data richiesta';
   public static DATA_RISPOSTA: string = 'Data risposta';

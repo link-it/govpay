@@ -67,6 +67,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
         { label: Voce.DATA_FLUSSO+': ', value: _df },
         { label: Voce.DATA_REGOLAMENTO+': ', value: _dr },
         { label: Voce.DATA_PUBBLICAZIONE+': ', value: _dp },
+        { label: Voce.REVISIONE+': ', value: this.json.revisione || '1' },
         { label: Voce.NUMERO_PAY+': ', value: this.json.numeroPagamenti }
       ]
     });
