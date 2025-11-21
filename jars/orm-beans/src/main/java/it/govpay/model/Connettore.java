@@ -38,7 +38,6 @@ public class Connettore extends Versionabile {
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
-    public static final String P_SUBSCRIPTION_KEY_RECUPERO_RT_VALUE = "SUBSCRIPTION_KEY_RECUPERO_RT_VALUE";
 	public static final String P_ABILITA_GDE = "ABILITA_GDE";
 	public static final String P_ABILITATO = "ABILITATO";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";

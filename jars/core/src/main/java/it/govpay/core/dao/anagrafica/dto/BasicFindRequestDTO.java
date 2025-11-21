@@ -43,6 +43,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private List<String> fieldList;
 	private Integer offset;
 	private List<FilterSortWrapper> defaultSort = null;
+	private String orderByRaw = null;
 	
 	public final static int DEFAULT_LIMIT = 50;
 	public final static int DEFAULT_MAX_LIMIT = 200;
@@ -158,6 +159,8 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		resetSort();
 		
 		if(orderBy==null || orderBy.trim().isEmpty()) return;
+		
+		this.orderByRaw = orderBy;
 
 		String[] split = orderBy.split(",");
 		
@@ -177,7 +180,6 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 				if(key.equals(fieldname)) {
 					this.addSort(this.fieldMap.get(key), sortOrder);
 					added = true;
-					continue;
 				}
 			}
 			
@@ -220,6 +222,14 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 
 	public List<String> getFieldList() {
 		return fieldList;
+	}
+
+	public String getOrderByRaw() {
+		return orderByRaw;
+	}
+
+	public void setOrderByRaw(String orderByRaw) {
+		this.orderByRaw = orderByRaw;
 	}
 	
 }

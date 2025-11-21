@@ -211,9 +211,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			// richiesto ordinamento
 			ListaFrDTO frDTO = new ListaFrDTO(listaRendicontazioniDTO.getUser());
 			if(listaRendicontazioniDTO.isOrderEnabled()) {
-				for (String nomeImpostato : listaRendicontazioniDTO.getFieldList()) {
-					frDTO.setOrderBy(nomeImpostato);
-				}
+				frDTO.setOrderBy(listaRendicontazioniDTO.getOrderByRaw());
 			} else { // default
 				filter.setFilterSortList(frDTO.getFieldSortList());
 			}
