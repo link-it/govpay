@@ -144,6 +144,7 @@ CREATE TABLE domini
 	CONSTRAINT pk_domini PRIMARY KEY (id)
 );
 
+CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 
 
 
@@ -979,8 +980,8 @@ CREATE TABLE fr
 	importo_totale_pagamenti DOUBLE PRECISION,
 	cod_bic_riversamento VARCHAR(35),
 	xml BYTEA,
-	ragione_sociale_psp VARCHAR(70),
-	ragione_sociale_dominio VARCHAR(70),
+	ragione_sociale_psp VARCHAR(255),
+	ragione_sociale_dominio VARCHAR(255),
 	obsoleto BOOLEAN NOT NULL,
 	data_ora_pubblicazione TIMESTAMP,
 	data_ora_aggiornamento TIMESTAMP,
@@ -991,6 +992,7 @@ CREATE TABLE fr
 	id_dominio BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_2 UNIQUE (cod_dominio,cod_flusso,cod_psp,revisione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT fk_fr_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),

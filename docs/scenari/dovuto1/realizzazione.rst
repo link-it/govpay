@@ -7,6 +7,10 @@ In questo scenario il cittadino debitore utilizza il portale di pagamento dell'e
 per consultare la propria posizione debitoria, precedentemente alimentata dai sistemi gestionali delle pendenze,
 predisporre un carrello di dovuti e procedere al suo pagamento.
 
+.. warning::
+   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`govpay_integrazione_pagamentiente`.
+
 La realizzazione di questo scenario prevede le seguenti tre fasi:
 
 1. Il caricamento della pendenza nell’archivio dei pagamenti in attesa da parte del gestionale

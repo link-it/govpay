@@ -5,6 +5,10 @@ Pagamento spontaneo ad iniziativa ente
 
 In questo scenario il pagamento ha origine per iniziativa dell'utente/cittadino che, per ottenere un determinato servizio (ad esempio una licenza di pesca), procede con l'immissione delle informazioni relative alla pendenza e richiede di procedere con il versamento attraverso il portale dei pagamenti dell'ente creditore.
 
+.. warning::
+   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`govpay_integrazione_pagamentiente`.
+
 Lo scenario si articola nei seguenti passaggi:
 
     1. L'utente si collega al portale dell'ente creditore e, tipicamente tramite la compilazione di un form, fornisce tutti i dettagli della pendenza che intende pagare. In questa fase non rientra il coinvolgimento di GovPay. Quest'ultimo entra in gioco a partire dalla successiva fase di esecuzione del pagamento.

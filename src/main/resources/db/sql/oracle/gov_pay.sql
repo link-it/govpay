@@ -214,6 +214,8 @@ CREATE TABLE domini
 
 ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
 
+CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
+
 CREATE TRIGGER trg_domini
 BEFORE
 insert on domini
@@ -1327,8 +1329,8 @@ CREATE TABLE fr
 	importo_totale_pagamenti BINARY_DOUBLE,
 	cod_bic_riversamento VARCHAR2(35 CHAR),
 	xml BLOB NOT NULL,
-	ragione_sociale_psp VARCHAR2(70 CHAR),
-	ragione_sociale_dominio VARCHAR2(70 CHAR),
+	ragione_sociale_psp VARCHAR2(255 CHAR),
+	ragione_sociale_dominio VARCHAR2(255 CHAR),
 	obsoleto NUMBER NOT NULL,
 	data_ora_pubblicazione TIMESTAMP,
 	data_ora_aggiornamento TIMESTAMP,
@@ -1339,6 +1341,7 @@ CREATE TABLE fr
 	id_dominio NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_2 UNIQUE (cod_dominio,cod_flusso,cod_psp,revisione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT fk_fr_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),

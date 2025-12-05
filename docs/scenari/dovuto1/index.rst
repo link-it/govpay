@@ -29,8 +29,12 @@ Le fasi che andiamo a descrivere per questo scenario sono le seguenti:
    - L'uso delle *API Pendenze* di GovPay per l'integrazione con i sistemi verticali gestionali 
      e consentire il caricamento delle pendenze nell'archivio dei pagamenti in attesa.
 
-   - L'uso delle *API "Pagamento* di GovPay per l'integrazione con il portale al cittadino e 
+   - L'uso delle *API "Pagamento* di GovPay per l'integrazione con il portale al cittadino e
      realizzare il workflow di pagamento ad iniziativa Ente previsto da pagoPA (aka Modello 1).
+
+.. warning::
+   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`govpay_integrazione_pagamentiente`.
 
 2. La :ref:`govpay_scenari_dovuto1_configurazione` di GovPay per supportare lo scenario 
    descritto utilizzando il cruscotto di gestione.

@@ -455,8 +455,8 @@
 			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="codBicRiversamento" type="String35" minOccurs="0"/>
-			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
-			<xsd:element name="ragioneSocialeDominio" type="String70" minOccurs="0" />
+			<xsd:element name="ragioneSocialePsp" type="String255" minOccurs="0" />
+			<xsd:element name="ragioneSocialeDominio" type="String255" minOccurs="0" />
 			<xsd:element name="obsoleto">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
@@ -526,6 +526,9 @@
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_domini_scarica_fr">
+							<linkit:sql-table-index-field name="scaricaFr"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -3071,6 +3074,12 @@
 							<linkit:sql-table-unique-field name="codFlusso"/>
 							<linkit:sql-table-unique-field name="dataOraFlusso" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codDominio"/>
+							<linkit:sql-table-unique-field name="codFlusso"/>
+							<linkit:sql-table-unique-field name="codPsp"/>
+							<linkit:sql-table-unique-field name="revisione"/>
+						</linkit:sql-table-unique>
 						<linkit:sql-table-index name="idx_fr_cod_flusso">
 							<linkit:sql-table-index-field name="codFlusso"/>
 						</linkit:sql-table-index>
@@ -3128,8 +3137,8 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
-			<xsd:element name="ragioneSocialeDominio" type="String70" minOccurs="0" />
+			<xsd:element name="ragioneSocialePsp" type="String255" minOccurs="0" />
+			<xsd:element name="ragioneSocialeDominio" type="String255" minOccurs="0" />
 			<xsd:element name="obsoleto">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">

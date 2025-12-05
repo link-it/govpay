@@ -11,6 +11,10 @@ In questo scenario, *Modello 1 - Pagamento spontaneo ad iniziativa ente*, il cit
 - **Acquisizione Esito**
     il portale dell'ente creditore, al termine del flusso di navigazione che ha portato al completamento del versamento, acquisisce l'esito da visualizzare e la ricevuta telematica da mettere a disposizione per il download.
 
+.. warning::
+   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`govpay_integrazione_pagamentiente`.
+
 
 Avvio Pagamento
 ~~~~~~~~~~~~~~~
