@@ -58,7 +58,7 @@ pipeline {
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
-        sh 'sudo systemctl start wildfly-26.1.3.Final@ndpsym tomcat_govpay'
+        sh 'sudo systemctl start wildfly-28.0.1.Final@ndpsym tomcat_govpay'
         sh 'sudo docker start mailhog'
 	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
@@ -69,7 +69,7 @@ pipeline {
       }
       post {
         always {
-			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym tomcat_govpay'
+			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym wildfly-28.0.1.Final@ndpsym tomcat_govpay'
 			sh 'sudo docker stop mailhog'
             junit 'integration-test/target/surefire-reports/*.xml'
             sh 'tar -cvf ./integration-test/target/surefire-reports.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'

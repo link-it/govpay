@@ -166,6 +166,9 @@
 		<!-- networknt_json-schema-validator -->
 		<networknt_json-schema-validator.version>1.5.6</networknt_json-schema-validator.version>
 
+		<!-- rhino (transitive dependency from json-schema-core) -->
+		<rhino.version>1.7.15.1</rhino.version>
+
 		<!-- org.json -->
 		<org.json.json.version>20250517</org.json.json.version>
 
@@ -282,12 +285,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>${commons.codec.version}</version>
-			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -1513,6 +1510,18 @@
 			    <artifactId>commons-beanutils</artifactId>
 			    <version>${commons.beanutils.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons.codec.version}</version>
+			</dependency>
+
+				<dependency>
+				<groupId>org.mozilla</groupId>
+				<artifactId>rhino</artifactId>
+				<version>${rhino.version}</version>
+			</dependency>
 
            <!-- Base64 Java8 migration -->
            <dependency>
@@ -1730,6 +1739,8 @@
                             </suppressionFiles>
                             <nvdApiDelay>120000</nvdApiDelay><!-- 2 minuti -->
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
+							<!-- Disabilitato per evitare problemi SSL con GitHub -->
+							<!-- <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled> -->
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>
