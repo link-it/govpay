@@ -5,15 +5,15 @@ Realizzazione
 
 In questo scenario, *Modello 1 - Pagamento spontaneo ad iniziativa ente*, il cittadino procede tramite il portale dell'ente creditore alla definizione della pendenza e quindi procede al relativo pagamento sempre dal portale. I passi in cui il cittadino inserisce i dati e compone la pendenza da pagare non coinvolgono GovPay e non sono quindi esposti in questo scenario. Successivamente, con la conferma del cittadino pagatore, si avvia il processo di pagamento tramite GovPay con l'attuazione dei seguenti passaggi che saranno descritti di seguito:
 
+.. warning::
+   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`integrazione_pagamentiente`.
+
 - **Avvio Pagamemto**
     Il portale dell'ente creditore, dopo aver raccolto le informazioni necessarie alla formazione della pendenza, invia la richiesta di pagamento a GovPay.
 
 - **Acquisizione Esito**
     il portale dell'ente creditore, al termine del flusso di navigazione che ha portato al completamento del versamento, acquisisce l'esito da visualizzare e la ricevuta telematica da mettere a disposizione per il download.
-
-.. warning::
-   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
-   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`govpay_integrazione_pagamentiente`.
 
 
 Avvio Pagamento
