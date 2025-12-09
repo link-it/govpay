@@ -10,7 +10,7 @@ ed avvia la transazione utilizzando gli strumenti disponibili.
 
 .. warning::
    Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
-   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`integrazione_pagamentiente`.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`Pagamenti ad iniziativa ente <integrazione_pagamentiente>`.
 
 Lo scenario si articola complessivamente nelle seguenti fasi:
 

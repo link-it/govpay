@@ -7,7 +7,7 @@ In questo scenario, *Modello 1 - Pagamento spontaneo ad iniziativa ente*, il cit
 
 .. warning::
    Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
-   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`integrazione_pagamentiente`.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`Pagamenti ad iniziativa ente <integrazione_pagamentiente>`.
 
 - **Avvio Pagamemto**
     Il portale dell'ente creditore, dopo aver raccolto le informazioni necessarie alla formazione della pendenza, invia la richiesta di pagamento a GovPay.

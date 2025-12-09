@@ -9,7 +9,7 @@ predisporre un carrello di dovuti e procedere al suo pagamento.
 
 .. warning::
    Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
-   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`integrazione_pagamentiente`.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`Pagamenti ad iniziativa ente <integrazione_pagamentiente>`.
 
 La realizzazione di questo scenario prevede le seguenti tre fasi:
 
