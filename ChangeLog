@@ -1,3 +1,25 @@
+2025-12-10  Giuliano Pintori <pintori@link.it>
+
+	* [Build, Sicurezza]
+	Risoluzione vulnerabilità CVE-2025-66453
+	Aggiornata dipendenza rhino alla versione 1.7.15.1 per risolvere vulnerabilità DoS nella funzione toFixed().
+	Aggiunta property rhino.version nel pom.xml per gestione centralizzata della versione.
+
+	* [Documentazione]
+	Aggiornamento documentazione
+	Aggiunti avvisi di deprecazione per il Modello 1 pagoPA (dismissione prevista a marzo 2026) nelle sezioni:
+	- docs/scenari/dovuto1/index.rst e realizzazione.rst
+	- docs/scenari/spontaneo1/index.rst e realizzazione.rst
+	- docs/integrazione/api/index.rst
+	Corretti riferimenti per puntare alla nuova procedura (Pagamenti ad iniziativa ente - Modello Unico).
+
+	* [GovPayORM, Database]
+	Aggiunta funzionalità #821
+	Aggiunto indice idx_domini_scarica_fr sulla colonna scarica_fr della tabella domini per ottimizzare le query di ricerca domini abilitati.
+	Aggiunto vincolo unique_fr_2 (cod_dominio, cod_flusso, cod_psp, revisione) sulla tabella FR per verificare univocità dei flussi di rendicontazione.
+	Aggiornate patch SQL per tutti i database supportati (PostgreSQL, Oracle, MySQL, SQL Server, HSQL).
+	Aggiornati file XSD schema (govpay.xsd).
+
 2025-11-18  Giuliano Pintori <pintori@link.it>
 
         * [GovPayORM]

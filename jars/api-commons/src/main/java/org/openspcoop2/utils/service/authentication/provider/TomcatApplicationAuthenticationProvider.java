@@ -113,6 +113,8 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 
 		// check utenza da file tomcat-users.xml
 		File fUsers = new File(confDirJBoss, this.tomcatUserFileName);
+		
+		log.trace("Lettura file utenti tomcat: {}", fUsers.getAbsolutePath());
 		if(!fUsers.exists()) {
 			throw new ProviderNotFoundException("File '"+fUsers.getAbsolutePath()+"' not exists");
 		}
