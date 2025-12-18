@@ -146,9 +146,6 @@ public class RtUtils extends NdpValidationUtils {
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		valida(rpt.getIdentificativoMessaggioRichiesta(), rt.getRiferimentoMessaggioRichiesta(), esito, "RiferimentoMessaggioRichiesta non corrisponde", true);
 		validaSemantica(rpt.getDominio(), rt.getDominio(), esito);
-		validaSemantica(rpt.getEnteBeneficiario(), rt.getEnteBeneficiario(), esito);
-		validaSemantica(rpt.getSoggettoPagatore(), rt.getSoggettoPagatore(), esito);
-		validaSemantica(rpt.getSoggettoVersante(), rt.getSoggettoVersante(), esito);
 		validaSemantica(rpt.getDatiVersamento(), rt.getDatiPagamento(), esito);
 		return esito;
 	}

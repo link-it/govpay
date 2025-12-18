@@ -105,8 +105,6 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, ERRORE_CREDITOR_REFERENCE_ID_NON_CORRISPONDE, true); // Identificativo di correlazione dei due messaggi lo IUV???
 
-		validaSemantica(ctPaymentPA.getDebtor(), ctReceipt.getDebtor(), esito);
-
 		StOutcome ctRecepitOutcome = ctReceipt.getOutcome(); // esito pagamento ha solo due valori OK/KO
 		String name = ctRecepitOutcome.name();
 		switch (ctRecepitOutcome) {
