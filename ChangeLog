@@ -1,3 +1,27 @@
+2025-12-18  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Risolto Bug
+	Corretto errore nel giornale eventi durante l'invio dei tracciati di notifica pagamenti via email.
+	Il sistema registrava erroneamente esito OK anche in caso di fallimento dell'invio (es. email troppo grande).
+	Modificato SpedizioneTracciatoNotificaPagamentiThread per propagare correttamente le eccezioni nei metodi inviaTracciatoViaEmail, salvaTracciatoSuFileSystem e inviaTracciatoViaAPIRest.
+
+	* [GovPayCore]
+	Risolto Bug
+	Corretto errore nell'invocazione dei batch esterni che generava URL con trailing slash causando HTTP 404.
+	Modificato BasicClientCORE per evitare l'aggiunta dello slash finale quando il path è vuoto o nullo.
+
+	* [GovPayCore, GovPayApiBackoffice, GovPayConsole]
+	Aggiunta funzionalità
+	Rinominato parametro di forzatura esecuzione batch da 'forzaEsecuzione' a 'force' per coerenza con convenzioni API REST.
+	Modificati: BatchClient, BatchUtils, OperazioniController, OperazioniDAO, LeggiOperazioneDTO, Operazioni (endpoint REST).
+	Aggiornato schema OpenAPI govpay-api-backoffice-v1.yaml.
+	Aggiornato frontend Angular della console (app.component.ts).
+
+	* [IntegrationTest]
+	Aggiunta funzionalità #821
+	Aggiornato schema di test Karate per flussi di rendicontazione con i nuovi campi dataOraPubblicazione e dataOraAggiornamento.
+
 2025-12-10  Giuliano Pintori <pintori@link.it>
 
 	* [Build, Sicurezza]

@@ -617,6 +617,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_RETRY_KO, errorMsg);
 				LogUtils.logDebug(log, MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
 				beanDati.setDescrizioneStepElaborazione(StringUtils.join(erroriSpedizione, ","));
+
+				// Rilancio l'eccezione per permettere la corretta registrazione dell'esito nel giornale eventi
+				throw new ServiceException(errorMsg + " Dettaglio errori: " + StringUtils.join(erroriSpedizione, "; "));
 			}
 		} catch (java.io.IOException e) {
 			erroreSpedizione = MessageFormat.format("Errore durante la lettura del contenuto dello zip dal db durante l''invio del Tracciato {0} [Nome: {1}], al destinatario [{2}]:{3}", this.tipoTracciato, tracciato.getNomeFile(), this.connettore.getUrl(), e.getMessage());
@@ -630,6 +633,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_KO_KEY, e.getMessage());
 
 			dumpResponse.setPayload(erroreSpedizione.getBytes());
+
+			// Rilancio l'eccezione per permettere la corretta registrazione dell'esito nel giornale eventi
+			throw new ServiceException(erroreSpedizione, e);
 		} finally {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
@@ -775,6 +781,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			gestisciUtilsException(beanDati, erroreSpedizione, e);
 
 			dumpResponse.setPayload(erroreSpedizione.getBytes());
+
+			// Rilancio l'eccezione per permettere la corretta registrazione dell'esito nel giornale eventi
+			throw new ServiceException(erroreSpedizione, e);
 		} finally {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
@@ -950,6 +959,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 					LogUtils.logDebug(log, MessageFormat.format("Salvataggio Tracciato {0} [Nome: {1}], su FileSystem [{2}] si e'' concluso con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato, tracciato.getNomeFile(), connettore.getFileSystemPath()));
 				}
 				dumpResponse.setPayload(erroreSalvataggioFile.getBytes());
+
+				// Rilancio l'eccezione per permettere la corretta registrazione dell'esito nel giornale eventi
+				throw new ServiceException(erroreSalvataggioFile);
 			}
 		} finally {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());

@@ -214,7 +214,17 @@ public class GovpayConfig {
 	private Properties risorseCustomBaseURLProperties;
 
 	private boolean verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
-	
+
+	private String batchAcaEndpointUrl;
+	private int batchAcaConnectionTimeout;
+	private int batchAcaReadTimeout;
+	private int batchAcaConnectionRequestTimeout;
+
+	private String batchFdrEndpointUrl;
+	private int batchFdrConnectionTimeout;
+	private int batchFdrReadTimeout;
+	private int batchFdrConnectionRequestTimeout;
+
 	private List<String> navSondaPagoPA;
 	
 	private String warName = Costanti.GOVPAY.toLowerCase();
@@ -336,7 +346,17 @@ public class GovpayConfig {
 		this.risorseCustomBaseURLProperties = new Properties();
 
 		this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = false;
-		
+
+		this.batchAcaEndpointUrl = null;
+		this.batchAcaConnectionTimeout = 5000; // 5 secondi
+		this.batchAcaReadTimeout = 30000; // 30 secondi
+		this.batchAcaConnectionRequestTimeout = 5000; // 5 secondi
+
+		this.batchFdrEndpointUrl = null;
+		this.batchFdrConnectionTimeout = 5000; // 5 secondi
+		this.batchFdrReadTimeout = 30000; // 30 secondi
+		this.batchFdrConnectionRequestTimeout = 5000; // 5 secondi
+
 		this.navSondaPagoPA = new ArrayList<>();
 
 		// Recupero il property all'interno dell'EAR
@@ -788,7 +808,73 @@ public class GovpayConfig {
 			String verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.verificaPendenzaMandatoria.enabled", this.props, false, log);
 			if(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString != null && Boolean.valueOf(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString))
 				this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = true;
-			
+
+			// Configurazione endpoint batch ACA esterno
+			String batchAcaEndpointUrlString = getProperty("it.govpay.batch.aca.endpoint.url", this.props, false, log);
+			if(batchAcaEndpointUrlString != null && StringUtils.isNotEmpty(batchAcaEndpointUrlString)) {
+				this.batchAcaEndpointUrl = batchAcaEndpointUrlString;
+			}
+
+			String batchAcaConnectionTimeoutString = getProperty("it.govpay.batch.aca.endpoint.connectionTimeout", this.props, false, log);
+			if(batchAcaConnectionTimeoutString != null && StringUtils.isNotEmpty(batchAcaConnectionTimeoutString)) {
+				try {
+					this.batchAcaConnectionTimeout = Integer.parseInt(batchAcaConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.aca.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchAcaConnectionTimeoutString);
+				}
+			}
+
+			String batchAcaReadTimeoutString = getProperty("it.govpay.batch.aca.endpoint.readTimeout", this.props, false, log);
+			if(batchAcaReadTimeoutString != null && StringUtils.isNotEmpty(batchAcaReadTimeoutString)) {
+				try {
+					this.batchAcaReadTimeout = Integer.parseInt(batchAcaReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.aca.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchAcaReadTimeoutString);
+				}
+			}
+
+			String batchAcaConnectionRequestTimeoutString = getProperty("it.govpay.batch.aca.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchAcaConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchAcaConnectionRequestTimeoutString)) {
+				try {
+					this.batchAcaConnectionRequestTimeout = Integer.parseInt(batchAcaConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.aca.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchAcaConnectionRequestTimeoutString);
+				}
+			}
+
+			// Configurazione endpoint batch FDR esterno
+			String batchFdrEndpointUrlString = getProperty("it.govpay.batch.fdr.endpoint.url", this.props, false, log);
+			if(batchFdrEndpointUrlString != null && StringUtils.isNotEmpty(batchFdrEndpointUrlString)) {
+				this.batchFdrEndpointUrl = batchFdrEndpointUrlString;
+			}
+
+			String batchFdrConnectionTimeoutString = getProperty("it.govpay.batch.fdr.endpoint.connectionTimeout", this.props, false, log);
+			if(batchFdrConnectionTimeoutString != null && StringUtils.isNotEmpty(batchFdrConnectionTimeoutString)) {
+				try {
+					this.batchFdrConnectionTimeout = Integer.parseInt(batchFdrConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.fdr.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchFdrConnectionTimeoutString);
+				}
+			}
+
+			String batchFdrReadTimeoutString = getProperty("it.govpay.batch.fdr.endpoint.readTimeout", this.props, false, log);
+			if(batchFdrReadTimeoutString != null && StringUtils.isNotEmpty(batchFdrReadTimeoutString)) {
+				try {
+					this.batchFdrReadTimeout = Integer.parseInt(batchFdrReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.fdr.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchFdrReadTimeoutString);
+				}
+			}
+
+			String batchFdrConnectionRequestTimeoutString = getProperty("it.govpay.batch.fdr.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchFdrConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchFdrConnectionRequestTimeoutString)) {
+				try {
+					this.batchFdrConnectionRequestTimeout = Integer.parseInt(batchFdrConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.fdr.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchFdrConnectionRequestTimeoutString);
+				}
+			}
+
 			String navSondaPagoPAS = getProperty("it.govpay.pagoPA.sonda.nav", props, false, log);
 			if(StringUtils.isNotEmpty(navSondaPagoPAS)) {
 				String[] split = navSondaPagoPAS.split(",");
@@ -1353,7 +1439,39 @@ public class GovpayConfig {
 	public boolean isVerificaPendenzaMandatoriaInAcquisizioneRendicontazioni() {
 		return verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
 	}
-	
+
+	public String getBatchAcaEndpointUrl() {
+		return batchAcaEndpointUrl;
+	}
+
+	public int getBatchAcaConnectionTimeout() {
+		return batchAcaConnectionTimeout;
+	}
+
+	public int getBatchAcaReadTimeout() {
+		return batchAcaReadTimeout;
+	}
+
+	public int getBatchAcaConnectionRequestTimeout() {
+		return batchAcaConnectionRequestTimeout;
+	}
+
+	public String getBatchFdrEndpointUrl() {
+		return batchFdrEndpointUrl;
+	}
+
+	public int getBatchFdrConnectionTimeout() {
+		return batchFdrConnectionTimeout;
+	}
+
+	public int getBatchFdrReadTimeout() {
+		return batchFdrReadTimeout;
+	}
+
+	public int getBatchFdrConnectionRequestTimeout() {
+		return batchFdrConnectionRequestTimeout;
+	}
+
 	public List<String> getNavSondaPagoPA() {
         return navSondaPagoPA;
     }

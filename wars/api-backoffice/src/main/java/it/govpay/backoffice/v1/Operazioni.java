@@ -71,9 +71,9 @@ public class Operazioni extends BaseRsServiceV1{
     @Path("/{idOperazione}")
 
     @Produces({ "application/json" })
-    public Response getOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idOperazione") String idOperazione){
+    public Response getOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idOperazione") String idOperazione, @QueryParam("force") @DefaultValue(value="false") Boolean force){
         this.buildContext();
-        return this.controller.getOperazione(this.getUser(), idOperazione);
+        return this.controller.getOperazione(this.getUser(), idOperazione, force);
     }
 
 }

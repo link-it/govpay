@@ -130,6 +130,9 @@
 	MANUTENZIONE: {
 	  RECUPERO_RT: {
 	    ENABLED: true // abilita la funzione di recupero ricevute da pagopa
+	  },
+	  INVIA_POSIZIONI_DEBITORIE_ACA: {
+	    ENABLED: false // abilita il comando per l'invio posizioni debitorie ACA
 	  }
 	}
   };

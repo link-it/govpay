@@ -8,6 +8,8 @@ Background:
 
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 
+* callonce sleep(10000)
+
 Scenario: Ricerca flussiRendicontazione senza filtri
 
 Given url ragioneriaBaseurl

@@ -164,7 +164,6 @@ public abstract class BasicClientCORE {
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
 	private String tipoEventoCustom;
-//	protected TipoDestinatario tipoDestinatario;
 
 	private Oauth2ClientCredentialsManager oauth2ClientCredentialsManager = Oauth2ClientCredentialsManager.getInstance();
 
@@ -372,8 +371,7 @@ public abstract class BasicClientCORE {
 
 	private void impostaTimeoutConnessione(TipoDestinatario tipoDestinatario) {
 		switch (tipoDestinatario) {
-		case INTERMEDIARIO:
-		case CHECKOUT_PAGOPA:
+		case INTERMEDIARIO, CHECKOUT_PAGOPA:
 			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutPagoPA();
 			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutPagoPA();
 			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutPagoPA();
@@ -392,6 +390,16 @@ public abstract class BasicClientCORE {
 			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutMaggioliJPPA();
 			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutMaggioliJPPA();
 			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutMaggioliJPPA();
+			break;
+		case BATCH_ACA:
+			this.readTimeout = GovpayConfig.getInstance().getBatchAcaReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getBatchAcaConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getBatchAcaConnectionRequestTimeout();
+			break;
+		case BATCH_FDR:
+			this.readTimeout = GovpayConfig.getInstance().getBatchFdrReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getBatchFdrConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getBatchFdrConnectionRequestTimeout();
 			break;
 		case GOVPAY:
 		default:
@@ -552,10 +560,16 @@ public abstract class BasicClientCORE {
 					}
 				}
 			} else {
-				if(!location.endsWith("/")) location = location.concat("/");
-				try {
+				// Aggiungi lo slash solo se c'è un path da concatenare e non è vuoto
+				if(path != null && !path.isEmpty()) {
+					if(!location.endsWith("/")) location = location.concat("/");
 					// elimino la possibilita' di avere due '/'
 					path = path.startsWith("/") ? path.substring(1) : path;
+				} else {
+					// Se path è null o vuoto, non aggiungere lo slash finale
+					path = "";
+				}
+				try {
 					this.url = new URI(location.concat(path)).toURL();
 					LogUtils.logDebug(log, "La richiesta sara' spedita alla URL: [{}].", this.url);
 				} catch (MalformedURLException | URISyntaxException e) {
@@ -906,7 +920,7 @@ public abstract class BasicClientCORE {
 							SOAPMessage createMessage = MessageFactory.newInstance().createMessage(headers, new ByteArrayInputStream(msg));
 							throw new ClientException("Ricevuto messaggio di errore: HTTP " + responseCode + " [SOAPFaultCode: " + createMessage.getSOAPBody().getFault().getFaultCode() + " - SOAPFaultString: " + createMessage.getSOAPBody().getFault().getFaultString() +"]",responseCode);
 						} catch (IOException | SOAPException | NullPointerException e) {
-
+							// donothing
 						}
 
 					throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode);

@@ -3527,6 +3527,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: force
+          description: Forza l'esecuzione del batch anche se già in esecuzione
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '201':
           description: Esito dell'esecuzione

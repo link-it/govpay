@@ -81,6 +81,8 @@ public class Operazioni{
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String CHECK_DB = "check-db";
 	public static final String RND = "update-rnd";
+	public static final String BATCH_ACA = "batch_aca";
+	public static final String BATCH_FDR = "batch_fdr";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
 	public static final String CHECK_NTFY = "check-ntfy";

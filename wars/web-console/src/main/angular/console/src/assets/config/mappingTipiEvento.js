@@ -87,7 +87,7 @@
       getIntermediario: 'Leggi intermediario',
       getLogo: 'Leggi logo dominio',
       getOperatore: 'Leggi operatore',
-      getOperazione: 'Leggi operazione',
+      getOperazione: 'Esegui operazione',
       getPagamento: 'Leggi pagamento',
       getPendenza: 'Leggi pendenza',
       getPendenzaByAvviso: 'Leggi pendenza tramite riferimento avviso',

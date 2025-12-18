@@ -464,6 +464,7 @@ export class UtilService {
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
   public static URL_RECUPERO_RT : string = '/recuperoRT';
   public static URL_RESET_CACHE: string = '/resetCacheAnagrafica';
+  public static URL_INVIA_POSIZIONI_DEBITORIE_ACA: string = '/inviaPosizioniDebitorieAca';
   //Reportistiche
   public static URL_REPORTISTICHE: string = '/reportistiche';
   public static URL_PROSPETTO_RISCOSSIONI: string = '/entrate-previste';
@@ -515,6 +516,7 @@ export class UtilService {
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
   public static TXT_MAN_RICEVUTE: string = 'Recupera ricevute';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
+  public static TXT_MAN_POSIZIONI_DEBITORIE_ACA: string = 'Invia posizioni debitorie ACA';
   public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
 
   //Types

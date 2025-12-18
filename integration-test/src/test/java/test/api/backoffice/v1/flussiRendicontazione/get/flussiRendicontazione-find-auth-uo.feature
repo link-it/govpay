@@ -5,6 +5,8 @@ Background:
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-rendicontazioni.feature')
 * def rendicontazioneSchema = read('msg/rendicontazione.json')
 
+* callonce sleep(10000)
+
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] del flusso di rendicontazione [<idFlusso>]
 
 * def applicazione = read('msg/<applicazione>')

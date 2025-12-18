@@ -802,7 +802,13 @@ public enum EsitoOperazione {
      * Il numero avviso indicato per la pendenza non comincia con l'auxDigit indicato nell'ente creditore.  
      * 
      */
-    VER_039;
+    VER_039,
+    
+    /**
+     * Errore durante la richiesta di schedulazione del batch.  
+     * 
+     */
+    BATCH_001;
 	
 
     public String value() {

@@ -76,6 +76,7 @@ import { PayloadViewComponent } from './elements/payload-view/payload-view.compo
 import { TableViewComponent } from './elements/table-view/table-view.component';
 
 import { XmlPipe } from './pipes/xml.pipe';
+import { ConfermaForzaOperazioneDialogComponent } from './elements/conferma-forza-operazione-dialog/conferma-forza-operazione-dialog.component';
 
 import { httpInterceptorProviders } from './services/http-interceptors';
 
@@ -124,7 +125,8 @@ import { httpInterceptorProviders } from './services/http-interceptors';
     OAuth2LoginCardComponent,
     PayloadViewComponent,
     TableViewComponent,
-    XmlPipe
+    XmlPipe,
+    ConfermaForzaOperazioneDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -159,7 +161,7 @@ import { httpInterceptorProviders } from './services/http-interceptors';
     MaterialDesignFrameworkModule,
     JsonSchemaFormModule.forRoot(MaterialDesignFrameworkModule)
   ],
-  entryComponents: [ EntryListComponents, GeneratorsEntryListComponents, DialogViewComponent, ItemViewComponent ],
+  entryComponents: [ EntryListComponents, GeneratorsEntryListComponents, DialogViewComponent, ItemViewComponent, ConfermaForzaOperazioneDialogComponent ],
   providers: [
     httpInterceptorProviders,
     { provide: RouteReuseStrategy, useClass: ListReuseStrategy },

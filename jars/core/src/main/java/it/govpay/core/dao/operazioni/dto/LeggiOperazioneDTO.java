@@ -30,13 +30,22 @@ public class LeggiOperazioneDTO extends BasicFindRequestDTO {
 	}
 	
 	private String idOperazione = null;
-	
+	private boolean forzaEsecuzione = false;
+
 	public String getIdOperazione() {
 		return this.idOperazione;
 	}
 
 	public void setIdOperazione(String idOperazione) {
 		this.idOperazione = idOperazione;
+	}
+
+	public boolean isForzaEsecuzione() {
+		return forzaEsecuzione;
+	}
+
+	public void setForzaEsecuzione(boolean forzaEsecuzione) {
+		this.forzaEsecuzione = forzaEsecuzione;
 	}
 
 }

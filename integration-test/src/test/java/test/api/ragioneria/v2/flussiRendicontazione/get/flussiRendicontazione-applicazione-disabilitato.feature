@@ -9,6 +9,8 @@ Background:
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 * def rendicontazioneSchema = read('msg/rendicontazione.json')
 
+* callonce sleep(10000)
+
 Scenario Outline: Verifico che la find restituisca tutti e sole le riconciliazioni caricate dal verticale <applicazione>.
 
 Given url ragioneriaBaseurl

@@ -10,6 +10,8 @@ Background:
 * def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def nomeAPI = '/flussiRendicontazione'
 
+* callonce sleep(10000)
+
 Scenario: Validazione sintattica filtri per data
 
 # No filtri
