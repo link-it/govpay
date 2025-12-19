@@ -18,9 +18,9 @@
 			<id>java-1.8</id>
 			<properties>
 				<javaVersion>1.8</javaVersion>
-				
-				<!-- cxf -->
-				<cxf.version>3.5.9</cxf.version>
+
+				<!-- cxf - 3.5.11 is last release of 3.5.x (no CVE-2025-48913 fix for Java 8) -->
+				<cxf.version>3.5.11</cxf.version>
 				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 			</properties>
 		</profile>
@@ -31,8 +31,8 @@
 			<id>java-11</id>
 			<properties>
 				<javaVersion>11</javaVersion>
-				<!-- cxf -->
-				<cxf.version>3.6.7</cxf.version>
+				<!-- cxf - CVE-2025-48913 fix -->
+				<cxf.version>3.6.8</cxf.version>
 				<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 				<jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
 			</properties>
@@ -64,8 +64,8 @@
 		<!-- jackson -->
 		<jackson.version>2.17.1</jackson.version>
 		
-		<!-- Jersey -->
-		<jersey.version>2.38</jersey.version>
+		<!-- Jersey - CVE-2025-12383 fix -->
+		<jersey.version>2.47</jersey.version>
 		
 		<!-- Spring -->
 		<spring.gov4j.version>5.3.39-gov4j-2</spring.gov4j.version>
@@ -89,7 +89,7 @@
 		<commons.csv.version>1.14.0</commons.csv.version>
 		<commons.codec.version>1.18.0</commons.codec.version>
 		<commons.io.version>2.19.0</commons.io.version>
-		<commons.text.version>1.13.1</commons.text.version>
+		<commons.text.version>1.15.0</commons.text.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.lang3.version>3.18.0</commons.lang3.version>
 		<commons.pool2.version>2.12.1</commons.pool2.version>
@@ -173,6 +173,8 @@
         <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
         <!-- jasperreports -->
         <jasperreports.version>6.21.3</jasperreports.version>
+        <!-- rhino (transitive from jasperreports) - CVE-2025-66453 fix -->
+        <rhino.version>1.7.15.1</rhino.version>
         <!-- jfreechart -->
         <jfreechart.version>1.0.19</jfreechart.version>
         
@@ -233,7 +235,14 @@
 				<artifactId>commons-codec</artifactId>
 				<version>${commons.codec.version}</version>
 			</dependency>
-			
+
+			<!-- rhino - CVE-2025-66453 fix: force version to override transitive dependency from jasperreports -->
+			<dependency>
+				<groupId>org.mozilla</groupId>
+				<artifactId>rhino</artifactId>
+				<version>${rhino.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>xml-adapters</artifactId>
