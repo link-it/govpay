@@ -34,7 +34,7 @@ pipeline {
     stage('cleanup') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
-        sh 'cd ${DOCKER_COMPOSE_DIR} && docker-compose down -v && cd - || true'
+        sh 'cd ${DOCKER_COMPOSE_DIR} && docker compose down -v && cd - || true'
         sh '/opt/apache-maven-3.6.3/bin/mvn clean'
       }
     }
@@ -64,7 +64,7 @@ pipeline {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
         sh 'sudo systemctl start wildfly-28.0.1.Final@ndpsym tomcat_govpay'
         sh 'sudo docker start mailhog'
-        sh 'cd ${DOCKER_COMPOSE_DIR} && docker-compose up -d && cd -'
+        sh 'cd ${DOCKER_COMPOSE_DIR} && docker compose up -d && cd -'
 	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }
@@ -74,7 +74,7 @@ pipeline {
       }
       post {
         always {
-			sh 'cd ${DOCKER_COMPOSE_DIR} && docker-compose down -v && cd -'
+			sh 'cd ${DOCKER_COMPOSE_DIR} && docker compose down -v && cd -'
 			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym wildfly-28.0.1.Final@ndpsym tomcat_govpay'
 			sh 'sudo docker stop mailhog'
             junit 'integration-test/target/surefire-reports/*.xml'
