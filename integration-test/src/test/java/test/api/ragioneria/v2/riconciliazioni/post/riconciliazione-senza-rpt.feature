@@ -8,6 +8,9 @@ Background:
 
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* callonce sleep(10000)
+
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -41,6 +44,9 @@ Then assert responseStatus == 200
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
+
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl

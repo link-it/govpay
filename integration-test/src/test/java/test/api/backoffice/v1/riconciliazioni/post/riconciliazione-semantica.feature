@@ -7,6 +7,9 @@ Background:
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* callonce sleep(10000)
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')

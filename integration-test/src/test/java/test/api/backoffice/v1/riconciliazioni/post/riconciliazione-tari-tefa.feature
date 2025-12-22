@@ -93,6 +93,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* callonce sleep(10000)
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
@@ -236,6 +238,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio

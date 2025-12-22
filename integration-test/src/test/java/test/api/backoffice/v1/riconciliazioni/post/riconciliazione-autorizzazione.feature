@@ -2,10 +2,12 @@ Feature: Riconciliazione non autorizzata
 
 Background:
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* callonce sleep(10000)
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
@@ -20,6 +22,8 @@ Scenario: Riconciliazione singola da applicazione non autorizzata per il dominio
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def applicazione = read('msg/applicazione_dominio2.json')
 
@@ -59,6 +63,8 @@ Scenario: Riconciliazione cumulativa da applicazione non autorizzata per il domi
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 * def applicazione = read('msg/applicazione_dominio2.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -92,6 +98,8 @@ Scenario: Riconciliazione singola da applicazione non autorizzata per il servizi
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 * def applicazione = read('msg/applicazione_nonAuth.json')
 
 Given url backofficeBaseurl
@@ -123,6 +131,8 @@ Scenario: Riconciliazione singola da operatore non autorizzata per il dominio
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def operatore = read('msg/operatore_domini2.json')
 
@@ -166,6 +176,8 @@ Scenario: Riconciliazione cumulativa da operatore non autorizzata per il dominio
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def operatore = read('msg/operatore_domini2.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
@@ -211,6 +223,8 @@ Scenario: Riconciliazione cumulativa da operatore non autorizzata per il servizi
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def operatore = read('msg/operatore_nonAuth.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})

@@ -7,6 +7,8 @@ Background:
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* callonce sleep(10000)
+
 * def ndpsym_psp_url = ndpsym_url + '/psp/'
 
 * def idPendenza = getCurrentTimeMillis()
@@ -263,6 +265,8 @@ Then assert responseStatus == 200
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
