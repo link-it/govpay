@@ -40,6 +40,8 @@ Scenario: Riconciliazione singola IUV non ISO
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2ABasicAutenticationHeader
@@ -73,6 +75,8 @@ Then status 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio, idRiconciliazione
@@ -114,6 +118,8 @@ Then status 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -158,6 +164,8 @@ Then status 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
@@ -201,6 +209,8 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2, idRiconciliazione
 And headers idA2ABasicAutenticationHeader
@@ -238,6 +248,8 @@ Then assert responseStatus == 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2, idRiconciliazione
@@ -283,6 +295,8 @@ Then assert responseStatus == 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -330,6 +344,8 @@ Then assert responseStatus == 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
