@@ -97,7 +97,7 @@
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
-		<logger.version>2.25.0</logger.version>
+		<logger.version>2.25.3</logger.version>
 
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.71</swagger-codegen-maven-plugin.version>
