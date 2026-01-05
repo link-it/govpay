@@ -207,6 +207,27 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_PARAMETRI = "jppapdp.ricezioneRecuperaRTParametri";
 	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT = "jppapdp.ricezioneRecuperaRT";
 	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO = "jppapdp.ricezioneRecuperaRTKo";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_OK = "rendicontazioni.acquisizioneOk";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA = "rendicontazioni.acquisizioneFlussoOkAnomalia";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK = "rendicontazioni.acquisizioneFlussoOk";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_NUMERO_RENDICONTAZIONI_ERRATO = "rendicontazioni.numeroRendicontazioniErrato";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_TOTALE_ERRATO = "rendicontazioni.importoTotaleErrato";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_POLI_PAGAMENTO = "rendicontazioni.poliPagamento";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_NO_PAGAMENTO = "rendicontazioni.noPagamento";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_VERSAMENTO_MALFORMATO = "rendicontazioni.senzaRptVersamentoMalformato";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_NO_VERSAMENTO = "rendicontazioni.senzaRptNoVersamento";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_ERRATO = "rendicontazioni.importoErrato";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_STORNO_ERRATO = "rendicontazioni.importoStornoErrato";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ESITO_SCONOSCIUTO = "rendicontazioni.esitoSconosciuto";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_DOMINIO_NON_CENSITO = "rendicontazioni.acquisizioneFlussoDominioNonCensito";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO = "rendicontazioni.acquisizioneFlusso";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO = "rendicontazioni.acquisizioneFlussoKo";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL = "rendicontazioni.acquisizioneFlussoFail";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE = "rendicontazioni.acquisizione";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_OK = "rendicontazioni.acquisizioneFlussiOk";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO = "rendicontazioni.acquisizioneFlussiKo";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL = "rendicontazioni.acquisizioneFlussiFail";
+	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI = "rendicontazioni.acquisizioneFlussi";
 	
 	public static final String PROPERTY_COD_CANALE = "codCanale";
 	public static final String PROPERTY_COD_PSP = "codPsp";
