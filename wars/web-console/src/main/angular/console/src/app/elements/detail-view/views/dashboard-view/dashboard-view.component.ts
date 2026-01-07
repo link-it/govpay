@@ -47,6 +47,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         this.hasPagamenti = false;
         this.hasAuthentication = false;
         this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
+      } else if(_profilo) {
+        this.initDashboard();
       }
     });
     this.govpaySubscription = UtilService.govpayBehavior.subscribe((_govpay: any) => {

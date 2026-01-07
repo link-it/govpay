@@ -33,6 +33,18 @@
 	Aggiunto ripristino configurazione applicazione originale prima di ogni scenario
 	in riconciliazione-autorizzazione.feature.
 
+	* [GovPayConsole]
+	Risolto Bug
+	Corretta visualizzazione della form di login quando si clicca sul link 'Cruscotto' da utente autenticato.
+	Il problema era causato dal caching delle route (ListReuseStrategy) che manteneva lo stato hasAuthentication=false
+	dopo eventuali errori 401/403 su altre pagine. Modificata la subscription a profiloUtenteBehavior in
+	dashboard-view.component.ts per reinizializzare il dashboard anche quando il profilo è disponibile.
+
+	* [Documentazione]
+	Aggiunta funzionalità
+	Aggiunta sezione "Componenti Aggiuntivi" alla documentazione di installazione/configurazione.
+	Documentati i componenti opzionali: govpay-aca-batch, govpay-fdr-batch e govpay-gde-api.
+
 2025-12-18  Giuliano Pintori <pintori@link.it>
 
 	* [GovPayCore]

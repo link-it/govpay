@@ -41,9 +41,20 @@ Le informazioni contenute nel form sono le seguenti:
    "Id Intermediario", "Identificativo dell'intermediario o Partner Tecnologico, fornito da AgID, corrisponde alla Partita IVA del soggetto", "Obbligatorio"
    "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", "Obbligatorio"
    "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
-   "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", "Obbligatorio"
+   "Url", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", "Obbligatorio"
    "Ocp-Apim-Subscription-Key", "Chiave da inviare a PagoPA per accedere ad alcune risorse, identifica il soggetto chiamante e consente l'accesso alle sole risorse autorizzate", ""
    "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si può scegliere, al momento, tra *Nessuna e HTTP-Basic, SSL, Header, API-Key e OAuth2 Client Credentials*. Per ogni modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione previsti", ""
+
+Per abilitare il servizio di recupero delle ricevute da pagoPA inserire le seguenti informazioni nella sezione Servizio recupero RT:
+
+.. csv-table:: Dettagli Connettore Recupero RT
+   :header: "Campo", "Significato", "Note"
+   :widths: 40,40,20
+
+   "Url", "Riferimenti utilizzati da Govpay per comunicare il servizio di recupero RT di pagoPA: Endpoint per le chiamate in uscita verso il servizio BizEvents di pagoPA", "Obbligatorio"
+   "Ocp-Apim-Subscription-Key", "Chiave da inviare a PagoPA per accedere ad alcune risorse, identifica il soggetto chiamante e consente l'accesso alle sole risorse autorizzate", "Obbligatori"
+   "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con pagoPA. Si può scegliere, al momento, tra *Nessuna e HTTP-Basic, SSL, Header, API-Key e OAuth2 Client Credentials*. Per ogni modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione previsti", ""
+
 
 Selezionando un intermediario dalla pagina che li elenca si accede alla pagina di dettaglio.
 

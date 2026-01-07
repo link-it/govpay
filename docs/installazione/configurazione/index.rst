@@ -200,3 +200,61 @@ questo processo.
 
 I files presenti nella directory **dist** dovranno essere utilizzati
 nella fase successiva di dispiegamento di GovPay.
+
+
+Componenti Aggiuntivi
+---------------------
+
+GovPay può essere esteso con componenti aggiuntivi che forniscono funzionalità opzionali.
+Questi componenti sono distribuiti separatamente e possono essere installati in base alle esigenze.
+
+govpay-aca-batch
+~~~~~~~~~~~~~~~~
+
+Batch per l'invio delle posizioni debitorie all'Archivio Centralizzato degli Avvisi (ACA) di pagoPA.
+
+- **Repository:** https://github.com/link-it/govpay-aca-batch
+- **Release:** https://github.com/link-it/govpay-aca-batch/releases
+
+Questo componente consente di:
+
+- Sincronizzare le pendenze di GovPay con l'ACA
+- Gestire l'invio massivo delle posizioni debitorie
+- Monitorare lo stato delle comunicazioni con l'ACA
+
+Il batch può essere schedulato per eseguire periodicamente l'invio delle posizioni debitorie
+non ancora comunicate o aggiornate.
+
+govpay-fdr-batch
+~~~~~~~~~~~~~~~~
+
+Batch per l'acquisizione dei Flussi di Rendicontazione (FdR) da pagoPA.
+
+- **Repository:** https://github.com/link-it/govpay-fdr-batch
+- **Release:** https://github.com/link-it/govpay-fdr-batch/releases
+
+Questo componente consente di:
+
+- Scaricare automaticamente i flussi di rendicontazione dalla piattaforma pagoPA
+- Elaborare e importare i flussi nel database di GovPay
+- Gestire la riconciliazione automatica dei pagamenti
+
+Il batch può essere schedulato per eseguire periodicamente il download e l'elaborazione
+dei nuovi flussi di rendicontazione disponibili.
+
+govpay-gde-api
+~~~~~~~~~~~~~~
+
+API per il Giornale degli Eventi (GDE) esterno.
+
+- **Repository:** https://github.com/link-it/govpay-gde-api
+- **Release:** https://github.com/link-it/govpay-gde-api/releases
+
+Questo componente espone API REST per:
+
+- Ricevere e archiviare gli eventi generati da GovPay
+- Consultare lo storico degli eventi
+- Integrare il giornale eventi con sistemi esterni di monitoraggio
+
+Il servizio GDE può essere configurato come endpoint esterno per la registrazione
+degli eventi, consentendo una gestione centralizzata del logging applicativo.
