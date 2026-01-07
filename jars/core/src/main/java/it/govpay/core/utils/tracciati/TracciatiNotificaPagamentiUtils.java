@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -36,6 +36,7 @@ import java.util.Map;
 import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
@@ -331,23 +332,24 @@ public class TracciatiNotificaPagamentiUtils {
 			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
 			if(contabilita.getQuote() != null && !contabilita.getQuote().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
-				
+
 				sb.append("<bilancio>");
 				for (QuotaContabilita quota : contabilita.getQuote()) {
 					sb.append("<capitolo>");
-					
+
 					sb.append("<codice>");
-					sb.append(quota.getCapitolo());
+					sb.append(StringEscapeUtils.escapeXml11(quota.getCapitolo()));
 					sb.append("</codice>");
-					
+
 					sb.append("<importo>");
-					sb.append(TracciatiNotificaPagamentiUtils.printImporto(quota.getImporto(), false));
+					String importoStr = TracciatiNotificaPagamentiUtils.printImporto(quota.getImporto(), false);
+					sb.append(StringEscapeUtils.escapeXml11(importoStr));
 					sb.append("</importo>");
-					
+
 					sb.append("</capitolo>");
 				}
 				sb.append("</bilancio>");
-				
+
 				bilancio = sb.toString();
 			}
 			
@@ -446,23 +448,24 @@ public class TracciatiNotificaPagamentiUtils {
 			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
 			if(contabilita.getQuote() != null && !contabilita.getQuote().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
-				
+
 				sb.append("<bilancio>");
 				for (QuotaContabilita quota : contabilita.getQuote()) {
 					sb.append("<capitolo>");
-					
+
 					sb.append("<codice>");
-					sb.append(quota.getCapitolo());
+					sb.append(StringEscapeUtils.escapeXml11(quota.getCapitolo()));
 					sb.append("</codice>");
-					
+
 					sb.append("<importo>");
-					sb.append(TracciatiNotificaPagamentiUtils.printImporto(quota.getImporto(), false));
+					String importoStr = TracciatiNotificaPagamentiUtils.printImporto(quota.getImporto(), false);
+					sb.append(StringEscapeUtils.escapeXml11(importoStr));
 					sb.append("</importo>");
-					
+
 					sb.append("</capitolo>");
 				}
 				sb.append("</bilancio>");
-				
+
 				bilancio = sb.toString();
 			}
 			
@@ -561,23 +564,24 @@ public class TracciatiNotificaPagamentiUtils {
 			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
 			if(contabilita.getQuote() != null && !contabilita.getQuote().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
-				
+
 				sb.append("<bilancio>");
 				for (QuotaContabilita quota : contabilita.getQuote()) {
 					sb.append("<capitolo>");
-					
+
 					sb.append("<codice>");
-					sb.append(quota.getCapitolo());
+					sb.append(StringEscapeUtils.escapeXml11(quota.getCapitolo()));
 					sb.append("</codice>");
-					
+
 					sb.append("<importo>");
-					sb.append(TracciatiNotificaPagamentiUtils.printImporto(quota.getImporto(), false));
+					String importoStr = TracciatiNotificaPagamentiUtils.printImporto(quota.getImporto(), false);
+					sb.append(StringEscapeUtils.escapeXml11(importoStr));
 					sb.append("</importo>");
-					
+
 					sb.append("</capitolo>");
 				}
 				sb.append("</bilancio>");
-				
+
 				bilancio = sb.toString();
 			}
 			

@@ -75,6 +75,11 @@
           <mat-slide-toggle formControlName="intermediato_ctrl" color="accent" (change)="_intermediatoChange($event)">{{_voce.INTERMEDIATO}}</mat-slide-toggle>
         </div>
       </div>
+      <div class="row">
+        <div class="col-12 col-sm-6" [formGroup]="fGroup">
+          <mat-slide-toggle formControlName="scaricaFr_ctrl" color="accent">{{_voce.SCARICA_FR}}</mat-slide-toggle>
+        </div>
+      </div>
       <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="fGroup.value?.intermediato_ctrl">Parametri adesione a pagoPA</p>
       <div class="row" *ngIf="fGroup.value?.intermediato_ctrl">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -193,6 +193,27 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return this.toAliasTable(field)+".fr_obsoleto";
 			}else{
 				return "fr_obsoleto";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_data_ora_pubblicazione";
+			}else{
+				return "fr_data_ora_pubblicazione";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_data_ora_aggiornamento";
+			}else{
+				return "fr_data_ora_aggiornamento";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_REVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_revisione";
+			}else{
+				return "fr_revisione";
 			}
 		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
@@ -974,6 +995,15 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().FR_OBSOLETO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_REVISIONE)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){

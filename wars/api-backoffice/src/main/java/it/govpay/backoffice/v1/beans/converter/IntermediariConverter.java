@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -46,6 +46,18 @@ public class IntermediariConverter {
 			intermediario.setConnettorePddRecuperoRT(ConnettorePagopaRecuperoRTConverter.getConnettore(intermediarioPost.getServizioPagoPaRecuperoRT(), idIntermediario));
 
 		}
+		if(intermediarioPost.getServizioPagoPaACA() != null) {
+			intermediario.setConnettorePddACA(ConnettorePagopaACAConverter.getConnettore(intermediarioPost.getServizioPagoPaACA(), idIntermediario));
+
+		}
+		if(intermediarioPost.getServizioPagoPaGPD() != null) {
+			intermediario.setConnettorePddGPD(ConnettorePagopaGPDConverter.getConnettore(intermediarioPost.getServizioPagoPaGPD(), idIntermediario));
+
+		}
+		if(intermediarioPost.getServizioPagoPaFR() != null) {
+			intermediario.setConnettorePddFR(ConnettorePagopaFRConverter.getConnettore(intermediarioPost.getServizioPagoPaFR(), idIntermediario));
+
+		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
 
 		if(intermediarioPost.getServizioFtp()!=null) {
@@ -72,6 +84,18 @@ public class IntermediariConverter {
 
 		if(i.getConnettorePddRecuperoRT()!=null) {
 			rsModel.setServizioPagoPaRecuperoRT(ConnettorePagopaRecuperoRTConverter.toRsModel(i.getConnettorePddRecuperoRT()));
+		}
+
+		if(i.getConnettorePddACA()!=null) {
+			rsModel.setServizioPagoPaACA(ConnettorePagopaACAConverter.toRsModel(i.getConnettorePddACA()));
+		}
+
+		if(i.getConnettorePddGPD()!=null) {
+			rsModel.setServizioPagoPaGPD(ConnettorePagopaGPDConverter.toRsModel(i.getConnettorePddGPD()));
+		}
+
+		if(i.getConnettorePddFR()!=null) {
+			rsModel.setServizioPagoPaFR(ConnettorePagopaFRConverter.toRsModel(i.getConnettorePddFR()));
 		}
 
 		if(i.getConnettoreSftp()!=null) {

@@ -28,7 +28,8 @@
 			"sslType": "TLSv1.2",
 			"ksType": "JKS",
 			"ksPKeyPasswd": "ksPKeyPasswd"
-		}
+		},
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

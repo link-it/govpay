@@ -455,8 +455,8 @@
 			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="codBicRiversamento" type="String35" minOccurs="0"/>
-			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
-			<xsd:element name="ragioneSocialeDominio" type="String70" minOccurs="0" />
+			<xsd:element name="ragioneSocialePsp" type="String255" minOccurs="0" />
+			<xsd:element name="ragioneSocialeDominio" type="String255" minOccurs="0" />
 			<xsd:element name="obsoleto">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
@@ -526,6 +526,9 @@
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_domini_scarica_fr">
+							<linkit:sql-table-index-field name="scaricaFr"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -570,6 +573,7 @@
 			<xsd:element name="codConnettoreMaggioliJPPA" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 			<xsd:element name="tassonomiaPagoPA" type="String35" minOccurs="0"/>
+			<xsd:element name="scaricaFr" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -663,6 +667,9 @@
 			<xsd:element name="codIntermediario" type="String35"/>
 			<xsd:element name="codConnettorePdd" type="String35"/>
 			<xsd:element name="codConnettoreRecuperoRT" type="String35" minOccurs="0"/>
+			<xsd:element name="codConnettoreACA" type="String35" minOccurs="0"/>
+			<xsd:element name="codConnettoreGPD" type="String35" minOccurs="0"/>
+			<xsd:element name="codConnettoreFR" type="String35" minOccurs="0"/>
 			<xsd:element name="codConnettoreFtp" type="String35" minOccurs="0"/>
 			<xsd:element name="denominazione" type="xsd:string"/>
 			<xsd:element name="principal" type="String4000"/>
@@ -2512,7 +2519,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:element name="Rendicontazione" type="Rendicontazione"/>
 	<xsd:complexType name="Rendicontazione">
 		<xsd:annotation>
 			<xsd:appinfo>
@@ -2532,6 +2538,9 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rnd_fk_pagamenti">
 							<linkit:sql-table-index-column name="id_pagamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_data">
+							<linkit:sql-table-index-field name="data" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3065,11 +3074,20 @@
 							<linkit:sql-table-unique-field name="codFlusso"/>
 							<linkit:sql-table-unique-field name="dataOraFlusso" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codDominio"/>
+							<linkit:sql-table-unique-field name="codFlusso"/>
+							<linkit:sql-table-unique-field name="codPsp"/>
+							<linkit:sql-table-unique-field name="revisione"/>
+						</linkit:sql-table-unique>
 						<linkit:sql-table-index name="idx_fr_cod_flusso">
 							<linkit:sql-table-index-field name="codFlusso"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_fr_data_acq">
 							<linkit:sql-table-index-field name="dataAcquisizione" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_fr_id_dominio">
+							<linkit:sql-table-index-column name="id_dominio"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3078,7 +3096,6 @@
 		<xsd:sequence>
 			<xsd:element name="codPsp" type="String35"/>
 			<xsd:element name="codDominio" type="String35"/>
-
 			<xsd:element name="codFlusso" type="String35"/>
 			<xsd:element name="stato" type="String35"/>
 			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0">
@@ -3097,7 +3114,7 @@
 			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="codBicRiversamento" type="String35" minOccurs="0"/>
-			<xsd:element name="xml" type="xsd:base64Binary"/>
+			<xsd:element name="xml" type="xsd:base64Binary" minOccurs="0"/>
 
 			<xsd:element name="idSingoloVersamento" type="id-singolo-versamento" minOccurs="0">
 				<xsd:annotation>
@@ -3120,8 +3137,8 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
-			<xsd:element name="ragioneSocialeDominio" type="String70" minOccurs="0" />
+			<xsd:element name="ragioneSocialePsp" type="String255" minOccurs="0" />
+			<xsd:element name="ragioneSocialeDominio" type="String255" minOccurs="0" />
 			<xsd:element name="obsoleto">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
@@ -3129,6 +3146,9 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
+			<xsd:element name="dataOraPubblicazione" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataOraAggiornamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="revisione" type="xsd:integer" minOccurs="0"/>
 
 			<xsd:element name="idRendicontazione" type="id-rendicontazione" minOccurs="0">
 				<xsd:annotation>
@@ -3136,6 +3156,17 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Rendicontazione" object-type="Rendicontazione"
 								relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -3188,6 +3219,9 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
+			<xsd:element name="frDataOraPubblicazione" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="frDataOraAggiornamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="frRevisione" type="xsd:integer" minOccurs="0"/>
 			<xsd:element name="rndIuv" type="String35"/>
 			<xsd:element name="rndIur" type="String35"/>
 			<xsd:element name="rndIndiceDati" type="xsd:positiveInteger" minOccurs="0"/>

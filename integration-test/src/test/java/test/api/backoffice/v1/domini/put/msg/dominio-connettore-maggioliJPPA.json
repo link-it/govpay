@@ -33,5 +33,6 @@
   		"url" : "http://prova.it",
   		"versioneApi" : "SOAP v1"
   },
-  "intermediato": "true"
+  "intermediato": "true",
+  "scaricaFr": "true"
 }

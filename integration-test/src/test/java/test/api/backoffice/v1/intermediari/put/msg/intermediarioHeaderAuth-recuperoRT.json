@@ -14,7 +14,8 @@
 		"auth": {
 			"headerName": "X-GOVPAY-AUTH",
 			"headerValue": "govpay"
-		}
+		},
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

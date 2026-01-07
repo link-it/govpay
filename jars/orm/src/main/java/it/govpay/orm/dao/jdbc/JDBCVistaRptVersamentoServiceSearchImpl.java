@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -255,6 +255,7 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			fields.add(VistaRptVersamento.model().VRS_IUV_PAGAMENTO);
 			fields.add(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO);
 			fields.add(VistaRptVersamento.model().VRS_COD_RATA);
+			fields.add(VistaRptVersamento.model().VRS_TIPO);
 			fields.add(VistaRptVersamento.model().VRS_PROPRIETA);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));

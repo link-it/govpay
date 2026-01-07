@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -39,6 +39,9 @@ import java.io.Serializable;
  * 			&lt;element name="codIntermediario" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreRecuperoRT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreACA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreGPD" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreFR" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -61,6 +64,9 @@ import java.io.Serializable;
   	"codIntermediario",
   	"codConnettorePdd",
   	"codConnettoreRecuperoRT",
+  	"codConnettoreACA",
+  	"codConnettoreGPD",
+  	"codConnettoreFR",
   	"codConnettoreFtp",
   	"denominazione",
   	"principal",
@@ -98,6 +104,30 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
 
   public void setCodConnettoreRecuperoRT(java.lang.String codConnettoreRecuperoRT) {
     this.codConnettoreRecuperoRT = codConnettoreRecuperoRT;
+  }
+
+  public java.lang.String getCodConnettoreACA() {
+    return this.codConnettoreACA;
+  }
+
+  public void setCodConnettoreACA(java.lang.String codConnettoreACA) {
+    this.codConnettoreACA = codConnettoreACA;
+  }
+
+  public java.lang.String getCodConnettoreGPD() {
+    return this.codConnettoreGPD;
+  }
+
+  public void setCodConnettoreGPD(java.lang.String codConnettoreGPD) {
+    this.codConnettoreGPD = codConnettoreGPD;
+  }
+
+  public java.lang.String getCodConnettoreFR() {
+    return this.codConnettoreFR;
+  }
+
+  public void setCodConnettoreFR(java.lang.String codConnettoreFR) {
+    this.codConnettoreFR = codConnettoreFR;
   }
 
   public java.lang.String getCodConnettoreFtp() {
@@ -171,6 +201,18 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreRecuperoRT",required=false,nillable=false)
   protected java.lang.String codConnettoreRecuperoRT;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreACA",required=false,nillable=false)
+  protected java.lang.String codConnettoreACA;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreGPD",required=false,nillable=false)
+  protected java.lang.String codConnettoreGPD;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreFR",required=false,nillable=false)
+  protected java.lang.String codConnettoreFR;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreFtp",required=false,nillable=false)

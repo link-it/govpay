@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -238,6 +238,12 @@ public class DominiConverter {
 		} else {
 			dominio.setIntermediato(true);
 		}
+		
+		if(dominioPost.getScaricaFr() != null ) {
+			dominio.setScaricaFr(dominioPost.getScaricaFr().booleanValue());
+		} else {
+			dominio.setScaricaFr(true);
+		}
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -280,6 +286,7 @@ public class DominiConverter {
 		}
 		rsModel.setAbilitato(dominio.isAbilitato());
 		rsModel.setIntermediato(dominio.isIntermediato());
+		rsModel.setScaricaFr(dominio.isScaricaFr());
 
 		if(dominio.isIntermediato()) {
 			rsModel.setGln(dominio.getGln());
@@ -370,6 +377,7 @@ public class DominiConverter {
 
 		rsModel.setAbilitato(dominio.isAbilitato());
 		rsModel.setIntermediato(dominio.isIntermediato());
+		rsModel.setScaricaFr(dominio.isScaricaFr());
 
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));

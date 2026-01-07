@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -28,6 +28,7 @@ import it.govpay.backoffice.v1.beans.GdeInterfacce;
 import it.govpay.backoffice.v1.beans.GdeInterfaccia;
 import it.govpay.backoffice.v1.beans.Giornale;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.model.Connettore;
 
 public class GiornaleConverter {
 	
@@ -166,6 +167,30 @@ public class GiornaleConverter {
 		case SOLO_ERRORE:
 			rsModel.setDump(DumpEnum.SOLO_ERRORE);
 			break;
+		}
+
+		return rsModel;
+	}
+
+	private static it.govpay.model.Connettore getConnettoreGdeDTO(it.govpay.backoffice.v1.beans.ConnettoreGde connettoreGdePost) {
+		Connettore connettoreGde = new it.govpay.model.Connettore();
+
+		connettoreGde.setAbilitato(connettoreGdePost.getAbilitato());
+		connettoreGde.setUrl(connettoreGdePost.getUrl());
+
+		ConnettoriConverter.setAutenticazione(connettoreGde, connettoreGdePost.getAuth());
+
+		return connettoreGde;
+	}
+
+	private static it.govpay.backoffice.v1.beans.ConnettoreGde toConnettoreGdeRsModel(it.govpay.model.Connettore connettoreGde) {
+		it.govpay.backoffice.v1.beans.ConnettoreGde rsModel = new it.govpay.backoffice.v1.beans.ConnettoreGde();
+
+		rsModel.setAbilitato(connettoreGde.isAbilitato());
+		rsModel.setUrl(connettoreGde.getUrl());
+
+		if(connettoreGde.getTipoAutenticazione() != null && !connettoreGde.getTipoAutenticazione().equals(it.govpay.model.Connettore.EnumAuthType.NONE)) {
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettoreGde));
 		}
 
 		return rsModel;

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -32,6 +32,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.model.Connettore;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
@@ -106,6 +107,10 @@ public class Configurazione {
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
 		}
+		
+		if(configurazione.getServizioGDE() == null) {
+			configurazione.setServizioGDE(configurazioneDefault.getServizioGDE());
+		}
 	}
 
 	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws IOException {
@@ -144,6 +149,7 @@ public class Configurazione {
 		if(configurazione.getGiornale().getApiMaggioliJPPA() == null) {
 			configurazione.getGiornale().setApiMaggioliJPPA(configurazioneDefault.getGiornale().getApiMaggioliJPPA());
 		}
+
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
@@ -156,6 +162,11 @@ public class Configurazione {
 		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
 		configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
 		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
+		
+		Connettore servizioGDE = new Connettore();
+		servizioGDE.setAbilitato(false);
+		servizioGDE.setIdConnettore(it.govpay.bd.model.Configurazione.COD_CONNETTORE_GDE);
+		configurazione.setServizioGDE(servizioGDE);
 
 		return configurazione;
 	}

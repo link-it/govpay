@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -62,6 +62,7 @@ public class ConfigurazioniConverter {
 	private ConfigurazioniConverter() {}
 
 	public static final String PATH_GIORNALE_EVENTI = ConfigurazioneDAO.PATH_GIORNALE_EVENTI;
+	public static final String PATH_SERVIZO_GDE = ConfigurazioneDAO.PATH_SERVIZO_GDE;
 	public static final String PATH_TRACCIATO_CSV = ConfigurazioneDAO.PATH_TRACCIATO_CSV;
 	public static final String PATH_HARDENING = ConfigurazioneDAO.PATH_HARDENING;
 	public static final String PATH_MAIL_BATCH = ConfigurazioneDAO.PATH_MAIL_BATCH;
@@ -75,6 +76,8 @@ public class ConfigurazioniConverter {
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
 		if(configurazionePost.getGiornaleEventi() != null)
 			configurazione.setGiornale(GiornaleConverter.getGiornaleDTO(configurazionePost.getGiornaleEventi()));
+		if(configurazionePost.getServizioGDE() != null)
+			configurazione.setServizioGDE(getConnettoreGdeDTO(configurazionePost.getServizioGDE()));
 		if(configurazionePost.getTracciatoCsv() != null)
 			configurazione.setConfigurazioneTracciatoCsv(getTracciatoCsvDTO(configurazionePost.getTracciatoCsv()));
 		if(configurazionePost.getHardening() != null)
@@ -97,6 +100,9 @@ public class ConfigurazioniConverter {
 
 		if(configurazione.getGiornale() != null) {
 			rsModel.setGiornaleEventi(GiornaleConverter.toRsModel(configurazione.getGiornale()));
+		}
+		if(configurazione.getServizioGDE() != null) {
+			rsModel.setServizioGDE(toConnettoreGdeRsModel(configurazione.getServizioGDE()));
 		}
 		if(configurazione.getConfigurazioneTracciatoCsv() != null) {
 			rsModel.setTracciatoCsv(toTracciatoRsModel(configurazione.getConfigurazioneTracciatoCsv()));
@@ -168,6 +174,10 @@ public class ConfigurazioniConverter {
 				it.govpay.backoffice.v1.beans.Giornale giornalePost = it.govpay.backoffice.v1.beans.Giornale.parse(ConverterUtils.toJSON(op.getValue()));
 				giornalePost.validate();
 				e.setValue(GiornaleConverter.getGiornaleDTO(giornalePost ));
+			} else if(PATH_SERVIZO_GDE.equals(op.getPath())) {
+				it.govpay.backoffice.v1.beans.ConnettoreGde connettoreGde = it.govpay.backoffice.v1.beans.ConnettoreGde.parse(ConverterUtils.toJSON(op.getValue()));
+				connettoreGde.validate();
+				e.setValue(getConnettoreGdeDTO(connettoreGde));
 			} else if(PATH_TRACCIATO_CSV.equals(op.getPath())) {
 				TracciatoCsv tracciatoCsv = TracciatoCsv.parse(ConverterUtils.toJSON(op.getValue()));
 				tracciatoCsv.validate();
@@ -559,6 +569,31 @@ public class ConfigurazioniConverter {
 
 		if(batchSpedizioneAppIo.getTipoAutenticazione()!=null && !batchSpedizioneAppIo.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(batchSpedizioneAppIo));
+
+		return rsModel;
+	}
+
+	private static it.govpay.model.Connettore getConnettoreGdeDTO(it.govpay.backoffice.v1.beans.ConnettoreGde connettoreGdePost) {
+		it.govpay.model.Connettore connettoreGde = new it.govpay.model.Connettore();
+
+		connettoreGde.setIdConnettore(it.govpay.bd.model.Configurazione.COD_CONNETTORE_GDE);
+		connettoreGde.setAbilitato(connettoreGdePost.getAbilitato());
+		connettoreGde.setUrl(connettoreGdePost.getUrl());
+
+		ConnettoriConverter.setAutenticazione(connettoreGde, connettoreGdePost.getAuth());
+
+		return connettoreGde;
+	}
+
+	private static it.govpay.backoffice.v1.beans.ConnettoreGde toConnettoreGdeRsModel(it.govpay.model.Connettore connettoreGde) {
+		it.govpay.backoffice.v1.beans.ConnettoreGde rsModel = new it.govpay.backoffice.v1.beans.ConnettoreGde();
+
+		rsModel.setAbilitato(connettoreGde.isAbilitato());
+		rsModel.setUrl(connettoreGde.getUrl());
+
+		if(connettoreGde.getTipoAutenticazione() != null && !connettoreGde.getTipoAutenticazione().equals(EnumAuthType.NONE)) {
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettoreGde));
+		}
 
 		return rsModel;
 	}

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -88,6 +88,12 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_dominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				setParameter(object, "setObsoleto", FR.model().OBSOLETO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "obsoleto", FR.model().OBSOLETO.getFieldType()));
+				setParameter(object, "setDataOraPubblicazione", FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ora_pubblicazione", FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType()));
+				setParameter(object, "setDataOraAggiornamento", FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_ora_aggiornamento", FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType()));
+				setParameter(object, "setRevisione", FR.model().REVISIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "revisione", FR.model().REVISIONE.getFieldType()));
 				return object;
 			}
 			
@@ -142,6 +148,12 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"ragioneSocialeDominio"));
 				setParameter(object, "setObsoleto", FR.model().OBSOLETO.getFieldType(),
 					this.getObjectFromMap(map,"obsoleto"));
+				setParameter(object, "setDataOraPubblicazione", FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataOraPubblicazione"));
+				setParameter(object, "setDataOraAggiornamento", FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"dataOraAggiornamento"));
+				setParameter(object, "setRevisione", FR.model().REVISIONE.getFieldType(),
+					this.getObjectFromMap(map,"revisione"));
 				return object;
 			}
 			

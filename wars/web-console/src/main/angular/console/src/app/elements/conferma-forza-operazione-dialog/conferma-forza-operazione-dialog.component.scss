@@ -1,0 +1,15 @@
+.dialog-container {
+  padding: 20px;
+
+  mat-dialog-content {
+    padding: 20px 0;
+
+    p {
+      margin-bottom: 20px;
+    }
+  }
+
+  mat-dialog-actions {
+    padding-top: 20px;
+  }
+}

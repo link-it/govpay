@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -40,7 +40,6 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BDConfigWrapper;
-//import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -238,9 +237,7 @@ public class UtenzaPatchUtils {
 		if(!(op.getValue() instanceof String || op.getValue() instanceof Dominio)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 		
 		// la patch puo' essere un oggetto complesso o un iddominio
-		if(op.getValue() instanceof String) {
-			String dominio = (String) op.getValue();
-
+		if(op.getValue() instanceof String dominio) {
 			if(dominio.equals(DOMINI_STAR)) {
 				switch(op.getOp()) {
 				case ADD: utenza.setAutorizzazioneDominiStar(true);
@@ -270,8 +267,7 @@ public class UtenzaPatchUtils {
 				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 				}
 			}
-		} else if(op.getValue() instanceof Dominio) {
-			Dominio dominio = (Dominio) op.getValue();
+		} else if(op.getValue() instanceof Dominio dominio) {
 
 			if(dominio.getCodDominio().equals(DOMINI_STAR)) {
 				switch(op.getOp()) {

@@ -23,7 +23,10 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL COMMENT 'Identificativo intermediario su pagopa',
 	cod_connettore_pdd VARCHAR(35) NOT NULL COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso pagopa',
-	cod_connettore_recupero_rt VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio recupero-rt pagopa',,
+	cod_connettore_recupero_rt VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio recupero-rt pagopa',
+	cod_connettore_aca VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio aca pagopa',
+	cod_connettore_gpd VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio gpd pagopa',
+	cod_connettore_fr VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio acquisizione-fr pagopa',
 	cod_connettore_ftp VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore ftp verso pagopa',
 	denominazione VARCHAR(255) NOT NULL COMMENT 'Nome dell\'intermediario',
 	principal VARCHAR(756) NOT NULL COMMENT 'Principal in forma canonica con cui si autentica l\'intermediario a govpay',
@@ -131,6 +134,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR(255) COMMENT 'Identificativo connettore maggioli jppa',
 	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	tassonomia_pago_pa VARCHAR(35) COMMENT 'Tassonomia PagoPA ente creditore',
+	scarica_fr BOOLEAN NOT NULL COMMENT 'Indica se scaricare i flussi di rendicontazione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT COMMENT 'Riferimento alla stazione',
@@ -145,6 +149,7 @@ CREATE TABLE domini
 
 -- index
 CREATE UNIQUE INDEX index_domini_1 ON domini (cod_dominio);
+CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 
 
 
@@ -941,17 +946,23 @@ CREATE TABLE fr
 	numero_pagamenti BIGINT COMMENT 'Numero di pagamenti rendicontati',
 	importo_totale_pagamenti DOUBLE COMMENT 'Importo totale rendicontato',
 	cod_bic_riversamento VARCHAR(35) COMMENT 'Bic del conto di riversamento',
-	xml MEDIUMBLOB NOT NULL COMMENT 'XML del flusso codfificato in base64',
-	ragione_sociale_psp VARCHAR(70) COMMENT 'Ragione sociale psp che ha emesso il flusso',
-	ragione_sociale_dominio VARCHAR(70) COMMENT 'Ragione sociale ente creditore',
+	xml MEDIUMBLOB COMMENT 'XML del flusso codfificato in base64',
+	ragione_sociale_psp VARCHAR(255) COMMENT 'Ragione sociale psp che ha emesso il flusso',
+	ragione_sociale_dominio VARCHAR(255) COMMENT 'Ragione sociale ente creditore',
 	obsoleto BOOLEAN NOT NULL COMMENT 'Indica se il flusso e\' l\'ultimo acquisito',
+	data_ora_pubblicazione DATETIME(3) COMMENT 'Data pubblicazione flusso',
+	data_ora_aggiornamento DATETIME(3) COMMENT 'Data aggiornamento flusso',
+	revisione BIGINT COMMENT 'Revisione del flusso',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_incasso BIGINT COMMENT 'Riferimento all\'incasso',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_2 UNIQUE (cod_dominio,cod_flusso,cod_psp,revisione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_fr_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
@@ -959,6 +970,7 @@ CREATE TABLE fr
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
+CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
 
 
 
@@ -1028,6 +1040,7 @@ CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
 CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
+CREATE INDEX idx_rnd_data ON rendicontazioni (data);
 
 
 
@@ -1634,6 +1647,7 @@ CREATE VIEW v_eventi_vers AS
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
     fr.cod_dominio AS fr_cod_dominio,
+    fr.id_dominio AS fr_id_dominio,
     fr.cod_flusso AS fr_cod_flusso,
     fr.stato AS fr_stato,
     fr.descrizione_stato AS fr_descrizione_stato,
@@ -1649,6 +1663,9 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
     fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
     fr.obsoleto AS fr_obsoleto,
+    fr.data_ora_pubblicazione AS fr_data_ora_pubblicazione,
+    fr.data_ora_aggiornamento AS fr_data_ora_aggiornamento,
+    fr.revisione AS fr_revisione,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,

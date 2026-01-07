@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -44,13 +45,16 @@ public class FlussiRendicontazioneConverter {
 
 	private FlussiRendicontazioneConverter() {}
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, UnsupportedEncodingException {
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, UnsupportedEncodingException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(fr.getDominio(configWrapper)));
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
@@ -92,13 +96,16 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static FlussoRendicontazioneIndex toRsIndexModel(it.govpay.bd.model.Fr fr) throws ServiceException {
+	public static FlussoRendicontazioneIndex toRsIndexModel(it.govpay.bd.model.Fr fr) throws ServiceException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazioneIndex rsModel = new FlussoRendicontazioneIndex();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(fr.getDominio(configWrapper)));
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));

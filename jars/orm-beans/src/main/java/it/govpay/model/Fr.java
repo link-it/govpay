@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -43,11 +43,15 @@ public class Fr extends BasicModel{
 	private Date dataFlusso;
 	private Date dataRegolamento;
 	private Date dataAcquisizione;
+	private Date dataOraPubblicazione;
+	private Date dataOraAggiornamento;
+	private Long revisione;
 	private long numeroPagamenti;
 	private BigDecimal importoTotalePagamenti;
 	private byte[] xml;
 	private List<Anomalia> anomalie;
 	private Long idIncasso;
+	private Long idDominio;
 	private String ragioneSocialeDominio;
 	private String ragioneSocialePsp;
 	private Boolean obsoleto;
@@ -139,6 +143,24 @@ public class Fr extends BasicModel{
 	public void setDataAcquisizione(Date dataAcquisizione) {
 		this.dataAcquisizione = dataAcquisizione;
 	}
+	public Date getDataOraPubblicazione() {
+		return this.dataOraPubblicazione;
+	}
+	public void setDataOraPubblicazione(Date dataOraPubblicazione) {
+		this.dataOraPubblicazione = dataOraPubblicazione;
+	}
+	public Date getDataOraAggiornamento() {
+		return this.dataOraAggiornamento;
+	}
+	public void setDataOraAggiornamento(Date dataOraAggiornamento) {
+		this.dataOraAggiornamento = dataOraAggiornamento;
+	}
+	public Long getRevisione() {
+		return this.revisione;
+	}
+	public void setRevisione(Long revisione) {
+		this.revisione = revisione;
+	}
 
 	public class Anomalia {
 		String codAnomalia;
@@ -167,8 +189,8 @@ public class Fr extends BasicModel{
 	}
 
 	private String marshall(List<Anomalia> anomalie) {
-		if(anomalie == null || anomalie.size() == 0) return null;
-		StringBuffer sb = new StringBuffer();
+		if(anomalie == null || anomalie.isEmpty()) return null;
+		StringBuilder sb = new StringBuilder();
 
 		if(this.stato.equals(StatoFr.RIFIUTATA)) {
 			// Retrocompatibilita' vecchia versione senza anomalie.
@@ -226,6 +248,12 @@ public class Fr extends BasicModel{
 	}
 	public void setIdIncasso(Long idIncasso) {
 		this.idIncasso = idIncasso;
+	}
+	public Long getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(Long idDominio) {
+		this.idDominio = idDominio;
 	}
 	public String getRagioneSocialeDominio() {
 		return ragioneSocialeDominio;

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -150,6 +150,30 @@ public class IntermediariBD extends BasicBD {
 			Connettore connettorePdd = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePddRecuperoRT(connettorePdd);
 		}
+		if(intermediarioVO.getCodConnettoreACA() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreACA());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			Connettore connettorePddACA = ConnettoreConverter.toDTO(connettori);
+			intermediario.setConnettorePddACA(connettorePddACA);
+		}
+		if(intermediarioVO.getCodConnettoreGPD() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreGPD());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			Connettore connettorePddGPD = ConnettoreConverter.toDTO(connettori);
+			intermediario.setConnettorePddGPD(connettorePddGPD);
+		}
+		if(intermediarioVO.getCodConnettoreFR() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFR());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			Connettore connettorePddFR = ConnettoreConverter.toDTO(connettori);
+			intermediario.setConnettorePddFR(connettorePddFR);
+		}
 		if(intermediarioVO.getCodConnettoreFtp() != null) {
 			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFtp());
@@ -198,47 +222,41 @@ public class IntermediariBD extends BasicBD {
 			if(intermediario.getConnettorePdd() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePdd());
-
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePdd().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePdd().getIdConnettore());
 			}
 			
 			if(intermediario.getConnettorePddRecuperoRT() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddRecuperoRT());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddRecuperoRT().getIdConnettore());
+			}
 
+			if(intermediario.getConnettorePddACA() != null) {
 
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePddRecuperoRT().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddACA());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddACA().getIdConnettore());
+			}
 
-				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					this.getConnettoreService().create(connettore);
-				}
+			if(intermediario.getConnettorePddGPD() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddGPD());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddGPD().getIdConnettore());
+			}
+
+			if(intermediario.getConnettorePddFR() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddFR());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddFR().getIdConnettore());
 			}
 
 			if(intermediario.getConnettoreSftp() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
-
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettoreSftp().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettoreSftp().getIdConnettore());
 			}
 
 			this.emitAudit(intermediario);
-		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -267,47 +285,41 @@ public class IntermediariBD extends BasicBD {
 			if(intermediario.getConnettorePdd() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePdd());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePdd().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePdd().getIdConnettore());
 			}
 			
 			if(intermediario.getConnettorePddRecuperoRT() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddRecuperoRT());
-
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePddRecuperoRT().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddRecuperoRT().getIdConnettore());
 			}
-			
+
+			if(intermediario.getConnettorePddACA() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddACA());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddACA().getIdConnettore());
+			}
+
+			if(intermediario.getConnettorePddGPD() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddGPD());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddGPD().getIdConnettore());
+			}
+
+			if(intermediario.getConnettorePddFR() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddFR());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddFR().getIdConnettore());
+			}
+
 			if(intermediario.getConnettoreSftp() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
-
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettoreSftp().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettoreSftp().getIdConnettore());
 			}
 
 			this.emitAudit(intermediario);
-		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -315,6 +327,21 @@ public class IntermediariBD extends BasicBD {
 			}
 		}
 
+	}
+	
+	private void insertConnettore(List<it.govpay.orm.Connettore> voConnettoreLst, String idConnettore) throws ServiceException {
+		try {
+			IExpression expDelete = this.getConnettoreService().newExpression();
+			expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, idConnettore);
+			this.getConnettoreService().deleteAll(expDelete);
+
+			for (it.govpay.orm.Connettore connettore : voConnettoreLst) {
+				this.getConnettoreService().create(connettore);
+			}
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 
 
@@ -375,7 +402,6 @@ public class IntermediariBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_INTERMEDIARIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_INTERMEDIARIO), "id");
-//			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_INTERMEDIARIO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -383,7 +409,6 @@ public class IntermediariBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_INTERMEDIARIO, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);

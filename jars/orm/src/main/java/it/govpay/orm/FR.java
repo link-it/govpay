@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -48,13 +48,17 @@ import java.io.Serializable;
  * 			&lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
- * 			&lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="ragioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="obsoleto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataOraPubblicazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataOraAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="revisione" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="idRendicontazione" type="{http://www.govpay.it/orm}id-rendicontazione" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -87,7 +91,11 @@ import java.io.Serializable;
   	"ragioneSocialePsp",
   	"ragioneSocialeDominio",
   	"obsoleto",
-  	"idRendicontazione"
+  	"dataOraPubblicazione",
+  	"dataOraAggiornamento",
+  	"revisione",
+  	"idRendicontazione",
+  	"idDominio"
   }
 )
 
@@ -242,12 +250,44 @@ public class FR extends org.openspcoop2.utils.beans.BaseBeanWithId implements Se
     this.obsoleto = obsoleto;
   }
 
+  public java.util.Date getDataOraPubblicazione() {
+    return this.dataOraPubblicazione;
+  }
+
+  public void setDataOraPubblicazione(java.util.Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+  }
+
+  public java.util.Date getDataOraAggiornamento() {
+    return this.dataOraAggiornamento;
+  }
+
+  public void setDataOraAggiornamento(java.util.Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+  }
+
+  public java.math.BigInteger getRevisione() {
+    return this.revisione;
+  }
+
+  public void setRevisione(java.math.BigInteger revisione) {
+    this.revisione = revisione;
+  }
+
   public IdRendicontazione getIdRendicontazione() {
     return this.idRendicontazione;
   }
 
   public void setIdRendicontazione(IdRendicontazione idRendicontazione) {
     this.idRendicontazione = idRendicontazione;
+  }
+
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   private static final long serialVersionUID = 1L;
@@ -318,7 +358,7 @@ public class FR extends org.openspcoop2.utils.beans.BaseBeanWithId implements Se
   protected java.lang.String codBicRiversamento;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="xml",required=true,nillable=false)
+  @XmlElement(name="xml",required=false,nillable=false)
   protected byte[] xml;
 
   @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
@@ -339,7 +379,24 @@ public class FR extends org.openspcoop2.utils.beans.BaseBeanWithId implements Se
   @XmlElement(name="obsoleto",required=true,nillable=false)
   protected Boolean obsoleto;
 
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataOraPubblicazione",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataOraPubblicazione;
+
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataOraAggiornamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataOraAggiornamento;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="revisione",required=false,nillable=false)
+  protected java.math.BigInteger revisione;
+
   @XmlElement(name="idRendicontazione",required=false,nillable=false)
   protected IdRendicontazione idRendicontazione;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
 }

@@ -1,5 +1,5 @@
 echo "Shutdown tomcat e wildfly..."
-sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone tomcat_govpay wildfly-26.1.3.Final@ndpsym
+sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone tomcat_govpay wildfly-26.1.3.Final@ndpsym wildfly-28.0.1.Final@ndpsym
 echo "Rimozione dati del simulatore pagoPA..."
 sudo rm -rf /var/govpay-ndpsym/cache/*.cache
 sudo rm -rf /var/govpay-ndpsym/cache/RH/*

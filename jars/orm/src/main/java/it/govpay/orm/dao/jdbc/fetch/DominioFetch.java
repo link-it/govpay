@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -90,6 +90,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "intermediato", Dominio.model().INTERMEDIATO.getFieldType()));
 				setParameter(object, "setTassonomiaPagoPA", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tassonomia_pago_pa", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()));
+				setParameter(object, "setScaricaFr", Dominio.model().SCARICA_FR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "scarica_fr", Dominio.model().SCARICA_FR.getFieldType()));
 				return object;
 			}
 			
@@ -146,6 +148,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"intermediato"));
 				setParameter(object, "setTassonomiaPagoPA", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType(),
 					this.getObjectFromMap(map,"tassonomiaPagoPA"));
+				setParameter(object, "setScaricaFr", Dominio.model().SCARICA_FR.getFieldType(),
+					this.getObjectFromMap(map,"scaricaFr"));
 				return object;
 			}
 			

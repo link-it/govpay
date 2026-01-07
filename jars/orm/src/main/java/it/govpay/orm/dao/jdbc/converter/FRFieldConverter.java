@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -356,6 +356,27 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "obsoleto";
 			}
 		}
+		if(field.equals(FR.model().DATA_ORA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ora_pubblicazione";
+			}else{
+				return "data_ora_pubblicazione";
+			}
+		}
+		if(field.equals(FR.model().DATA_ORA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ora_aggiornamento";
+			}else{
+				return "data_ora_aggiornamento";
+			}
+		}
+		if(field.equals(FR.model().REVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".revisione";
+			}else{
+				return "revisione";
+			}
+		}
 		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_rendicontazione";
@@ -368,6 +389,13 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".iuv";
 			}else{
 				return "iuv";
+			}
+		}
+		if(field.equals(FR.model().ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
 			}
 		}
 
@@ -506,11 +534,23 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(FR.model().OBSOLETO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
+		if(field.equals(FR.model().DATA_ORA_PUBBLICAZIONE)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().DATA_ORA_AGGIORNAMENTO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().REVISIONE)){
+			return this.toTable(FR.model(), returnAlias);
+		}
 		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
 			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
 		}
 		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
 			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
+		}
+		if(field.equals(FR.model().ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(FR.model().ID_DOMINIO, returnAlias);
 		}
 
 
@@ -560,6 +600,9 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(FR.model().ID_RENDICONTAZIONE)){
 			return "rendicontazioni";
+		}
+		if(model.equals(FR.model().ID_DOMINIO)){
+			return "domini";
 		}
 
 

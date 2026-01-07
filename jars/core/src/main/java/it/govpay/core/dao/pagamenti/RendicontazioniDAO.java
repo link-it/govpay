@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -54,7 +54,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		super();
 	}
 
-	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException {
+	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException, NotFoundException {
 		FrBD rendicontazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
@@ -211,9 +211,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			// richiesto ordinamento
 			ListaFrDTO frDTO = new ListaFrDTO(listaRendicontazioniDTO.getUser());
 			if(listaRendicontazioniDTO.isOrderEnabled()) {
-				for (String nomeImpostato : listaRendicontazioniDTO.getFieldList()) {
-					frDTO.setOrderBy(nomeImpostato);
-				}
+				frDTO.setOrderBy(listaRendicontazioniDTO.getOrderByRaw());
 			} else { // default
 				filter.setFilterSortList(frDTO.getFieldSortList());
 			}

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -53,6 +53,9 @@ import java.io.Serializable;
  * 			&lt;element name="frRagioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="frRagioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="frObsoleto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="frDataOraPubblicazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="frDataOraAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="frRevisione" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="rndIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="rndIur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="rndIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/&gt;
@@ -179,6 +182,9 @@ import java.io.Serializable;
   	"frRagioneSocialePsp",
   	"frRagioneSocialeDominio",
   	"frObsoleto",
+  	"frDataOraPubblicazione",
+  	"frDataOraAggiornamento",
+  	"frRevisione",
   	"rndIuv",
   	"rndIur",
   	"rndIndiceDati",
@@ -418,6 +424,30 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBeanWi
 
   public void setFrObsoleto(Boolean frObsoleto) {
     this.frObsoleto = frObsoleto;
+  }
+
+  public java.util.Date getFrDataOraPubblicazione() {
+    return this.frDataOraPubblicazione;
+  }
+
+  public void setFrDataOraPubblicazione(java.util.Date frDataOraPubblicazione) {
+    this.frDataOraPubblicazione = frDataOraPubblicazione;
+  }
+
+  public java.util.Date getFrDataOraAggiornamento() {
+    return this.frDataOraAggiornamento;
+  }
+
+  public void setFrDataOraAggiornamento(java.util.Date frDataOraAggiornamento) {
+    this.frDataOraAggiornamento = frDataOraAggiornamento;
+  }
+
+  public java.math.BigInteger getFrRevisione() {
+    return this.frRevisione;
+  }
+
+  public void setFrRevisione(java.math.BigInteger frRevisione) {
+    this.frRevisione = frRevisione;
   }
 
   public java.lang.String getRndIuv() {
@@ -1277,6 +1307,20 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBeanWi
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="frObsoleto",required=true,nillable=false)
   protected Boolean frObsoleto;
+
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="frDataOraPubblicazione",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date frDataOraPubblicazione;
+
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="frDataOraAggiornamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date frDataOraAggiornamento;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="frRevisione",required=false,nillable=false)
+  protected java.math.BigInteger frRevisione;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="rndIuv",required=true,nillable=false)

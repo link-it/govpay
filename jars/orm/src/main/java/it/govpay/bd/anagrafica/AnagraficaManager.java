@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -274,73 +274,73 @@ public class AnagraficaManager {
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(keyPrefID + applicazione.getId(), CACHE_KEY_GET_APPLICAZIONE));} catch (UtilsException e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(keyPrefCODICE + applicazione.getCodApplicazione(), CACHE_KEY_GET_APPLICAZIONE));} catch (UtilsException e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(applicazione.getPrincipal(), CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL));} catch (UtilsException e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(applicazione.getPrincipal(), CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT));} catch (UtilsException e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(keyPrefID + applicazione.getId(), CACHE_KEY_GET_APPLICAZIONE));} catch (UtilsException e) {/* donothing */}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(keyPrefCODICE + applicazione.getCodApplicazione(), CACHE_KEY_GET_APPLICAZIONE));} catch (UtilsException e) {/* donothing */}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(applicazione.getPrincipal(), CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL));} catch (UtilsException e) {/* donothing */}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(applicazione.getPrincipal(), CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Dominio dominio) {
-		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(keyPrefID + dominio.getId(), CACHE_KEY_GET_DOMINIO));} catch (UtilsException e) {	}
-		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(keyPrefCODICE + dominio.getCodDominio(), CACHE_KEY_GET_DOMINIO));} catch (UtilsException e) {	}
+		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(keyPrefID + dominio.getId(), CACHE_KEY_GET_DOMINIO));} catch (UtilsException e) {/* donothing */}
+		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(keyPrefCODICE + dominio.getCodDominio(), CACHE_KEY_GET_DOMINIO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(UnitaOperativa uo) {
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(keyPrefID + uo.getId(), CACHE_KEY_GET_UNITA_OPERATIVA));} catch (UtilsException e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(keyPrefCODICE + uo.getIdDominio() + "_" + uo.getCodUo(), CACHE_KEY_GET_UNITA_OPERATIVA));} catch (UtilsException e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(uo.getIdDominio() + "_" + uo.getAnagrafica().getCodUnivoco(), CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE));} catch (UtilsException e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(keyPrefID + uo.getId(), CACHE_KEY_GET_UNITA_OPERATIVA));} catch (UtilsException e) {/* donothing */}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(keyPrefCODICE + uo.getIdDominio() + "_" + uo.getCodUo(), CACHE_KEY_GET_UNITA_OPERATIVA));} catch (UtilsException e) {/* donothing */}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(uo.getIdDominio() + "_" + uo.getAnagrafica().getCodUnivoco(), CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(IbanAccredito iban) {
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefID + iban.getId(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {	}
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {	}
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getIdDominio() + "_" + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefID + iban.getId(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {/* donothing */}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {/* donothing */}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getIdDominio() + "_" + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Intermediario intermediario) {
-		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(keyPrefID + intermediario.getId(), CACHE_KEY_GET_INTERMEDIARIO));} catch (UtilsException e) {	}
-		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(keyPrefCODICE + intermediario.getCodIntermediario(), CACHE_KEY_GET_INTERMEDIARIO));} catch (UtilsException e) {	}
+		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(keyPrefID + intermediario.getId(), CACHE_KEY_GET_INTERMEDIARIO));} catch (UtilsException e) {/* donothing */}
+		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(keyPrefCODICE + intermediario.getCodIntermediario(), CACHE_KEY_GET_INTERMEDIARIO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Operatore operatore) {
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(String.valueOf(operatore.getId()), CACHE_KEY_GET_OPERATORE));} catch (UtilsException e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(operatore.getUtenza().getPrincipal(), CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL));} catch (UtilsException e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(operatore.getUtenza().getPrincipal(), CACHE_KEY_GET_OPERATORE_BY_SUBJECT));} catch (UtilsException e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(String.valueOf(operatore.getId()), CACHE_KEY_GET_OPERATORE));} catch (UtilsException e) {/* donothing */}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(operatore.getUtenza().getPrincipal(), CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL));} catch (UtilsException e) {/* donothing */}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(operatore.getUtenza().getPrincipal(), CACHE_KEY_GET_OPERATORE_BY_SUBJECT));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Utenza utenza) {
-		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(keyPrefID + utenza.getId(), CACHE_KEY_GET_UTENZA));} catch (UtilsException e) {	}
-		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(keyPrefCODICE + utenza.getPrincipal(), CACHE_KEY_GET_UTENZA));} catch (UtilsException e) {	}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(keyPrefID + utenza.getId(), CACHE_KEY_GET_UTENZA));} catch (UtilsException e) {/* donothing */}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(keyPrefCODICE + utenza.getPrincipal(), CACHE_KEY_GET_UTENZA));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Stazione stazione) {
-		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(keyPrefID + stazione.getId(), CACHE_KEY_GET_STAZIONE));} catch (UtilsException e) {	}
-		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(keyPrefCODICE + stazione.getCodStazione(), CACHE_KEY_GET_STAZIONE));} catch (UtilsException e) {	}
+		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(keyPrefID + stazione.getId(), CACHE_KEY_GET_STAZIONE));} catch (UtilsException e) {/* donothing */}
+		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(keyPrefCODICE + stazione.getCodStazione(), CACHE_KEY_GET_STAZIONE));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Tributo tributo) {
-		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(keyPrefID + tributo.getId(), CACHE_KEY_GET_TRIBUTO));} catch (UtilsException e) {	}
-		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(keyPrefCODICE + tributo.getIdDominio() + "_" + tributo.getCodTributo(), CACHE_KEY_GET_TRIBUTO));} catch (UtilsException e) {	}
+		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(keyPrefID + tributo.getId(), CACHE_KEY_GET_TRIBUTO));} catch (UtilsException e) {/* donothing */}
+		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(keyPrefCODICE + tributo.getIdDominio() + "_" + tributo.getCodTributo(), CACHE_KEY_GET_TRIBUTO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(TipoTributo tipoTributo) {
-		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(keyPrefID + tipoTributo.getId(), CACHE_KEY_GET_TIPO_TRIBUTO));} catch (UtilsException e) {	}
-		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoTributo.getCodTributo(), CACHE_KEY_GET_TIPO_TRIBUTO));} catch (UtilsException e) {	}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(keyPrefID + tipoTributo.getId(), CACHE_KEY_GET_TIPO_TRIBUTO));} catch (UtilsException e) {/* donothing */}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoTributo.getCodTributo(), CACHE_KEY_GET_TIPO_TRIBUTO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(TipoVersamento tipoVersamento) {
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamento.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO));} catch (UtilsException e) {	}
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamento.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO));} catch (UtilsException e) {	}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamento.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO));} catch (UtilsException e) {/* donothing */}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamento.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(TipoVersamentoDominio tipoVersamentoDominio) {
-		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamentoDominio.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {	}
-		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_" + tipoVersamentoDominio.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {	}
-		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_tv_pagamentoPortaleForm", CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {	}
+		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamentoDominio.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {/* donothing */}
+		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_" + tipoVersamentoDominio.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {/* donothing */}
+		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_tv_pagamentoPortaleForm", CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static void removeFromCache(Configurazione configurazione) {
-		try {configurazioneBDCacheWrapper.removeObjectCache(configurazioneBDCacheWrapper.getKeyCache(CACHE_KEY_GET_CONFIGURAZIONE, CACHE_KEY_GET_CONFIGURAZIONE));} catch (UtilsException e) {	}
+		try {configurazioneBDCacheWrapper.removeObjectCache(configurazioneBDCacheWrapper.getKeyCache(CACHE_KEY_GET_CONFIGURAZIONE, CACHE_KEY_GET_CONFIGURAZIONE));} catch (UtilsException e) {/* donothing */}
 	}
 	
 	public static Dominio getDominio(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
@@ -350,14 +350,14 @@ public class AnagraficaManager {
 			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Dominio) dominio;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}
@@ -369,14 +369,14 @@ public class AnagraficaManager {
 			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codDominio, method, codDominio);
 			return (Dominio) dominio;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}
@@ -389,8 +389,8 @@ public class AnagraficaManager {
 			Object codiciDomini = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_COD_DOMINI, method);
 			return (List<String>) codiciDomini;
 		} catch (Throwable t) {
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}  
@@ -403,8 +403,8 @@ public class AnagraficaManager {
 			Object codiciApplicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_COD_APPLICAZIONI, method);
 			return (List<String>) codiciApplicazione;
 		} catch (Throwable t) {
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}  
@@ -416,14 +416,14 @@ public class AnagraficaManager {
 			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -435,14 +435,14 @@ public class AnagraficaManager {
 			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codApplicazione, method, codApplicazione);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -454,14 +454,14 @@ public class AnagraficaManager {
 			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}  
@@ -473,14 +473,14 @@ public class AnagraficaManager {
 			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -493,14 +493,14 @@ public class AnagraficaManager {
 			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -512,14 +512,14 @@ public class AnagraficaManager {
 			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codUo, method, idDominio, codUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -531,14 +531,14 @@ public class AnagraficaManager {
 			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, idDominio + "_" + codUnivocoUo, method, idDominio, codUnivocoUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -551,17 +551,17 @@ public class AnagraficaManager {
 			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 
@@ -571,17 +571,17 @@ public class AnagraficaManager {
 			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codIbanAccredito, method, idDominio, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -591,17 +591,17 @@ public class AnagraficaManager {
 			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + "IBAN_" + codIbanAccredito, method, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -611,14 +611,14 @@ public class AnagraficaManager {
 			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -630,14 +630,14 @@ public class AnagraficaManager {
 			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codIntermediario, method, codIntermediario);
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -649,17 +649,17 @@ public class AnagraficaManager {
 			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -670,17 +670,17 @@ public class AnagraficaManager {
 			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -690,17 +690,17 @@ public class AnagraficaManager {
 			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, subject, method, subject);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -710,14 +710,14 @@ public class AnagraficaManager {
 			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Utenza) utenza;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -729,14 +729,14 @@ public class AnagraficaManager {
 			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + principal, method, principal);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -749,14 +749,14 @@ public class AnagraficaManager {
 			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, subject, method, subject);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -770,14 +770,14 @@ public class AnagraficaManager {
 			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Stazione) stazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}
@@ -789,14 +789,14 @@ public class AnagraficaManager {
 			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codStazione, method, codStazione);
 			return (Stazione) stazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		}
@@ -809,17 +809,17 @@ public class AnagraficaManager {
 			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Tributo) tributo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 
@@ -829,17 +829,17 @@ public class AnagraficaManager {
 			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codTributo, method, Long.valueOf(idDominio), codTributo);
 			return (Tributo) tributo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 
@@ -849,17 +849,17 @@ public class AnagraficaManager {
 			Object tipoTributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoTributo) tipoTributo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 
@@ -869,17 +869,17 @@ public class AnagraficaManager {
 			Object tributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codTributo, method, codTributo);
 			return (TipoTributo) tributo;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -889,14 +889,14 @@ public class AnagraficaManager {
 			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -908,14 +908,14 @@ public class AnagraficaManager {
 			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codTipoVersamento, method, codTipoVersamento);
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
 		} 
@@ -927,17 +927,17 @@ public class AnagraficaManager {
 			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 
@@ -947,17 +947,17 @@ public class AnagraficaManager {
 			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codTipoVersamento, method, Long.valueOf(idDominio), codTipoVersamento);
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -968,11 +968,11 @@ public class AnagraficaManager {
 			Object tipiVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_tv_pagamentoPortaleForm", method, Long.valueOf(idDominio));
 			return (List<TipoVersamentoDominio>) tipiVersamentoDominio;
 		} catch (Throwable t) {
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 	
@@ -982,17 +982,17 @@ public class AnagraficaManager {
 			Object configurazione = getConfigurazioneBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
 			return (Configurazione) configurazione;
 		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
+			if(t instanceof NotFoundException notFoundException) {
+				throw notFoundException;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
+			if(t instanceof ServiceException serviceException) {
+				throw serviceException;
 			}
 			throw new ServiceException(t);
-		} finally {
+		} finally {/* donothing */
 		}
 	}
 

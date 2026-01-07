@@ -10,6 +10,8 @@ Background:
 * def pathServizio = '/flussiRendicontazione'
 * def rendicontazioneSchema = read('msg/rendicontazione.json')
 
+* callonce sleep(10000)
+
 Scenario Outline: Ricerca rendicontazioni da applicazione <applicazione>.
 
 Given url ragioneriaBaseurl

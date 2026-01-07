@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -32,6 +32,7 @@ import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.dao.operazioni.exception.OperazioneNonTrovataException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.LogUtils;
 
 public class OperazioniDAO extends BaseDAO{
@@ -48,8 +49,9 @@ public class OperazioniDAO extends BaseDAO{
 	public static final String ELABORAZIONE_RICONCILIAZIONI = "elaborazioneRiconciliazioni";
 	public static final String CHIUSURA_RPT_SCADUTE = "chiusuraRptScadute";
 	public static final String RECUPERO_RT = "recuperoRT";
+	public static final String INVIA_POSIZIONI_DEBITORIE_ACA = "inviaPosizioniDebitorieAca";
 
-	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException{
+	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException, GovPayException {
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
 		
 		String idOperazioneForLog = LogUtils.sanitizeForLog(leggiOperazioneDTO.getIdOperazione());
@@ -59,7 +61,12 @@ public class OperazioniDAO extends BaseDAO{
 			IContext ctx = ContextThreadLocal.get();
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
-				esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
+				// Se il batch e' abilitato usa il batch interno, altrimenti attiva il batch esterno
+				if(it.govpay.core.utils.GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()) {
+					esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
+				} else {
+					esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchFdr(ctx, leggiOperazioneDTO.isForzaEsecuzione());
+				}
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(CHIUSURA_RPT_SCADUTE)){
 				esitoOperazione = it.govpay.core.business.Operazioni.chiusuraRptScadute(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RESET_CACHE_ANAGRAFICA)){
@@ -87,6 +94,8 @@ public class OperazioniDAO extends BaseDAO{
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RECUPERO_RT)){
 				it.govpay.core.business.Operazioni.setEseguiRecuperoRT();
 				esitoOperazione = "Recupero RT schedulato";
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(INVIA_POSIZIONI_DEBITORIE_ACA)){
+				esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchAca(ctx, leggiOperazioneDTO.isForzaEsecuzione());
 			} else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
@@ -121,7 +130,8 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_RICONCILIAZIONI));
 			results.add(new LeggiOperazioneDTOResponse(RECUPERO_RT));
-			
+			results.add(new LeggiOperazioneDTOResponse(INVIA_POSIZIONI_DEBITORIE_ACA));
+
 			return new ListaOperazioniDTOResponse((long) results.size(), results);
 		}finally {
 			if(bd != null)

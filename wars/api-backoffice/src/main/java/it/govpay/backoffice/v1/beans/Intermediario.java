@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -32,6 +32,9 @@ import it.govpay.core.exceptions.IOException;
 "servizioPagoPa",
 "servizioFtp",
 "servizioPagoPaRecuperoRT",
+"servizioPagoPaACA",
+"servizioPagoPaGPD",
+"servizioPagoPaFR",
 "abilitato",
 "idIntermediario",
 "stazioni",
@@ -52,6 +55,15 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("servizioPagoPaRecuperoRT")
   private ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT = null;
+
+  @JsonProperty("servizioPagoPaACA")
+  private ConnettorePagopaACA servizioPagoPaACA = null;
+
+  @JsonProperty("servizioPagoPaGPD")
+  private ConnettorePagopaGPD servizioPagoPaGPD = null;
+
+  @JsonProperty("servizioPagoPaFR")
+  private ConnettorePagopaFR servizioPagoPaFR = null;
 
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -140,6 +152,51 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public Intermediario servizioPagoPaACA(ConnettorePagopaACA servizioPagoPaACA) {
+    this.servizioPagoPaACA = servizioPagoPaACA;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaACA")
+  public ConnettorePagopaACA getServizioPagoPaACA() {
+    return servizioPagoPaACA;
+  }
+  public void setServizioPagoPaACA(ConnettorePagopaACA servizioPagoPaACA) {
+    this.servizioPagoPaACA = servizioPagoPaACA;
+  }
+
+  /**
+   **/
+  public Intermediario servizioPagoPaGPD(ConnettorePagopaGPD servizioPagoPaGPD) {
+    this.servizioPagoPaGPD = servizioPagoPaGPD;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaGPD")
+  public ConnettorePagopaGPD getServizioPagoPaGPD() {
+    return servizioPagoPaGPD;
+  }
+  public void setServizioPagoPaGPD(ConnettorePagopaGPD servizioPagoPaGPD) {
+    this.servizioPagoPaGPD = servizioPagoPaGPD;
+  }
+
+  /**
+   **/
+  public Intermediario servizioPagoPaFR(ConnettorePagopaFR servizioPagoPaFR) {
+    this.servizioPagoPaFR = servizioPagoPaFR;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaFR")
+  public ConnettorePagopaFR getServizioPagoPaFR() {
+    return servizioPagoPaFR;
+  }
+  public void setServizioPagoPaFR(ConnettorePagopaFR servizioPagoPaFR) {
+    this.servizioPagoPaFR = servizioPagoPaFR;
+  }
+
+  /**
    * Indica lo stato di abilitazione
    **/
   public Intermediario abilitato(Boolean abilitato) {
@@ -200,6 +257,9 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.servizioPagoPa, intermediario.servizioPagoPa) &&
         Objects.equals(this.servizioFtp, intermediario.servizioFtp) &&
         Objects.equals(servizioPagoPaRecuperoRT, intermediario.servizioPagoPaRecuperoRT) &&
+        Objects.equals(servizioPagoPaACA, intermediario.servizioPagoPaACA) &&
+        Objects.equals(servizioPagoPaGPD, intermediario.servizioPagoPaGPD) &&
+        Objects.equals(servizioPagoPaFR, intermediario.servizioPagoPaFR) &&
         Objects.equals(this.abilitato, intermediario.abilitato) &&
         Objects.equals(this.idIntermediario, intermediario.idIntermediario) &&
         Objects.equals(this.stazioni, intermediario.stazioni);
@@ -207,7 +267,7 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, servizioPagoPaRecuperoRT, abilitato, idIntermediario, stazioni);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, servizioPagoPaRecuperoRT, servizioPagoPaACA, servizioPagoPaGPD, servizioPagoPaFR, abilitato, idIntermediario, stazioni);
   }
 
   public static Intermediario parse(String json) throws IOException {
@@ -229,6 +289,9 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");
     sb.append("    servizioFtp: ").append(this.toIndentedString(this.servizioFtp)).append("\n");
     sb.append("    servizioPagoPaRecuperoRT: ").append(toIndentedString(servizioPagoPaRecuperoRT)).append("\n");
+    sb.append("    servizioPagoPaACA: ").append(toIndentedString(servizioPagoPaACA)).append("\n");
+    sb.append("    servizioPagoPaGPD: ").append(toIndentedString(servizioPagoPaGPD)).append("\n");
+    sb.append("    servizioPagoPaFR: ").append(toIndentedString(servizioPagoPaFR)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("    idIntermediario: ").append(this.toIndentedString(this.idIntermediario)).append("\n");
     sb.append("    stazioni: ").append(this.toIndentedString(this.stazioni)).append("\n");

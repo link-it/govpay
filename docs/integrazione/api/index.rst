@@ -33,6 +33,9 @@ definizione OpenAPI per la documentazione di dettaglio.
      - definita dall'ente creditore
      - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml&nocors>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/v2/govpay-api-ec.yaml&nocors>`_
 
+.. warning::
+   Le **API Pagamento** sono deprecate in quanto utilizzano le API pagoPA per la gestione del Modello 1, che verrà dismesso a marzo 2026.
+
 .. toctree::
         :maxdepth: 2
 	:hidden:

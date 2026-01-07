@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -34,6 +34,9 @@ import it.govpay.core.exceptions.IOException;
 "dataFlusso",
 "trn",
 "dataRegolamento",
+"dataOraPubblicazione",
+"dataOraAggiornamento",
+"revisione",
 "idPsp",
 "ragioneSocialePsp",
 "bicRiversamento",
@@ -58,6 +61,17 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("dataRegolamento")
   private Date dataRegolamento = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataOraPubblicazione")
+  private Date dataOraPubblicazione = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataOraAggiornamento")
+  private Date dataOraAggiornamento = null;
+
+  @JsonProperty("revisione")
+  private Long revisione = null;
 
   @JsonProperty("idPsp")
   private String idPsp = null;
@@ -148,6 +162,54 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   }
   public void setDataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
+  }
+
+  /**
+   * Data di pubblicazione del flusso di rendicontazione
+   **/
+  public FlussoRendicontazioneIndex dataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+    return this;
+  }
+
+  @JsonProperty("dataOraPubblicazione")
+  public Date getDataOraPubblicazione() {
+    return this.dataOraPubblicazione;
+  }
+  public void setDataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+  }
+
+  /**
+   * Data di aggiornamento del flusso di rendicontazione
+   **/
+  public FlussoRendicontazioneIndex dataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+    return this;
+  }
+
+  @JsonProperty("dataOraAggiornamento")
+  public Date getDataOraAggiornamento() {
+    return this.dataOraAggiornamento;
+  }
+  public void setDataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+  }
+
+  /**
+   * Numero di revisione del flusso di rendicontazione
+   **/
+  public FlussoRendicontazioneIndex revisione(Long revisione) {
+    this.revisione = revisione;
+    return this;
+  }
+
+  @JsonProperty("revisione")
+  public Long getRevisione() {
+    return this.revisione;
+  }
+  public void setRevisione(Long revisione) {
+    this.revisione = revisione;
   }
 
   /**
@@ -305,6 +367,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
         Objects.equals(this.dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
         Objects.equals(this.trn, flussoRendicontazioneIndex.trn) &&
         Objects.equals(this.dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
+        Objects.equals(this.dataOraPubblicazione, flussoRendicontazioneIndex.dataOraPubblicazione) &&
+        Objects.equals(this.dataOraAggiornamento, flussoRendicontazioneIndex.dataOraAggiornamento) &&
+        Objects.equals(this.revisione, flussoRendicontazioneIndex.revisione) &&
         Objects.equals(this.idPsp, flussoRendicontazioneIndex.idPsp) &&
         Objects.equals(this.ragioneSocialePsp, flussoRendicontazioneIndex.ragioneSocialePsp) &&
         Objects.equals(this.bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
@@ -318,7 +383,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.ragioneSocialePsp, this.bicRiversamento, this.idDominio, this.ragioneSocialeDominio, this.numeroPagamenti, this.importoTotale, stato, this.segnalazioni);
+    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.dataOraPubblicazione, this.dataOraAggiornamento, this.revisione, this.idPsp, this.ragioneSocialePsp, this.bicRiversamento, this.idDominio, this.ragioneSocialeDominio, this.numeroPagamenti, this.importoTotale, stato, this.segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws IOException {
@@ -339,6 +404,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     sb.append("    dataFlusso: ").append(this.toIndentedString(this.dataFlusso)).append("\n");
     sb.append("    trn: ").append(this.toIndentedString(this.trn)).append("\n");
     sb.append("    dataRegolamento: ").append(this.toIndentedString(this.dataRegolamento)).append("\n");
+    sb.append("    dataOraPubblicazione: ").append(this.toIndentedString(this.dataOraPubblicazione)).append("\n");
+    sb.append("    dataOraAggiornamento: ").append(this.toIndentedString(this.dataOraAggiornamento)).append("\n");
+    sb.append("    revisione: ").append(this.toIndentedString(this.revisione)).append("\n");
     sb.append("    idPsp: ").append(this.toIndentedString(this.idPsp)).append("\n");
     sb.append("    ragioneSocialePsp: ").append(this.toIndentedString(this.ragioneSocialePsp)).append("\n");
     sb.append("    bicRiversamento: ").append(this.toIndentedString(this.bicRiversamento)).append("\n");

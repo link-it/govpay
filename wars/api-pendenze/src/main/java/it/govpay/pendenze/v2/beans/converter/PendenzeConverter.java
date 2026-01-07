@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -45,6 +45,7 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.pendenze.v2.Allegati;
 import it.govpay.pendenze.v2.beans.AllegatoPendenza;
 import it.govpay.pendenze.v2.beans.Avviso;
@@ -77,7 +78,7 @@ public class PendenzeConverter {
 
 	private PendenzeConverter() {}
 
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts, List<Allegato> allegati) throws ServiceException, IOException, ValidationException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts, List<Allegato> allegati) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 
@@ -114,16 +115,14 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 		break;
-		case ESEGUITO_SENZA_RPT:
-		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
+		case ESEGUITO_SENZA_RPT, ESEGUITO: 
 			statoPendenza = StatoPendenza.ESEGUITA;
 			if(versamento.getStatoPagamento() != null) {
 				switch (versamento.getStatoPagamento()) {
 				case INCASSATO:
 					statoPendenza = StatoPendenza.INCASSATA;
 					break;
-				case NON_PAGATO:
-				case PAGATO:
+				case NON_PAGATO, PAGATO:
 				default:
 					break;
 				}
@@ -161,13 +160,15 @@ public class PendenzeConverter {
 		List<RppIndex> rpps = new ArrayList<>();
 		if(rpts != null && !rpts.isEmpty()) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper)));
+				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento()));
 			}
 		}
 		rsModel.setRpp(rpps);
 
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
-		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
+		if(StringUtils.isNotBlank(versamento.getAnomalie())) {
+			rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
+		}
 
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione());
@@ -178,13 +179,10 @@ public class PendenzeConverter {
 		}
 
 		if(versamento.getTipo() != null) {
-			switch (versamento.getTipo()) {
-			case DOVUTO:
+			if(versamento.getTipo().equals(TipologiaTipoVersamento.DOVUTO)) {
 				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
+			} else {
 				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
 			}
 		}
 
@@ -199,8 +197,6 @@ public class PendenzeConverter {
 	private static List<Segnalazione> unmarshall(String anomalie) {
 		List<Segnalazione> list = new ArrayList<>();
 
-		if(anomalie == null || anomalie.isEmpty()) return null;
-
 		String[] split = anomalie.split("\\|");
 		for(String s : split){
 			String[] split2 = s.split("#");
@@ -212,7 +208,7 @@ public class PendenzeConverter {
 		return list;
 	}
 
-	public static Documento toDocumentoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Documento documento ) throws ServiceException {
+	public static Documento toDocumentoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Documento documento ) {
 		Documento rsModel = new Documento();
 
 		rsModel.setDescrizione(documento.getDescrizione());
@@ -282,15 +278,14 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 			break;
-		case ESEGUITO_SENZA_RPT:
-		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
+		case ESEGUITO_SENZA_RPT, ESEGUITO: 
+			statoPendenza = StatoPendenza.ESEGUITA;
 			if(versamento.getStatoPagamento() != null) {
 				switch (versamento.getStatoPagamento()) {
 				case INCASSATO:
 					statoPendenza = StatoPendenza.INCASSATA;
 					break;
-				case NON_PAGATO:
-				case PAGATO:
+				case NON_PAGATO, PAGATO:
 				default:
 					break;
 				}
@@ -328,13 +323,10 @@ public class PendenzeConverter {
 		}
 
 		if(versamento.getTipo() != null) {
-			switch (versamento.getTipo()) {
-			case DOVUTO:
+			if(versamento.getTipo().equals(TipologiaTipoVersamento.DOVUTO)) {
 				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
+			} else {
 				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
 			}
 		}
 
@@ -344,7 +336,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
-	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice, BDConfigWrapper configWrapper) throws ServiceException, IOException, ValidationException {
+	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice, BDConfigWrapper configWrapper) throws ServiceException, IOException {
 		VocePendenza rsModel = new VocePendenza();
 
 		if(singoloVersamento.getDatiAllegati() != null)
@@ -392,7 +384,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, GovPayException, IOException {
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, GovPayException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -466,7 +458,7 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException, IOException {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws GovPayException, IOException {
 
 		if(voci != null && !voci.isEmpty()) {
 			for (NuovaVocePendenza vocePendenza : voci) {
@@ -504,17 +496,15 @@ public class PendenzeConverter {
 				sv.setContabilita(ContabilitaConverter.toStringDTO(vocePendenza.getContabilita()));
 				sv.setMetadata(toMetadataDTO(vocePendenza.getMetadata()));
 
-				if(vocePendenza.getContabilita() != null) {
-					if(vocePendenza.getContabilita().getQuote() != null) {
-						BigDecimal somma = BigDecimal.ZERO;
-						for (QuotaContabilita voceContabilita : vocePendenza.getContabilita().getQuote()) {
-							somma = somma.add(voceContabilita.getImporto());
-						}
+				if(vocePendenza.getContabilita() != null && vocePendenza.getContabilita().getQuote() != null) {
+					BigDecimal somma = BigDecimal.ZERO;
+					for (QuotaContabilita voceContabilita : vocePendenza.getContabilita().getQuote()) {
+						somma = somma.add(voceContabilita.getImporto());
+					}
 
-						if(somma.compareTo(vocePendenza.getImporto()) != 0) {
-							throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
-								Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
-						}
+					if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+						throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
+							Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
 					}
 				}
 				versamento.getSingoloVersamento().add(sv);

@@ -7,7 +7,7 @@
           <div class="card-header" id="headGde">
             <span class="mb-0">
               <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#gde" aria-expanded="true" aria-controls="gde">
-                Giornale degli Eventi
+                Registrazione degli Eventi
               </button>
             </span>
           </div>
@@ -282,6 +282,30 @@
                 </mat-tab-group>
                 <div class="text-right p-3">
                   <button mat-button color="accent" type="submit" [disabled]="!gdeForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headServizioGDE">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#servizioGDE" aria-expanded="false" aria-controls="servizioGDE">
+                Servizio Giornale Degli Eventi
+              </button>
+            </span>
+          </div>
+          <div id="servizioGDE" class="collapse" aria-labelledby="headServizioGDE" data-parent="#settings">
+            <div class="card-body">
+              <form class="w-100 px-4 pt-4 pb-0" [formGroup]="servizioGDEForm" novalidate (ngSubmit)="onSubmit('servizioGDEForm', servizioGDEForm.value)">
+                <mat-slide-toggle class="mb-3" color="accent" formControlName="servizioGDEAbilitato_ctrl"
+                  (change)="_toggleValidators($event, 'servizioGDEForm', { all: false, ctrls: ['servizioGDEUrl_ctrl'], disable: true })">Abilitato</mat-slide-toggle>
+                <mat-form-field class="w-100 mb-3">
+                  <input matInput type="text" placeholder="URL" formControlName="servizioGDEUrl_ctrl" [required]="!!_servizioGDEAbilitato.value">
+                </mat-form-field>
+                <link-ssl-config #sslConfig [fGroup]="servizioGDEForm" [json]="json?.servizioGDE?.auth" [required]="!!_servizioGDEAbilitato.value"></link-ssl-config>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!servizioGDEForm.valid">Salva</button>
                 </div>
               </form>
             </div>

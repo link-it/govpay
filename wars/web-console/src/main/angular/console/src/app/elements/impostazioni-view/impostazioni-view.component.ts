@@ -31,6 +31,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   protected _sslControllers: string[] = ['cryptoType_ctrl'];
 
   protected gdeForm: FormGroup;
+  protected servizioGDEForm: FormGroup;
   protected serverForm: FormGroup;
   protected avvisaturaAppIOForm: FormGroup;
   protected appIOBatchForm: FormGroup;
@@ -43,6 +44,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   protected _truststoreLocation: FormControl = new FormControl();
   protected _keystoreLocation: FormControl = new FormControl();
   protected _appIOBatchAbilitato: FormControl = new FormControl(false);
+  protected _servizioGDEAbilitato: FormControl = new FormControl(false);
   protected _protezioneAbilitato: FormControl = new FormControl(false);
 
   constructor(protected us: UtilService, protected gps: GovpayService) {
@@ -82,6 +84,10 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       enteDS_ctrl: new FormControl('mai'),
       apiBEIODS_ctrl: new FormControl('mai'),
       apiMJPPADS_ctrl: new FormControl('mai')
+    });
+    this.servizioGDEForm = new FormGroup({
+      servizioGDEAbilitato_ctrl: this._servizioGDEAbilitato,
+      servizioGDEUrl_ctrl: new FormControl('')
     });
     this.serverForm = new FormGroup({
       serverAbilitato_ctrl: this._serverAbilitato,
@@ -254,6 +260,11 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       }
     }
 
+    if (this.json.servizioGDE) {
+      this.servizioGDEForm.controls['servizioGDEAbilitato_ctrl'].setValue(this.json.servizioGDE.abilitato || false);
+      this.servizioGDEForm.controls['servizioGDEUrl_ctrl'].setValue(this.json.servizioGDE.url || '');
+    }
+
     if (this.json.mailBatch) {
       this.serverForm.controls['serverAbilitato_ctrl'].setValue(this.json.mailBatch.abilitato || false);
       if (this.json.mailBatch.mailserver) {
@@ -412,6 +423,19 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   onSubmit(form: string, values: any) {
     let _bodyPatch: any = {};
     switch(form) {
+      case 'servizioGDEForm':
+        const _authGDE = this.sslConfig.mapToJson();
+        _bodyPatch = [{
+          op: UtilService.PATCH_METHODS.REPLACE,
+          path: "/servizioGDE",
+          value: {
+            abilitato: values.servizioGDEAbilitato_ctrl,
+            url: values.servizioGDEUrl_ctrl,
+            auth: _authGDE
+          }
+        }];
+        if(_authGDE == null) { delete _bodyPatch[0].value.auth; }
+        break;
       case 'serverForm':
         _bodyPatch = [];
         const _obj: any = {

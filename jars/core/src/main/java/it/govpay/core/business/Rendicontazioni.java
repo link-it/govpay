@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -104,30 +104,12 @@ import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
-
+/**
+ * @deprecated Deprecato dalla versione 3.8.2, sarà rimosso nella versione 3.9.0
+ * Utilizzare il componente govpay-fdr-batch.            
+ */
+@Deprecated(forRemoval = true, since = "3.8.2")
 public class Rendicontazioni {
-
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_OK = "rendicontazioni.acquisizioneOk";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA = "rendicontazioni.acquisizioneFlussoOkAnomalia";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK = "rendicontazioni.acquisizioneFlussoOk";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_NUMERO_RENDICONTAZIONI_ERRATO = "rendicontazioni.numeroRendicontazioniErrato";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_TOTALE_ERRATO = "rendicontazioni.importoTotaleErrato";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_POLI_PAGAMENTO = "rendicontazioni.poliPagamento";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_NO_PAGAMENTO = "rendicontazioni.noPagamento";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_VERSAMENTO_MALFORMATO = "rendicontazioni.senzaRptVersamentoMalformato";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_NO_VERSAMENTO = "rendicontazioni.senzaRptNoVersamento";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_ERRATO = "rendicontazioni.importoErrato";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_STORNO_ERRATO = "rendicontazioni.importoStornoErrato";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ESITO_SCONOSCIUTO = "rendicontazioni.esitoSconosciuto";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_DOMINIO_NON_CENSITO = "rendicontazioni.acquisizioneFlussoDominioNonCensito";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO = "rendicontazioni.acquisizioneFlusso";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO = "rendicontazioni.acquisizioneFlussoKo";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL = "rendicontazioni.acquisizioneFlussoFail";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE = "rendicontazioni.acquisizione";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_OK = "rendicontazioni.acquisizioneFlussiOk";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO = "rendicontazioni.acquisizioneFlussiKo";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL = "rendicontazioni.acquisizioneFlussiFail";
-	private static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI = "rendicontazioni.acquisizioneFlussi";
 
 	public class DownloadRendicontazioniResponse {
 
@@ -229,7 +211,7 @@ public class Rendicontazioni {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		LogUtils.logInfo(log, "Acquisizione dei flussi di rendicontazione in corso...");
 		try {
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE);
 			DominiBD dominiBD = new DominiBD(ctx.getTransactionId());
 			Giornale giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 
@@ -243,6 +225,7 @@ public class Rendicontazioni {
 
 				DominioFilter filter = dominiBD.newFilter();
 				filter.setCodStazione(stazione.getCodStazione());
+				filter.setScaricaFr(Boolean.TRUE);
 				List<Dominio> lstDomini = dominiBD.findAll(filter);
 
 				// La lista deve essere richiesta per dominio visto che pagoPA non garantisce l'univocita globale per idFlusso
@@ -276,10 +259,16 @@ public class Rendicontazioni {
 							String codDominioFlussoRendicontazioneDaFileSystem = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
 							LogUtils.logInfo(log, "Aggiungo Flusso di Rendicontazione da fileSystem: [{}, {}, {}]", codDominioFlussoRendicontazioneDaFileSystem, 
 									idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+							// verifico che il dominio del flusso da file sia censito
+							AnagraficaManager.getDominio(configWrapper, codDominioFlussoRendicontazioneDaFileSystem);
+							
 							// Aggiungo la rendicontazione in testa alla lista per processarla prima di quelle da nodo 
 							flussiDaPagoPA.add(0, new RendicontazioneScaricata(idRendicontazione, codDominioFlussoRendicontazioneDaFileSystem, xmlfile));
 						} catch (JAXBException| SAXException | IOException e) {
 							LogUtils.logError(log, MessageFormat.format("Impossibile acquisire il flusso di rendicontazione da file: {0}", xmlfile.getAbsolutePath()), e);
+						} catch (NotFoundException e) {
+							String errore = MessageFormat.format("Dominio del flusso di rendicontazione da file non censito: {0}, il file non verra' acquisito", e.getMessage());
+							LogUtils.logError(log, errore, e);
 						}
 					}
 				} else {
@@ -344,7 +333,7 @@ public class Rendicontazioni {
 						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_STAZIONE, stazione.getCodStazione()));
 						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ID_FLUSSO, idRendicontazione.getIdentificativoFlusso()));
 						appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, rnd.getCodDominio()));
-						
+
 						if(rnd.getFrFile() == null) {
 							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE);
 
@@ -362,31 +351,14 @@ public class Rendicontazioni {
 								risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso);
 								eventoCtx.setEsito(Esito.OK);
 							} catch (ClientException e) {
-								if(eventoCtx != null) {
-									if(e instanceof ClientException clientException) {
-										eventoCtx.setSottotipoEsito(clientException.getResponseCode() + "");
-									} else {
-										eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-									}
-									eventoCtx.setEsito(Esito.FAIL);
-									eventoCtx.setDescrizioneEsito(e.getMessage());
-									eventoCtx.setException(e);
-								}
-								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-								rnd.getErrori().add(MessageFormat.format("Richiesta al nodo fallita: {0}.", e.getMessage()));
-								LogUtils.logError(log, MessageFormat.format("Richiesta flusso rendicontazione [{0}] fallita: {1}", idRendicontazione.getIdentificativoFlusso(), e.getMessage()), e);
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, e.getMessage());
+								String errore = handleClientException(e, eventoCtx, "Richiesta flusso rendicontazione",
+										idRendicontazione.getIdentificativoFlusso(), ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL);
+								rnd.getErrori().add(errore);
 								continue;
 							} catch (ClientInitializeException e) {
-								eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-								eventoCtx.setEsito(Esito.FAIL);
-								eventoCtx.setDescrizioneEsito(e.getMessage());
-								eventoCtx.setException(e);
-
-								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-								rnd.getErrori().add(MessageFormat.format("Creazione client per la richiesta al nodo fallita: {0}.", e.getMessage()));
-								LogUtils.logError(log, MessageFormat.format("Creazione client per la richiesta flusso rendicontazione [{0}] fallita: {1}", idRendicontazione.getIdentificativoFlusso(), e.getMessage()), e);
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, e.getMessage());
+								String errore = handleClientInitializeException(e, eventoCtx, "Richiesta flusso rendicontazione",
+										idRendicontazione.getIdentificativoFlusso(), ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL);
+								rnd.getErrori().add(errore);
 								continue;
 							}
 
@@ -394,7 +366,7 @@ public class Rendicontazioni {
 								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 								rnd.getErrori().add(MessageFormat.format("Richiesta al nodo fallita: {0} {1}.", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString()));
 								LogUtils.logError(log, MessageFormat.format("Richiesta flusso rendicontazione [{0}] fallita: {1} {2}", idRendicontazione.getIdentificativoFlusso(), risposta.getFault().getFaultCode(), risposta.getFault().getFaultString()));
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO, risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO, risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
 								if(eventoCtx != null) {
 									eventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
 									eventoCtx.setEsito(Esito.KO);
@@ -409,7 +381,7 @@ public class Rendicontazioni {
 								} catch (IOException e) {
 									rnd.getErrori().add(MessageFormat.format("Lettura del flusso fallita: {0}.", e.getMessage()));
 									LogUtils.logError(log, "Errore durante la lettura del flusso di rendicontazione", e);
-									MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, "Lettura del flusso fallita: " + e);
+									MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, "Lettura del flusso fallita: " + e);
 									continue;
 								}
 							}
@@ -419,7 +391,7 @@ public class Rendicontazioni {
 							} catch (IOException e) {
 								rnd.getErrori().add(MessageFormat.format("Lettura del flusso fallita: {0}.", e.getMessage()));
 								LogUtils.logError(log, "Errore durante la lettura del flusso di rendicontazione da file: " + rnd.getFrFile().getAbsolutePath(), e);
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, "Lettura del flusso fallita: " + e);
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, "Lettura del flusso fallita: " + e);
 								continue;
 							}
 						}
@@ -430,14 +402,17 @@ public class Rendicontazioni {
 						} catch (JAXBException | SAXException e) {
 							rnd.getErrori().add(MessageFormat.format("Parsing del flusso fallita: {0}.", e.getMessage()));
 							LogUtils.logError(log, "Errore durante il parsing del flusso di rendicontazione", e);
-							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, "Errore durante il parsing del flusso di rendicontazione: " + e);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_FAIL, "Errore durante il parsing del flusso di rendicontazione: " + e);
 							continue;
 						}
 
 						LogUtils.logInfo(log, "Ricevuto flusso rendicontazione per {} singoli pagamenti", flussoRendicontazione.getDatiSingoliPagamentis().size());
 
-						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO);
 						appContext.getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
+
+						// decide se avviare il recupero RT per i pagamenti rendicontati
+						boolean avviaRecuperoRT = false;
 
 						Fr fr = new Fr();
 						fr.setObsoleto(false);
@@ -464,19 +439,29 @@ public class Rendicontazioni {
 
 						Dominio dominio = null;
 						try {
-							codDominio = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
+							// prelevo il cod dominio dalla lista dei metadati, in questo modo evito evito problemi di foreign key.
+							codDominio = rnd.getCodDominio();
 							ragioneSocialeDominio = flussoRendicontazione.getIstitutoRicevente().getDenominazioneRicevente();
 							fr.setCodDominio(codDominio);
 							fr.setRagioneSocialeDominio(ragioneSocialeDominio);
 							appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
 							dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+							fr.setIdDominio(dominio.getId());
 						} catch (ServiceException | NotFoundException e) {
 							if(codDominio == null) {
 								codDominio = "????";
 								appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, "null"));
 							}
-							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_DOMINIO_NON_CENSITO);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_DOMINIO_NON_CENSITO);
 							LogUtils.logWarn(log, "Il dominio [{}] del flusso di rendicontazione non e' censito", codDominio);
+						}
+						
+						// se il dominio contenuto nel tracciato xml e' diverso da quello previsto emetto un warning
+						if(!codDominio.equals(flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco())){
+							String errorMsg = MessageFormat.format("Il dominio indicato nel flusso di rendicontazione [{0}] non corrisponde a quello previsto [{1}]",
+									flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco(),	codDominio);
+							fr.addAnomalia("007116", errorMsg);
+							LogUtils.logWarn(log, errorMsg);
 						}
 
 						BigDecimal totaleImportiRendicontati = BigDecimal.ZERO;
@@ -499,7 +484,7 @@ public class Rendicontazioni {
 							try {
 								rendicontazione.setEsito(EsitoRendicontazione.toEnum(dsp.getCodiceEsitoSingoloPagamento()));
 							} catch (CodificaInesistenteException e) {
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ESITO_SCONOSCIUTO, iuv, iur, dsp.getCodiceEsitoSingoloPagamento() == null ? "null" : dsp.getCodiceEsitoSingoloPagamento());
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ESITO_SCONOSCIUTO, iuv, iur, dsp.getCodiceEsitoSingoloPagamento() == null ? "null" : dsp.getCodiceEsitoSingoloPagamento());
 								rendicontazione.addAnomalia("007110", MessageFormat.format("Codice esito [{0}] sconosciuto", dsp.getCodiceEsitoSingoloPagamento()));
 							}
 
@@ -515,8 +500,11 @@ public class Rendicontazioni {
 							it.govpay.bd.model.Pagamento pagamento = null;
 							try {
 								pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur, indiceDati);
-
+								
 								// Pagamento trovato. Faccio i controlli semantici
+								LogUtils.logDebug(log, "Pagamento trovato [Dominio:{} Iuv:{} Iur:{} Indice:{}] - ID:{} ImportoPagato:{} ImportoRevocato:{} IdSingoloVersamento:{}",
+								  codDominio, iuv, iur, indiceDati, pagamento.getId(), pagamento.getImportoPagato(), pagamento.getImportoRevocato(), pagamento.getIdSingoloVersamento());
+
 								rendicontazione.setIdPagamento(pagamento.getId());
 
 								// imposto l'id singolo versamento
@@ -525,7 +513,7 @@ public class Rendicontazioni {
 								// Verifico l'importo
 								if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {
 									if(pagamento.getImportoRevocato().compareTo(importoRendicontato.abs()) != 0) {
-										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_STORNO_ERRATO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_STORNO_ERRATO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 										LogUtils.logInfo(log, "Revoca [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: l''importo rendicontato [{}] non corrisponde a quanto stornato [{}]",
 												codDominio, iuv, iur, indiceDati, importoRendicontato.doubleValue(), pagamento.getImportoRevocato().doubleValue());
 										rendicontazione.addAnomalia("007112", MessageFormat.format("L''importo rendicontato [{0}] non corrisponde a quanto stornato [{1}]",
@@ -534,7 +522,7 @@ public class Rendicontazioni {
 
 								} else {
 									if(pagamento.getImportoPagato().compareTo(importoRendicontato) != 0) {
-										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_ERRATO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_ERRATO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 										LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: l''importo rendicontato [{}] non corrisponde a quanto pagato [{}]",
 												codDominio, iuv, iur, indiceDati, importoRendicontato.doubleValue(), pagamento.getImportoPagato().doubleValue());
 										rendicontazione.addAnomalia("007104", MessageFormat.format("L''importo rendicontato [{0}] non corrisponde a quanto pagato [{1}]",
@@ -543,11 +531,12 @@ public class Rendicontazioni {
 								}
 							} catch (NotFoundException e) {
 								// Pagamento non trovato. Devo capire se ce' un errore.
+								LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] non trovato: ricerco la causa...", codDominio, iuv, iur, indiceDati);
 
 								// controllo se lo IUV e' interno, se non lo e' salto tutta la parte di acquisizione
 								// Se dominio e' null viene considerato non intermediato
-								if(!IuvUtils.isIuvInterno(dominio, iuv)) {
-									LogUtils.logDebug(log, "IUV {} appartenente ad un Dominio {} non intermediato, salto acquisizione.", iuv, codDominio);
+								if(!IuvUtils.isIuvInterno(log, dominio, iuv)) {
+									LogUtils.logInfo(log, "IUV {} appartenente ad un Dominio {} non intermediato, salto acquisizione.", iuv, codDominio);
 									rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
 									// passo alla prossima rendicontazione
 									continue;
@@ -583,7 +572,7 @@ public class Rendicontazioni {
 									if(verificaPendenzaMandatoria) {
 										rnd.getErrori().add(MessageFormat.format("Acquisizione flusso fallita. Riscontrato errore nell''acquisizione del versamento dall''applicazione gestrice [Transazione: {0}].", ctx.getTransactionId()));
 										LogUtils.logError(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}]. Flusso non acquisito.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
-										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO, idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
+										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO, idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
 										throw new GovPayException(ce);
 									} else {
 										LogUtils.logWarn(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}], stato pendenza gestito come SCONOSCIUTO.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
@@ -593,7 +582,7 @@ public class Rendicontazioni {
 									if(verificaPendenzaMandatoria) {
 										rnd.getErrori().add(MessageFormat.format("Acquisizione flusso fallita. Riscontrato errore nella creazione del client per l''acquisizione del versamento dall''applicazione gestrice [Transazione: {0}].", ctx.getTransactionId()));
 										LogUtils.logError(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}] a causa di un errore durante la creazione del client. Flusso non acquisito.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
-										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO, idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
+										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_KO, idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
 										throw new GovPayException(ce);
 									} else {
 										LogUtils.logWarn(log, MessageFormat.format("Errore durante il processamento del flusso di Rendicontazione [Flusso:{0}]: impossibile acquisire i dati del versamento [Dominio:{1} Iuv:{2}], stato pendenza gestito come SCONOSCIUTO.", idRendicontazione.getIdentificativoFlusso(), codDominio, iuv));
@@ -605,7 +594,8 @@ public class Rendicontazioni {
 
 								// imposto l'id singoloversamento in funzione dell'indice dati
 								if(versamento != null) {
-									LogUtils.logInfo(log, "Trovata Pendenza [{}, {}], verra' associata alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}].", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), codDominio, iuv, iur, indiceDati);
+									LogUtils.logInfo(log, "Trovata Pendenza [{}, {}] in stato [{}], verra' associata alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}].", 
+											versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getStatoVersamento(), codDominio, iuv, iur, indiceDati);
 
 									List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 									int idxRiconciliazione = indiceDati != null ? indiceDati.intValue() : 1; // se la rendicontazione non ha l'indice dati assumo che sia 1.
@@ -616,6 +606,9 @@ public class Rendicontazioni {
 											break;
 										}
 									}
+
+									// c'e' almeno una pendenza pagata nel flusso che non ha la RT associata 
+									avviaRecuperoRT = true;
 								} else {
 									LogUtils.logInfo(log, "Non e' stata trovata nessuna pendenza corrispondente alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}]: {}.", codDominio, iuv, iur, indiceDati, erroreVerifica);
 								}
@@ -625,7 +618,7 @@ public class Rendicontazioni {
 										rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
 									if(versamento == null) {
 										// non ho trovato il versamento
-										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_NO_VERSAMENTO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+										MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_NO_VERSAMENTO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 										LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.",	codDominio, iuv, iur, indiceDati);
 										rendicontazione.addAnomalia("007111", "Il versamento risulta sconosciuto: " + erroreVerifica);
 										// salto la parte di add anomalia
@@ -634,7 +627,7 @@ public class Rendicontazioni {
 										List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 										if(singoliVersamenti.size() != 1) {
 											// Un pagamento senza rpt DEVE riferire un pagamento tipo 3 con un solo singolo versamento
-											MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_VERSAMENTO_MALFORMATO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+											MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_SENZA_RPT_VERSAMENTO_MALFORMATO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 											LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: Pagamento senza RPT di versamento malformato, numero voci maggiore di 1.", codDominio, iuv, iur, indiceDati);
 											rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
 										}
@@ -643,17 +636,18 @@ public class Rendicontazioni {
 									}
 								}
 
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_NO_PAGAMENTO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_NO_PAGAMENTO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 								LogUtils.logInfo(log, "Pagamento [Dominio:{} Iuv:{} Iur:{} Indice:{}] rendicontato con errore: il pagamento non risulta presente in base dati.", codDominio, iuv, iur, indiceDati);
 								rendicontazione.addAnomalia("007101", "Il pagamento riferito dalla rendicontazione non risulta presente in base dati.");
 							} catch (MultipleResultException e) {
 								// Individuati piu' pagamenti riferiti dalla rendicontazione
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_POLI_PAGAMENTO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_POLI_PAGAMENTO, iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 								LogUtils.logInfo(log, "Pagamento rendicontato duplicato: [Dominio:{} Iuv:{} Iur:{} Indice:{}]",	codDominio, iuv, iur, indiceDati);
 								rendicontazione.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 								fr.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 							} finally {
 								//controllo che non sia gia' stata  acquisita un rendicontazione per la tupla (codDominio,iuv,iur,indiceDati), in questo caso emetto una anomalia
+								LogUtils.logInfo(log, "Controllo presenza rendicontazione duplicata all'interno del flusso: [Dominio:{} Iuv:{} Iur:{} Indice:{}]...",	codDominio, iuv, iur, indiceDati);
 								if(fr.getRendicontazioni() != null) {
 									for (Rendicontazione r2 : fr.getRendicontazioni()) {
 										if(r2.getIuv().equals(rendicontazione.getIuv())
@@ -671,6 +665,7 @@ public class Rendicontazioni {
 										}
 									}
 								}
+								LogUtils.logInfo(log, "Controllo presenza rendicontazione duplicata all'interno del flusso: [Dominio:{} Iuv:{} Iur:{} Indice:{}] completato",	codDominio, iuv, iur, indiceDati);
 
 								if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && rendicontazione.getAnomalie().isEmpty()) {
 									rendicontazione.setStato(StatoRendicontazione.OK);
@@ -678,6 +673,8 @@ public class Rendicontazioni {
 									rendicontazione.setStato(StatoRendicontazione.ANOMALA);
 									hasFrAnomalia = true;
 								}
+								
+								LogUtils.logInfo(log, "Rendicontazione: [Dominio:{} Iuv:{} Iur:{} Indice:{}] stato finale acquisizione: {}", codDominio, iuv, iur, indiceDati, rendicontazione.getStato());
 
 								fr.addRendicontazione(rendicontazione);
 							}
@@ -688,13 +685,13 @@ public class Rendicontazioni {
 						// Controlli di quadratura generali
 
 						if(totaleImportiRendicontati.compareTo(flussoRendicontazione.getImportoTotalePagamenti()) != 0){
-							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_TOTALE_ERRATO);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_IMPORTO_TOTALE_ERRATO);
 							LogUtils.logInfo(log, "La somma degli importi rendicontati [{}] non corrisponde al totale indicato nella testata del flusso [{}]", totaleImportiRendicontati, flussoRendicontazione.getImportoTotalePagamenti());
 							fr.addAnomalia("007106", MessageFormat.format("La somma degli importi rendicontati [{0}] non corrisponde al totale indicato nella testata del flusso [{1}]", totaleImportiRendicontati, flussoRendicontazione.getImportoTotalePagamenti()));
 						}
 
 						if(flussoRendicontazione.getDatiSingoliPagamentis().size() != flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()) {
-							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_NUMERO_RENDICONTAZIONI_ERRATO);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_NUMERO_RENDICONTAZIONI_ERRATO);
 							LogUtils.logInfo(log, "Il numero di pagamenti rendicontati [{}] non corrisponde al totale indicato nella testata del flusso [{}]", flussoRendicontazione.getDatiSingoliPagamentis().size(), flussoRendicontazione.getNumeroTotalePagamenti().longValueExact());
 							fr.addAnomalia("007107", MessageFormat.format("Il numero di pagamenti rendicontati [{0}] non corrisponde al totale indicato nella testata del flusso [{1}]", flussoRendicontazione.getDatiSingoliPagamentis().size(), flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()));
 						}
@@ -707,6 +704,7 @@ public class Rendicontazioni {
 							hasFrAnomalia = true;
 						}
 
+						LogUtils.logDebug(log, "Acquisizione flusso di rendicontazione {} {}, stato finale: {}", rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), fr.getStato());
 
 						// Procedo al salvataggio
 						RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(configWrapper);
@@ -758,10 +756,16 @@ public class Rendicontazioni {
 							}
 							if(!hasFrAnomalia) {
 								LogUtils.logInfo(log, "Flusso di rendicontazione acquisito senza anomalie.");
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK);
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK);
 							} else {
 								LogUtils.logInfo(log, "Flusso di rendicontazione acquisito con anomalie.");
-								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA);
+								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA);
+							}
+
+							// lancia il recupero delle ricevute.
+							if(avviaRecuperoRT) {
+								LogUtils.logInfo(log, "Sono state acquisite delle rendicontazioni per pendenze a cui manca la ricevuta, avvio recupero RT.");
+								Operazioni.setEseguiRecuperoRT();
 							}
 
 						}catch (ServiceException e) {
@@ -794,7 +798,7 @@ public class Rendicontazioni {
 			}
 
 		} catch(ServiceException | it.govpay.core.exceptions.IOException e) {
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL, e.getMessage());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL, e.getMessage());
 			response.descrizioneEsito=MessageFormat.format("Impossibile acquisire i flussi: {0}", e.getMessage());
 			LogUtils.logError(log, MessageFormat.format("Acquisizione dei flussi di rendicontazione in completata con errore: {0}", e.getMessage()), e);
 			throw new GovPayException(e);
@@ -803,7 +807,7 @@ public class Rendicontazioni {
 		}
 		response.descrizioneEsito = MessageFormat.format("Operazione completata: {0} flussi acquisiti", frAcquisiti);
 		if(frNonAcquisiti > 0) response.descrizioneEsito += MessageFormat.format(" e {0}non acquisiti per errori", frNonAcquisiti);
-		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_OK);
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_OK);
 		LogUtils.logInfo(log, "Acquisizione dei flussi di rendicontazione in completata.");
 
 		return response;
@@ -821,7 +825,7 @@ public class Rendicontazioni {
 		try {
 			appContext.setupNodoClient(stazione.getCodStazione(), codDominio, EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE);
 			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI);
 
 			NodoChiediElencoFlussiRendicontazione richiesta = new NodoChiediElencoFlussiRendicontazione();
 			if(dominio != null) richiesta.setIdentificativoDominio(codDominio);
@@ -840,52 +844,32 @@ public class Rendicontazioni {
 				LogUtils.logDebug(log, "Richiesta elenco flussi rendicontazione per il dominio [{}] al nodo completata.", codDominio);
 			} catch (ClientException e) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				LogUtils.logError(log, MessageFormat.format("Richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", codDominio, e.getMessage()), e);
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL, e.getMessage());
-				if(eventoCtx != null) {
-					if(e instanceof ClientException clientException) {
-						eventoCtx.setSottotipoEsito(clientException.getResponseCode() + "");
-					} else {
-						eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-					}
-					eventoCtx.setEsito(Esito.FAIL);
-					eventoCtx.setDescrizioneEsito(e.getMessage());
-					eventoCtx.setException(e);
-				}
+				handleClientException(e, eventoCtx, "Richiesta elenco flussi rendicontazione",
+						codDominio, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL);
 				return flussiDaAcquisire;
 			} catch (ClientInitializeException e) {
-				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				LogUtils.logError(log, MessageFormat.format("Errore nella creazione del client per la richiesta elenco flussi rendicontazione per il dominio [{0}] al nodo completata con errore {1}.", codDominio, e.getMessage()), e);
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL, e.getMessage());
-
-				if(eventoCtx != null) {
-					eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-					eventoCtx.setEsito(Esito.FAIL);
-					eventoCtx.setDescrizioneEsito(e.getMessage());
-					eventoCtx.setException(e);
-				}
+				handleClientInitializeException(e, eventoCtx, "Richiesta elenco flussi rendicontazione",
+						codDominio,	ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL);
 				return flussiDaAcquisire;
 			}
 
 			if(risposta.getFault() != null) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
 				log.warn("Richiesta elenco flussi rendicontazione per il dominio [{}] fallita: {} {}", codDominio, risposta.getFault().getFaultCode(), risposta.getFault().getFaultString());
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO, risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-				if(eventoCtx != null) {
-					eventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
-					eventoCtx.setEsito(Esito.KO);
-					eventoCtx.setDescrizioneEsito(risposta.getFault().getFaultString());
-				}
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO, risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
+				eventoCtx.setSottotipoEsito(risposta.getFault().getFaultCode());
+				eventoCtx.setEsito(Esito.KO);
+				eventoCtx.setDescrizioneEsito(risposta.getFault().getFaultString());
 				return flussiDaAcquisire;
 			} else {
 
 				if(risposta.getElencoFlussiRendicontazione() == null || risposta.getElencoFlussiRendicontazione().getTotRestituiti() == 0) {
 					LogUtils.logInfo(log, "Richiesta elenco flussi rendicontazione per il dominio [{}]: ritornata lista vuota dal psp", codDominio);
-					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_OK, "0");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_OK, "0");
 					return flussiDaAcquisire;
 				}
 
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_OK, risposta.getElencoFlussiRendicontazione().getTotRestituiti() + "");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_OK, risposta.getElencoFlussiRendicontazione().getTotRestituiti() + "");
 				LogUtils.logInfo(log, "Richiesta elenco flussi rendicontazione per il dominio [{}]: ritornati {} flussi.", codDominio, risposta.getElencoFlussiRendicontazione().getTotRestituiti());
 
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
@@ -897,7 +881,7 @@ public class Rendicontazioni {
 			LogUtils.logError(log, "Errore durante l'acquisizione dei flussi di rendicontazione", e);
 			return flussiDaAcquisire;
 		}  finally {
-			if(eventoCtx != null && eventoCtx.isRegistraEvento()) {
+			if(eventoCtx.isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
 					eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
@@ -910,6 +894,69 @@ public class Rendicontazioni {
 		}
 
 		return flussiDaAcquisire;
+	}
+
+	/**
+	 * Gestisce un errore ClientException configurando l'evento e il log appropriato.
+	 *
+	 * @param e L'eccezione da gestire
+	 * @param eventoCtx Il contesto dell'evento da aggiornare
+	 * @param operazione Descrizione dell'operazione fallita (es. "Richiesta flusso rendicontazione")
+	 * @param parametri Parametri specifici dell'operazione per il log
+	 * @param ctx Context per diagnostici
+	 * @param codiceDiagnostico Codice del messaggio diagnostico
+	 * @return Messaggio di errore formattato
+	 */
+	private String handleClientException(ClientException e, EventoContext eventoCtx, String operazione, String parametri, IContext ctx, String codiceDiagnostico) {
+
+		// Aggiorna evento
+		if(eventoCtx != null) {
+			eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+			eventoCtx.setEsito(Esito.FAIL);
+			eventoCtx.setDescrizioneEsito(e.getMessage());
+			eventoCtx.setException(e);
+		}
+
+		// Log
+		String messaggioErrore = MessageFormat.format("{0} [{1}] fallita: {2}", operazione, parametri, e.getMessage());
+		LogUtils.logError(log, messaggioErrore, e);
+
+		// Diagnostico
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, codiceDiagnostico, e.getMessage());
+
+		return MessageFormat.format("{0} fallita: {1}.", operazione, e.getMessage());
+	}
+
+	/**
+	 * Gestisce un errore ClientInitializeException configurando l'evento e il log appropriato.
+	 *
+	 * @param e L'eccezione da gestire
+	 * @param eventoCtx Il contesto dell'evento da aggiornare
+	 * @param operazione Descrizione dell'operazione fallita
+	 * @param parametri Parametri specifici dell'operazione per il log
+	 * @param ctx Context per diagnostici
+	 * @param codiceDiagnostico Codice del messaggio diagnostico
+	 * @return Messaggio di errore formattato
+	 */
+	private String handleClientInitializeException(ClientInitializeException e, EventoContext eventoCtx, String operazione, String parametri, IContext ctx, String codiceDiagnostico) {
+
+		// Aggiorna evento
+		if(eventoCtx != null) {
+			eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+			eventoCtx.setEsito(Esito.FAIL);
+			eventoCtx.setDescrizioneEsito(e.getMessage());
+			eventoCtx.setException(e);
+		}
+
+		// Log
+		String messaggioErrore = MessageFormat.format("Errore nella creazione del client per {0} [{1}]: {2}",
+				operazione, parametri, e.getMessage());
+		LogUtils.logError(log, messaggioErrore, e);
+
+		// Diagnostico
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, codiceDiagnostico, e.getMessage());
+
+		return MessageFormat.format("Creazione client per {0} fallita: {1}.", operazione, e.getMessage());
 	}
 
 	public static void popolaDatiPagoPAEvento(EventoContext eventoCtx, Intermediario intermediario, Stazione stazione, Dominio dominio, String codFlusso) {

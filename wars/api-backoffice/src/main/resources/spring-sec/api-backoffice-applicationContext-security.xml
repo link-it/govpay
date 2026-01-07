@@ -3,13 +3,16 @@
         xmlns:b="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+        xmlns:util="http://www.springframework.org/schema/util"
         xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security.xsd
- 		http://www.springframework.org/schema/security/oauth2 
- 		http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+ 		http://www.springframework.org/schema/security/oauth2
+ 		http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+ 		http://www.springframework.org/schema/util
+ 		http://www.springframework.org/schema/util/spring-util.xsd">
           
 
         <global-method-security
@@ -407,6 +410,33 @@
         
         
         <!-- OAUTH2_PKCE_START
+
+        <b:bean id="nimbusJwtDecoderBuilder" class="org.springframework.security.oauth2.jwt.NimbusJwtDecoder" factory-method="withJwkSetUri">
+		    <b:constructor-arg value="${OAUTH2_JWK_SET_URI}"/>
+		</b:bean>
+
+		<util:map id="oauth2ClaimValidationRules" map-class="java.util.HashMap"
+		          key-type="java.lang.String"
+		          value-type="java.util.Collection">
+		    <b:entry key="iss">
+		        <util:list value-type="java.lang.String">
+		            <b:value>${OAUTH2_VALORE_CLAIM_ISS}</b:value>
+		        </util:list>
+		    </b:entry>
+		    <b:entry key="aud">
+		        <util:list value-type="java.lang.String">
+		            <b:value>${OAUTH2_VALORE_CLAIM_AUD}</b:value>
+		        </util:list>
+		    </b:entry>
+		</util:map>
+
+		<b:bean id="govpayJwtValidator" class="it.govpay.rs.v1.authentication.oauth2.server.jwt.GovPayJwtValidators" factory-method="createDefaultWithClaims">
+  			<b:constructor-arg ref="oauth2ClaimValidationRules"/>
+		</b:bean>
+
+		<b:bean id="customJwtDecoder" factory-bean="nimbusJwtDecoderBuilder" factory-method="build">
+			<b:property name="jwtValidator" ref="govpayJwtValidator"/>
+		</b:bean>
         
         <b:bean id="oauth2AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.oauth2.server.entrypoint.BearerTokenAuthenticationEntryPoint" />
         
@@ -433,7 +463,7 @@
                 <intercept-url pattern="/**" access="denyAll" />
                 <logout logout-url="/rs/oauth2/v1/logout" success-handler-ref="logoutSuccessHandlerOAuth2" delete-cookies="JSESSIONID" invalidate-session="true" />
 	       		<oauth2-resource-server entry-point-ref="oauth2AuthenticationEntryPoint" > 
-	       			<jwt jwk-set-uri="${OAUTH2_JWK_SET_URI}" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
+	       			<jwt decoder-ref="customJwtDecoder" jwt-authentication-converter-ref="govpayJwtAuthenticationConverter" />
 	       		</oauth2-resource-server>
                 <headers>
                         <content-type-options disabled="true"/>

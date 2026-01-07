@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -63,12 +63,18 @@ public class Fr extends it.govpay.model.Fr {
 		this.numAltroIntermediario = numAltroIntermediario;
 	}
 
-	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
 		if(this.dominio == null){
-			try {
-				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
-			}catch(NotFoundException e) {
-				// sono ammessi domini non censiti 
+			if (this.getIdDominio() != null) {
+				// Usa l'ID per una ricerca più efficiente tramite FK
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
+			} else {
+				// Fallback al codice quando l'ID non è disponibile
+				try {
+					this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
+				}catch(NotFoundException e) {
+					// sono ammessi domini non censiti
+				}
 			}
 		}
 		return this.dominio;
@@ -87,7 +93,7 @@ public class Fr extends it.govpay.model.Fr {
 		}
 		return this.rendicontazioni;
 	}
-	
+
 	public List<Rendicontazione> getRendicontazioni() {
 		return this.rendicontazioni;
 	}
@@ -100,11 +106,9 @@ public class Fr extends it.govpay.model.Fr {
 	}
 
 	public Incasso getIncasso(BasicBD bd) throws ServiceException {
-		if(this.getIdIncasso() != null) {
-			if(this.incasso == null) {
-				IncassiBD incassiBD = new IncassiBD(bd);
-				this.incasso = incassiBD.getIncasso(this.getIdIncasso());
-			}
+		if(this.getIdIncasso() != null && this.incasso == null) {
+			IncassiBD incassiBD = new IncassiBD(bd);
+			this.incasso = incassiBD.getIncasso(this.getIdIncasso());
 		}
 		return this.incasso;
 	}

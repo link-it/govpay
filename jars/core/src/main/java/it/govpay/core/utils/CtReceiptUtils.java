@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -94,8 +94,6 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
-
-		validaSemantica(ctPaymentPA.getDebtor(), ctReceipt.getDebtor(), esito);
 
 		StOutcome ctRecepitOutcome = ctReceipt.getOutcome(); // esito pagamento ha solo due valori OK/KO
 		String name = ctRecepitOutcome.name();
@@ -219,8 +217,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				// verifico che la ricevuta receitId non sia gia' stata acquisita.
 				for (Rpt rpt2 : listaTransazioniPerDominioIuv) {
 					if(rpt2.getStato().equals(StatoRpt.RT_ACCETTATA_PA) && rpt2.getCcp().equals(receiptId)) {
+						String dataMsgRicevutaString = rpt2.getDataMsgRicevuta() != null ? SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt2.getDataMsgRicevuta()) : "N.D.";
 						throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, MessageFormat.format("La ricevuta [Dominio: {0}, IUV: {1}, ReceiptID: {2}] è già acquisita in data {3}.", codDominio, iuv, receiptId,
-								SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(rpt2.getDataMsgRicevuta())), rpt2.getCodDominio());
+								dataMsgRicevutaString), rpt2.getCodDominio());
 					}
 				}
 

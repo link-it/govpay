@@ -2,10 +2,12 @@ Feature: Riconciliazione non autorizzata
 
 Background:
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* callonce sleep(10000)
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
@@ -20,6 +22,8 @@ Scenario: Riconciliazione singola da applicazione non autorizzata per il dominio
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def applicazione = read('msg/applicazione_dominio2.json')
 
@@ -42,6 +46,19 @@ And match response == read('msg/errore_auth.json')
 
 Scenario: Riconciliazione cumulativa da applicazione non autorizzata per il dominio
 
+# Ripristino configurazione originale applicazione IDA2A01
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
@@ -58,6 +75,8 @@ Scenario: Riconciliazione cumulativa da applicazione non autorizzata per il domi
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def applicazione = read('msg/applicazione_dominio2.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
@@ -82,6 +101,19 @@ And match response == read('msg/errore_auth.json')
 
 Scenario: Riconciliazione singola da applicazione non autorizzata per il servizio
 
+# Ripristino configurazione originale applicazione IDA2A01
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
@@ -91,6 +123,8 @@ Scenario: Riconciliazione singola da applicazione non autorizzata per il servizi
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def applicazione = read('msg/applicazione_nonAuth.json')
 
@@ -114,6 +148,19 @@ And match response == read('msg/errore_auth.json')
 
 Scenario: Riconciliazione singola da operatore non autorizzata per il dominio
 
+# Ripristino configurazione originale applicazione IDA2A01
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
@@ -123,6 +170,8 @@ Scenario: Riconciliazione singola da operatore non autorizzata per il dominio
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def operatore = read('msg/operatore_domini2.json')
 
@@ -150,6 +199,19 @@ And match response == read('msg/errore_auth.json')
 
 Scenario: Riconciliazione cumulativa da operatore non autorizzata per il dominio
 
+# Ripristino configurazione originale applicazione IDA2A01
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
@@ -166,6 +228,8 @@ Scenario: Riconciliazione cumulativa da operatore non autorizzata per il dominio
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def operatore = read('msg/operatore_domini2.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
@@ -195,6 +259,19 @@ And match response == read('msg/errore_auth.json')
 
 Scenario: Riconciliazione cumulativa da operatore non autorizzata per il servizio
 
+# Ripristino configurazione originale applicazione IDA2A01
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
@@ -211,6 +288,8 @@ Scenario: Riconciliazione cumulativa da operatore non autorizzata per il servizi
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def operatore = read('msg/operatore_nonAuth.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -112,6 +113,8 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 
 		// check utenza da file tomcat-users.xml
 		File fUsers = new File(confDirJBoss, this.tomcatUserFileName);
+		
+		log.trace("Lettura file utenti tomcat: {}", fUsers.getAbsolutePath());
 		if(!fUsers.exists()) {
 			throw new ProviderNotFoundException("File '"+fUsers.getAbsolutePath()+"' not exists");
 		}
@@ -121,6 +124,19 @@ public class TomcatApplicationAuthenticationProvider implements AuthenticationPr
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+			// Protezione XXE (XML External Entity)
+			// Disabilita completamente DTD per prevenire XXE attacks
+			try {
+				factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+				factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+				factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+				factory.setXIncludeAware(false);
+				factory.setExpandEntityReferences(false);
+			} catch (ParserConfigurationException e) {
+				throw new ProviderNotFoundException("Errore durante la configurazione sicura del parser XML: " + e.getMessage());
+			}
+
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(fUsers);
 			document.getDocumentElement().normalize();

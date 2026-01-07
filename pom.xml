@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.8.1</version>
+	<version>3.8.2</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -97,7 +97,7 @@
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
-		<logger.version>2.25.0</logger.version>
+		<logger.version>2.25.3</logger.version>
 
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.71</swagger-codegen-maven-plugin.version>
@@ -165,6 +165,9 @@
 
 		<!-- networknt_json-schema-validator -->
 		<networknt_json-schema-validator.version>1.5.6</networknt_json-schema-validator.version>
+
+		<!-- rhino (transitive dependency from json-schema-core) -->
+		<rhino.version>1.7.15.1</rhino.version>
 
 		<!-- org.json -->
 		<org.json.json.version>20250517</org.json.json.version>
@@ -273,7 +276,7 @@
 
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
-		<owasp.plugin.version>12.1.5</owasp.plugin.version>
+		<owasp.plugin.version>12.1.9</owasp.plugin.version>
 		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnCVSS>11</owasp.plugin.failBuildOnCVSS>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
@@ -282,12 +285,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>${commons.codec.version}</version>
-			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -1513,6 +1510,18 @@
 			    <artifactId>commons-beanutils</artifactId>
 			    <version>${commons.beanutils.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons.codec.version}</version>
+			</dependency>
+
+				<dependency>
+				<groupId>org.mozilla</groupId>
+				<artifactId>rhino</artifactId>
+				<version>${rhino.version}</version>
+			</dependency>
 
            <!-- Base64 Java8 migration -->
            <dependency>
@@ -1730,6 +1739,8 @@
                             </suppressionFiles>
                             <nvdApiDelay>120000</nvdApiDelay><!-- 2 minuti -->
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
+							<!-- Disabilitato per evitare problemi SSL con GitHub -->
+							<!-- <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled> -->
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>
@@ -1740,11 +1751,13 @@
 	        <plugin>
 	            <groupId>com.github.spotbugs</groupId>
 	            <artifactId>spotbugs-maven-plugin</artifactId>
-	            <version>4.9.4.0</version>
+	            <version>4.9.8.0</version>
 	            <configuration>
 	            	<!-- abilita insieme XML e HTML -->
     				<xmlOutput>true</xmlOutput>
     				<htmlOutput>true</htmlOutput>
+    				<!-- File di esclusione per falsi positivi -->
+    				<excludeFilterFile>src/main/resources/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
 	                <plugins>
 	                    <plugin>
 	                        <groupId>com.h3xstream.findsecbugs</groupId>
@@ -1761,7 +1774,7 @@
             <plugin>
 		      <groupId>org.sonarsource.scanner.maven</groupId>
 		      <artifactId>sonar-maven-plugin</artifactId>
-		      <version>5.2.0.4988</version>
+		      <version>5.3.0.6276</version>
 		    </plugin>
 		</plugins>
 	</build>

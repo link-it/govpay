@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -282,7 +282,13 @@ public class RendicontazioniBD extends BasicBD {
 			exp.and();
 			exp.equals(model.IUV, iuv);
 			exp.equals(model.IUR, iur);
-			exp.equals(model.INDICE_DATI, indiceDati);
+			
+			if(indiceDati != null) {
+				IExpression orIndiceDati = this.getRendicontazioneService().newExpression();
+				orIndiceDati.equals(model.INDICE_DATI, indiceDati).or().isNull(model.INDICE_DATI);
+				exp.and(orIndiceDati);
+			}
+			
 			exp.equals(model.STATO, stato.toString());
 			
 			CustomField cf = new  CustomField(CF_ID_PAGAMENTO, Long.class, CF_ID_PAGAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));

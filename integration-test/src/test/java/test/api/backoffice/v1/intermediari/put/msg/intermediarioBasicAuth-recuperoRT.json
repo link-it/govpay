@@ -14,7 +14,8 @@
 		"auth": {
 			"username": "usr",
 			"password": "pwd"
-		}
+		},
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

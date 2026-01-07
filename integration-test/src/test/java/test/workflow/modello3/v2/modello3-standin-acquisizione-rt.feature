@@ -2,8 +2,8 @@ Feature: Acquisizione di una RT non attivata o verificata
 
 Background:
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 
 * configure followRedirects = false
 
@@ -179,7 +179,7 @@ And match response /paSendRTReq/receipt/receiptId == ccpDet
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* call sleep(1000)
+* call sleep(10000)
 * def dataFineFR = getDateTime()
 * call sleep(1000)
 
@@ -313,7 +313,7 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* call sleep(1000)
+* call sleep(10000)
 * def dataFineFR = getDateTime()
 * call sleep(1000)
 

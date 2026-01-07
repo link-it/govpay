@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -55,6 +55,7 @@ public class DominioFilter extends AbstractFilter {
 	private DominioFieldConverter converter = null;
 	
 	private Boolean intermediato = null; 
+	private Boolean scaricaFr = null;
 	
 	public enum SortFields {
 	}
@@ -87,7 +88,7 @@ public class DominioFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.idDomini != null && this.idDomini.size() > 0 ){
+			if(this.idDomini != null && !this.idDomini.isEmpty() ){
 				if(addAnd)
 					newExpression.and();
 				
@@ -126,12 +127,16 @@ public class DominioFilter extends AbstractFilter {
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
+			if(this.scaricaFr != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(model.SCARICA_FR, this.scaricaFr);
+				
+			}
+			
 			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -153,7 +158,7 @@ public class DominioFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_STAZIONE.COD_STAZIONE, true) + " = ? ");
 			}
 			
-			if(this.idDomini != null && this.idDomini.size() > 0 ){
+			if(this.idDomini != null && !this.idDomini.isEmpty() ){
 				this.idDomini.removeAll(Collections.singleton(null));
 				
 				String [] ids = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
@@ -179,23 +184,26 @@ public class DominioFilter extends AbstractFilter {
 			// filtro abilitato
 			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
 			
+			// scaricaFr
+			if(this.scaricaFr != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SCARICA_FR, true) + " = ? ");
+			}
+			
 			return sqlQueryObject;
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (SQLQueryObjectException e) {
+		} catch (ExpressionException | SQLQueryObjectException e) {
 			throw new ServiceException(e);
 		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		List<Object> lst = new ArrayList<Object>();
+		List<Object> lst = new ArrayList<>();
 		
 		if(this.codStazione != null){
 			lst.add(this.codStazione);
 		}
 		
-		if(this.idDomini != null && this.idDomini.size() > 0 ){
+		if(this.idDomini != null && !this.idDomini.isEmpty() ){
 			// do nothing
 		}
 		
@@ -224,6 +232,16 @@ public class DominioFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 		
+		// scaricaFr
+		if(this.scaricaFr != null) {
+			try {
+				lst = this.setValoreFiltroBoolean(lst, this.converter, this.scaricaFr);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
+			
+		}
+		
 		return lst.toArray(new Object[lst.size()]);
 	}
 
@@ -238,10 +256,6 @@ public class DominioFilter extends AbstractFilter {
 	public List<Long> getIdDomini() {
 		return this.idDomini;
 	}
-
-//	public void setIdDomini(Collection<Long> idDomini) {
-//		this.idDomini = idDomini;
-//	}
 
 	public String getCodDominio() {
 		return this.codDominio;
@@ -273,5 +287,13 @@ public class DominioFilter extends AbstractFilter {
 
 	public void setIntermediato(Boolean intermediato) {
 		this.intermediato = intermediato;
+	}
+
+	public Boolean getScaricaFr() {
+		return scaricaFr;
+	}
+
+	public void setScaricaFr(Boolean scaricaFr) {
+		this.scaricaFr = scaricaFr;
 	}
 }

@@ -40,6 +40,9 @@ CREATE TABLE intermediari
 	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
 	cod_connettore_pdd VARCHAR2(35 CHAR) NOT NULL,
 	cod_connettore_recupero_rt VARCHAR2(35 CHAR),
+	cod_connettore_aca VARCHAR2(35 CHAR),
+	cod_connettore_gpd VARCHAR2(35 CHAR),
+	cod_connettore_fr VARCHAR2(35 CHAR),
 	cod_connettore_ftp VARCHAR2(35 CHAR),
 	denominazione VARCHAR2(255 CHAR) NOT NULL,
 	principal VARCHAR2(4000 CHAR) NOT NULL,
@@ -195,6 +198,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR2(255 CHAR),
 	intermediato NUMBER NOT NULL,
 	tassonomia_pago_pa VARCHAR2(35 CHAR),
+	scarica_fr NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER,
@@ -209,6 +213,8 @@ CREATE TABLE domini
 
 
 ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
+
+CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 
 CREATE TRIGGER trg_domini
 BEFORE
@@ -1323,22 +1329,29 @@ CREATE TABLE fr
 	importo_totale_pagamenti BINARY_DOUBLE,
 	cod_bic_riversamento VARCHAR2(35 CHAR),
 	xml BLOB NOT NULL,
-	ragione_sociale_psp VARCHAR2(70 CHAR),
-	ragione_sociale_dominio VARCHAR2(70 CHAR),
+	ragione_sociale_psp VARCHAR2(255 CHAR),
+	ragione_sociale_dominio VARCHAR2(255 CHAR),
 	obsoleto NUMBER NOT NULL,
+	data_ora_pubblicazione TIMESTAMP,
+	data_ora_aggiornamento TIMESTAMP,
+	revisione NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_incasso NUMBER,
+	id_dominio NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_2 UNIQUE (cod_dominio,cod_flusso,cod_psp,revisione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_fr_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
 -- index
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
+CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
 CREATE TRIGGER trg_fr
 BEFORE
 insert on fr
@@ -1439,6 +1452,7 @@ CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
 CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
+CREATE INDEX idx_rnd_data ON rendicontazioni (data);
 CREATE TRIGGER trg_rendicontazioni
 BEFORE
 insert on rendicontazioni
@@ -1983,6 +1997,7 @@ CREATE VIEW v_eventi_vers AS (
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
     fr.cod_dominio AS fr_cod_dominio,
+    fr.id_dominio AS fr_id_dominio,
     fr.cod_flusso AS fr_cod_flusso,
     fr.stato AS fr_stato,
     fr.descrizione_stato AS fr_descrizione_stato,
@@ -1998,6 +2013,9 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
     fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
     fr.obsoleto AS fr_obsoleto,
+    fr.data_ora_pubblicazione AS fr_data_ora_pubblicazione,
+    fr.data_ora_aggiornamento AS fr_data_ora_aggiornamento,
+    fr.revisione AS fr_revisione,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,

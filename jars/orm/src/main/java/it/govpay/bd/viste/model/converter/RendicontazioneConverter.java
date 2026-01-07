@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -74,6 +74,10 @@ public class RendicontazioneConverter {
 		fr.setRagioneSocialeDominio(vo.getFrRagioneSocialeDominio());
 		fr.setRagioneSocialePsp(vo.getFrRagioneSocialePsp());
 		fr.setObsoleto(vo.getFrObsoleto());
+		fr.setDataOraPubblicazione(vo.getFrDataOraPubblicazione());
+		fr.setDataOraAggiornamento(vo.getFrDataOraAggiornamento());
+		if(vo.getFrRevisione() != null)
+			fr.setRevisione(vo.getFrRevisione().longValue());
 
 		dto.setFr(fr);
 
@@ -117,7 +121,7 @@ public class RendicontazioneConverter {
 		if(vo.getVrsCodVersamentoEnte() != null) {
 			versamento = new Versamento();
 	
-			versamento.setId(vo.getId());
+			versamento.setId(vo.getVrsId());
 			versamento.setIdApplicazione(vo.getVrsIdApplicazione().getId());
 	
 			if(vo.getVrsIdUo() != null)

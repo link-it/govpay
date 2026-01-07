@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -50,6 +50,8 @@ public class Dominio extends BasicModel {
 	private boolean intermediato;
 	
 	private String tassonomiaPagoPA;
+	
+	private boolean scaricaFr;
 
 	@Override
 	public Long getId() {
@@ -210,6 +212,14 @@ public class Dominio extends BasicModel {
 
 	public void setTassonomiaPagoPA(String tassonomiaPagoPA) {
 		this.tassonomiaPagoPA = tassonomiaPagoPA;
+	}
+
+	public boolean isScaricaFr() {
+		return scaricaFr;
+	}
+
+	public void setScaricaFr(boolean scaricaFr) {
+		this.scaricaFr = scaricaFr;
 	}
 	
 }

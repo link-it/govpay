@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -34,6 +34,9 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "servizioPagoPa",
 "servizioFtp",
 "servizioPagoPaRecuperoRT",
+"servizioPagoPaACA",
+"servizioPagoPaGPD",
+"servizioPagoPaFR",
 "abilitato",
 })
 public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
@@ -52,6 +55,15 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("servizioPagoPaRecuperoRT")
   private ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT = null;
+
+  @JsonProperty("servizioPagoPaACA")
+  private ConnettorePagopaACA servizioPagoPaACA = null;
+
+  @JsonProperty("servizioPagoPaGPD")
+  private ConnettorePagopaGPD servizioPagoPaGPD = null;
+
+  @JsonProperty("servizioPagoPaFR")
+  private ConnettorePagopaFR servizioPagoPaFR = null;
 
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -134,6 +146,51 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
   }
 
   /**
+   **/
+  public IntermediarioPost servizioPagoPaACA(ConnettorePagopaACA servizioPagoPaACA) {
+    this.servizioPagoPaACA = servizioPagoPaACA;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaACA")
+  public ConnettorePagopaACA getServizioPagoPaACA() {
+    return servizioPagoPaACA;
+  }
+  public void setServizioPagoPaACA(ConnettorePagopaACA servizioPagoPaACA) {
+    this.servizioPagoPaACA = servizioPagoPaACA;
+  }
+
+  /**
+   **/
+  public IntermediarioPost servizioPagoPaGPD(ConnettorePagopaGPD servizioPagoPaGPD) {
+    this.servizioPagoPaGPD = servizioPagoPaGPD;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaGPD")
+  public ConnettorePagopaGPD getServizioPagoPaGPD() {
+    return servizioPagoPaGPD;
+  }
+  public void setServizioPagoPaGPD(ConnettorePagopaGPD servizioPagoPaGPD) {
+    this.servizioPagoPaGPD = servizioPagoPaGPD;
+  }
+
+  /**
+   **/
+  public IntermediarioPost servizioPagoPaFR(ConnettorePagopaFR servizioPagoPaFR) {
+    this.servizioPagoPaFR = servizioPagoPaFR;
+    return this;
+  }
+
+  @JsonProperty("servizioPagoPaFR")
+  public ConnettorePagopaFR getServizioPagoPaFR() {
+    return servizioPagoPaFR;
+  }
+  public void setServizioPagoPaFR(ConnettorePagopaFR servizioPagoPaFR) {
+    this.servizioPagoPaFR = servizioPagoPaFR;
+  }
+
+  /**
    * Indica lo stato di abilitazione
    **/
   public IntermediarioPost abilitato(Boolean abilitato) {
@@ -163,12 +220,15 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
         Objects.equals(this.servizioPagoPa, intermediarioPost.servizioPagoPa) &&
         Objects.equals(this.servizioFtp, intermediarioPost.servizioFtp) &&
         Objects.equals(servizioPagoPaRecuperoRT, intermediarioPost.servizioPagoPaRecuperoRT) &&
+        Objects.equals(servizioPagoPaACA, intermediarioPost.servizioPagoPaACA) &&
+        Objects.equals(servizioPagoPaGPD, intermediarioPost.servizioPagoPaGPD) &&
+        Objects.equals(servizioPagoPaFR, intermediarioPost.servizioPagoPaFR) &&
         Objects.equals(this.abilitato, intermediarioPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, servizioPagoPaRecuperoRT, abilitato);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, servizioPagoPaRecuperoRT, servizioPagoPaACA, servizioPagoPaGPD, servizioPagoPaFR, abilitato);
   }
 
   public static IntermediarioPost parse(String json) throws IOException {
@@ -190,6 +250,9 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");
     sb.append("    servizioFtp: ").append(this.toIndentedString(this.servizioFtp)).append("\n");
     sb.append("    servizioPagoPaRecuperoRT: ").append(toIndentedString(servizioPagoPaRecuperoRT)).append("\n");
+    sb.append("    servizioPagoPaACA: ").append(toIndentedString(servizioPagoPaACA)).append("\n");
+    sb.append("    servizioPagoPaGPD: ").append(toIndentedString(servizioPagoPaGPD)).append("\n");
+    sb.append("    servizioPagoPaFR: ").append(toIndentedString(servizioPagoPaFR)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -214,6 +277,9 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
 		vf.getValidator("servizioPagoPa", this.servizioPagoPa).notNull().validateFields();
 		vf.getValidator("servizioFtp", this.servizioFtp).validateFields();
 		vf.getValidator("servizioPagoPaRecuperoRT", this.servizioPagoPaRecuperoRT).validateFields();
+		vf.getValidator("servizioPagoPaACA", this.servizioPagoPaACA).validateFields();
+		vf.getValidator("servizioPagoPaGPD", this.servizioPagoPaGPD).validateFields();
+		vf.getValidator("servizioPagoPaFR", this.servizioPagoPaFR).validateFields();
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

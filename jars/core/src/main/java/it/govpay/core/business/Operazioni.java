@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -81,6 +81,8 @@ public class Operazioni{
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String CHECK_DB = "check-db";
 	public static final String RND = "update-rnd";
+	public static final String BATCH_ACA = "batch_aca";
+	public static final String BATCH_FDR = "batch_fdr";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
 	public static final String CHECK_NTFY = "check-ntfy";

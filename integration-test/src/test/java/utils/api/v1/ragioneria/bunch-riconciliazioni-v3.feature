@@ -40,6 +40,8 @@ Scenario: Riconciliazione singola IUV non ISO
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
@@ -62,6 +64,8 @@ Then status 201
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
@@ -92,6 +96,8 @@ Then status 201
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -125,6 +131,8 @@ Then status 201
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
@@ -156,6 +164,8 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio_2
 And headers idA2ABasicAutenticationHeader
@@ -181,6 +191,8 @@ Then assert responseStatus == 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio_2
@@ -214,6 +226,8 @@ Then assert responseStatus == 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -249,6 +263,8 @@ Then assert responseStatus == 200
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 

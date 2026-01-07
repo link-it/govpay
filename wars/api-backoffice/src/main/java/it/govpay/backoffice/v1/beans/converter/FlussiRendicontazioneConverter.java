@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -50,6 +50,9 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setIdPsp(fr.getCodPsp());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setIdDominio(fr.getCodDominio());
@@ -99,6 +102,9 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setIdPsp(fr.getCodPsp());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setIdDominio(fr.getCodDominio());

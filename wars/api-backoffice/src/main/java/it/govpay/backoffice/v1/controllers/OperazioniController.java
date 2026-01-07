@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
  *
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -87,7 +87,7 @@ public class OperazioniController extends BaseController {
 		}
     }
 
-    public Response getOperazione(Authentication user, String id) {
+    public Response getOperazione(Authentication user, String id, Boolean forzaEsecuzione) {
     	String methodName = "getOperazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName + ": " + id);
@@ -97,6 +97,7 @@ public class OperazioniController extends BaseController {
 
 			LeggiOperazioneDTO leggiOperazioneDTO = new LeggiOperazioneDTO(user);
 			leggiOperazioneDTO.setIdOperazione(id);
+			leggiOperazioneDTO.setForzaEsecuzione(forzaEsecuzione != null && forzaEsecuzione);
 
 			OperazioniDAO operazioniDAO = new OperazioniDAO();
 

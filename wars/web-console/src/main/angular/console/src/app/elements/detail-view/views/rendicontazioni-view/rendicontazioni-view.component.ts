@@ -57,6 +57,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
     //Riepilogo
     let _dr = this.json.dataRegolamento?moment(this.json.dataRegolamento).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
     let _df = this.json.dataFlusso?moment(this.json.dataFlusso).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE;
+    let _dp = this.json.dataOraPubblicazione?moment(this.json.dataOraPubblicazione).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE;
     this.info = new Riepilogo({
       titolo: new Dato({ label: Voce.ISTITUTO, value: this.json.ragioneSocialePsp + ' (' + this.json.idPsp + ')' }),
       sottotitolo: new Dato({ label: Voce.ENTE_CREDITORE, value: this.json.ragioneSocialeDominio?(this.json.ragioneSocialeDominio + ' (' + this.json.idDominio + ')'):this.json.idDominio }),
@@ -65,6 +66,8 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
         { label: Voce.ID_CONTABILE+': ', value: this.json.trn },
         { label: Voce.DATA_FLUSSO+': ', value: _df },
         { label: Voce.DATA_REGOLAMENTO+': ', value: _dr },
+        { label: Voce.DATA_PUBBLICAZIONE+': ', value: _dp },
+        { label: Voce.REVISIONE+': ', value: this.json.revisione || '1' },
         { label: Voce.NUMERO_PAY+': ', value: this.json.numeroPagamenti }
       ]
     });

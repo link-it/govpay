@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -38,7 +38,8 @@ public class Connettore extends Versionabile {
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
-    public static final String P_SUBSCRIPTION_KEY_RECUPERO_RT_VALUE = "SUBSCRIPTION_KEY_RECUPERO_RT_VALUE";
+	public static final String P_ABILITA_GDE = "ABILITA_GDE";
+	public static final String P_ABILITATO = "ABILITATO";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";
 	public static final String P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME = "HTTP_HEADER_AUTH_HEADER_VALUE";
 	
@@ -86,7 +87,9 @@ public class Connettore extends Versionabile {
 	private String oauth2ClientCredentialsClientSecret;
 	private String oauth2ClientCredentialsUrlTokenEndpoint;
 	private String oauth2ClientCredentialsScope;
-	
+	private boolean abilitaGDE = false;
+	private boolean abilitato = false;
+
 	public Connettore() {
 	}
 	
@@ -115,6 +118,8 @@ public class Connettore extends Versionabile {
 		this.oauth2ClientCredentialsClientSecret = src.oauth2ClientCredentialsClientSecret;
 		this.oauth2ClientCredentialsUrlTokenEndpoint = src.oauth2ClientCredentialsUrlTokenEndpoint;
 		this.oauth2ClientCredentialsScope = src.oauth2ClientCredentialsScope;
+		this.abilitaGDE = src.abilitaGDE;
+		this.abilitato = src.abilitato;
 	}
 		
 	public String getIdConnettore() {
@@ -263,5 +268,17 @@ public class Connettore extends Versionabile {
 	}
 	public void setOauth2ClientCredentialsScope(String oauth2ClientCredentialsScope) {
 		this.oauth2ClientCredentialsScope = oauth2ClientCredentialsScope;
+	}
+	public boolean isAbilitaGDE() {
+		return abilitaGDE;
+	}
+	public void setAbilitaGDE(boolean abilitaGDE) {
+		this.abilitaGDE = abilitaGDE;
+	}
+	public boolean isAbilitato() {
+		return abilitato;
+	}
+	public void setAbilitato(boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 }

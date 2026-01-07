@@ -6,7 +6,8 @@
 	},
 	"servizioPagoPaRecuperoRT": {
 		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
-		"subscriptionKey" : "ABC123"
+		"subscriptionKey" : "ABC123",
+		"abilitaGDE": false
 	},
 	"abilitato": true
 }

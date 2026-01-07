@@ -59,6 +59,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       this.fGroup.addControl('stazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('abilita_ctrl', new FormControl(false));
       this.fGroup.addControl('intermediato_ctrl', new FormControl(true));
+      this.fGroup.addControl('scaricaFr_ctrl', new FormControl(true));
       this.fGroup.addControl('indirizzo_ctrl', new FormControl(''));
       this.fGroup.addControl('civico_ctrl', new FormControl(''));
       this.fGroup.addControl('cap_ctrl', new FormControl(''));
@@ -95,6 +96,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['stazione_ctrl'].setValue((this.json.stazione)?this.json.stazione:'');
           this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
           this.fGroup.controls['intermediato_ctrl'].setValue(this.json.intermediato);
+          this.fGroup.controls['scaricaFr_ctrl'].setValue((this.json.scaricaFr !== undefined && this.json.scaricaFr !== null)?this.json.scaricaFr:true);
           this.fGroup.controls['indirizzo_ctrl'].setValue((this.json.indirizzo)?this.json.indirizzo:'');
           this.fGroup.controls['civico_ctrl'].setValue((this.json.civico)?this.json.civico:'');
           this.fGroup.controls['cap_ctrl'].setValue((this.json.cap)?this.json.cap:'');
@@ -296,6 +298,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.stazione = (_info['stazione_ctrl'] && _info['intermediato_ctrl'])?_info['stazione_ctrl']:null;
       _json.abilitato = _info['abilita_ctrl'];
       _json.intermediato = _info['intermediato_ctrl'];
+      _json.scaricaFr = _info['scaricaFr_ctrl'];
       _json.indirizzo = (_info['indirizzo_ctrl'])?_info['indirizzo_ctrl']:null;
       _json.civico = (_info['civico_ctrl'])?_info['civico_ctrl']:null;
       _json.cap = (_info['cap_ctrl'])?_info['cap_ctrl']:null;

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -61,7 +61,11 @@ public class FRModel extends AbstractModel<FR> {
 		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"FR",FR.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new Field("ragioneSocialeDominio",java.lang.String.class,"FR",FR.class);
 		this.OBSOLETO = new Field("obsoleto",Boolean.class,"FR",FR.class);
+		this.DATA_ORA_PUBBLICAZIONE = new Field("dataOraPubblicazione",java.util.Date.class,"FR",FR.class);
+		this.DATA_ORA_AGGIORNAMENTO = new Field("dataOraAggiornamento",java.util.Date.class,"FR",FR.class);
+		this.REVISIONE = new Field("revisione",java.math.BigInteger.class,"FR",FR.class);
 		this.ID_RENDICONTAZIONE = new it.govpay.orm.model.IdRendicontazioneModel(new Field("idRendicontazione",it.govpay.orm.IdRendicontazione.class,"FR",FR.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
 	
 	}
 	
@@ -87,7 +91,11 @@ public class FRModel extends AbstractModel<FR> {
 		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"FR",FR.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"ragioneSocialeDominio",java.lang.String.class,"FR",FR.class);
 		this.OBSOLETO = new ComplexField(father,"obsoleto",Boolean.class,"FR",FR.class);
+		this.DATA_ORA_PUBBLICAZIONE = new ComplexField(father,"dataOraPubblicazione",java.util.Date.class,"FR",FR.class);
+		this.DATA_ORA_AGGIORNAMENTO = new ComplexField(father,"dataOraAggiornamento",java.util.Date.class,"FR",FR.class);
+		this.REVISIONE = new ComplexField(father,"revisione",java.math.BigInteger.class,"FR",FR.class);
 		this.ID_RENDICONTAZIONE = new it.govpay.orm.model.IdRendicontazioneModel(new ComplexField(father,"idRendicontazione",it.govpay.orm.IdRendicontazione.class,"FR",FR.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
 	
 	}
 	
@@ -129,7 +137,15 @@ public class FRModel extends AbstractModel<FR> {
 	 
 	public IField OBSOLETO = null;
 	 
+	public IField DATA_ORA_PUBBLICAZIONE = null;
+	 
+	public IField DATA_ORA_AGGIORNAMENTO = null;
+	 
+	public IField REVISIONE = null;
+	 
 	public it.govpay.orm.model.IdRendicontazioneModel ID_RENDICONTAZIONE = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override

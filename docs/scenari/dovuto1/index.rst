@@ -3,10 +3,14 @@
 Pagamento di un dovuto ad iniziativa ente
 =========================================
 
-In questo scenario la pendenza da pagare ha origine nel contesto dell'ente, 
-che si connota come creditore nei confronti di un determinato cittadino. 
+In questo scenario la pendenza da pagare ha origine nel contesto dell'ente,
+che si connota come creditore nei confronti di un determinato cittadino.
 Quest'ultimo provvede al pagamento accedendo al portale dei pagamenti dell'ente
 ed avvia la transazione utilizzando gli strumenti disponibili.
+
+.. warning::
+   Il Modello 1 è deprecato e verrà dismesso da pagoPA a marzo 2026.
+   Per la nuova procedura da seguire, si rimanda alla sezione :ref:`Pagamenti ad iniziativa ente <integrazione_pagamentiente>`.
 
 Lo scenario si articola complessivamente nelle seguenti fasi:
 
@@ -29,7 +33,7 @@ Le fasi che andiamo a descrivere per questo scenario sono le seguenti:
    - L'uso delle *API Pendenze* di GovPay per l'integrazione con i sistemi verticali gestionali 
      e consentire il caricamento delle pendenze nell'archivio dei pagamenti in attesa.
 
-   - L'uso delle *API "Pagamento* di GovPay per l'integrazione con il portale al cittadino e 
+   - L'uso delle *API "Pagamento* di GovPay per l'integrazione con il portale al cittadino e
      realizzare il workflow di pagamento ad iniziativa Ente previsto da pagoPA (aka Modello 1).
 
 2. La :ref:`govpay_scenari_dovuto1_configurazione` di GovPay per supportare lo scenario 

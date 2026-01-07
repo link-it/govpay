@@ -7,6 +7,8 @@ Background:
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* callonce sleep(10000)
+
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Riconciliazione cumulativa da applicazione
@@ -27,6 +29,8 @@ Scenario: Riconciliazione cumulativa da applicazione
 * def causale = toUpperCase(response.response.rh[0].causale)
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -55,6 +59,8 @@ Scenario: Riconciliazione cumulativa da applicazione
 * def causale = toUpperCase(response.response.rh[0].causale)
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def idFlusso = estraiIdFlussoDallaCausale(causale)
 

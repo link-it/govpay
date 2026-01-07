@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni-idFlussoNonUnivoco-v2.feature')
 
+* callonce sleep(10000)
+
 Scenario: Ricerca rendicontazioni da applicazione applicazione_dominio1.
 
 * def applicazione = read('msg/applicazione_dominio1e2.json')

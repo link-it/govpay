@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -62,6 +62,12 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_pdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType()));
 				setParameter(object, "setCodConnettoreRecuperoRT", Intermediario.model().COD_CONNETTORE_RECUPERO_RT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_recupero_rt", Intermediario.model().COD_CONNETTORE_RECUPERO_RT.getFieldType()));
+				setParameter(object, "setCodConnettoreACA", Intermediario.model().COD_CONNETTORE_ACA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_aca", Intermediario.model().COD_CONNETTORE_ACA.getFieldType()));
+				setParameter(object, "setCodConnettoreGPD", Intermediario.model().COD_CONNETTORE_GPD.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_gpd", Intermediario.model().COD_CONNETTORE_GPD.getFieldType()));
+				setParameter(object, "setCodConnettoreFR", Intermediario.model().COD_CONNETTORE_FR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_fr", Intermediario.model().COD_CONNETTORE_FR.getFieldType()));
 				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_ftp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
@@ -100,6 +106,12 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettorePdd"));
 				setParameter(object, "setCodConnettoreRecuperoRT", Intermediario.model().COD_CONNETTORE_RECUPERO_RT.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreRecuperoRT"));
+				setParameter(object, "setCodConnettoreACA", Intermediario.model().COD_CONNETTORE_ACA.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreACA"));
+				setParameter(object, "setCodConnettoreGPD", Intermediario.model().COD_CONNETTORE_GPD.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreGPD"));
+				setParameter(object, "setCodConnettoreFR", Intermediario.model().COD_CONNETTORE_FR.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreFR"));
 				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreFtp"));
 				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),

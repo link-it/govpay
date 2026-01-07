@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -82,6 +82,23 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			}
 		}
 
+		// Object _dominio
+		Long id_dominio = null;
+		it.govpay.orm.IdDominio idLogic_dominio = null;
+		idLogic_dominio = fr.getIdDominio();
+		if(idLogic_dominio!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_dominio, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_dominio = idLogic_dominio.getId();
+				if(id_dominio==null || id_dominio<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object fr
 		sqlQueryObjectInsert.addInsertTable(this.getFRFieldConverter().toTable(FR.model()));
@@ -101,7 +118,11 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_PUBBLICAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_AGGIORNAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().REVISIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_incasso","?");
+		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
 		// Insert fr
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getFRFetch().getKeyGeneratorObject(FR.model());
@@ -122,7 +143,11 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRagioneSocialePsp(),FR.model().RAGIONE_SOCIALE_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRagioneSocialeDominio(),FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getObsoleto(),FR.model().OBSOLETO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraPubblicazione(),FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraAggiornamento(),FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRevisione(),FR.model().REVISIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		fr.setId(id);
 
@@ -187,6 +212,23 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			}
 		}
 
+		// Object _fr_dominio
+		Long id_fr_dominio = null;
+		it.govpay.orm.IdDominio idLogic_fr_dominio = null;
+		idLogic_fr_dominio = fr.getIdDominio();
+		if(idLogic_fr_dominio!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_fr_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_fr_dominio, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_fr_dominio = idLogic_fr_dominio.getId();
+				if(id_fr_dominio==null || id_fr_dominio<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object fr
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -225,11 +267,23 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		lstObjects_fr.add(new JDBCObject(fr.getRagioneSocialeDominio(), FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getObsoleto(), FR.model().OBSOLETO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_PUBBLICAZIONE,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getDataOraPubblicazione(), FR.model().DATA_ORA_PUBBLICAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_AGGIORNAMENTO,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getDataOraAggiornamento(), FR.model().DATA_ORA_AGGIORNAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().REVISIONE,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getRevisione(), FR.model().REVISIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_incasso","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_fr.add(new JDBCObject(id_fr_incasso, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_fr.add(new JDBCObject(id_fr_dominio, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_fr.add(new JDBCObject(tableId, Long.class));

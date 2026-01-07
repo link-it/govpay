@@ -8,6 +8,9 @@ Background:
 
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* callonce sleep(10000)
+
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 
 Scenario: Riconciliazione cumulativa da applicazione
@@ -28,6 +31,8 @@ Scenario: Riconciliazione cumulativa da applicazione
 * def causale = toUpperCase(response.response.rh[0].causale)
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
@@ -56,6 +61,8 @@ Scenario: Riconciliazione cumulativa da applicazione
 * def causale = toUpperCase(response.response.rh[0].causale)
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 * def idFlusso = estraiIdFlussoDallaCausale(causale)
 

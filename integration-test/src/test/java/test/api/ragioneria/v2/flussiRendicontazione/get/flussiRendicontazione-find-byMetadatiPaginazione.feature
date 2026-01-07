@@ -10,6 +10,8 @@ Background:
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pathServizio = '/flussiRendicontazione'
 
+* callonce sleep(10000)
+
 Scenario: Ricerca tracciati senza filtri sui metadati di paginazione
 
 Given url ragioneriaBaseurl
