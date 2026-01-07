@@ -1,3 +1,38 @@
+2026-01-07  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.2
+
+2026-01-07  Giuliano Pintori <pintori@link.it>
+
+	* [IntegrationTest]
+	Aggiunta funzionalità
+	Aggiunti test di integrazione per le sonde di monitoraggio GovPay (endpoint /sonde).
+	Creato sonde-get.feature con 23 scenari per verificare tutte le sonde disponibili:
+	check-db, check-ntfy, check-tracciati, spedizione-promemoria, check-promemoria,
+	check-ntfy-appio, check-gestione-promemoria, check-elab-trac-notif-pag,
+	check-spedizione-trac-notif-pag, check-riconciliazioni, check-rpt-scadute,
+	check-recupero-rt, spedizione-trac-notif-pag, elaborazione-trac-notif-pag,
+	riconciliazioni, caricamento-tracciati, update-rnd, gestione-promemoria,
+	update-ntfy-appio, update-ntfy, rpt-scadute, recupero-rt.
+
+	* [IntegrationTest]
+	Aggiunta funzionalità
+	Aggiunti test di integrazione per le operazioni backoffice (endpoint /operazioni).
+	Creato operazioni-find.feature con scenari per lista operazioni e invocazione
+	delle operazioni chiusuraRptScadute, elaborazioneRiconciliazioni e inviaPosizioniDebitorieAca.
+
+	* [IntegrationTest]
+	Risolto Bug
+	Corretti test di riconciliazione che fallivano con errore 422 "Flusso rendicontazione non trovato".
+	Aggiunto sleep(10000) dopo l'acquisizione rendicontazioni per permettere l'elaborazione batch.
+	Modificati bunch-riconciliazioni.feature e bunch-riconciliazioni-v3.feature in v1, v2, v3.
+
+	* [IntegrationTest]
+	Risolto Bug
+	Corretti test di autorizzazione riconciliazioni che fallivano con errore 403.
+	Aggiunto ripristino configurazione applicazione originale prima di ogni scenario
+	in riconciliazione-autorizzazione.feature.
+
 2025-12-18  Giuliano Pintori <pintori@link.it>
 
 	* [GovPayCore]
