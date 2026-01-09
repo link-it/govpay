@@ -206,6 +206,9 @@ And match response.descrizioneStato == '#("Flusso rendicontazione non trovato.: 
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+# Attesa elaborazione flussi di rendicontazione acquisiti
+* call sleep(10000)
+
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
