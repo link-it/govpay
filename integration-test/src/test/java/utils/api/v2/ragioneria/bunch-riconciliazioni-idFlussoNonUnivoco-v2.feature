@@ -36,6 +36,7 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* call sleep(1000)
+# Attesa elaborazione flussi di rendicontazione acquisiti
+* call sleep(10000)
 * def dataFineFR = getDateTime()
 * call sleep(1000)
