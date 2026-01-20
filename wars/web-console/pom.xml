@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.9</version>
+		<version>3.7.10-SNAPSHOT</version>
 	</parent>
 	<artifactId>web-console</artifactId>
 	<packaging>war</packaging>
