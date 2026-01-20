@@ -248,13 +248,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link PagamentoPortaleVersamento }
-     */
-    public PagamentoPortaleVersamento createPagamentoPortaleVersamento() {
-        return new PagamentoPortaleVersamento();
-    }
-
-    /**
      * Create an instance of {@link IdTracciatoNotificaPagamenti }
      */
     public IdTracciatoNotificaPagamenti createIdTracciatoNotificaPagamenti() {
@@ -339,13 +332,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdPagamentoPortale }
-     */
-    public IdPagamentoPortale createIdPagamentoPortale() {
-        return new IdPagamentoPortale();
-    }
-
-    /**
      * Create an instance of {@link Incasso }
      */
     public Incasso createIncasso() {
@@ -378,13 +364,6 @@ public class ObjectFactory {
      */
     public IdTipoTributo createIdTipoTributo() {
         return new IdTipoTributo();
-    }
-
-    /**
-     * Create an instance of {@link PagamentoPortale }
-     */
-    public PagamentoPortale createPagamentoPortale() {
-        return new PagamentoPortale();
     }
 
     /**
@@ -455,13 +434,6 @@ public class ObjectFactory {
      */
     public VistaRendicontazione createVistaRendicontazione() {
         return new VistaRendicontazione();
-    }
-
-    /**
-     * Create an instance of {@link VistaPagamentoPortale }
-     */
-    public VistaPagamentoPortale createVistaPagamentoPortale() {
-        return new VistaPagamentoPortale();
     }
 
     /**

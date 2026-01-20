@@ -43,7 +43,6 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 	
 		super();
 	
-		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VistaRptVersamento",VistaRptVersamento.class));
 		this.COD_CARRELLO = new Field("codCarrello",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.CCP = new Field("ccp",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -142,7 +141,6 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 	
 		super(father);
 	
-		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VistaRptVersamento",VistaRptVersamento.class));
 		this.COD_CARRELLO = new ComplexField(father,"codCarrello",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -239,8 +237,6 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 	
 	
 
-	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
-	 
 	public IField COD_CARRELLO = null;
 	 
 	public IField IUV = null;
