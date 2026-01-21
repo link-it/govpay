@@ -665,65 +665,6 @@ CREATE TABLE singoli_versamenti
 ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE INDEX idx_sng_id_voce (id_versamento, indice_dati);
 
 
-CREATE TABLE pagamenti_portale
-(
-	cod_canale VARCHAR(35) COMMENT 'Codice identificativo del canale scelto per il pagamento (WISP 1.3)',
-	nome VARCHAR(255) NOT NULL COMMENT 'Nome del pagamento',
-	importo DOUBLE NOT NULL COMMENT 'Importo del pagamento',
-	versante_identificativo VARCHAR(35) COMMENT 'Codice fiscale o partita iva del versante, se diverso dal pagatore',
-	id_sessione VARCHAR(35) NOT NULL COMMENT 'Identificativo della sessione di pagamento assegnata da GovPay',
-	id_sessione_portale VARCHAR(255) COMMENT 'Identificativo della sessione di pagamento assegnata dal portale richiedente',
-	id_sessione_psp VARCHAR(255) COMMENT 'Identificativo della sessione di pagamento assegnata da pagoPA',
-	stato VARCHAR(35) NOT NULL COMMENT 'Stato del pagamento',
-	codice_stato VARCHAR(35) NOT NULL COMMENT 'Codice dello stato del pagamento',
-	descrizione_stato VARCHAR(1024) COMMENT 'Descrizione dello stato di pagamento',
-	psp_redirect_url VARCHAR(1024) COMMENT 'Url di redirezione per pagamenti ad iniziativa ente',
-	psp_esito VARCHAR(255) COMMENT 'Esito del pagamento fornito dal PSP',
-	json_request LONGTEXT COMMENT 'Richiesta di pagamento originale inviata dal portale',
-	data_richiesta DATETIME(3) DEFAULT now() COMMENT 'Data della richiesta di pagamento',
-	url_ritorno VARCHAR(1024) COMMENT 'Url di redirezione al portale di pagamento',
-	cod_psp VARCHAR(35) COMMENT 'Codice identificativo del psp scelto per il pagamento (WISP 1.3)',
-	tipo_versamento VARCHAR(4) COMMENT 'Tipologia di pagamento scelto (WISP 1.3)',
-	multi_beneficiario VARCHAR(35) COMMENT 'Indicazione se il pagmento e\' per un carrello multibeneficiario (WISP 1.3)',
-	ack BOOLEAN NOT NULL COMMENT '',
-	tipo INT NOT NULL COMMENT 'Tipologia di pagamento (Modello 1, 2 o 3)',
-	principal VARCHAR(4000) NOT NULL COMMENT 'Principal del richiedente',
-	tipo_utenza VARCHAR(35) NOT NULL COMMENT 'Tipologia dell\'utenza richiedente',
-	src_versante_identificativo VARCHAR(35),
-	severita INT COMMENT 'Livello severita in caso di pagamento fallito',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_applicazione BIGINT COMMENT 'Riferimento all\'applicazione',
-	-- fk/pk keys constraints
-	CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di pagamento';
-
--- index
-CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
-CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
-CREATE INDEX idx_prt_id_sessione_psp ON pagamenti_portale (id_sessione_psp);
-CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identificativo);
-CREATE INDEX idx_prt_data_richiesta ON pagamenti_portale (data_richiesta);
-
-
-
-CREATE TABLE pag_port_versamenti
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_pagamento_portale BIGINT NOT NULL COMMENT 'Riferimento alla richeista di pagamento',
-	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto di pagamento',
-	-- fk/pk keys constraints
-	CONSTRAINT fk_ppv_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_ppv_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pendenze oggetto di pagamento';
-
--- index
-CREATE INDEX idx_ppv_fk_prt ON pag_port_versamenti (id_pagamento_portale);
-CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
-
 
 
 CREATE TABLE trac_notif_pag
@@ -791,10 +732,8 @@ CREATE TABLE rpt
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
-	id_pagamento_portale BIGINT COMMENT 'Identificativo della richiesta di pagamento assegnato dal portale chiamante',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Transazioni di pagmaento';
 
@@ -802,7 +741,6 @@ CREATE TABLE rpt
 CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
-CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
 CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
 CREATE INDEX idx_rpt_data_msg_ricevuta ON rpt (data_msg_ricevuta);
@@ -968,6 +906,7 @@ CREATE TABLE fr
 
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE UNIQUE INDEX index_fr_2 ON fr (cod_dominio,cod_flusso,cod_psp,revisione);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
@@ -1236,17 +1175,11 @@ ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_iban_appoggio;
 ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_tributo;
 ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_versamento;
 
-ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_pagamento_portale;
 ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rpt;
 ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_singolo_versamento;
-
-ALTER TABLE pagamenti_portale DROP FOREIGN KEY fk_ppt_id_applicazione;
-
-ALTER TABLE pag_port_versamenti DROP FOREIGN KEY fk_ppv_id_pagamento_portale;
-ALTER TABLE pag_port_versamenti DROP FOREIGN KEY fk_ppv_id_versamento;
 
 ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
 
@@ -1361,46 +1294,6 @@ CREATE VIEW v_riscossioni AS (
    LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id);
 
 
--- Vista pagamenti_portale
-
-CREATE VIEW v_pagamenti_portale AS
- SELECT 
-  pagamenti_portale.cod_canale,
-  pagamenti_portale.nome,
-  pagamenti_portale.importo,
-  pagamenti_portale.versante_identificativo,
-  pagamenti_portale.src_versante_identificativo,
-  pagamenti_portale.id_sessione,
-  pagamenti_portale.id_sessione_portale,
-  pagamenti_portale.id_sessione_psp,
-  pagamenti_portale.stato,
-  pagamenti_portale.codice_stato,
-  pagamenti_portale.descrizione_stato,
-  pagamenti_portale.psp_redirect_url,
-  pagamenti_portale.psp_esito,
-  pagamenti_portale.data_richiesta,
-  pagamenti_portale.url_ritorno,
-  pagamenti_portale.cod_psp,
-  pagamenti_portale.tipo_versamento,
-  pagamenti_portale.multi_beneficiario,
-  pagamenti_portale.ack,
-  pagamenti_portale.tipo,
-  pagamenti_portale.principal,
-  pagamenti_portale.tipo_utenza,
-  pagamenti_portale.id,
-  pagamenti_portale.id_applicazione,
-  pagamenti_portale.severita,
-  versamenti.debitore_identificativo as debitore_identificativo,
-  versamenti.src_debitore_identificativo as src_debitore_identificativo,
-  versamenti.id_dominio as id_dominio, 
-  versamenti.id_uo as id_uo, 
-  versamenti.id_tipo_versamento as id_tipo_versamento,
-  versamenti.cod_versamento_ente as cod_versamento_ente,
-  versamenti.src_iuv as src_iuv
-FROM pagamenti_portale 
-JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
-
 -- Vista Eventi per Versamenti
 
 CREATE VIEW v_eventi_vers_rendicontazioni AS (
@@ -1433,36 +1326,6 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
         JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
 );
-
-CREATE VIEW v_eventi_vers_pagamenti AS (
- SELECT DISTINCT eventi.componente,
-    eventi.ruolo,
-    eventi.categoria_evento,
-    eventi.tipo_evento,
-    eventi.sottotipo_evento,
-    eventi.data,
-    eventi.intervallo,
-    eventi.esito,
-    eventi.sottotipo_esito,
-    eventi.dettaglio_esito,
-    eventi.parametri_richiesta,
-    eventi.parametri_risposta,
-    eventi.dati_pago_pa,
-    versamenti.cod_versamento_ente,
-    applicazioni.cod_applicazione,
-    eventi.iuv,
-    eventi.cod_dominio,
-    eventi.ccp,
-    eventi.id_sessione,
-    eventi.severita,
-    eventi.cluster_id,
-    eventi.transaction_id,
-    eventi.id
-   FROM versamenti
-     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
-     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-     JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione);
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
         SELECT DISTINCT eventi.componente,
@@ -1549,29 +1412,6 @@ CREATE VIEW v_eventi_vers AS
                eventi.cluster_id,
                eventi.transaction_id,
                eventi.id FROM eventi 
-        UNION SELECT componente,
-               ruolo,
-               categoria_evento,
-               tipo_evento,
-               sottotipo_evento,
-               data,
-               intervallo,
-               esito,
-               sottotipo_esito,
-               dettaglio_esito,
-               parametri_richiesta,
-               parametri_risposta,
-               dati_pago_pa,
-               cod_versamento_ente,
-               cod_applicazione,
-               iuv,
-               cod_dominio,
-               ccp,
-               id_sessione,
-	       severita,
-               cluster_id,
-               transaction_id,
-               id FROM v_eventi_vers_pagamenti 
         UNION SELECT componente,
                ruolo,
                categoria_evento,
@@ -1809,7 +1649,6 @@ rpt.data_conservazione as data_conservazione,
 rpt.bloccante as bloccante,                      
 rpt.versione as versione,
 rpt.id as id,                             
-rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
     versamenti.debitore_identificativo AS vrs_debitore_identificativo,

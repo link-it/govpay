@@ -932,93 +932,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE pagamenti_portale
-(
-	cod_canale VARCHAR2(35 CHAR),
-	nome VARCHAR2(255 CHAR) NOT NULL,
-	importo BINARY_DOUBLE NOT NULL,
-	versante_identificativo VARCHAR2(35 CHAR),
-	id_sessione VARCHAR2(35 CHAR) NOT NULL,
-	id_sessione_portale VARCHAR2(255 CHAR),
-	id_sessione_psp VARCHAR2(255 CHAR),
-	stato VARCHAR2(35 CHAR) NOT NULL,
-	codice_stato VARCHAR2(35 CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(1024 CHAR),
-	psp_redirect_url VARCHAR2(1024 CHAR),
-	psp_esito VARCHAR2(255 CHAR),
-	json_request CLOB,
-	data_richiesta TIMESTAMP,
-	url_ritorno VARCHAR2(1024 CHAR),
-	cod_psp VARCHAR2(35 CHAR),
-	tipo_versamento VARCHAR2(4 CHAR),
-	multi_beneficiario VARCHAR2(35 CHAR),
-	ack NUMBER NOT NULL,
-	tipo NUMBER NOT NULL,
-	principal VARCHAR2(4000 CHAR) NOT NULL,
-	tipo_utenza VARCHAR2(35 CHAR) NOT NULL,
-	src_versante_identificativo VARCHAR2(35 CHAR),
-	severita NUMBER,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_applicazione NUMBER,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
-);
-
--- index
-CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
-CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
-CREATE INDEX idx_prt_id_sessione_psp ON pagamenti_portale (id_sessione_psp);
-CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identificativo);
-CREATE INDEX idx_prt_data_richiesta ON pagamenti_portale (data_richiesta);
-CREATE TRIGGER trg_pagamenti_portale
-BEFORE
-insert on pagamenti_portale
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_pagamenti_portale.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_pag_port_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE pag_port_versamenti
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_pagamento_portale NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_ppv_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_ppv_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
-);
-
--- index
-CREATE INDEX idx_ppv_fk_prt ON pag_port_versamenti (id_pagamento_portale);
-CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
-CREATE TRIGGER trg_pag_port_versamenti
-BEFORE
-insert on pag_port_versamenti
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_pag_port_versamenti.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_trac_notif_pag MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE trac_notif_pag
@@ -1105,10 +1018,8 @@ CREATE TABLE rpt
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
-	id_pagamento_portale NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -1116,7 +1027,6 @@ CREATE TABLE rpt
 CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
-CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
 CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
 CREATE INDEX idx_rpt_data_msg_ricevuta ON rpt (data_msg_ricevuta);
@@ -1736,17 +1646,11 @@ ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
 
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
 ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
-
--- ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
-
-ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
-ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
 
 ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
 
@@ -1862,46 +1766,6 @@ CREATE VIEW v_riscossioni AS (
    LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id);
 
 
--- Vista pagamenti_portale
-
-CREATE VIEW v_pagamenti_portale AS
- SELECT 
-  pagamenti_portale.cod_canale,
-  pagamenti_portale.nome,
-  pagamenti_portale.importo,
-  pagamenti_portale.versante_identificativo,
-  pagamenti_portale.src_versante_identificativo,
-  pagamenti_portale.id_sessione,
-  pagamenti_portale.id_sessione_portale,
-  pagamenti_portale.id_sessione_psp,
-  pagamenti_portale.stato,
-  pagamenti_portale.codice_stato,
-  pagamenti_portale.descrizione_stato,
-  pagamenti_portale.psp_redirect_url,
-  pagamenti_portale.psp_esito,
-  pagamenti_portale.data_richiesta,
-  pagamenti_portale.url_ritorno,
-  pagamenti_portale.cod_psp,
-  pagamenti_portale.tipo_versamento,
-  pagamenti_portale.multi_beneficiario,
-  pagamenti_portale.ack,
-  pagamenti_portale.tipo,
-  pagamenti_portale.principal,
-  pagamenti_portale.tipo_utenza,
-  pagamenti_portale.id,
-  pagamenti_portale.id_applicazione,
-  pagamenti_portale.severita,
-  versamenti.debitore_identificativo as debitore_identificativo,
-  versamenti.src_debitore_identificativo as src_debitore_identificativo,
-  versamenti.id_dominio as id_dominio, 
-  versamenti.id_uo as id_uo, 
-  versamenti.id_tipo_versamento as id_tipo_versamento,
-  versamenti.cod_versamento_ente as cod_versamento_ente,
-  versamenti.src_iuv as src_iuv
-FROM pagamenti_portale 
-JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
-
 -- Vista Eventi per Versamenti
 
 CREATE VIEW v_eventi_vers_rendicontazioni AS (
@@ -1914,18 +1778,6 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
         JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento=singoli_versamenti.id
         JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-);
-
-CREATE VIEW v_eventi_vers_pagamenti AS (
-	SELECT DISTINCT 
-               versamenti.cod_versamento_ente as cod_versamento_ente,
-               applicazioni.cod_applicazione as cod_applicazione,
-               eventi.id
-        FROM versamenti
-        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-        JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
-        JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-        JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione
 );
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
@@ -1958,7 +1810,6 @@ CREATE VIEW v_eventi_vers_base AS (
                cod_applicazione,
                id
         FROM eventi
-        UNION SELECT * FROM v_eventi_vers_pagamenti
         UNION SELECT * FROM v_eventi_vers_rendicontazioni
         UNION SELECT * FROM v_eventi_vers_riconciliazioni
         UNION SELECT * FROM v_eventi_vers_tracciati
@@ -2159,7 +2010,6 @@ rpt.data_conservazione as data_conservazione,
 rpt.bloccante as bloccante,  
 rpt.versione as versione,                      
 rpt.id as id,                             
-rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
     versamenti.debitore_identificativo AS vrs_debitore_identificativo,

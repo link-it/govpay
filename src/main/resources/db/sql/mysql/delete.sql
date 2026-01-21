@@ -14,8 +14,6 @@ DELETE FROM notifiche_app_io;
 DELETE FROM notifiche;
 DELETE FROM rpt;
 DELETE FROM trac_notif_pag;
-DELETE FROM pag_port_versamenti;
-DELETE FROM pagamenti_portale;
 DELETE FROM singoli_versamenti;
 DELETE FROM versamenti;
 DELETE FROM documenti;
