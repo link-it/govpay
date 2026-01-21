@@ -132,34 +132,6 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_sessione";
-			}else{
-				return "id_sessione";
-			}
-		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".src_versante_identificativo";
-			}else{
-				return "src_versante_identificativo";
-			}
-		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_richiesta";
-			}else{
-				return "data_richiesta";
-			}
-		}
 		if(field.equals(VistaVersamento.model().IMPORTO_TOTALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".importo_totale";
@@ -648,18 +620,6 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaVersamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaVersamento.model().ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
 		if(field.equals(VistaVersamento.model().IMPORTO_TOTALE)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
@@ -890,12 +850,6 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "domini";
 		}
 		if(model.equals(VistaVersamento.model().ID_APPLICAZIONE)){
-			return "applicazioni";
-		}
-		if(model.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE)){
-			return "pagamenti_portale";
-		}
-		if(model.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
 		if(model.equals(VistaVersamento.model().ID_DOCUMENTO)){

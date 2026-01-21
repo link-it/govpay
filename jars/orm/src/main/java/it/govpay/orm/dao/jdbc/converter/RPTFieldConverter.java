@@ -181,34 +181,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo";
 			}
 		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_sessione";
-			}else{
-				return "id_sessione";
-			}
-		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".src_versante_identificativo";
-			}else{
-				return "src_versante_identificativo";
-			}
-		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_richiesta";
-			}else{
-				return "data_richiesta";
-			}
-		}
 		if(field.equals(RPT.model().COD_CARRELLO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_carrello";
@@ -515,18 +487,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().ID_VERSAMENTO.TIPO)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
 		if(field.equals(RPT.model().COD_CARRELLO)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
@@ -662,12 +622,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO)){
 			return "tipi_versamento";
-		}
-		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE)){
-			return "pagamenti_portale";
-		}
-		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
-			return "applicazioni";
 		}
 
 

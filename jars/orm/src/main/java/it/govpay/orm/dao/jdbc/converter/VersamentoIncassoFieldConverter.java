@@ -132,34 +132,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_sessione";
-			}else{
-				return "id_sessione";
-			}
-		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".src_versante_identificativo";
-			}else{
-				return "src_versante_identificativo";
-			}
-		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_richiesta";
-			}else{
-				return "data_richiesta";
-			}
-		}
 		if(field.equals(VersamentoIncasso.model().IMPORTO_TOTALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".importo_totale";
@@ -564,18 +536,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VersamentoIncasso.model().ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			return this.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			return this.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			return this.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
 		if(field.equals(VersamentoIncasso.model().IMPORTO_TOTALE)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
@@ -770,12 +730,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return "domini";
 		}
 		if(model.equals(VersamentoIncasso.model().ID_APPLICAZIONE)){
-			return "applicazioni";
-		}
-		if(model.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE)){
-			return "pagamenti_portale";
-		}
-		if(model.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
 
