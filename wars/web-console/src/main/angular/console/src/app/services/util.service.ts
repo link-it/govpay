@@ -48,8 +48,8 @@ export class UtilService {
   // Config.js
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
-  // Config.js
-  public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
+  // Disabilitato - rimossa tabella pagamenti_portale
+  public static GESTIONE_PAGAMENTI: any = { ENABLED: false };
   public static GESTIONE_RISCOSSIONI: any = GovPayConfig.GESTIONE_RISCOSSIONI;
   public static GESTIONE_MANUTENZIONE: any = GovPayConfig.MANUTENZIONE;
 

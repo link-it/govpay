@@ -121,9 +121,6 @@
       MAX_THREAD_EXPORT_LIMIT: 5, // Max sincro calls
       POLLING_TRACCIATI: 5000    // Timeout per tracciati NN(millisec)|false
     },
-    GESTIONE_PAGAMENTI: {
-      ENABLED: true // abilita la sezione pagamenti
-    },
     GESTIONE_RISCOSSIONI: {
       ENABLED: true  // abilita la sezione riscossioni
     },
