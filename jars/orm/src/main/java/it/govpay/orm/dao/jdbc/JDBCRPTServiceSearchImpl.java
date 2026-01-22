@@ -203,25 +203,17 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			fields.add(RPT.model().VERSIONE);
 
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getRPTFieldConverter().toTable(RPT.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 
 				Long idVersamento = (Long)map.remove("id_versamento");
-				Long idPagamentoPortale = this.getNullableValueFromMap("id_pagamento_portale", map);
 
 				RPT rpt = (RPT)this.getRPTFetch().fetch(jdbcProperties.getDatabase(), RPT.model(), map);
 				it.govpay.orm.IdVersamento id_rpt_versamento =  new it.govpay.orm.IdVersamento();
 				id_rpt_versamento.setId(idVersamento);
 				rpt.setIdVersamento(id_rpt_versamento);
-
-				if(idPagamentoPortale != null && idPagamentoPortale > 0){
-					it.govpay.orm.IdPagamentoPortale id_rpt_idPagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
-					id_rpt_idPagamentoPortale.setId(idPagamentoPortale);
-					rpt.setIdPagamentoPortale(id_rpt_idPagamentoPortale);
-				}
 
 				list.add(rpt);
 			}
@@ -519,14 +511,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
 			}
 		}
-		if(obj.getIdPagamentoPortale()!=null &&
-				imgSaved.getIdPagamentoPortale()!=null){
-			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
-			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null &&
-					imgSaved.getIdPagamentoPortale().getIdApplicazione()!=null){
-				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
-			}
-		}
 
 	}
 
@@ -630,25 +614,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
 		}
 
-		if(expression.inUseModel(RPT.model().ID_PAGAMENTO_PORTALE,false)){
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PAGAMENTO_PORTALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE,false)){
-			if(!expression.inUseModel(RPT.model().ID_PAGAMENTO_PORTALE,false)){
-				String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-				String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PAGAMENTO_PORTALE);
-				sqlQueryObject.addFromTable(tableName2);
-				sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
-			}
-
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PAGAMENTO_PORTALE);
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-
 	}
 
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -703,18 +668,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
-			));
-
-		// RPT.model().ID_PAGAMENTO_PORTALE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_PAGAMENTO_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_PAGAMENTO_PORTALE))
-			));
-
-		// RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
 			));
 
 

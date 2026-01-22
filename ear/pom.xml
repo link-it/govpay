@@ -43,16 +43,6 @@
                                                 </webModule>
                                                 <webModule>
                                                         <groupId>it.govpay</groupId>
-                                                        <artifactId>api-pagamento</artifactId>
-                                                        <contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
-                                                </webModule>
-                                                <webModule>
-                                                        <groupId>it.govpay</groupId>
-                                                        <artifactId>web-connector</artifactId>
-                                                        <contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
-                                                </webModule>
-                                                <webModule>
-                                                        <groupId>it.govpay</groupId>
                                                         <artifactId>api-pendenze</artifactId>
                                                         <contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
                                                 </webModule>
@@ -111,30 +101,6 @@
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-jppapdp</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>api-pagamento</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>api-pagamento</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>web-connector</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>web-connector</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>

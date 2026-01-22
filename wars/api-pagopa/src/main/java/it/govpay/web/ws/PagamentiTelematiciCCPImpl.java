@@ -19,24 +19,16 @@
  */
 package it.govpay.web.ws;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import jakarta.annotation.Resource;
-import jakarta.jws.WebService;
-import jakarta.xml.ws.WebServiceContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -84,15 +76,11 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
-import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
@@ -135,17 +123,18 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.eventi.DatiPagoPA;
-import it.govpay.orm.IdVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.web.ws.converter.PaaInviaRTConverter;
 import it.govpay.web.ws.converter.PaaInviaRTRispostaConverter;
+import jakarta.annotation.Resource;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.WebServiceContext;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",
@@ -469,59 +458,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				try {
 					log.debug("Verifica RPT precedente per eventuale transazione concorrente.");
 					Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp, true);
-					if(oldrpt.getPagamentoPortale() != null)
-						appContext.getEventoCtx().setIdPagamento(oldrpt.getPagamentoPortale().getIdSessione());
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]" , codDominio);
 				} catch (NotFoundException e2) {
 	
-					log.debug("Creazione PagamentoPortale.");
-					PagamentoPortale pagamentoPortale = new PagamentoPortale();
-					Versamento versamento2 = rpt.getVersamento();
-					it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
-					pagamentoPortale.setPrincipal(applicazione.getPrincipal());
-					pagamentoPortale.setTipoUtenza(TIPO_UTENZA.APPLICAZIONE);
-					pagamentoPortale.setCodCanale(rpt.getCodCanale());
-					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
-					pagamentoPortale.setCodPsp(rpt.getCodPsp());
-					pagamentoPortale.setDataRichiesta(rpt.getDataMsgRichiesta());
-					pagamentoPortale.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
-					
-					appContext.getEventoCtx().setIdPagamento(pagamentoPortale.getIdSessione());
-	
-					List<IdVersamento> idVersamentoList = new ArrayList<>();
-	
-					IdVersamento idVersamento = new IdVersamento();
-					idVersamento.setCodVersamentoEnte(versamento2.getCodVersamentoEnte());
-					idVersamento.setId(versamento2.getId());
-					
-					idVersamentoList.add(idVersamento);
-					pagamentoPortale.setIdVersamento(idVersamentoList);
-					
-					pagamentoPortale.setImporto(versamento2.getImportoTotale());
-					pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
-					
-					if(versamento2.getNome()!=null) {
-						pagamentoPortale.setNome(versamento2.getNome());
-					} else {
-						try {
-							pagamentoPortale.setNome(versamento2.getCausaleVersamento().getSimple());
-						} catch(UnsupportedEncodingException e) {}
-					}
-	
-					pagamentoPortale.setStato(STATO.IN_CORSO);
-					pagamentoPortale.setTipo(3);
-					
-					if(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante() != null)
-						pagamentoPortale.setVersanteIdentificativo(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante().getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
-	
-					PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
-					ppbd.setAtomica(false);
-										
-					ppbd.insertPagamento(pagamentoPortale, true);
-					
-					// imposto l'id pagamento all'rpt
-					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
-					rpt.setPagamentoPortale(pagamentoPortale);
 					log.debug("Creazione RPT.");
 					try {
 						// 	L'RPT non esiste, procedo
@@ -529,15 +468,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}catch(ServiceException e) {
 						rptBD.rollback();
 						rptBD.disableSelectForUpdate();
-	
-						// update della entry pagamento portale
-						pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-						pagamentoPortale.setStato(STATO.FALLITO);
-						pagamentoPortale.setDescrizioneStato(e.getMessage());
-						pagamentoPortale.setAck(false);
-						ppbd.updatePagamento(pagamentoPortale, false, true);
-						
-						ppbd.commit();
 						throw e;
 					}
 					log.debug("Schedulazione nodoInviaRPT.");
@@ -862,8 +792,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
 				
 				for(Rpt rpt_pendente : rpt_pendenti) {
-					if(rpt_pendente.getPagamentoPortale() != null)
-						appContext.getEventoCtx().setIdPagamento(rpt_pendente.getPagamentoPortale().getIdSessione());
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
 					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
@@ -1046,8 +974,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
-			if(rpt.getIdPagamentoPortale() != null)
-				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
 			appContext.getResponse().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ESITO_PAGAMENTO, rpt.getEsitoPagamento().toString()));
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_RT_OK);
@@ -1909,8 +1835,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
-			if(rpt.getIdPagamentoPortale() != null)
-				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
 			appContext.getResponse().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_ESITO_PAGAMENTO, rpt.getEsitoPagamento().toString()));
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_ACQUISIZIONE_RT_OK);

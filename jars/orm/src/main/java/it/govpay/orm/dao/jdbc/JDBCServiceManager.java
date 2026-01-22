@@ -68,10 +68,6 @@ import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperatoreServiceSearch;
 import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.IOperazioneServiceSearch;
-import it.govpay.orm.dao.IPagamentoPortaleService;
-import it.govpay.orm.dao.IPagamentoPortaleServiceSearch;
-import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
-import it.govpay.orm.dao.IPagamentoPortaleVersamentoServiceSearch;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPagamentoServiceSearch;
 import it.govpay.orm.dao.IPromemoriaService;
@@ -116,7 +112,6 @@ import it.govpay.orm.dao.IVistaEventiRptService;
 import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
 import it.govpay.orm.dao.IVistaEventiVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
-import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
@@ -1008,73 +1003,9 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public IRendicontazioneService getRendicontazioneService() throws ServiceException,NotImplementedException{
 		return new JDBCRendicontazioneService(this);
 	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:PagamentoPortaleVersamento type:PagamentoPortaleVersamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPagamentoPortaleVersamentoServiceSearch getPagamentoPortaleVersamentoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCPagamentoPortaleVersamentoServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPagamentoPortaleVersamentoService getPagamentoPortaleVersamentoService() throws ServiceException,NotImplementedException{
-		return new JDBCPagamentoPortaleVersamentoService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:PagamentoPortale type:PagamentoPortale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPagamentoPortaleServiceSearch getPagamentoPortaleServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCPagamentoPortaleServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPagamentoPortaleService getPagamentoPortaleService() throws ServiceException,NotImplementedException{
-		return new JDBCPagamentoPortaleService(this);
-	}
-	
-	
-	
+
+
+
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:Pagamento type:Pagamento
@@ -1604,30 +1535,9 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public IVistaEventiRptService getVistaEventiRptService() throws ServiceException,NotImplementedException{
 		return new JDBCVistaEventiRptService(this);
 	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VistaPagamentoPortale type:VistaPagamentoPortale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamentoPortale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamentoPortale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IVistaPagamentoPortaleServiceSearch getVistaPagamentoPortaleServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCVistaPagamentoPortaleServiceSearch(this);
-	}
-	
-	
-	
-	
+
+
+
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:VistaPagamento type:VistaPagamento

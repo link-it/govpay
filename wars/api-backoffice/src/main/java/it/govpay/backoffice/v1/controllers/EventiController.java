@@ -44,11 +44,8 @@ import it.govpay.core.dao.eventi.dto.LeggiEventoDTO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTOResponse;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
-import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.RptDAO;
-import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
@@ -120,7 +117,6 @@ public class EventiController extends BaseController {
 			listaEventiDTO.setCcp(ccp);
 			listaEventiDTO.setIdA2A(idA2A);
 			listaEventiDTO.setIdPendenza(idPendenza);
-			listaEventiDTO.setIdPagamento(idPagamento);
 			listaEventiDTO.setMessaggi(messaggi);
 
 			if(esito != null) {
@@ -256,21 +252,7 @@ public class EventiController extends BaseController {
 					if(listaRptDTOResponse.getTotalResults() == 0)
 						autorizzato = false;
 				}
-			} else if(idPagamento != null) {
-				listaEventiDTO.setVista(VISTA.PAGAMENTI);
-
-				if(autorizza) {
-
-					ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
-					listaPagamentiPortaleDTO.setIdSessione(idPagamento);
-
-					PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
-					ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
-
-					if(pagamentoPortaleDTOResponse.getTotalResults() == 0)
-						autorizzato = false;
-				}
-			}
+			} 
 
 			List<String> domini = null;
 			// Autorizzazione sui domini
@@ -341,7 +323,6 @@ public class EventiController extends BaseController {
 				String idPendenza = evento.getCodVersamentoEnte();
 				String idDominio = evento.getCodDominio();
 				String iuv = evento.getCodDominio();
-				String idPagamento = evento.getIdSessione();
 
 				if(idA2A != null && idPendenza != null) {
 
@@ -389,19 +370,7 @@ public class EventiController extends BaseController {
 					if(listaRptDTOResponse.getTotalResults() == 0) {
 						autorizzato = false;
 					}
-				} else if(idPagamento != null) {
-
-
-					ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
-					listaPagamentiPortaleDTO.setIdSessione(idPagamento);
-
-					PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
-					ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
-
-					if(pagamentoPortaleDTOResponse.getTotalResults() == 0) {
-						autorizzato = false;
-					}
-				}
+				} 
 			}
 
 			if(!autorizzato)

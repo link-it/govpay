@@ -38,7 +38,6 @@ import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
@@ -80,7 +79,6 @@ public class InviaRptThread implements Runnable {
 	private Intermediario intermediario = null;
 	private Stazione stazione = null;
 	private Applicazione applicazione = null;
-	private PagamentoPortale pagamentoPortale = null;
 	private Versamento versamento = null;
 
 	public InviaRptThread(Rpt rpt, IContext ctx) throws ServiceException, IOException {
@@ -92,7 +90,6 @@ public class InviaRptThread implements Runnable {
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 		this.versamento = this.rpt.getVersamento(configWrapper);
 		this.applicazione = this.versamento.getApplicazione(configWrapper);
-		this.pagamentoPortale = this.rpt.getPagamentoPortale(configWrapper);
 	}
 
 	@Override
@@ -122,8 +119,6 @@ public class InviaRptThread implements Runnable {
 			eventoCtx.setCcp(this.rpt.getCcp());
 			eventoCtx.setIdA2A(this.applicazione.getCodApplicazione());
 			eventoCtx.setIdPendenza(this.versamento.getCodVersamentoEnte());
-			if(this.pagamentoPortale != null)
-				eventoCtx.setIdPagamento(this.pagamentoPortale.getIdSessione());
 
 			GiornaleEventi.popolaEventoCooperazione(this.rpt, this.intermediario, this.stazione, eventoCtx);
 			

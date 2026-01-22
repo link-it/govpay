@@ -205,7 +205,6 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			boolean update = true;
 			Rpt rpt = null;
-			Long idPagamentoPortale = null;
 			VersioneRPT versioneRPTAttesa = it.govpay.model.Rpt.VersioneRPT.SANP_240;
 			try {
 				List<Rpt> listaTransazioniPerDominioIuv = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, null);
@@ -476,7 +475,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			boolean updateAnomalo = RtUtils.impostaNuovoStatoVersamento(rpt, versamento, irregolare, irregolarita);
 
-			RtUtils.schedulazionePromemoriaENotificaAppIO(rptBD, configWrapper, rpt, idPagamentoPortale, versamento, versamentiBD, iuvPagamento,
+			RtUtils.schedulazionePromemoriaENotificaAppIO(rptBD, configWrapper, rpt, versamento, versamentiBD, iuvPagamento,
 					totalePagato, dataPagamento, updateAnomalo);
 
 			Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, configWrapper);

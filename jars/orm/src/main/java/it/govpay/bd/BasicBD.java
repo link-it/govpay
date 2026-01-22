@@ -56,8 +56,6 @@ import it.govpay.orm.dao.IDBNotificaAppIOService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
 import it.govpay.orm.dao.IDBOperazioneService;
-import it.govpay.orm.dao.IDBPagamentoPortaleService;
-import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPromemoriaService;
 import it.govpay.orm.dao.IDBRPTService;
@@ -77,7 +75,6 @@ import it.govpay.orm.dao.IDBUtenzaService;
 import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDBVistaEventiVersamentoServiceSearch;
-import it.govpay.orm.dao.IDBVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IDBVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IDBVistaRptVersamentoServiceSearch;
@@ -94,8 +91,6 @@ import it.govpay.orm.dao.INotificaAppIOService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperazioneService;
-import it.govpay.orm.dao.IPagamentoPortaleService;
-import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
@@ -116,7 +111,6 @@ import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
-import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
@@ -147,8 +141,6 @@ public class BasicBD {
 	private ITipoVersamentoService tipoVersamentoService;
 	private ITipoVersamentoDominioService tipoVersamentoDominioService;
 	private ISingoloVersamentoService singoloVersamentoService;
-	private IPagamentoPortaleService pagamentoPortaleService;
-	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
 	private IRPTService rptService;
 	private INotificaService notificaService;
 	private INotificaAppIOService notificaAppIOService;
@@ -167,7 +159,6 @@ public class BasicBD {
 	private IStampaService stampaService;
 	private IConfigurazioneService configurazioneService;
 	private IPromemoriaService promemoriaService;
-	private IVistaPagamentoPortaleServiceSearch vistaPagamentoPortaleServiceSearch;
 	private IVistaRendicontazioneServiceSearch vistaRendicontazioneServiceSearch;
 	private IVistaRptVersamentoServiceSearch vistaRptVersamentoServiceSearch;
 	private IDocumentoService documentoService;
@@ -260,8 +251,6 @@ public class BasicBD {
 				this.tipoVersamentoDominioService = serviceManager.getTipoVersamentoDominioService();
 				this.versamentoService = serviceManager.getVersamentoService();
 				this.singoloVersamentoService = serviceManager.getSingoloVersamentoService();
-				this.pagamentoPortaleService = serviceManager.getPagamentoPortaleService();
-				this.pagamentoPortaleVersamentoService = serviceManager.getPagamentoPortaleVersamentoService();
 				this.rptService = serviceManager.getRPTService();
 				this.notificaService = serviceManager.getNotificaService();
 				this.notificaAppIOService = serviceManager.getNotificaAppIOService();
@@ -280,7 +269,6 @@ public class BasicBD {
 				this.stampaService = serviceManager.getStampaService();
 				this.configurazioneService = serviceManager.getConfigurazioneService();
 				this.promemoriaService = serviceManager.getPromemoriaService();
-				this.vistaPagamentoPortaleServiceSearch = serviceManager.getVistaPagamentoPortaleServiceSearch();
 				this.vistaRendicontazioneServiceSearch = serviceManager.getVistaRendicontazioneServiceSearch();
 				this.vistaRptVersamentoServiceSearch = serviceManager.getVistaRptVersamentoServiceSearch();
 				this.documentoService = serviceManager.getDocumentoService();
@@ -321,8 +309,6 @@ public class BasicBD {
 			((IDBTipoVersamentoDominioService)this.tipoVersamentoDominioService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
-			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
-			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
 			((IDBNotificaAppIOService)this.notificaAppIOService).enableSelectForUpdate();
@@ -339,7 +325,6 @@ public class BasicBD {
 			((IDBStampaService)this.stampaService).enableSelectForUpdate();
 			((IDBConfigurazioneService)this.configurazioneService).enableSelectForUpdate();
 			((IDBPromemoriaService)this.promemoriaService).enableSelectForUpdate();
-			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).enableSelectForUpdate();
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).enableSelectForUpdate();
 			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).enableSelectForUpdate();
 			((IDBDocumentoService)this.documentoService).enableSelectForUpdate();
@@ -379,8 +364,6 @@ public class BasicBD {
 			((IDBTipoVersamentoDominioService)this.tipoVersamentoDominioService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
-			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
-			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
 			((IDBNotificaAppIOService)this.notificaAppIOService).disableSelectForUpdate();
@@ -397,7 +380,6 @@ public class BasicBD {
 			((IDBStampaService)this.stampaService).disableSelectForUpdate();
 			((IDBConfigurazioneService)this.configurazioneService).disableSelectForUpdate();
 			((IDBPromemoriaService)this.promemoriaService).disableSelectForUpdate();
-			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).disableSelectForUpdate();
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).disableSelectForUpdate();
 			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).disableSelectForUpdate();
 			((IDBDocumentoService)this.documentoService).disableSelectForUpdate();
@@ -547,21 +529,7 @@ public class BasicBD {
 		}
 		return this.singoloVersamentoService;
 	}
-	
-	public IPagamentoPortaleService getPagamentoPortaleService() {
-		if(this.father != null) {
-			return this.father.getPagamentoPortaleService();
-		}
-		return this.pagamentoPortaleService;
-	}
-	
-	public IPagamentoPortaleVersamentoService getPagamentoPortaleVersamentoService() {
-		if(this.father != null) {
-			return this.father.getPagamentoPortaleVersamentoService();
-		}
-		return this.pagamentoPortaleVersamentoService;
-	}
-	
+
 	public IRPTService getRptService() {
 		if(this.father != null) {
 			return this.father.getRptService();
@@ -687,14 +655,7 @@ public class BasicBD {
 		}
 		return this.promemoriaService;
 	}
-	
-	public IVistaPagamentoPortaleServiceSearch getVistaPagamentoPortaleServiceSearch() {
-		if(this.father != null) {
-			return this.father.getVistaPagamentoPortaleServiceSearch();
-		}
-		return this.vistaPagamentoPortaleServiceSearch;
-	}
-	
+
 	public IVistaRendicontazioneServiceSearch getVistaRendicontazioneServiceSearch() {
 		if(this.father != null) {
 			return this.father.getVistaRendicontazioneServiceSearch();

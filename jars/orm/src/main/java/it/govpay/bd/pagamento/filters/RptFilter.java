@@ -55,17 +55,12 @@ public class RptFilter extends AbstractFilter {
 	private Boolean conservato;
 	private List<String> stato;
 	private List<Long> idRpt= null;
-	private Long idPagamentoPortale = null;
-	private String codPagamentoPortale = null;
 	private Date dataInizio;
 	private Date dataFine;
 	private String codApplicazione = null;
 	private String idPendenza = null;
 	private EsitoPagamento esitoPagamento = null;
-	
-	private String cfCittadinoPagamentoPortale = null;
-	private String codApplicazionePagamentoPortale = null;
-	
+
 	private Date dataRtA;
 	private Date dataRtDa;
 	private String idDebitore;
@@ -164,47 +159,7 @@ public class RptFilter extends AbstractFilter {
 				newExpression.in(RPT.model().STATO, this.stato);
 				addAnd = true;
 			}
-			
-			if(this.idPagamentoPortale != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				
-				RPTFieldConverter rptFieldConverter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField idRptCustomField = new CustomField("id_pagamento_portale",  Long.class, "id_pagamento_portale",  rptFieldConverter.toTable(RPT.model()));
-				newExpression.equals(idRptCustomField, this.idPagamentoPortale);
-				addAnd = true;
-			}
-			
-			if(this.codPagamentoPortale != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
-				addAnd = true;
-			}
-			
-			if(this.codApplicazionePagamentoPortale != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazionePagamentoPortale);
-				addAnd = true;
-			}
-			
-			if(this.cfCittadinoPagamentoPortale != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				IExpression newExpression2 = this.newExpression();
-				newExpression2.equals(RPT.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale.toUpperCase())
-					.or().equals(RPT.model().ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale.toUpperCase());
-				
-				
-				newExpression.and(newExpression2);
-				addAnd = true;
-			}
-			
+
 			if(this.codApplicazione != null) {
 				if(addAnd)
 					newExpression.and();
@@ -386,8 +341,7 @@ public class RptFilter extends AbstractFilter {
 			boolean addTabellaApplicazioni = false;
 			
 			String tableNameRPT = converter.toAliasTable(model);
-			String tableNameApplicazioni = converter.toAliasTable(model.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE);
-			String tableNamePagamentiPortale = converter.toAliasTable(model.ID_PAGAMENTO_PORTALE);
+			String tableNameApplicazioni = converter.toAliasTable(model.ID_VERSAMENTO.ID_APPLICAZIONE);
 			String tableNameVersamenti = converter.toAliasTable(model.ID_VERSAMENTO);
 			String tableNameUO = converter.toAliasTable(model.ID_VERSAMENTO.ID_UO);
 			String tableNameTipiVersamento = converter.toAliasTable(model.ID_VERSAMENTO.ID_TIPO_VERSAMENTO);
@@ -445,65 +399,7 @@ public class RptFilter extends AbstractFilter {
 				String [] statiS = this.stato.toArray(new String[this.stato.size()]);
 				sqlQueryObject.addWhereINCondition(converter.toColumn(model.STATO, true), true, statiS );
 			}
-			
-			if(this.idPagamentoPortale != null) {
-				sqlQueryObject.addWhereCondition(converter.toTable(model.IUV, true) + ".id_pagamento_portale" + " = ? ");
-			}
-			
-			if(this.codPagamentoPortale != null) {
-				if(!addTabellaPagamentiPortale) {
-					// RPT -> PP
-					sqlQueryObject.addFromTable(tableNamePagamentiPortale);
-					sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
-					
-					addTabellaPagamentiPortale = true;
-				}
-				
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
-			}
-			
-			if(this.codApplicazionePagamentoPortale != null) {
-				if(!addTabellaApplicazioni) {
-					if(!addTabellaPagamentiPortale) {
-						// RPT -> PP
-						sqlQueryObject.addFromTable(tableNamePagamentiPortale);
-						sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
-						
-						addTabellaPagamentiPortale = true;
-					}
-					
-					// PP -> A
-					sqlQueryObject.addFromTable(tableNameApplicazioni);
-					
-					
-					addTabellaApplicazioni = true;
-				}
-				
-				sqlQueryObject.addWhereCondition(tableNameApplicazioni+".id="+tableNamePagamentiPortale+".id_applicazione");
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
-			}
-			
-			if(this.cfCittadinoPagamentoPortale != null) {
-				if(!addTabellaPagamentiPortale) {
-					// RPT -> PP
-					sqlQueryObject.addFromTable(tableNamePagamentiPortale);
-					sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
-					
-					addTabellaPagamentiPortale = true;
-				}
-				
-				if(!addTabellaVersamenti) {
-					// RPT -> V
-					sqlQueryObject.addFromTable(tableNameVersamenti);
-					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
-					
-					addTabellaVersamenti = true;
-				}
-				
-				sqlQueryObject.addWhereCondition(false, converter.toColumn(model.ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO, true) + " = ? ", 
-						converter.toColumn(model.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
-			}
-			
+
 			if(this.codApplicazione != null) {
 				if(!addTabellaApplicazioni) {
 					if(!addTabellaVersamenti) {
@@ -710,24 +606,7 @@ public class RptFilter extends AbstractFilter {
 		if(this.stato != null && !this.stato.isEmpty()){
 			// donothing
 		}
-		
-		if(this.idPagamentoPortale != null) {
-			lst.add(this.idPagamentoPortale);
-		}
-		
-		if(this.codPagamentoPortale != null) {
-			lst.add(this.codPagamentoPortale);
-		}
-		
-		if(this.codApplicazionePagamentoPortale != null) {
-			lst.add(this.codApplicazionePagamentoPortale);
-		}
-		
-		if(this.cfCittadinoPagamentoPortale != null) {
-			lst.add(this.cfCittadinoPagamentoPortale.toUpperCase());
-			lst.add(this.cfCittadinoPagamentoPortale.toUpperCase());
-		}
-		
+
 		if(this.codApplicazione != null) {
 			lst.add(this.codApplicazione);
 		}
@@ -859,13 +738,6 @@ public class RptFilter extends AbstractFilter {
 		this.ccp = ccp;
 	}
 
-	public Long getIdPagamentoPortale() {
-		return this.idPagamentoPortale;
-	}
-
-	public void setIdPagamentoPortale(Long idPagamentoPortale) {
-		this.idPagamentoPortale = idPagamentoPortale;
-	}
 	public Date getDataInizio() {
 		return this.dataInizio;
 	}
@@ -880,14 +752,6 @@ public class RptFilter extends AbstractFilter {
 
 	public void setDataFine(Date dataFine) {
 		this.dataFine = dataFine;
-	}
-
-	public String getCodPagamentoPortale() {
-		return this.codPagamentoPortale;
-	}
-
-	public void setCodPagamentoPortale(String codPagamentoPortale) {
-		this.codPagamentoPortale = codPagamentoPortale;
 	}
 
 	public String getCodApplicazione() {
@@ -912,22 +776,6 @@ public class RptFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
-	}
-
-	public String getCfCittadinoPagamentoPortale() {
-		return cfCittadinoPagamentoPortale;
-	}
-
-	public void setCfCittadinoPagamentoPortale(String cfCittadinoPagamentoPortale) {
-		this.cfCittadinoPagamentoPortale = cfCittadinoPagamentoPortale;
-	}
-
-	public String getCodApplicazionePagamentoPortale() {
-		return codApplicazionePagamentoPortale;
-	}
-
-	public void setCodApplicazionePagamentoPortale(String codApplicazionePagamentoPortale) {
-		this.codApplicazionePagamentoPortale = codApplicazionePagamentoPortale;
 	}
 
 	public EsitoPagamento getEsitoPagamento() {

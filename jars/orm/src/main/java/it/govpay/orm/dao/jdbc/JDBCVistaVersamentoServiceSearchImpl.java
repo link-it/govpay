@@ -592,14 +592,6 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 				imgSaved.getIdApplicazione()!=null){
 			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
 		}
-		if(obj.getIdPagamentoPortale()!=null &&
-				imgSaved.getIdPagamentoPortale()!=null){
-			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
-			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null &&
-					imgSaved.getIdPagamentoPortale().getIdApplicazione()!=null){
-				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
-			}
-		}
 		if(obj.getIdOperazione()!=null &&
 				imgSaved.getIdOperazione()!=null){
 			obj.getIdOperazione().setId(imgSaved.getIdOperazione().getId());
@@ -696,16 +688,6 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
 			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(VistaVersamento.model().ID_PAGAMENTO_PORTALE,false)){
-			String versamenti = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
-			String pagPortVers = "pag_port_versamenti";
-			String pagPort = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE);
-			sqlQueryObject.addFromTable(pagPortVers);
-			sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
-
-			sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
 		}
 
 		if(expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO,false)){
@@ -836,18 +818,6 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_APPLICAZIONE))
-			));
-
-		// VistaVersamento.model().ID_PAGAMENTO_PORTALE
-		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE))
-			));
-
-		// VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
 			));
 
 		// VistaVersamento.model().ID_OPERAZIONE

@@ -56,8 +56,6 @@ public class VersamentoFilter  extends AbstractFilter {
 	private List<Long> idVersamento= null;
 	private List<IdUnitaOperativa> idUo;
 	private String codVersamento = null;
-	private Long idPagamentoPortale = null;
-	private String codPagamentoPortale = null;
 	private Date dataInizio;
 	private Date dataFine;
 	private String codApplicazione = null;
@@ -109,11 +107,7 @@ public class VersamentoFilter  extends AbstractFilter {
 				
 				newExpressionOr.and(newExpressionDomini);
 			}
-			
-			if(this.codPagamentoPortale != null) {
-				newExpressionOr.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
-			}
-			
+
 			return newExpressionOr;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
@@ -326,10 +320,6 @@ public class VersamentoFilter  extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codPagamentoPortale != null) {
-				newExpression.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
-			}
-
 			if(this.idTracciato != null) {
 				if(addAnd)
 					newExpression.and();
@@ -506,7 +496,6 @@ public class VersamentoFilter  extends AbstractFilter {
 			boolean addTabellaTipiVersamento = false;
 			boolean addTabellaDomini = false;
 			boolean addTabellaApplicazioni = false;
-			boolean addTabellaPagamentiPortale = false;
 			boolean addTabellaOperazioni = false;
 			
 			// Filtro sullo stato pagamenti
@@ -639,22 +628,6 @@ public class VersamentoFilter  extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
 			}
 			
-			if(this.codPagamentoPortale != null) {
-				if(!addTabellaPagamentiPortale) {
-					String versamenti = converter.toAliasTable(VistaVersamento.model());
-					String pagPortVers = "pag_port_versamenti";
-					String pagPort = converter.toAliasTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE);
-					
-					sqlQueryObject.addFromTable(pagPortVers);
-					sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
-					sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
-					sqlQueryObject.addFromTable(converter.toTable(model.ID_PAGAMENTO_PORTALE));
-					addTabellaPagamentiPortale = true;
-				}
-				
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
-			}
-
 			if(this.idTracciato != null) {
 				if(!addTabellaOperazioni) {
 					String versamenti = converter.toAliasTable(VistaVersamento.model());
@@ -848,10 +821,6 @@ public class VersamentoFilter  extends AbstractFilter {
 		if(this.codDominio != null){
 			lst.add(this.codDominio);
 		}
-		
-		if(this.codPagamentoPortale != null) {
-			lst.add(this.codPagamentoPortale);
-		}
 
 		if(this.idTracciato != null) {
 			lst.add(this.idTracciato);
@@ -945,22 +914,6 @@ public class VersamentoFilter  extends AbstractFilter {
 		if(stato != null) {
 			this.statiVersamento.add(stato);
 		}
-	}
-
-	public Long getIdPagamentoPortale() {
-		return this.idPagamentoPortale;
-	}
-
-	public void setIdPagamentoPortale(Long idPagamentoPortale) {
-		this.idPagamentoPortale = idPagamentoPortale;
-	}
-
-	public String getCodPagamentoPortale() {
-		return this.codPagamentoPortale;
-	}
-
-	public void setCodPagamentoPortale(String codPagamentoPortale) {
-		this.codPagamentoPortale = codPagamentoPortale;
 	}
 
 	public Date getDataInizio() {

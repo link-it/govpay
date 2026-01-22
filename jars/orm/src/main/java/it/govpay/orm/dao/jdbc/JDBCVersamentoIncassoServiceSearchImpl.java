@@ -576,10 +576,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 				imgSaved.getIdApplicazione()!=null){
 			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
 		}
-		if(obj.getIdPagamentoPortale()!=null &&
-				imgSaved.getIdPagamentoPortale()!=null){
-			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
-		}
 	}
 
 	@Override
@@ -668,16 +664,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
 			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE,false)){
-			String versamenti = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String pagPortVers = "pag_port_versamenti";
-			String pagPort = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE);
-			sqlQueryObject.addFromTable(pagPortVers);
-			sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
-
-			sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
 		}
 
 		if(expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO,false)){
@@ -785,12 +771,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_APPLICAZIONE))
-			));
-
-		// VersamentoIncasso.model().ID_PAGAMENTO_PORTALE
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE))
 			));
 
         return mapTableToPKColumn;

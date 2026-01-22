@@ -65,7 +65,6 @@ import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -87,11 +86,11 @@ public class PendenzeConverter {
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, it.govpay.core.exceptions.IOException {
 		return toRsModel(dto.getVersamento(),
 				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(),
-				dto.getPagamenti(), dto.getRpts(), true, dto.getAllegati());
+				dto.getRpts(), true, dto.getAllegati());
 	}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione,
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso, List<Allegato> allegati) throws ServiceException, it.govpay.core.exceptions.IOException {
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti, List<Rpt> rpts , boolean addInfoIncasso, List<Allegato> allegati) throws ServiceException, it.govpay.core.exceptions.IOException {
 		Pendenza rsModel = new Pendenza();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		if(versamento.getCodAnnoTributario()!= null)
@@ -171,16 +170,6 @@ public class PendenzeConverter {
 		rsModel.setVoci(v);
 		rsModel.setVerificato(versamento.isAck());
 		rsModel.setAnomalo(versamento.isAnomalo());
-
-		List<it.govpay.backoffice.v1.beans.Pagamento> listaPagamentoIndex = new ArrayList<>();
-
-		if(pagamenti != null && !pagamenti.isEmpty()) {
-			for (PagamentoPortale pagamento : pagamenti) {
-				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,null));
-			}
-		}
-
-		rsModel.setPagamenti(listaPagamentoIndex);
 
 		List<Rpp> rpps = new ArrayList<>();
 		if(rpts != null && !rpts.isEmpty()) {

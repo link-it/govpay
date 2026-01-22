@@ -37,7 +37,6 @@ import org.slf4j.MDC;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
@@ -75,7 +74,6 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	private Dominio dominio;
 	private Versamento versamento = null;
 	private Applicazione applicazione = null;
-	private PagamentoPortale pagamentoPortale = null;
 	private String esito = null;
 	private String descrizioneEsito = null;
 	private boolean completed = false;
@@ -91,7 +89,6 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 		this.versamento = this.rpt.getVersamento(configWrapper);
 		this.applicazione = this.versamento.getApplicazione(configWrapper);
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
-		this.pagamentoPortale = this.rpt.getPagamentoPortale(configWrapper);
 		this.dominio = dominio;
 		this.nomeThread = id;
 		this.objectFactory = new ObjectFactory();
@@ -126,8 +123,6 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			eventoCtx.setCcp(this.rpt.getCcp());
 			eventoCtx.setIdA2A(this.applicazione.getCodApplicazione());
 			eventoCtx.setIdPendenza(this.versamento.getCodVersamentoEnte());
-			if(this.pagamentoPortale != null)
-				eventoCtx.setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
 			client = new it.govpay.core.utils.client.MaggioliJPPAClient(this.dominio,connettoreMaggioliJPPA, operationId, this.giornale, eventoCtx);
 
