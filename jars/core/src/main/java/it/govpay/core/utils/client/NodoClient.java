@@ -31,13 +31,10 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
-import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.utils.GpContext;
@@ -135,16 +132,6 @@ public class NodoClient extends BasicClientCORE {
 		byte [] body = this.getBody(true,objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
 		Risposta response = send(EventoContext.Azione.NODOINVIARPT.toString(), body);
 		return (NodoInviaRPTRisposta) response;
-	}
-
-	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws ClientException {
-		IntestazioneCarrelloPPT intestazione = new IntestazioneCarrelloPPT();
-		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
-		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
-		intestazione.setIdentificativoCarrello(codCarrello);
-		byte [] body = this.getBody(true, objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
-		Risposta response = this.send(EventoContext.Azione.NODOINVIACARRELLORPT.toString(), body);
-		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
 	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione) throws ClientException {

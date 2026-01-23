@@ -33,7 +33,6 @@ public class Evento extends BasicModel {
 	
 	public enum TipoEventoCooperazione {
 		NODOINVIARPT("nodoInviaRPT"),
-		NODOINVIACARRELLORPT("nodoInviaCarrelloRPT"), 
 		NODOCHIEDISTATORPT("nodoChiediStatoRPT"), 
 		PAAINVIART("paaInviaRT"), 
 		NODOCHIEDICOPIART("nodoChiediCopiaRT"), 

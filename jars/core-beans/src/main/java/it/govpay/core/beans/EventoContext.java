@@ -85,8 +85,7 @@ public class EventoContext implements Serializable {
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE }
 
 	public enum Azione {
-		NODOINVIARPT("nodoInviaRPT"), 
-		NODOINVIACARRELLORPT("nodoInviaCarrelloRPT"), 
+		NODOINVIARPT("nodoInviaRPT"),
 		NODOCHIEDISTATORPT("nodoChiediStatoRPT"), 
 		NODOCHIEDICOPIART("nodoChiediCopiaRT"), 
 		NODOCHIEDILISTAPENDENTIRPT("nodoChiediListaPendentiRPT"), 
