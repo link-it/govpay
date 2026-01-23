@@ -217,16 +217,6 @@
                                                 </webModule>
                                                 <webModule>
                                                         <groupId>it.govpay</groupId>
-                                                        <artifactId>api-pagamento</artifactId>
-                                                        <contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
-                                                </webModule>
-                                                <webModule>
-                                                        <groupId>it.govpay</groupId>
-                                                        <artifactId>web-connector</artifactId>
-                                                        <contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
-                                                </webModule>
-                                                <webModule>
-                                                        <groupId>it.govpay</groupId>
                                                         <artifactId>api-pendenze</artifactId>
                                                         <contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
                                                 </webModule>

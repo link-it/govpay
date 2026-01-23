@@ -38,22 +38,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</exclusions>
 	</sub-deployment>
-	<sub-deployment
-		name="web-connector-${project.version}.war">
-		<exclusions>
-			<module name="org.apache.cxf" />
-			<module name="org.jboss.resteasy.resteasy-jackson2-provider" />
-		</exclusions>
-	</sub-deployment>
 	<sub-deployment name="api-user-${project.version}.war">
-		<exclusions>
-			<module name="org.apache.cxf" />
-			<module name="org.springframework.spring" />
-			<module name="org.jboss.resteasy.resteasy-jackson2-provider" />
-		</exclusions>
-	</sub-deployment>
-	<sub-deployment
-		name="api-pagamento-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.cxf" />
 			<module name="org.springframework.spring" />
