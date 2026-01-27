@@ -138,6 +138,9 @@
 	MANUTENZIONE: {
 	  RECUPERO_RT: {
 	    ENABLED: ${it.govpay.backoffice.gui.sezioneManutenzione.recuperaRT.enabled} // abilita la funzione di recupero ricevute
+	  },
+	  INVIA_POSIZIONI_DEBITORIE_ACA: {
+	    ENABLED: ${it.govpay.backoffice.gui.sezioneManutenzione.invioACA.enabled} // abilita il comando per l'invio posizioni debitorie ACA
 	  }
 	}
   };
