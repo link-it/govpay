@@ -140,34 +140,10 @@ And match response == pendenzaGet
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 
-# Attivo il pagamento 
+# Attivo il pagamento tramite il simulatore
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
-* set pagamentoPost.soggettoVersante = 
-"""
-{
-  "tipo": "F",
-  "identificativo": "RSSMRA30A01H501I",
-  "anagrafica": "Mario Rossi",
-  "indirizzo": "Piazza della Vittoria",
-  "civico": "10/A",
-  "cap": 0,
-  "localita": "Roma",
-  "provincia": "Roma",
-  "nazione": "IT",
-  "email": "mario.rossi@host.eu",
-  "cellulare": "+39 000-1234567"
-}
-"""
-
-Given url pagamentiBaseurl
-And path '/pagamenti'
-And headers idA2ABasicAutenticationHeader
-And request pagamentoPost
-When method post
-Then status 201
-And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

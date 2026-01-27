@@ -8,7 +8,8 @@ Background:
 
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 
 * def pathServizio = '/riscossioni'
 
@@ -17,92 +18,120 @@ Scenario: Filtro su divisione e direzione
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
 And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
+Given url ndpsym_psp_url
+And path 'attiva'
+And param codDominio = idDominio
+And param numeroAvviso = numeroAvviso
+And param ccp = ccp
+And param importo = importo
+And param tipoRicevuta = 'R01'
+And param ibanAccredito = ibanAccredito
+And param riversamentoCumulativo = '0'
 When method get
+Then assert responseStatus == 200
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
 And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
+Given url ndpsym_psp_url
+And path 'attiva'
+And param codDominio = idDominio
+And param numeroAvviso = numeroAvviso
+And param ccp = ccp
+And param importo = importo
+And param tipoRicevuta = 'R01'
+And param ibanAccredito = ibanAccredito
+And param riversamentoCumulativo = '0'
 When method get
+Then assert responseStatus == 200
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
 And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
+Given url ndpsym_psp_url
+And path 'attiva'
+And param codDominio = idDominio
+And param numeroAvviso = numeroAvviso
+And param ccp = ccp
+And param importo = importo
+And param tipoRicevuta = 'R01'
+And param ibanAccredito = ibanAccredito
+And param riversamentoCumulativo = '0'
 When method get
+Then assert responseStatus == 200
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
 And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
+Given url ndpsym_psp_url
+And path 'attiva'
+And param codDominio = idDominio
+And param numeroAvviso = numeroAvviso
+And param ccp = ccp
+And param importo = importo
+And param tipoRicevuta = 'R01'
+And param ibanAccredito = ibanAccredito
+And param riversamentoCumulativo = '0'
 When method get
+Then assert responseStatus == 200
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def dataEnd = getDateTime()
 
@@ -110,13 +139,13 @@ When method get
 
 Given url ragioneriaBaseurl
 And path pathServizio
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param tipo = 'MBT'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
 	numRisultati: 4,
@@ -134,13 +163,13 @@ And match response.risultati[3].tipo == 'MBT'
 
 Given url ragioneriaBaseurl
 And path pathServizio
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param tipo = 'ENTRATA'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
 	numRisultati: 4,
@@ -158,13 +187,13 @@ And match response.risultati[3].tipo == 'ENTRATA'
 
 Given url ragioneriaBaseurl
 And path pathServizio
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param tipo = 'ENTRATA','MBT'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
 	numRisultati: 8,
@@ -187,7 +216,7 @@ And match response.risultati[7].tipo == 'MBT'
 
 Given url ragioneriaBaseurl
 And path pathServizio
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param tipo = 'ENTRATA','MBT','ALTRO_INTERMEDIARIO'
 And headers basicAutenticationHeader
@@ -196,7 +225,7 @@ Then status 200
 
 Given url ragioneriaBaseurl
 And path pathServizio
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param tipo = 'ALTRO_INTERMEDIARIO'
 And headers basicAutenticationHeader
@@ -207,15 +236,9 @@ Scenario: Controllo di sintassi sul valore del filtro per tipo
 
 Given url ragioneriaBaseurl
 And path pathServizio
-And param tipo = 'TIPO_NON_VALIDO' 
+And param tipo = 'TIPO_NON_VALIDO'
 And headers basicAutenticationHeader
 When method get
 Then status 400
 And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 And match response.dettaglio contains 'TIPO_NON_VALIDO'
-
-
-
-
-
-

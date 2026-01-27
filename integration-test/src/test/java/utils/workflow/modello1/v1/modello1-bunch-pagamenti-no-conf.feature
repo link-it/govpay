@@ -1,11 +1,12 @@
 Feature: Setup pagamenti
 
-Background: 
+Background:
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 # idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA
-# idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA 
+# idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
 # idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA
 # idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE
 # idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE
@@ -25,14 +26,20 @@ Scenario: Pagamento ad iniziativa Ente
 * def dataInizio = getDateTime()
 * call sleep(1000)
 
-# idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA: pagamento come anonimo SEGRETERIA, idDominio
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-avviso-anonimo.feature')
-* def idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA = idPagamentoAnonimo
+# idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA: pagamento come anonimo SEGRETERIA, idDominio (solo caricamento, senza attivazione)
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
-* def spidHeadersVerdi = {'X-SPID-FISCALNUMBER': 'VRDGPP65B03A112N','X-SPID-NAME': 'Giuseppe','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'gverdi@mailserver.host.it'} 
-* def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
 
-* def spidHeaders = spidHeadersVerdi
+* def idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA = getIuvFromNumeroAvviso(response.numeroAvviso)
+
+* def soggettoVersante = { tipo: 'F', identificativo: 'VRDGPP65B03A112N', anagrafica: 'Giuseppe Verdi' }
 
 # idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
 * def tipoRicevuta = "R01"
@@ -40,7 +47,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA = idPagamento 
+* def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA = iuv
 
 # idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA
 * def tipoRicevuta = "R02"
@@ -48,7 +55,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA = idPagamento 
+* def idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA = iuv
 
 # idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE
 * def tipoRicevuta = "R01"
@@ -56,7 +63,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
+* def idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE = iuv
 
 # idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE
 * def tipoRicevuta = "R02"
@@ -64,72 +71,39 @@ Scenario: Pagamento ad iniziativa Ente
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
+* def idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE = iuv
 
 # idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO
 * def idPendenza = getCurrentTimeMillis()
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
-* set pendenza.voci[0].ibanAccredito = ibanAccreditoErrato
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* set pendenzaPut.voci[0].ibanAccredito = ibanAccreditoErrato
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
 And headers basicAutenticationHeader
-And request pendenza
+And request pendenzaPut
 When method put
 Then status 201
 
 * def numeroAvviso = response.numeroAvviso
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO = getIuvFromNumeroAvviso(numeroAvviso)
 
-Given url pagamentiBaseurl
-And path '/pagamenti'
-And headers spidHeaders
-And request pagamentoPost
-When method post
-Then status 502
-And match response ==  
-"""
-{
-   "categoria":"PAGOPA",
-   "codice":"PPT_SEMANTICA",
-   "descrizione":"Errore semantico",
-   "dettaglio":"#notnull",
-   "id":"#notnull",
-   "location":"#notnull"
-}
-"""
-* def idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO = response.id
-
-# idPagamentoVerdi_INCORSO_DOM2_ENTRATASIOPE
-
+# idPagamentoVerdi_INCORSO_DOM2_ENTRATASIOPE (solo caricamento, senza attivazione)
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
-* set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.idDominio = idDominio_2
+* set pendenzaPut.voci[0].codEntrata = codEntrataSiope
 
-Given url pagamentoBaseurl
-And path '/pagamenti'
-And headers spidHeaders
-And request pagamentoPost
-When method post
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
 Then status 201
-And match response == { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
 
-* def idPagamentoVerdi_INCORSO_DOM2_ENTRATASIOPE = response.id
+* def idPagamentoVerdi_INCORSO_DOM2_ENTRATASIOPE = getIuvFromNumeroAvviso(response.numeroAvviso)
 
-
-
-
-
-Given url pagamentiBaseurl
-And path '/logout'
-And headers spidHeaders
-When method get
-Then status 200
-
-* def spidHeaders = spidHeadersRossi
+* def soggettoVersante = { tipo: 'F', identificativo: 'RSSMRA30A01H501I', anagrafica: 'Mario Rossi' }
 
 # idPagamentoRossi_ESEGUITO_DOM1_SEGRETERIA
 * def tipoRicevuta = "R01"
@@ -137,7 +111,7 @@ Then status 200
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoRossi_ESEGUITO_DOM1_SEGRETERIA = idPagamento 
+* def idPagamentoRossi_ESEGUITO_DOM1_SEGRETERIA = iuv
 
 # idPagamentoRossi_NONESEGUITO_DOM1_SEGRETERIA
 * def tipoRicevuta = "R02"
@@ -145,7 +119,7 @@ Then status 200
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoRossi_NONESEGUITO_DOM1_SEGRETERIA = idPagamento 
+* def idPagamentoRossi_NONESEGUITO_DOM1_SEGRETERIA = iuv
 
 # idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE
 * def tipoRicevuta = "R01"
@@ -153,7 +127,7 @@ Then status 200
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
+* def idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE = iuv
 
 # idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE
 * def tipoRicevuta = "R02"
@@ -161,7 +135,7 @@ Then status 200
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo-spid.feature')
-* def idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
+* def idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE = iuv
 
 * call sleep(1000)
 * def dataFine = getDateTime()
@@ -170,3 +144,4 @@ Then status 200
 # idPagamentoAnonimo2: pagamento come anonimo SEGRETERIA, idDominio
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-avviso-anonimo.feature')
 * def idPagamentoAnonimo2 = idPagamentoAnonimo
+
