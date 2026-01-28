@@ -1,50 +1,38 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import it.govpay.backoffice.v1.beans.ConnettorePagopa;
-import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
-import it.govpay.model.Connettore.EnumSslType;
 
 public class ConnettorePagopaConverter {
+
+	private ConnettorePagopaConverter() {}
 
 	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.ConnettorePagopa connector) {
 		Connettore connettore = new Connettore();
 
-		if(connector.getAuth() != null) {
-			connettore.setHttpUser(connector.getAuth().getUsername());
-			connettore.setHttpPassw(connector.getAuth().getPassword());
-			connettore.setSslKsLocation(connector.getAuth().getKsLocation());
-			connettore.setSslTsLocation(connector.getAuth().getTsLocation());
-			connettore.setSslKsPasswd(connector.getAuth().getKsPassword());
-			connettore.setSslTsPasswd(connector.getAuth().getTsPassword());
-			connettore.setSslTsType(connector.getAuth().getTsType());
-			connettore.setSslType(connector.getAuth().getSslType());
-			connettore.setSslKsType(connector.getAuth().getKsType());
-			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
-			
-			if(connector.getAuth().getTipo() != null) {
-				connettore.setTipoAutenticazione(EnumAuthType.SSL);
-				if(connector.getAuth().getTipo() != null) {
-					switch (connector.getAuth().getTipo()) {
-					case CLIENT:
-						connettore.setTipoSsl(EnumSslType.CLIENT);
-						break;
-					case SERVER:
-					default:
-						connettore.setTipoSsl(EnumSslType.SERVER);
-						break;
-					}
-				}
-			} else {
-				connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
-			}
-		} else {
-			connettore.setTipoAutenticazione(EnumAuthType.NONE);
-		}
+		ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
 
 		connettore.setUrl(connector.getUrlRPT());
-		connettore.setUrlServiziAvvisatura(connector.getUrlAvvisatura());
 		connettore.setSubscriptionKeyValue(connector.getSubscriptionKey());
 
 		return connettore;
@@ -52,43 +40,10 @@ public class ConnettorePagopaConverter {
 
 	public static ConnettorePagopa toRsModel(it.govpay.model.Connettore connettore) {
 		ConnettorePagopa rsModel = new ConnettorePagopa();
-		if(!connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
-			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
+		if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrlRPT(connettore.getUrl());
-		rsModel.setUrlAvvisatura(connettore.getUrlServiziAvvisatura());
 		rsModel.subscriptionKey(connettore.getSubscriptionKeyValue());
-
-		return rsModel;
-	}
-
-	public static it.govpay.backoffice.v1.beans.TipoAutenticazione toTipoAutenticazioneRsModel(it.govpay.model.Connettore connettore) {
-		it.govpay.backoffice.v1.beans.TipoAutenticazione rsModel = new it.govpay.backoffice.v1.beans.TipoAutenticazione();
-
-		rsModel.username(connettore.getHttpUser())
-		.password(connettore.getHttpPassw())
-		.ksLocation(connettore.getSslKsLocation())
-		.ksPassword(connettore.getSslKsPasswd())
-		.tsLocation(connettore.getSslTsLocation())
-		.tsPassword(connettore.getSslTsPasswd())
-		.tsType(connettore.getSslTsType())
-		.sslType(connettore.getSslType())
-		.ksType(connettore.getSslKsType())
-		.ksPKeyPasswd(connettore.getSslPKeyPasswd());
-		
-		if(connettore.getTipoSsl() != null) {
-			switch (connettore.getTipoSsl() ) {
-			case CLIENT:
-				rsModel.setTipo(TipoEnum.CLIENT);
-				break;
-			case SERVER:
-			default:
-				rsModel.setTipo(TipoEnum.SERVER);
-				break;
-			}
-		}
-
-//		if(connettore.getSslType() != null)
-//			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
 
 		return rsModel;
 	}

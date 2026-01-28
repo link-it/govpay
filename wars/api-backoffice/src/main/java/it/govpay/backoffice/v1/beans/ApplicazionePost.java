@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 import java.util.LinkedHashMap;
@@ -7,6 +26,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
@@ -334,23 +354,44 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		vf.getValidator("servizioIntegrazione", this.servizioIntegrazione).validateFields();
 		vf.getValidator("acl", this.acl).validateObjects();
 
+		validaDomini(validatoreId);
+
+		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
+			for (String idTipoPendenza : this.tipiPendenza) {
+				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) &&
+						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
+					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
+			}
+		}
+
+		if(this.ruoli != null && !this.ruoli.isEmpty()) {
+			for (String idRuolo : this.ruoli) {
+				validatoreId.validaIdRuolo("ruoli", idRuolo);
+			}
+		}
+
+		vf.getValidator("abilitato", this.abilitato).notNull();
+		vf.getValidator("apiPagamenti", this.apiPagamenti).notNull();
+		vf.getValidator("apiPendenze", this.apiPendenze).notNull();
+		vf.getValidator("apiRagioneria", this.apiRagioneria).notNull();
+	}
+
+	private void validaDomini(ValidatoreIdentificativi validatoreId) throws ValidationException {
 		if(this.domini != null && !this.domini.isEmpty()) {
 
 			for (Object object : this.domini) {
-				if(object instanceof String) {
-					String idDominio = (String) object;
+				if(object instanceof String idDominio) {
 					if(!idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						validatoreId.validaIdDominio("domini", idDominio);
-				} else if(object instanceof DominioProfiloPost) {
-					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+				} else if(object instanceof DominioProfiloPost dominioProfiloPost) {
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
 				} else if(object instanceof java.util.LinkedHashMap) {
 					java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
 
 					DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
-					if(map.containsKey("idDominio"))
-						dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
+					if(map.containsKey(Costanti.FIELD_ID_DOMINIO))
+						dominioProfiloPost.setIdDominio((String) map.get(Costanti.FIELD_ID_DOMINIO));
 					if(map.containsKey("unitaOperative")) {
 						Object objectUnita = map.get("unitaOperative");
 
@@ -373,9 +414,8 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 					}
 
 					if(dominioProfiloPost.getIdDominio() == null)
-						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
+						validatoreId.validaIdDominio(Costanti.FIELD_ID_DOMINIO, dominioProfiloPost.getIdDominio());
 
-//					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
 				} else {
@@ -383,25 +423,6 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 				}
 			}
 		}
-
-		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
-			for (String idTipoPendenza : this.tipiPendenza) {
-				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) &&
-						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
-					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
-			}
-		}
-
-		if(this.ruoli != null && !this.ruoli.isEmpty()) {
-			for (String idRuolo : this.ruoli) {
-				validatoreId.validaIdRuolo("ruoli", idRuolo);
-			}
-		}
-
-		vf.getValidator("abilitato", this.abilitato).notNull();
-		vf.getValidator("apiPagamenti", this.apiPagamenti).notNull();
-		vf.getValidator("apiPendenze", this.apiPendenze).notNull();
-		vf.getValidator("apiRagioneria", this.apiRagioneria).notNull();
 	}
 }
 

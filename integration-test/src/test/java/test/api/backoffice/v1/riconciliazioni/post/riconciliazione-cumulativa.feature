@@ -7,6 +7,8 @@ Background:
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* callonce sleep(10000)
+
 Scenario: Riconciliazione cumulativa da applicazione
 
 * def tipoRicevuta = "R01"
@@ -25,6 +27,8 @@ Scenario: Riconciliazione cumulativa da applicazione
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -52,6 +56,8 @@ Scenario: Idempotenza riconciliazione cumulativa da applicazione
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -89,6 +95,8 @@ Scenario: Riconciliazione cumulativa da operatore
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path 'operatori', 'RSSMRA30A01H501I'
@@ -130,6 +138,8 @@ Scenario: Idempotenza riconciliazione cumulativa da operatore
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* call sleep(10000)
 
 Given url backofficeBaseurl
 And path 'operatori', 'RSSMRA30A01H501I'

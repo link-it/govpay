@@ -1,15 +1,33 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "urlRitorno",
 "contoAddebito",
@@ -29,56 +47,56 @@ import it.govpay.core.beans.JSONSerializable;
 "rpp",
 })
 public class PagamentoIndex extends JSONSerializable {
-  
+
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
-  
+
   @JsonProperty("contoAddebito")
   private Conto contoAddebito = null;
-  
+
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
-  
+
   @JsonProperty("credenzialiPagatore")
   private String credenzialiPagatore = null;
-  
+
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
-  
+
   @JsonProperty("autenticazioneSoggetto")
   private TipoAutenticazioneSoggetto autenticazioneSoggetto = null;
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("stato")
   private StatoPagamento stato = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
-  
+
   @JsonProperty("idSessionePsp")
   private String idSessionePsp = null;
-  
+
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
-  
+
   @JsonProperty("pendenze")
   private String pendenze = null;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
-  
+
   /**
    * url di ritorno al portale al termine della sessione di pagamento
    **/
@@ -172,7 +190,7 @@ public class PagamentoIndex extends JSONSerializable {
       return null;
     }
   }
-  
+
   public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws ValidationException{
     if(autenticazioneSoggetto != null) {
       this.autenticazioneSoggetto = TipoAutenticazioneSoggetto.fromValue(autenticazioneSoggetto);

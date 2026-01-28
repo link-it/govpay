@@ -8,12 +8,16 @@ import { ProfiloComponent } from './elements/profilo/profilo.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostazioni-view.component';
+import { AuthViewComponent } from './elements/auth-view/auth-view.component';
 
 const _routes: Routes = [
   { path: '', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD), pathMatch: 'full' },
+  { path: UtilService.ROUTE(UtilService.URL_AUTH), component: AuthViewComponent, data: { type: null, title: UtilService.TXT_AUTH, search: false, back: false, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_DASHBOARD), component: DashboardViewComponent, data: { type: null, title: UtilService.TXT_DASHBOARD, search: false, back: false, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PENDENZE), component: ListViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.PENDENZE, title: UtilService.TXT_PENDENZE, search: true, back: false, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PENDENZE)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.PENDENZE, title: '', search: false, back: true, actions: true, info: null, reuse: false } },
+  { path: UtilService.ROUTE(UtilService.URL_RICEVUTE), component: ListViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.RICEVUTE, title: UtilService.TXT_RICEVUTE, search: true, back: false, actions: true, info: null, reuse: false } },
+  { path: UtilService.ROUTE(UtilService.URL_RICEVUTE)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.RICEVUTE, title: '', search: false, back: true, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PAGAMENTI), component: ListViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.PAGAMENTI, title: UtilService.TXT_PAGAMENTI, search: true, back: false, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PAGAMENTI)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.PAGAMENTI, title: '', search: false, back: true, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_REGISTRO_INTERMEDIARI), component: ListViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.REGISTRO_INTERMEDIARI, title: UtilService.TXT_REGISTRO_INTERMEDIARI, search: true, back: false, actions: false, info: null, reuse: false } },
@@ -47,4 +51,4 @@ const _routes: Routes = [
   { path: '**', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD) }
 ];
 
-export const RoutingClass: ModuleWithProviders = RouterModule.forRoot(_routes,{ enableTracing: false });
+export const RoutingClass: ModuleWithProviders = RouterModule.forRoot(_routes,{ enableTracing: false , useHash: true });

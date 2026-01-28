@@ -1,6 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.beans;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 import it.govpay.model.Evento.RuoloEvento;
@@ -20,6 +40,19 @@ public class EventoContext implements Serializable {
 	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE = "paVerifyPaymentNotice";
 	public static final String APIPAGOPA_TIPOEVENTO_PAGETPAYMENT = "paGetPayment";
+	
+	public static final String APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUR = "getOrganizationReceiptIur";
+	public static final String APIPAGOPA_TIPOEVENTO_GETORGANIZATIONRECEIPTIUVIUR = "getOrganizationReceiptIuvIur";
+	public static final String APIPAGOPA_TIPOEVENTO_HEALTHCHECK = "healthCheck";
+	
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_GETORGANIZATIONDEBTPOSITIONS = "getOrganizationDebtPositions";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_CREATEPOSITION = "createPosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_GETORGANIZATIONDEBTPOSITIONBYIUPD = "getOrganizationDebtPositionByIUPD";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_UPDATEPOSITION = "updatePosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_DELETEPOSITION = "deletePosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_PUBLISHPOSITION = "publishPosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_INVALIDATEPOSITION = "invalidatePosition";
+	public static final String APIPAGOPA_TIPOEVENTO_GPD_HEALTHCHECK = "healthCheck";
 
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";
@@ -47,9 +80,9 @@ public class EventoContext implements Serializable {
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 
-	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK, API_MAGGIOLI_JPPA, GOVPAY };
-	public enum Esito {OK, KO, FAIL};
-	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
+	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK, API_MAGGIOLI_JPPA, GOVPAY }
+	public enum Esito {OK, KO, FAIL}
+	public enum Categoria { INTERFACCIA, INTERNO, UTENTE }
 
 	public enum Azione {
 		NODOINVIARPT("nodoInviaRPT"), 
@@ -151,13 +184,18 @@ public class EventoContext implements Serializable {
 	private Long idTracciato;
 
 	private Throwable exception;
-	private Integer severita;
+	private BigInteger severita;
 
 	private String clusterId;
 	private String transactionId;
 
 	public EventoContext() {
+		this(null);
+	}
+	
+	public EventoContext(Componente componente) {
 		this.dataRichiesta = new Date();
+		this.componente = componente;
 	}
 
 	public Componente getComponente() {
@@ -407,11 +445,11 @@ public class EventoContext implements Serializable {
 		this.exception = exception;
 	}
 
-	public Integer getSeverita() {
+	public BigInteger getSeverita() {
 		return severita;
 	}
 
-	public void setSeverita(Integer severita) {
+	public void setSeverita(BigInteger severita) {
 		this.severita = severita;
 	}
 

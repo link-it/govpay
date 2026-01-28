@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -21,7 +21,7 @@ package it.govpay.core.exceptions;
 
 public abstract class BaseException extends Exception {
 	
-	transient private static final long serialVersionUID = 1L;
+	private static final transient long serialVersionUID = 1L;
 	private String code;
 	private String message;
 	private String details;
@@ -40,13 +40,13 @@ public abstract class BaseException extends Exception {
 	
 	public BaseException(String message, String subCode, String description) {
 		this(message);
-		this.details = description; // "(#"+subCode+") " + description;
+		this.details = description;
 		this.code = subCode;
 	}
 	
 	public BaseException(String message, String subCode, String description, Throwable cause) {
 		this(message, cause);
-		this.details = description; // "(#"+subCode+") " + description;
+		this.details = description;
 		this.code = subCode;
 	}
 

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.eventi;
 
 import java.util.ArrayList;
@@ -20,13 +39,11 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.dao.eventi.exception.EventoNonTrovatoException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoUtils;
 
 public class EventiDAO extends BaseDAO {
 
-	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO) throws ServiceException, NotAuthenticatedException, NotAuthorizedException {
+	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		EventiBD eventiBD = null;
@@ -99,7 +116,7 @@ public class EventiDAO extends BaseDAO {
 	}
 
 
-	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws ServiceException {
 		PutEventoDTOResponse putEventoDTOResponse = new PutEventoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		EventiBD eventiBD = null;
@@ -113,12 +130,11 @@ public class EventiDAO extends BaseDAO {
 			eventiBD.insertEvento(evento);
 			return putEventoDTOResponse;
 		} finally {
-			if(eventiBD != null)
-				eventiBD.closeConnection();
+			eventiBD.closeConnection();
 		}
 	}
 
-	public LeggiEventoDTOResponse leggiEvento(LeggiEventoDTO leggiEventoDTO) throws ServiceException,EventoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiEventoDTOResponse leggiEvento(LeggiEventoDTO leggiEventoDTO) throws ServiceException,EventoNonTrovatoException {
 		LeggiEventoDTOResponse response = new LeggiEventoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		EventiBD eventiBD = null;
@@ -129,8 +145,7 @@ public class EventiDAO extends BaseDAO {
 		} catch (NotFoundException e) {
 			throw new EventoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			if(eventiBD != null)
-				eventiBD.closeConnection();
+			eventiBD.closeConnection();
 		}
 		return response;
 	}

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -156,13 +158,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".data_richiesta";
 			}else{
 				return "data_richiesta";
-			}
-		}
-		if(field.equals(VersamentoIncasso.model().IUV.IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
-			}else{
-				return "iuv";
 			}
 		}
 		if(field.equals(VersamentoIncasso.model().IMPORTO_TOTALE)){
@@ -581,9 +576,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
 			return this.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().IUV.IUV)){
-			return this.toTable(VersamentoIncasso.model().IUV, returnAlias);
-		}
 		if(field.equals(VersamentoIncasso.model().IMPORTO_TOTALE)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
@@ -785,9 +777,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
-		}
-		if(model.equals(VersamentoIncasso.model().IUV)){
-			return "iuv";
 		}
 
 

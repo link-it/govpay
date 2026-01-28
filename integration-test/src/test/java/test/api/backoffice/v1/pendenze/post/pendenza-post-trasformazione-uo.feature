@@ -33,7 +33,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 """          
 * set tipoPendenzaDominio.portaleBackoffice.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenzaDominio.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-uo-freemarker.ftl'))
-* set tipoPendenzaDominio.portaleBackoffice.validazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portaleBackoffice.validazione =  encodeBase64InputStream(karate.readAsString('msg/tipoPendenza-dovuta-validazione-form.json.payload'))
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo

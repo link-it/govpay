@@ -1,28 +1,40 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.model.eventi;
 
 import java.io.Serializable;
 
-import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
-
 public class DatiPagoPA implements Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public DatiPagoPA() {
-//		this.codPsp = Rpt.codPspWISP20;
-//		this.codCanale = Rpt.codCanaleWISP20;
-//		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
-//		this.codIntermediarioPsp = Rpt.codIntermediarioPspWISP20;
-//		this.modelloPagamento = Rpt.modelloPagamentoWISP20;
+		// donothing
 	}
-	
+
 	private String codPsp;
-	private TipoVersamento tipoVersamento;
-	private ModelloPagamento modelloPagamento;
+	private String tipoVersamento;
+	private String modelloPagamento;
 	private String fruitore;
 	private String erogatore;
 	private String codStazione;
@@ -41,10 +53,10 @@ public class DatiPagoPA implements Serializable{
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
 	}
-	public TipoVersamento getTipoVersamento() {
+	public String getTipoVersamento() {
 		return tipoVersamento;
 	}
-	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public String getFruitore() {
@@ -71,10 +83,10 @@ public class DatiPagoPA implements Serializable{
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
 	}
-	public ModelloPagamento getModelloPagamento() {
+	public String getModelloPagamento() {
 		return modelloPagamento;
 	}
-	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+	public void setModelloPagamento(String modelloPagamento) {
 		this.modelloPagamento = modelloPagamento;
 	}
 	public String getCodIntermediario() {
@@ -119,5 +131,5 @@ public class DatiPagoPA implements Serializable{
 	public void setSct(String sct) {
 		this.sct = sct;
 	}
-	
+
 }

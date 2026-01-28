@@ -6,6 +6,8 @@ Background:
 
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 
+* callonce sleep(10000)
+
 Scenario: Ricerca flussiRendicontazione con iuv impostato 
 
 Given url backofficeBaseurl

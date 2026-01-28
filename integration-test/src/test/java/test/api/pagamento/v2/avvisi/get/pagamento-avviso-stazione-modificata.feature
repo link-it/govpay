@@ -21,6 +21,8 @@ And request dominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
@@ -86,7 +88,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 # Reset Cache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Pagamento Modello 3
 
@@ -109,7 +111,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 # Reset Cache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
@@ -177,14 +179,14 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 # Reset Cache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Modifico il simulatore per utilizzare la seconda stazione
 
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -232,7 +234,7 @@ And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnu
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp")',
+ urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : null,
@@ -326,7 +328,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 # Reset Cache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 # Pagamento Modello 3
 
@@ -382,7 +384,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 # Reset Cache
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})

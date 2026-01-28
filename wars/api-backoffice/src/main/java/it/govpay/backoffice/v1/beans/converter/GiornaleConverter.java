@@ -1,6 +1,25 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.backoffice.v1.beans.GdeEvento;
 import it.govpay.backoffice.v1.beans.GdeEvento.DumpEnum;
@@ -9,9 +28,11 @@ import it.govpay.backoffice.v1.beans.GdeInterfacce;
 import it.govpay.backoffice.v1.beans.GdeInterfaccia;
 import it.govpay.backoffice.v1.beans.Giornale;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.model.Connettore;
 
 public class GiornaleConverter {
-
+	
+	private GiornaleConverter() {}
 
 	public static it.govpay.model.configurazione.Giornale getGiornaleDTO(Giornale giornalePost) throws ValidationException {
 		it.govpay.model.configurazione.Giornale giornale = new it.govpay.model.configurazione.Giornale();
@@ -50,7 +71,7 @@ public class GiornaleConverter {
 
 			// valore log non valido
 			if(LogEnum.fromValue(gdeEvento.getLog()) == null) {
-				throw new ValidationException("Codifica inesistente per log. Valore fornito [" + gdeEvento.getLog() + "] valori possibili " + ArrayUtils.toString(LogEnum.values()));
+				throw new ValidationException("log", gdeEvento.getLog(), ArrayUtils.toString(LogEnum.values()));
 			}
 
 			gdeEvento.setLog(LogEnum.fromValue(gdeEvento.getLog()));
@@ -72,7 +93,7 @@ public class GiornaleConverter {
 
 			// valore dumo non valido
 			if(DumpEnum.fromValue(gdeEvento.getDump()) == null) {
-				throw new ValidationException("Codifica inesistente per dump. Valore fornito [" + gdeEvento.getDump() + "] valori possibili " + ArrayUtils.toString(DumpEnum.values()));
+				throw new ValidationException("dump", gdeEvento.getDump(), ArrayUtils.toString(DumpEnum.values()));
 			}
 
 			gdeEvento.setDump(DumpEnum.fromValue(gdeEvento.getDump()));
@@ -146,6 +167,30 @@ public class GiornaleConverter {
 		case SOLO_ERRORE:
 			rsModel.setDump(DumpEnum.SOLO_ERRORE);
 			break;
+		}
+
+		return rsModel;
+	}
+
+	private static it.govpay.model.Connettore getConnettoreGdeDTO(it.govpay.backoffice.v1.beans.ConnettoreGde connettoreGdePost) {
+		Connettore connettoreGde = new it.govpay.model.Connettore();
+
+		connettoreGde.setAbilitato(connettoreGdePost.getAbilitato());
+		connettoreGde.setUrl(connettoreGdePost.getUrl());
+
+		ConnettoriConverter.setAutenticazione(connettoreGde, connettoreGdePost.getAuth());
+
+		return connettoreGde;
+	}
+
+	private static it.govpay.backoffice.v1.beans.ConnettoreGde toConnettoreGdeRsModel(it.govpay.model.Connettore connettoreGde) {
+		it.govpay.backoffice.v1.beans.ConnettoreGde rsModel = new it.govpay.backoffice.v1.beans.ConnettoreGde();
+
+		rsModel.setAbilitato(connettoreGde.isAbilitato());
+		rsModel.setUrl(connettoreGde.getUrl());
+
+		if(connettoreGde.getTipoAutenticazione() != null && !connettoreGde.getTipoAutenticazione().equals(it.govpay.model.Connettore.EnumAuthType.NONE)) {
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettoreGde));
 		}
 
 		return rsModel;

@@ -1,10 +1,28 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -24,7 +42,8 @@ import it.govpay.ragioneria.v3.beans.Riscossione;
 import it.govpay.ragioneria.v3.beans.StatoRiconciliazione;
 
 public class RiconciliazioniConverter {
-
+	
+	private RiconciliazioniConverter() {}
 
 	public static RichiestaIncassoDTO toRichiestaIncassoDTO(NuovaRiconciliazione incassoPost, String idDominio, String idRiconciliazione, Authentication user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
@@ -44,7 +63,7 @@ public class RiconciliazioniConverter {
 		return dto;
 	}
 
-	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
+	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riconciliazione rsModel = new Riconciliazione();
 

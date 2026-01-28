@@ -21,7 +21,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """

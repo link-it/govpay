@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -193,6 +195,27 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "fr_obsoleto";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_data_ora_pubblicazione";
+			}else{
+				return "fr_data_ora_pubblicazione";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_data_ora_aggiornamento";
+			}else{
+				return "fr_data_ora_aggiornamento";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_REVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_revisione";
+			}else{
+				return "fr_revisione";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".rnd_iuv";
@@ -338,6 +361,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return this.toAliasTable(field)+".sng_contabilita";
 			}else{
 				return "sng_contabilita";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".sng_metadata";
+			}else{
+				return "sng_metadata";
 			}
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){
@@ -967,6 +997,15 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		if(field.equals(VistaRendicontazione.model().FR_OBSOLETO)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_REVISIONE)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
@@ -1028,6 +1067,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().SNG_CONTABILITA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_METADATA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){

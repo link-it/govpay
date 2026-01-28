@@ -5,6 +5,8 @@ Background:
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-rendicontazioni.feature')
 * def rendicontazioneSchema = read('msg/rendicontazione.json')
 
+* callonce sleep(10000)
+
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] del flusso di rendicontazione [<idFlusso>]
 
 * def applicazione = read('msg/<applicazione>')
@@ -71,26 +73,26 @@ Examples:
 | applicazione_none.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 0 |
 | applicazione_none.json | idflusso_dom2_uo | 403 | errore_auth.json | 0 |
 | applicazione_none.json | idflusso_dom2 | 403 | errore_auth.json | 0 |
-| applicazione_dominio1e2_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 2 |
-| applicazione_dominio1e2_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 2 |
-| applicazione_dominio1e2_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 2 | 
-| applicazione_dominio1e2_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 2 |
-| applicazione_dominio1e2_ec.json | idflusso_dom2 | 200 | flussoRendicontazioni.json | 2 |
-| applicazione_dominio1_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 1 |
-| applicazione_dominio1_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_ec.json | idflusso_dom2 | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_uo1.json | idflusso_dom1 | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_uo1.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 1 |
-| applicazione_dominio1_uo1.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_uo1.json | idflusso_dom2_uo | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_uo1.json | idflusso_dom2 | 403 | errore_auth.json | 1 |
-| applicazione_dominio1_uo1e2.json | idflusso_dom1 | 403 | errore_auth.json | 2 |
-| applicazione_dominio1_uo1e2.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 2 |
-| applicazione_dominio1_uo1e2.json | idflusso_dom1_uo2 | 200 | flussoRendicontazioni.json | 2 |
-| applicazione_dominio1_uo1e2.json | idflusso_dom2_uo | 403 | errore_auth.json | 2 |
-| applicazione_dominio1_uo1e2.json | idflusso_dom2 | 403 | errore_auth.json | 2 |
+| applicazione_dominio1e2_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 5 |
+| applicazione_dominio1e2_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 5 |
+| applicazione_dominio1e2_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 5 | 
+| applicazione_dominio1e2_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 5 |
+| applicazione_dominio1e2_ec.json | idflusso_dom2 | 200 | flussoRendicontazioni.json | 5 |
+| applicazione_dominio1_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 3 |
+| applicazione_dominio1_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_ec.json | idflusso_dom2 | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1.json | idflusso_dom1 | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 3 |
+| applicazione_dominio1_uo1.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1.json | idflusso_dom2_uo | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1.json | idflusso_dom2 | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1e2.json | idflusso_dom1 | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1e2.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 3 |
+| applicazione_dominio1_uo1e2.json | idflusso_dom1_uo2 | 200 | flussoRendicontazioni.json | 3 |
+| applicazione_dominio1_uo1e2.json | idflusso_dom2_uo | 403 | errore_auth.json | 3 |
+| applicazione_dominio1_uo1e2.json | idflusso_dom2 | 403 | errore_auth.json | 3 |
 | applicazione_dominio1_star.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 3 |
 | applicazione_dominio1_star.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 3 |
 | applicazione_dominio1_star.json | idflusso_dom1_uo2 | 200 | flussoRendicontazioni.json | 3 |
@@ -169,25 +171,25 @@ Examples:
 | operatore_none.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 0 |
 | operatore_none.json | idflusso_dom2_uo | 403 | errore_auth.json | 0 |
 | operatore_none.json | idflusso_dom2 | 403 | errore_auth.json | 0 |
-| operatore_domini1e2_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 2 |
-| operatore_domini1e2_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 2 |
-| operatore_domini1e2_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 2 |
-| operatore_domini1e2_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 2 |
-| operatore_domini1e2_ec.json | idflusso_dom2 | 200 | flussoRendicontazioni.json | 2 |
-| operatore_domini1_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 1 |
-| operatore_domini1_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 1 |
-| operatore_domini1_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 1 |
-| operatore_domini1_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 1 |
-| operatore_domini1_ec.json | idflusso_dom2 | 403 | errore_auth.json | 1 |
-| operatore_domini1_uo1.json | idflusso_dom1 | 403 | errore_auth.json | 1 |
-| operatore_domini1_uo1.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 1 |
-| operatore_domini1_uo1.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 1 |
-| operatore_domini1_uo1.json | idflusso_dom2_uo | 403 | errore_auth.json | 1 |
-| operatore_domini1_uo1.json | idflusso_dom2 | 403 | errore_auth.json | 1 |
-| operatore_domini1_uo1e2.json | idflusso_dom1 | 403 | errore_auth.json | 2 |
-| operatore_domini1_uo1e2.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 2 |
-| operatore_domini1_uo1e2.json | idflusso_dom1_uo2 | 200 | flussoRendicontazioni.json | 2 |
-| operatore_domini1_uo1e2.json | idflusso_dom2_uo | 403 | errore_auth.json | 2 |
-| operatore_domini1_uo1e2.json | idflusso_dom2 | 403 | errore_auth.json | 2 |
+| operatore_domini1e2_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 5 |
+| operatore_domini1e2_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 5 |
+| operatore_domini1e2_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 5 |
+| operatore_domini1e2_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 5 |
+| operatore_domini1e2_ec.json | idflusso_dom2 | 200 | flussoRendicontazioni.json | 5 |
+| operatore_domini1_ec.json | idflusso_dom1 | 200 | flussoRendicontazioni.json | 3 |
+| operatore_domini1_ec.json | idflusso_dom1_uo | 403 | errore_auth.json | 3 |
+| operatore_domini1_ec.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 3 |
+| operatore_domini1_ec.json | idflusso_dom2_uo | 403 | errore_auth.json | 3 |
+| operatore_domini1_ec.json | idflusso_dom2 | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1.json | idflusso_dom1 | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 3 |
+| operatore_domini1_uo1.json | idflusso_dom1_uo2 | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1.json | idflusso_dom2_uo | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1.json | idflusso_dom2 | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1e2.json | idflusso_dom1 | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1e2.json | idflusso_dom1_uo | 200 | flussoRendicontazioni.json | 3 |
+| operatore_domini1_uo1e2.json | idflusso_dom1_uo2 | 200 | flussoRendicontazioni.json | 3 |
+| operatore_domini1_uo1e2.json | idflusso_dom2_uo | 403 | errore_auth.json | 3 |
+| operatore_domini1_uo1e2.json | idflusso_dom2 | 403 | errore_auth.json | 3 |
 
 

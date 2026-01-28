@@ -3,8 +3,24 @@
 Pagamenti
 =========
 
-La sezione "Pagamenti" è dedicata alla consultazione delle operazioni di pagamento che sono state richieste a Govpay in seguito all'interazione tra l'utente pagatore e il portale dei servizi di pagamento dell'ente creditore.
+La sezione *Pagamenti* è dedicata alla consultazione delle operazioni di pagamento che sono state richieste a Govpay in seguito all'interazione tra l'utente pagatore e il portale dei servizi di pagamento dell'ente creditore.
 
+Visualizzazione della sezione
+-----------------------------
+
+Attraverso le impostazioni della console si decide se visualizzare questa sezione.
+Data la migrazione verso il modello unico di pagamento che rende superata la visualizzazione delle informazioni relative ai pagamenti effettuati da portale, la sezione è nascosta di default.
+Per abilitarla si deve intervenire sulla seguente proprietà:
+
+.. code-block:: javascript
+   :linenos:
+
+   global.GovPayConfig = {
+       GESTIONE_PAGAMENTI: {
+           ENABLED: true // abilita la sezione pagamenti
+       }
+   };
+    
 
 Gli stati del Pagamento
 -----------------------
@@ -89,7 +105,7 @@ Per aggiungere una nota, premere il pulsante *+*, il sistema presenta quindi la 
    Immissione nota
 
 
-Con la voce di menu in alto a destra (*Scarica Resoconto*), è possibile scaricare i documenti salienti associati al pagammento:
+Con la voce di menu in alto a destra (*Scarica Resoconto*), è possibile scaricare i documenti salienti associati al pagamento:
 
 
 .. figure:: ../../_images/P06ScaricaResocontoSingoloPagamento.png

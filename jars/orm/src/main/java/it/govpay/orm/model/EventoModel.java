@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.Evento;
@@ -60,7 +62,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.CCP = new Field("ccp",java.lang.String.class,"Evento",Evento.class);
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Evento",Evento.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"Evento",Evento.class);
-		this.SEVERITA = new Field("severita",java.lang.Integer.class,"Evento",Evento.class);
+		this.SEVERITA = new Field("severita",java.math.BigInteger.class,"Evento",Evento.class);
 		this.ID_FR = new it.govpay.orm.model.IdFrModel(new Field("idFR",it.govpay.orm.IdFr.class,"Evento",Evento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"Evento",Evento.class));
 		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciato",it.govpay.orm.IdTracciato.class,"Evento",Evento.class));
@@ -92,7 +94,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"Evento",Evento.class);
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Evento",Evento.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"Evento",Evento.class);
-		this.SEVERITA = new ComplexField(father,"severita",java.lang.Integer.class,"Evento",Evento.class);
+		this.SEVERITA = new ComplexField(father,"severita",java.math.BigInteger.class,"Evento",Evento.class);
 		this.ID_FR = new it.govpay.orm.model.IdFrModel(new ComplexField(father,"idFR",it.govpay.orm.IdFr.class,"Evento",Evento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"Evento",Evento.class));
 		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciato",it.govpay.orm.IdTracciato.class,"Evento",Evento.class));

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
@@ -18,6 +37,8 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Stazione.Versione;
 
 public class StazioniConverter {
+	
+	private StazioniConverter() {}
 
 	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws UnprocessableEntityException, ValidationException {
 		PutStazioneDTO stazioneDTO = new PutStazioneDTO(user);
@@ -46,12 +67,16 @@ public class StazioniConverter {
 		stazione.setApplicationCode(applicationCode);
 		stazione.setCodStazione(idStazione);
 		stazione.setPassword(stazionePost.getPassword());
-		
+
+		if(stazione.getPassword() == null) {
+			stazione.setPassword("");
+		}
+
 		if(stazionePost.getVersione() != null) {
 			// valore versione non valido
 			VersioneStazione versioneStazione = VersioneStazione.fromValue(stazionePost.getVersione());
 			if(versioneStazione == null) {
-				throw new ValidationException("Codifica inesistente per versione. Valore fornito [" + stazionePost.getVersione() + "] valori possibili " + ArrayUtils.toString(VersioneStazione.values()));
+				throw new ValidationException("versione", stazionePost.getVersione(), ArrayUtils.toString(VersioneStazione.values()));
 			}
 
 			switch (versioneStazione) {
@@ -63,7 +88,7 @@ public class StazioniConverter {
 				break;
 			}
 		}
-		
+
 		stazioneDTO.setStazione(stazione);
 		stazioneDTO.setIdIntermediario(idIntermediario);
 		stazioneDTO.setIdStazione(idStazione);
@@ -75,6 +100,10 @@ public class StazioniConverter {
 		rsModel.abilitato(stazione.isAbilitato())
 		.idStazione(stazione.getCodStazione())
 		.password(stazione.getPassword());
+
+		if(stazione.getPassword().equals("")) {
+			rsModel.setPassword(null);
+		}
 
 		if(stazione.getVersione() != null) {
 			switch (stazione.getVersione()) {
@@ -103,7 +132,11 @@ public class StazioniConverter {
 		.idStazione(stazione.getCodStazione())
 		.domini(UriBuilderUtils.getListDomini(stazione.getCodStazione()))
 		.password(stazione.getPassword());
-		
+
+		if(stazione.getPassword().equals("")) {
+			rsModel.setPassword(null);
+		}
+
 		if(stazione.getVersione() != null) {
 			switch (stazione.getVersione()) {
 			case V1:

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.filters;
 
 import java.util.ArrayList;
@@ -47,6 +66,7 @@ public class VersamentoFilter  extends AbstractFilter {
 	private String cfCittadino;
 	private List<Long> idTipiVersamento = null;
 	private String codTipoVersamento = null;
+	private List<String> codTipiVersamento = null;
 	private String divisione;
 	private String direzione;
 	private String idSessione;
@@ -70,13 +90,13 @@ public class VersamentoFilter  extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(VistaVersamento.model().DEBITORE_IDENTIFICATIVO);
 		this.listaFieldSimpleSearch.add(VistaVersamento.model().COD_VERSAMENTO_ENTE);
-		this.listaFieldSimpleSearch.add(VistaVersamento.model().IUV.IUV);
+		this.listaFieldSimpleSearch.add(VistaVersamento.model().IUV_VERSAMENTO);
 	}
 
 	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
+	public IExpression toSimpleSearchExpressionEngine() throws ServiceException {
 		try {
-			IExpression newExpressionOr = super._toSimpleSearchExpression();
+			IExpression newExpressionOr = super.toSimpleSearchExpressionEngine();
 			
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
@@ -105,7 +125,7 @@ public class VersamentoFilter  extends AbstractFilter {
 	}
 	
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -336,6 +356,14 @@ public class VersamentoFilter  extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.equals(VistaVersamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
+				addAnd = true;
+			}
+			
+			if(this.codTipiVersamento != null && !this.codTipiVersamento.isEmpty()){
+				this.codTipiVersamento.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				newExpression.in(VistaVersamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipiVersamento);
 				addAnd = true;
 			}
 			
@@ -659,6 +687,22 @@ public class VersamentoFilter  extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
 			
+			if(this.codTipiVersamento != null && !this.codTipiVersamento.isEmpty()){
+				this.codTipiVersamento.removeAll(Collections.singleton(null));
+				
+				if(!addTabellaTipiVersamento) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+							+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
+
+					addTabellaTipiVersamento = true;
+				}
+				
+				String [] codsTipiVersamento = this.codTipiVersamento.toArray(new String[this.codTipiVersamento.size()]);
+			
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), true, codsTipiVersamento );
+			}
+			
 			if(this.direzione != null){
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DIREZIONE, true) + " = ? ");
 			}
@@ -819,6 +863,10 @@ public class VersamentoFilter  extends AbstractFilter {
 		
 		if(this.codTipoVersamento != null){
 			lst.add(this.codTipoVersamento);
+		}
+		
+		if(this.codTipiVersamento != null && !this.codTipiVersamento.isEmpty()){
+			// donothing	
 		}
 		
 		if(this.direzione != null){
@@ -1057,6 +1105,14 @@ public class VersamentoFilter  extends AbstractFilter {
 
 	public void setIdDocumento(Long idDocumento) {
 		this.idDocumento = idDocumento;
+	}
+
+	public List<String> getCodTipiVersamento() {
+		return codTipiVersamento;
+	}
+
+	public void setCodTipiVersamento(List<String> codTipiVersamento) {
+		this.codTipiVersamento = codTipiVersamento;
 	}
 
 }

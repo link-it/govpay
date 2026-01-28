@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.configurazione;
 
 import java.text.MessageFormat;
@@ -16,11 +35,8 @@ import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
 import it.govpay.core.dao.configurazione.dto.PatchConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTOResponse;
-import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.model.Connettore;
 import it.govpay.model.PatchOp;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
@@ -39,6 +55,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 	public static final String PATH_APP_IO_BATCH = "/appIOBatch";
 	public static final String PATH_AVVISATURA_MAIL = "/avvisaturaMail";
 	public static final String PATH_AVVISATURA_APP_IO = "/avvisaturaAppIO";
+	public static final String PATH_SERVIZO_GDE = "/servizioGDE";
 
 	public ConfigurazioneDAO() {
 		super();
@@ -48,16 +65,17 @@ public class ConfigurazioneDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public LeggiConfigurazioneDTOResponse getConfigurazione(LeggiConfigurazioneDTO leggiConfigurazioneDTO) throws ConfigurazioneNonTrovataException, NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public LeggiConfigurazioneDTOResponse getConfigurazione(LeggiConfigurazioneDTO leggiConfigurazioneDTO) throws ServiceException {
 		try {
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
+			// donothing
 		}
 	}
 
 
-	public PutConfigurazioneDTOResponse salvaConfigurazione(PutConfigurazioneDTO putConfigurazioneDTO) throws ConfigurazioneNonTrovataException, ServiceException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {  
+	public PutConfigurazioneDTOResponse salvaConfigurazione(PutConfigurazioneDTO putConfigurazioneDTO) throws ServiceException {  
 		PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = new PutConfigurazioneDTOResponse();
 		try {
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
@@ -68,7 +86,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 
 			// flag creazione o update
 			putConfigurazioneDTOResponse.setCreated(created);
-			configurazioneBD.salvaConfigurazione(configurazione);
+			configurazioneBD.salvaConfigurazione(configurazione, putConfigurazioneDTO.getIdOperatore());
 
 			// elimino la entry in cache
 			AnagraficaManager.removeFromCache(configurazione);
@@ -77,6 +95,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 		} finally {
+			// donothing
 		}
 		return putConfigurazioneDTOResponse;
 	}
@@ -109,12 +128,15 @@ public class ConfigurazioneDAO extends BaseDAO{
 				} else if(PATH_APP_IO_BATCH.equals(op.getPath())) {
 					AppIOBatch batchSpedizioneAppIo =  (AppIOBatch) op.getValue();
 					configurazione.setBatchSpedizioneAppIo(batchSpedizioneAppIo);
+				} else if(PATH_SERVIZO_GDE.equals(op.getPath())) {
+					Connettore servizioGDE = (Connettore) op.getValue(); 
+					configurazione.setServizioGDE(servizioGDE);
 				} else {
 					throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 				}
 			}
 
-			configurazioneBD.salvaConfigurazione(configurazione);
+			configurazioneBD.salvaConfigurazione(configurazione, patchConfigurazioneDTO.getIdOperatore());
 			// elimino la entry in cache
 			AnagraficaManager.removeFromCache(configurazione);
 
@@ -123,6 +145,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
+			// donothing
 		}
 	}
 }

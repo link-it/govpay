@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
@@ -10,9 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -50,6 +69,7 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.ExceptionUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
@@ -66,11 +86,18 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class Promemoria {
 
-	private static final String ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2 = "Errore in aggiornamento promemoria [{0}/{1}] fallito: {2}";
-
-	private static final String DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA = "Spedizione promemoria verso il mail server [{0}]:[{1}] completata.";
-
-	private static final String DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1 = "Spedizione promemoria verso il mail server [{0}]:[{1}]...";
+	private static final String ERROR_MSG_ALLEGATO_DEL_MESSAGGIO_NON_GENERABILE = "Allegato del messaggio non generabile";
+	private static final String SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA_COMPLETATO = "Salvataggio messaggio e oggetto del promemoria completato.";
+	private static final String SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA = "Salvataggio messaggio e oggetto del promemoria...";
+	private static final String ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE = "Corpo del messaggio non generabile";
+	private static final String CREAZIONE_MESSAGGIO_DEL_PROMEMORIA_COMPLETATA = "Creazione messaggio del promemoria completata.";
+	private static final String CREAZIONE_MESSAGGIO_DEL_PROMEMORIA = "Creazione messaggio del promemoria...";
+	private static final String CREAZIONE_OGGETTO_DEL_PROMEMORIA_COMPLETATA = "Creazione oggetto del promemoria completata.";
+	private static final String CREAZIONE_OGGETTO_DEL_PROMEMORIA = "Creazione oggetto del promemoria...";
+	private static final String DESTINATARIO_MESSAGGIO_NON_SPECIFICATO = "Destinatario messaggio non specificato";
+	private static final String ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2 = "Errore in aggiornamento promemoria [{}/{}] fallito: {}";
+	private static final String DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA = "Spedizione promemoria verso il mail server [{}]:[{}] completata.";
+	private static final String DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1 = "Spedizione promemoria verso il mail server [{}]:[{}]...";
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Promemoria.class);
 
@@ -92,7 +119,7 @@ public class Promemoria {
 	
 
 	public Promemoria() {
-		this.senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_MAIL, log);
+		this.senderCommonsMail = SenderFactory.newSender(SenderType.JAKARTA_MAIL, log);
 
 		Configurazione configurazioneBD = new Configurazione();
 		try {
@@ -143,10 +170,8 @@ public class Promemoria {
 			
 			this.startTls = mailserver.isStartTls();
 			
-		} catch (ServiceException e) {
-			log.error(MessageFormat.format("Errore durante l''inizializzazione del Promemoria: {0}", e.getMessage()),e);
-		} catch (IOException e) {
-			log.error(MessageFormat.format("Errore durante l''inizializzazione del Promemoria: {0}", e.getMessage()),e);
+		} catch (ServiceException | IOException e) {
+			LogUtils.logError(log, MessageFormat.format("Errore durante l''inizializzazione del Promemoria: {0}", e.getMessage()),e);
 		}
 	}
 
@@ -162,7 +187,7 @@ public class Promemoria {
 		return promemoria;
 	}
 	
-	public it.govpay.bd.model.Promemoria creaPromemoriaRicevuta(it.govpay.bd.model.Rpt rpt, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException, JAXBException, SAXException {
+	public it.govpay.bd.model.Promemoria creaPromemoriaRicevuta(it.govpay.bd.model.Rpt rpt, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws JAXBException, SAXException {
 		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(rpt, versamento, TipoPromemoria.RICEVUTA);
 		this.setRicevutaDestinatari(rpt, versamento, promemoria); 
 		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdf() != null)
@@ -174,7 +199,7 @@ public class Promemoria {
 	}
 
 
-	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) throws ServiceException {
+	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) {
 		
 		it.govpay.bd.model.Promemoria promemoria = null;
 		Documento documento = versamento.getDocumento();
@@ -196,7 +221,7 @@ public class Promemoria {
 		return promemoria;
 	}
 	
-	public it.govpay.bd.model.Promemoria creaPromemoriaScadenza(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) throws ServiceException {
+	public it.govpay.bd.model.Promemoria creaPromemoriaScadenza(Versamento versamento, Date dataAvvisatura) {
 		
 		it.govpay.bd.model.Promemoria promemoria = null;
 		Documento documento = versamento.getDocumento();
@@ -220,11 +245,14 @@ public class Promemoria {
 		if(rpt != null) {
 			switch(rpt.getVersione()) {
 				case SANP_230:
+				case RPTSANP230_RTV2:
 					CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 					versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
 					break;
 				case SANP_240:
+				case RPTV2_RTV1:
 				case SANP_321_V2:
+				case RPTV1_RTV2:
 					break;
 			}
 		}
@@ -232,9 +260,9 @@ public class Promemoria {
 		if(versante != null && debitore != null) {
 			promemoria.setDestinatarioTo(versante);
 			promemoria.setDestinatarioCc(debitore);
-		} else if(versante != null && debitore == null) {
+		} else if(versante != null) {
 			promemoria.setDestinatarioTo(versante);
-		} else if(versante == null && debitore != null) {
+		} else if(debitore != null) {
 			promemoria.setDestinatarioTo(debitore);
 		} else {
 			// nessuna mail
@@ -258,14 +286,14 @@ public class Promemoria {
 			byte[] templateBytes = Base64.getDecoder().decode(template.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			TrasformazioniUtils.convertFreeMarkerTemplate(nomeTrasformazione, templateBytes , dynamicMap , baos );
-			log.debug(MessageFormat.format("Risultato trasformazione: {0}", baos.toString()));
-			log.debug(MessageFormat.format("Risultato trasformazione UTF-8: {0}", baos.toString(Charset.UTF_8.getValue())));
+			LogUtils.logDebug(log, "Risultato trasformazione: {}", baos.toString());
+			LogUtils.logDebug(log, "Risultato trasformazione UTF-8: {}", baos.toString(Charset.UTF_8.getValue()));
 			return baos.toString();
 		} catch (TrasformazioneException | UnprocessableEntityException e) {
-			log.error(MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
+			LogUtils.logError(log, MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
 			throw e;
 		} catch (UnsupportedEncodingException e) {
-			log.error(MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
+			LogUtils.logError(log, MessageFormat.format("Trasformazione tramite template Freemarker completata con errore: {0}", e.getMessage()), e);
 			throw new ServiceException(e);
 		}
 	}
@@ -327,8 +355,7 @@ public class Promemoria {
 	public List<it.govpay.bd.model.Promemoria> findPromemoriaDaSpedire(Integer offset, Integer limit) throws ServiceException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PromemoriaBD promemoriaBD = new PromemoriaBD(configWrapper);
-		List<it.govpay.bd.model.Promemoria> promemoria = promemoriaBD.findPromemoriaDaSpedire(offset,limit,true);
-		return promemoria;
+		return promemoriaBD.findPromemoriaDaSpedire(offset,limit,true);
 	}
 
 	public void invioPromemoria(it.govpay.bd.model.Promemoria promemoria) { 
@@ -353,7 +380,9 @@ public class Promemoria {
 	private void invioPromemoriaAvviso(it.govpay.bd.model.Promemoria promemoria) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PromemoriaBD promemoriaBD = new PromemoriaBD(configWrapper);
-		String errore = "", codApplicazione = "", codVersamentoEnte  = "";
+		String errore = "";
+		String codApplicazione = "";
+		String codVersamentoEnte  = "";
 		try {
 			Versamento versamento = promemoria.getVersamento();
 			codApplicazione = versamento.getApplicazione(configWrapper).getCodApplicazione();
@@ -361,7 +390,7 @@ public class Promemoria {
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
 			if(StringUtils.isEmpty(promemoria.getDestinatarioTo())){
-				throw new PromemoriaException("Destinatario messaggio non specificato");
+				throw new PromemoriaException(DESTINATARIO_MESSAGGIO_NON_SPECIFICATO);
 			}
 
 			org.openspcoop2.utils.mail.Mail mail = new org.openspcoop2.utils.mail.Mail();
@@ -378,14 +407,14 @@ public class Promemoria {
 			if(promemoria.getDestinatarioCc() !=null)
 				mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 
-			log.debug(MessageFormat.format("Invio promemoria avviso di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}], al destinatario [{2}] CC[{3}]",
-					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")));
+			log.debug("Invio promemoria avviso di pagamento per la pendenza [IDA2A: {} , IdPendenza: {}], al destinatario [{}] CC[{}]",
+					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""));
 
 			boolean inserisciOggetto = promemoria.getOggetto() == null;
 			if(promemoria.getOggetto() == null) {
-				log.debug("Creazione oggetto del promemoria...");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA);
 				try {
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
+					Map<String, Object> dynamicMap = new HashMap<>();
 					TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(configWrapper));
 					String promemoriaAvvisoOggetto = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggetto() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggetto() : this.configurazionePromemoriaAvvisoMail.getOggetto();
 					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() : this.configurazionePromemoriaAvvisoMail.getTipo(); 
@@ -393,25 +422,25 @@ public class Promemoria {
 				} catch (Throwable t) {
 					throw new PromemoriaException("Oggetto del messaggio non generabile", t);
 				}
-				log.debug("Creazione oggetto del promemoria completata.");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.setSubject(promemoria.getOggetto());
 
 			boolean inserisciMessaggio = promemoria.getMessaggio() == null;
 
 			if(promemoria.getMessaggio() == null) {
-				log.debug("Creazione messaggio del promemoria...");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA);
 				try {
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
+					Map<String, Object> dynamicMap = new HashMap<>();
 					TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(configWrapper));
 					String promemoriaAvvisoMessaggio = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggio() : this.configurazionePromemoriaAvvisoMail.getMessaggio();
 					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() : this.configurazionePromemoriaAvvisoMail.getTipo(); 
 					promemoria.setMessaggio(this.getMessaggioAvviso(promemoriaAvvisoTipoTemplate, promemoriaAvvisoMessaggio, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), dynamicMap));
 					promemoria.setContentType(this.getContentType(dynamicMap));
 				} catch (Throwable t) {
-					throw new PromemoriaException("Corpo del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Creazione messaggio del promemoria completata.");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.getBody().setMessage(promemoria.getMessaggio());
 
@@ -433,72 +462,39 @@ public class Promemoria {
 
 			// salvo il contenuto del promemoria
 			if(inserisciMessaggio || inserisciOggetto) {
-				log.debug("Salvataggio messaggio e oggetto del promemoria...");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA);
 				try {
 					promemoriaBD.updateMessaggioPromemoria(promemoria.getId(), promemoria.getOggetto(), promemoria.getMessaggio(), promemoria.getContentType());
 				} catch (Throwable t) {
-					throw new PromemoriaException("Allegato del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_ALLEGATO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Salvataggio messaggio e oggetto del promemoria completato.");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA_COMPLETATO);
 			}
 
 			try {
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port);
 				this.senderCommonsMail.send(mail, true);
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port);
 				promemoriaBD.updateSpedito(promemoria.getId());
 			}catch (UtilsException e) {
 				errore = MessageFormat.format("Errore durante l''invio del promemoria avviso di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}] al destinatario [{2}] CC[{3}]:{4}",
 						versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""), e.getMessage());
-				log.error(errore, e);
 
-				if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
-					log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
-					promemoriaBD.updateFallita(promemoria.getId(), ExceptionUtils.getInnerException(e, javax.mail.internet.AddressException.class).getMessage());
-					log.debug("Salvataggio stato 'fallito' completato con successo");
-				} else {
-					log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-					long tentativi = promemoria.getTentativiSpedizione() + 1;
-					Date today = new Date();
-					Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-					Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
-
-					// Limito la rispedizione al giorno dopo.
-					if(prossima.after(tomorrow)) prossima = tomorrow;
-
-					promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-					log.debug("La spedizione del promemoria schedulata con successo.");
-				}
+				gestisciUtilsException(promemoria, promemoriaBD, errore, e);
 			} 
 		} catch (PromemoriaException e) {
-			log.debug("Errore in gestione promemoria: " + e.getMessage());
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	e.getMessage()));
-			}
+			gestisciPromemoriaException(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, e);
 		} catch (Throwable t) {
-			log.error("Errore in gestione promemoria", t);
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	t.getMessage()));
-			}
+			gestisciThrowable(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, t);
 		}
 	}
 
 	private void invioPromemoriaRicevutaPagamentoEseguitoSenzaRPT(it.govpay.bd.model.Promemoria promemoria) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PromemoriaBD promemoriaBD = new PromemoriaBD(configWrapper);
-		String errore = "", codApplicazione = "", codVersamentoEnte  = "";
+		String errore = "";
+		String codApplicazione = "";
+		String codVersamentoEnte  = "";
 		try {
 			Versamento versamento = promemoria.getVersamento();
 			codApplicazione = versamento.getApplicazione(configWrapper).getCodApplicazione();
@@ -507,7 +503,7 @@ public class Promemoria {
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
 			if(StringUtils.isEmpty(promemoria.getDestinatarioTo())){
-				throw new PromemoriaException("Destinatario messaggio non specificato");
+				throw new PromemoriaException(DESTINATARIO_MESSAGGIO_NON_SPECIFICATO);
 			}
 			
 			
@@ -561,39 +557,39 @@ public class Promemoria {
 			if(promemoria.getDestinatarioCc() !=null)
 				mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 
-			log.debug(MessageFormat.format("Invio promemoria ricevuta di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}], al destinatario [{2}] CC[{3}]",
-					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")));
+			log.debug("Invio promemoria ricevuta di pagamento per la pendenza [IDA2A: {} , IdPendenza: {}], al destinatario [{}] CC[{}]",
+					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""));
 
 			boolean inserisciOggetto = promemoria.getOggetto() == null;
 			if(promemoria.getOggetto() == null) {
-				log.debug("Creazione oggetto del promemoria...");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA);
 				try {
-				Map<String, Object> dynamicMap = new HashMap<String, Object>();
+				Map<String, Object> dynamicMap = new HashMap<>();
 				TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(configWrapper));
 				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() : this.configurazionePromemoriaRicevutaMail.getTipo(); 
 				String promemoriaRicevutaOggetto = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggetto() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggetto() : this.configurazionePromemoriaRicevutaMail.getOggetto();
 				promemoria.setOggetto(this.getOggettoRicevuta(promemoriaRicevutaTipoTemplate, promemoriaRicevutaOggetto, rpt, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), dynamicMap));
 				} catch (Throwable t) {
-					throw new PromemoriaException("Corpo del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Creazione oggetto del promemoria completata.");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.setSubject(promemoria.getOggetto());
 
 			boolean inserisciMessaggio = promemoria.getMessaggio() == null;
 			if(promemoria.getMessaggio() == null) {
-				log.debug("Creazione messaggio del promemoria...");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA);
 				try {
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
+					Map<String, Object> dynamicMap = new HashMap<>();
 				TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(configWrapper));
 				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() : this.configurazionePromemoriaRicevutaMail.getTipo(); 
 				String promemoriaRicevutaMessaggio = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggio() : this.configurazionePromemoriaRicevutaMail.getMessaggio();
 				promemoria.setMessaggio(this.getMessaggioRicevuta(promemoriaRicevutaTipoTemplate, promemoriaRicevutaMessaggio, rpt, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), dynamicMap));
 				promemoria.setContentType(this.getContentType(dynamicMap));
 				} catch (Throwable t) {
-					throw new PromemoriaException("Corpo del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Creazione messaggio del promemoria completata.");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.getBody().setMessage(promemoria.getMessaggio());
 
@@ -614,68 +610,35 @@ public class Promemoria {
 
 			// salvo il contenuto del promemoria
 			if(inserisciMessaggio || inserisciOggetto) {
-				log.debug("Salvataggio messaggio e oggetto del promemoria...");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA);
 				promemoriaBD.updateMessaggioPromemoria(promemoria.getId(), promemoria.getOggetto(), promemoria.getMessaggio(), promemoria.getContentType()); 
-				log.debug("Salvataggio messaggio e oggetto del promemoria completato.");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA_COMPLETATO);
 			}
 
 			try {
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port);
 				this.senderCommonsMail.send(mail, true);
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port);
 				promemoriaBD.updateSpedito(promemoria.getId());
 			}catch (UtilsException e) {
 				errore = MessageFormat.format("Errore durante l''invio del promemoria ricevuta di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}] al destinatario [{2}] CC[{3}]:{4}",
 						versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""), e.getMessage());
-				log.error(errore, e);
-
-				if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
-					log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
-					promemoriaBD.updateFallita(promemoria.getId(), errore);
-					log.debug("Salvataggio stato 'fallito' completato con successo");
-				} else {
-					log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-					long tentativi = promemoria.getTentativiSpedizione() + 1;
-					Date today = new Date();
-					Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-					Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
-
-					// Limito la rispedizione al giorno dopo.
-					if(prossima.after(tomorrow)) prossima = tomorrow;
-
-					promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-					log.debug("La spedizione del promemoria schedulata con successo.");
-				}
+				
+				gestisciUtilsException(promemoria, promemoriaBD, errore, e);
 			}
 		} catch (PromemoriaException e) {
-			log.debug(MessageFormat.format("Errore in gestione promemoria: {0}", e.getMessage()));
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	e.getMessage()));
-			}
+			gestisciPromemoriaException(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, e);
 		} catch (Throwable t) {
-			log.error("Errore in gestione promemoria", t);
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	t.getMessage()));
-			}
+			gestisciThrowable(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, t);
 		}
 	}
 	
 	private void invioPromemoriaRicevuta(it.govpay.bd.model.Promemoria promemoria) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PromemoriaBD promemoriaBD = new PromemoriaBD(configWrapper);
-		String errore = "", codApplicazione = "", codVersamentoEnte  = "";
+		String errore = "";
+		String codApplicazione = "";
+		String codVersamentoEnte  = "";
 		try {
 			Versamento versamento = promemoria.getVersamento();
 			codApplicazione = versamento.getApplicazione(configWrapper).getCodApplicazione();
@@ -685,7 +648,7 @@ public class Promemoria {
 			Rpt rpt = promemoria.getRpt();
 
 			if(StringUtils.isEmpty(promemoria.getDestinatarioTo())){
-				throw new PromemoriaException("Destinatario messaggio non specificato");
+				throw new PromemoriaException(DESTINATARIO_MESSAGGIO_NON_SPECIFICATO);
 			}
 
 			org.openspcoop2.utils.mail.Mail mail = new org.openspcoop2.utils.mail.Mail();
@@ -706,39 +669,39 @@ public class Promemoria {
 			if(promemoria.getDestinatarioCc() !=null)
 				mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 
-			log.debug(MessageFormat.format("Invio promemoria ricevuta di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}], al destinatario [{2}] CC[{3}]",
-					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")));
+			log.debug("Invio promemoria ricevuta di pagamento per la pendenza [IDA2A: {} , IdPendenza: {}], al destinatario [{}] CC[{}]",
+					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""));
 
 			boolean inserisciOggetto = promemoria.getOggetto() == null;
 			if(promemoria.getOggetto() == null) {
-				log.debug("Creazione oggetto del promemoria...");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA);
 				try {
-				Map<String, Object> dynamicMap = new HashMap<String, Object>();
+				Map<String, Object> dynamicMap = new HashMap<>();
 				TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(configWrapper));
 				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() : this.configurazionePromemoriaRicevutaMail.getTipo(); 
 				String promemoriaRicevutaOggetto = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggetto() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggetto() : this.configurazionePromemoriaRicevutaMail.getOggetto();
 				promemoria.setOggetto(this.getOggettoRicevuta(promemoriaRicevutaTipoTemplate, promemoriaRicevutaOggetto, rpt, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), dynamicMap));
 				} catch (Throwable t) {
-					throw new PromemoriaException("Corpo del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Creazione oggetto del promemoria completata.");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.setSubject(promemoria.getOggetto());
 
 			boolean inserisciMessaggio = promemoria.getMessaggio() == null;
 			if(promemoria.getMessaggio() == null) {
-				log.debug("Creazione messaggio del promemoria...");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA);
 				try {
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
+					Map<String, Object> dynamicMap = new HashMap<>();
 				TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(configWrapper));
 				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() : this.configurazionePromemoriaRicevutaMail.getTipo(); 
 				String promemoriaRicevutaMessaggio = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggio() : this.configurazionePromemoriaRicevutaMail.getMessaggio();
 				promemoria.setMessaggio(this.getMessaggioRicevuta(promemoriaRicevutaTipoTemplate, promemoriaRicevutaMessaggio, rpt, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), dynamicMap));
 				promemoria.setContentType(this.getContentType(dynamicMap));
 				} catch (Throwable t) {
-					throw new PromemoriaException("Corpo del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Creazione messaggio del promemoria completata.");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.getBody().setMessage(promemoria.getMessaggio());
 
@@ -747,7 +710,6 @@ public class Promemoria {
 				String codDominio = rpt.getCodDominio();
 				String iuv = rpt.getIuv();
 				String ccp = rpt.getCcp();
-//				rpt.getPagamentoPortale().getApplicazione(configWrapper);
 
 				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica();
 				LeggiRicevutaDTO leggiRicevutaDTO = new LeggiRicevutaDTO(null);
@@ -764,68 +726,35 @@ public class Promemoria {
 
 			// salvo il contenuto del promemoria
 			if(inserisciMessaggio || inserisciOggetto) {
-				log.debug("Salvataggio messaggio e oggetto del promemoria...");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA);
 				promemoriaBD.updateMessaggioPromemoria(promemoria.getId(), promemoria.getOggetto(), promemoria.getMessaggio(), promemoria.getContentType()); 
-				log.debug("Salvataggio messaggio e oggetto del promemoria completato.");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA_COMPLETATO);
 			}
 
 			try {
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port);
 				this.senderCommonsMail.send(mail, true);
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port);
 				promemoriaBD.updateSpedito(promemoria.getId());
 			}catch (UtilsException e) {
 				errore = MessageFormat.format("Errore durante l''invio del promemoria ricevuta di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}] al destinatario [{2}] CC[{3}]:{4}",
 						versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""), e.getMessage());
-				log.error(errore, e);
-
-				if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
-					log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
-					promemoriaBD.updateFallita(promemoria.getId(), errore);
-					log.debug("Salvataggio stato 'fallito' completato con successo");
-				} else {
-					log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-					long tentativi = promemoria.getTentativiSpedizione() + 1;
-					Date today = new Date();
-					Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-					Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
-
-					// Limito la rispedizione al giorno dopo.
-					if(prossima.after(tomorrow)) prossima = tomorrow;
-
-					promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-					log.debug("La spedizione del promemoria schedulata con successo.");
-				}
+				
+				gestisciUtilsException(promemoria, promemoriaBD, errore, e);
 			}
 		} catch (PromemoriaException e) {
-			log.debug("Errore in gestione promemoria: " + e.getMessage());
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	e.getMessage()));
-			}
+			gestisciPromemoriaException(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, e);
 		} catch (Throwable t) {
-			log.error("Errore in gestione promemoria", t);
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	t.getMessage()));
-			}
+			gestisciThrowable(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, t);
 		}
 	}
 	
 	private void invioPromemoriaScadenza(it.govpay.bd.model.Promemoria promemoria) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PromemoriaBD promemoriaBD = new PromemoriaBD(configWrapper);
-		String errore = "", codApplicazione = "", codVersamentoEnte  = "";
+		String errore = "";
+		String codApplicazione = "";
+		String codVersamentoEnte  = "";
 		try {
 			Versamento versamento = promemoria.getVersamento();
 			codApplicazione = versamento.getApplicazione(configWrapper).getCodApplicazione();
@@ -833,7 +762,7 @@ public class Promemoria {
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper); 
 
 			if(StringUtils.isEmpty(promemoria.getDestinatarioTo())){
-				throw new PromemoriaException("Destinatario messaggio non specificato");
+				throw new PromemoriaException(DESTINATARIO_MESSAGGIO_NON_SPECIFICATO);
 			}
 
 			org.openspcoop2.utils.mail.Mail mail = new org.openspcoop2.utils.mail.Mail();
@@ -850,14 +779,14 @@ public class Promemoria {
 			if(promemoria.getDestinatarioCc() !=null)
 				mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 
-			log.debug(MessageFormat.format("Invio promemoria scadenza avviso di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}], al destinatario [{2}] CC[{3}]",
-					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")));
+			log.debug("Invio promemoria scadenza avviso di pagamento per la pendenza [IDA2A: {} , IdPendenza: {}], al destinatario [{}] CC[{}]",
+					versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""));
 
 			boolean inserisciOggetto = promemoria.getOggetto() == null;
 			if(promemoria.getOggetto() == null) {
-				log.debug("Creazione oggetto del promemoria...");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA);
 				try {
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
+					Map<String, Object> dynamicMap = new HashMap<>();
 					TrasformazioniUtils.fillDynamicMapPromemoriaScadenza(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(configWrapper));
 					String promemoriaAvvisoOggetto = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaOggetto() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaOggetto() : this.configurazionePromemoriaScadenzaMail.getOggetto();
 					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaTipo() : this.configurazionePromemoriaScadenzaMail.getTipo(); 
@@ -865,25 +794,25 @@ public class Promemoria {
 				} catch (Throwable t) {
 					throw new PromemoriaException("Oggetto del messaggio non generabile", t);
 				}
-				log.debug("Creazione oggetto del promemoria completata.");
+				log.debug(CREAZIONE_OGGETTO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.setSubject(promemoria.getOggetto());
 
 			boolean inserisciMessaggio = promemoria.getMessaggio() == null;
 
 			if(promemoria.getMessaggio() == null) {
-				log.debug("Creazione messaggio del promemoria...");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA);
 				try {
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
+					Map<String, Object> dynamicMap = new HashMap<>();
 					TrasformazioniUtils.fillDynamicMapPromemoriaScadenza(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(configWrapper));
 					String promemoriaAvvisoMessaggio = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaMessaggio() : this.configurazionePromemoriaScadenzaMail.getMessaggio();
 					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaTipo() : this.configurazionePromemoriaScadenzaMail.getTipo(); 
 					promemoria.setMessaggio(this.getMessaggioScadenza(promemoriaAvvisoTipoTemplate, promemoriaAvvisoMessaggio, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), dynamicMap));
 					promemoria.setContentType(this.getContentType(dynamicMap));
 				} catch (Throwable t) {
-					throw new PromemoriaException("Corpo del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_CORPO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Creazione messaggio del promemoria completata.");
+				log.debug(CREAZIONE_MESSAGGIO_DEL_PROMEMORIA_COMPLETATA);
 			}
 			mail.getBody().setMessage(promemoria.getMessaggio());
 
@@ -905,65 +834,82 @@ public class Promemoria {
 
 			// salvo il contenuto del promemoria
 			if(inserisciMessaggio || inserisciOggetto) {
-				log.debug("Salvataggio messaggio e oggetto del promemoria...");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA);
 				try {
 					promemoriaBD.updateMessaggioPromemoria(promemoria.getId(), promemoria.getOggetto(), promemoria.getMessaggio(), promemoria.getContentType());
 				} catch (Throwable t) {
-					throw new PromemoriaException("Allegato del messaggio non generabile", t);
+					throw new PromemoriaException(ERROR_MSG_ALLEGATO_DEL_MESSAGGIO_NON_GENERABILE, t);
 				}
-				log.debug("Salvataggio messaggio e oggetto del promemoria completato.");
+				log.debug(SALVATAGGIO_MESSAGGIO_E_OGGETTO_DEL_PROMEMORIA_COMPLETATO);
 			}
 
 			try {
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1, this.host,	this.port);
 				this.senderCommonsMail.send(mail, true);
-				log.debug(MessageFormat.format(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port));
+				log.debug(DEBUG_MSG_SPEDIZIONE_PROMEMORIA_VERSO_IL_MAIL_SERVER_0_1_COMPLETATA, this.host, this.port);
 				promemoriaBD.updateSpedito(promemoria.getId());
 			}catch (UtilsException e) {
 				errore = MessageFormat.format("Errore durante l''invio del promemoria scadenza avviso di pagamento per la pendenza [IDA2A: {0} , IdPendenza: {1}] al destinatario [{2}] CC[{3}]:{4}",
 						versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), promemoria.getDestinatarioTo(), (promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : ""), e.getMessage());
-				log.error(errore, e);
-
-				if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
-					log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
-					promemoriaBD.updateFallita(promemoria.getId(), ExceptionUtils.getInnerException(e, javax.mail.internet.AddressException.class).getMessage());
-					log.debug("Salvataggio stato 'fallito' completato con successo");
-				} else {
-					log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-					long tentativi = promemoria.getTentativiSpedizione() + 1;
-					Date today = new Date();
-					Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-					Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
-
-					// Limito la rispedizione al giorno dopo.
-					if(prossima.after(tomorrow)) prossima = tomorrow;
-
-					promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-					log.debug("La spedizione del promemoria schedulata con successo.");
-				}
+				gestisciUtilsException(promemoria, promemoriaBD, errore, e);
 			} 
 		} catch (PromemoriaException e) {
-			log.debug(MessageFormat.format("Errore in gestione promemoria: {0}", e.getMessage()));
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	e.getMessage()));
-			}
+			gestisciPromemoriaException(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, e);
 		} catch (Throwable t) {
-			log.error("Errore in gestione promemoria", t);
-			try {
-				Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
-				if(innerException != null)
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
-				else
-					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
-			} catch (ServiceException e1) {
-				log.debug(MessageFormat.format(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte,	t.getMessage()));
-			}
+			gestisciThrowable(promemoria, promemoriaBD, codApplicazione, codVersamentoEnte, t);
 		}
 	}
+	
+	private void gestisciUtilsException(it.govpay.bd.model.Promemoria promemoria, PromemoriaBD promemoriaBD, String errore, UtilsException e) throws ServiceException {
+		Throwable innerException = ExceptionUtils.estraiInnerExceptionDaUtilsException(e);
+		
+		if(innerException != null) {
+			log.info(errore, e);
+			log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
+			promemoriaBD.updateFallita(promemoria.getId(), innerException.getMessage());
+			log.debug("Salvataggio stato 'fallito' completato con successo");
+		} else {
+			LogUtils.logError(log, errore, e);
+			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
+			long tentativi = promemoria.getTentativiSpedizione() + 1;
+			Date today = new Date();
+			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+			Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
+
+			// Limito la rispedizione al giorno dopo.
+			if(prossima.after(tomorrow)) prossima = tomorrow;
+
+			promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
+			log.debug("La spedizione del promemoria schedulata con successo.");
+		}
+	}
+
+	private void gestisciThrowable(it.govpay.bd.model.Promemoria promemoria, PromemoriaBD promemoriaBD, String codApplicazione,
+			String codVersamentoEnte, Throwable t) {
+		LogUtils.logError(log, "Errore in gestione promemoria", t);
+		try {
+			Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
+			if(innerException != null)
+				promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
+			else
+				promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
+		} catch (ServiceException e1) {
+			log.debug(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte, e1.getMessage());
+		}
+	}
+
+	private void gestisciPromemoriaException(it.govpay.bd.model.Promemoria promemoria, PromemoriaBD promemoriaBD, String codApplicazione,
+			String codVersamentoEnte, PromemoriaException e) {
+		log.debug("Errore in gestione promemoria: {}", e.getMessage());
+		try {
+			Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
+			if(innerException != null)
+				promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
+			else
+				promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
+		} catch (ServiceException e1) {
+			log.debug(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte, e1.getMessage());
+		}
+	}
+
 }

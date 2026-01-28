@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -38,8 +38,6 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.TipoTributo;
 
 public class EntrateDAO extends BaseDAO{
@@ -52,10 +50,10 @@ public class EntrateDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public PutEntrataDTOResponse createOrUpdateEntrata(PutEntrataDTO putTipoTributoDTO) throws ServiceException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public PutEntrataDTOResponse createOrUpdateEntrata(PutEntrataDTO putTipoTributoDTO) throws ServiceException,TipoTributoNonTrovatoException {
 		PutEntrataDTOResponse intermediarioDTOResponse = new PutEntrataDTOResponse();
 		TipiTributoBD entrateBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putTipoTributoDTO.getIdOperatore());
 		try {
 			entrateBD = new TipiTributoBD(configWrapper);
 			TipoTributoFilter filter = entrateBD.newFilter(false);
@@ -78,13 +76,12 @@ public class EntrateDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException(e.getMessage());
 		} finally {
-			if(entrateBD != null)
-				entrateBD.closeConnection();
+			entrateBD.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
-	public FindEntrateDTOResponse findEntrate(FindEntrateDTO findEntrateDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public FindEntrateDTOResponse findEntrate(FindEntrateDTO findEntrateDTO) throws ServiceException {
 		TipiTributoBD entrateBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -120,12 +117,11 @@ public class EntrateDAO extends BaseDAO{
 			
 			return new FindEntrateDTOResponse(count, findAll);
 		} finally {
-			if(entrateBD != null)
-				entrateBD.closeConnection();
+			entrateBD.closeConnection();
 		}
 	}
 
-	public GetEntrataDTOResponse getEntrata(GetEntrataDTO getEntrataDTO) throws NotAuthorizedException, TipoTributoNonTrovatoException, ServiceException, NotAuthenticatedException {
+	public GetEntrataDTOResponse getEntrata(GetEntrataDTO getEntrataDTO) throws TipoTributoNonTrovatoException, ServiceException {
 		GetEntrataDTOResponse response = null;
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -133,6 +129,7 @@ public class EntrateDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException("Entrata " + getEntrataDTO.getCodTipoTributo() + " non censita in Anagrafica");
 		} finally {
+			//donothing
 		}
 		return response;
 	}

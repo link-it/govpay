@@ -1,13 +1,31 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -19,6 +37,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "datiAllegati",
 "descrizioneCausaleRPT",
 "contabilita",
+"metadata",
 "idDominio",
 "tipoBollo",
 "hashDocumento",
@@ -30,28 +49,31 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "tipoContabilita",
 })
 public class NuovaVocePendenza extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
+  @JsonProperty("metadata")
+  private Metadata metadata = null;
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   /**
    * Identificativo della voce di pendenza nel gestionale proprietario
    **/
@@ -148,6 +170,21 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   }
 
   /**
+   **/
+  public NuovaVocePendenza metadata(Metadata metadata) {
+    this.metadata = metadata;
+    return this;
+  }
+
+  @JsonProperty("metadata")
+  public Metadata getMetadata() {
+    return metadata;
+  }
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
+  /**
    * Identificativo del dominio creditore
    **/
   public NuovaVocePendenza idDominio(String idDominio) {
@@ -189,7 +226,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 			return "01";
 		}
 	}
-	
+
 	public static TipoBolloEnum fromCodifica(String codifica) {
 		switch (codifica) {
 		case "01":
@@ -209,17 +246,17 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   }
 
 
-    
-    
+
+
   @JsonProperty("tipoBollo")
   private TipoBolloEnum tipoBollo = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento = null;
-  
+
   @JsonProperty("provinciaResidenza")
   private String provinciaResidenza = null;
-  
+
   /**
    * Tipologia di Bollo digitale
    **/
@@ -270,7 +307,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("codEntrata")
   private String codEntrata = null;
-  
+
   /**
    **/
   public NuovaVocePendenza codEntrata(String codEntrata) {
@@ -288,16 +325,16 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   /**
    **/
   public NuovaVocePendenza ibanAccredito(String ibanAccredito) {
@@ -374,6 +411,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
         Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
+        Objects.equals(metadata, nuovaVocePendenza.metadata) &&
         Objects.equals(idDominio, nuovaVocePendenza.idDominio) &&
         Objects.equals(tipoBollo, nuovaVocePendenza.tipoBollo) &&
         Objects.equals(hashDocumento, nuovaVocePendenza.hashDocumento) &&
@@ -387,7 +425,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, metadata, idDominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
   }
 
   public static NuovaVocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -403,13 +441,14 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovaVocePendenza {\n");
-    
+
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
@@ -438,12 +477,13 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
-		
+
 		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		vf.getValidator("contabilita", this.contabilita).validateFields();
+		vf.getValidator("metadata", this.metadata).validateFields();
 
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);
@@ -494,7 +534,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
 			}
 		}
-		
+
 		else {
 			throw new ValidationException("Nella voce di pendenza deve essere valorizzato uno tra codEntrata, tipoBollo o ibanAccredito.");
 		}

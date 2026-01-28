@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.stampe;
 
 import java.io.UnsupportedEncodingException;
@@ -6,10 +25,11 @@ import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -21,9 +41,11 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
 import it.govpay.core.utils.VersamentoUtils;
@@ -40,6 +62,8 @@ import it.govpay.stampe.model.RataAvviso;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 
 public class AvvisoPagamentoUtils {
+	
+	private AvvisoPagamentoUtils() {}
 
 	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException, UtilsException {
 		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
@@ -54,6 +78,10 @@ public class AvvisoPagamentoUtils {
 				throw new ServiceException(e);
 			}
 		}
+		
+		// gestione personalizzata del messaggio di informativa importo
+		input.setNascondiInformativaImportoAvviso(nascondiInformativaImportoAvviso(versamento));
+		input.setInformativaImportoAvviso(getInformativaImportoAvviso(versamento));
 
 		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 		AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -81,6 +109,10 @@ public class AvvisoPagamentoUtils {
 			input.setPagine(new PagineAvviso());
 
 		AvvisoPagamentoInputConf configurazioneStampa = AvvisoPagamentoInputConf.getConfigurazioneFromVersamenti(documento, versamenti, log);
+		
+		// gestione personalizzata del messaggio di informativa importo
+		input.setNascondiInformativaImportoAvviso(configurazioneStampa.isNascondiInformativaImportoAvviso());
+		input.setInformativaImportoAvviso(configurazioneStampa.getInformativaImportoAvviso());
 
 		if(configurazioneStampa.isPostale())
 			return getAvvisoPostalefromDocumento(printAvviso, versamenti, configurazioneStampa, input, log);
@@ -271,7 +303,8 @@ public class AvvisoPagamentoUtils {
 		RataAvviso rata1 = getRata(v1, input, sdfDataScadenza);
 		RataAvviso rata2 = getRata(v2, input, sdfDataScadenza);
 
-		RataAvviso rataScontato = null, rataRidotto = null ;
+		RataAvviso rataScontato = null;
+		RataAvviso rataRidotto = null ;
 
 		if(rata1.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
 			rataRidotto = rata1;
@@ -332,7 +365,7 @@ public class AvvisoPagamentoUtils {
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina2);
 		}
 
-		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
+		while(!versamenti.isEmpty() && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
 			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -438,13 +471,7 @@ public class AvvisoPagamentoUtils {
 		if(versamento.getImportoTotale() != null)
 			rata.setImporto(versamento.getImportoTotale().doubleValue());
 
-		if(versamento.getDataValidita() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-		} else if(versamento.getDataScadenza() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
-		} else {
-			rata.setData(null); 
-		}
+		impostaDataScadenza(versamento, sdfDataScadenza, rata);
 
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
@@ -480,6 +507,31 @@ public class AvvisoPagamentoUtils {
 		return rata;
 	}
 
+	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza,	RataAvviso rata) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		if(proprietaPendenza != null && proprietaPendenza.getDataScandenzaAvviso() != null) {
+			rata.setData(sdfDataScadenza.format(proprietaPendenza.getDataScandenzaAvviso()));
+		} else {
+			if(versamento.getDataValidita() != null) {
+				rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
+			} else if(versamento.getDataScadenza() != null) {
+				rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
+			} else {
+				Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+	
+				if(numeroGiorniValiditaPendenza != null) {
+					Calendar instance = Calendar.getInstance();
+					instance.setTime(versamento.getDataCreazione()); 
+					instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+					rata.setData(sdfDataScadenza.format(instance.getTime()));
+				} else {
+					rata.setData(null);
+				}
+			}
+		}
+	}
+
 	public static void impostaAnagraficaEnteCreditore(Versamento versamento, Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
 			throws ServiceException {
 
@@ -511,7 +563,7 @@ public class AvvisoPagamentoUtils {
 
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
 		}
 
@@ -523,7 +575,7 @@ public class AvvisoPagamentoUtils {
 			sb.append("Tel: ").append(anagraficaUO.getTelefono());
 			sb.append(" - ");
 			line2=true;
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
 			sb.append("Tel: ").append(anagraficaDominio.getTelefono());
 			sb.append(" - ");
 			line2=true;
@@ -532,23 +584,26 @@ public class AvvisoPagamentoUtils {
 		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getFax())){
 			sb.append("Fax: ").append(anagraficaUO.getFax());
 			line2=true;
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
+		} else if(anagraficaDominio != null && StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
 			sb.append("Fax: ").append(anagraficaDominio.getFax());
 			line2=true;
 		}
 
 		if(line2) sb.append("<br/>");
 
-		if(anagraficaUO != null)
+		if(anagraficaUO != null) {
 			if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
 				sb.append("pec: ").append(anagraficaUO.getPec());
 			} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
 				sb.append("email: ").append(anagraficaUO.getEmail());
-			} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+			} 
+		}else if(anagraficaDominio != null){ 
+			if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
 				sb.append("pec: ").append(anagraficaDominio.getPec());
 			} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
 				sb.append("email: ").append(anagraficaDominio.getEmail());
 			}
+		}
 
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
@@ -567,7 +622,6 @@ public class AvvisoPagamentoUtils {
 				}
 			}
 		}
-		return;
 	}
 
 	public static void impostaAnagraficaDebitore(Anagrafica anagraficaDebitore, AvvisoPagamentoInput input) {
@@ -583,11 +637,35 @@ public class AvvisoPagamentoUtils {
 			String capCittaDebitore = StringUtils.isNotEmpty(localitaDebitore) ? (capDebitore + " " + localitaDebitore + provinciaDebitore) : "";
 
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
-			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
+			if(anagraficaDebitore.getCodUnivoco() != null) {
+				input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
+			}
 
 			input.setIndirizzoDestinatario1(indirizzoDestinatario);
-
 			input.setIndirizzoDestinatario2(capCittaDebitore);
+			
+			// Modifica per la sostituzione dei valori impostati negli identificativi del debitore con stringa vuota se 
+			// questi coincidono con una delle keyword indicate nelle proprieta' di sistema
+			List<String> keywordsDaSostituireIdentificativiDebitoreAvviso = GovpayConfig.getInstance().getKeywordsDaSostituireIdentificativiDebitoreAvviso();
+			if(keywordsDaSostituireIdentificativiDebitoreAvviso != null) {
+				if(input.getCfDestinatario() != null) {
+					for (String keyword : keywordsDaSostituireIdentificativiDebitoreAvviso) {
+						if(keyword.equalsIgnoreCase(input.getCfDestinatario())) {
+							input.setCfDestinatario("");
+							break;
+						}
+					}
+				}
+				
+				if(input.getNomeCognomeDestinatario() != null) {
+					for (String keyword : keywordsDaSostituireIdentificativiDebitoreAvviso) {
+						if(keyword.equalsIgnoreCase(input.getNomeCognomeDestinatario())) {
+							input.setNomeCognomeDestinatario("");
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -753,5 +831,29 @@ public class AvvisoPagamentoUtils {
 
 		return autDominio;
 
+	}
+	
+	/**
+	 * Nascondo l'informativa se l'etichetta e' vuota
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static boolean nascondiInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		return proprietaPendenza != null && (proprietaPendenza.getInformativaImportoAvviso() != null && proprietaPendenza.getInformativaImportoAvviso().isEmpty());
+	}
+	
+	/**
+	 * restituisce il messaggio personalizzato di informativa importo
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static String getInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		return proprietaPendenza != null ? proprietaPendenza.getInformativaImportoAvviso() : null;
 	}
 }

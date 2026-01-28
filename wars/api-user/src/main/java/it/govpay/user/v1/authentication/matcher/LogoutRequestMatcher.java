@@ -1,9 +1,28 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.user.v1.authentication.matcher;
 
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,14 +35,15 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /***
- * 
+ *
  * Request matcher per poter utilizzare url parametriche per il logout
  * based on {@link AntPathRequestMatcher}
- * 
- * 
+ *
+ *
  * @author pintori
  *
  */
+@SuppressWarnings("deprecation")
 public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
 
 	private static final Log logger = LogFactory.getLog(LogoutRequestMatcher.class);
@@ -33,7 +53,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 	private final String pattern;
 	private final HttpMethod httpMethod;
 	private final boolean caseSensitive;
-	
+
 	/**
 	 * Creates a matcher with the specific pattern which will match all HTTP methods in a
 	 * case insensitive manner.
@@ -103,11 +123,9 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 	 */
 	@Override
 	public boolean matches(HttpServletRequest request) {
-		boolean matches = this.doMatches(request);
-		
-		return matches;
+		return this.doMatches(request);
 	}
-	
+
 	public boolean doMatches(HttpServletRequest request) {
 		if (this.httpMethod != null && StringUtils.hasText(request.getMethod())
 				&& this.httpMethod != valueOf(request.getMethod())) {
@@ -135,7 +153,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 			logger.debug("Checking match of request : '" + url + "'; against '"
 					+ this.pattern + "'");
 		}
-		
+
 		return this.matcher.matches(url);
 	}
 
@@ -209,6 +227,7 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 			return HttpMethod.valueOf(method);
 		}
 		catch (IllegalArgumentException e) {
+			// donothing
 		}
 
 		return null;
@@ -260,7 +279,9 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 		private final boolean caseSensitive;
 
 		public SubpathMatcher(String subpath, boolean caseSensitive) {
-			assert!subpath.contains("*");
+			if (subpath.contains("*")) {
+			    throw new IllegalArgumentException("Il valore di subpath non può contenere '*'");
+			}
 			this.subpath = caseSensitive ? subpath : subpath.toLowerCase();
 			this.length = subpath.length();
 			this.caseSensitive = caseSensitive;

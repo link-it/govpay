@@ -9,17 +9,10 @@ Background:
 
 # Configurazione Applicazione per utilizzare le API V2
 
-
-* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
-* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
-* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
+* def applicazioneRequest = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazioneRequest.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazioneRequest.servizioIntegrazione.url = ente_api_url + '/v2'
+* callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
 Scenario: Numero avviso su multivoce
 
@@ -36,8 +29,8 @@ Scenario: Numero avviso su multivoce
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
 * match response contains { dati: '##null'}
-* match response.faultBean == esitoAttivaRPT
-* match response.faultBean.description contains 'numero avviso per una pendenza di tipo multivoce'
+* match response.faultBean == {"faultCode":"PAA_SEMANTICA","faultString":"Errore semantico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
+* match response.faultBean.description contains 'Il versamento contiene piu\' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.'
 
 Scenario Outline: <field> non valida
 
@@ -72,7 +65,7 @@ Then status 200
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | numeroAvviso | pendenza.numeroAvviso | buildNumeroAvviso(dominio, applicazione) | 'NumeroAvviso' |
-| numeroAvviso | pendenza.numeroAvviso | null | 'NumeroAvviso' |
+# | numeroAvviso | pendenza.numeroAvviso | null | 'NumeroAvviso' |
 | idDominio | pendenza.idDominio | idDominio_2 | 'IdDominio' |
 | importo | pendenza.importo | 0.01 | 'importo' |
 

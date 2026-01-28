@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,11 +20,13 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
@@ -43,10 +45,10 @@ public class Rpt extends BasicModel{
 	
 	public static final String CCP_NA = "n/a";
 	
-	public static final List<StatoRpt> stati_pendenti;
+	private static final List<StatoRpt> stati_pendenti;
 	
 	static {
-		stati_pendenti = new ArrayList<Rpt.StatoRpt>();
+		stati_pendenti = new ArrayList<>();
 		stati_pendenti.add(StatoRpt.RPT_PARCHEGGIATA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_ATTIVATA);
 		stati_pendenti.add(StatoRpt.RPT_RICEVUTA_NODO);
@@ -61,6 +63,10 @@ public class Rpt extends BasicModel{
 		stati_pendenti.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA);
 		stati_pendenti.add(StatoRpt.RT_ERRORE_INVIO_A_PA);
 		stati_pendenti.add(StatoRpt.INTERNO_NODO);
+	}
+	
+	public static List<StatoRpt> getStatiPendenti() {
+		return stati_pendenti;
 	}
 	
 	public enum FirmaRichiesta {
@@ -88,7 +94,7 @@ public class Rpt extends BasicModel{
 					return p;
 			}
 			
-			throw new CodificaInesistenteException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per FirmaRichiesta. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(FirmaRichiesta.values())));
 		}
 	}
 	
@@ -113,19 +119,18 @@ public class Rpt extends BasicModel{
 
 		public static EsitoPagamento toEnum(String codifica) throws CodificaInesistenteException {
 			try {
-				int codifica2 = Integer.parseInt(codifica);
-				return toEnum(codifica2);
+				return toEnum(new BigInteger(codifica));
 			} catch (NumberFormatException e) {
-				throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+				throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoPagamento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoPagamento.values())));
 			}
 		}
 
-		public static EsitoPagamento toEnum(int codifica) throws CodificaInesistenteException {
+		public static EsitoPagamento toEnum(BigInteger codifica) throws CodificaInesistenteException {
 			for(EsitoPagamento p : EsitoPagamento.values()){
-				if(p.getCodifica() == codifica)
+				if(p.getCodifica() == codifica.intValue())
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoPagamento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoPagamento.values())));
 		}
 	}
 	
@@ -150,7 +155,8 @@ public class Rpt extends BasicModel{
 		RT_ESITO_SCONOSCIUTO_PA,
 		RT_ERRORE_INVIO_A_PA,
 		INTERNO_NODO,
-		RPT_SCADUTA;
+		RPT_SCADUTA,
+		RT_GENERATA_NODO;
 		
 		public static StatoRpt toEnum(String s) {
 			try {
@@ -175,7 +181,14 @@ public class Rpt extends BasicModel{
 		
 		SANP_321_V2,
 		SANP_240,
-		SANP_230;
+		SANP_230,
+		
+		RPTV2_RTV1,
+		RPTV1_RTV2,
+		RPTSANP230_RTV2
+		
+		
+		;
 		
 		public static VersioneRPT toEnum(String s) {
 			try {
@@ -208,7 +221,7 @@ public class Rpt extends BasicModel{
 	private String codCanale;
 	private String codPsp;
 	private String codIntermediarioPsp;
-	private TipoVersamento tipoVersamento;
+	private String tipoVersamento;
 	private ModelloPagamento modelloPagamento;
 	private String codMsgRicevuta;
 	private Date dataMsgRicevuta;
@@ -445,10 +458,10 @@ public class Rpt extends BasicModel{
 	public void setCodIntermediarioPsp(String codIntermediarioPsp) {
 		this.codIntermediarioPsp = codIntermediarioPsp;
 	}
-	public TipoVersamento getTipoVersamento() {
+	public String getTipoVersamento() {
 		return this.tipoVersamento;
 	}
-	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public ModelloPagamento getModelloPagamento() {

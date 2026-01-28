@@ -15,7 +15,7 @@ And request read('msg/applicazione_star_star.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/pendenze'
@@ -67,7 +67,7 @@ And request read('msg/applicazione_star_star.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/pendenze'
@@ -120,7 +120,7 @@ And request read('msg/applicazione_domini1_star.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/pendenze'
@@ -169,7 +169,7 @@ And request read('msg/applicazione_domini1_segreteria.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBaseurl
 And path '/pendenze'

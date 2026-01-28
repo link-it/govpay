@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   version: "1.8.0"
   title: GovPay - API Pagamento
+  description: 'GovPay - API Pagamento V1 sono deprecate'
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -27,6 +28,7 @@ paths:
       tags:
         - Domini
       summary: Elenco dei domini beneficiari censiti
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -100,6 +102,7 @@ paths:
       tags:
         - Domini
       summary: Lettura dei dati di un dominio beneficiario
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -128,6 +131,7 @@ paths:
       tags:
         - Domini
       summary: Elenco delle unità operative del beneficiario
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -202,6 +206,7 @@ paths:
       tags:
         - Domini
       summary: Lettura dei dati di una unità operativa
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -235,6 +240,7 @@ paths:
       tags:
         - Domini
       summary: Elenco degli iban di accredito del beneficiario
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -309,6 +315,7 @@ paths:
       tags:
         - Domini
       summary: Lettura dei dati di un iban di accredito
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -342,6 +349,7 @@ paths:
       tags:
         - Domini
       summary: Elenco delle tipologie di entrata del dominio
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -416,6 +424,7 @@ paths:
       tags:
         - Domini
       summary: Lettura dei dati di una entrata
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -456,6 +465,7 @@ paths:
         (_idA2A_ e _idPendenza_) oppure con l'identificativo avviso (_idDominio_ 
         e _iuv_). Nel caso invece di pendenze note al portale, è possibile
         fornire direttamente i dati della pendenza.
+      deprecated: true
       parameters:
         - in: query
           name: idSessionePortale
@@ -533,6 +543,7 @@ paths:
       summary: Lista dei pagamenti
       tags:
         - Pagamenti  
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -649,6 +660,7 @@ paths:
       summary: Dettaglio di un pagamento
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: id
@@ -676,6 +688,7 @@ paths:
       summary: Dettaglio di un pagamento
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idSession
@@ -704,6 +717,7 @@ paths:
         - Pendenze
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -816,6 +830,7 @@ paths:
         - Pendenze
       summary: Dettaglio di una pendenza per identificativo
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      deprecated: true
       parameters:
         - in: path
           name: idA2A
@@ -851,6 +866,7 @@ paths:
       summary: Lista delle richieste di pagamento pendenza
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -971,6 +987,7 @@ paths:
       summary: Dettaglio di una richiesta di pagamento pendenza
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -1011,6 +1028,7 @@ paths:
       summary: Acquisizione della richiesta di pagamento pagopa
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -1056,6 +1074,7 @@ paths:
       summary: Acquisizione della ricevuta di pagamento
       tags:
         - Pagamenti
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -1107,6 +1126,7 @@ paths:
         - Pendenze
       summary: Avviso di pagamento
       description: Fornisce un avviso di pagamento o la pendenza ad esso associata
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -1164,6 +1184,7 @@ paths:
   '/profilo':
     get:
       summary: Elenco delle acl associate all'utenza chiamante
+      deprecated: true
       tags:
         - Utenti
       responses:
@@ -1185,6 +1206,7 @@ paths:
       operationId: logout
       tags:
         - Utenti
+      deprecated: true
       responses:
         '200':
           description: Operazione eseguita con successo

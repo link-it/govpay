@@ -1,12 +1,30 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v1.beans.converter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import it.govpay.core.exceptions.ValidationException;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.UtenzaCittadino;
@@ -18,6 +36,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -50,9 +69,9 @@ public class PagamentiPortaleConverter {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
 
 		json.setId(dtoResponse.getId());
-		json.setLocation(UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
+		json.setLocation(dtoResponse.getId().equals("0") ? "" : UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
 		json.setRedirect(dtoResponse.getRedirectUrl());
-		json.setIdSession(dtoResponse.getIdSessione()); 
+		json.setIdSession(dtoResponse.getIdSessione());
 
 		return json;
 	}
@@ -65,7 +84,7 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
-		else 
+		else
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.N_A.toString());
 
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
@@ -90,7 +109,7 @@ public class PagamentiPortaleConverter {
 
 			int i =0;
 			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
-				
+
 				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
@@ -205,11 +224,11 @@ public class PagamentiPortaleConverter {
 			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
 		//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-		//		versamento.setAnomalie(pendenza.getAnomalie()); 
+		//		versamento.setAnomalie(pendenza.getAnomalie());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-		
+
 		// tipo versamento e' deciso dall'api che lo carica.
 		versamento.setTipo(TipologiaTipoVersamento.SPONTANEO);
 
@@ -308,7 +327,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		rsModel.setImporto(pagamentoPortale.getImporto()); 
+		rsModel.setImporto(pagamentoPortale.getImporto());
 
 		return rsModel;
 	}
@@ -346,7 +365,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
-		rsModel.setImporto(pagamentoPortale.getImporto()); 
+		rsModel.setImporto(pagamentoPortale.getImporto());
 
 		return rsModel;
 
@@ -369,10 +388,10 @@ public class PagamentiPortaleConverter {
 			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
 					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 			versante.setAnagrafica(nomeCognome);
-			
+
 			if(versante.getEmail() == null && cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL) != null)
 				versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
-			
+
 			versante.setTipo(TipoEnum.F);
 			versante.setCap(null);
 			versante.setCellulare(null);

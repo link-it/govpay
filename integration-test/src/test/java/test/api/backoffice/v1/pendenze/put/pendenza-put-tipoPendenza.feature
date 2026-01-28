@@ -55,7 +55,7 @@ And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
 
-* match response.numeroAvviso == '#notpresent'
+* match response.numeroAvviso == '#string'
 * match response.stato == 'NON_ESEGUITA'
 
 Scenario: Caricamento pendenza dovuta con Tipo pendenza non esistente

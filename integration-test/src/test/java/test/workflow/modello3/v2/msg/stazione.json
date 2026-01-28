@@ -1,7 +1,7 @@
 {
   "password": "GovPayTest",
-  "urlRT": "#(govpay_url + '/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice')",
-  "urlCCP": "#(govpay_url + '/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+  "urlRT": "#(govpay_api_pagopa_url + '/PagamentiTelematiciRTservice')",
+  "urlCCP": "#(govpay_api_pagopa_url + '/PagamentiTelematiciCCPservice')",
   "subject": "ndpsym",
   "httpUsername": "ndpsym",
   "httpPassword": "password",

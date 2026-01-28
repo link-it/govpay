@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -29,6 +29,8 @@ import it.govpay.orm.ACL;
 import it.govpay.orm.IdUtenza;
 
 public class AclConverter {
+	
+	private AclConverter() {}
 
 	public static Acl toDTO(ACL vo) throws CodificaInesistenteException {
 		Acl dto = new Acl();
@@ -51,12 +53,12 @@ public class AclConverter {
 			IdUtenza idUtenza = new IdUtenza();
 			idUtenza.setId(dto.getIdUtenza());
 			try {
-				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.subject));
+				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.SUBJECT));
 			} catch (Exception e) {
 				idUtenza.setPrincipal(dto.getUtenzaPrincipal());
 			}
 			try {
-				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.subject));
+				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.SUBJECT));
 			} catch (Exception e) {
 				idUtenza.setPrincipalOriginale(dto.getUtenzaPrincipalOriginale());
 			}

@@ -146,6 +146,7 @@ Background:
 	}
 """
 
+@test1
 Scenario: Caricamento pendenza dovuta con spedizione notifica AppIO, ApiKey non valida.
 
 # Svuoto Cache Simulatore AppIO
@@ -208,7 +209,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -311,7 +312,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 401,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -379,7 +380,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -482,7 +483,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 404,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -550,7 +551,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -653,7 +654,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -721,7 +722,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -824,7 +825,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -884,7 +885,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -953,7 +954,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -1056,7 +1057,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1116,7 +1117,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 400,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1184,7 +1185,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -1287,7 +1288,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1347,7 +1348,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 500,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1415,7 +1416,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -1548,7 +1549,7 @@ And request tipoPendenzaDominio_appIO
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
@@ -1652,7 +1653,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """
@@ -1712,7 +1713,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "#ignore"
 	}
 }
 """

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.Dominio;
@@ -49,7 +51,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
 		this.AUX_DIGIT = new Field("auxDigit",int.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX = new Field("iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
-		this.SEGREGATION_CODE = new Field("segregationCode",java.lang.Integer.class,"Dominio",Dominio.class);
+		this.SEGREGATION_CODE = new Field("segregationCode",java.math.BigInteger.class,"Dominio",Dominio.class);
 		this.LOGO = new Field("logo",byte[].class,"Dominio",Dominio.class);
 		this.CBILL = new Field("cbill",java.lang.String.class,"Dominio",Dominio.class);
 		this.AUT_STAMPA_POSTE = new Field("autStampaPoste",java.lang.String.class,"Dominio",Dominio.class);
@@ -60,6 +62,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.COD_CONNETTORE_MAGGIOLI_JPPA = new Field("codConnettoreMaggioliJPPA",java.lang.String.class,"Dominio",Dominio.class);
 		this.INTERMEDIATO = new Field("intermediato",boolean.class,"Dominio",Dominio.class);
 		this.TASSONOMIA_PAGO_PA = new Field("tassonomiaPagoPA",java.lang.String.class,"Dominio",Dominio.class);
+		this.SCARICA_FR = new Field("scaricaFr",boolean.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -75,7 +78,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
 		this.AUX_DIGIT = new ComplexField(father,"auxDigit",int.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX = new ComplexField(father,"iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
-		this.SEGREGATION_CODE = new ComplexField(father,"segregationCode",java.lang.Integer.class,"Dominio",Dominio.class);
+		this.SEGREGATION_CODE = new ComplexField(father,"segregationCode",java.math.BigInteger.class,"Dominio",Dominio.class);
 		this.LOGO = new ComplexField(father,"logo",byte[].class,"Dominio",Dominio.class);
 		this.CBILL = new ComplexField(father,"cbill",java.lang.String.class,"Dominio",Dominio.class);
 		this.AUT_STAMPA_POSTE = new ComplexField(father,"autStampaPoste",java.lang.String.class,"Dominio",Dominio.class);
@@ -86,6 +89,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.COD_CONNETTORE_MAGGIOLI_JPPA = new ComplexField(father,"codConnettoreMaggioliJPPA",java.lang.String.class,"Dominio",Dominio.class);
 		this.INTERMEDIATO = new ComplexField(father,"intermediato",boolean.class,"Dominio",Dominio.class);
 		this.TASSONOMIA_PAGO_PA = new ComplexField(father,"tassonomiaPagoPA",java.lang.String.class,"Dominio",Dominio.class);
+		this.SCARICA_FR = new ComplexField(father,"scaricaFr",boolean.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -128,6 +132,8 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField INTERMEDIATO = null;
 	 
 	public IField TASSONOMIA_PAGO_PA = null;
+	 
+	public IField SCARICA_FR = null;
 	 
 
 	@Override

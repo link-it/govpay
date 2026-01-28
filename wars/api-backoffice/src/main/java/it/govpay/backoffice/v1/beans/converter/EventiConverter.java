@@ -1,8 +1,27 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.backoffice.v1.beans.CategoriaEvento;
@@ -15,8 +34,10 @@ import it.govpay.backoffice.v1.beans.RuoloEvento;
 import it.govpay.core.exceptions.IOException;
 
 public class EventiConverter {
+	
+	private EventiConverter() {}
 
-	public static EventoIndex toRsModelIndex(it.govpay.bd.model.Evento evento) throws IOException {
+	public static EventoIndex toRsModelIndex(it.govpay.bd.model.Evento evento) {
 		EventoIndex rsModel = new EventoIndex();
 
 		rsModel.setId(evento.getId());
@@ -80,8 +101,8 @@ public class EventiConverter {
 		rsModel.setIdPagamento(evento.getIdSessione());
 
 		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
-		rsModel.setSeverita(evento.getSeverita());
-		
+		rsModel.setSeverita(evento.getSeverita() != null ? evento.getSeverita().intValue() : null);
+
 		rsModel.setClusterId(evento.getClusterId());
 		rsModel.setTransactionId(evento.getTransactionId());
 
@@ -155,14 +176,12 @@ public class EventiConverter {
 
 		if(evento.getDettaglioRichiesta() != null) {
 			rsModel.setParametriRichiesta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRichiesta())));
-//			rsModel.setParametriRichiesta(new RawObject(ConverterUtils.getParametriRichiestaEvento(evento.getDettaglioRichiesta())));
 		}
 		if(evento.getDettaglioRisposta() != null) {
 			rsModel.setParametriRisposta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRisposta())));
-//			rsModel.setParametriRisposta(new RawObject(ConverterUtils.getParametriRispostaEvento(evento.getDettaglioRisposta())));
 		}
 
-		rsModel.setSeverita(evento.getSeverita());
+		rsModel.setSeverita(evento.getSeverita() != null ? evento.getSeverita().intValue() : null);
 		rsModel.setClusterId(evento.getClusterId());
 		rsModel.setTransactionId(evento.getTransactionId());
 
@@ -173,20 +192,14 @@ public class EventiConverter {
 		DatiPagoPA datiPagoPA = null;
 		if(evento.getPagoPA() != null) {
 			datiPagoPA = new DatiPagoPA();
-//			datiPagoPA.setIdentificativoErogatore(evento.getPagoPA().getErogatore());
-//			datiPagoPA.setIdentificativoFruitore(evento.getPagoPA().getFruitore());
 			datiPagoPA.setIdCanale(evento.getPagoPA().getCodCanale());
 			datiPagoPA.setIdPsp(evento.getPagoPA().getCodPsp());
 			datiPagoPA.setIdIntermediarioPsp(evento.getPagoPA().getCodIntermediarioPsp());
 			datiPagoPA.setIdIntermediario(evento.getPagoPA().getCodIntermediario());
 			datiPagoPA.setIdStazione(evento.getPagoPA().getCodStazione());
 			datiPagoPA.setIdDominio(evento.getPagoPA().getCodDominio());
-			if(evento.getPagoPA().getTipoVersamento() != null) {
-				datiPagoPA.setTipoVersamento(evento.getPagoPA().getTipoVersamento().getCodifica());
-			}
-			if(evento.getPagoPA().getModelloPagamento() != null) {
-				datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento().getCodifica() +"");
-			}
+			datiPagoPA.setTipoVersamento(evento.getPagoPA().getTipoVersamento());
+			datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento());
 
 			datiPagoPA.setIdFlusso(evento.getPagoPA().getCodFlusso());
 			if(evento.getPagoPA().getIdTracciato() != null)

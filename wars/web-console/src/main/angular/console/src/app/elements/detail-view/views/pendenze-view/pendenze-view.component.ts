@@ -18,6 +18,7 @@ import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 import { HttpResponse } from '@angular/common/http';
+import { forEach } from 'angular2-json-schema-form';
 
 @Component({
   selector: 'link-pendenze',
@@ -34,12 +35,16 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
 
   @Input() json: any;
   @Input() modified: boolean = false;
+  @Input() pendenzaMBT: boolean = false;
 
-
+  protected _voce = Voce;
   protected NOTA = UtilService.NOTA;
   protected ADD = UtilService.PATCH_METHODS.ADD;
   protected info: Riepilogo;
   protected allegati = [];
+  protected proprietaPendenzaAvviso = [];
+  protected proprietaPendenzaRt = [];
+  protected datiAllegati: any;
   protected infoVisualizzazione: any = { visible: false, titolo: '', campi: [] };
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
@@ -49,6 +54,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
   protected _pageRef: any = { next: null };
   protected _lastEvtResponse: any;
   protected _chunks: any[] = [];
+  protected _isVisualizzaPersonalizzazioni: boolean = false;
 
   constructor(public gps: GovpayService, public us: UtilService) {
   }
@@ -100,10 +106,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
       this.info.extraInfo.push({label: Voce.TIPO_PENDENZA + ': ', value: _json.tipoPendenza.descrizione});
     }
-    // DEPRECATED
-    // if(_json.tassonomiaAvviso) {
-    //   this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
-    // }
     if(_json.tassonomia) {
       this.info.extraInfo.push({ label: Voce.TASSONOMIA_ENTE+': ', value: _json.tassonomia });
     }
@@ -135,8 +137,16 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dataScadenza) {
       this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
     }
-    if(_json.dataUltimoAggiornamento) {
-      this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimoAggiornamento).format('DD/MM/YYYY') });
+    if(_json.dataUltimaModificaAca) {
+      this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimaModificaAca).format('DD/MM/YYYY [ore] HH:mm:ss') });
+    }
+    if(_json.dataUltimaComunicazioneAca) {
+      this.info.extraInfo.push({ label: Voce.DATA_ULTIMA_COMUNICAZIONE_ACA+': ', value: moment(_json.dataUltimaComunicazioneAca).format('DD/MM/YYYY [ore] HH:mm:ss') });
+    }
+    if(_json.descrizioneStato && 
+    	(_json.stato === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANOMALA))
+    ) {
+      this.info.extraInfo.push({ label: Voce.DESCRIZIONE_STATO+': ', value: _json.descrizioneStato });
     }
 
     //Json Visualizzazione
@@ -158,9 +168,20 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     }
     //Dettaglio importi
     this._paymentsSum = 0;
-    this.importi = _json.voci.map(function(item) {
+    this.importi = _json.voci.map(function(item, index) {
       let _std = new NewStandardCollapse();
-      _std.titolo = new Dato({ value: item.descrizione });
+	  let _description = item.descrizione;
+	  if (!item.descrizione || item.descrizione.trim() === '') {
+		if(item.tipoBollo) {
+			 _description = Voce.BOLLO;
+		  } else {
+			_description = Voce.VOCE + ' '+(index +1);		
+		  }
+	  } else {
+		_description = item.descrizione;
+	  }
+	  
+      _std.titolo = new Dato({ value: _description });
       _std.elenco = [];
       const lbls: string[] = [];
       const vals: string[] = [];
@@ -168,26 +189,44 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         lbls.push(Voce.ID);
         vals.push(item.idVocePendenza);
       }
-      if(item.tipoBollo) {
-        lbls.push(Voce.ID_BOLLO);
-        vals.push(item.tipoBollo);
-      }
       if(item.dominio && item.dominio.ragioneSociale) {
         lbls.push(Voce.ENTE_CREDITORE);
         vals.push(item.dominio.ragioneSociale);
       }
       _std.sottotitolo = Dato.arraysToDato(lbls, vals, ', ');
       if(!item.tipoBollo) {
-        _std.elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([ item.tipoContabilita, item.codiceContabilita ], ', ') });
+        let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
+        _std.elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, item.codiceContabilita ], '/') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
         _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
-      }
+      } else { // informazioni bollo
+		_std.elenco.push({ label: Voce.ID_BOLLO, value: item.tipoBollo });
+		_std.elenco.push({ label: Voce.PROVINCIA, value: item.provinciaResidenza });
+		_std.elenco.push({ label: Voce.HASH_DOCUMENTO, value: item.hashDocumento });
+	  }
       _std.importo = this.us.currencyFormat(item.importo);
       _std.stato = item.stato;
       this._paymentsSum += UtilService.defaultDisplay({ value: item.importo, text: 0 });
       let p = new Parameters();
       _std.item = item;
-      _std.item.idDominio = this.json.dominio.idDominio;
+      if(item.dominio){
+        _std.item.dominio = item.dominio;
+        _std.item.idDominio = item.dominio.idDominio;
+      } else {
+        _std.item.dominio = this.json.dominio;
+        _std.item.idDominio = this.json.dominio.idDominio;
+      }
+      // Metadata
+      if (item.metadata && item.metadata.mapEntries) {
+        const _mapEntries = item.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
+        _std.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+      }
+	  // dati allegati
+	  if(item.datiAllegati) {
+	  		const _datiAllegati = item.datiAllegati;
+			_std.elenco.push({ label: Voce.DATI_CUSTOM, value: _datiAllegati, type: 'allegati' });
+	  	}
+	  
       p.jsonP = item;
       p.model = _std;
       p.type = UtilService.NEW_STANDARD_COLLAPSE;
@@ -221,6 +260,43 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         return p;
       }, this);
     }
+	if(_json.proprieta) {
+		// Data validita avviso
+		if(_json.proprieta.dataScandenzaAvviso){
+			this.proprietaPendenzaAvviso.push({label: Voce.DATA_VALIDITA_AVVISO, value: moment(_json.proprieta.dataScandenzaAvviso).format('DD/MM/YYYY') });
+		}
+		// informativa importo avviso
+		if(_json.proprieta.informativaImportoAvviso){
+			this.proprietaPendenzaAvviso.push({label: Voce.INFORMATIVA_IMPORTO_AVVISO, value: _json.proprieta.informativaImportoAvviso});
+		}
+		// lingua secondaria avviso
+		if(_json.proprieta.linguaSecondaria){
+			this.proprietaPendenzaAvviso.push({label: Voce.LINGUA_SECONDARIA_AVVISO, value: UtilService.LINGUE_SECONDARIE[_json.proprieta.linguaSecondaria]});
+		}
+		// causale lingua secondaria avviso
+		if(_json.proprieta.linguaSecondariaCausale){
+			this.proprietaPendenzaAvviso.push({label: Voce.CAUSALE_LINGUA_SECONDARIA_AVVISO, value: _json.proprieta.linguaSecondariaCausale});
+		}
+		// informativa importo avviso lingua secondaria
+		if(_json.proprieta.linguaSecondariaInformativaImportoAvviso){
+			this.proprietaPendenzaAvviso.push({label: Voce.INFORMATIVA_IMPORTO_LINGUA_SECONDARIA_AVVISO, value: _json.proprieta.linguaSecondariaInformativaImportoAvviso});
+		}
+		// riga 1 ricevuta
+		if(_json.proprieta.lineaTestoRicevuta1){
+			this.proprietaPendenzaRt.push({label: Voce.RT_LINEA_TESTO_RIGA1, value: _json.proprieta.lineaTestoRicevuta1});
+		}
+		// riga 2 ricevuta
+		if(_json.proprieta.lineaTestoRicevuta2){
+			this.proprietaPendenzaRt.push({label: Voce.RT_LINEA_TESTO_RIGA2, value: _json.proprieta.lineaTestoRicevuta2});
+		}
+    }
+	if(_json.datiAllegati) {
+		this.datiAllegati =  _json.datiAllegati;
+	}
+	
+	this._isVisualizzaPersonalizzazioni = _json.proprieta || _json.datiAllegati;
+    
+    this.pendenzaMBT = this.us.isPendenzaMBT(_json);
   }
 
   protected elencoTentativi() {
@@ -237,15 +313,21 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
             const _ccp = (item.rpt.datiVersamento && item.rpt.datiVersamento.codiceContestoPagamento)?item.rpt.datiVersamento.codiceContestoPagamento:Voce.NON_PRESENTE;
             stStrings.push(Voce.CCP+': '+_ccp);
           } else {
-            if (item.rpt && item.rpt.data) {
-              if (item.rpt.data.creditorReferenceId) {
-                stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
+            if (item.rpt) {
+              if (item.rpt.creditorReferenceId) {
+                stStrings.push(Voce.IUV+': '+item.rpt.creditorReferenceId);
               }
             }
             if (item.rt) {
               _istituto = (item.rt.PSPCompanyName || '');
-            }
-            stStrings.push(Voce.DATA+': '+item.dataRichiestaPagamento?moment(item.dataRichiestaPagamento).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE);
+			  const _date = item.rt.paymentDateTime?moment(item.rt.paymentDateTime).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE;
+              stStrings.push(Voce.DATA+': '+_date);
+              const _ccp = (item.rt.receiptId)?item.rt.receiptId:Voce.NON_PRESENTE;
+              stStrings.push(Voce.ID_RICEVUTA+': '+_ccp);
+            } else {
+				stStrings.push(Voce.DATA+': '+Voce.NON_PRESENTE);	
+			}
+            
           }
           let _subtitle = Dato.concatStrings(stStrings, ', ');
           let _std = new StandardCollapse();
@@ -308,10 +390,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
               _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
             }
             if(item.datiPagoPA.tipoVersamento) {
-              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+			let _tipoVersamento = UtilService.TIPI_VERSAMENTO[item.datiPagoPA.tipoVersamento] ? UtilService.TIPI_VERSAMENTO[item.datiPagoPA.tipoVersamento] : item.datiPagoPA.tipoVersamento;
+              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: _tipoVersamento });
             }
             if(item.datiPagoPA.modelloPagamento) {
-              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: UtilService.MODELLI_PAGAMENTO[item.datiPagoPA.modelloPagamento] });
             }
             if(item.datiPagoPA.idDominio) {
               _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
@@ -487,8 +570,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     const chunk: any[] = [];
 
     try {
-      //Pdf Avviso di pagamento
-      if(this.json.numeroAvviso) {
+      //Pdf Avviso di pagamento solo se non c'e una marca da bollo'
+      if(this.json.numeroAvviso && !this.pendenzaMBT) {
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }

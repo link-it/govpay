@@ -4,6 +4,8 @@
   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
   "trn": "#notnull",
   "dataRegolamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+  "dataOraPubblicazione": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
+  "dataOraAggiornamento": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
   "idPsp": "#string",
   "bicRiversamento": "##string",
   "dominio" : {
@@ -13,6 +15,7 @@
   "numeroPagamenti": "#number",
   "importoTotale":"#? isImportoConDueDecimali(_)",
   "stato" : "#notnull",
+  "revisione": "#number",
   "segnalazioni": "##[]",
   "rendicontazioni": "#[] rendicontazioneSchema"
 }

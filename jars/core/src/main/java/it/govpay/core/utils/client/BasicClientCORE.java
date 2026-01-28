@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
- * 
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
@@ -41,42 +43,47 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ConnectionKeepAliveStrategy;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultClientConnectionReuseStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpEntityContainer;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpOptions;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpTrace;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.DefaultClientConnectionReuseStrategy;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.HttpsSupport;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -94,20 +101,24 @@ import org.openspcoop2.utils.transport.http.HttpConstants;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.openspcoop2.utils.transport.http.WrappedLogSSLSocketFactory;
 import org.slf4j.Logger;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Categoria;
-import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+import it.govpay.core.utils.client.oauth2.Oauth2ClientCredentialsManager;
 import it.govpay.core.utils.eventi.EventiUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
@@ -127,31 +138,41 @@ public abstract class BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(BasicClientCORE.class);
 
 	protected boolean debug = true;
-	//	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
-	//	protected SSLContext sslContext;
-	protected boolean ishttpBasicEnabled=false, isSslEnabled=false, isSubscriptionKeyEnabled=false;
-	protected String httpBasicUser, httpBasicPassword;
-	protected String subscriptionKeyHeaderName, subscriptionKeyHeaderValue;
+	protected boolean ishttpBasicEnabled=false;
+	protected boolean isSslEnabled=false;
+	protected boolean isSubscriptionKeyEnabled=false;
+	protected boolean ishttpHeaderEnabled=false;
+	protected boolean isApiKeyEnabled=false;
+	protected boolean isOauth2ClientCredentialsEnabled=false;
+	protected String httpBasicUser;
+	protected String httpBasicPassword;
+	protected String subscriptionKeyHeaderName;
+	protected String subscriptionKeyHeaderValue;
+	protected String httpHeaderName;
+	protected String httpHeaderValue;
+	protected String apiKey;
+	protected String apiKeyValue;
+	protected String apiId;
+	protected String apiIdValue;
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
 	protected ServerInfoContextManuallyAdd serverInfoContext = null;
 	protected String operationID;
 	protected String serverID;
-	protected Componente componente;
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
 	private String tipoEventoCustom;
+
+	private Oauth2ClientCredentialsManager oauth2ClientCredentialsManager = Oauth2ClientCredentialsManager.getInstance();
 
 	protected IntegrationContext integrationCtx;
 
 	private static boolean USE_POOL = true;
 
 	private HttpEntity httpEntityResponse = null;
-	private HttpClient httpClient = null;
 
-	private HttpRequestBase httpRequest;
 	private InputStream isResponse = null;
 
 	protected Integer connectionTimeout;
@@ -168,8 +189,8 @@ public abstract class BasicClientCORE {
 	protected static Map<String, SSLSocketFactory> sslContextFactorys = new HashMap<>();
 	protected SSLSocketFactory sslContextFactory;
 
-	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura());
+	protected BasicClientCORE(Intermediario intermediario, TipoOperazioneNodo tipoOperazione, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, connettore, eventoCtx, TipoDestinatario.INTERMEDIARIO);
 		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
@@ -180,8 +201,8 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(TipoDestinatario.INTERMEDIARIO);
 	}
 
-	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione());
+	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione(), eventoCtx, TipoDestinatario.APPLICAZIONE);
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
@@ -192,11 +213,11 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(TipoDestinatario.APPLICAZIONE);
 	}
 
-	protected BasicClientCORE(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore) throws ClientException {
-		this(tipoDestinatario +"_" + operazioneSwagger, connettore);
+	protected BasicClientCORE(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore, eventoCtx, tipoDestinatario);
 		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
-		destinatario = "APP_IO";
+		destinatario = tipoDestinatario.toString();
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
@@ -204,23 +225,21 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
-	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore) throws ClientException {
-		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore);
+	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore,  TipoDestinatario tipoDestinatario, ConnettoreNotificaPagamenti connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx, tipoDestinatario);
 		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
 		mittente = "GovPay";
-		destinatario = "ServizioMyPivot";
+		destinatario = "Servizio" + tipoDestinatario.toString();
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(tipoConnettore);
-		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
-	private BasicClientCORE(String bundleKey, Connettore connettore) throws ClientException {
-		this.readTimeout = GovpayConfig.getInstance().getReadTimeout();
-		this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeout();
-		this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeout();
-		
+	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx, TipoDestinatario tipoDestinatario) throws ClientInitializeException {
+		impostaTimeoutConnessione(tipoDestinatario);
+
 		this.dumpRequest = new DumpRequest();
 		this.dumpResponse = new DumpResponse();
 		this.serverInfoRequest = new ServerInfoRequest();
@@ -229,31 +248,30 @@ public abstract class BasicClientCORE {
 		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 
 		// inizializzazione base del context evento
-		this.eventoCtx = new EventoContext();
+		this.eventoCtx = eventoCtx;
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 		this.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		this.getEventoCtx().setDataRichiesta(new Date());
 		this.getEventoCtx().setTransactionId(ctx.getTransactionId());
-		
+
 		String clusterId = GovpayConfig.getInstance().getClusterId();
 		if(clusterId != null)
 			this.getEventoCtx().setClusterId(clusterId);
-		else 
+		else
 			this.getEventoCtx().setClusterId(GovpayConfig.getInstance().getAppName());
 
 		this.serverID = bundleKey;
 		this.connettore = connettore;
 		if(this.connettore == null) {
-			throw new ClientException("Connettore non configurato");
+			throw new ClientInitializeException("Connettore non configurato");
 		}
 
 		try {
 			this.url =  new URL(this.connettore.getUrl());
 		} catch (Exception e) {
-			throw new ClientException("La URL del connettore " + this.errMsg + " non e' valida: " + e);
+			throw new ClientInitializeException("La URL del connettore " + this.errMsg + " non e' valida: " + e);
 		}
 		this.sslContextFactory = sslContextFactorys.get(bundleKey);
-		//		this.sslContext = sslContexts.get(bundleKey);
 
 		if(this.connettore.getTipoAutenticazione().equals(EnumAuthType.SSL)) {
 			this.getEventoCtx().setPrincipal("SSL Auth");
@@ -266,11 +284,11 @@ public abstract class BasicClientCORE {
 					// Autenticazione CLIENT
 					if(this.connettore.getTipoSsl().equals(EnumSslType.CLIENT)){
 
-						if(this.connettore.getSslKsType() == null || 
+						if(this.connettore.getSslKsType() == null ||
 								this.connettore.getSslKsLocation() == null ||
 								this.connettore.getSslKsPasswd() == null ||
 								this.connettore.getSslPKeyPasswd() == null)
-							throw new ClientException("Configurazione SSL Client del connettore " + this.errMsg + " incompleta.");	
+							throw new ClientInitializeException("Configurazione SSL Client del connettore " + this.errMsg + " incompleta.");
 
 						KeyStore keystore = KeyStore.getInstance(this.connettore.getSslKsType()); // JKS,PKCS12,jceks,bks,uber,gkr
 						try (FileInputStream finKeyStore = new FileInputStream(this.connettore.getSslKsLocation());){
@@ -281,11 +299,11 @@ public abstract class BasicClientCORE {
 						km = keyManagerFactory.getKeyManagers();
 					}
 
-					if(this.connettore.getSslTsType() == null || 
+					if(this.connettore.getSslTsType() == null ||
 							this.connettore.getSslTsLocation() == null ||
-							this.connettore.getSslTsPasswd() == null || 
+							this.connettore.getSslTsPasswd() == null ||
 							this.connettore.getSslType() == null)
-						throw new ClientException("Configurazione SSL Server del connettore " + this.errMsg + " incompleta.");	
+						throw new ClientInitializeException("Configurazione SSL Server del connettore " + this.errMsg + " incompleta.");
 
 					// Autenticazione SERVER
 					KeyStore truststore = KeyStore.getInstance(this.connettore.getSslTsType()); // JKS,PKCS12,jceks,bks,uber,gkr
@@ -301,9 +319,11 @@ public abstract class BasicClientCORE {
 					sslContext.init(km, tm, null);
 					this.sslContextFactory =  sslContext.getSocketFactory();
 					sslContextFactorys.put(bundleKey, this.sslContextFactory);
+				} catch (ClientInitializeException e) {
+					throw e;
 				} catch (Exception e) {
-					throw new ClientException(e);
-				} 
+					throw new ClientInitializeException(e);
+				}
 			}
 		}
 
@@ -314,7 +334,25 @@ public abstract class BasicClientCORE {
 
 			this.getEventoCtx().setPrincipal(this.httpBasicUser);
 		}
-		
+
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.HTTP_HEADER)) {
+			this.ishttpHeaderEnabled = true;
+			this.httpHeaderName = connettore.getHttpHeaderName();
+			this.httpHeaderValue = connettore.getHttpHeaderValue();
+
+			this.getEventoCtx().setPrincipal(this.httpHeaderValue);
+		}
+
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.API_KEY)) {
+			this.isApiKeyEnabled = true;
+			this.apiId = GovpayConfig.getInstance().getAutenticazioneApiKeyNomeHeaderApiIdFruizione();
+			this.apiIdValue = connettore.getApiId();
+			this.apiKey =  GovpayConfig.getInstance().getAutenticazioneApiKeyNomeHeaderApiKeyFruizione();
+			this.apiKeyValue = connettore.getApiKey();
+
+			this.getEventoCtx().setPrincipal(this.apiIdValue);
+		}
+
 		if(connettore.getSubscriptionKeyValue() != null) {
 			// se non ho impostato nessuna autenticazione salvo SubscriptionKey come metodo di autenticazione per l'evento.
 			if(connettore.getTipoAutenticazione().equals(EnumAuthType.NONE)) {
@@ -324,10 +362,56 @@ public abstract class BasicClientCORE {
 			this.subscriptionKeyHeaderName = GovpayConfig.getInstance().getNomeHeaderSubscriptionKeyPagoPA();
 			this.subscriptionKeyHeaderValue = connettore.getSubscriptionKeyValue();
 		}
+
+		// Oauth2 Client Credentials
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.OAUTH2_CLIENT_CREDENTIALS)) {
+			this.isOauth2ClientCredentialsEnabled = true;
+		}
 	}
 
-	private static Map<String, PoolingHttpClientConnectionManager> cmMap = new HashMap<String, PoolingHttpClientConnectionManager>();
-	private static synchronized void initialize(String key, SSLConnectionSocketFactory sslConnectionSocketFactory){
+	private void impostaTimeoutConnessione(TipoDestinatario tipoDestinatario) {
+		switch (tipoDestinatario) {
+		case INTERMEDIARIO, CHECKOUT_PAGOPA:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutPagoPA();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutPagoPA();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutPagoPA();
+			break;
+		case APPLICAZIONE:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutEnte();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutEnte();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutEnte();
+			break;
+		case APP_IO:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutAppIO();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutAppIO();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutAppIO();
+			break;
+		case MAGGIOLI_JPPA:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutMaggioliJPPA();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutMaggioliJPPA();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutMaggioliJPPA();
+			break;
+		case BATCH_ACA:
+			this.readTimeout = GovpayConfig.getInstance().getBatchAcaReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getBatchAcaConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getBatchAcaConnectionRequestTimeout();
+			break;
+		case BATCH_FDR:
+			this.readTimeout = GovpayConfig.getInstance().getBatchFdrReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getBatchFdrConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getBatchFdrConnectionRequestTimeout();
+			break;
+		case GOVPAY:
+		default:
+			this.readTimeout = GovpayConfig.getInstance().getReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeout();
+			break;
+		}
+	}
+
+	private static Map<String, PoolingHttpClientConnectionManager> cmMap = new HashMap<>();
+	private static synchronized void initialize(String key, Integer connectionTimeout, Integer readTimeout, SSLConnectionSocketFactory sslConnectionSocketFactory){
 		if(!BasicClientCORE.cmMap.containsKey(key)){
 
 			PoolingHttpClientConnectionManager cm = null;
@@ -345,31 +429,36 @@ public abstract class BasicClientCORE {
 			// Increase default max connection per route to 20
 			cm.setDefaultMaxPerRoute(GovpayConfig.getInstance().getNumeroMassimoConnessioniPerRouteDefault());
 			// Increase max connections for localhost:80 to 50
-			//HttpHost localhost = new HttpHost("locahost", 80);
-			//cm.setMaxPerRoute(new HttpRoute(localhost), 50);
+			//HttpHost localhost = new HttpHost("locahost", 80)
+			//cm.setMaxPerRoute(new HttpRoute(localhost), 50)
+
+			ConnectionConfig.Builder connConfigBuilder = ConnectionConfig.custom();
+			connConfigBuilder.setConnectTimeout(connectionTimeout, TimeUnit.MILLISECONDS);
+			connConfigBuilder.setSocketTimeout(readTimeout, TimeUnit.MILLISECONDS);
+			cm.setDefaultConnectionConfig(connConfigBuilder.build());
 
 			BasicClientCORE.cmMap.put(key, cm);
 		}
 	}
 
-	private HttpClient buildHttpClient(ConnectionKeepAliveStrategy keepAliveStrategy, SSLSocketFactory sslSocketFactory, boolean usePool, String key, Connettore connettore) throws UtilsException{
+	private HttpClient buildHttpClient(ConnectionKeepAliveStrategy keepAliveStrategy, SSLSocketFactory sslSocketFactory, boolean usePool, String key, Connettore connettore) {
 
 		HttpClientBuilder httpClientBuilder = HttpClients.custom();
 
 		// Imposta Contesto SSL se attivo
 
 		SSLConnectionSocketFactory sslConnectionSocketFactory = null;
-		if(this.isSslEnabled && 
+		if(this.isSslEnabled &&
 				(!usePool || !BasicClientCORE.cmMap.containsKey(key))){
 			if(this.debug) {
 				String clientCertificateConfigurated = connettore.getSslKsLocation();
 				sslSocketFactory = new WrappedLogSSLSocketFactory(sslSocketFactory, log, key, clientCertificateConfigurated);
-			}		
+			}
 
-			HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+			HostnameVerifier hostnameVerifier = HttpsSupport.getDefaultHostnameVerifier();
 
 			if(hostnameVerifier==null) {
-				hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+				hostnameVerifier = HttpsSupport.getDefaultHostnameVerifier();
 			}
 			sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslSocketFactory, hostnameVerifier);
 		}
@@ -378,32 +467,32 @@ public abstract class BasicClientCORE {
 
 			// Caso con pool
 			if(!BasicClientCORE.cmMap.containsKey(key)){
-				BasicClientCORE.initialize(key, sslConnectionSocketFactory);
+				BasicClientCORE.initialize(key, this.connectionTimeout, this.readTimeout, sslConnectionSocketFactory);
 			}
 
 			PoolingHttpClientConnectionManager cm = BasicClientCORE.cmMap.get(key);
-			
-			log.debug("-----GET CONNECTION [START] ----");
-			log.debug("PRIMA CLOSE AVAILABLE["+cm.getTotalStats().getAvailable()+"] LEASED["
-					+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]");
-//			 BLOCKED ConnettoreHTTPCORE.cm.closeExpiredConnections();
-//			 BLOCKED ConnettoreHTTPCORE.cm.closeIdleConnections(30, java.util.concurrent.TimeUnit.SECONDS);
-			log.debug("DOPO CLOSE AVAILABLE["+cm.getTotalStats().getAvailable()+"] LEASED["
-					+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]");
-			
 
-			//System.out.println("-----GET CONNECTION [START] ----");
+			LogUtils.logTrace(log, "-----GET CONNECTION [START] ----");
+			LogUtils.logTrace(log, "PRIMA CLOSE AVAILABLE[{}] LEASED[{}] MAX[{}] PENDING[{}]", cm.getTotalStats().getAvailable(), cm.getTotalStats().getLeased(), cm.getTotalStats().getMax(), cm.getTotalStats().getPending());
+//			 BLOCKED ConnettoreHTTPCORE.cm.closeExpiredConnections()
+//			 BLOCKED ConnettoreHTTPCORE.cm.closeIdleConnections(30, java.util.concurrent.TimeUnit.SECONDS)
+			LogUtils.logTrace(log, "DOPO CLOSE AVAILABLE[{}] LEASED[{}] MAX[{}] PENDING[{}]", cm.getTotalStats().getAvailable(), cm.getTotalStats().getLeased(), cm.getTotalStats().getMax(), cm.getTotalStats().getPending());
+
+			//System.out.println("-----GET CONNECTION [START] ----")
 			//System.out.println("PRIMA CLOSE AVAILABLE["+cm.getTotalStats().getAvailable()+"] LEASED["
-			//		+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]");
-			// BLOCKED ConnettoreHTTPCORE.cm.closeExpiredConnections();
-			// BLOCKED ConnettoreHTTPCORE.cm.closeIdleConnections(30, java.util.concurrent.TimeUnit.SECONDS);
+			//		+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]")
+			// BLOCKED ConnettoreHTTPCORE.cm.closeExpiredConnections()
+			// BLOCKED ConnettoreHTTPCORE.cm.closeIdleConnections(30, java.util.concurrent.TimeUnit.SECONDS)
 			//System.out.println("DOPO CLOSE AVAILABLE["+cm.getTotalStats().getAvailable()+"] LEASED["
-			//		+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]");
+			//		+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]")
 			httpClientBuilder.setConnectionManager(cm);
 		}
 		else {
 			if(sslConnectionSocketFactory!=null) {
-				httpClientBuilder.setSSLSocketFactory(sslConnectionSocketFactory);		
+				HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
+																						  .setSSLSocketFactory(sslConnectionSocketFactory)
+																						  .build();
+				httpClientBuilder.setConnectionManager(cm);
 			}
 		}
 
@@ -414,11 +503,11 @@ public abstract class BasicClientCORE {
 			httpClientBuilder.setKeepAliveStrategy(keepAliveStrategy);
 		}
 
-		log.debug("-----GET CONNECTION [END] ----");
-		
+		LogUtils.logDebug(log, "-----GET CONNECTION [END] ----");
+
 		//System.out.println("PRESA LA CONNESSIONE AVAILABLE["+cm.getTotalStats().getAvailable()+"] LEASED["
-				//		+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]");
-				//System.out.println("-----GET CONNECTION [END] ----");
+				//		+cm.getTotalStats().getLeased()+"] MAX["+cm.getTotalStats().getMax()+"] PENDING["+cm.getTotalStats().getPending()+"]")
+				//System.out.println("-----GET CONNECTION [END] ----")
 
 		return httpClientBuilder.build();
 	}
@@ -429,24 +518,24 @@ public abstract class BasicClientCORE {
 		try {
 			List<String> outHandlers = GovpayConfig.getInstance().getOutHandlers();
 			if(outHandlers!= null && !outHandlers.isEmpty()) {
-				log.debug("Applicazione al messaggio degli handlers configurati...");
+				LogUtils.logDebug(log, "Applicazione al messaggio degli handlers configurati...");
 				for(String handler: outHandlers) {
 					Class<?> c = Class.forName(handler);
 					IntegrationOutHandler instance = (IntegrationOutHandler) c.getConstructor().newInstance();
-					log.debug("Applicazione al messaggio dell'handler ["+handler+"]...");
+					LogUtils.logDebug(log, "Applicazione al messaggio dell'handler [{}]...", handler);
 					instance.invoke(integrationCtx);
-					log.debug("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
+					LogUtils.logDebug(log, "Applicazione al messaggio dell'handler [{}] completata con successo", handler);
 				}
-				log.debug("Applicazione al messaggio degli handlers configurati completata con successo");
+				LogUtils.logDebug(log, "Applicazione al messaggio degli handlers configurati completata con successo");
 			} else {
-				log.debug("Nessun handler configurato");
+				LogUtils.logDebug(log, "Nessun handler configurato");
 			}
 		} catch(Exception e) {
 			throw new ClientException("Errore durante l'applicazione al messaggio degli handlers configurati: " + e.getMessage(), e);
 		}
 	}
 
-	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl, 
+	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl,
 			String contentType, List<Property> headerProperties, String swaggerOperationId, String path, HttpRequestMethod httpMethod)  throws ClientException {
 		int responseCode = 0;
 		byte [] msg = null;
@@ -457,7 +546,7 @@ public abstract class BasicClientCORE {
 
 			// Creazione URL
 			if(this.debug)
-				log.debug("Creazione URL...");
+				LogUtils.logDebug(log, "Creazione URL...");
 			IContext ctx = ContextThreadLocal.get();
 			String location = this.url.toExternalForm();
 			if(soap) {
@@ -471,13 +560,19 @@ public abstract class BasicClientCORE {
 					}
 				}
 			} else {
-				if(!location.endsWith("/")) location = location.concat("/");
-				try {
+				// Aggiungi lo slash solo se c'è un path da concatenare e non è vuoto
+				if(path != null && !path.isEmpty()) {
+					if(!location.endsWith("/")) location = location.concat("/");
 					// elimino la possibilita' di avere due '/'
 					path = path.startsWith("/") ? path.substring(1) : path;
-					this.url = new URL(location.concat(path));
-					log.debug("La richiesta sara' spedita alla URL: ["+this.url+"].");
-				} catch (MalformedURLException e) {
+				} else {
+					// Se path è null o vuoto, non aggiungere lo slash finale
+					path = "";
+				}
+				try {
+					this.url = new URI(location.concat(path)).toURL();
+					LogUtils.logDebug(log, "La richiesta sara' spedita alla URL: [{}].", this.url);
+				} catch (MalformedURLException | URISyntaxException e) {
 					responseCode = 500;
 					throw new ClientException("Url di connessione malformata: " + location.concat(path), e, responseCode);
 				}
@@ -486,163 +581,171 @@ public abstract class BasicClientCORE {
 			this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 			this.serverInfoRequest.setAddress(this.url.toString());
 			this.serverInfoRequest.setHttpRequestMethod(httpMethod);
-			
+
 			this.getEventoCtx().setUrl(this.url.toExternalForm());
 
-			if(this.debug)
-				log.debug("Creazione URL ["+location+"]...");
+			if(this.debug) {
+				LogUtils.logDebug(log, "Creazione URL [{}]...", location);
+				LogUtils.logInfo(log, "Creazione connessione alla URL [{}]...", location);
+			}
 
 			// Keep-alive
-			ConnectionKeepAliveStrategy keepAliveStrategy = null; //new ConnectionKeepAliveStrategyCustom();
-
-			// Creazione Connessione
-			if(this.debug)
-				log.info("Creazione connessione alla URL ["+location+"]...",false);
+			ConnectionKeepAliveStrategy keepAliveStrategy = null; //new ConnectionKeepAliveStrategyCustom()
 
 			// creazione client
-			try {
-				this.httpClient = buildHttpClient(keepAliveStrategy, this.sslContextFactory, BasicClientCORE.USE_POOL, this.serverID, this.connettore); 
-			} catch (UtilsException e) {
-				responseCode = 500;
-				throw new ClientException(e,responseCode);
-			}
+			HttpClient httpClient = buildHttpClient(keepAliveStrategy, this.sslContextFactory, BasicClientCORE.USE_POOL, this.serverID, this.connettore);
 
 			// HttpMethod
 			if(httpMethod==null){
 				throw new ClientException("HttpRequestMethod non definito");
 			}
-			this.httpRequest = null;
+			HttpUriRequestBase httpRequest = null;
 			switch (httpMethod) {
 			case GET:
-				this.httpRequest = new HttpGet(url.toString());
+				httpRequest = new HttpGet(url.toString());
 				break;
 			case DELETE:
-				this.httpRequest = new HttpDelete(url.toString());
+				httpRequest = new HttpDelete(url.toString());
 				break;
 			case HEAD:
-				this.httpRequest = new HttpHead(url.toString());
+				httpRequest = new HttpHead(url.toString());
 				break;
 			case POST:
-				this.httpRequest = new HttpPost(url.toString());
+				httpRequest = new HttpPost(url.toString());
 				break;
 			case PUT:
-				this.httpRequest = new HttpPut(url.toString());
+				httpRequest = new HttpPut(url.toString());
 				break;
 			case OPTIONS:
-				this.httpRequest = new HttpOptions(url.toString());
+				httpRequest = new HttpOptions(url.toString());
 				break;
 			case TRACE:
-				this.httpRequest = new HttpTrace(url.toString());
+				httpRequest = new HttpTrace(url.toString());
 				break;
 			case PATCH:
-				this.httpRequest = new HttpPatch(url.toString());
-				break;	
+				httpRequest = new HttpPatch(url.toString());
+				break;
 			default:
-				this.httpRequest = new CustomHttpEntity(httpMethod, url.toString());
+				httpRequest = new HttpUriRequestBase(httpMethod.name(), URI.create(url.toString()));
 				break;
 			}
 
 			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-
-			// Impostazione transfer-length
-//			if(this.debug)
-//				log.debug("Impostazione transfer-length...");
-//			boolean transferEncodingChunked = false;
-//			String tlm = null;
-//			int chunkLength = -1;
-
-			//			TODO
-			//			if(ConsegnaContenutiApplicativi.ID_MODULO.equals(this.idModulo)){
-			//				tlm = this.openspcoopProperties.getTransferLengthModes_consegnaContenutiApplicativi();
-			//				chunkLength = this.openspcoopProperties.getChunkLength_consegnaContenutiApplicativi();
-			//			}
-			//			else{
-			//				// InoltroBuste e InoltroRisposte
-			//				tlm = this.openspcoopProperties.getTransferLengthModes_inoltroBuste();
-			//				chunkLength = this.openspcoopProperties.getChunkLength_inoltroBuste();
-			//			}
-			//			transferEncodingChunked = TransferLengthModes.TRANSFER_ENCODING_CHUNKED.equals(tlm);
-			//			if(transferEncodingChunked){
-			//				//this.httpConn.setChunkedStreamingMode(chunkLength);
-			//			}
-//			if(this.debug)
-//				log.info("Impostazione transfer-length effettuata (chunkLength:"+chunkLength+"): "+tlm,false);
-
-
+			requestConfigBuilder.setRedirectsEnabled(false);
 
 			// Impostazione timeout
 			if(this.debug) {
-				log.debug("Impostazione timeout...");
-				log.debug("Impostazione http timeout CT["+this.connectionTimeout+"] RT["+this.readTimeout+"] CReqT["+this.connectionRequestTimeout+"]",false);
+				LogUtils.logDebug(log, "Impostazione timeout...");
+				LogUtils.logDebug(log, "Impostazione http timeout: ConnectionTimeout[{}] ReadTimeout[{}] ConnectionRequestTimeout[{}]", this.connectionTimeout, this.readTimeout, this.connectionRequestTimeout);
 			}
-			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout);
-			requestConfigBuilder.setConnectTimeout(this.connectionTimeout);
-			requestConfigBuilder.setSocketTimeout(this.readTimeout);
+			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout, TimeUnit.MILLISECONDS);
 
 			// Gestione automatica del redirect
-			//this.httpConn.setInstanceFollowRedirects(true); 
-
+			//this.httpConn.setInstanceFollowRedirects(true)
 
 			// Impostazione Content-Type della Spedizione su HTTP
-
 			if(contentType != null) {
 				if(this.debug)
-					log.debug("Impostazione content type ["+contentType+"]");
+					LogUtils.logDebug(log, "Impostazione content type [{}]", contentType);
 				this.dumpRequest.setContentType(contentType);
-				this.dumpRequest.getHeaders().put(HTTP.CONTENT_TYPE, contentType);
-				this.httpRequest.addHeader(HTTP.CONTENT_TYPE, contentType);
+				this.dumpRequest.getHeaders().put(HttpHeaders.CONTENT_TYPE, contentType);
+				httpRequest.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
 			}
-
-
 
 			// Aggiunga del SoapAction Header in caso di richiesta SOAP
 			if(soap) {
 				if(this.debug)
-					log.debug("Impostazione soap action...");
+					LogUtils.logDebug(log, "Impostazione soap action...");
 				this.dumpRequest.getHeaders().put(SOAP_ACTION, "\"" + azione + "\"");
-				this.httpRequest.addHeader(SOAP_ACTION, "\"" + azione + "\"");
+				httpRequest.addHeader(SOAP_ACTION, "\"" + azione + "\"");
 				if(this.debug)
-					log.debug("SOAP Action inviata ["+azione+"]",false);
+					LogUtils.logDebug(log, "SOAP Action inviata [{}]",azione);
 			}
 
 			// Authentication BASIC
 			if(this.ishttpBasicEnabled) {
 				if(this.debug)
-					log.debug("Impostazione autenticazione...");
-				
+					LogUtils.logDebug(log, "Impostazione autenticazione...");
+
 				Base64 base = new Base64();
 				String encoding = new String(base.encode((this.httpBasicUser + ":" + this.httpBasicPassword).getBytes()));
+				String encodingValue = "Basic " + encoding;
 
-				this.dumpRequest.getHeaders().put("Authorization", "Basic " + encoding);
-				this.httpRequest.addHeader("Authorization", "Basic " + encoding);
+				this.dumpRequest.getHeaders().put("Authorization", encodingValue);
+				httpRequest.addHeader("Authorization", encodingValue);
 				if(this.debug)
-					log.debug("Impostato Header Authorization [Basic "+encoding+"]");
-			}
-			
-			// Authentication Subscription Key
-			if(this.isSubscriptionKeyEnabled) {
-				if(this.debug)
-					log.debug("Impostazione autenticazione...");
-				
-				this.dumpRequest.getHeaders().put(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
-				this.httpRequest.addHeader(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
-				if(this.debug)
-					log.debug("Impostato Header Subscription Key ["+this.subscriptionKeyHeaderName+"]["+this.subscriptionKeyHeaderValue+"]");
+					LogUtils.logDebug(log, "Impostato Header Authorization [{}]", encodingValue);
 			}
 
-			// Impostazione Proprieta del trasporto
-			if(headerProperties!= null  && headerProperties.size() > 0) {
+			// Authentication HTTP Header
+			if(this.ishttpHeaderEnabled) {
 				if(this.debug)
-					log.debug("Impostazione header di trasporto...");
-				
-				for (Property prop : headerProperties) {
-					this.httpRequest.addHeader(prop.getName(), prop.getValue());
-					this.dumpRequest.getHeaders().put(prop.getName(), prop.getValue());
-					if(this.debug)
-						log.debug("Aggiunto Header ["+prop.getName()+"]: ["+prop.getValue()+"]");
+					LogUtils.logDebug(log, "Impostazione autenticazione...");
+
+				this.dumpRequest.getHeaders().put(this.httpHeaderName, this.httpHeaderValue);
+				httpRequest.addHeader(this.httpHeaderName, this.httpHeaderValue);
+				if(this.debug)
+					LogUtils.logDebug(log, "Impostato Autenticazione tramite Header HTTP [{}:{}]", this.httpHeaderName, this.httpHeaderValue);
+			}
+
+			// Authentication API KEY
+			if(this.isApiKeyEnabled) {
+				if(this.debug)
+					LogUtils.logDebug(log, "Impostazione autenticazione...");
+
+				this.dumpRequest.getHeaders().put(this.apiKey, this.apiKeyValue);
+				httpRequest.addHeader(this.apiKey, this.apiKeyValue);
+
+				this.dumpRequest.getHeaders().put(this.apiId, this.apiIdValue);
+				httpRequest.addHeader(this.apiId, this.apiIdValue);
+				if(this.debug) {
+					LogUtils.logDebug(log, "Impostato Autenticazione tramite API KEY -> API-KEY: [{}:{}]", this.apiKey, this.apiKeyValue);
+					LogUtils.logDebug(log, "Impostato Autenticazione tramite API KEY -> API-ID: [{}:{}]", this.apiId, this.apiIdValue);
 				}
 			}
 
+			// Authentication Subscription Key
+			if(this.isSubscriptionKeyEnabled) {
+				if(this.debug)
+					LogUtils.logDebug(log, "Impostazione autenticazione...");
+
+				this.dumpRequest.getHeaders().put(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+				httpRequest.addHeader(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+				if(this.debug)
+					LogUtils.logDebug(log, "Impostato Header Subscription Key [{}][{}]", this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+			}
+
+			// Authentication Oauth2 Client Credentials
+			if(this.isOauth2ClientCredentialsEnabled) {
+				if(this.debug) {
+					LogUtils.logDebug(log, "Impostazione autenticazione...");
+					LogUtils.logDebug(log, "Richiedo token...");
+				}
+
+				ClientAccessToken accessToken = this.oauth2ClientCredentialsManager.getClientCredentialsAccessToken(this.serverID, this.connettore);
+				String oauth2ClientCredentialsBearer = accessToken.getTokenKey();
+				this.getEventoCtx().setPrincipal(oauth2ClientCredentialsBearer);
+				String headerValue = "Bearer " + oauth2ClientCredentialsBearer;
+
+				this.dumpRequest.getHeaders().put("Authorization", headerValue);
+				httpRequest.addHeader("Authorization", headerValue);
+
+				if(this.debug)
+					LogUtils.logDebug(log, "Impostato Header Authorization [{}]",headerValue);
+			}
+
+			// Impostazione Proprieta del trasporto
+			if(headerProperties!= null  && !headerProperties.isEmpty()) {
+				if(this.debug)
+					LogUtils.logDebug(log, "Impostazione header di trasporto...");
+
+				for (Property prop : headerProperties) {
+					httpRequest.addHeader(prop.getName(), prop.getValue());
+					this.dumpRequest.getHeaders().put(prop.getName(), prop.getValue());
+					if(this.debug)
+						LogUtils.logDebug(log, "Aggiunto Header [{}]: [{}]", prop.getName(), prop.getValue());
+				}
+			}
 
 			// Impostazione Metodo
 			HttpBodyParameters httpBody = null;
@@ -656,6 +759,10 @@ public abstract class BasicClientCORE {
 			// Preparazione messaggio da spedire
 			// Spedizione byte
 			integrationCtx.setMsg(body);
+
+			// salvo il messaggio originale prima dell'applicazione degli out handlers
+			dumpRequest.setPayload(integrationCtx.getMsg());
+
 			this.invokeOutHandlers();
 
 			dumpRequest.setPayload(integrationCtx.getMsg());
@@ -667,92 +774,88 @@ public abstract class BasicClientCORE {
 
 			if(httpBody.isDoOutput()){
 				if(this.debug)
-					log.debug("Spedizione byte...");
+					LogUtils.logDebug(log, "Spedizione byte...");
 
-				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg());
-				if(this.httpRequest instanceof HttpEntityEnclosingRequestBase){
-					((HttpEntityEnclosingRequestBase)this.httpRequest).setEntity(httpEntity);
+				ContentType msgContentType = null;
+				if (contentType != null) {
+					msgContentType = ContentType.create(contentType);
 				}
-				else{
-					responseCode = 500;
-					throw new ClientException("Tipo ["+this.httpRequest.getClass().getName()+"] non utilizzabile per una richiesta di tipo ["+httpMethod+"]", responseCode);
-				}
-				if(contentType != null) {
-					((ByteArrayEntity) httpEntity).setContentType(contentType);
-				}
+
+				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg(), msgContentType);
+				httpRequest.setEntity(httpEntity);
 			}
 
 			// Imposto Configurazione
-			this.httpRequest.setConfig(requestConfigBuilder.build());
-			
-			
+			httpRequest.setConfig(requestConfigBuilder.build());
+
+
 			if(this.debug) {
-				log.debug("Elenco Header impostati nella request:");
-				
-				for (Header prop : this.httpRequest.getAllHeaders()) {
-					log.debug("Header ["+prop.getName()+"]: ["+prop.getValue()+"]");
+				LogUtils.logDebug(log, "Elenco Header impostati nella request:");
+
+				for (Header prop : httpRequest.getHeaders()) {
+					LogUtils.logDebug(log, "Header [{}]: [{}]", prop.getName(), prop.getValue());
 				}
-				
-				log.debug("Elenco Header impostati nella dumpRequest:");
-				
+
+				LogUtils.logTrace(log, "Elenco Header impostati nella dumpRequest:");
+
 				for (String key : this.dumpRequest.getHeaders().keySet()) {
-					log.debug("Header ["+key+"]: ["+this.dumpRequest.getHeaders().get(key)+"]");
+					LogUtils.logTrace(log, "Header [{}]: [{}]", key, this.dumpRequest.getHeaders().get(key));
 				}
 			}
 
 			// Spedizione byte
 			if(this.debug)
-				log.debug("Spedizione byte...");
+				LogUtils.logDebug(log, "Spedizione byte...");
 			// Eseguo la richiesta e prendo la risposta
 			HttpResponse httpResponse = null;
 			try {
-				httpResponse = this.httpClient.execute(this.httpRequest);
+				httpResponse = httpClient.execute(httpRequest);
 			} catch (ClientProtocolException e) {
 				responseCode = 500;
 				throw new ClientException(e, responseCode);
 			} catch (IOException e) {
 				responseCode = 500;
-				
+
 				// retrocompatibilita'
 				if(ExceptionUtils.getInnerException(e, java.net.UnknownHostException.class) != null) {
 					responseCode = 999;
 				}
 				throw new ClientException(e, responseCode);
 			}
-			this.httpEntityResponse = httpResponse.getEntity();
+			if (httpResponse instanceof HttpEntityContainer) {
+				this.httpEntityResponse = ((HttpEntityContainer)httpResponse).getEntity();
+			}
 
 			this.dumpResponse.getHeaders().put("HTTP-Method", httpMethod.name());
 			this.dumpResponse.getHeaders().put("RequestPath", this.url.toString());
 
 			if(this.debug)
-				log.debug("Analisi risposta...");
-			Header [] hdrRisposta = httpResponse.getAllHeaders();
+				LogUtils.logDebug(log, "Analisi risposta...");
+			Header [] hdrRisposta = httpResponse.getHeaders();
 			if(hdrRisposta!=null){
 				for (int i = 0; i < hdrRisposta.length; i++) {
 
 					String key = null;
-					String value = null;
+					String value = hdrRisposta[i].getValue();;
 
+					// Check per evitare la coppia che ha come chiave null e come valore HTTP OK 200
 					if(hdrRisposta[i].getName()==null){
-						// Check per evitare la coppia che ha come chiave null e come valore HTTP OK 200
-						if(this.debug)
-							log.debug("HTTP risposta ["+HttpConstants.RETURN_CODE+"] ["+hdrRisposta[i].getValue()+"]...");
 						key = HttpConstants.RETURN_CODE;
-						value = hdrRisposta[i].getValue();
 					}
 					else{
-						if(this.debug)
-							log.debug("HTTP risposta ["+hdrRisposta[i].getName()+"] ["+hdrRisposta[i].getValue()+"]...");
 						key = hdrRisposta[i].getName();
-						value = hdrRisposta[i].getValue();
 					}
+
+					if(this.debug)
+						LogUtils.logDebug(log, "HTTP risposta [{}] [{}]...", key, value);
+
 
 					List<String> list = null;
 					if(dumpResponse.getHeaders().containsKey(key)) {
-						list =  new ArrayList<String>(Arrays.asList(StringUtils.split(dumpResponse.getHeaders().remove(key),",")));
+						list =  new ArrayList<>(Arrays.asList(StringUtils.split(dumpResponse.getHeaders().remove(key),",")));
 					}
 					if(list==null) {
-						list = new ArrayList<String>();
+						list = new ArrayList<>();
 
 					}
 					list.add(value);
@@ -776,10 +879,9 @@ public abstract class BasicClientCORE {
 
 			// Ricezione Risposta
 			if(this.debug)
-				log.debug("Analisi risposta input stream e risultato http...");
+				LogUtils.logDebug(log, "Analisi risposta input stream e risultato http...");
 
-			responseCode = httpResponse.getStatusLine().getStatusCode();
-			//			this.resultHTTPMessage = httpResponse.getStatusLine().getReasonPhrase();
+			responseCode = httpResponse.getCode();
 
 			try {
 				if(responseCode < 400) { // httpstatus 3xx sono casi ok
@@ -807,17 +909,18 @@ public abstract class BasicClientCORE {
 					} catch (IOException e) {
 						msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 					} finally {
-						log.warn("Errore nell'esecuzione dell'operazione ["+this.errMsg+", HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+						String errWarnMsg = new String(msg);
+						LogUtils.logWarn(log, "Errore nell'esecuzione dell'operazione [{}, HTTP Response Code {}]\nRisposta: {}", this.errMsg, responseCode, errWarnMsg);
 					}
 
 					if(soap)
 						try {
 							MimeHeaders headers = new MimeHeaders();
-							headers.addHeader("Content-Type", "text/xml");
+							headers.addHeader("Content-Type", MediaType.TEXT_XML_VALUE);
 							SOAPMessage createMessage = MessageFactory.newInstance().createMessage(headers, new ByteArrayInputStream(msg));
 							throw new ClientException("Ricevuto messaggio di errore: HTTP " + responseCode + " [SOAPFaultCode: " + createMessage.getSOAPBody().getFault().getFaultCode() + " - SOAPFaultString: " + createMessage.getSOAPBody().getFault().getFaultString() +"]",responseCode);
 						} catch (IOException | SOAPException | NullPointerException e) {
-
+							// donothing
 						}
 
 					throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode);
@@ -827,21 +930,20 @@ public abstract class BasicClientCORE {
 				this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
 
 				if(log.isTraceEnabled() && dumpResponse.getHeaders() != null) {
-					StringBuffer sb = new StringBuffer();
-					for(String key : dumpResponse.getHeaders().keySet()) { 
+					StringBuilder sb = new StringBuilder();
+					for(String key : dumpResponse.getHeaders().keySet()) {
 						sb.append("\n\t" + key + ": " + dumpResponse.getHeaders().get(key));
 					}
 					if(msg != null) sb.append("\n" + new String(msg));
-					log.trace(sb.toString());
+					LogUtils.logTrace(log, sb.toString());
 				}
 			}
 		}  catch (ClientException e) {
 			throw e;
-
-		} finally { 
+		} finally {
 			// funzionalita' di log
 			popolaContextEvento(fromHttpMethod(httpMethod), responseCode, dumpRequest, dumpResponse);
-			
+
 			// chiusura della connessione
 			try {
 				this.disconnect();
@@ -866,50 +968,44 @@ public abstract class BasicClientCORE {
 
 	//	@Override
 	public void disconnect() throws ClientException{
-		List<Throwable> listExceptionChiusura = new ArrayList<Throwable>();
+		List<Throwable> listExceptionChiusura = new ArrayList<>();
 		try{
-			// Gestione finale della connessione    		
-			//System.out.println("CHECK CLOSE STREAM...");
+			// Gestione finale della connessione
 			if(this.isResponse!=null){
 				if(this.debug) {
-					log.debug("Chiusura socket...");
+					LogUtils.logDebug(log, "Chiusura socket...");
 				}
-				//System.out.println("CLOSE STREAM...");
 				this.isResponse.close();
-				//System.out.println("CLOSE STREAM");
-			}				
+			}
 		}
 		catch(Throwable t) {
-			log.debug("Chiusura socket fallita: "+t.getMessage(),t);
+			LogUtils.logDebug(log, "Chiusura socket fallita: "+t.getMessage(),t);
 			listExceptionChiusura.add(t);
 		}
 		try{
 			// Gestione finale della connessione
-			//System.out.println("CHECK ENTITY...");
 			if(this.httpEntityResponse!=null){
 				if(this.debug) {
-					log.debug("Chiusura httpEntityResponse...");
+					LogUtils.logDebug(log, "Chiusura httpEntityResponse...");
 				}
-				//System.out.println("CLOSE ENTITY...");
 				EntityUtils.consume(this.httpEntityResponse);
-				//System.out.println("CLOSE ENTITY");
 			}
 		}catch(Throwable t) {
-			log.debug("Chiusura connessione fallita: "+t.getMessage(),t);
+			LogUtils.logDebug(log, "Chiusura connessione fallita: "+t.getMessage(),t);
 			listExceptionChiusura.add(t);
 		}
 
-		if(listExceptionChiusura!=null && !listExceptionChiusura.isEmpty()) {
+		if(!listExceptionChiusura.isEmpty()) {
 			org.openspcoop2.utils.UtilsMultiException multiException = new org.openspcoop2.utils.UtilsMultiException(listExceptionChiusura.toArray(new Throwable[1]));
 			throw new ClientException("Chiusura connessione non riuscita: "+multiException.getMessage(),multiException,500);
 		}
 	}
 
 
-	public byte[] sendSoap(String azione, byte[] body, boolean isAzioneInUrl) throws ClientException { 
+	public byte[] sendSoap(String azione, byte[] body, boolean isAzioneInUrl) throws ClientException {
 		List<Property> headerProperties = new ArrayList<>();
-		headerProperties.add(new Property("Accept", "text/xml"));
-		return this.send(true, azione, body, isAzioneInUrl, "text/xml", headerProperties, null, null, HttpRequestMethod.POST);
+		headerProperties.add(new Property(HttpHeaders.ACCEPT, MediaType.TEXT_XML_VALUE));
+		return this.send(true, azione, body, isAzioneInUrl, MediaType.TEXT_XML_VALUE, headerProperties, null, null, HttpRequestMethod.POST);
 	}
 
 	public byte[] getJson(String path, List<Property> headerProperties, String swaggerOperationId) throws ClientException {
@@ -917,7 +1013,7 @@ public abstract class BasicClientCORE {
 	}
 
 	public byte[] sendJson(String path, byte[] jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String swaggerOperationId) throws ClientException {
-		return this.send(false, null, jsonBody, false, "application/json", headerProperties, swaggerOperationId, path, httpMethod);
+		return this.send(false, null, jsonBody, false, MediaType.APPLICATION_JSON_VALUE, headerProperties, swaggerOperationId, path, httpMethod);
 	}
 
 	public byte[] sendJson(String path, byte[] jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String contentType, String swaggerOperationId) throws ClientException {
@@ -928,27 +1024,27 @@ public abstract class BasicClientCORE {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.componente, this.getGiornale());
+			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.getEventoCtx().getComponente(), this.getGiornale());
 
-			log.debug("Log Evento Client: ["+this.componente +"], Operazione ["+this.getEventoCtx().getTipoEvento()+"], Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
+			LogUtils.logDebug(log, "Log Evento Client: [{}], Operazione [{}], Method [{}], Url [{}], StatusCode [{}]", this.getEventoCtx().getComponente(), this.getEventoCtx().getTipoEvento(), httpMethod, this.url.toExternalForm(), responseCode);
 
 			if(configurazioneInterfaccia != null) {
 				try {
-					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
+					LogUtils.logDebug(log, "Configurazione Giornale Eventi API: [{}]: {}" ,this.getEventoCtx().getComponente() , ConverterUtils.toJSON(configurazioneInterfaccia));
 				} catch (it.govpay.core.exceptions.IOException e) {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}
 
-				if(EventiUtils.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+				if(EventiUtils.isRequestLettura(httpMethod, this.getEventoCtx().getComponente(), this.getEventoCtx().getTipoEvento())) {
 					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
 					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
-					log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-				} else if(EventiUtils.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+					LogUtils.logDebug(log, "Tipo Operazione 'Lettura', Log [{}], Dump [{}].", logEvento, dumpEvento);
+				} else if(EventiUtils.isRequestScrittura(httpMethod, this.getEventoCtx().getComponente(), this.getEventoCtx().getTipoEvento())) {
 					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
 					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
-					log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+					LogUtils.logDebug(log, "Tipo Operazione 'Scrittura', Log [{}], Dump [{}].", logEvento, dumpEvento);
 				} else {
-					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
+					LogUtils.logDebug(log, "Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
 				}
 
 				this.getEventoCtx().setRegistraEvento(logEvento);
@@ -986,13 +1082,13 @@ public abstract class BasicClientCORE {
 						// dump risposta
 						if(dumpResponse.getPayload() != null && dumpResponse.getPayload().length > 0)
 							dettaglioRisposta.setPayload(base.encodeToString(dumpResponse.getPayload()));
-					} 
+					}
 
 					this.getEventoCtx().setDettaglioRichiesta(dettaglioRichiesta);
 					this.getEventoCtx().setDettaglioRisposta(dettaglioRisposta);
 				}
 			} else {
-				log.warn("La configurazione per l'API ["+this.componente+"] non e' corretta, salvataggio evento non eseguito."); 
+				LogUtils.logWarn(log, "La configurazione per l'API [{}] non e' corretta, salvataggio evento non eseguito.", this.getEventoCtx().getComponente());
 			}
 		}
 	}
@@ -1039,17 +1135,16 @@ public abstract class BasicClientCORE {
 	public static boolean cleanCache(String bundleKey) {
 		if(USE_POOL)
 			cmMap.remove(bundleKey);
-		
+
 		return sslContextFactorys.remove(bundleKey) != null;
-		//		return sslContexts.remove(bundleKey) != null;
 	}
 
 	public static boolean cleanCache() {
 		sslContextFactorys = new HashMap<>();
-		
+
 		if(USE_POOL)
 			cmMap = new HashMap<>();
-		
+
 		return true;
 	}
 
@@ -1071,32 +1166,5 @@ public abstract class BasicClientCORE {
 
 	public void setTipoEventoCustom(String tipoEventoCustom) {
 		this.tipoEventoCustom = tipoEventoCustom;
-	}
-
-	class CustomHttpEntity extends HttpEntityEnclosingRequestBase{
-
-		private HttpRequestMethod httpMethod;
-		public CustomHttpEntity(HttpRequestMethod httpMethod) {
-			super();
-			this.httpMethod = httpMethod;
-		} 
-
-		public CustomHttpEntity(HttpRequestMethod httpMethod, final URI uri) {
-			super();
-			setURI(uri);
-			this.httpMethod = httpMethod;
-		}
-
-		public CustomHttpEntity(HttpRequestMethod httpMethod, final String uri) {
-			super();
-			setURI(URI.create(uri));
-			this.httpMethod = httpMethod;
-		}
-
-		@Override
-		public String getMethod() {
-			return this.httpMethod.name();
-		}
-
 	}
 }

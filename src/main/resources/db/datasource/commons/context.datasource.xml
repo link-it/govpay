@@ -1,0 +1,7 @@
+
+<Context>
+	...
+
+<!-- Inserire la seguente riga in fondo all'elemento Context -->
+	<ResourceLink global="it.govpay.datasource" name="it.govpay.datasource" type="javax.sql.DataSource"/>
+</Context>

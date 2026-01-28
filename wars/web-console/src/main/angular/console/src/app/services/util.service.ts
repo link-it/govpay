@@ -21,30 +21,39 @@ declare let GovApiComponenti: any;
 declare let GovApiTipiEvento: any;
 declare let GovFiltersConfig: any;
 
+import * as CryptoJS from 'crypto-js';
+
 @Injectable()
 export class UtilService {
 
   public static readonly PDF: string = 'pdf';
   public static readonly CSV: string = 'csv';
 
-  // Config.govpay: Autenticazione
+  // Config.js: Autenticazione
   public static ACCESS_BASIC: string = 'Basic';
   public static ACCESS_SPID: string = 'Spid';
   public static ACCESS_IAM: string = 'Iam';
+  public static ACCESS_OAUTH2: string = 'OAuth2';
   public static BASIC: any = GovPayConfig.BASIC;
   public static SPID: any = GovPayConfig.SPID;
   public static IAM: any = GovPayConfig.IAM;
-  public static TOA: any = { Spid: false, Basic: false, Iam: false };
+  public static OAUTH2: any = GovPayConfig.OAUTH2;
+  public static TOA: any = { Spid: false, Basic: false, Iam: false , OAuth2: false };
 
-  // Config.govpay
+  // Config.js
   public static INFORMATION: any = GovPayConfig.INFO;
   public static BADGE: any = GovPayConfig.BADGE_FILTER;
   public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
 
-  // Config.govpay
+  // Config.js
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
-  // Config.govpay
+  // Config.js
+  public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
+  public static GESTIONE_RISCOSSIONI: any = GovPayConfig.GESTIONE_RISCOSSIONI;
+  public static GESTIONE_MANUTENZIONE: any = GovPayConfig.MANUTENZIONE;
+
+  // Config.js
   public static PREFERENCES: any = GovPayConfig.PREFERENCES;
 
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
@@ -129,7 +138,8 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
-    INCASSATA: 'Riconciliata'
+    INCASSATA: 'Riconciliata',
+    ANOMALA: 'Anomala'
   };
 
   //STATI RPP PAGAMENTI
@@ -158,6 +168,8 @@ export class UtilService {
   public static STATI_ESITO_RENDICONTAZIONI: any = {
     0: 'Pagamento eseguito',
     3: 'Pagamento revocato',
+    4: 'Pagamento eseguito Stand In',
+    8: 'Pagamento eseguito Stand In senza RPT',
     9: 'Pagamento eseguito senza RPT'
   };
 
@@ -206,7 +218,8 @@ export class UtilService {
     0: 'Immediato',
     1: 'Immediato multibeneficiario',
     2: 'Differito',
-    4: 'Attivato presso Psp'
+    4: 'Attivato presso Psp',
+    UNICO: 'Modello unico'
   };
 
   //TIPOLOGIE CATEGORIA EVENTO
@@ -238,6 +251,15 @@ export class UtilService {
       });
     }
   }
+
+  //TIPOLOGIE CONTABILITA NUMERICHE
+  public static TIPI_CONTABILITA_NUMERICHE: any = {
+    CAPITOLO: '0',
+    SPECIALE: '1',
+    SIOPE: '2',
+    ALTRO: '9'
+  };
+
   private static _MAP_TIPI_EVENTO: any[] = [];
   public static DIRECT_MAP_TIPI_EVENTO: any;
   public static COMPONENTI_EVENTO: any;
@@ -278,6 +300,15 @@ export class UtilService {
 
   //REUSE FOR SOCKET NOTIFICATION
   public static HasSocketNotification: boolean = false;
+
+  // Lingua secondaria
+  public static LINGUE_SECONDARIE: any = {
+      'false': 'Nessuna',
+      'de': 'Tedesco',
+      'en': 'Inglese',
+      'fr': 'Francese',
+	  'sl': 'Sloveno'
+    };
 
   //TIPI SOGGETTO
   public static TIPI_SOGGETTO: any = {
@@ -322,7 +353,10 @@ export class UtilService {
 
   public static TIPI_AUTENTICAZIONE: any = {
     basic: 'HTTP Basic',
-    ssl: 'SSL'
+    header: 'HTTP Header',
+    ssl: 'SSL',
+    apiKey: 'API Key',
+    oauth2ClientCredentials: 'OAuth2 Client Credentials'
   };
 
   public static TIPI_SSL: any = {
@@ -371,10 +405,28 @@ export class UtilService {
     '12': 'Agenzie Fiscali'
   };
 
-  // VERSIONI STATZIONI
+  // VERSIONI STAZIONI
   public static VERSIONI_STAZIONE: any = {
     V1: 'V1',
     V2: 'V2'
+  };
+
+  // MODELLO UNICO DA VERSIONE STAZIONE
+  public static MODELLO_UNICO_DA_VERSIONE: any = {
+    'V2': 'Si',
+    'V1': 'No'
+  };
+
+  // MODELLO UNICO BOOLEAN DA VERSIONE STAZIONE
+  public static MODELLO_UNICO_BOOLEAN_DA_VERSIONE: any = {
+    'V2': true,
+    'V1': false
+  };
+
+  // VERSIONE STAZIONE DA MODELLO UNICO BOOLEAN
+  public static VERSIONE_DA_MODELLO_UNICO_BOOLEAN: any = {
+    true: 'V2',
+    false: 'V1'
   };
 
   public static COOKIE_RIFIUTATI: string = 'GovPay_Dashboard_Rifiutati';
@@ -385,6 +437,7 @@ export class UtilService {
   //ROOT URL SERVIZI
   public static URL_DETTAGLIO: string = '/dettaglio';
   public static URL_PROFILO: string = '/profilo';
+  public static URL_AUTH: string = '/authCallback';
   public static URL_DASHBOARD: string = '/dashboard';
   public static URL_PENDENZE: string = '/pendenze';
   public static URL_PAGAMENTI: string = '/pagamenti';
@@ -404,11 +457,14 @@ export class UtilService {
   public static URL_UNITA_OPERATIVE: string = '/unitaOperative';
   public static URL_IBAN_ACCREDITI: string = '/contiAccredito';
   public static URL_RUOLI: string = '/ruoli';
+  public static URL_RICEVUTE: string = '/rpp';
+  public static URL_CARICA_RICEVUTE: string = '/ricevute';
   //Operazioni
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
-  public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
+  public static URL_RECUPERO_RT : string = '/recuperoRT';
   public static URL_RESET_CACHE: string = '/resetCacheAnagrafica';
+  public static URL_INVIA_POSIZIONI_DEBITORIE_ACA: string = '/inviaPosizioniDebitorieAca';
   //Reportistiche
   public static URL_REPORTISTICHE: string = '/reportistiche';
   public static URL_PROSPETTO_RISCOSSIONI: string = '/entrate-previste';
@@ -429,12 +485,14 @@ export class UtilService {
   public static QUERY_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=true';
   public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
   public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
+  public static QUERY_RICEVUTE_OK: string = 'esito=ESEGUITO';
 
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
 
   //LABEL
+  public static TXT_AUTH: string = 'Autorizzazione';
   public static TXT_DASHBOARD: string = 'Cruscotto';
   public static TXT_PENDENZE: string = 'Pendenze';
   public static TXT_PAGAMENTI: string = 'Pagamenti';
@@ -451,15 +509,15 @@ export class UtilService {
   public static TXT_RISCOSSIONI: string = 'Riscossioni';
   public static TXT_RENDICONTAZIONI: string = 'Rendicontazioni';
   public static TXT_INCASSI: string = 'Riconciliazioni';
-
-  public static TXT_TRACCIATI: string = 'Caricamento pendenze';
+  public static TXT_RICEVUTE: string = 'Ricevute';
+  public static TXT_TRACCIATI: string = 'Caricamenti massivi';
 
   public static TXT_MAN_NOTIFICHE: string = 'Spedisci notifiche';
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
-  public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
+  public static TXT_MAN_RICEVUTE: string = 'Recupera ricevute';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
+  public static TXT_MAN_POSIZIONI_DEBITORIE_ACA: string = 'Invia posizioni debitorie ACA';
   public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
-
 
   //Types
   //Component view ref
@@ -482,11 +540,13 @@ export class UtilService {
   public static INCASSI: string = 'incassi';
   public static UNITA_OPERATIVE: string = 'unitaOperative';
   public static IBAN_ACCREDITI: string = 'ibanAccredito';
+  public static RICEVUTE: string = 'ricevute';
 
   public static TRACCIATI: string = 'tracciati';
   public static TRACCIATO: string = 'tracciato';
   public static OPERAZIONI_TRACCIATO: string = 'operazioni';
   public static VERIFICATO: string = 'verificato';
+  public static RICEVUTA: string = 'ricevuta';
 
   //Item view ref
   public static STANDARD: string = '';
@@ -500,6 +560,7 @@ export class UtilService {
   public static KEY_VALUE: string = 'key_value';
   public static KEY_JSON: string = 'key_json';
   public static ALLEGATO: string = 'allegato';
+  public static PROPRIETA: string = 'proprieta';
   //Dialog view ref
   public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';
@@ -579,6 +640,7 @@ export class UtilService {
   public static EXPORT_INCASSO: string = 'esporta_incasso';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
+  public static EXPORT_FLUSSO_CSV: string = 'esporta_flusso_csv';
   public static EXPORT_TRACCIATO_RICHIESTA: string = 'esporta_tracciato_richiesta';
   public static EXPORT_TRACCIATO_ESITO: string = 'esporta_tracciato_esito';
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
@@ -646,6 +708,13 @@ export class UtilService {
    */
   public static DASHBOARD_LINKS_PARAMS: any = { method: null, params: [] };
 
+  public static STORAGE_VAR: any = {
+    TOKEN: 'TOKEN',
+    STATE: 'STATE',
+    CODE_VERIFIER: 'CODE_VERIFIER',
+    CODE_CHALLENGE: 'CODE_CHALLENGE',
+	ID_TOKEN: 'ID_TOKEN'
+  };
 
   constructor(private message: MatSnackBar, private dialog: MatDialog, private http: HttpClient) { }
 
@@ -685,7 +754,7 @@ export class UtilService {
 
   /**
    * Set TOA
-   * @param {string} toa: Basic | Spid | Iam
+   * @param {string} toa: Basic | Spid | Iam | OAuth2
    * @param {boolean} value
    */
   public static SetTOA(toa: string, value: boolean = false) {
@@ -693,7 +762,7 @@ export class UtilService {
   }
 
   public static ResetTOA() {
-    UtilService.TOA = { Spid: false, Basic: false, Iam: false };
+    UtilService.TOA = { Spid: false, Basic: false, Iam: false, OAuth2: false };
   }
 
   public static RootByTOA(): string {
@@ -703,6 +772,9 @@ export class UtilService {
     }
     if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && UtilService.TOA.Iam) {
       _root = UtilService.IAM.ROOT_SERVICE;
+    }
+    if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2) {
+      _root = UtilService.OAUTH2.ROOT_SERVICE;
     }
     return _root;
   }
@@ -715,8 +787,16 @@ export class UtilService {
     if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && UtilService.TOA.Iam) {
       _root = UtilService.IAM.LOGOUT_SERVICE;
     }
+    if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2) {
+	   const idToken = window.localStorage.getItem(UtilService.STORAGE_VAR.ID_TOKEN);
+      _root = UtilService.OAUTH2.LOGOUT_SERVICE + (idToken ? '?id_token_hint=' + idToken : '');
+    }
     return _root;
   }
+  
+  public static isOAuth2(): boolean {
+	return (!UtilService.TOA.Basic && !UtilService.TOA.Spid && !UtilService.TOA.Iam && UtilService.TOA.OAuth2);
+	}
 
   public static cacheUser(profilo: any) {
     UtilService.PROFILO_UTENTE = profilo;
@@ -724,6 +804,8 @@ export class UtilService {
   }
 
   public static cleanUser() {
+    window.localStorage.removeItem(UtilService.STORAGE_VAR.TOKEN);
+	window.localStorage.removeItem(UtilService.STORAGE_VAR.ID_TOKEN);
     UtilService.PROFILO_UTENTE = null;
     UtilService.profiloUtenteBehavior.next(null);
   }
@@ -900,35 +982,44 @@ export class UtilService {
   onError(error: any, customMessage?: string) {
     let _msg = 'Warning: status ' + error.status;
     try {
+		let _error = this.blobToJson(error.error);
+
       switch(error.status) {
         case 401:
           UtilService.cleanUser();
-          if(error.error) {
-            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
+          if(_error) {
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
           } else {
             _msg = 'Accesso al servizio non autorizzato. Autenticarsi per avviare la sessione.';
           }
           break;
         case 403:
-          if(!error.error) {
+          if(!_error) {
             UtilService.cleanUser();
             _msg = 'Accesso non autorizzato. Sessione non valida.';
           } else {
-            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
           }
           break;
         case 404:
           _msg = 'Servizio non disponibile.';
           break;
+        case 422:
+          if(!_error) {
+            _msg = 'Operazione non disponibile.';
+          } else {
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
+          }
+          break;
         case 500:
           _msg = 'Errore interno del server.';
           break;
         case 504:
-          _msg = (error.error)?error.error:'Gateway Timeout.';
+          _msg = (_error)?_error:'Gateway Timeout.';
           break;
         default:
-          if(error.error) {
-            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
+          if(_error) {
+            _msg = (!_error.dettaglio)?_error.descrizione:_error.descrizione+': '+_error.dettaglio;
           } else {
             _msg = customMessage?customMessage:error.message;
           }
@@ -940,6 +1031,26 @@ export class UtilService {
       _msg = 'Si è verificato un problema non previsto.';
     }
     this.alert(_msg);
+  }
+
+  blobToJson(_blob : any): any {
+	if(_blob instanceof Blob){
+		let contentType = _blob.type;
+
+      const url = URL.createObjectURL(_blob);
+      let xmlRequest = new XMLHttpRequest();
+      xmlRequest.open('GET', url, false);
+      xmlRequest.send();
+      URL.revokeObjectURL(url);
+      let _res = xmlRequest.responseText;
+
+    if(contentType === 'application/json' || contentType === 'application/problem+json') {
+			return JSON.parse(_res);
+		}
+    return _res;
+    }
+
+    return _blob;
   }
 
   /**
@@ -1242,6 +1353,12 @@ export class UtilService {
         });
         break;
       case 'PagamentiRiconciliati.csv':
+        _keys = this._elaborateKeys(jsonData);
+        jsonData.forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+      case 'Rendicontazioni.csv':
         _keys = this._elaborateKeys(jsonData);
         jsonData.forEach((_json, index) => {
           _csv += this.jsonToCsvRows((index===0), _keys, _json);
@@ -1726,7 +1843,7 @@ export class UtilService {
                   eventType: 'idA2A-async-load' } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
-                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
+                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI, warning: true, warning_message: Voce.DEBITORE_WARNING_CF_INVALID_MESSAGE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
                       values: this.statiPendenza(), showTooltip: false }),
           // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
@@ -1743,7 +1860,7 @@ export class UtilService {
       case UtilService.PAGAMENTI:
         _list = [
           new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT,
-            pattern: FormService.VAL_CF_PI }),
+            pattern: FormService.VAL_CF_PI, warning: true, warning_message: Voce.DEBITORE_WARNING_CF_INVALID_MESSAGE }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
@@ -1801,7 +1918,8 @@ export class UtilService {
           new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_REG_INIZIO + ' ' + FormService.FORM_PH_DATA_REG_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
-          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_REG_FINE+' '+FormService.FORM_PH_DATA_REG_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_REG_FINE+' '+FormService.FORM_PH_DATA_REG_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
+          new FormInput({ id: 'escludiObsoleti', label: FormService.FORM_ESCLUDI_OBSOLETI, type: UtilService.SLIDE_TOGGLE, value: false }),
         ];
       break;
       case UtilService.GIORNALE_EVENTI:
@@ -1878,6 +1996,18 @@ export class UtilService {
           new FormInput({ id: 'descrizione', label: FormService.FORM_DESCRIZIONE, type: UtilService.INPUT })
         ];
       break;
+      case UtilService.RICEVUTE:
+        _list = [
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI + '?' + UtilService.QUERY_ASSOCIATI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+                  eventType: 'idDominio-async-load' } }, this.http),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
+          new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
+                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI, warning: true, warning_message: Voce.DEBITORE_WARNING_CF_INVALID_MESSAGE }),
+          new FormInput({ id: 'dataRtDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
+          new FormInput({ id: 'dataRtA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
+        ];
+      break;
     }
 
     return _list;
@@ -1937,6 +2067,78 @@ export class UtilService {
     }
 
     return value;
+  }
+
+  /**
+   * Encrypt a derived hd private key with a given pin and return it in Base64 form
+   */
+  public static EncryptAES(text: string, key: string) {
+    return CryptoJS.AES.encrypt(text, key).toString();
+  };
+
+  /**
+   * Decrypt an encrypted message
+   * @param encryptedBase64 encrypted data in base64 format
+   * @param key The secret key
+   * @return The decrypted content
+   */
+  public static DecryptAES(encryptedBase64: string, key: string) {
+    const decrypted = CryptoJS.AES.decrypt(encryptedBase64, key);
+    if (decrypted) {
+      try {
+        console.log(decrypted);
+        const str = decrypted.toString(CryptoJS.enc.Utf8);
+        if (str.length > 0) {
+          return str;
+        } else {
+          return 'error 1';
+        }
+      } catch (e) {
+        return 'error 2';
+      }
+    }
+    return 'error 3';
+  };
+
+  public static StrRandom(length: number) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  public static navToIuv(numeroAvviso: any) {
+      try {
+          if (numeroAvviso == null) {
+              return null;
+          }
+
+          if (numeroAvviso.length !== 18) {
+              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: Consentite 18 cifre trovate [${numeroAvviso.length}].`);
+          }
+
+          if (!/^\d+$/.test(numeroAvviso)) {
+              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: non è in formato numerico.`);
+          }
+
+          if (numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
+              return numeroAvviso.substring(3);
+          } else if (numeroAvviso.startsWith("1")) { // '1' + reference(17)
+              return numeroAvviso.substring(1);
+          } else if (numeroAvviso.startsWith("2")) { // '2' + ref(15) + check(2)
+              return numeroAvviso.substring(1);
+          } else if (numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+              return numeroAvviso.substring(1);
+          } else {
+              throw new Error(`Numero Avviso [${numeroAvviso}] fornito non valido: prima cifra non è [0|1|2|3]`);
+          }
+      } catch (error) {
+          //console.error(error.message); // Facoltativo, log dell'errore per debugging
+          return numeroAvviso; // Restituisci il valore di input in caso di errore
+      }
   }
 
   /**
@@ -2149,5 +2351,9 @@ export class UtilService {
       exportLabel: _exportLabel,
       quoteCount : _quoteCount
     };
+  }
+
+  isPendenzaMBT(_json: any) : boolean{
+	return _json.voci.some((voce: any) => voce.provinciaResidenza && voce.provinciaResidenza != null);
   }
 }

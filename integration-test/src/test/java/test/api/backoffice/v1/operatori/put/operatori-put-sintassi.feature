@@ -47,7 +47,7 @@ Examples:
 | tipiPendenza | 'XXXX' | 'tipiPendenza' |
 | acl | 'XXXX' | 'acl' |
 | acl | [ { servizio: null, autorizzazioni: [ 'R' ] } ] | 'servizio' |
-| acl | [ { servizio: 'xxxx', autorizzazioni: 'R' } ] | 'servizio' |
+| acl | [ { servizio: 'xxxx', autorizzazioni: ['R'] } ] | 'servizio' |
 | acl | [ { servizio: 'Pagamenti', autorizzazioni: [ 'X' ] } ] | 'autorizzazioni' |
 | acl | [ { servizio: 'Pagamenti', autorizzazioni: null } ] | 'autorizzazioni' |
 | acl | [ { servizio: 'Pagamenti', autorizzazioni: 'R' } ] | 'autorizzazioni' |

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -44,7 +44,7 @@ public class NotificaTerminazioneConverter extends NotificaConverter {
 			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1)));
 		}
 		// elenco pagamenti
-		if(pagamenti != null && pagamenti.size() > 0) {
+		if(pagamenti != null && !pagamenti.isEmpty()) {
 			List<Riscossione> riscossioni = new ArrayList<>();
 			int indice = 1;
 			String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());

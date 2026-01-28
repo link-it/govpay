@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -44,7 +44,7 @@ public class AuditBD extends BasicBD {
 	}
 	
 	public AuditBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
 	public void insertAudit(long idOperatore, BasicModel model) {
@@ -56,7 +56,7 @@ public class AuditBD extends BasicBD {
 			
 			Audit audit = new Audit();
 			audit.setData(new Date());
-			audit.setIdOggetto(model.getId());
+			audit.setIdOggetto(model.getId() != null ? model.getId() : 0);
 			audit.setOggetto(model.toString());
 			audit.setTipoOggetto(model.getClass().getSimpleName());
 			IdOperatore idOp = new IdOperatore();

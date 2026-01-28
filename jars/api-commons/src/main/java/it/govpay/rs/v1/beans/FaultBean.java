@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.rs.v1.beans;
 
 import java.util.Objects;
@@ -11,35 +30,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dettaglio",
 })
 public class FaultBean {
-  
-    
+
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
    */
   public enum CategoriaEnum {
-    
-    
-        
-            
+
+
+
+
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
-    
-    
+
+
     UNMARSHALL("UNMARSHALL"),
 
-    
+
     RICHIESTA("RICHIESTA"),
-    
-            
+
+
     OPERAZIONE("OPERAZIONE"),
-    
-            
+
+
     PAGOPA("PAGOPA"),
-    
-            
+
+
     INTERNO("INTERNO");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -63,20 +82,20 @@ public class FaultBean {
     }
   }
 
-    
-    
+
+
   @JsonProperty("categoria")
   private CategoriaEnum categoria = null;
-  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
    **/
@@ -161,20 +180,11 @@ public class FaultBean {
     return Objects.hash(this.categoria, this.codice, this.descrizione, this.dettaglio);
   }
 
-//  public static FaultBean parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-//    return parse(json, FaultBean.class);
-//  }
-//
-//  @Override
-//  public String getJsonIdFilter() {
-//    return "faultBean";
-//  }
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBean {\n");
-    
+
     sb.append("    categoria: ").append(this.toIndentedString(this.categoria)).append("\n");
     sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");

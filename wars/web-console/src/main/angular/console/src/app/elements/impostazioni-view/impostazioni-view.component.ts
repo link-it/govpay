@@ -4,6 +4,7 @@ import { UtilService } from '../../services/util.service';
 import { GovpayService } from '../../services/govpay.service';
 import { Voce } from '../../services/voce.service';
 import { MatTabGroup } from '@angular/material';
+import { SslConfigComponent } from '../../elements/detail-view/views/ssl-config/ssl-config.component';
 
 declare let jQuery: any;
 
@@ -13,8 +14,9 @@ declare let jQuery: any;
   styleUrls: ['./impostazioni-view.component.scss']
 })
 export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterContentChecked {
-@ViewChild('tg', { read: MatTabGroup }) tg: MatTabGroup;
-@ViewChild('tgIO', { read: MatTabGroup }) tgIO: MatTabGroup;
+  @ViewChild('tg', { read: MatTabGroup }) tg: MatTabGroup;
+  @ViewChild('tgIO', { read: MatTabGroup }) tgIO: MatTabGroup;
+  @ViewChild('sslConfig') sslConfig: SslConfigComponent;
 
   protected Voce = Voce;
   protected Util = UtilService;
@@ -29,6 +31,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   protected _sslControllers: string[] = ['cryptoType_ctrl'];
 
   protected gdeForm: FormGroup;
+  protected servizioGDEForm: FormGroup;
   protected serverForm: FormGroup;
   protected avvisaturaAppIOForm: FormGroup;
   protected appIOBatchForm: FormGroup;
@@ -41,6 +44,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   protected _truststoreLocation: FormControl = new FormControl();
   protected _keystoreLocation: FormControl = new FormControl();
   protected _appIOBatchAbilitato: FormControl = new FormControl(false);
+  protected _servizioGDEAbilitato: FormControl = new FormControl(false);
   protected _protezioneAbilitato: FormControl = new FormControl(false);
 
   constructor(protected us: UtilService, protected gps: GovpayService) {
@@ -80,6 +84,10 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       enteDS_ctrl: new FormControl('mai'),
       apiBEIODS_ctrl: new FormControl('mai'),
       apiMJPPADS_ctrl: new FormControl('mai')
+    });
+    this.servizioGDEForm = new FormGroup({
+      servizioGDEAbilitato_ctrl: this._servizioGDEAbilitato,
+      servizioGDEUrl_ctrl: new FormControl('')
     });
     this.serverForm = new FormGroup({
       serverAbilitato_ctrl: this._serverAbilitato,
@@ -252,6 +260,11 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       }
     }
 
+    if (this.json.servizioGDE) {
+      this.servizioGDEForm.controls['servizioGDEAbilitato_ctrl'].setValue(this.json.servizioGDE.abilitato || false);
+      this.servizioGDEForm.controls['servizioGDEUrl_ctrl'].setValue(this.json.servizioGDE.url || '');
+    }
+
     if (this.json.mailBatch) {
       this.serverForm.controls['serverAbilitato_ctrl'].setValue(this.json.mailBatch.abilitato || false);
       if (this.json.mailBatch.mailserver) {
@@ -302,16 +315,15 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOTipo_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.tipo || '');
         this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOOggetto_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.oggetto || '');
         this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOMessaggio_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.messaggio || '');
-        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOPreavviso_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.preavviso || '');
+        let _preavviso = this.json.avvisaturaAppIO.promemoriaScadenza.preavviso !== undefined ? this.json.avvisaturaAppIO.promemoriaScadenza.preavviso : '';
+        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOPreavviso_ctrl'].setValue(_preavviso);
       }
     }
 
     if (this.json.appIOBatch) {
-      if (this.json.appIOBatch) {
-        this.appIOBatchForm.controls['appIOBatchUrl_ctrl'].setValue(this.json.appIOBatch.url || '');
-        this.appIOBatchForm.controls['appIOBatchTTL_ctrl'].setValue(this.json.appIOBatch.timeToLive || '');
-        this.appIOBatchForm.controls['appIOBatchAbilitato_ctrl'].setValue(this.json.appIOBatch.abilitato || false);
-      }
+      this.appIOBatchForm.controls['appIOBatchUrl_ctrl'].setValue(this.json.appIOBatch.url || '');
+      this.appIOBatchForm.controls['appIOBatchTTL_ctrl'].setValue(this.json.appIOBatch.timeToLive || '');
+      this.appIOBatchForm.controls['appIOBatchAbilitato_ctrl'].setValue(this.json.appIOBatch.abilitato || false);
     }
 
     if (this.json.avvisaturaMail) {
@@ -332,7 +344,8 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.avvisaturaMailForm.controls['promemoriaScadenzaMailTipo_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.tipo || '');
         this.avvisaturaMailForm.controls['promemoriaScadenzaMailOggetto_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.oggetto || '');
         this.avvisaturaMailForm.controls['promemoriaScadenzaMailMessaggio_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.messaggio || '');
-        this.avvisaturaMailForm.controls['promemoriaScadenzaMailPreavviso_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.preavviso || '');
+        let _preavviso = this.json.avvisaturaMail.promemoriaScadenza.preavviso !== undefined ? this.json.avvisaturaMail.promemoriaScadenza.preavviso : '';
+        this.avvisaturaMailForm.controls['promemoriaScadenzaMailPreavviso_ctrl'].setValue(_preavviso);
       }
     }
 
@@ -410,6 +423,19 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   onSubmit(form: string, values: any) {
     let _bodyPatch: any = {};
     switch(form) {
+      case 'servizioGDEForm':
+        const _authGDE = this.sslConfig.mapToJson();
+        _bodyPatch = [{
+          op: UtilService.PATCH_METHODS.REPLACE,
+          path: "/servizioGDE",
+          value: {
+            abilitato: values.servizioGDEAbilitato_ctrl,
+            url: values.servizioGDEUrl_ctrl,
+            auth: _authGDE
+          }
+        }];
+        if(_authGDE == null) { delete _bodyPatch[0].value.auth; }
+        break;
       case 'serverForm':
         _bodyPatch = [];
         const _obj: any = {
@@ -473,15 +499,18 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         }];
         break;
       case 'appIOBatchForm':
+        const _auth = this.sslConfig.mapToJson();
         _bodyPatch = [{
           op: UtilService.PATCH_METHODS.REPLACE,
           path: "/appIOBatch",
           value: {
             url: values.appIOBatchUrl_ctrl,
             timeToLive: values.appIOBatchTTL_ctrl,
-            abilitato: values.appIOBatchAbilitato_ctrl
+            abilitato: values.appIOBatchAbilitato_ctrl,
+            auth: _auth
           }
         }];
+        if(_auth == null) { delete _bodyPatch[0].value.auth; }
         break;
       case 'avvisaturaMailForm':
         _bodyPatch = [{

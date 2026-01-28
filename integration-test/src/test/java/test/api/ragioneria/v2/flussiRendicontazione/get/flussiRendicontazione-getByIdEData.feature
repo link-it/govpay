@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni-v2.feature')
 
+* callonce sleep(10000)
+
 Scenario: Ricerca rendicontazioni da applicazione applicazione_dominio1.
 
 * def applicazione = read('msg/applicazione_dominio1.json')
@@ -17,7 +19,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url ragioneriaBaseurl
 And path 'flussiRendicontazione'

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -25,12 +25,14 @@ import java.util.List;
 import it.govpay.model.ConnettoreSftp;
 
 public class ConnettoreSftpConverter {
+	
+	private ConnettoreSftpConverter() {}
 
 	public static ConnettoreSftp toDTO(List<it.govpay.orm.Connettore> connettoreLst) {
 		ConnettoreSftp dto = new ConnettoreSftp();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
-				dto = setProprietaConnettoreDTO(dto, connettore);
+				setProprietaConnettoreDTO(dto, connettore);
 			}
 		}
 		return dto;

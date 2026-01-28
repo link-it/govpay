@@ -20,6 +20,7 @@ import { BooleanViewComponent } from '../elements/item-view/views/boolean-view/b
 import { LabelViewComponent } from '../elements/item-view/views/label-view/label-view.component';
 import { DatePickerViewComponent, TimePickerDialogComponent } from '../elements/item-view/views/date-picker-view/date-picker-view.component';
 
+import { RicevuteViewComponent } from '../elements/detail-view/views/ricevute-view/ricevute-view.component';
 import { PendenzeViewComponent } from '../elements/detail-view/views/pendenze-view/pendenze-view.component';
 import { PagamentiViewComponent } from '../elements/detail-view/views/pagamenti-view/pagamenti-view.component';
 import { RegistroIntermediariViewComponent } from '../elements/detail-view/views/registro-intermediari-view/registro-intermediari-view.component';
@@ -64,10 +65,12 @@ import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-v
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
 import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
 import { ConnettoreMaggioliComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-maggioli/connettore-maggioli.component';
+import { RicevutaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ricevuta-view/ricevuta-view.component';
 
 export class EntryPointList {
 
   public static entryList: Array<any> = [
+    RicevuteViewComponent,
     PendenzeViewComponent,
     PagamentiViewComponent,
     RegistroIntermediariViewComponent,
@@ -127,7 +130,8 @@ export class EntryPointList {
     ConnettoreSecimComponent,
     ConnettoreGovpayComponent,
     ConnettoreHypersicComponent,
-    ConnettoreMaggioliComponent
+    ConnettoreMaggioliComponent,
+    RicevutaViewComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -135,6 +139,9 @@ export class EntryPointList {
 
     switch (name) {
       //Component view ref
+      case UtilService.RICEVUTE:
+        _type = RicevuteViewComponent;
+        break;
       case UtilService.PENDENZE:
         _type = PendenzeViewComponent;
         break;
@@ -314,6 +321,9 @@ export class EntryPointList {
         break;
       case UtilService.LABEL:
         _type = LabelViewComponent;
+        break;
+      case UtilService.RICEVUTA:
+        _type = RicevutaViewComponent;
         break;
       //Default Item view ref
       default:
@@ -506,6 +516,9 @@ export class EntryPointList {
         break;
       case 'BooleanViewComponent':
         _name = UtilService.SLIDE_TOGGLE;
+        break;
+      case 'RicevutaViewComponent':
+        _name = UtilService.RICEVUTA;
         break;
       //Default Item view ref
       default:

@@ -31,7 +31,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Input('enable-multi-fab-actions') multiFabAction: boolean = false;
   @Input('is-loading-progress') _isLoading: boolean = false;
   @Input('has-form-view') _hasFormView: boolean = true;
+
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
+  @Output('refresh-search') refreshSearch: EventEmitter<boolean> = new EventEmitter();
 
   protected rsc: any;
   protected _isLoadingMeta: boolean = false;
@@ -216,7 +218,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       (_response) => {
         this._lastMetaResponse = _response.body;
         this._isLoadingMeta = false;
-        // this.__waitForMeta(true);
+        this.__waitForMeta(true);
       },
       (error) => {
         this._isLoadingMeta = false;
@@ -236,10 +238,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.rsc.data.actions = 0;
       }
       if (enableActions) {
-        if (this.rsc.data.actions === 0) {
-          this.rsc.data.actions = true;
-          UtilService.headBehavior.next(this.rsc);
-        }
+        this.rsc.data.actions = (this._lastMetaResponse.numRisultati > 0);
+        UtilService.headBehavior.next(this.rsc);
       }
     });
   }
@@ -341,6 +341,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           templateName: UtilService.TIPO_PENDENZA
         };
         _component = this.ls.componentRefByName(UtilService.TIPI_PENDENZE);
+        break;
+      case UtilService.URL_RICEVUTE:
+        _mb.info = {
+          dialogTitle: 'Carica ricevuta',
+          templateName: UtilService.RICEVUTA
+        };
+        _component = this.ls.componentRefByName(UtilService.RICEVUTE);
         break;
       default:
         return null;
@@ -504,6 +511,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_INCASSI:
         _fabAction.single = UtilService.USER_ACL.hasRendiIncassi;
         break;
+      case UtilService.URL_RICEVUTE:
+        _fabAction.single = UtilService.USER_ACL.hasPagamentiePendenze;
+        break;
       default:
     }
 
@@ -517,6 +527,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         case UtilService.ENTRATA:
         case UtilService.INCASSO:
         case UtilService.TRACCIATO:
+        case UtilService.RICEVUTA:
           UtilService.dialogBehavior.next(_mb);
           break;
         default:
@@ -567,6 +578,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_GIORNALE_EVENTI:
       case UtilService.URL_TRACCIATI:
       case UtilService.URL_INCASSI:
+      case UtilService.URL_RICEVUTE:
         _classTemplate = UtilService.TWO_COLS;
       break;
     }
@@ -615,6 +627,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_TIPI_PENDENZA:
         id = (item.idTipoPendenza || '');
+        break;
+      case UtilService.URL_RICEVUTE:
+        id = (item.pendenza.idPendenza || ''); // TODO decidere id
         break;
       // case UtilService.URL_ENTRATE:
       //   break;
@@ -749,6 +764,19 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.titolo = new Dato({ label: '',  value: item.descrizione });
         _std.sottotitolo = _st;
         break;
+      case UtilService.URL_RICEVUTE:
+        const versione620: boolean = !!(item.rpt && item.rt.versioneOggetto && item.rt.versioneOggetto === '6.2.0');
+        const _iuv2 = versione620?item.rt.datiPagamento.identificativoUnivocoVersamento:item.rt.creditorReferenceId;
+        const _importo = versione620?item.rt.datiPagamento.importoTotalePagato:item.rt.paymentAmount;
+        const _dataPagamento = versione620?item.rt.dataOraMessaggioRicevuta:item.rt.paymentDateTime;
+        _stdTC = new TwoCols();
+        _stdTC.generalTemplate = true;
+        _stdTC.gtTextUL = item.pendenza.causale;
+        _stdTC.gtTextBL = Dato.concatStrings([ item.pendenza.dominio.ragioneSociale, Voce.IUV+': '+_iuv2 ], ', ');
+        _stdTC.gtTextUR = this.us.currencyFormat(_importo);
+        _stdTC.gtTextBR = moment(_dataPagamento).format('DD/MM/YYYY [ore] HH:mm');
+        _std = _stdTC;
+        break;
     }
     return _std;
   }
@@ -824,6 +852,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           _component.instance._componentData = _mappedElement;
           this._livClick(_component.instance);
         break;
+        case UtilService.RICEVUTA:
+          this.refreshSearch.emit(true);
+        break
         default:
           this.getList();
       }
@@ -1036,7 +1067,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           riscossione[_configRic.exportLabel['importo']] = risc.importo || 0;
           riscossione[_configRic.exportLabel['data']] = risc.data || '';
           riscossione[_configRic.exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
-          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.tipoPendenza.idTipoPendenza || '';
           riscossione[_configRic.exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
           riscossione[_configRic.exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
           riscossione[_configRic.exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';

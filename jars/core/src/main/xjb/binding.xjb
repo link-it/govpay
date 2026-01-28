@@ -1,9 +1,9 @@
 <!DOCTYPE xml>
-<bindings xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/jaxb"
-	version="2.1"
-	xsi:schemalocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb">
+<bindings xmlns:jxb="http://jakarta.ee/xml/ns/jaxb"
+	xmlns:xjc="http://jakarta.ee/xml/ns/jaxb/xjc" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jakarta.ee/xml/ns/jaxb"
+	version="3.0"
+	xsi:schemalocation="http://jakarta.ee/xml/ns/jaxb http://jakarta.ee/xml/ns/jaxb">
 
 </bindings>
 

@@ -1,8 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -25,7 +43,7 @@ public class LabelAvvisiProperties {
 	public static final String PROPERTIES_FILE = "/" + PROPERTIES_FILE_NAME;
 	
 	public static final String DEFAULT_PROPS = "it";
-	public static final String [] LINGUE_DISPONIBILI = { "it" , "de",  "en", "fr", "sl" };
+	protected static final String [] LINGUE_DISPONIBILI = { "it" , "de",  "en", "fr", "sl" };
 	
 	public static final String LABEL_AVVISO_PAGAMENTO = "avviso_pagamento";
 	public static final String LABEL_ENTE_CREDITORE = "ente_creditore";
@@ -109,12 +127,10 @@ public class LabelAvvisiProperties {
 				props0 = new Properties();
 				try(InputStream isExt = new FileInputStream(gpConfigFile)) {
 					props0.load(isExt);
-				} catch (FileNotFoundException e) {
-					throw new ConfigException(e);
 				} catch (IOException e) {
 					throw new ConfigException(e);
 				} 
-				log.debug(MessageFormat.format("Individuata configurazione prioritaria Mapping Label TipoEvento: {0}", gpConfigFile.getAbsolutePath()));
+				log.debug("Individuata configurazione prioritaria Mapping Label TipoEvento: {}", gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
 			}
 			
@@ -123,11 +139,8 @@ public class LabelAvvisiProperties {
 				Properties properties = getProperties(lingua+".", props, false, log);
 				this.propMap.put(lingua, properties);
 			}
-		} catch (PropertyNotFoundException e) {
-			log.error(MessageFormat.format("Errore di inizializzazione gestore label avvisi pagamento: {0}", e.getMessage()), e); 
-			throw new ConfigException(e);
-		} catch (IOException e) {
-			log.error(MessageFormat.format("Errore di inizializzazione gestore label avvisi pagamento: {0}", e.getMessage()), e); 
+		} catch (PropertyNotFoundException | IOException e) {
+			LogUtils.logError(log, MessageFormat.format("Errore di inizializzazione gestore label avvisi pagamento: {0}", e.getMessage()), e); 
 			throw new ConfigException(e);
 		}
 	}
@@ -135,7 +148,7 @@ public class LabelAvvisiProperties {
 	private static Properties getProperties(String baseName, Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		Properties valori = new Properties();
 		
-		List<String> nomiProperties = new ArrayList<String>();
+		List<String> nomiProperties = new ArrayList<>();
 		// 1. collezionare tutti i nomi di properties da leggere (possono essere definiti in piu' file)
 		for(int i=0; i<props.length; i++) {
 			if(props[i] != null) {
@@ -164,13 +177,15 @@ public class LabelAvvisiProperties {
 	private static String getProperty(String name, Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		String value = null;
 		for(int i=0; i<props.length; i++) {
-			try { value = getProperty(name, props[i], required, i==1, log); } catch (PropertyNotFoundException e) { }
+			try { value = getProperty(name, props[i], required, i==1, log); } catch (PropertyNotFoundException e) { 
+				//donothing
+			}
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}
 		}
 
-		if(log!= null) log.info(MessageFormat.format("Proprieta {0} non trovata", name));
+		if(log!= null) log.info("Proprieta {} non trovata", name);
 
 		if(required) 
 			throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
@@ -200,10 +215,10 @@ public class LabelAvvisiProperties {
 					throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 				else return null;
 			} else {
-				if(log != null) log.info(MessageFormat.format("Letta proprieta di configurazione {0}{1}: {2}", logString, name, value));
+				if(log != null) log.info("Letta proprieta di configurazione {}{}: {}", logString, name, value);
 			}
 		} else {
-			if(log != null) log.info(MessageFormat.format("Letta proprieta di sistema {0}: {1}", name, value));
+			if(log != null) log.info("Letta proprieta di sistema {}: {}", name, value);
 		}
 
 		return value.trim();
@@ -214,7 +229,7 @@ public class LabelAvvisiProperties {
 		Properties p = this.propMap.get(lingua);
 
 		if(p == null) {
-			log.debug(MessageFormat.format("Configurazione [{0}] non trovata", lingua));
+			log.debug("Configurazione [{}] non trovata", lingua);
 			throw new UtilsException(MessageFormat.format("Configurazione [{0}] non trovata", lingua));
 		}
 

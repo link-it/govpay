@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>it.govpay</groupId>
 		<artifactId>bom</artifactId>
-		<version>3.7.3</version>
+		<version>3.8.2</version>
 		<relativePath>../</relativePath>
 	</parent>
 	<properties>
@@ -24,4 +24,3 @@
 		<module>web-console</module>
 	</modules>
 </project>
-

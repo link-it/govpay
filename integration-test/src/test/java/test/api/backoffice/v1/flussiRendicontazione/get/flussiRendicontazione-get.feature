@@ -125,6 +125,8 @@ Then assert responseStatus == 200
 * def idFlusso = response.response.rendicontazioni[0].identificativoFlusso
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+* call sleep(10000)
+
 Given url backofficeBaseurl
 And path '/flussiRendicontazione', idFlusso
 And headers idA2ABasicAutenticationHeader

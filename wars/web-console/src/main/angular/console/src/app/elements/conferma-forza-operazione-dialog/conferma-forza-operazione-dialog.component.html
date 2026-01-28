@@ -1,0 +1,11 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ data.titolo }}</h2>
+  <mat-dialog-content>
+    <p>{{ data.messaggio }}</p>
+    <mat-checkbox [(ngModel)]="forzaOperazione">Forza operazione</mat-checkbox>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onAnnulla()">Annulla</button>
+    <button mat-raised-button color="primary" (click)="onConferma()" cdkFocusInitial>OK</button>
+  </mat-dialog-actions>
+</div>

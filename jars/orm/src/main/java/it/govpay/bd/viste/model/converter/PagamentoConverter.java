@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.model.converter;
 
 import java.math.BigDecimal;
@@ -14,6 +33,8 @@ import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.model.Pagamento.TipoPagamento;
 
 public class PagamentoConverter {
+	
+	private PagamentoConverter() {}
 
 	public static Pagamento toDTO(it.govpay.orm.VistaPagamento vo) {
 		Pagamento dto = new Pagamento();
@@ -29,8 +50,7 @@ public class PagamentoConverter {
 		pagamento.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
 		pagamento.setDataAcquisizione(vo.getDataAcquisizione());
 		pagamento.setDataPagamento(vo.getDataPagamento());
-		if(vo.getCommissioniPsp() != null)
-			pagamento.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
+		pagamento.setCommissioniPsp(vo.getCommissioniPsp());
 		if(vo.getTipoAllegato() != null)
 			pagamento.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
 		pagamento.setAllegato(vo.getAllegato());
@@ -38,16 +58,13 @@ public class PagamentoConverter {
 			pagamento.setIdRpt(vo.getIdRPT().getId());
 		if(vo.getIdSingoloVersamento() != null)
 			pagamento.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
-		if(vo.getIdRr() != null)
-			pagamento.setIdRr(vo.getIdRr().getId());
 
 		pagamento.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
 		pagamento.setCausaleRevoca(vo.getCausaleRevoca());
 		pagamento.setDatiRevoca(vo.getDatiRevoca());
 		pagamento.setEsitoRevoca(vo.getEsitoRevoca());
 		pagamento.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
-		if(vo.getImportoRevocato() != null)
-			pagamento.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
+		pagamento.setImportoRevocato(vo.getImportoRevocato());
 		if(vo.getStato() != null)
 			pagamento.setStato(Stato.valueOf(vo.getStato()));
 
@@ -81,15 +98,7 @@ public class PagamentoConverter {
 
 		SingoloVersamento singoloVersamento = new SingoloVersamento();
 
-//		if(vo.getSngIdTributo() != null)
-//			singoloVersamento.setIdTributo(vo.getSngIdTributo().getId());
-//		singoloVersamento.setImportoSingoloVersamento(BigDecimal.valueOf(vo.getSngImportoSingoloVersamento()));
 		singoloVersamento.setCodSingoloVersamentoEnte(vo.getSngCodSingVersEnte());
-//		singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf(vo.getSngStatoSingoloVersamento()));
-//		singoloVersamento.setDatiAllegati(vo.getSngDatiAllegati());
-//		singoloVersamento.setDescrizione(vo.getSngDescrizione());
-//		singoloVersamento.setIndiceDati(vo.getSngIndiceDati()); 
-//		singoloVersamento.setDescrizioneCausaleRPT(vo.getSngDescrizioneCausaleRPT());
 
 		dto.setSingoloVersamento(singoloVersamento);
 		
@@ -97,7 +106,7 @@ public class PagamentoConverter {
 
 		Versamento versamento = new Versamento();
 
-		versamento.setId(vo.getId());
+		versamento.setId(vo.getVrsId());
 		versamento.setIdApplicazione(vo.getVrsIdApplicazione().getId());
 
 		if(vo.getVrsIdUo() != null)
@@ -111,105 +120,13 @@ public class PagamentoConverter {
 
 		if(vo.getVrsIdTipoVersamentoDominio() != null)
 			versamento.setIdTipoVersamentoDominio(vo.getVrsIdTipoVersamentoDominio().getId());
-//		versamento.setNome(vo.getVrsNome());
 		versamento.setCodVersamentoEnte(vo.getVrsCodVersamentoEnte());
-//		versamento.setStatoVersamento(StatoVersamento.valueOf(vo.getVrsStatoVersamento()));
-//		versamento.setDescrizioneStato(vo.getVrsDescrizioneStato());
-//		versamento.setImportoTotale(BigDecimal.valueOf(vo.getVrsImportoTotale()));
-//		versamento.setAggiornabile(vo.isVrsAggiornabile());
-//		versamento.setDataCreazione(vo.getVrsDataCreazione());
-//		versamento.setDataValidita(vo.getVrsDataValidita());
-//		versamento.setDataScadenza(vo.getVrsDataScadenza());
-//		versamento.setDataUltimoAggiornamento(vo.getVrsDataOraUltimoAgg());
-//		try {
-//			versamento.setCausaleVersamento(vo.getVrsCausaleVersamento());
-//		} catch (UnsupportedEncodingException e) {
-//			throw new ServiceException(e);
-//		}
-//		Anagrafica debitore = new Anagrafica();
-//		if(vo.getVrsDebitoreTipo()!=null)
-//			debitore.setTipo(TIPO.valueOf(vo.getVrsDebitoreTipo()));
-//		debitore.setRagioneSociale(vo.getVrsDebitoreAnagrafica());
-//		debitore.setCap(vo.getVrsDebitoreCap());
-//		debitore.setCellulare(vo.getVrsDebitoreCellulare());
-//		debitore.setCivico(vo.getVrsDebitoreCivico());
-//		debitore.setCodUnivoco(vo.getVrsDebitoreIdentificativo());
-//		debitore.setEmail(vo.getVrsDebitoreEmail());
-//		debitore.setFax(vo.getVrsDebitoreFax());
-//		debitore.setIndirizzo(vo.getVrsDebitoreIndirizzo());
-//		debitore.setLocalita(vo.getVrsDebitoreLocalita());
-//		debitore.setNazione(vo.getVrsDebitoreNazione());
-//		debitore.setProvincia(vo.getVrsDebitoreProvincia());
-//		debitore.setTelefono(vo.getVrsDebitoreTelefono());
-//		versamento.setAnagraficaDebitore(debitore);
-//
-//		if(vo.getVrsCodAnnoTributario() != null && !vo.getVrsCodAnnoTributario().isEmpty())
-//			versamento.setCodAnnoTributario(Integer.parseInt(vo.getVrsCodAnnoTributario()));
-//
-//		versamento.setCodLotto(vo.getVrsCodLotto());
-
-//		versamento.setTassonomiaAvviso(vo.getVrsTassonomiaAvviso()); 
 		versamento.setTassonomia(vo.getVrsTassonomia());
-
-//		versamento.setCodVersamentoLotto(vo.getVrsCodVersamentoLotto()); 
-//		versamento.setCodBundlekey(vo.getVrsCodBundlekey()); 
-//		versamento.setDatiAllegati(vo.getVrsDatiAllegati());
-//		if(vo.getVrsIncasso() != null) {
-//			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
-//		}
-//		versamento.setAnomalie(vo.getVrsAnomalie());
-//
-//		versamento.setIuvVersamento(vo.getVrsIuvVersamento());
-//		versamento.setNumeroAvviso(vo.getVrsNumeroAvviso());
-
-		// se il numero avviso e' impostato lo iuv proposto deve coincidere con quello inserito a partire dall'avviso
-//		if(versamento.getNumeroAvviso() !=  null) {
-//			versamento.setIuvProposto(versamento.getIuvVersamento());
-//		}
-
-//		versamento.setAck(vo.isVrsAck());
-//		versamento.setAnomalo(vo.isVrsAnomalo());
-
 		versamento.setDirezione(vo.getVrsDirezione());
 		versamento.setDivisione(vo.getVrsDivisione());
-//		versamento.setIdSessione(vo.getVrsIdSessione());
-//
-//		versamento.setDataPagamento(vo.getVrsDataPagamento());
-//		if(vo.getVrsImportoPagato() != null)
-//			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato())); 
-//		if(vo.getVrsImportoIncassato() != null)
-//			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-//		if(vo.getVrsStatoPagamento() != null)
-//			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-//		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-//
-//		versamento.setDataPagamento(vo.getVrsDataPagamento());
-//		if(vo.getVrsImportoPagato() != null)
-//			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato()));
-//		if(vo.getVrsImportoIncassato() != null)
-//			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-//		if(vo.getVrsStatoPagamento() != null)
-//			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-//		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
 		
 		if(vo.getVrsIdDocumento() != null)
 			versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
-//		if(vo.getVrsCodRata() != null) {
-//			if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.ENTRO.toString())) {
-//				versamento.setTipoSoglia(TipoSogliaVersamento.ENTRO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.ENTRO.toString())+ TipoSogliaVersamento.ENTRO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
-//			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.OLTRE.toString())) {
-//				versamento.setTipoSoglia(TipoSogliaVersamento.OLTRE);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
-//			} else {
-//				versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
-//			}
-//		}
-		
-//		if(vo.getVrsTipo() != null)
-//			versamento.setTipo(TipologiaTipoVersamento.toEnum(vo.getVrsTipo()));
 
 		dto.setVersamento(versamento );
 

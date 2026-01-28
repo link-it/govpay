@@ -40,3 +40,39 @@ Examples:
 | direzione | null |
 | divisione | 'Divisione_Test' |
 | divisione | null |
+
+
+Scenario Outline: Caricamento pendenza con controllo del campo opzionale <field> 
+
+* set pendenzaPut.<field> = <value>
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def checkValue = <retValue> != null ? <retValue> : '#notpresent'
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.<field> == checkValue
+
+Examples:
+| field | value | retValue |
+| soggettoPagatore | null | {"identificativo":"ANONIMO","anagrafica":"ANONIMO"} |
+| soggettoPagatore.identificativo | null | 'ANONIMO' |
+| soggettoPagatore.identificativo | '' | 'ANONIMO' |
+| soggettoPagatore.identificativo | ' ' | 'ANONIMO' |
+| soggettoPagatore.identificativo | 'ANONIMO' | 'ANONIMO' |
+| soggettoPagatore.anagrafica | null | 'ANONIMO' |
+| soggettoPagatore.anagrafica | '' | 'ANONIMO' |
+| soggettoPagatore.anagrafica | ' ' | 'ANONIMO' |
+| soggettoPagatore.anagrafica | 'ANONIMO' | 'ANONIMO' |
+| soggettoPagatore.tipo | null | null |
+
+

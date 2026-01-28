@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,6 +20,8 @@
 
 package it.govpay.model;
 
+import java.math.BigInteger;
+
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +35,7 @@ public class Dominio extends BasicModel {
 	private String gln;
 	private boolean abilitato;
 	private int auxDigit;
-	private Integer segregationCode;
+	private BigInteger segregationCode;
 
 	private String iuvPrefix;
 	private byte[] logo;
@@ -48,6 +50,8 @@ public class Dominio extends BasicModel {
 	private boolean intermediato;
 	
 	private String tassonomiaPagoPA;
+	
+	private boolean scaricaFr;
 
 	@Override
 	public Long getId() {
@@ -122,11 +126,11 @@ public class Dominio extends BasicModel {
 		this.iuvPrefix = iuvPrefix;
 	}
 
-	public Integer getSegregationCode() {
+	public BigInteger getSegregationCode() {
 		return this.segregationCode;
 	}
 
-	public void setSegregationCode(Integer segregationCode) {
+	public void setSegregationCode(BigInteger segregationCode) {
 		this.segregationCode = segregationCode;
 	}
 
@@ -208,6 +212,14 @@ public class Dominio extends BasicModel {
 
 	public void setTassonomiaPagoPA(String tassonomiaPagoPA) {
 		this.tassonomiaPagoPA = tassonomiaPagoPA;
+	}
+
+	public boolean isScaricaFr() {
+		return scaricaFr;
+	}
+
+	public void setScaricaFr(boolean scaricaFr) {
+		this.scaricaFr = scaricaFr;
 	}
 	
 }

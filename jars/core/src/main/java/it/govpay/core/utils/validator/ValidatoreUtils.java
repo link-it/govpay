@@ -1,10 +1,29 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita;
 import it.govpay.core.exceptions.ValidationException;
@@ -15,6 +34,8 @@ import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ValidatoreUtils {
+	
+	private ValidatoreUtils() {}
 	
 	public static void validaCodiceConvenzione(ValidatorFactory vf, String nomeCampo, String codiceConvenzione) throws ValidationException {
 		vf.getValidator(nomeCampo, codiceConvenzione).minLength(5).maxLength(35);
@@ -173,7 +194,7 @@ public class ValidatoreUtils {
 		validaCodiceContabilita(vf, nomeCampo, split[1]);
 		} catch(ValidationException e) {
 			throw new ValidationException("La decodifica del valore ["+codiceTassonomicoPagoPA+"] contenuto nel campo ["+nomeCampo
-					+"] non ha avuto successo: valore non valido per la parte del C	odiceContabilita. Valore fornito [" + split[1] + "] non rispetta il pattern previsto ["+CostantiValidazione.PATTERN_COD_CONTABILITA+"].");
+					+"] non ha avuto successo: valore non valido per la parte del CodiceContabilita. Valore fornito [" + split[1] + "] non rispetta il pattern previsto ["+CostantiValidazione.PATTERN_COD_CONTABILITA+"].");
 		}
 	}
 	

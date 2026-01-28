@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.stampe.pdf.rt;
 
 import java.io.ByteArrayInputStream;
@@ -7,14 +26,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
@@ -22,7 +40,6 @@ import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -36,26 +53,21 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class RicevutaTelematicaPdf{
 	
 	
-	private static RicevutaTelematicaPdf _instance = null;
+	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
+	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
+	private static RicevutaTelematicaPdf instance = null;
 	private static JAXBContext jaxbContext = null;
 
-	public static RicevutaTelematicaPdf getInstance() {
-		if(_instance == null)
+	public static synchronized RicevutaTelematicaPdf getInstance() {
+		if(instance == null)
 			init();
 
-		return _instance;
-	}
-	
-	public static JAXBContext getJAXBContextInstance() {
-		if(jaxbContext == null)
-			init();
-
-		return jaxbContext;
+		return instance;
 	}
 
 	public static synchronized void init() {
-		if(_instance == null)
-			_instance = new RicevutaTelematicaPdf();
+		if(instance == null)
+			instance = new RicevutaTelematicaPdf();
 		
 
 		if(jaxbContext == null) {
@@ -67,8 +79,8 @@ public class RicevutaTelematicaPdf{
 		}
 	}
 
-	public RicevutaTelematicaPdf() {
-
+	private RicevutaTelematicaPdf() {
+		// donothing
 	}
 	
 	public JasperPrint creaJasperPrintRicevutaTelematica(Logger log, RicevutaTelematicaInput input,
@@ -102,16 +114,16 @@ public class RicevutaTelematicaPdf{
 			
 			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
 			
-			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
-                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty(PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY,
+                    PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY);
 			
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			
 			JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
-			log.trace("RicevutaTelematicaInput: " + new String(byteArray));
+			log.trace("RicevutaTelematicaInput: {}", new String(byteArray));
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 				
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);
@@ -129,17 +141,6 @@ public class RicevutaTelematicaPdf{
 		}finally {
 			
 		}
-	}
-	
-	public JRDataSource creaXmlDataSource(Logger log,RicevutaTelematicaInput input) throws UtilsException, JRException, JAXBException {
-//		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
-		Marshaller jaxbMarshaller = getJAXBContextInstance().createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
-		jaxbMarshaller.marshal(jaxbElement, baos);
-		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);
-		return dataSource;
 	}
 	
 	public void caricaLoghiRicevuta(RicevutaTelematicaInput input, Properties propertiesRicevutaTelematicaPerDominio) {

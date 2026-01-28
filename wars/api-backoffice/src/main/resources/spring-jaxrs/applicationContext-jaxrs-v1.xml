@@ -18,8 +18,8 @@
     <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
 
     <!--  Jackson Provider for JSON/XML -->
-   	<b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
-    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+   	<b:bean id="jacksonJsonProvider" class="it.govpay.core.jaxrs.JacksonJsonProviderCustomized"/>
+    <b:bean id="jacksonXmlProvider" class="it.govpay.core.jaxrs.JacksonXmlProviderCustomized"/>
 
     
     <!-- FaultBean Exception Mapper -->
@@ -76,10 +76,10 @@
     <b:bean id="quadrature" class="it.govpay.backoffice.v1.Quadrature"/>
     <b:bean id="rendicontazioni" class="it.govpay.backoffice.v1.Rendicontazioni"/>
    	<b:bean id="reportistiche" class="it.govpay.backoffice.v1.Reportistiche"/>
+   	<b:bean id="ricevute" class="it.govpay.backoffice.v1.Ricevute"/>
    	<b:bean id="riscossioni" class="it.govpay.backoffice.v1.Riscossioni"/>
    	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
    	<b:bean id="ruoli" class="it.govpay.backoffice.v1.Ruoli"/>
-   	<b:bean id="tracciati" class="it.govpay.backoffice.v1.Tracciati"/>
    	<b:bean id="tracciatiNotificaPagamenti" class="it.govpay.backoffice.v1.TracciatiNotificaPagamenti"/>
    	<b:bean id="tipiPendenza" class="it.govpay.backoffice.v1.TipiPendenza"/>
        
@@ -114,10 +114,10 @@
 			   	<ref bean="quadrature" />
 			   	<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -162,10 +162,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -209,10 +209,10 @@
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -257,10 +257,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -305,10 +305,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -325,6 +325,54 @@
 		</jaxrs:features>
     </jaxrs:server>
     <!-- HEADER_END -->
+    
+    <!-- API_KEY_START -->
+    <jaxrs:server id="apiBackofficeApiKeyV1" address="/apikey/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+                <ref bean="allegati" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
+			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciatiNotificaPagamenti" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- API_KEY_END -->
     
     <!-- SPID_START -->
     <jaxrs:server id="apiBackofficeSpidV1" address="/spid/v1/">
@@ -353,10 +401,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -401,10 +449,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
@@ -423,7 +471,7 @@
     <!-- SESSION_END -->
     
     
-    <!-- SESSION_START -->
+    <!-- PUBLIC_START -->
     <jaxrs:server id="apiBackofficePublicV1" address="/public/v1/">
         <jaxrs:serviceBeans>
        			<ref bean="check" />
@@ -442,7 +490,55 @@
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>
-    <!-- SESSION_END -->
+    <!-- PUBLIC_END -->
+    
+    <!-- OAUTH2_PKCE_START -->
+    <jaxrs:server id="apiBackofficeOauth2PkceV1" address="/oauth2/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+                <ref bean="allegati" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
+			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciatiNotificaPagamenti" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- OAUTH2_PKCE_END -->
     
     
     <!-- DEFAULT_START -->
@@ -472,10 +568,10 @@
 			   	<ref bean="quadrature" />
 		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
+			   	<ref bean="ricevute" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
-			   	<ref bean="tracciati" />
 			   	<ref bean="tracciatiNotificaPagamenti" />
 			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>

@@ -1,21 +1,41 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
-import it.govpay.backoffice.v1.beans.ModalitaAvvisaturaDigitale;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
 import it.govpay.backoffice.v1.controllers.PendenzeController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -39,15 +59,15 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvvisi") Boolean stampaAvvisi){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is, stampaAvvisi);
+        return this.controller.addTracciatoPendenze(this.getUser(), httpHeaders, is, stampaAvvisi);
     }
 
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("idPendenza") String idPendenza, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("iuv") String iuv, @QueryParam("mostraSpontaneiNonPagati") @DefaultValue(value="false") Boolean mostraSpontaneiNonPagati, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
+    public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("idPendenza") String idPendenza, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idTipoPendenza") List<String> idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("iuv") String iuv, @QueryParam("mostraSpontaneiNonPagati") @DefaultValue(value="false") Boolean mostraSpontaneiNonPagati, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, dataDa, dataA, idTipoPendenza, direzione, divisione, iuv, mostraSpontaneiNonPagati, metadatiPaginazione, maxRisultati);
+        return this.controller.findPendenze(this.getUser(), uriInfo, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, dataDa, dataA, idTipoPendenza, direzione, divisione, iuv, mostraSpontaneiNonPagati, metadatiPaginazione, maxRisultati);
     }
 
     @GET
@@ -56,7 +76,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getPendenzaByAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso){
     	 this.buildContext();
-        return this.controller.getPendenzaByAvviso(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso);
+        return this.controller.getPendenzaByAvviso(this.getUser(), idDominio,  numeroAvviso);
     }
 
     @GET
@@ -64,7 +84,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
         this.buildContext();
-        return this.controller.getPendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, true);
+        return this.controller.getPendenza(this.getUser(), idA2A,  idPendenza, true);
     }
 
     @GET
@@ -72,7 +92,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findTracciatiPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("statoTracciatoPendenza") String stato, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findTracciatiPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, stato, metadatiPaginazione, maxRisultati);
+        return this.controller.findTracciatiPendenze(this.getUser(), uriInfo, pagina, risultatiPerPagina, idDominio, stato, metadatiPaginazione, maxRisultati);
     }
 
     @PATCH
@@ -80,43 +100,43 @@ public class Pendenze extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     public Response updatePendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is){
         this.buildContext();
-        return this.controller.updatePendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is,true);
+        return this.controller.updatePendenza(this.getUser(), idA2A,  idPendenza, is,true);
     }
 
     @POST
     @Path("/tracciati/{idDominio}")
     @Consumes({ "text/csv", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @QueryParam("stampaAvvisi") Boolean stampaAvvisi, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @QueryParam("stampaAvvisi") Boolean stampaAvvisi){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addTracciatoPendenze(this.getUser(), httpHeaders, is,  idDominio, stampaAvvisi);
     }
 
     @POST
     @Path("/tracciati/{idDominio}/{idTipoPendenza}")
     @Consumes({ "text/csv", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("stampaAvvisi") Boolean stampaAvvisi, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("stampaAvvisi") Boolean stampaAvvisi){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, idTipoPendenza, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addTracciatoPendenze(this.getUser(), httpHeaders, is,  idDominio, idTipoPendenza, stampaAvvisi);
     }
 
     @PUT
     @Path("/{idA2A}/{idPendenza}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso){
         this.buildContext();
-        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenza(this.getUser(), idA2A,  idPendenza, is, stampaAvviso);
     }
 
     @POST
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso){
         this.buildContext();
-        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenza(this.getUser(), is, stampaAvviso);
     }
 
     @GET
@@ -141,7 +161,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json", "text/csv" })
     public Response getEsitoTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.buildContext();
-        return this.controller.getEsitoTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getEsitoTracciatoPendenze(this.getUser(),  id);
     }
 
     @GET
@@ -149,17 +169,17 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/zip" })
     public Response getStampeTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.buildContext();
-        return this.controller.getStampeTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getStampeTracciatoPendenze(this.getUser(),  id);
     }
 
     @POST
     @Path("/{idDominio}/{idTipoPendenza}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idUnitaOperativa") String idUnitaOperativa, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idUnitaOperativa") String idUnitaOperativa, @QueryParam("stampaAvviso") Boolean stampaAvviso){
         this.buildContext();
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, idUnitaOperativa, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, idDominio,  idTipoPendenza, is, idUnitaOperativa, stampaAvviso);
     }
 
     @GET

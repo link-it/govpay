@@ -1,9 +1,25 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,19 +32,19 @@ import it.govpay.core.beans.JSONSerializable;
 "idSession",
 })
 public class PagamentoCreato extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
+
   @JsonProperty("redirect")
   private String redirect = null;
-  
+
   @JsonProperty("idSession")
   private String idSession = null;
-  
+
   /**
    * identificativo del pagamento
    **/
@@ -113,7 +129,7 @@ public class PagamentoCreato extends JSONSerializable {
     return Objects.hash(id, location, redirect, idSession);
   }
 
-  public static PagamentoCreato parse(String json) throws it.govpay.core.exceptions.IOException { 
+  public static PagamentoCreato parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, PagamentoCreato.class);
   }
 
@@ -126,7 +142,7 @@ public class PagamentoCreato extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PagamentoCreato {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");
     sb.append("    redirect: ").append(toIndentedString(redirect)).append("\n");

@@ -34,6 +34,7 @@ And headers spidHeaders
 Then status 200
 
 Given url pagamentiBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And headers spidHeaders
 And request pagamentoPost

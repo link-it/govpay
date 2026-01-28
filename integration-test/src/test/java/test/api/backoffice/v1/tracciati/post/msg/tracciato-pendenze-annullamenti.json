@@ -1,0 +1,22 @@
+{
+	"idTracciato": "#(idPendenza)",
+	"idDominio": "#(idDominio)",
+	"inserimenti": [],
+	"annullamenti": [
+		{
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-0')",
+			"motivoAnnullamento": "Annullamento Test #(idPendenza + '-0')"
+		},
+		{
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-1')",
+			"motivoAnnullamento": "Annullamento Test #(idPendenza + '-1')"
+		},
+		{
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-2')",
+			"motivoAnnullamento": "Annullamento Test #(idPendenza + '-2')"
+		}
+	]
+}

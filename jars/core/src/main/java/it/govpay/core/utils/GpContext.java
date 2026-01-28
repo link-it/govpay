@@ -1,17 +1,33 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-//import javax.ws.rs.core.HttpHeaders;
-//import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
-import javax.xml.ws.handler.MessageContext;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
 import org.openspcoop2.utils.logger.beans.context.core.AbstractTransaction;
@@ -26,6 +42,7 @@ import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.logger.beans.context.core.Service;
 import org.openspcoop2.utils.logger.constants.context.FlowMode;
 import org.openspcoop2.utils.logger.constants.context.Result;
+import org.openspcoop2.utils.service.context.IContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
@@ -36,9 +53,15 @@ import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.model.Evento.RuoloEvento;
-import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.xml.ws.handler.MessageContext;
 
+/**
+ * @author Pintori Giuliano (giuliano.pintori@link.it)
+ * @author  $Author: pintori $
+ *
+ */
 public class GpContext extends ApplicationContext {
 
 	public static final String UNKNOWN = "<Unknown>";
@@ -53,7 +76,7 @@ public class GpContext extends ApplicationContext {
 	private EventoContext eventoCtx;
 	
 	// Mappa da utilizzare all'interno delle trasformazioni si puo' utilizzare per salvare dei dati all'interno dei template e utilizzarli dopo la fine della trasformazione.
-	private Hashtable<String, Object> ctx = new Hashtable<String, Object>();
+	private Hashtable<String, Object> ctx = new Hashtable<>();
 	
 	public Hashtable<String, Object> getContext() {
 		return this.ctx;
@@ -88,12 +111,12 @@ public class GpContext extends ApplicationContext {
 		super();
 	}
 
-	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio, Componente componente) throws ServiceException {
+	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio, Componente componente) {
 		this();
 		popolaGpContext(this, msgCtx, tipoServizio, versioneServizio, componente);
 	}
 	
-	public static void popolaGpContext(GpContext ctx, MessageContext msgCtx, String tipoServizio, int versioneServizio, Componente componente) throws ServiceException {
+	public static void popolaGpContext(GpContext ctx, MessageContext msgCtx, String tipoServizio, int versioneServizio, Componente componente) {
 		ApplicationTransaction transaction = ctx.getTransaction();
 		transaction.setRole(Role.SERVER);
 		transaction.setProtocol(TIPO_PROTOCOLLO_WS);
@@ -141,7 +164,7 @@ public class GpContext extends ApplicationContext {
 		ctx.getEventoCtx().setTipoEvento(operation.getName());
 	}
 
-	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user, Componente componente) throws ServiceException {
+	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user, Componente componente) {
 		this();
 		ApplicationTransaction transaction = this.getTransaction();
 		transaction.setRole(Role.SERVER);
@@ -183,7 +206,7 @@ public class GpContext extends ApplicationContext {
 		this.getEventoCtx().setTipoEvento(nomeOperazione);
 	}
 
-	public static GpContext newContext() throws ServiceException{
+	public static GpContext newContext() {
 		GpContext context = new GpContext();
 		
 		ApplicationTransaction transaction = context.getTransaction();
@@ -209,18 +232,13 @@ public class GpContext extends ApplicationContext {
 		return context;
 	}
 
-	public static GpContext newBatchContext() throws ServiceException{
+	public static GpContext newBatchContext() {
 		GpContext context = new GpContext();
 		
 		ApplicationTransaction transaction = context.getTransaction();
 		transaction.setRole(Role.CLIENT);
 		transaction.setProtocol(TIPO_PROTOCOLLO_TASK);
 		
-//		Actor to = new Actor();
-//		to.setName(GovPay);
-//		to.setType(TIPO_SOGGETTO_GOVPAY);
-//		transaction.setTo(to);
-
 		HttpServer server = new HttpServer();
 		server.setName(GOVPAY);
 		transaction.addServer(server);
@@ -234,26 +252,20 @@ public class GpContext extends ApplicationContext {
 		
 		return context;
 	}
-
-	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_620_ENCODED);
+	
+	public String setupNodoClient(String codDominio, String azione) {
+		return this.setupNodoClient(null, codDominio, null, azione);
+	}
+	
+	public String setupNodoClient(String codStazione, String codDominio, String azione) {
+		return this.setupNodoClient(codStazione, codDominio, null, azione);
 	}
 
-	private synchronized String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
-//		Actor to = new Actor();
-//		to.setName(NodoDeiPagamentiSPC);
-//		to.setType(TIPO_SOGGETTO_NDP);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setTo(to);
-//
-//		Actor from = new Actor();
-//		from.setName(codStazione);
-//		from.setType(TIPO_SOGGETTO_STAZIONE);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setFrom(from);
-		
-		// TODO Capire come indicare gli actor per i vari server.
+	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
+		return this.setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString());
+	}
 
-		// this.setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
-
+	public synchronized String setupNodoClient(String codStazione, String codDominio, String servizio, String azione) {
 		HttpServer server = new HttpServer();
 		server.setName(NodoDeiPagamentiSPC);
 		server.setIdOperation(UUID.randomUUID().toString());
@@ -263,20 +275,6 @@ public class GpContext extends ApplicationContext {
 	}
 
 	public synchronized String setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
-//		Actor to = new Actor();
-//		to.setName(codApplicazione);
-//		to.setType(TIPO_SOGGETTO_APP);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setTo(to);
-//
-//		Actor from = new Actor();
-//		from.setName(GovPay);
-//		from.setType(TIPO_SERVIZIO_GOVPAY);
-//		GpThreadLocal.get().getApplicationContext().getTransaction().setFrom(from);
-		
-		// TODO Capire come indicare gli actor per i vari server.
-
-		// this.setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
-
 		HttpServer server = new HttpServer();
 		server.setName(codApplicazione);
 		server.setEndpoint(url);
@@ -325,22 +323,6 @@ public class GpContext extends ApplicationContext {
 
 		return server.getIdOperation();
 	}
-
-//	private void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
-//		Service service = new Service();
-//		service.setName(servizio);
-//		service.setVersion(version);
-//		service.setType(tipoServizio);
-//		this.getTransaction().setService(service);
-//
-//		Operation operation = new Operation();
-//		operation.setMode(FlowMode.INPUT_OUTPUT);
-//		operation.setName(operazione);
-//		this.getTransaction().setOperation(operation);
-		
-		// TODO Capire come indicare il tipo di servizio fruito dai vari server.
-		
-//	}
 
 	@Override
 	public ApplicationTransaction getTransaction() {

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.business;
 
 import java.util.ArrayList;
@@ -13,10 +32,8 @@ import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
@@ -31,6 +48,7 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
@@ -43,10 +61,10 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.EventoUtils;
-import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -54,6 +72,9 @@ import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
@@ -71,9 +92,10 @@ public class Rpt {
 	private static Logger log = LoggerWrapperFactory.getLogger(Rpt.class);
 
 	public Rpt() {
+		//nothing
 	}
 
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, 
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Canale canale, String ibanAddebito, 
 			Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale, String codiceConvenzione) throws GovPayException, UtilsException {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -84,8 +106,8 @@ public class Rpt {
 			if(pagamentoPortale != null) codCarrello = pagamentoPortale.getIdSessione();
 			appContext.getPagamentoCtx().setCodCarrello(codCarrello);
 			appContext.setCorrelationId(codCarrello);
-			appContext.getRequest().addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
-			ctx.getApplicationLogger().log("pagamento.avviaTransazioneCarrelloWISP20");
+			appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CARRELLO, appContext.getPagamentoCtx().getCodCarrello()));
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_AVVIA_TRANSAZIONE_CARRELLO_WISP20);
 
 			Stazione stazione = null;
 			Giornale giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
@@ -95,22 +117,22 @@ public class Rpt {
 
 				String codApplicazione = versamentoModel.getApplicazione(configWrapper).getCodApplicazione();
 				String codVersamentoEnte = versamentoModel.getCodVersamentoEnte(); 
-				ctx.getApplicationLogger().log("rpt.validazioneSemantica", codApplicazione, codVersamentoEnte);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_VALIDAZIONE_SEMANTICA, codApplicazione, codVersamentoEnte);
 
-				log.debug("Verifica autorizzazione pagamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
+				log.debug("Verifica autorizzazione pagamento del versamento [{}] applicazione [{}]...", codVersamentoEnte, codApplicazione);
 				if(!versamentoModel.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-					log.debug("Non autorizzato pagamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]: pagamento in stato diverso da " + StatoVersamento.NON_ESEGUITO);
+					log.debug("Non autorizzato pagamento del versamento [{}] applicazione [{}]: pagamento in stato diverso da {}", codVersamentoEnte, codApplicazione, StatoVersamento.NON_ESEGUITO);
 					throw new GovPayException(EsitoOperazione.PAG_006, codApplicazione, codVersamentoEnte, versamentoModel.getStatoVersamento().toString());
 				} else {
-					log.debug("Autorizzato pagamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]: pagamento in stato " + StatoVersamento.NON_ESEGUITO);
+					log.debug("Autorizzato pagamento del versamento [{}] applicazione [{}]: pagamento in stato {}", codVersamentoEnte, codApplicazione, StatoVersamento.NON_ESEGUITO);
 				}
 
-				log.debug("Verifica scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
+				log.debug("Verifica scadenza del versamento [{}] applicazione [{}]...", codVersamentoEnte, codApplicazione);
 				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
-					log.warn("Scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa.");
+					log.warn("Scadenza del versamento [{}] applicazione [{}] decorsa.", codVersamentoEnte, codApplicazione);
 					throw new GovPayException(EsitoOperazione.PAG_007, codApplicazione, codVersamentoEnte, SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamentoModel.getDataScadenza()));
 				} else { // versamento non scaduto, controllo data validita'
-					log.debug("Verifica validita' del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
+					log.debug("Verifica validità del versamento [{}] applicazione [{}]...", codVersamentoEnte, codApplicazione);
 					if(versamentoModel.getDataValidita() != null && DateUtils.isDataDecorsa(versamentoModel.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
 
 						if(versamentoModel.getId() == null) {
@@ -118,28 +140,28 @@ public class Rpt {
 							throw new GovPayException(EsitoOperazione.PAG_012, codApplicazione, codVersamentoEnte, SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamentoModel.getDataValidita()));
 						} else {
 							// Versammento in archivio scaduto. Ne chiedo un aggiornamento.
-							log.info("Validita del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
+							log.info("Validità del versamento [{}] applicazione [{}] decorsa. Avvio richiesta di aggiornamento all'applicazione.", codVersamentoEnte, codApplicazione);
 							try {
 								versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, log);
 								versamenti.set(i, versamentoModel); // aggiorno il versamento all'interno della lista, l'oggetto restituito in caso di verifica e' nuovo le modifiche a versamentoModel vengono perse 
-								log.info("Versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] aggiornato tramite servizio di verifica.");
+								log.info("Versamento [{}] applicazione [{}] aggiornato tramite servizio di verifica.", codVersamentoEnte, codApplicazione);
 							} catch (VersamentoAnnullatoException e){
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento annullato");
+								log.warn("Aggiornamento del versamento [{}] applicazione [{}] fallito: versamento annullato", codVersamentoEnte, codApplicazione);
 								throw new GovPayException(EsitoOperazione.VER_013, codApplicazione, codVersamentoEnte);
 							} catch (VersamentoScadutoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento scaduto");
+								log.warn("Aggiornamento del versamento [{}] applicazione [{}] fallito: versamento scaduto", codVersamentoEnte, codApplicazione);
 								throw new GovPayException(EsitoOperazione.VER_010, codApplicazione, codVersamentoEnte);
 							} catch (VersamentoDuplicatoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento duplicato");
+								log.warn("Aggiornamento del versamento [{}] applicazione [{}] fallito: versamento duplicato", codVersamentoEnte, codApplicazione);
 								throw new GovPayException(EsitoOperazione.VER_012, codApplicazione, codVersamentoEnte);
 							} catch (VersamentoSconosciutoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento sconosciuto");
+								log.warn("Aggiornamento del versamento [{}] applicazione [{}] fallito: versamento sconosciuto", codVersamentoEnte, codApplicazione);
 								throw new GovPayException(EsitoOperazione.VER_011, codApplicazione, codVersamentoEnte);
 							} catch (ClientException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di interazione con il servizio di verifica.");
+								log.warn("Aggiornamento del versamento [{}] applicazione [{}] fallito: errore di interazione con il servizio di verifica.", codVersamentoEnte, codApplicazione);
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							} catch (VersamentoNonValidoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazione dei dati ricevuti dal servizio di verifica.");
+								log.warn("Aggiornamento del versamento [{}] applicazione [{}] fallito: errore di validazione dei dati ricevuti dal servizio di verifica.", codVersamentoEnte, codApplicazione);
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							}
 						}
@@ -148,7 +170,7 @@ public class Rpt {
 					}
 				}
 
-				log.debug("Scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] verificata.");
+				log.debug("Scadenza del versamento [{}] applicazione [{}] verificata.", codVersamentoEnte, codApplicazione);
 
 				if(stazione == null) {
 					stazione = versamentoModel.getDominio(configWrapper).getStazione();
@@ -158,7 +180,7 @@ public class Rpt {
 					}
 				}
 
-				ctx.getApplicationLogger().log("rpt.validazioneSemanticaOk", codApplicazione, codVersamentoEnte);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_VALIDAZIONE_SEMANTICA_OK, codApplicazione, codVersamentoEnte);
 			}
 
 			Intermediario intermediario = null;
@@ -193,33 +215,26 @@ public class Rpt {
 
 					// Verifico se ha uno IUV suggerito ed in caso lo assegno
 					if(versamento.getIuvProposto() != null) {
-						log.debug("IUV Proposto: " + versamento.getIuvProposto());
+						log.debug("IUV Proposto: {}", versamento.getIuvProposto());
 						TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 						iuvBusiness.checkIUV(versamento.getDominio(configWrapper), versamento.getIuvProposto(), tipoIuv);
 						iuv = versamento.getIuvProposto();
 						ccp = IuvUtils.buildCCP();
-						ctx.getApplicationLogger().log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), versamento.getIuvProposto(), ccp);
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_ASSEGNAZIONE_IUV_CUSTOM, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), versamento.getIuvProposto(), ccp);
 					} else {
 						// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
 						iuv = versamento.getIuvVersamento();
 						if(iuv != null) {
-							log.debug("Iuv gia' assegnato: " + iuv);
+							log.debug("Iuv gia' assegnato: {}", iuv);
 							ccp = IuvUtils.buildCCP();
-							ctx.getApplicationLogger().log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_ASSEGNAZIONE_IUV_RIUSO, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						} else {
 							log.debug("Iuv non assegnato. Generazione...");
 							
-							// Non c'e' iuv assegnato. Glielo genero io.
-							TipoIUV tipoIUV = it.govpay.model.Iuv.TipoIUV.ISO11694;
-							
-							// se e' stata impostata l'opzione per dismettere la generazione di IUV in formato ISO11694 allora lo IUV verra' generato in formato numerico
-							if(GovpayConfig.getInstance().isDismettiIUVIso11694()) {
-								tipoIUV = TipoIUV.NUMERICO;
-							}
-							
-							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), tipoIUV, rptBD);
+							// Non c'e' iuv assegnato. Glielo genero io sempre di tipo numerico.
+							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.NUMERICO, rptBD);
 							ccp = IuvUtils.buildCCP();
-							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
+							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_ASSEGNAZIONE_IUV_GENERATO, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
 
@@ -231,23 +246,23 @@ public class Rpt {
 					// blocco dei pagamenti modello 3 per le RPT SANP 2.4.0
 					// il nuovo pagamento modello 3 ha un timeout sempre impostato di max 30 minuti
 					if(pagamentoPortale != null && pagamentoPortale.getTipo() == 1) {
-						log.debug("Blocco pagamento per il Mod3 SANP 2.4 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() + " minuti]"); 
-						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+						log.debug("Blocco pagamento per il Mod1 SANP 2.4 attivo con soglia: [{} minuti]", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins());
+						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:{}, IdPendenza:{}].", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
 						RptFilter filter = rptBD.newFilter();
-						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
+						filter.setStato(it.govpay.model.Rpt.getStatiPendenti());
 						filter.setIdVersamento(versamento.getId());
 						filter.setVersione(it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
-						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
+						List<it.govpay.bd.model.Rpt> rptPendenti = rptBD.findAll(filter);
 
-						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+						log.debug("Trovate [{}] RPT pendenti per il versamento [IdA2A:{}, IdPendenza:{}].", rptPendenti.size(), versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 						// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
 						// Altrimenti lancio il fault
-						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() * 60000);
+						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins() * 60000);
 
-						for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
+						for(it.govpay.bd.model.Rpt rpt_pendente : rptPendenti) {
 							Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 
 							// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
@@ -259,23 +274,23 @@ public class Rpt {
 
 					// blocco dei pagamenti modello 1 per le RPT SANP 2.3.0
 					if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
-						log.debug("Blocco pagamento per il Mod1 SANP 2.3 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 
-						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+						log.debug("Blocco pagamento per il Mod1 SANP 2.3 attivo con soglia: [{} minuti]", GovpayConfig.getInstance().getTimeoutPendentiModello1Mins());
+						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:{}, IdPendenza:{}].", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
 						RptFilter filter = rptBD.newFilter();
-						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
+						filter.setStato(it.govpay.model.Rpt.getStatiPendenti());
 						filter.setIdVersamento(versamento.getId());
 						filter.setVersione(it.govpay.model.Rpt.VersioneRPT.SANP_230.toString());
-						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
+						List<it.govpay.bd.model.Rpt> rptPendenti = rptBD.findAll(filter);
 
-						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+						log.debug("Trovate [{}] RPT pendenti per il versamento [IdA2A:{}, IdPendenza:{}].", rptPendenti.size(), versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 						// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
 						// Altrimenti lancio il fault
 						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() * 60000);
 
-						for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
+						for(it.govpay.bd.model.Rpt rpt_pendente : rptPendenti) {
 							Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 
 							// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
@@ -300,18 +315,23 @@ public class Rpt {
 
 					rptBD.insertRpt(rpt);
 					rpts.add(rpt);
-					ctx.getApplicationLogger().log("rpt.creazioneRpt", versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp, rpt.getCodMsgRichiesta());
-					log.info("Inserita Rpt per il versamento ("+versamento.getCodVersamentoEnte()+") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") con dominio (" + rpt.getCodDominio() + ") iuv (" + rpt.getIuv() + ") ccp (" + rpt.getCcp() + ")");
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_CREAZIONE_RPT, versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp, rpt.getCodMsgRichiesta());
+					log.info("Inserita RPT per il versamento ({}) dell'applicazione ({}) con dominio ({}) iuv ({}) ccp ({})", versamento.getCodVersamentoEnte(), versamento.getApplicazione(configWrapper).getCodApplicazione(), rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 				} 
 
 				rptBD.commit();
-			} catch (ServiceException | GovPayException | UtilsException e){
+			} catch (ServiceException | GovPayException e){
 				if(rptBD != null) {
 					rptBD.rollback();
 				}
 				throw e;
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
@@ -321,13 +341,14 @@ public class Rpt {
 			// Se ho una ClientException non so come sia andata la consegna.
 			NodoClient clientInviaCarrelloRPT = null;
 			rptBD = null;
+			EventoContext inviaCarrelloRPTEventoCtx = new EventoContext(Componente.API_PAGOPA);
 			try {
 				Risposta risposta = null;
 				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOINVIACARRELLORPT);
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
-				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
-				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
-				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId, codiceConvenzione);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_CARRELLO, appContext.getPagamentoCtx().getCodCarrello()));
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_INVIO_CARRELLO_RPT);
+				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, inviaCarrelloRPTEventoCtx);
+				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, codiceConvenzione);
 
 				// ripristino la connessione
 				rptBD = new RptBD(configWrapper);
@@ -351,10 +372,12 @@ public class Rpt {
 							rpt.setDescrizioneStato(descrizione);
 							rpt.setEsitoPagamento(EsitoPagamento.RIFIUTATO);
 							rpt.setFaultCode(faultCode);
+							log.info("Aggiorno stato = RPT_RIFIUTATA_NODO per l'RPT [{}/{}/{}]", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,EsitoPagamento.RIFIUTATO);
 						}
 
 					} catch (Exception e) {
+						log.warn("Si e' verificato un errore durante l'aggioramento della RPT: {} ,{}", e.getMessage(), e);
 						// Se uno o piu' aggiornamenti vanno male, non importa. 
 						// si risolvera' poi nella verifica pendenti
 					} 
@@ -371,159 +394,90 @@ public class Rpt {
 							}
 						}
 					}
-					ctx.getApplicationLogger().log("rpt.invioKo", risposta.getLog());
-					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
-					if(clientInviaCarrelloRPT != null) {
-						clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(risposta.getFaultBean().getFaultCode());
-						clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.KO);
-						//						clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(risposta.toString());
+					MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_INVIO_KO, risposta.getLog());
+					log.info("RPT rifiutata dal Nodo dei Pagamenti: {}" , risposta.getLog());
+					if(inviaCarrelloRPTEventoCtx != null) {
+						inviaCarrelloRPTEventoCtx.setSottotipoEsito(risposta.getFaultBean().getFaultCode());
+						inviaCarrelloRPTEventoCtx.setEsito(Esito.KO);
 					}
-					throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
+					throw new GovPayException(Rpt.toFaultBean(risposta.getFaultBean()));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
 					// Aggiorno lo stato e ritorno
 					if(risposta.getUrl() != null) {
-						log.debug("Redirect URL: " + risposta.getUrl());
-						ctx.getApplicationLogger().log("rpt.invioOk");
+						log.debug("Redirect URL: {}", risposta.getUrl());
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_INVIO_OK);
 					} else {
 						log.debug("Nessuna URL di redirect");
-						ctx.getApplicationLogger().log("rpt.invioOkNoRedirect");
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_INVIO_OK_NO_REDIRECT);
 					}
-					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.OK);
-					return this.updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), pagamentoPortale, null);
+					inviaCarrelloRPTEventoCtx.setEsito(Esito.OK);
+					return this.updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), null);
 				}
-			} catch (ClientException e) {
+			} catch (ClientInitializeException | ClientException e) {
 				// ClientException: tento una chiedi stato RPT per recuperare lo stato effettivo.
 				//   - RPT non esistente: rendo un errore NDP per RPT non inviata
 				//   - RPT esistente: faccio come OK
 				//   - Errore nella richiesta: rendo un errore NDP per stato sconosciuto
-				if(clientInviaCarrelloRPT != null) {
-					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
-					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.FAIL);
-					clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(e.getMessage());
-					clientInviaCarrelloRPT.getEventoCtx().setException(e);
-				}
-				ctx.getApplicationLogger().log("rpt.invioFail", e.getMessage());
-				log.warn("Errore nella spedizione dell'Rpt: " + e);
-				NodoChiediStatoRPTRisposta risposta = null;
-				log.info("Attivazione della procedura di recupero del processo di pagamento.");
-
-				NodoClient chiediStatoRptClient = null;
-
-				try {
-					try {
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), EventoContext.Azione.NODOCHIEDISTATORPT);
-						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
-
-						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
-						// salvataggio id Rpt/ versamento/ pagamento
-						chiediStatoRptClient.getEventoCtx().setCodDominio(rpts.get(0).getCodDominio());
-						chiediStatoRptClient.getEventoCtx().setIuv(rpts.get(0).getIuv());
-						chiediStatoRptClient.getEventoCtx().setCcp(rpts.get(0).getCcp());
-						chiediStatoRptClient.getEventoCtx().setIdA2A(rpts.get(0).getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-						chiediStatoRptClient.getEventoCtx().setIdPendenza(rpts.get(0).getVersamento().getCodVersamentoEnte());
-						if(rpts.get(0).getPagamentoPortale() != null)
-							chiediStatoRptClient.getEventoCtx().setIdPagamento(rpts.get(0).getPagamentoPortale().getIdSessione());
-
-						risposta = RptUtils.chiediStatoRPT(chiediStatoRptClient, intermediario, stazione, rpts.get(0), operationId);
-						chiediStatoRptClient.getEventoCtx().setEsito(Esito.OK);
-					} catch (ClientException ee) {
-						if(chiediStatoRptClient != null) {
-							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
-							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(ee.getMessage());
-							chiediStatoRptClient.getEventoCtx().setException(ee);
-						}
-						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
-						log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
-						this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, e);
-						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
-					} finally {
-
-					}
-					if(risposta.getEsito() == null) {
-						if(chiediStatoRptClient != null) {
-							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());
-							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
-							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(risposta.getFault().getFaultString());
-						}
-						// anche la chiedi stato e' fallita
-						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
-						log.warn("Recupero sessione fallito. Errore nella richiesta di stato RPT: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
+				if(inviaCarrelloRPTEventoCtx != null) {
+					if(e instanceof ClientException clientException) {
+						log.warn("Errore nella spedizione del carrello RPT: " +e.getMessage(), e); 
+						inviaCarrelloRPTEventoCtx.setSottotipoEsito(clientException.getResponseCode() + "");
 					} else {
-						StatoRpt statoRpt = StatoRpt.toEnum(risposta.getEsito().getStato());
-						log.info("Acquisito stato RPT dal nodo: " + risposta.getEsito().getStato());
-
-
-						if(statoRpt.equals(StatoRpt.RT_ACCETTATA_PA) || statoRpt.equals(StatoRpt.RT_RIFIUTATA_PA)) {
-							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTcompletato");
-							log.info("Processo di pagamento gia' completato.");
-							if(chiediStatoRptClient != null) {
-								chiediStatoRptClient.getEventoCtx().setSottotipoEsito("PAA_NODO_INDISPONIBILE"); 
-								chiediStatoRptClient.getEventoCtx().setEsito(Esito.KO);
-								chiediStatoRptClient.getEventoCtx().setDescrizioneEsito("Richiesta di pagamento gia' gestita dal Nodo dei Pagamenti");
-							}
-							// Ho gia' trattato anche la RT. Non faccio nulla.
-							throw new GovPayException(EsitoOperazione.NDP_000, e, "Richiesta di pagamento gia' gestita dal Nodo dei Pagamenti");
-						}
-
-
-						// Ho lo stato aggiornato. Aggiorno il db
-						if(risposta.getEsito().getUrl() != null) {
-							log.info("Processo di pagamento recuperato. Url di redirect: " + risposta.getEsito().getUrl());
-							appContext.getResponse().addGenericProperty(new Property("redirectUrl", risposta.getEsito().getUrl()));
-							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTOk");
-						} else {
-							log.info("Processo di pagamento recuperato. Nessuna URL di redirect.");
-							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTOk");
-						}
-						return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), pagamentoPortale, e);
+						log.error("Errore nella creazione del client per la spedizione del carrello RPT: " + e.getMessage(), e);
+						inviaCarrelloRPTEventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 					}
+					
+					inviaCarrelloRPTEventoCtx.setEsito(Esito.FAIL);
+					inviaCarrelloRPTEventoCtx.setDescrizioneEsito(e.getMessage());
+					inviaCarrelloRPTEventoCtx.setException(e);
+				}
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RPT_INVIO_FAIL, e.getMessage());
+				
+				try {
+					// 2024-11-04 eliminato recupero della rpt, operazione non piu' supportata da PagoPA
+					this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), e);
+					throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 				} catch (NotificaException e1) {
 					throw new GovPayException(e);
 				} finally {
-					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
-						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
-					}
+					// donothing
 				}
 			} catch (NotificaException e) {
 				throw new GovPayException(e);
 			}  finally {
 
-				if(clientInviaCarrelloRPT != null && clientInviaCarrelloRPT.getEventoCtx().isRegistraEvento()) {
+				if(inviaCarrelloRPTEventoCtx != null && inviaCarrelloRPTEventoCtx.isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
 					for(it.govpay.bd.model.Rpt rpt : rpts) {
 						// salvataggio id Rpt/ versamento/ pagamento
-						clientInviaCarrelloRPT.getEventoCtx().setCodDominio(rpt.getCodDominio());
-						clientInviaCarrelloRPT.getEventoCtx().setIuv(rpt.getIuv());
-						clientInviaCarrelloRPT.getEventoCtx().setCcp(rpt.getCcp());
-						clientInviaCarrelloRPT.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-						clientInviaCarrelloRPT.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
+						inviaCarrelloRPTEventoCtx.setCodDominio(rpt.getCodDominio());
+						inviaCarrelloRPTEventoCtx.setIuv(rpt.getIuv());
+						inviaCarrelloRPTEventoCtx.setCcp(rpt.getCcp());
+						inviaCarrelloRPTEventoCtx.setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
+						inviaCarrelloRPTEventoCtx.setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
 						if(rpt.getPagamentoPortale() != null)
-							clientInviaCarrelloRPT.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+							inviaCarrelloRPTEventoCtx.setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
 
-						RptUtils.popolaEventoCooperazione(clientInviaCarrelloRPT, rpt, intermediario, stazione); 
+						GiornaleEventi.popolaEventoCooperazione(rpt, intermediario, stazione, inviaCarrelloRPTEventoCtx); 
 
 						if(rpt.getFaultCode() != null)
-							clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(rpt.getFaultCode());
-						if(!clientInviaCarrelloRPT.getEventoCtx().getEsito().equals(Esito.OK) && clientInviaCarrelloRPT.getEventoCtx().getDescrizioneEsito() == null) {
-							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
+							inviaCarrelloRPTEventoCtx.setSottotipoEsito(rpt.getFaultCode());
+						if(!inviaCarrelloRPTEventoCtx.getEsito().equals(Esito.OK) && inviaCarrelloRPTEventoCtx.getDescrizioneEsito() == null) {
+							inviaCarrelloRPTEventoCtx.setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						eventiBD.insertEvento(EventoUtils.toEventoDTO(clientInviaCarrelloRPT.getEventoCtx(),log));
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(inviaCarrelloRPTEventoCtx,log));
 					}
 				}
 			}
-		} catch (ServiceException e) {
-			throw new GovPayException(e);
-		} catch (IOException e) {
+		} catch (ServiceException | IOException e) {
 			throw new GovPayException(e);
 		} 
 	}
 
-	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException, UtilsException, NotificaException { 
+	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, Exception e) throws ServiceException, GovPayException, NotificaException { 
 		IContext ctx = ContextThreadLocal.get();
 		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -559,16 +513,18 @@ public class Rpt {
 				rptBD.rollback();
 			} finally {
 				if(rptBD != null) {
+					// ripristino autocommit
+					if(!rptBD.isAutoCommit() ) {
+						rptBD.setAutoCommit(true);
+					}
+					
 					rptBD.closeConnection();
 				}
 			}
 		}
 
 		switch (statoRpt) {
-		case RPT_RIFIUTATA_NODO:
-		case RPT_ERRORE_INVIO_A_NODO:
-		case RPT_ERRORE_INVIO_A_PSP:
-		case RPT_RIFIUTATA_PSP:
+		case RPT_RIFIUTATA_NODO, RPT_ERRORE_INVIO_A_NODO, RPT_ERRORE_INVIO_A_PSP, RPT_RIFIUTATA_PSP:
 			// Casi di rifiuto. Rendo l'errore
 			if(e!= null)
 				throw new GovPayException(EsitoOperazione.NDP_000, e);
@@ -579,13 +535,13 @@ public class Rpt {
 			String codSessione = rpts.get(0).getCodSessione();
 
 			if(codSessione != null) {
-				appContext.getResponse().addGenericProperty(new Property("codPspSession", codSessione));
+				appContext.getResponse().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_PSP_SESSION, codSessione));
 			}
 
 			if(codSessione != null) {
-				ctx.getApplicationLogger().log("pagamento.invioCarrelloRpt");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_CARRELLO_RPT);
 			} else {
-				ctx.getApplicationLogger().log("pagamento.invioCarrelloRptNoRedirect");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_INVIO_CARRELLO_RPT_NO_REDIRECT);
 			}
 
 			log.info("RPT inviata correttamente al nodo");
@@ -610,7 +566,7 @@ public class Rpt {
 			RptFilter filter = rptBD.newFilter();
 			filter.setCodDominio(codDominio);
 			filter.setIuv(iuv);
-			filter.setStato(it.govpay.model.Rpt.stati_pendenti);
+			filter.setStato(it.govpay.model.Rpt.getStatiPendenti());
 			filter.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 
 			
@@ -630,21 +586,21 @@ public class Rpt {
 						oldPagamentoPortale.setStato(STATO.ANNULLATO);
 						oldPagamentoPortale.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
 					}catch (NotFoundException e) {
-
+						// donothing
 					}
 				}
 
 				try {
-					rptBD.updateRpt(rpt.getId(), rpt);
+					rptBD.updateRpt(rpt);
 					if(oldPagamentoPortale != null) {
 						ppbd.updatePagamento(oldPagamentoPortale, false, true); // aggiorna versamenti = false, autocommit gestito esternamente true
 					}
 
 					rptBD.commit();
-					log.info("RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"] annullata con successo.");
+					log.info("RPT [idDominio:{}][iuv:{}][ccp:{}] annullata con successo.", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 				} catch(ServiceException e) {
 					rptBD.rollback();
-					log.error("Errore durante l'annullamento della RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"]: " +e .getMessage(), e);
+					LogUtils.logError(log, "Errore durante l'annullamento della RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"]: " +e .getMessage(), e);
 					throw e;
 				} 
 			}
@@ -653,8 +609,29 @@ public class Rpt {
 			if(rptBD != null) {
 				rptBD.disableSelectForUpdate();
 				
+				// ripristino autocommit
+				if(!rptBD.isAutoCommit() ) {
+					rptBD.setAutoCommit(true);
+				}
+				
 				rptBD.closeConnection();
 			}
 		}
+	}
+	
+	public static it.govpay.core.exceptions.FaultBean toFaultBean(FaultBean faultBean) {
+		if(faultBean == null) return null;
+		
+		it.govpay.core.exceptions.FaultBean toRet = new it.govpay.core.exceptions.FaultBean();
+		
+		toRet.setDescription(faultBean.getDescription());
+		toRet.setFaultCode(faultBean.getFaultCode());
+		toRet.setFaultString(faultBean.getFaultString());
+		toRet.setId(faultBean.getId());
+		toRet.setOriginalDescription(faultBean.getOriginalDescription());
+		toRet.setOriginalFaultCode(faultBean.getOriginalFaultCode());
+		toRet.setOriginalFaultString(faultBean.getOriginalFaultString());
+		toRet.setSerial(faultBean.getSerial());
+		return toRet;
 	}
 }

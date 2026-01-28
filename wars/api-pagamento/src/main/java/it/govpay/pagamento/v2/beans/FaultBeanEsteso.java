@@ -1,8 +1,25 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
-
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,34 +33,34 @@ import it.govpay.core.beans.JSONSerializable;
 "location",
 })
 public class FaultBeanEsteso extends JSONSerializable {
-  
+
 	  /**
 	   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
 	   */
 	  public enum CategoriaEnum {
-	    
-	    
-	        
-	            
+
+
+
+
 	    AUTORIZZAZIONE("AUTORIZZAZIONE"),
-	    
-	            
+
+
 	    RICHIESTA("RICHIESTA"),
-	    
-	            
+
+
 	    OPERAZIONE("OPERAZIONE"),
-	    
-	            
+
+
 	    PAGOPA("PAGOPA"),
 
 
 	    EC("EC"),
-	    
-	            
+
+
 	    INTERNO("INTERNO");
-	            
-	        
-	    
+
+
+
 
 	    private String value;
 
@@ -67,26 +84,26 @@ public class FaultBeanEsteso extends JSONSerializable {
 	    }
 	  }
 
-	    
-	    
+
+
   @JsonProperty("categoria")
   private CategoriaEnum categoria = null;
-	  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
    **/

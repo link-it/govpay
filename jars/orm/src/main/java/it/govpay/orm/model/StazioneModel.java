@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.Stazione;
@@ -45,7 +47,7 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.COD_STAZIONE = new Field("codStazione",java.lang.String.class,"Stazione",Stazione.class);
 		this.PASSWORD = new Field("password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Stazione",Stazione.class);
-		this.APPLICATION_CODE = new Field("applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.APPLICATION_CODE = new Field("applicationCode",java.math.BigInteger.class,"Stazione",Stazione.class);
 		this.VERSIONE = new Field("versione",java.lang.String.class,"Stazione",Stazione.class);
 	
 	}
@@ -58,7 +60,7 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.COD_STAZIONE = new ComplexField(father,"codStazione",java.lang.String.class,"Stazione",Stazione.class);
 		this.PASSWORD = new ComplexField(father,"password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Stazione",Stazione.class);
-		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",java.math.BigInteger.class,"Stazione",Stazione.class);
 		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"Stazione",Stazione.class);
 	
 	}

@@ -18,6 +18,8 @@ export class FormInput {
   defaultTime: string = null; //HH:MM
   pattern: RegExp = null;
   required: boolean = false;
+  warning: boolean = false;
+  warning_message: string = 'WARNING'; // Default warning message
   promise: any = {
     async: false,
     url: '',

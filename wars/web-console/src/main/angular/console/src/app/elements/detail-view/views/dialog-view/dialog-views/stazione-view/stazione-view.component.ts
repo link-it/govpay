@@ -15,6 +15,7 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
   @Input() parent: any;
 
   protected versioni: any[];
+  protected _isPasswordRequired: boolean = true;
 
   constructor(public us: UtilService) {}
 
@@ -23,7 +24,7 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
 
     this.fGroup.addControl('idStazione_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('versione_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('modelloUnico_ctrl', new FormControl(false));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
   }
 
@@ -38,8 +39,13 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
         }
         this.fGroup.controls['idStazione_ctrl'].setValue((idStazione)?idStazione:'');
         this.fGroup.controls['password_ctrl'].setValue((this.json.password)?this.json.password:'');
-        this.fGroup.controls['versione_ctrl'].setValue((this.json.password)?this.json.versione:'');
+        let _modelloUnicoValue = this.json.versione ? UtilService.MODELLO_UNICO_BOOLEAN_DA_VERSIONE[this.json.versione] : false;
+        this.fGroup.controls['modelloUnico_ctrl'].setValue(_modelloUnicoValue);
         this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
+        
+        // controllo required campo password
+        this._isPasswordRequired = !_modelloUnicoValue;
+        this.setPasswordRequired(this._isPasswordRequired);
       }
     });
   }
@@ -58,9 +64,24 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
     }
     _json.abilitato = _info['abilita_ctrl'];
     _json.password = (_info['password_ctrl'])?_info['password_ctrl']:null;
-    _json.versione = (_info['versione_ctrl'])?_info['versione_ctrl']:null;
+    let _versioneFromBoolean = UtilService.VERSIONE_DA_MODELLO_UNICO_BOOLEAN[_info['modelloUnico_ctrl']];
+    _json.versione = _versioneFromBoolean;
+    //_json.versione = (_info['versione_ctrl'])?_info['versione_ctrl']:null;
 
     return _json;
   }
 
+  protected _modelloUnicoChange(event: any) {
+	this._isPasswordRequired = !event.checked;
+	this.setPasswordRequired(this._isPasswordRequired);
+  }
+  
+   protected setPasswordRequired(pwdRequired: boolean) {
+    const controls: any = this.fGroup.controls;
+    if (pwdRequired) {
+	  controls.password_ctrl.setValidators(Validators.required);
+    } else {
+	  controls.password_ctrl.clearValidators();
+    }
+  }
 }

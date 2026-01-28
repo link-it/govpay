@@ -1,14 +1,33 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePendenza  {
 
@@ -39,19 +58,19 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	      return null;
 	    }
 	  }
-	  @Schema(required = true, description = "Tipologia di Bollo digitale")
+	  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipologia di Bollo digitale")
 	 /**
 	   * Tipologia di Bollo digitale
 	  **/
 	  private TipoBolloEnum tipoBollo = null;
 
-	  @Schema(example = "--- base64 ---", required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
+	  @Schema(example = "--- base64 ---", requiredMode = RequiredMode.REQUIRED, description = "Digest in base64 del documento informatico associato alla marca da bollo")
 	 /**
 	   * Digest in base64 del documento informatico associato alla marca da bollo
 	  **/
 	  private String hashDocumento = null;
 
-	  @Schema(example = "RO", required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
+	  @Schema(example = "RO", requiredMode = RequiredMode.REQUIRED, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
 	 /**
 	   * Sigla automobilistica della provincia di residenza del soggetto pagatore
 	  **/
@@ -139,7 +158,7 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	    return this;
 	  }
 
-	  @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
+	  @Schema(example = "IT60X0542811101000000123456", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String ibanAccredito = null;
 
 	  @Schema(example = "IT60X0542811101000000123456", description = "")
@@ -182,7 +201,7 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	    return this;
 	  }
 
-	  @Schema(example = "SRV-12345", required = true, description = "")
+	  @Schema(example = "SRV-12345", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String codEntrata = null;
 	 /**
 	   * Get codEntrata

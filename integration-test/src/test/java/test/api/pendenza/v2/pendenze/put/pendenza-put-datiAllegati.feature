@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
@@ -33,6 +35,7 @@ Examples:
 | [ "datoAllegato1" , "datoAllegato2" ] |
 | [ 10 , 20 ] |
 | [ datoAllegato1: 10 , datoAllegato2: 20 ] |
+| { "datoAllegato1": 10 , "datoAllegato2": 20 } |
 
 Scenario Outline: Caricamento pendenza con dati allegati nella voce
 
@@ -61,3 +64,4 @@ Examples:
 | [ "datoAllegato1" , "datoAllegato2" ] |
 | [ 10 , 20 ] |
 | [ datoAllegato1: 10 , datoAllegato2: 20 ] |
+| { "datoAllegato1": 10 , "datoAllegato2": 20 } |

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,15 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao;
 
-import org.openspcoop2.generic_project.dao.IDBServiceWithId;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
+import org.openspcoop2.generic_project.dao.IDBServiceWithId;
+import it.govpay.orm.IdRpt;
 
 /**     
  * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.RPT 
@@ -38,6 +36,4 @@ import it.govpay.orm.RPT;
 
 public interface IDBRPTService extends IRPTService,IDBServiceWithId<RPT, IdRpt> {
 
-	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException;
-	
 }

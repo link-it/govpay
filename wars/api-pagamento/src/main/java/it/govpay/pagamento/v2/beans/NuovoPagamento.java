@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.util.ArrayList;
@@ -5,12 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -26,31 +44,31 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NuovoPagamento extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
-  
+
   @JsonProperty("contoAddebito")
   private Conto contoAddebito = null;
-  
+
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
-  
+
   @JsonProperty("credenzialiPagatore")
   private String credenzialiPagatore = null;
-  
+
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
-  
+
   @JsonProperty("autenticazioneSoggetto")
   private TipoAutenticazioneSoggetto autenticazioneSoggetto = TipoAutenticazioneSoggetto.N_A;
-  
+
   @JsonProperty("lingua")
   private LinguaPagamento lingua = null;
-  
+
   @JsonProperty("pendenze")
   private List<NuovaPendenza> pendenze = new ArrayList<>();
-  
+
   /**
    * url di ritorno al portale al termine della sessione di pagamento
    **/
@@ -144,7 +162,7 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
       return null;
     }
   }
-  
+
   public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws ValidationException{
     if(autenticazioneSoggetto != null) {
       this.autenticazioneSoggetto = TipoAutenticazioneSoggetto.fromValue(autenticazioneSoggetto);
@@ -229,7 +247,7 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovoPagamento {\n");
-    
+
     sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
     sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
     sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
@@ -259,8 +277,10 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
 		vf.getValidator("pendenze", this.pendenze).notNull().minItems(1).maxItems(5).validateObjects();
 		vf.getValidator("urlRitorno", this.urlRitorno).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 		vf.getValidator("contoAddebito", this.contoAddebito).validateFields();
-		//vf.getValidator("dataEsecuzionePagamento", this.dataEsecuzionePagamento).after(LocalDate.now()).insideDays(30);
 		vf.getValidator("credenzialiPagatore", this.credenzialiPagatore).minLength(1).maxLength(35);
+		if(this.soggettoVersante != null) {
+			this.soggettoVersante.setVersante(true);
+		}
 		vf.getValidator("soggettoVersante", this.soggettoVersante).validateFields();
 		vf.getValidator("autenticazioneSoggetto", this.autenticazioneSoggetto).notNull();
 	}

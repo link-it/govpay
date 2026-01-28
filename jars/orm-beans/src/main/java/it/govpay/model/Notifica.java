@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -24,7 +24,7 @@ import java.util.Date;
 public class Notifica extends BasicModel {
 	
 	public Notifica() {
-		
+		// Default constructor
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -35,7 +35,6 @@ public class Notifica extends BasicModel {
 	private Long id;
 	private long idApplicazione;
 	private Long idRpt;
-	private Long idRr;
 	private TipoNotifica tipo;
 	private Date dataCreazione;
 	private StatoSpedizione stato;
@@ -98,12 +97,6 @@ public class Notifica extends BasicModel {
 	}
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
-	}
-	public Long getIdRr() {
-		return this.idRr;
-	}
-	public void setIdRr(Long idRr) {
-		this.idRr = idRr;	
 	}
 	public Date getDataProssimaSpedizione() {
 		return this.dataProssimaSpedizione;

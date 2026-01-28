@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
@@ -55,7 +56,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -94,7 +95,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -133,7 +134,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -172,7 +173,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -211,7 +212,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -251,7 +252,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -291,7 +292,7 @@ And request
 When method patch
 Then status 200
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'

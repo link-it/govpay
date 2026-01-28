@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -18,6 +18,8 @@
  *
  */
 package it.govpay.core.exceptions;
+
+import it.govpay.core.beans.Costanti;
 
 /**	
  * Contiene la definizione di una eccezione lanciata dalle funzioni di validazione
@@ -45,4 +47,10 @@ public class ValidationException extends Exception {
 		super(msg);
 	}
 
+	public ValidationException(String fieldName, String valoreErrato, String valoriAmmessi) {
+		super(Costanti.MSG_VALIDATION_EXCEPTION_CODIFICA_INESISTENTE_PER +
+				fieldName + Costanti.MSG_VALIDATION_EXCEPTION_VALORE_FORNITO +
+				valoreErrato + Costanti.MSG_VALIDATION_EXCEPTION_VALORI_POSSIBILI +
+				valoriAmmessi + Costanti.MSG_VALIDATION_EXCEPTION_SUFFIX);
+	}
 }

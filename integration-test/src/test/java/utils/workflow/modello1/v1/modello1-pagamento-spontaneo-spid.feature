@@ -24,6 +24,7 @@ Scenario: Pagamento ad iniziativa Ente
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
 
 Given url pagamentoBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And headers spidHeaders
 And request pagamentoPost

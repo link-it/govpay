@@ -1,0 +1,11 @@
+<div class="w-100 mb-3" [formGroup]="fGroup">
+  <input type="text" formControlName="ricevuta_ctrl" hidden>
+  <input #iBrowse type="file" hidden>
+  <div class="d-block action" (click)="_select()">
+    <p *ngIf="!_methodSelected?.file" class="m-0">Carica ricevuta...</p>
+    <div *ngIf="_methodSelected?.file" class="d-flex align-items-center">
+      <p class="w-100 m-0 pr-3">{{_methodSelected?.filename}}</p>
+      <button class="lh-100 right-aligned" mat-icon-button type="button" (click)="_resetSelection($event)"><mat-icon>delete</mat-icon></button>
+    </div>
+  </div>
+</div>

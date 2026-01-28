@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.business;
 
 import java.text.MessageFormat;
@@ -12,6 +31,8 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.LogUtils;
+import it.govpay.model.Connettore;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
@@ -31,6 +52,7 @@ public class Configurazione {
 	private static Logger log = LoggerWrapperFactory.getLogger(Configurazione.class);
 
 	public Configurazione() {
+		//donothing
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazione() throws ServiceException{
@@ -43,15 +65,15 @@ public class Configurazione {
 			configurazione = AnagraficaManager.getConfigurazione(configWrapper);
 			this.validaConfigurazione(configurazione);
 		}catch(IOException | NotFoundException e) {
-			log.error(MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
+			LogUtils.logError(log, MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
 			throw new ServiceException(e);
 		}
 
 		return configurazione; 
 	}
 
-	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione, Long idOperatore) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true, idOperatore);
 		ConfigurazioneBD configurazioneBD = new ConfigurazioneBD(configWrapper);
 		configurazioneBD.salvaConfigurazione(configurazione);
 	}
@@ -84,6 +106,10 @@ public class Configurazione {
 
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
+		}
+		
+		if(configurazione.getServizioGDE() == null) {
+			configurazione.setServizioGDE(configurazioneDefault.getServizioGDE());
 		}
 	}
 
@@ -123,6 +149,7 @@ public class Configurazione {
 		if(configurazione.getGiornale().getApiMaggioliJPPA() == null) {
 			configurazione.getGiornale().setApiMaggioliJPPA(configurazioneDefault.getGiornale().getApiMaggioliJPPA());
 		}
+
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
@@ -135,18 +162,21 @@ public class Configurazione {
 		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
 		configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
 		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
+		
+		Connettore servizioGDE = new Connettore();
+		servizioGDE.setAbilitato(false);
+		servizioGDE.setIdConnettore(it.govpay.bd.model.Configurazione.COD_CONNETTORE_GDE);
+		configurazione.setServizioGDE(servizioGDE);
 
 		return configurazione;
 	}
 
 	public AvvisaturaViaMail getAvvisaturaViaMailDefault() {
-		AvvisaturaViaMail avvisaturaMail = new AvvisaturaViaMail();
-		return avvisaturaMail;
+		return new AvvisaturaViaMail();
 	}
 
 	public AvvisaturaViaAppIo getAvvisaturaViaAppIoDefault() {
-		AvvisaturaViaAppIo avvisaturaAppIo = new AvvisaturaViaAppIo();
-		return avvisaturaAppIo;
+		return new AvvisaturaViaAppIo();
 	}
 
 	public MailBatch getBatchSpedizioneEmailDefault() {
@@ -176,8 +206,7 @@ public class Configurazione {
 	}
 
 	public TracciatoCsv getTracciatoCsvDefault() {
-		TracciatoCsv tracciato = new TracciatoCsv();
-		return tracciato;
+		return new TracciatoCsv();
 	}
 
 	public Giornale getGiornaleDefault() {

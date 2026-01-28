@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 
@@ -16,6 +35,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "abilitato",
 "url",
 "timeToLive",
+"auth",
 })
 public class AppIOBatch extends JSONSerializable implements IValidable {
 
@@ -27,6 +47,9 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
 
   @JsonProperty("timeToLive")
   private BigDecimal timeToLive = null;
+
+  @JsonProperty("auth")
+  private TipoAutenticazione auth = null;
 
   /**
    * Indica lo stato di abilitazione
@@ -76,6 +99,21 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
     this.timeToLive = timeToLive;
   }
 
+  /**
+   **/
+  public AppIOBatch auth(TipoAutenticazione auth) {
+    this.auth = auth;
+    return this;
+  }
+
+  @JsonProperty("auth")
+  public TipoAutenticazione getAuth() {
+    return auth;
+  }
+  public void setAuth(TipoAutenticazione auth) {
+    this.auth = auth;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -87,12 +125,13 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
     AppIOBatch appIOBatch = (AppIOBatch) o;
     return Objects.equals(abilitato, appIOBatch.abilitato) &&
         Objects.equals(url, appIOBatch.url) &&
-        Objects.equals(timeToLive, appIOBatch.timeToLive);
+        Objects.equals(timeToLive, appIOBatch.timeToLive) &&
+        Objects.equals(auth, appIOBatch.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, url, timeToLive);
+    return Objects.hash(abilitato, url, timeToLive, auth);
   }
 
   public static AppIOBatch parse(String json) throws IOException {
@@ -112,6 +151,7 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("    timeToLive: ").append(toIndentedString(timeToLive)).append("\n");
+    sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -135,6 +175,7 @@ public void validate() throws ValidationException {
 	  if(this.abilitato.booleanValue()) {
 		  vf.getValidator("url", this.url).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
 		  vf.getValidator("timeToLive", this.timeToLive).min(new BigDecimal(3600)).max(new BigDecimal(604800));
+		  vf.getValidator("auth", this.auth).validateFields();
 	  }
 }
 }

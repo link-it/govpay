@@ -20,6 +20,7 @@ Le modalità di autenticazione supportate dalle API di GovPay sono quelle indica
     header      valore dell'header                                          principal comunicato in header HTTP                                 header
     spid        codice fiscale o partita iva dell'utenza spid               proprietà dell'utenza SPID propagate in header HTTP                 spid
     session     principal individuato in sede di creazione della sessione   autenticazione tramite sessione precedentemente creata              session
+    api-key     valore dell'header                                          API-Id e API-Key forniti tramite header HTTP                        apikey
     public      nessun principal                                            accesso anonimo                                                     public
     ==========  ==========================================================  =================================================================   ===========
 

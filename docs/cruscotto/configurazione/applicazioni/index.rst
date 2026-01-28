@@ -26,6 +26,7 @@ Per aggiungere una nuova applicazione, premere il pulsante posizionato, come sem
    Vista generale dei campi di una nuova applicazione
 
 Analizziamo le sottosezioni in cui è strutturata l'applicazione, ovvero:
+
 * Informazioni di riepilogo
 * Codifica avvisi
 * API integrazione
@@ -37,7 +38,7 @@ Informazioni di riepilogo
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: ../../_images/38ApplicazioneRiepilogoDelleInformazioni.png
+.. figure:: ../../_images/38ApplicazioneRiepilogoDelleInformazioniConPassword.png
    :align: center
    :name: ApplicazioneInformazioniDiRiepilogo
 
@@ -49,9 +50,33 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
    :widths: 40,40,20
 
    "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
-   "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
+   "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", "Obbligatorio"
+   "Password", "Password necessaria per l'autenticazione", ""
    "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
 
+Il campo *Principal* deve essere valorizzato in base al tipo di autenticazione che si intende utilizzare:
+
+.. csv-table::
+   :header: "Tipo autenticazione", "Valore da inserire"
+   :widths: 50,50
+
+   "HTTP Basic", "Username dell'autenticazione Basic"
+   "SSL", "Subject del certificato X509"
+   "SSL Header", "Subject del certificato X509 contenuto nell'header"
+   "Header", "Principal contenuto nell'header"
+   "Api Key", "APP-ID presentato dal client tramite header X-APP-ID"
+
+Il campo *Password* deve essere valorizzato in base al tipo di autenticazione che si intende utilizzare:
+
+.. csv-table::
+   :header: "Tipo autenticazione", "Valore da inserire"
+   :widths: 50,50
+
+   "HTTP Basic", "Password dell'autenticazione Basic"
+   "SSL", "Non necessario"
+   "SSL Header", "Non necessario"
+   "Header", "Non necessario"
+   "Api Key", "API-Key presentato dal client tramite header X-API-KEY"
 
 Codifica avvisi
 ^^^^^^^^^^^^^^^

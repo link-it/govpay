@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 
+* callonce sleep(10000)
+
 Scenario: Ricerca rendicontazioni da applicazione applicazione_dominio1.
 
 * def applicazione = read('msg/applicazione_dominio1.json')

@@ -1,6 +1,25 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.model;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class TipoVersamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
@@ -50,7 +69,7 @@ public class TipoVersamento extends BasicModel {
 	
 	private boolean avvisaturaMailPromemoriaScadenzaAbilitatoDefault;
 	private String avvisaturaMailPromemoriaScadenzaTipoDefault;
-	private BigDecimal avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
+	private BigInteger avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
 	private String avvisaturaMailPromemoriaScadenzaOggettoDefault;
 	private String avvisaturaMailPromemoriaScadenzaMessaggioDefault;
 	
@@ -80,7 +99,7 @@ public class TipoVersamento extends BasicModel {
 	
 	private boolean avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault;
 	private String avvisaturaAppIoPromemoriaScadenzaTipoDefault;
-	private BigDecimal avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
+	private BigInteger avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
 	private String avvisaturaAppIoPromemoriaScadenzaOggettoDefault;
 	private String avvisaturaAppIoPromemoriaScadenzaMessaggioDefault;
 	
@@ -290,10 +309,10 @@ public class TipoVersamento extends BasicModel {
 	public void setAvvisaturaMailPromemoriaScadenzaTipoDefault(String avvisaturaMailPromemoriaScadenzaTipoDefault) {
 		this.avvisaturaMailPromemoriaScadenzaTipoDefault = avvisaturaMailPromemoriaScadenzaTipoDefault;
 	}
-	public BigDecimal getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() {
+	public BigInteger getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() {
 		return avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
 	}
-	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(BigDecimal avvisaturaMailPromemoriaScadenzaPreavvisoDefault) {
+	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(BigInteger avvisaturaMailPromemoriaScadenzaPreavvisoDefault) {
 		this.avvisaturaMailPromemoriaScadenzaPreavvisoDefault = avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
 	}
 	public String getAvvisaturaMailPromemoriaScadenzaOggettoDefault() {
@@ -405,10 +424,10 @@ public class TipoVersamento extends BasicModel {
 	public void setAvvisaturaAppIoPromemoriaScadenzaTipoDefault(String avvisaturaAppIoPromemoriaScadenzaTipoDefault) {
 		this.avvisaturaAppIoPromemoriaScadenzaTipoDefault = avvisaturaAppIoPromemoriaScadenzaTipoDefault;
 	}
-	public BigDecimal getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() {
+	public BigInteger getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() {
 		return avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
 	}
-	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(BigDecimal avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault) {
+	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(BigInteger avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault) {
 		this.avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault = avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
 	}
 	public String getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault() {

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -31,6 +31,8 @@ import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.IdVersamento;
 
 public class NotificaAppIoConverter {
+	
+	private NotificaAppIoConverter() {}
 
 	public static it.govpay.orm.NotificaAppIO toVO(NotificaAppIo dto) {
 		it.govpay.orm.NotificaAppIO vo = new it.govpay.orm.NotificaAppIO();

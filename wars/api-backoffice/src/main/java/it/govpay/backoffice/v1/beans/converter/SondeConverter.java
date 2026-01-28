@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import it.govpay.backoffice.v1.beans.Sonda;
@@ -11,6 +30,7 @@ import it.govpay.model.configurazione.MailBatch;
 
 public class SondeConverter {
 
+	private SondeConverter() {}
 
 	public static Sonda toRsModel(org.openspcoop2.utils.sonde.Sonda sonda, org.openspcoop2.utils.sonde.ParametriSonda parametri, it.govpay.bd.model.Configurazione configurazione) throws IOException {
 		Sonda rsModel = new Sonda(sonda.getClass());
@@ -45,7 +65,7 @@ public class SondeConverter {
 			org.openspcoop2.utils.sonde.Sonda.StatoSonda statoSonda, it.govpay.bd.model.Configurazione configurazione) throws IOException {
 
 		if(Costanti.NTFY.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizioneNotifiche()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -59,7 +79,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.NTFY_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_SPEDIZIONE_PROMEMORIA.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizionePromemoria()) {
 
 				MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 				if(!batchSpedizioneEmail.isAbilitato()) {
@@ -81,7 +101,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_SPEDIZIONE_PROMEMORIA_DISABILITATO);
 			}
 		} else if(Costanti.NTFY_APP_IO.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizioneNotificheAppIO()) {
 
 
 				if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
@@ -104,7 +124,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.NTFY_APP_IO_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_GESTIONE_PROMEMORIA.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchGestionePromemoria()) {
 
 				MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 				AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
@@ -157,7 +177,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_CHIUSURA_RPT_SCADUTE.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchChiusuraRPTScadute()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -171,7 +191,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_CHIUSURA_RPT_SCADUTE_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_RICONCILIAZIONI.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchElaborazioneRiconciliazioni()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -184,8 +204,8 @@ public class SondeConverter {
 				rsModel.setStato(StatoSonda.ERROR);
 				rsModel.setDescrizioneStato(Costanti.BATCH_RICONCILIAZIONI_DISABILITATO);
 			}
-		} else if(Costanti.PND.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+		} else if(Costanti.BATCH_RECUPERO_RT.equals(rsModel.getId())) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRT()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -196,10 +216,10 @@ public class SondeConverter {
 			} else {
 				// batch disabilitato
 				rsModel.setStato(StatoSonda.ERROR);
-				rsModel.setDescrizioneStato(Costanti.PND_DISABILITATO);
+				rsModel.setDescrizioneStato(Costanti.BATCH_RECUPERO_RT_DISABILITATO);
 			}
 		} else if(Costanti.RND.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -256,8 +276,6 @@ public class SondeConverter {
 				return Costanti.CHECK_DB_NOME;
 			case Costanti.RND:
 				return Costanti.RND_NOME;
-			case Costanti.PND:
-				return Costanti.PND_NOME;
 			case Costanti.NTFY:
 				return Costanti.NTFY_NOME;
 			case Costanti.CHECK_NTFY:
@@ -294,6 +312,10 @@ public class SondeConverter {
 				return Costanti.BATCH_CHIUSURA_RPT_SCADUTE_NOME;
 			case Costanti.CHECK_CHIUSURA_RPT_SCADUTE:
 				return Costanti.CHECK_CHIUSURA_RPT_SCADUTE_NOME;
+			case Costanti.BATCH_RECUPERO_RT:
+				return Costanti.BATCH_RECUPERO_RT_NOME;
+			case Costanti.CHECK_RECUPERO_RT:
+				return Costanti.CHECK_RECUPERO_RT_NOME;
 			}
 		}
 		return id;

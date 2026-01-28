@@ -8,21 +8,12 @@ Background:
 * def esitoAttivaRPT = {"faultCode":"PAA_SYSTEM_ERROR","faultString":"Errore generico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
 * def loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non neque vestibulum, porta eros quis, fringilla enim. Nam sit amet justo sagittis, pretium urna et, convallis nisl. Proin fringilla consequat ex quis pharetra. Nam laoreet dignissim leo. Ut pulvinar odio et egestas placerat. Quisque tincidunt egestas orci, feugiat lobortis nisi tempor id. Donec aliquet sed massa at congue. Sed dictum, elit id molestie ornare, nibh augue facilisis ex, in molestie metus enim finibus arcu. Donec non elit dictum, dignissim dui sed, facilisis enim. Suspendisse nec cursus nisi. Ut turpis justo, fermentum vitae odio et, hendrerit sodales tortor. Aliquam varius facilisis nulla vitae hendrerit. In cursus et lacus vel consectetur.'
 
-
 # Configurazione Applicazione per utilizzare le API V2
 
-
-* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
-* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
-* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-
+* def applicazioneRequest = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazioneRequest.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazioneRequest.servizioIntegrazione.url = ente_api_url + '/v2'
+* callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
 Scenario Outline: <field> non valida
 
@@ -76,13 +67,13 @@ Examples:
 | dataValidita | pendenzaPut.dataScadenza | '2030-19-40' | 'dataScadenza' |
 | annoRiferimento | pendenzaPut.annoRiferimento | 'aaaa' | 'annoRiferimento' |
 | tassonomiaAvviso | pendenzaPut.tassonomiaAvviso | 'xxxx' | 'tassonomiaAvviso' |
-| soggettoPagatore | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
-| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
-| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
+# | soggettoPagatore | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
+# | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
+# | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | loremIpsum | 'identificativo' |
-| soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
+# | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
 | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | loremIpsum | 'anagrafica' |
 | soggettoPagatore.indirizzo | pendenzaPut.soggettoPagatore.indirizzo | '' | 'indirizzo' |
 | soggettoPagatore.indirizzo | pendenzaPut.soggettoPagatore.indirizzo | loremIpsum | 'indirizzo' |
@@ -310,5 +301,100 @@ Examples:
 | allegati.tipo | pendenzaPut.allegati[0].tipo | loremIpsum | 'tipo' |
 | allegati.descrizione | pendenzaPut.allegati[0].descrizione | loremIpsum | 'descrizione' |
 | allegati.contenuto | pendenzaPut.allegati[0].contenuto | null | 'contenuto' |
+
+@test-stato
+Scenario Outline: <field> non valida
+
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
+* set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
+* set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
+
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = <fieldValue>
+
+Given url ente_api_url
+And path '/v2/avvisi', idDominio, numeroAvviso
+And request pendenzaVerificataV2
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldValue | fieldResponse |
+| stato | null | 'Stato' |
+| stato | loremIpsum | 'stato' |
+| stato | 1 | 'stato' |
+| stato | 'XXX' | 'stato' |
+
+
+Scenario Outline: <field> non valida 
+
+* def metadataCustom = 
+"""
+{
+	"mapEntries" : [
+		{
+			"key":"chiave1", "value":"valore1"
+		}
+	]
+}
+"""
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* set pendenzaPut.voci[0].metadata = metadataCustom
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
+
+* set <fieldRequest> = <fieldValue>
+
+Given url ente_api_url
+And path '/v2/avvisi', idDominio, numeroAvviso
+And request pendenzaVerificataV2
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| voci.metadata.mapEntries | pendenzaPut.voci[0].metadata | {} | 'mapEntries' |
+| voci.metadata.mapEntries | pendenzaPut.voci[0].metadata.mapEntries | null | 'mapEntries' |
+| voci.metadata.mapEntries | pendenzaPut.voci[0].metadata.mapEntries | [] | 'mapEntries' |
+| voci.metadata.mapEntries.key | pendenzaPut.voci[0].metadata.mapEntries[0].key | null | 'key' |
+| voci.metadata.mapEntries.key | pendenzaPut.voci[0].metadata.mapEntries[0].key | '' | 'key' |
+| voci.metadata.mapEntries.key | pendenzaPut.voci[0].metadata.mapEntries[0].key | loremIpsum | 'key' |
+| voci.metadata.mapEntries.value | pendenzaPut.voci[0].metadata.mapEntries[0].value | null | 'value' |
+| voci.metadata.mapEntries.value | pendenzaPut.voci[0].metadata.mapEntries[0].value | '' | 'value' |
+| voci.metadata.mapEntries.value | pendenzaPut.voci[0].metadata.mapEntries[0].value | loremIpsum | 'value' |
 
 

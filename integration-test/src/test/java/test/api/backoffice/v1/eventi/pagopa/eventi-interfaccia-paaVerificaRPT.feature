@@ -5,6 +5,8 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Eventi verifica pendenza annullata
 
 * def idPendenza = getCurrentTimeMillis()
@@ -67,7 +69,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -157,7 +159,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -240,7 +242,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -327,7 +329,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -372,7 +374,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
@@ -423,7 +425,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -468,7 +470,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
@@ -519,7 +521,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
@@ -620,7 +622,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "ndpsym",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(govpay_url +'/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice')",
+		"url": "#(govpay_api_pagopa_url +'/PagamentiTelematiciCCPservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"

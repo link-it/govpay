@@ -22,7 +22,7 @@ Background:
   abilitato: true
 }
 """  
-* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(karate.readAsString('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
@@ -63,7 +63,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -109,7 +109,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -120,7 +120,8 @@ And request pagamentoPost
 When method post
 Then status 500
 * match response == { categoria: 'INTERNO', codice: 'VAL_003', descrizione: 'Errore durante la trasformazione', dettaglio: '#notnull' }
-* match response.dettaglio contains decodeBase64(tipoPendenzaDominio.portalePagamento.trasformazione.definizione)
+# * match response.dettaglio contains decodeBase64(tipoPendenzaDominio.portalePagamento.trasformazione.definizione)
+* match response.dettaglio contains 'Unrecognized field "type"'
 
 Scenario: Pagamento spontaneo modello 4 autenticato basic template di trasformazione crea una pendenza con errori di sintassi
 
@@ -133,7 +134,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 

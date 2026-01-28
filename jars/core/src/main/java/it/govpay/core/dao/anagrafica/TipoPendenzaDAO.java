@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -21,6 +21,7 @@ package it.govpay.core.dao.anagrafica;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -45,10 +46,10 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.model.TipoVersamento;
 
 public class TipoPendenzaDAO extends BaseDAO{
@@ -62,9 +63,9 @@ public class TipoPendenzaDAO extends BaseDAO{
 	}
 
 	public PutTipoPendenzaDTOResponse createOrUpdateTipoPendenza(PutTipoPendenzaDTO putTipoPendenzaDTO) throws ServiceException,
-		TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+		TipoVersamentoNonTrovatoException, NotAuthorizedException, ValidationException{
 		PutTipoPendenzaDTOResponse intermediarioDTOResponse = new PutTipoPendenzaDTOResponse();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putTipoPendenzaDTO.getIdOperatore());
 		TipiVersamentoBD tipiVerwsamentoBD = null;
 
 		try {
@@ -73,7 +74,19 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
 			filter.setSearchModeEquals(true); 
 			
-			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() != null) {
+			String backofficeValidazioneDefinizione = putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault();
+			if(backofficeValidazioneDefinizione != null) {
+				
+				if(backofficeValidazioneDefinizione.startsWith("\""))
+					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(1);
+
+				if(backofficeValidazioneDefinizione.endsWith("\""))
+					backofficeValidazioneDefinizione = backofficeValidazioneDefinizione.substring(0, backofficeValidazioneDefinizione.length() - 1);
+				
+				byte[] template = Base64.getDecoder().decode(backofficeValidazioneDefinizione.getBytes());
+				
+				LogUtils.logTrace(log, "Ricevuto schema validazione portale backoffice: {}", new String(template));
+				
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
 	
@@ -85,16 +98,27 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault().getBytes(), config, this.log);
+					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
-					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					LogUtils.logError(log, "Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
 			
-			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault() != null) {
+			String pagamentoValidazioneDefinizione = putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault();
+			if(pagamentoValidazioneDefinizione != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
+				
+				if(pagamentoValidazioneDefinizione.startsWith("\""))
+					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(1);
+
+				if(pagamentoValidazioneDefinizione.endsWith("\""))
+					pagamentoValidazioneDefinizione = pagamentoValidazioneDefinizione.substring(0, pagamentoValidazioneDefinizione.length() - 1);
+				
+				byte[] template = Base64.getDecoder().decode(pagamentoValidazioneDefinizione.getBytes());
+				
+				LogUtils.logTrace(log, "Ricevuto schema validazione portale pagamento: {}", new String(template));
 	
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
@@ -104,9 +128,9 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault().getBytes(), config, this.log);
+					validator.setSchema(template, config, this.log);
 				} catch (org.openspcoop2.utils.json.ValidationException e) {
-					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					LogUtils.logError(log, "Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali pagamento non e' valido.", e);
 				} 
 			}
@@ -116,7 +140,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			intermediarioDTOResponse.setCreated(isCreate);
 			if(isCreate) {
 				// possono creare i tipi pendenza solo gli utenti che hanno autorizzazione su tutti i tipi pendenza (lista idtipoversamento non null e vuota)
-				if(putTipoPendenzaDTO.getIdTipiVersamento() == null || putTipoPendenzaDTO.getIdTipiVersamento().size() > 0) {
+				if(putTipoPendenzaDTO.getIdTipiVersamento() == null || !putTipoPendenzaDTO.getIdTipiVersamento().isEmpty()) {
 					throw new NotAuthorizedException("L'utenza non possiede i diritti per creare nuovi Tipi Pendenza");
 				}
 				
@@ -127,7 +151,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 					throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare il Tipo Pendenza");
 				}
 				
-				if(putTipoPendenzaDTO.getCodTipiVersamento().size() > 0) {
+				if(!putTipoPendenzaDTO.getCodTipiVersamento().isEmpty()) {
 					if(!putTipoPendenzaDTO.getCodTipiVersamento().contains(putTipoPendenzaDTO.getCodTipoVersamento())) {
 						throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare il Tipo Pendenza");
 					}
@@ -144,13 +168,12 @@ public class TipoPendenzaDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException(e.getMessage());
 		} finally {
-			if(tipiVerwsamentoBD != null)
-				tipiVerwsamentoBD.closeConnection();
+			tipiVerwsamentoBD.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
-	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException, UnprocessableEntityException {
+	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws ServiceException, UnprocessableEntityException {
 		TipiVersamentoBD tipiVersamentoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -219,12 +242,11 @@ public class TipoPendenzaDAO extends BaseDAO{
 			
 			return new FindTipiPendenzaDTOResponse(count, findAll);
 		} finally {
-			if(tipiVersamentoBD != null)
-				tipiVersamentoBD.closeConnection();
+			tipiVersamentoBD.closeConnection();
 		}
 	}
 
-	public GetTipoPendenzaDTOResponse getTipoPendenza(GetTipoPendenzaDTO getTipoPendenzaDTO) throws NotAuthorizedException, TipoVersamentoNonTrovatoException, ServiceException, NotAuthenticatedException {
+	public GetTipoPendenzaDTOResponse getTipoPendenza(GetTipoPendenzaDTO getTipoPendenzaDTO) throws TipoVersamentoNonTrovatoException, ServiceException {
 		GetTipoPendenzaDTOResponse response = null;
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);

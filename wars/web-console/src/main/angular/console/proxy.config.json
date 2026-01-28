@@ -1,24 +1,60 @@
 {
-  "--/govpay/backend/api/backoffice/rs/form/*": {
-    "target": "http://10.114.87.69:8080",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "-/govpay/backend/api/backoffice/rs/spid/*": {
-    "target": "http://10.114.87.69:8080",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
   "/govpay/backend/api/backoffice/rs/form/*": {
-    "target": "https://dev.govcloud.it/",
+    "target": "http://172.16.2.109:8080",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/govpay/backend/api/backoffice/rs/oauth2/*": {
+    "target": "http://172.16.2.109:8080",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "_-/govpay/backend/api/backoffice/rs/form/*": {
+    "target": "http://172.16.1.121:8082",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
   "/govpay/backend/api/backoffice/rs/spid/*": {
+    "target": "http://172.16.1.121:8082",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "-/govpay/backend/api/backoffice/rs/form/*": {
     "target": "https://dev.govcloud.it/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "-/govpay/backend/api/backoffice/rs/spid/*": {
+    "target": "https://dev.govcloud.it/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "--/govpay/backend/api/backoffice/rs/form/*": {
+    "target": "https://demo.govcloud.it/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "--/govpay/backend/api/backoffice/rs/spid/*": {
+    "target": "https://demo.govcloud.it/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "-/govway/in/RegioneSiciliana/GovPay-Prod-Backoffice-Form/*": {
+    "target": "https://gestionepagopa.regione.sicilia.it/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/govway/in/RegioneSiciliana/GovPay-Dev-Backoffice-Form/*": {
+    "target": "https://gestionepagopatest.regione.sicilia.it/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

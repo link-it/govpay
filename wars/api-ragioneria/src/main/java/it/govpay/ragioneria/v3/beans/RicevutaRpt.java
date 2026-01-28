@@ -1,12 +1,31 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans;
-
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 /**
   * Richiesta di pagamento originale inviata a pagoPA
@@ -41,19 +60,19 @@ public class RicevutaRpt   {
       return null;
     }
   }
-  @Schema(required = true, description = "Tipo XML della richiesta")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipo XML della richiesta")
  /**
    * Tipo XML della richiesta
   **/
   private TipoEnum tipo = null;
 
-  @Schema(required = true, description = "Richiesta in formato XML originale codificata in base64")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Richiesta in formato XML originale codificata in base64")
  /**
    * Richiesta in formato XML originale codificata in base64
   **/
   private byte[] xml = null;
 
-  @Schema(required = true, description = "Richiesta in formato JSON")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Richiesta in formato JSON")
  /**
    * Richiesta in formato JSON
   **/

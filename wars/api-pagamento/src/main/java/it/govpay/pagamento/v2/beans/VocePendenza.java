@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.math.BigDecimal;
@@ -25,31 +44,31 @@ import it.govpay.core.beans.JSONSerializable;
 "tipoContabilita",
 })
 public class VocePendenza extends JSONSerializable {
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("stato")
   private StatoVocePendenza stato = null;
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   /**
    * Identificativo della voce di pendenza nel gestionale proprietario
    **/
@@ -202,7 +221,7 @@ public class VocePendenza extends JSONSerializable {
 			return "01";
 		}
 	}
-	
+
 	public static TipoBolloEnum fromCodifica(String codifica) {
 		switch (codifica) {
 		case "01":
@@ -222,17 +241,17 @@ public class VocePendenza extends JSONSerializable {
   }
 
 
-    
-    
+
+
   @JsonProperty("tipoBollo")
   private TipoBolloEnum tipoBollo = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento = null;
-  
+
   @JsonProperty("provinciaResidenza")
   private String provinciaResidenza = null;
-  
+
   /**
    * Tipologia di Bollo digitale
    **/
@@ -283,7 +302,7 @@ public class VocePendenza extends JSONSerializable {
 
   @JsonProperty("codEntrata")
   private String codEntrata = null;
-  
+
   /**
    **/
   public VocePendenza codEntrata(String codEntrata) {
@@ -301,16 +320,16 @@ public class VocePendenza extends JSONSerializable {
 
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   /**
    **/
   public VocePendenza ibanAccredito(String ibanAccredito) {
@@ -417,7 +436,7 @@ public class VocePendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VocePendenza {\n");
-    
+
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

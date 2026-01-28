@@ -59,7 +59,7 @@ components:
         iuv: '340105455507221'
         idRicevuta: '840596274'
         importo: 100.99
-        stato: RT_ACCETTATA_PA
+        esito: 'ESEGUITO'
         istitutoAttestante:
           idPSP: '99999'
           denominazione: Banco di Ponzi S.p.A.

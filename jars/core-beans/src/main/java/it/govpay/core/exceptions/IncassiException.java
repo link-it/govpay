@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -39,7 +39,7 @@ public class IncassiException extends BaseException {
 		DOMINIO_INESISTENTE("021410","Dominio inesistente."),
 		CAUSALE_GIA_INCASSATA("021411","Riversamento gia' riconciliato."),
 		IBAN_INESISTENTE("021412","Iban inesistente."),
-		FLUSSO_GIA_INCASSATO("021413","Flusso gia riconciliata.");
+		FLUSSO_GIA_INCASSATO("021413","Flusso gia riconciliato.");
 		
 		private String faultSubCode;
 		private String description;

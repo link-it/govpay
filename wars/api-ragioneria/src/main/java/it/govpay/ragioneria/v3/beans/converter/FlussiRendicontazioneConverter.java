@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans.converter;
 
 import java.io.UnsupportedEncodingException;
@@ -24,13 +43,18 @@ import it.govpay.ragioneria.v3.beans.StatoRendicontazione;
 
 public class FlussiRendicontazioneConverter {
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
+	private FlussiRendicontazioneConverter() {}
+
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, UnsupportedEncodingException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(fr.getDominio(configWrapper)));
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
@@ -79,6 +103,9 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(fr.getDominio(configWrapper)));
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
@@ -111,18 +138,21 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
+	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws IOException, UnsupportedEncodingException {
 		it.govpay.ragioneria.v3.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v3.beans.Rendicontazione();
 
 		Rendicontazione rendicontazione = dto.getRendicontazione();
 
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
-		if(rendicontazione.getIndiceDati()!=null)
+		if(rendicontazione.getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getStato() != null) {
 			switch (rendicontazione.getStato()) {
 			case ALTRO_INTERMEDIARIO:
@@ -136,7 +166,7 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 
@@ -154,15 +184,19 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
+	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, IOException, UnsupportedEncodingException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		it.govpay.ragioneria.v3.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v3.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
-		if(rendicontazione.getIndiceDati()!=null)
+		if(rendicontazione.getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getStato() != null) {
 			switch (rendicontazione.getStato()) {
 			case ALTRO_INTERMEDIARIO:
@@ -176,7 +210,7 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
@@ -192,7 +226,7 @@ public class FlussiRendicontazioneConverter {
 		if(rendicontazione.getPagamento(null) != null) {
 			singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
 		} else {
-			singoloVersamento = rendicontazione.getSingoloVersamento(null);
+			singoloVersamento = rendicontazione.getSingoloVersamento(configWrapper);
 		}
 		Versamento versamento = singoloVersamento.getVersamentoBD(null);
 

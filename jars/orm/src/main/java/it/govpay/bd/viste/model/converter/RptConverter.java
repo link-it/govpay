@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.model.converter;
 
 import java.io.UnsupportedEncodingException;
@@ -10,7 +29,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
@@ -22,6 +40,8 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RptConverter {
+	
+	private RptConverter() {}
 
 	public static Rpt toDTO(it.govpay.orm.VistaRptVersamento vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		Rpt dto = new Rpt();
@@ -45,8 +65,7 @@ public class RptConverter {
 		dto.setId(vo.getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
-		if(vo.getImportoTotalePagato() != null)
-			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
+		dto.setImportoTotalePagato(vo.getImportoTotalePagato());
 		dto.setIuv(vo.getIuv());
 		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
 		dto.setPspRedirectURL(vo.getPspRedirectURL());
@@ -67,8 +86,7 @@ public class RptConverter {
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
 		dto.setCodPsp(vo.getCodPsp());
-		if(vo.getTipoVersamento() != null)
-			dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
+		dto.setTipoVersamento(vo.getTipoVersamento());
 		if(vo.getTipoIdentificativoAttestante() != null)
 			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
@@ -78,7 +96,7 @@ public class RptConverter {
 		
 		Versamento versamento = new Versamento();
 
-		versamento.setId(vo.getId());
+		versamento.setId(vo.getVrsId());
 		versamento.setIdApplicazione(vo.getVrsIdApplicazione().getId());
 
 		if(vo.getVrsIdUo() != null)
@@ -132,7 +150,7 @@ public class RptConverter {
 		versamento.setCodBundlekey(vo.getVrsCodBundlekey()); 
 		versamento.setDatiAllegati(vo.getVrsDatiAllegati());
 		if(vo.getVrsIncasso() != null) {
-			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+			versamento.setIncasso(vo.getVrsIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE));
 		}
 		versamento.setAnomalie(vo.getVrsAnomalie());
 
@@ -152,19 +170,8 @@ public class RptConverter {
 		versamento.setIdSessione(vo.getVrsIdSessione());
 
 		versamento.setDataPagamento(vo.getVrsDataPagamento());
-		if(vo.getVrsImportoPagato() != null)
-			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato())); 
-		if(vo.getVrsImportoIncassato() != null)
-			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
-		if(vo.getVrsStatoPagamento() != null)
-			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
-		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
-
-		versamento.setDataPagamento(vo.getVrsDataPagamento());
-		if(vo.getVrsImportoPagato() != null)
-			versamento.setImportoPagato(BigDecimal.valueOf(vo.getVrsImportoPagato()));
-		if(vo.getVrsImportoIncassato() != null)
-			versamento.setImportoIncassato(BigDecimal.valueOf(vo.getVrsImportoIncassato()));
+		versamento.setImportoPagato(vo.getVrsImportoPagato()); 
+		versamento.setImportoIncassato(vo.getVrsImportoIncassato());
 		if(vo.getVrsStatoPagamento() != null)
 			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
@@ -182,12 +189,8 @@ public class RptConverter {
 				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				versamento.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				versamento.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-//				String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-//				versamento.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 			}

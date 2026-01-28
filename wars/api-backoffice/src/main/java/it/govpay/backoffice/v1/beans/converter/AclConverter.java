@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.Collections;
@@ -20,6 +39,8 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class AclConverter {
+	
+	private AclConverter() { }
 
 	public static Acl getAclUtenza(AclPost aclPost, Authentication user) throws CodificaInesistenteException {
 
@@ -39,7 +60,7 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		acl.setUtenza(authenticationDetails.getUtenza());
 		return acl;
@@ -63,7 +84,7 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		acl.setUtenza(utenza);
 		return acl;
 	}
@@ -100,7 +121,7 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		acl.setRuolo(ruolo);
 		return acl;
 	}
@@ -138,9 +159,7 @@ public class AclConverter {
 			case RENDICONTAZIONI_E_INCASSI:
 				serv = ServizioEnum.RENDICONTAZIONI_E_INCASSI;
 				break;
-			case API_PAGAMENTI:
-			case API_PENDENZE:
-			case API_RAGIONERIA:
+			case API_PAGAMENTI, API_PENDENZE, API_RAGIONERIA:
 				break;
 			}
 		}
@@ -152,7 +171,7 @@ public class AclConverter {
 		rsModel.setServizio(serv.toString());
 
 		if(acl.getListaDiritti() != null) {
-			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
+			List<String> autorizzazioni = acl.getListaDiritti().stream().map(Diritti::getCodifica).collect(Collectors.toList());
 			Collections.sort(autorizzazioni);
 			rsModel.autorizzazioni(autorizzazioni);
 		}

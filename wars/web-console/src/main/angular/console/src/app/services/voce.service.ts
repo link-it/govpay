@@ -12,11 +12,13 @@ export class Voce {
   public static ALLEGA_PDF_AVVISO: string = 'Allega PDF avviso';
   public static ALLEGA_PDF_RICEVUTA: string = 'Allega PDF ricevuta';
   public static ALTRE_FUNZIONI: string = 'Altre funzioni';
+  public static ALTRE_INFORMAZIONI: string = 'Altre informazioni';
   public static ANNO_RIFERIMENTO: string = 'Anno riferimento';
   public static API_PAGAMENTI: string = 'API Pagamenti';
   public static API_PENDENZE: string = 'API Pendenze';
   public static API_RAGIONERIA: string = 'API Ragioneria';
   public static API_KEY: string = 'API Key';
+  public static API_ID: string = 'API Id';
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
@@ -31,18 +33,23 @@ export class Voce {
   public static AVVISI_FALLITI: string = 'Totale avvisi scartati';
   public static AVVISI_STAMPATI: string = 'Totale avvisi stampati';
   public static AVVISI_TOTALI: string = 'Totale avvisi';
+  public static AVVISO_PAGAMENTO: string = 'Avviso pagamento';
 
   public static BASIC: string = 'HTTP Basic';
   public static BIC_ACCREDITO: string = 'BIC accredito';
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
+  public static BOLLO: string = 'Marca da bollo telematica';
 
+  public static CANALE: string = 'Canale';
   public static CAP: string = 'Cap';
   public static CARTELLA_DI_PAGAMENTO: string = 'Cartella di pagamento';
   public static CATEGORIA_EVENTO: string = 'Categoria evento';
   public static CAUSALE: string = 'Causale';
+  public static CAUSALE_LINGUA_SECONDARIA_AVVISO: string = 'Causale nella lingua secondaria';
   public static CBILL: string = 'CBill';
   public static CCP: string = 'CCP';
   public static CIVICO: string = 'Numero civico';
+  public static CLUSTER_ID: string = 'Cluster ID';
   public static CODICE: string = 'Codice';
   public static CODICE_CONTABILITA: string = 'Codice contabilità';
   public static CODICE_FISCALE: string = 'Codice fiscale';
@@ -63,6 +70,7 @@ export class Voce {
 
   public static DATA: string = 'Data';
   public static DATA_CARICAMENTO: string = 'Data caricamento';
+  public static DATA_PAGAMENTO: string = 'Data pagamento';
   public static DATA_COMPLETAMENTO: string = 'Data completamento';
   public static DATA_CONTABILE: string = 'Data contabile';
   public static DATA_ESITO: string = 'Data esito';
@@ -70,21 +78,29 @@ export class Voce {
   public static DATA_FLUSSO: string = 'Data flusso';
   public static DATA_REGISTRAZIONE: string = 'Data registrazione';
   public static DATA_REGOLAMENTO: string = 'Data regolamento';
+  public static DATA_PUBBLICAZIONE: string = 'Data pubblicazione';
   public static DATA_RICEVUTA: string = 'Data ricevuta';
+  public static REVISIONE: string = 'Revisione';
   public static DATA_RICHIESTA: string = 'Data richiesta';
   public static DATA_RICHIESTA_PAGAMENTO: string = 'Data richiesta';
   public static DATA_RISPOSTA: string = 'Data risposta';
+  public static DATA_ULTIMA_COMUNICAZIONE_ACA: string = 'Ultimo invio all\'ACA';
+  public static DATA_ULTIMA_MODIFICA_ACA: string = 'Ultimo aggiornamento dati ACA';
   public static DATA_ULTIMO_AGGIORNAMENTO: string = 'Ultimo aggiornamento';
   public static DATA_VALUTA_INCASSO: string = 'Data valuta incasso';
   public static DATA_VALIDITA: string = 'Data validità';
+  public static DATA_VALIDITA_AVVISO: string = 'Data validità avviso';
+  public static DATI_CUSTOM: string = 'Dati Custom';
   public static DATI_PAGO_PA: string = 'Dati pagoPA';
   public static DEBITORE: string = 'Debitore';
+  public static DEBITORE_WARNING_CF_INVALID_MESSAGE: string = 'Codice fiscale non valido';
   public static DEFAULT: string = 'Predefinito';
   public static DEFINIZIONE: string = 'Definizione';
   public static DEFINIZIONI: string = 'Definizioni';
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
   public static DESCRIZIONE_STATO: string = 'Descrizione stato';
+  public static DETTAGLIO_CONTABILITA: string = 'Dettaglio contabilità';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';
@@ -112,6 +128,11 @@ export class Voce {
   public static GLN: string = 'Global location number';
 
   public static HOSTNAME: string = 'Hostname';
+  public static HEADER: string = 'Header';
+  public static HEADER_NAME: string = 'Nome Header';
+  public static HEADER_VALUE: string = 'Valore';
+  public static HTTP_HEADER: string = 'HTTP Header';
+  public static HASH_DOCUMENTO: string = 'Hash Documento';
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
@@ -130,6 +151,7 @@ export class Voce {
   public static ID_PAGAMENTO: string = 'Id pagamento';
   public static ID_PENDENZA: string = 'Id pendenza';
   public static ID_PSP: string = 'Id PSP';
+  public static ID_RICEVUTA: string = 'Id ricevuta';
   public static ID_RISCOSSIONE: string = 'Id riscossione';
   public static ID_SESSIONE: string = 'Id carrello';
   public static ID_STAZIONE: string = 'Id stazione';
@@ -148,6 +170,8 @@ export class Voce {
   public static INDICE_PENDENZA: string = 'Indice pendenza';
   public static INDICE_VOCE: string = 'Indice voce';
   public static INDIRIZZO: string = 'Indirizzo';
+  public static INFORMATIVA_IMPORTO_AVVISO: string = 'Messaggio informativo importo avviso';
+  public static INFORMATIVA_IMPORTO_LINGUA_SECONDARIA_AVVISO: string = 'Messaggio informativo importo avviso nella lingua secondaria';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTERMEDIATO: string = 'Intermediato';
   public static INTERVALLO_CREAZIONE: string = 'Intervallo creazione';
@@ -174,10 +198,13 @@ export class Voce {
 
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
+  public static LINGUA_SECONDARIA_AVVISO: string = 'Lingua secondaria';
 
+  public static METADATA: string = 'Metadata';
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
   public static MODALITA_CONNETTORE: string = 'Modalità consegna';
   public static MODELLO_PAGAMENTO: string = 'Modello pagamento';
+  public static MODELLO_UNICO: string = 'Modello unico';
   public static MODIFICA_DOMINIO: string = 'Modifica dominio';
   public static MODIFICA_ENTE_CREDITORE: string = 'Modifica Ente creditore';
   public static MY_BANK: string = 'My Bank';
@@ -198,6 +225,11 @@ export class Voce {
   public static NUOVO_ENTE_CREDITORE: string = 'Nuovo Ente creditore';
 
   public static SUBSCRIPTION_KEY: string = 'Subscription Key';
+  public static OAUTH2_CLIENT_CREDENTIALS: string = 'OAuth2 Client Credentials';
+  public static OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID: string = 'Client ID';
+  public static OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET: string = 'Client Secret';
+  public static OAUTH2_CLIENT_CREDENTIALS_SCOPE: string = 'Scope';
+  public static OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT: string = 'URL Authorization Server';
   public static OCP_APIM_SUBSCRIPTION_KEY: string = 'Ocp-Apim-Subscription-Key';
   public static OGGETTO: string = 'Oggetto';
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';
@@ -208,12 +240,14 @@ export class Voce {
 
   public static PAGAMENTI_RICONCILIATI: string = 'Pagamenti riconciliati';
   public static PAGAMENTO_SPONTANEO: string = 'Pagamento spontaneo';
+  public static PAGAMENTO_IN_CORSO: string = 'Pagamento in corso';
   public static PAGO_PA: string = 'Principal pagoPa';
   public static PARAMETRI: string = 'Parametri';
   public static PARSER_TRACCIATI: string = 'Parser tracciati csv';
   public static PASSWORD: string = 'Password';
   public static PASSWORD_INVALID_MESSAGE: string = 'La password deve contenere almeno una minuscola, una maiuscola, un numero, un carattere speciale e deve essere almeno di 8 caratteri';
   public static PATH: string = 'Path';
+  public static PAYLOAD: string = 'Payload';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
   public static PENDENZE: string = 'Pendenze';
@@ -231,18 +265,22 @@ export class Voce {
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static RICHIESTA_STAMPA_AVVISI: string = 'Richiesta stampa avvisi';
+  public static RICEVUTA_PAGAMENTO: string = 'Ricevuta pagamento';
   public static RICONCILIAZIONE: string = 'Riconciliazione';
   public static RIEPILOGO: string = 'Riepilogo informazioni';
   public static RISORSA: string = 'Risorsa';
   public static RUOLO: string = 'Ruolo';
   public static RUOLI: string = 'Ruoli';
+  public static RT_LINEA_TESTO_RIGA1: string = 'Testo riga 1';
+  public static RT_LINEA_TESTO_RIGA2: string = 'Testo riga 2';
 
   public static SCADENZA: string = 'Scadenza';
+  public static SCARICA_FR: string = 'Acquisizione Rendicontazioni';
   public static SCT: string = 'SCT';
   public static SECRET_CODE: string = 'Codice di segregazione';
-  public static SERVIZIO_AVVISATURA: string = 'Servizio avvisatura';
   public static SOLO_ESEGUITI: string = 'Notifica solo eseguiti';
   public static SERVIZIO_RPT: string = 'Servizio RPT';
+  public static SERVIZIO_RECUPERO_RT: string = 'Servizio recupero RT';
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
@@ -252,7 +290,7 @@ export class Voce {
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
 
-  public static TASSONOMIA: string = 'Tipo (ente)';
+  public static TASSONOMIA: string = 'Tassonomia';
   public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
   public static TASSONOMIA_ENTE: string = 'Tassonomia ente';
   public static TASSONOMIA_PAGO_PA: string = 'Tipo ente';
@@ -277,6 +315,7 @@ export class Voce {
   public static TIPO_TEMPLATE: string = 'Tipo template';
   public static TIPO_VERSAMENTO: string = 'Tipo versamento';
   public static TIPOLOGIA: string = 'Tipologia';
+  public static TRANSACTION_ID: string = 'ID Transazione';
   public static TRASFORMATORE: string = 'Trasformatore';
   public static TRASFORMATORE_PREDEFINITO: string = 'Trasformatore (Default)';
   public static TRASFORMAZIONE: string = 'Trasformazione';
@@ -295,6 +334,7 @@ export class Voce {
   public static URL: string = 'URL';
   public static URL_BACKEND_IO: string = 'URL backend IO';
   public static USERNAME: string = 'Username';
+  public static UTENTE: string = 'Utente';
 
   public static VALIDAZIONE: string = 'Validazione';
   public static VALIDAZIONE_DATI: string = 'Validazione inserimento dati';
@@ -307,6 +347,7 @@ export class Voce {
   public static VERSIONE_ZIP: string = 'Versione ZIP';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';
+  public static VOCE: string = 'Voce';
 
   public static WEB: string = 'Sito web';
   public static WEB_SITE: string = 'Indirizzo web';

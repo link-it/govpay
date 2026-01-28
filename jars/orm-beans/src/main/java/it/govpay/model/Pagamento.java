@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -57,7 +57,6 @@ public class Pagamento extends BasicModel {
 	
 	private Long idRpt;
 	private Long idSingoloVersamento;
-	private Long idRr;
 	private Long idIncasso;
 	
 	private Date dataAcquisizioneRevoca;
@@ -144,14 +143,6 @@ public class Pagamento extends BasicModel {
 
 	public void setCommissioniPsp(BigDecimal commissioniPsp) {
 		this.commissioniPsp = commissioniPsp;
-	}
-
-	public Long getIdRr() {
-		return this.idRr;
-	}
-
-	public void setIdRr(Long idRr) {
-		this.idRr = idRr;
 	}
 
 	public String getCausaleRevoca() {

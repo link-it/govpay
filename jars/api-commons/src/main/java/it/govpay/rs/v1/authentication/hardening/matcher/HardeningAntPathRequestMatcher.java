@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.rs.v1.authentication.hardening.matcher;
 
 import java.text.MessageFormat;
@@ -5,7 +24,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +38,7 @@ import org.springframework.util.StringUtils;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Configurazione;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaInvalidException;
@@ -28,14 +48,15 @@ import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaUnavailableEx
 import it.govpay.rs.v1.authentication.recaptcha.handler.ReCaptchaValidator;
 
 /***
- * 
+ *
  * Classe che effettua alcuni controlli supplementari in caso di matching della url chiamata
  * based on {@link AntPathRequestMatcher}
- * 
- * 
+ *
+ *
  * @author pintori
  *
  */
+@SuppressWarnings("deprecation")
 public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
 	private static final String ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0 = "Controllo ReCaptcha terminato con esito: accesso non consentito: {0}";
 	private static final Log logger = LogFactory.getLog(HardeningAntPathRequestMatcher.class);
@@ -45,7 +66,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 	private final String pattern;
 	private final HttpMethod httpMethod;
 	private final boolean caseSensitive;
-	
+
 	/**
 	 * Creates a matcher with the specific pattern which will match all HTTP methods in a
 	 * case insensitive manner.
@@ -116,13 +137,13 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 	@Override
 	public boolean matches(HttpServletRequest request) {
 		boolean matches = this.doMatches(request);
-		
+
 		if(matches)
 			return this.applyHardening(request);
-		
+
 		return matches;
 	}
-	
+
 	public boolean doMatches(HttpServletRequest request) {
 		if (this.httpMethod != null && StringUtils.hasText(request.getMethod())
 				&& this.httpMethod != valueOf(request.getMethod())) {
@@ -150,15 +171,15 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			logger.debug("Checking match of request : '" + url + "'; against '"
 					+ this.pattern + "'");
 		}
-		
+
 		return this.matcher.matches(url);
 	}
-	
+
 
 	public boolean applyHardening(HttpServletRequest request){
 		boolean authorized = false;
 		Hardening setting = readSettings();
-		
+
 		if(setting.isAbilitato()) {
 			logger.debug("Applico regole di hardening per l'accesso alla risorsa ["+request.getPathInfo()+"]...");
 			// Applico regole di controllo Google Captcha
@@ -168,7 +189,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			authorized = true; // se il controllo e' disabilitato passo
 			logger.debug("Regole di hardening disabilitate per l'accesso alla risorsa ["+request.getPathInfo()+"], accesso consentito.");
 		}
-		
+
 		return authorized;
 	}
 
@@ -181,30 +202,29 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			logger.error("Controllo ReCaptcha terminato con errore, configurazione del servizio non valida: " + e.getMessage(), e);
 		}catch(ReCaptchaParametroResponseInvalidException | ReCaptchaUnavailableException | ReCaptchaScoreNonValidoException | ReCaptchaInvalidException e) {
 			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
+		} catch (ValidationException e) {
+			logger.error("Controllo ReCaptcha terminato con errore, parametri utilizzati per la richiesta non validi: " + e.getMessage(), e);
 		}
 		return authorized;
 	}
-	
+
 	public Hardening readSettings() {
-//		BasicBD bd = null;
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			logger.debug("Lettura della configurazione di Govpay in corso...");
-//			bd = BasicBD.newInstance(transactionId, true);
 			Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione(new BDConfigWrapper(transactionId, true));
 			Hardening setting = configurazione.getHardening();
 			logger.debug("Lettura della configurazione di Govpay completata.");
 
-			return setting; 
+			return setting;
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
 		}	finally {
-//			if(bd != null)
-//				bd.closeConnection();
+			// donothing
 		}
 	}
-	
-	
+
+
 
 	@Override
 	public Map<String, String> extractUriTemplateVariables(HttpServletRequest request) {
@@ -276,6 +296,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			return HttpMethod.valueOf(method);
 		}
 		catch (IllegalArgumentException e) {
+			//donothing
 		}
 
 		return null;

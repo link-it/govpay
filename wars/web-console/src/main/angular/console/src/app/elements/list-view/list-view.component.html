@@ -3,7 +3,7 @@
   <div class="row list-flexible">
     <link-form-view #fv class="col-12 col-md-4 py-3 h-100 d-block" *ngIf="_isVisible()" [fields]="_fields"
                     (submit-form-data)="_formSubmit($event)"></link-form-view>
-    <link-side-list #sl class="col py-3 w-100 h-100" [(is-loading-progress)]="_preventMultiCall" [has-form-view]="_showFormView"></link-side-list>
+    <link-side-list #sl class="col py-3 w-100 h-100" [(is-loading-progress)]="_preventMultiCall" [has-form-view]="_showFormView" (refresh-search)="_refreshSearch($event)"></link-side-list>
   </div>
 </div>
 <button mat-icon-button [ngClass]="_cheatClass(cheat)" (click)="_toTop(cheat)"><mat-icon class="rotated">first_page</mat-icon></button>

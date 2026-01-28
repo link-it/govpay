@@ -1,12 +1,32 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -99,7 +119,7 @@ public class PagamentoPortale extends BasicModel {
 	private int tipo;
 	private boolean ack;
 	
-	private Integer severita;
+	private BigInteger severita;
 	
 	public String getIdSessione() {
 		return this.idSessione;
@@ -213,7 +233,7 @@ public class PagamentoPortale extends BasicModel {
 		if(this.versamenti != null)
 			return this.versamenti;
 
-		if(this.idVersamento != null && this.idVersamento.size() > 0) {
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamentiBD.setAtomica(false);
 			VersamentoFilter filter = versamentiBD.newFilter();
@@ -255,6 +275,7 @@ public class PagamentoPortale extends BasicModel {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;
@@ -320,10 +341,10 @@ public class PagamentoPortale extends BasicModel {
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
-	public Integer getSeverita() {
+	public BigInteger getSeverita() {
 		return severita;
 	}
-	public void setSeverita(Integer severita) {
+	public void setSeverita(BigInteger severita) {
 		this.severita = severita;
 	}
 

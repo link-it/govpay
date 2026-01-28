@@ -1,0 +1,19 @@
+<div class="container-fluid p-3">
+  <div class="row">
+    <div class="col-12 text-center mt-5" style="height: 150px;" *ngIf="!error">
+      <h5>Accesso in corso…</h5>
+      <mat-spinner diameter="30" color="primary" class="auth-spinner" *ngIf="_isLoading"></mat-spinner>
+    </div>
+    <!-- <div class="col-12 text-center mt-5" *ngIf="!error">
+      <h5>Authorization</h5>
+
+      <p>state: {{ state }}</p>
+      <p>codeVerifier: {{ codeVerifier }}</p>
+      <p>codeChallenge: {{ codeChallenge }}</p>
+    </div> -->
+    <div class="col-12 text-center mt-5" *ngIf="error">
+      <h5>Error</h5>
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+</div>

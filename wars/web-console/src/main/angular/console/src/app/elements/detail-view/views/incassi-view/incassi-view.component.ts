@@ -138,6 +138,11 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
         if (item.vocePendenza && item.vocePendenza.pendenza && item.vocePendenza.pendenza.idPendenza) {
           _stdC.elenco.push({ label: Voce.ID_PENDENZA, value: item.vocePendenza.pendenza.idPendenza });
         }
+        // Metadata
+        if (item.vocePendenza && item.vocePendenza.metadata && item.vocePendenza.metadata.mapEntries) {
+          const _mapEntries = item.vocePendenza.metadata.mapEntries.map(x => { return { label: x.key, value: x.value } });
+          _stdC.elenco.push({ label: Voce.METADATA, value: _mapEntries, type: 'metadata' });
+        }
         break;
     }
     return _stdC;
@@ -181,7 +186,7 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
       riscossione[this._exportLabel['importo']] = risc.importo || 0;
       riscossione[this._exportLabel['data']] = risc.data || '';
       riscossione[this._exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
-      riscossione[this._exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+      riscossione[this._exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.tipoPendenza.idTipoPendenza || '';
       riscossione[this._exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
       riscossione[this._exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
       riscossione[this._exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';

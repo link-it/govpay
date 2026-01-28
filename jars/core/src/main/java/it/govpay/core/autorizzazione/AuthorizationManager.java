@@ -1,11 +1,30 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.autorizzazione;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
@@ -26,6 +45,8 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AuthorizationManager {
+	
+	private AuthorizationManager() {}
 	
 	public static final String SESSION_PRINCIPAL_ATTRIBUTE_NAME = "GP_PRINCIPAL";
 	public static final String SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME = "GP_PRINCIPAL_OBJECT";
@@ -56,21 +77,21 @@ public class AuthorizationManager {
 	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws NotAuthorizedException{
 		boolean ok = true;
 
-		Hashtable<String,List<String>> hashSubject = null;
+		Map<String, List<String>> hashSubject = null;
 		try {
-			principalToCheck = CertificateUtils.formatPrincipal(principalToCheck,PrincipalType.subject);
+			principalToCheck = CertificateUtils.formatPrincipal(principalToCheck,PrincipalType.SUBJECT);
 		}catch(UtilsException e) {
 			throw new NotAuthorizedException("L'utenza registrata non e' un subject valido");
 		}
 		try {
-			principalFromRequest = CertificateUtils.formatPrincipal(principalFromRequest,PrincipalType.subject);
-			hashSubject = CertificateUtils.getPrincipalIntoHashtable(principalFromRequest,PrincipalType.subject);
+			principalFromRequest = CertificateUtils.formatPrincipal(principalFromRequest,PrincipalType.SUBJECT);
+			hashSubject = CertificateUtils.getPrincipalIntoMap(principalFromRequest,PrincipalType.SUBJECT);
 		}catch(UtilsException e) {
 			throw new NotAuthorizedException("Utenza" + principalFromRequest + "non autorizzata");
 		}
-		Enumeration<String> keys = hashSubject.keys();
-		while(keys.hasMoreElements()){
-			String key = keys.nextElement();
+		Iterator<String> keys = hashSubject.keySet().iterator();
+		while(keys.hasNext()){
+			String key = keys.next();
 			List<String> listValues = hashSubject.get(key);
             for (String value : listValues) {
             	ok = ok && principalToCheck.contains("/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/");
@@ -184,10 +205,7 @@ public class AuthorizationManager {
 			return false;
 
 		// controllo abilitazione
-		if(!utenza.isAbilitato())
-			return false;
-
-		return true;
+		return utenza.isAbilitato();
 	}
 	
 
@@ -231,7 +249,7 @@ public class AuthorizationManager {
 
 		if(authorized) {
 			if(codDominio != null) {
-				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				authorized = isDominioAuthorized(utenza, codDominio);
 			}
 
 			if(codTipoVersamento != null) {
@@ -378,15 +396,15 @@ public class AuthorizationManager {
 
 		if(authorized) {
 			if(codDominio != null) {
-				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				authorized = isDominioAuthorized(utenza, codDominio);
 				
 				if(authorized && codUO != null) {
-					authorized = authorized && isUOAuthorized(utenza, codDominio, codUO);
+					authorized = isUOAuthorized(utenza, codDominio, codUO);
 				}
 			}
 
 			if(authorized && codTipoVersamento != null) {
-				authorized = authorized && isTipoVersamentoAuthorized(utenza, codTipoVersamento);
+				authorized = isTipoVersamentoAuthorized(utenza, codTipoVersamento);
 			}
 		}
 

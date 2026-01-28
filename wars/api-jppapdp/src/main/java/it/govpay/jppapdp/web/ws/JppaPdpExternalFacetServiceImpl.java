@@ -1,23 +1,41 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.jppapdp.web.ws;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.annotation.Resource;
-import javax.jws.WebService;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import jakarta.annotation.Resource;
+import jakarta.jws.WebService;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.ws.WebServiceContext;
+import jakarta.xml.ws.WebServiceContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
@@ -44,6 +62,8 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.jppapdp.beans.utils.JaxbUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -66,6 +86,10 @@ wsdlLocation="/wsdl/jppapdp-ws-external.wsdl")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesEndpoint {
+
+	private static final String ERRORE_DURANTE_L_ESECUZIONE_DEL_METODO_IMPOSTA_DATA_OPERAZIONE = "Errore durante l'esecuzione del metodo impostaDataOperazione: ";
+	private static final String NESSUNA_DESCRIZIONE = "<Nessuna descrizione>";
+	private static final String ERRORE_DURANTE_IL_LOG_DELL_OPERAZIONE = "Errore durante il log dell'operazione: ";
 
 	@Resource
 	WebServiceContext wsCtxt;
@@ -102,12 +126,8 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 		response.setOperazione(StOperazione.RECUPERA_RT);
 		try {
 			
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRT");
-			} catch (UtilsException e) {
-				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			}
-			log.info("Ricevuta richiesta RecuperaRT per il Dominio ["+codDominio+"]");
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT);
+			log.info("Ricevuta richiesta RecuperaRT per il Dominio [{}]", codDominio);
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
@@ -131,7 +151,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			if(!authOk) {
 				GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 				String principal = details.getIdentificativo(); 
-				ctx.getApplicationLogger().log("jppapdp.erroreAutorizzazione", principal);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_ERRORE_AUTORIZZAZIONE, principal);
 				throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per il servizio Maggioli JPPA (" + principalMaggioli + ").");
 			}
 
@@ -142,13 +162,13 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 
 			String xmlDettaglioRichiesta = recuperaRTRichiesta.getXmlDettaglioRichiesta();
 			// unmarshal della richiesta interna
-			log.debug("Ricevuta Richiesta: " + xmlDettaglioRichiesta);
+			log.debug("Ricevuta Richiesta: {}", xmlDettaglioRichiesta);
 			
 			RecuperaRTRichiesta recuperaRT = (RecuperaRTRichiesta) MaggioliJPPAUtils.unmarshalJPPAPdPExternal(xmlDettaglioRichiesta, null);
 
 			String iuv = recuperaRT.getIdentificativoUnivocoVersamento();
 			String ccp = recuperaRT.getCodiceContestoPagamento();
-			log.info("Ricevuta richiesta RecuperaRT [" + codDominio + "][" + iuv + "][" + ccp + "]");
+			log.info("Ricevuta richiesta RecuperaRT [{}][{}][{}]",codDominio, iuv, ccp);
 			
 			appContext.setCorrelationId(codDominio + iuv + ccp);
 			appContext.getEventoCtx().setIuv(iuv);
@@ -156,22 +176,18 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
 			
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTParametri");
-			} catch (UtilsException e) {
-				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_PARAMETRI);
 
 			// lettura RPT
 			RptBD rptBD = new RptBD(configWrapper);
 
 			try {
-				log.debug("Lettura RT [" + codDominio + "][" + iuv + "][" + ccp + "] in corso...");
+				log.debug("Lettura RT [{}][{}][{}] in corso...",codDominio, iuv, ccp);
 				Rpt rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 				
 				if(!(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO) || rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO))) {
 					// stato non valido
-					log.debug("Lettura RT [" + codDominio + "][" + iuv + "][" + ccp + "] in stato ["+rpt.getEsitoPagamento()+"] non valido per il recupero.");
+					log.debug("Lettura RT [{}][{}][{}] in stato [{}] non valido per il recupero.", codDominio, iuv, ccp, rpt.getEsitoPagamento());
 					throw new UnprocessableEntityException("RPT [" + codDominio + "][" + iuv + "][" + ccp + "] in stato ["+rpt.getEsitoPagamento()+"] non valido per il recupero.");
 				}
 				
@@ -180,13 +196,13 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				JaxbUtils.marshalJPPAPdPExternalService(jaxbElement, baos);
 				String xmlDettaglioRisposta = baos.toString();
-//				response.setXmlDettaglioRisposta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRisposta +  MaggioliJPPAUtils.CDATA_TOKEN_END);
+//				response.setXmlDettaglioRisposta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRisposta +  MaggioliJPPAUtils.CDATA_TOKEN_END)
 				response.setXmlDettaglioRisposta(  xmlDettaglioRisposta );
 				response.setEsito(StEsito.OK);
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTOk");
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_OK);
 				appContext.getEventoCtx().setEsito(Esito.OK);
 			} catch (NotFoundException e) {
-				log.error("Lettura RT [" + codDominio + "][" + iuv + "][" + ccp + "] completata con errore: RPT non trovata.");
+				log.error("Lettura RT [{}][{}][{}] completata con errore: RPT non trovata.", codDominio, iuv, ccp);
 				response.setEsito(StEsito.ERROR);
 				errore = CategoriaEnum.OPERAZIONE.name();
 				return response;
@@ -199,13 +215,9 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			}
 		}  catch (NotAuthorizedException e) {
 			log.error("Errore di autorizzazione rilevato: "+ e.getMessage(),e);
-			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getDetails(); 
+			String faultDescription = e.getMessage() == null ? NESSUNA_DESCRIZIONE : e.getDetails(); 
 			errore = CategoriaEnum.AUTORIZZAZIONE.name();
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTKo", CategoriaEnum.AUTORIZZAZIONE.name(), e.getMessage(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO, CategoriaEnum.AUTORIZZAZIONE.name(), e.getMessage(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito("FAIL");
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -213,7 +225,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			try {
 				response.setDataOperazione(MaggioliJPPAUtils.impostaDataOperazione(new Date()));
 			} catch (DatatypeConfigurationException e1) {
-				log.error("Errore durante l'esecuzione del metodo impostaDataOperazione: " + e1.getMessage(),e1);
+				log.error(ERRORE_DURANTE_L_ESECUZIONE_DEL_METODO_IMPOSTA_DATA_OPERAZIONE + e1.getMessage(),e1);
 			}
 			response.setEsito(StEsito.ERROR);
 			if(response.getMessaggi() == null)
@@ -225,13 +237,9 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			response.getMessaggi().getMessaggio().add(messaggio );
 		} catch (UnprocessableEntityException e) {
 			log.error("Errore di operazione rilevato: "+ e.getMessage(),e);
-			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getDetails(); 
+			String faultDescription = e.getMessage() == null ? NESSUNA_DESCRIZIONE : e.getDetails(); 
 			errore = CategoriaEnum.RICHIESTA.name();
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTKo", CategoriaEnum.RICHIESTA.name(), e.getMessage(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO, CategoriaEnum.RICHIESTA.name(), e.getMessage(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito("FAIL");
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -239,7 +247,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			try {
 				response.setDataOperazione(MaggioliJPPAUtils.impostaDataOperazione(new Date()));
 			} catch (DatatypeConfigurationException e1) {
-				log.error("Errore durante l'esecuzione del metodo impostaDataOperazione: " + e1.getMessage(),e1);
+				log.error(ERRORE_DURANTE_L_ESECUZIONE_DEL_METODO_IMPOSTA_DATA_OPERAZIONE + e1.getMessage(),e1);
 			}
 			response.setEsito(StEsito.ERROR);
 			if(response.getMessaggi() == null)
@@ -249,16 +257,12 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			messaggio.setCodice(CategoriaEnum.RICHIESTA.name());
 			messaggio.setDescrizione(faultDescription); 
 			response.getMessaggi().getMessaggio().add(messaggio );
-		} catch (DatatypeConfigurationException | UtilsException | ServiceException | 
+		} catch (DatatypeConfigurationException | ServiceException | 
 				SAXException | JAXBException | ValidationException | XMLStreamException | IOException | it.govpay.core.exceptions.IOException e) {
 			log.error("Errore durante l'esecuzione della procedura di recupero RT: "+ e.getMessage(),e);
-			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getMessage(); 
+			String faultDescription = e.getMessage() == null ? NESSUNA_DESCRIZIONE : e.getMessage(); 
 			errore = FaultPa.PAA_SYSTEM_ERROR.name();
-			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTKo", FaultPa.PAA_SYSTEM_ERROR.name(), FaultPa.PAA_SYSTEM_ERROR.getFaultString(), faultDescription);
-			} catch (UtilsException e1) {
-				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-			}
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO, FaultPa.PAA_SYSTEM_ERROR.name(), FaultPa.PAA_SYSTEM_ERROR.getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito("FAIL");
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
@@ -266,7 +270,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			try {
 				response.setDataOperazione(MaggioliJPPAUtils.impostaDataOperazione(new Date()));
 			} catch (DatatypeConfigurationException e1) {
-				log.error("Errore durante l'esecuzione del metodo impostaDataOperazione: " + e1.getMessage(),e1);
+				log.error(ERRORE_DURANTE_L_ESECUZIONE_DEL_METODO_IMPOSTA_DATA_OPERAZIONE + e1.getMessage(),e1);
 			}
 			response.setEsito(StEsito.ERROR);
 			if(response.getMessaggi() == null)

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -62,21 +62,27 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.MailBatch;
 
 public class Operazioni{
-
+	
+	private Operazioni() {}
+	
+	private static final String LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO = "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+	private static final String OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA = "Operazione in corso su altro nodo. Richiesta interrotta.";
 	private static final String ERROR_MSG_AGGIORNAMENTO_SONDA_FALLITO_0 = "Aggiornamento sonda fallito: {0}";
 	private static final String ERROR_MSG_SONDA_0_NON_TROVATA = "Sonda [{0}] non trovata";
-	private static final String DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2 = "Completata Esecuzione dei [{0}] Threads, OK [{1}], Errore [{2}]";
-	private static final String ERROR_MSG_INTERRUPTED_0 = "Interrupted: {0}";
+	public static final String DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2 = "Completata Esecuzione dei [{}] Threads, OK [{}], Errore [{}]";
+	public static final String ERROR_MSG_INTERRUPTED_0 = "Interrupted: {0}";
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String CHECK_DB = "check-db";
 	public static final String RND = "update-rnd";
-	public static final String PND = "update-pnd";
+	public static final String BATCH_ACA = "batch_aca";
+	public static final String BATCH_FDR = "batch_fdr";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
 	public static final String CHECK_NTFY = "check-ntfy";
@@ -100,12 +106,14 @@ public class Operazioni{
 	
 	public static final String BATCH_CHIUSURA_RPT_SCADUTE = "rpt-scadute";
 	public static final String CHECK_CHIUSURA_RPT_SCADUTE = "check-rpt-scadute";
+	
+	public static final String BATCH_RECUPERO_RT = "recupero-rt";
+	public static final String CHECK_RECUPERO_RT = "check-recupero-rt";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
-	private static boolean eseguiGenerazioneAvvisi;
 	private static boolean eseguiElaborazioneTracciati = true;
 	
 	private static boolean eseguiElaborazioneTracciatiNotificaPagamenti;
@@ -113,6 +121,8 @@ public class Operazioni{
 	
 	private static boolean eseguiElaborazioneRiconciliazioni;
 	private static boolean eseguiElaborazioneChiusuraRptScadute;
+	
+	private static boolean eseguiRecuperoRT;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -160,18 +170,6 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiInvioNotificheAppIO() {
 		return eseguiInvioNotificheAppIO;
-	}
-
-	public static synchronized void setEseguiGenerazioneAvvisi() {
-		eseguiGenerazioneAvvisi = true;
-	}
-
-	public static synchronized void resetEseguiGenerazioneAvvisi() {
-		eseguiGenerazioneAvvisi = false;
-	}
-
-	public static synchronized boolean getEseguiGenerazioneAvvisi() {
-		return eseguiGenerazioneAvvisi;
 	}
 
 	public static synchronized void setEseguiElaborazioneTracciati() {
@@ -233,16 +231,31 @@ public class Operazioni{
 	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
 		return eseguiElaborazioneChiusuraRptScadute;
 	}
+	
+	public static synchronized void setEseguiRecuperoRT() {
+		eseguiRecuperoRT = true;
+	}
+
+	public static synchronized void resetEseguiRecuperoRT() {
+		eseguiRecuperoRT = false;
+	}
+
+	public static synchronized boolean getEseguiRecuperoRT() {
+		return eseguiRecuperoRT;
+	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Acquisizione rendicontazioni");
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, RND)) {
 				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni().downloadRendicontazioni(ctx);
 				aggiornaSondaOK(configWrapper, RND);
+				log.info("Batch Acquisizione rendicontazioni completato: {}",  downloadRendicontazioni.getDescrizioneEsito());
 				return downloadRendicontazioni.getDescrizioneEsito();
 			} else {
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Acquisizione rendicontazioni: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
@@ -253,27 +266,31 @@ public class Operazioni{
 		}
 	}
 
-	public static String recuperoRptPendenti(IContext ctx){
+	public static String recuperoRt(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Recupero RT");
 		try {
-			if(BatchManager.startEsecuzione(configWrapper, PND)) {
-				String verificaTransazioniPendenti = new Pagamento().verificaTransazioniPendenti();
-				aggiornaSondaOK(configWrapper, PND);
-				return verificaTransazioniPendenti;
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_RECUPERO_RT)) {  
+				String recuperoRT = new Ricevute().recuperoRT();
+				aggiornaSondaOK(configWrapper, BATCH_RECUPERO_RT);
+				log.info("Recupero RT completato {}.", recuperoRT);
+				return recuperoRT;
 			} else {
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Eseguo Batch Recupero RT: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
-		} catch (Exception e) {
-			log.error("Acquisizione Rpt pendenti fallita", e);
-			aggiornaSondaKO(configWrapper, PND, e);
-			return "Acquisizione fallita#" + e;
+		} catch (ServiceException | IOException e) {
+			log.error("Recupero RT fallito", e);
+			aggiornaSondaKO(configWrapper, BATCH_RECUPERO_RT, e);
+			return "Recupero RT fallito#" + e;
 		} finally {
-			BatchManager.stopEsecuzione(configWrapper, PND);
+			BatchManager.stopEsecuzione(configWrapper, BATCH_RECUPERO_RT);
 		}
 	}
 	
 	public static String chiusuraRptScadute(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Chiusura RPT scadute");
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE)) {
 				
@@ -281,13 +298,15 @@ public class Operazioni{
 				Date dataUltimoCheck = (sonda != null && sonda.getParam() != null) ? sonda.getParam().getDataUltimoCheck() : null;
 				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx, dataUltimoCheck);
 				aggiornaSondaOK(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
+				log.info("Batch Chiusura RPT scadute completato: {}", chiusuraRPTScadute);
 				return chiusuraRPTScadute;
 			} else {
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Chiusura RPT scadute: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			log.error("Chiusura RPT scadute fallita", e);
-			aggiornaSondaKO(configWrapper, PND, e);
+			aggiornaSondaKO(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE, e);
 			return "Chiusura RPT scadute fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
@@ -296,6 +315,7 @@ public class Operazioni{
 
 	public static String spedizioneNotifiche(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Spedizione notifiche");
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, NTFY)) {
 				log.debug("Spedizione notifiche non consegnate");
@@ -311,7 +331,7 @@ public class Operazioni{
 					try {
 						applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 					}catch(NotFoundException e) {
-						log.debug(MessageFormat.format("Applicazione [{0}] non trovata, passo alla prossima applicazione.", codApplicazione));
+						log.debug("Applicazione [{}] non trovata, passo alla prossima applicazione.", codApplicazione);
 						continue;
 					}
 
@@ -322,16 +342,16 @@ public class Operazioni{
 						List<InviaNotificaThread> threads = new ArrayList<>();
 						List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 
-						log.debug(MessageFormat.format("Trovate [{0}] notifiche da spedire per l''applicazione [{1}]", notifiche.size(), codApplicazione));
+						log.info("Trovate [{}] notifiche da spedire per l'applicazione [{}]", notifiche.size(), codApplicazione);
 
-						if(notifiche.size() > 0) {
+						if(!notifiche.isEmpty()) {
 							for(Notifica notifica: notifiche) {
 								InviaNotificaThread sender = new InviaNotificaThread(notifica, ctx);
 								ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
 								threads.add(sender);
 							}
 
-							log.info(MessageFormat.format("Processi di spedizione notifiche per l''applicazione [{0}] avviati.", codApplicazione));
+							log.info("Processi di spedizione notifiche per l''applicazione [{}] avviati.", codApplicazione);
 							aggiornaSondaOK(configWrapper, NTFY);
 
 							// Aspetto che abbiano finito tutti
@@ -356,25 +376,25 @@ public class Operazioni{
 											numeroErrori ++;
 									}
 									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
+									log.debug(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
 									break; // esco
 								}
 							}
 
 							// Hanno finito tutti, aggiorno stato esecuzione
 							BatchManager.aggiornaEsecuzione(configWrapper, NTFY);
-							log.info(MessageFormat.format("Processi di spedizione notifiche per l''applicazione [{0}] terminati.", codApplicazione));
+							log.info("Processi di spedizione notifiche per l''applicazione [{}] terminati.", codApplicazione);
 						}
 					}   else {
-						log.debug(MessageFormat.format("Connettore non configurato per l''applicazione [{0}], non ricerco notifiche da spedire.", codApplicazione));
+						log.debug("Connettore non configurato per l''applicazione [{}], non ricerco notifiche da spedire.", codApplicazione);
 					}
 				}
 				aggiornaSondaOK(configWrapper, NTFY);
 				log.debug("Spedizione notifiche completata.");
 				return "Spedizione notifiche completata.";
 			} else {
-				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Spedizione notifiche: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (ServiceException | IOException e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
@@ -387,10 +407,11 @@ public class Operazioni{
 
 	public static String spedizioneNotificheAppIO(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		
+		log.info("Eseguo Batch Spedizione notifiche AppIO");
 		try {
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
+				log.info("Batch Spedizione notifiche AppIO: spedizione notifiche AppIO disabilitata");
 				return "Spedizione notifiche AppIO disabilitata.";
 			}
 		} catch (Exception e) {
@@ -410,9 +431,9 @@ public class Operazioni{
 				List<InviaNotificaAppIoThread> threads = new ArrayList<>();
 				List<NotificaAppIo> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit);
 
-				log.debug(MessageFormat.format("Trovate [{0}] notifiche AppIO da spedire", notifiche.size()));
+				log.info("Trovate [{}] notifiche AppIO da spedire", notifiche.size());
 
-				if(notifiche.size() > 0) {
+				if(!notifiche.isEmpty()) {
 					for(NotificaAppIo notifica: notifiche) {
 						InviaNotificaAppIoThread sender = new InviaNotificaAppIoThread(notifica, ctx);
 						ThreadExecutorManager.getClientPoolExecutorNotificaAppIo().execute(sender);
@@ -444,7 +465,7 @@ public class Operazioni{
 									numeroErrori ++;
 							}
 							int numOk = threads.size() - numeroErrori;
-							log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
+							log.debug(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
 							break; // esco
 						}
 					}
@@ -453,11 +474,11 @@ public class Operazioni{
 					BatchManager.aggiornaEsecuzione(configWrapper, NTFY_APP_IO);
 				}
 				aggiornaSondaOK(configWrapper, NTFY_APP_IO);
-				log.debug("Spedizione notifiche AppIO completata.");
+				log.info("Spedizione notifiche AppIO completata.");
 				return "Spedizione notifiche AppIO completata.";
 			} else {
-				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.debug("Batch Spedizione notifiche AppIO: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (ServiceException | IOException e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche AppIO", e);
@@ -477,8 +498,8 @@ public class Operazioni{
 			batch.setAggiornamento(newDate);
 			batchBD.update(batch);
 			AnagraficaManager.aggiornaDataReset(newDate);
-			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
-			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+			log.info(LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO);	
+			return LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO;
 		} catch (Exception e) {
 			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
 			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
@@ -502,12 +523,12 @@ public class Operazioni{
 			batchBD.update(batch);
 			AnagraficaManager.cleanCache();
 			BasicClientCORE.cleanCache();
-			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
+			log.info(LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO);	
 			
 			Log4JUtils.reloadLog4j();
 			log.info("Reload Log4J completato.");
 			
-			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+			return LOG_MSG_AGGIORNAMENTO_DELLA_DATA_DI_RESET_DELLA_CACHE_ANAGRAFICA_DEL_SISTEMA_COMPLETATO_CON_SUCCESSO;
 		} catch (Exception e) {
 			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
 			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
@@ -532,14 +553,14 @@ public class Operazioni{
 				if(StringUtils.isEmpty(clusterId))
 					clusterId = "1";
 
-				log.info(MessageFormat.format("Nodo [{0}]: Reset della cache anagrafica locale in corso...", clusterId));	
+				log.info("Nodo [{}]: Reset della cache anagrafica locale in corso...", clusterId);	
 				AnagraficaManager.cleanCache();
 				BasicClientCORE.cleanCache();
-				log.info(MessageFormat.format("Nodo [{0}]: Reset della cache anagrafica locale completato.", clusterId));
+				log.info("Nodo [{}]: Reset della cache anagrafica locale completato.", clusterId);
 				
-				log.info(MessageFormat.format("Nodo [{0}]: Reload Log4J in corso...", clusterId));	
+				log.info("Nodo [{}]: Reload Log4J in corso...", clusterId);	
 				Log4JUtils.reloadLog4j();
-				log.info(MessageFormat.format("Nodo [{0}]: Reload Log4J completato.", clusterId));
+				log.info("Nodo [{}]: Reload Log4J completato.", clusterId);
 			}
 
 			log.debug("Check reset della cache anagrafica locale completato con successo.");	
@@ -552,7 +573,7 @@ public class Operazioni{
 		}
 	}
 
-	private static void aggiornaSondaOK(BDConfigWrapper configWrapper, String nome) {
+	public static void aggiornaSondaOK(BDConfigWrapper configWrapper, String nome) {
 		BasicBD bd = null;
 
 		try {
@@ -569,12 +590,12 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
-			//			Properties properties = new Properties();
-			//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			((SondaBatch)sonda).aggiornaStatoSonda(true,  new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
-		} catch (Throwable t) {
-			log.warn(MessageFormat.format("Errore nell''aggiornamento della sonda OK: {0}", t.getMessage()));
+		} catch (SondaException | ServiceException t) {
+			log.warn("Errore nell''aggiornamento della sonda OK: {}", t.getMessage());
 		}
 		finally {
 			if(bd != null) {
@@ -589,7 +610,7 @@ public class Operazioni{
 		}
 	}
 
-	private static void aggiornaSondaKO(BDConfigWrapper configWrapper, String nome, Exception e) {
+	public static void aggiornaSondaKO(BDConfigWrapper configWrapper, String nome, Exception e) {
 		BasicBD bd = null;
 
 		try {
@@ -606,10 +627,12 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 			
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), MessageFormat.format("Il batch e'' stato interrotto con errore: {0}", e.getMessage()), con, bd.getJdbcProperties().getDatabase());
-		} catch (Throwable t) {
-			log.warn("Errore nell'aggiornamento della sonda KO: "+ t.getMessage());
+		} catch (SondaException | ServiceException t) {
+			log.warn("Errore nell'aggiornamento della sonda KO: {}", t.getMessage());
 		} finally {
 			if(bd != null) {
 				try {
@@ -640,9 +663,11 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			if(sonda == null) {
+				throw new SondaException(MessageFormat.format(ERROR_MSG_SONDA_0_NON_TROVATA, nome));
+			}
 			return sonda;
-		} catch (Throwable t) {
+		} catch (SondaException | ServiceException t) {
 			log.warn(MessageFormat.format("Errore nella lettura della sonda [{0}]: {1}", nome, t.getMessage()));
 			return null;
 		}
@@ -661,6 +686,7 @@ public class Operazioni{
 
 	public static String elaborazioneTracciatiPendenze(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Elaborazione Tracciati");
 		try {
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_TRACCIATI)) {
@@ -676,25 +702,25 @@ public class Operazioni{
 				Tracciati tracciatiBusiness = new Tracciati();
 
 				while(!tracciati.isEmpty()) {
-					log.info(MessageFormat.format("Trovati [{0}] tracciati da elaborare...", tracciati.size()));
+					log.info("Trovati [{}] tracciati da elaborare...", tracciati.size());
 
 					for(Tracciato tracciato: tracciati) {
-						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
+						log.info("Avvio elaborazione tracciato {}", tracciato.getId());
 						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
 						elaboraTracciatoDTO.setTracciato(tracciato);
 						tracciatiBusiness.elaboraTracciatoPendenze(elaboraTracciatoDTO, ctx);
-						log.info(MessageFormat.format("Elaborazione tracciato {0} completata", tracciato.getId()));
+						log.info("Elaborazione tracciato {} completata", tracciato.getId());
 					}
 					tracciati = tracciatiBD.findAll(filter);
 				}
 
 				aggiornaSondaOK(configWrapper, BATCH_TRACCIATI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_TRACCIATI);
-				log.debug("Elaborazione tracciati terminata.");
+				log.info("Elaborazione tracciati terminata.");
 				return "Elaborazione tracciati terminata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Elaborazione Tracciati: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			try {
@@ -710,38 +736,40 @@ public class Operazioni{
 
 	public static String spedizionePromemoria(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Spedizione Promemoria");
 		try {
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 			if(!batchSpedizioneEmail.isAbilitato()) {
+				log.info("Batch Spedizione Promemoria terminato: spedizione promemoria Email disabilitata.");
 				return "Spedizione promemoria disabilitata.";
 			}
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA)) {
 				int limit = 100;
-				log.debug(MessageFormat.format("Spedizione primi [{0}] promemoria non consegnati", limit));
+				log.debug("Spedizione primi [{}] promemoria non consegnati", limit);
 				Promemoria promemoriaBD = new Promemoria(); 
 				List<it.govpay.bd.model.Promemoria> promemorias = promemoriaBD.findPromemoriaDaSpedire(0, limit);
 
-				if(promemorias.size() == 0) {
+				if(promemorias.isEmpty()) {
 					aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
 					BatchManager.stopEsecuzione(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
-					log.debug("Nessun promemoria da inviare.");
+					log.info("Nessun promemoria da inviare.");
 					return "Nessun promemoria da inviare.";
 				}
 
-				log.info(MessageFormat.format("Trovati [{0}] promemoria da spedire", promemorias.size()));
+				log.info("Trovati [{}] promemoria da spedire", promemorias.size());
 
 				for(it.govpay.bd.model.Promemoria promemoria: promemorias) {
 					promemoriaBD.invioPromemoria(promemoria);
 				}
 				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
-				log.debug("Spedizione promemoria completata.");
+				log.info("Spedizione promemoria completata.");
 				return "Spedizione promemoria completata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Spedizione Promemoria: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione dei promemoria", e);
@@ -757,6 +785,7 @@ public class Operazioni{
 
 	public static String gestionePromemoria(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Gestione Promemoria");
 		try {
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
@@ -764,22 +793,23 @@ public class Operazioni{
 			AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
 
 			if(!batchSpedizioneEmail.isAbilitato() && !batchSpedizioneAppIO.isAbilitato()) {
+				log.info("Batch Gestione Promemoria terminato: spedizione promemoria Email e AppIO disabilitata.");
 				return "Spedizione promemoria Email e AppIO disabilitata.";
 			}
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_GESTIONE_PROMEMORIA)) {
 				int limit = 100;
 
-				log.debug(MessageFormat.format("Elaborazione primi [{0}] versamenti con promemoria avviso non consegnati", limit));
+				log.debug("Elaborazione primi [{}] versamenti con promemoria avviso non consegnati", limit);
 				VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 				List<Versamento> listaPromemoriaAvviso = versamentiBD.findVersamentiConAvvisoDiPagamentoDaSpedire(0, limit);
 
-				if(listaPromemoriaAvviso.size() == 0) {
+				if(listaPromemoriaAvviso.isEmpty()) {
 					log.debug("Nessun promemoria avviso da inviare, controllo presenza promemoria scadenza.");
 				} else {
 					// elaborazione avvisi...
-					log.info(MessageFormat.format("Trovati [{0}] promemoria avviso da spedire", listaPromemoriaAvviso.size()));
+					log.info("Trovati [{}] promemoria avviso da spedire", listaPromemoriaAvviso.size());
 					for (Versamento versamento : listaPromemoriaAvviso) {
 						versamentoBusiness.inserisciPromemoriaAvviso(versamento);				
 					}
@@ -787,13 +817,13 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
 
-				log.debug(MessageFormat.format("Elaborazione primi [{0}] versamenti con promemoria scadenza via mail non consegnati", limit));
+				log.debug("Elaborazione primi [{}] versamenti con promemoria scadenza via mail non consegnati", limit);
 				List<Versamento> listaPromemoriaScadenzaMail = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(0, limit);
 
-				if(listaPromemoriaScadenzaMail.size() == 0) {
+				if(listaPromemoriaScadenzaMail.isEmpty()) {
 					log.debug("Nessun promemoria scadenza da inviare via mail.");
 				} else { 
-					log.info(MessageFormat.format("Trovati [{0}] promemoria scadenza da spedire via mail", listaPromemoriaScadenzaMail.size()));
+					log.info("Trovati [{}] promemoria scadenza da spedire via mail", listaPromemoriaScadenzaMail.size());
 					for (Versamento versamento : listaPromemoriaScadenzaMail) {
 						versamentoBusiness.inserisciPromemoriaScadenzaMail(versamento);
 					}
@@ -801,13 +831,13 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
 
-				log.debug(MessageFormat.format("Elaborazione primi [{0}] versamenti con promemoria scadenza via appIO non consegnati", limit));
+				log.debug("Elaborazione primi [{}] versamenti con promemoria scadenza via appIO non consegnati", limit);
 				List<Versamento> listaPromemoriaScadenzaAppIO = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(0, limit);
 
-				if(listaPromemoriaScadenzaAppIO.size() == 0) {
+				if(listaPromemoriaScadenzaAppIO.isEmpty()) {
 					log.debug("Nessun promemoria scadenza da inviare via appIO.");
 				} else {
-					log.info(MessageFormat.format("Trovati [{0}] promemoria scadenza da spedire", listaPromemoriaScadenzaAppIO.size()));
+					log.info("Trovati [{}] promemoria scadenza da spedire", listaPromemoriaScadenzaAppIO.size());
 					for (Versamento versamento : listaPromemoriaScadenzaAppIO) {
 						versamentoBusiness.inserisciPromemoriaScadenzaAppIO(versamento);
 					}
@@ -822,8 +852,8 @@ public class Operazioni{
 				log.debug("Gestione promemoria completata.");
 				return "Gestione promemoria completata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Gestione Promemoria: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la gestione dei promemoria", e);
@@ -839,6 +869,7 @@ public class Operazioni{
 	
 	public static String elaborazioneTracciatiNotificaPagamenti(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Elaborazione Tracciati Notifica Pagamenti");
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
 				
@@ -848,68 +879,39 @@ public class Operazioni{
 				
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
-					log.debug(MessageFormat.format("Elaborazione tracciati notifica pagamenti per il Dominio [{0}].", codDominio));
+					log.debug("Elaborazione tracciati notifica pagamenti per il Dominio [{}].", codDominio);
 					try {
 						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 					}catch(NotFoundException e) {
-						log.debug(MessageFormat.format("Dominio [{0}] non trovato, passo alla prossimo.", dominio));
+						log.debug("Dominio [{}] non trovato, passo al prossimo.", dominio);
 						continue;
 					}
 
-					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
-						log.debug(MessageFormat.format("Elaborazione Tracciato MyPivot per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
-						tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMyPivot(), ctx);
-						log.debug(MessageFormat.format("Elaborazione Tracciato MyPivot per il Dominio [{0}] completata.", codDominio));
-					} else {
-						log.debug(MessageFormat.format("Connettore MyPivot non configurato per il Dominio [{0}], non ricerco tracciati da elaborare.", codDominio));
-					}
+					// MyPivot
+					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreMyPivot(), "MyPivot", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
 					
-					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
-						log.debug(MessageFormat.format("Elaborazione Tracciato Secim per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiSecim = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
-						tracciatiSecim.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreSecim(), ctx);
-						log.debug(MessageFormat.format("Elaborazione Tracciato Secim per il Dominio [{0}] completata.", codDominio));
-					} else {
-						log.debug(MessageFormat.format("Connettore Secim non configurato per il Dominio [{0}], non ricerco tracciati da elaborare.", codDominio));
-					}
+					// Secim
+					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreSecim(), "Secim", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
 					
-					if(dominio.getConnettoreGovPay() != null && dominio.getConnettoreGovPay().isAbilitato()) {
-						log.debug(MessageFormat.format("Elaborazione Tracciato GovPay per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiGovpay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.GOVPAY);
-						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreGovPay(), ctx);
-						log.debug(MessageFormat.format("Elaborazione Tracciato GovPay per il Dominio [{0}] completata.", codDominio));
-					} else {
-						log.debug(MessageFormat.format("Connettore GovPay non configurato per il Dominio [{0}], non ricerco tracciati da elaborare.", codDominio));
-					}
+					// GovPay
+					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreGovPay(), "GovPay", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.GOVPAY);
 					
-					if(dominio.getConnettoreHyperSicAPKappa() != null && dominio.getConnettoreHyperSicAPKappa().isAbilitato()) {
-						log.debug(MessageFormat.format("Elaborazione Tracciato HyperSicAPKappa per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiGovpay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
-						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreHyperSicAPKappa(), ctx);
-						log.debug(MessageFormat.format("Elaborazione Tracciato HyperSicAPKappa per il Dominio [{0}] completata.", codDominio));
-					} else {
-						log.debug(MessageFormat.format("Connettore HyperSicAPKappa non configurato per il Dominio [{0}], non ricerco tracciati da elaborare.", codDominio));
-					}
+					// HyperSicAPKappa
+					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreHyperSicAPKappa(), "HyperSicAPKappa", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
 					
-					if(dominio.getConnettoreMaggioliJPPA() != null && dominio.getConnettoreMaggioliJPPA().isAbilitato()) {
-						log.debug(MessageFormat.format("Elaborazione Tracciato Maggioli JPPA per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiGovpay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
-						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMaggioliJPPA(), ctx);
-						log.debug(MessageFormat.format("Elaborazione Tracciato Maggioli JPPA per il Dominio [{0}] completata.", codDominio));
-					} else {
-						log.debug(MessageFormat.format("Connettore Maggioli JPPA non configurato per il Dominio [{0}], non ricerco tracciati da elaborare.", codDominio));
-					}
+					// Maggioli JPPA
+					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreMaggioliJPPA(), "Maggioli JPPA", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
+					
 				}
 				
 				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 			
-				log.debug("Elaborazione tracciati notifica pagamenti terminata.");
+				log.info("Elaborazione tracciati notifica pagamenti terminata.");
 				return "Elaborazione tracciati notifica pagamenti terminata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Elaborazione Tracciati Notifica Pagamenti: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare l'elaborazione dei tracciati notifica pagamenti", e);
@@ -923,313 +925,62 @@ public class Operazioni{
 		}
 	}
 	
+	private static void eseguiElaborazioneTracciatiNotificaPagamenti(IContext ctx, it.govpay.bd.model.Dominio dominio, ConnettoreNotificaPagamenti connettore, String nomeConnettore, it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO tipoTracciato) throws ServiceException {
+		String codDominio = dominio.getCodDominio();
+		
+		if(connettore != null && connettore.isAbilitato()) {
+			log.debug("Elaborazione Tracciato {} per il Dominio [{}]...", nomeConnettore, codDominio);
+			TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(tipoTracciato);
+			tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, connettore, ctx);
+			log.debug("Elaborazione Tracciato {} per il Dominio [{}] completata.", nomeConnettore, codDominio);
+		} else {
+			log.debug("Connettore {} non configurato per il Dominio [{}], non ricerco tracciati da elaborare.", nomeConnettore, codDominio);
+		}
+		
+	}
+	
 	public static String spedizioneTracciatiNotificaPagamenti(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Spedizione Tracciati Notifica Pagamenti");
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
 				// ricerca domini con connettore mypivot abilitato
 				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
 				
-				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
 					try {
 						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 					}catch(NotFoundException e) {
-						log.debug(MessageFormat.format("Dominio [{0}] non trovato, passo alla prossimo.", dominio));
+						log.debug("Dominio [{}] non trovato, passo al prossimo.", dominio);
 						continue;
 					}
-
-					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
-						log.debug(MessageFormat.format("Scheduling spedizione Tracciati MyPivot per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
-						
-						
-						int offset = 0;
-						int limit = (2 * threadNotificaPoolSize);
-						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiMyPivot.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreMyPivot(), ctx);
-						
-						log.debug(MessageFormat.format("Trovati [{0}] Tracciati MyPivot da spedire per il Dominio [{1}]...", tracciatiInStatoNonTerminalePerDominio.size(), codDominio));
-
-						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
-							for(TracciatoNotificaPagamenti tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, dominio.getConnettoreMyPivot(), ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
-								threads.add(sender);
-							}
-
-							log.debug("Processi di spedizione Tracciati MyPivot avviati.");
-							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-
-							// Aspetto che abbiano finito tutti
-							int numeroErrori = 0;
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-									log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
-								    // Restore interrupted state...
-								    Thread.currentThread().interrupt();
-								}
-								boolean completed = true;
-								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-									if(!sender.isCompleted()) 
-										completed = false;
-								}
-
-								if(completed) { 
-									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-										if(sender.isErrore()) 
-											numeroErrori ++;
-									}
-									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
-									break; // esco
-								}
-							}
-							
-							log.info(MessageFormat.format("Spedizione Tracciati MyPivot per il Dominio [{0}] completata.", codDominio));
-							//Hanno finito tutti, aggiorno stato esecuzione
-							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-						}
-					} else {
-						log.debug(MessageFormat.format("Connettore MyPivot non configurato per il Dominio [{0}], non ricerco tracciati da spedire.", codDominio));
-					}
 					
-					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
-						log.debug(MessageFormat.format("Scheduling spedizione Tracciati Secim per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiSecim = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
-						
-						int offset = 0;
-						int limit = (2 * threadNotificaPoolSize);
-						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiSecim.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreSecim(), ctx);
-						
-						log.debug(MessageFormat.format("Trovati [{0}] Tracciati Secim da spedire per il Dominio [{1}]...", tracciatiInStatoNonTerminalePerDominio.size(), codDominio));
-
-						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
-							for(TracciatoNotificaPagamenti tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, dominio.getConnettoreSecim(), ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
-								threads.add(sender);
-							}
-
-							log.debug("Processi di spedizione Tracciati Secim avviati.");
-							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-
-							// Aspetto che abbiano finito tutti
-							int numeroErrori = 0;
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-									log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
-								    // Restore interrupted state...
-								    Thread.currentThread().interrupt();
-								}
-								boolean completed = true;
-								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-									if(!sender.isCompleted()) 
-										completed = false;
-								}
-
-								if(completed) { 
-									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-										if(sender.isErrore()) 
-											numeroErrori ++;
-									}
-									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
-									break; // esco
-								}
-							}
-							
-							log.info(MessageFormat.format("Spedizione Tracciati Secim per il Dominio [{0}] completata.", codDominio));
-							//Hanno finito tutti, aggiorno stato esecuzione
-							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-						}
-					} else {
-						log.debug(MessageFormat.format("Connettore Secim non configurato per il Dominio [{0}], non ricerco tracciati da spedire.", codDominio));
-					}
+					// My Pivot
+					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreMyPivot(), "MyPivot", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
 					
-					if(dominio.getConnettoreGovPay() != null && dominio.getConnettoreGovPay().isAbilitato()) {
-						log.debug(MessageFormat.format("Scheduling spedizione Tracciati GovPay per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.GOVPAY);
-						
-						int offset = 0;
-						int limit = (2 * threadNotificaPoolSize);
-						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreGovPay(), ctx);
-						
-						log.debug(MessageFormat.format("Trovati [{0}] Tracciati GovPay da spedire per il Dominio [{1}]...",	tracciatiInStatoNonTerminalePerDominio.size(), codDominio));
+					// Secim
+					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreSecim(), "Secim", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
 
-						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
-							for(TracciatoNotificaPagamenti tracciatGovPay: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatGovPay, dominio.getConnettoreGovPay(), ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
-								threads.add(sender);
-							}
+					// GovPay
+					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreGovPay(), "GovPay", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.GOVPAY);
 
-							log.debug("Processi di spedizione Tracciati GovPay avviati.");
-							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+					// HyperSicAPKappa
+					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreHyperSicAPKappa(), "HyperSicAPKappa", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
 
-							// Aspetto che abbiano finito tutti
-							int numeroErrori = 0;
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-									log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
-								    // Restore interrupted state...
-								    Thread.currentThread().interrupt();
-								}
-								boolean completed = true;
-								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-									if(!sender.isCompleted()) 
-										completed = false;
-								}
+					// Maggioli JPPA
+					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreMaggioliJPPA(), "Maggioli JPPA", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
 
-								if(completed) { 
-									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-										if(sender.isErrore()) 
-											numeroErrori ++;
-									}
-									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
-									break; // esco
-								}
-							}
-							
-							log.info(MessageFormat.format("Spedizione Tracciati GovPay per il Dominio [{0}] completata.", codDominio));
-							//Hanno finito tutti, aggiorno stato esecuzione
-							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-						}
-					} else {
-						log.debug(MessageFormat.format("Connettore GovPay non configurato per il Dominio [{0}], non ricerco tracciati da spedire.", codDominio));
-					}
-					
-					if(dominio.getConnettoreHyperSicAPKappa() != null && dominio.getConnettoreHyperSicAPKappa().isAbilitato()) {
-						log.debug(MessageFormat.format("Scheduling spedizione Tracciati HyperSicAPKappa per il Dominio [{0}]...", codDominio));
-						TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
-						
-						int offset = 0;
-						int limit = (2 * threadNotificaPoolSize);
-						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreHyperSicAPKappa(), ctx);
-						
-						log.debug(MessageFormat.format("Trovati [{0}] Tracciati HyperSicAPKappa da spedire per il Dominio [{1}]...", tracciatiInStatoNonTerminalePerDominio.size(),	codDominio));
-
-						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
-							for(TracciatoNotificaPagamenti tracciatoHyperSicAPKappa: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoHyperSicAPKappa, dominio.getConnettoreHyperSicAPKappa(), ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
-								threads.add(sender);
-							}
-
-							log.debug("Processi di spedizione Tracciati HyperSicAPKappa avviati.");
-							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-
-							// Aspetto che abbiano finito tutti
-							int numeroErrori = 0;
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-									log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
-								    // Restore interrupted state...
-								    Thread.currentThread().interrupt();
-								}
-								boolean completed = true;
-								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-									if(!sender.isCompleted()) 
-										completed = false;
-								}
-
-								if(completed) { 
-									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-										if(sender.isErrore()) 
-											numeroErrori ++;
-									}
-									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
-									break; // esco
-								}
-							}
-							
-							log.info(MessageFormat.format("Spedizione Tracciati HyperSicAPKappa per il Dominio [{0}] completata.", codDominio));
-							//Hanno finito tutti, aggiorno stato esecuzione
-							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-						}
-					} else {
-						log.debug(MessageFormat.format("Connettore HyperSicAPKappa non configurato per il Dominio [{0}], non ricerco tracciati da spedire.", codDominio));
-					}
-					
-					if(dominio.getConnettoreMaggioliJPPA() != null && dominio.getConnettoreMaggioliJPPA().isAbilitato()) {
-						log.debug(MessageFormat.format("Scheduling spedizione Tracciati Maggioli JPPA per il Dominio [{0}]...",	codDominio));
-						TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
-						
-						int offset = 0;
-						int limit = (2 * threadNotificaPoolSize);
-						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreMaggioliJPPA(), ctx);
-						
-						log.debug(MessageFormat.format("Trovati [{0}] Tracciati Maggioli JPPA da spedire per il Dominio [{1}]...", tracciatiInStatoNonTerminalePerDominio.size(), codDominio));
-
-						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
-							for(TracciatoNotificaPagamenti tracciatoHyperSicAPKappa: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoHyperSicAPKappa, dominio.getConnettoreMaggioliJPPA(), ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
-								threads.add(sender);
-							}
-
-							log.debug("Processi di spedizione Tracciati Maggioli JPPA avviati.");
-							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-
-							// Aspetto che abbiano finito tutti
-							int numeroErrori = 0;
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-									log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
-								    // Restore interrupted state...
-								    Thread.currentThread().interrupt();
-								}
-								boolean completed = true;
-								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-									if(!sender.isCompleted()) 
-										completed = false;
-								}
-
-								if(completed) { 
-									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
-										if(sender.isErrore()) 
-											numeroErrori ++;
-									}
-									int numOk = threads.size() - numeroErrori;
-									log.debug(MessageFormat.format(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori));
-									break; // esco
-								}
-							}
-							
-							log.info(MessageFormat.format("Spedizione Tracciati Maggioli JPPA per il Dominio [{0}] completata.", codDominio));
-							//Hanno finito tutti, aggiorno stato esecuzione
-							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
-						}
-					} else {
-						log.debug(MessageFormat.format("Connettore Maggioli JPPA non configurato per il Dominio [{0}], non ricerco tracciati da spedire.", codDominio));
-					}
 				}
 				
 				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 			
-				log.debug("Spedizione tracciati notifica pagamenti terminata.");
+				log.info("Spedizione tracciati notifica pagamenti terminata.");
 				return "Spedizione tracciati notifica pagamenti terminata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Spedizione Tracciati Notifica Pagamenti: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (ServiceException | IOException e) {
 			log.error("Non è stato possibile avviare la spedizione dei tracciati notifica pagamenti", e);
@@ -1243,11 +994,74 @@ public class Operazioni{
 		}
 	}
 	
+	private static void spedizioneTracciatiNotificaPagamentiConnettore(IContext ctx, BDConfigWrapper configWrapper, it.govpay.bd.model.Dominio dominio, ConnettoreNotificaPagamenti connettore, String nomeConnettore, it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO tipoTracciato) throws ServiceException, IOException {
+		String codDominio = dominio.getCodDominio();
+		int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
+		
+		if(connettore != null && connettore.isAbilitato()) {
+			log.debug("Scheduling spedizione Tracciati {} per il Dominio [{}]...", nomeConnettore,	codDominio);
+			TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(tipoTracciato);
+			
+			int offset = 0;
+			int limit = (2 * threadNotificaPoolSize);
+			List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
+			List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, connettore, ctx);
+			
+			log.debug("Trovati [{}] Tracciati {} da spedire per il Dominio [{}]...", tracciatiInStatoNonTerminalePerDominio.size(), nomeConnettore, codDominio);
+
+			if(!tracciatiInStatoNonTerminalePerDominio.isEmpty()) {
+				for(TracciatoNotificaPagamenti tracciato: tracciatiInStatoNonTerminalePerDominio) {
+					SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciato, connettore, ctx);
+					ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
+					threads.add(sender);
+				}
+
+				log.debug("Processi di spedizione Tracciati {} avviati.", nomeConnettore);
+				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+
+				// Aspetto che abbiano finito tutti
+				int numeroErrori = 0;
+				while(true){
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						log.warn(MessageFormat.format(ERROR_MSG_INTERRUPTED_0, e.getMessage()), e);
+					    // Restore interrupted state...
+					    Thread.currentThread().interrupt();
+					}
+					boolean completed = true;
+					for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+						if(!sender.isCompleted()) 
+							completed = false;
+					}
+
+					if(completed) { 
+						for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+							if(sender.isErrore()) 
+								numeroErrori ++;
+						}
+						int numOk = threads.size() - numeroErrori;
+						log.debug(DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
+						break; // esco
+					}
+				}
+				
+				log.info("Spedizione Tracciati {} per il Dominio [{}] completata.", nomeConnettore, codDominio);
+				//Hanno finito tutti, aggiorno stato esecuzione
+				BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+			}
+		} else {
+			log.debug("Connettore {} non configurato per il Dominio [{}], non ricerco tracciati da spedire.", nomeConnettore,  codDominio);
+		}
+	}
+	
+	
+	
 	public static String elaborazioneRiconciliazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		log.info("Eseguo Batch Elaborazione Riconciliazioni");
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_RICONCILIAZIONI)) {
-				
 				int offset = 0;
 				int limit = 25;
 				IncassiBD incassiBD = new IncassiBD(configWrapper);
@@ -1256,9 +1070,9 @@ public class Operazioni{
 				
 				List<Incasso> findRiconciliazioniDaAcquisire = incassiBD.findRiconciliazioniDaAcquisire(configWrapper, offset, limit, true);
 				
-				log.debug(MessageFormat.format("Trovate [{0}] riconciliazioni.", findRiconciliazioniDaAcquisire.size()));
+				log.info("Trovate [{}] riconciliazioni.", findRiconciliazioniDaAcquisire.size());
 				
-				if(findRiconciliazioniDaAcquisire.size() > 0) {
+				if(!findRiconciliazioniDaAcquisire.isEmpty()) {
 					Incassi incassi = new Incassi();
 					
 					for (Incasso incasso : findRiconciliazioniDaAcquisire) {
@@ -1269,11 +1083,11 @@ public class Operazioni{
 				aggiornaSondaOK(configWrapper, BATCH_RICONCILIAZIONI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_RICONCILIAZIONI);
 			
-				log.debug("Elaborazione riconciliazioni terminata.");
+				log.info("Esecuzione Batch Elaborazione riconciliazioni terminata.");
 				return "Elaborazione riconciliazioni terminata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+				log.info("Batch Elaborazione riconciliazioni: operazione in corso su altro nodo. Richiesta interrotta.");
+				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare l'elaborazione delle riconciliazioni", e);

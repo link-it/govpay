@@ -32,5 +32,6 @@
   		"tipiPendenza" : [ "*" ],
   		"intervalloCreazioneTracciato": 24
   },
-  "intermediato": "true"
+  "intermediato": "true",
+  "scaricaFr": "true"
 }

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.fetch;
 
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.sql.ResultSet;
@@ -29,7 +31,6 @@ import java.util.Map;
 
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
-import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.VistaRendicontazione;
 
@@ -48,8 +49,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
 		
 		try{
-			JDBCParameterUtilities jdbcParameterUtilities =  
-					new JDBCParameterUtilities(tipoDatabase);
+			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(VistaRendicontazione.model())){
 				VistaRendicontazione object = new VistaRendicontazione();
@@ -87,16 +88,22 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_dominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "fr_obsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType()));
+				setParameter(object, "setFrDataOraPubblicazione", VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_data_ora_pubblicazione", VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE.getFieldType()));
+				setParameter(object, "setFrDataOraAggiornamento", VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_data_ora_aggiornamento", VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO.getFieldType()));
+				setParameter(object, "setFrRevisione", VistaRendicontazione.model().FR_REVISIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_revisione", VistaRendicontazione.model().FR_REVISIONE.getFieldType()));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_iuv", VistaRendicontazione.model().RND_IUV.getFieldType()));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_iur", VistaRendicontazione.model().RND_IUR.getFieldType()));
 				setParameter(object, "setRndIndiceDati", VistaRendicontazione.model().RND_INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rnd_indice_dati", VistaRendicontazione.model().RND_INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "rnd_indice_dati", VistaRendicontazione.model().RND_INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setRndImportoPagato", VistaRendicontazione.model().RND_IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_importo_pagato", VistaRendicontazione.model().RND_IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setRndEsito", VistaRendicontazione.model().RND_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rnd_esito", VistaRendicontazione.model().RND_ESITO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "rnd_esito", VistaRendicontazione.model().RND_ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setRndData", VistaRendicontazione.model().RND_DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_data", VistaRendicontazione.model().RND_DATA.getFieldType()));
 				setParameter(object, "setRndStato", VistaRendicontazione.model().RND_STATO.getFieldType(),
@@ -114,11 +121,13 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 				setParameter(object, "setSngDatiAllegati", VistaRendicontazione.model().SNG_DATI_ALLEGATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_dati_allegati", VistaRendicontazione.model().SNG_DATI_ALLEGATI.getFieldType()));
 				setParameter(object, "setSngIndiceDati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "sng_indice_dati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "sng_indice_dati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setSngDescrizioneCausaleRPT", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_contabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType()));
+				setParameter(object, "setSngMetadata", VistaRendicontazione.model().SNG_METADATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sng_metadata", VistaRendicontazione.model().SNG_METADATA.getFieldType()));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaRendicontazione.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -313,6 +322,12 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"frRagioneSocialeDominio"));
 				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
 					this.getObjectFromMap(map,"frObsoleto"));
+				setParameter(object, "setFrDataOraPubblicazione", VistaRendicontazione.model().FR_DATA_ORA_PUBBLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"frDataOraPubblicazione"));
+				setParameter(object, "setFrDataOraAggiornamento", VistaRendicontazione.model().FR_DATA_ORA_AGGIORNAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"frDataOraAggiornamento"));
+				setParameter(object, "setFrRevisione", VistaRendicontazione.model().FR_REVISIONE.getFieldType(),
+					this.getObjectFromMap(map,"frRevisione"));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					this.getObjectFromMap(map,"rndIuv"));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),
@@ -345,6 +360,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"sngDescrizioneCausaleRPT"));
 				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"sngContabilita"));
+				setParameter(object, "setSngMetadata", VistaRendicontazione.model().SNG_METADATA.getFieldType(),
+					this.getObjectFromMap(map,"sngMetadata"));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
 					this.getObjectFromMap(map,"vrsId"));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),

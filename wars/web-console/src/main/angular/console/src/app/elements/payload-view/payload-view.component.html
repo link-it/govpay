@@ -1,0 +1,9 @@
+<div *ngIf="!attribute">{{ 'Nessun dato da visualizzare' }}</div>
+<div class="border p-2" style="height: 240px;overflow: auto;" *ngIf="attribute">
+  <!-- <div>{{ type }}</div> -->
+  <pre *ngIf="type === MimeEnum.JSON">{{ payload | json }}</pre>
+  <pre *ngIf="type === MimeEnum.XML">{{ payload | xml }}</pre>
+</div>
+<div class="float-right" *ngIf="showCopy">
+  <button mat-icon-button type="button" (click)="copyPayload()" [matTooltip]="'Copia negli appunti'"><mat-icon>content_copy</mat-icon></button>
+</div>

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,10 +98,10 @@ public abstract class AbstractOperazioneResponse {
 		this.esitoOperazionePendenza.setIdA2A(this.getIdA2A());
 		this.esitoOperazionePendenza.setIdPendenza(this.getIdPendenza());
 		this.esitoOperazionePendenza.setNumero(BigDecimal.valueOf(this.getNumero()));
-		StatoOperazioneType stato = this.getStato();
+		StatoOperazioneType currentStato = this.getStato();
 		StatoOperazionePendenza statoEsitoOperazione = null;
 
-		switch (stato) {
+		switch (currentStato) {
 		case ESEGUITO_OK:
 			statoEsitoOperazione = StatoOperazionePendenza.ESEGUITO;
 			break;
@@ -115,10 +115,10 @@ public abstract class AbstractOperazioneResponse {
 		}
 		this.esitoOperazionePendenza.setStato(statoEsitoOperazione);
 
-		TipoOperazioneType tipo = this.getTipo();
+		TipoOperazioneType currentTipo = this.getTipo();
 		TipoOperazionePendenza tipoEsitoOperazione;
 
-		switch(tipo) {
+		switch(currentTipo) {
 		case ADD:
 			tipoEsitoOperazione = TipoOperazionePendenza.ADD;
 			break;

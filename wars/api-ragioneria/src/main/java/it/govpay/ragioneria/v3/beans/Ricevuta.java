@@ -1,33 +1,52 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class Ricevuta   {
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Dominio dominio = null;
 
-  @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
+  @Schema(example = "RF23567483937849450550875", requiredMode = RequiredMode.REQUIRED, description = "Identificativo univoco di versamento")
  /**
    * Identificativo univoco di versamento
   **/
   private String iuv = null;
 
-  @Schema(example = "ab12345", required = true, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
+  @Schema(example = "ab12345", requiredMode = RequiredMode.REQUIRED, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
  /**
    * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento
   **/
   private String idRicevuta = null;
 
-  @Schema(example = "10.01", required = true, description = "Importo della transazione di pagamento.")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della transazione di pagamento.")
  /**
    * Importo della transazione di pagamento.
   **/
@@ -48,13 +67,13 @@ public class Ricevuta   {
   **/
   private String idSessionePsp = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private RicevutaIstitutoAttestante istitutoAttestante = null;
 
   @Schema(description = "")
   private Soggetto versante = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private PendenzaPagata pendenza = null;
 
   @Schema(description = "Data di acquisizione della ricevuta")
@@ -75,7 +94,7 @@ public class Ricevuta   {
   @Schema(description = "")
   private RicevutaRt rt = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private ModelloPagamento modello = null;
  /**
    * Get dominio

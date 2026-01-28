@@ -5,7 +5,7 @@
 
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext-jaxrs-v1.xml,${spring.sec_config_folder}/api-user-applicationContext-security.xml</param-value>
+		<param-value>@contextConfigLocation@</param-value>
     </context-param>
     
     <listener>

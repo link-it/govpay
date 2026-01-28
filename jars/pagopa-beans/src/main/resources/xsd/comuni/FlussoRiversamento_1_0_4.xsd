@@ -75,6 +75,13 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+    <xsd:simpleType name="stText140">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1" />
+            <xsd:maxLength value="140" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
 	<xsd:simpleType name="stTipoIdentificativoUnivoco">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="G"/><!-- Persona Giuridica -->
@@ -91,14 +98,16 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="stCodiceEsitoPagamento">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="[0-9]{1,1}"/>
-			<xsd:enumeration value="0"/><!-- Pagamento eseguito -->
-			<xsd:enumeration value="3"/><!-- Pagamento revocato -->
-			<xsd:enumeration value="9"/><!-- Pagamento eseguito in assenza di RPT -->
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:simpleType name="stCodiceEsitoPagamento">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{1,1}" />
+            <xsd:enumeration value="0" /> <!-- Pagamento eseguito -->
+            <xsd:enumeration value="3" /> <!-- Pagamento revocato -->
+   	        <xsd:enumeration value="4" /> <!-- Pagamento eseguito in standin -->
+            <xsd:enumeration value="8" /> <!-- Pagamento eseguito in standin in assenza di RPT-->
+            <xsd:enumeration value="9" /> <!-- Pagamento eseguito in assenza di RPT -->
+        </xsd:restriction>
+    </xsd:simpleType>
 
 	<xsd:simpleType name="stIndice">
 		<xsd:restriction base="xsd:integer">
@@ -173,7 +182,7 @@
 					<xsd:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale dell’ente creditore che riceve il flusso.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="denominazioneRicevente" type="pay_i:stText70" minOccurs="0">
+			<xsd:element name="denominazioneRicevente" type="pay_i:stText140" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Contiene la denominazione dell’ente creditore che riceve il flusso.</xsd:documentation>
 				</xsd:annotation>
@@ -299,5 +308,3 @@
 	</xsd:element>
 	<!-- **** END: elementi ****-->
 </xsd:schema>
-
-

@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
@@ -65,6 +66,6 @@ And headers basicAutenticationHeader
 And request pagamentoPostEntrataRiferita
 When method post
 Then status 422
-And match response == { categoria: 'RICHIESTA', codice: '#notnull', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response contains { categoria: 'RICHIESTA', codice: '#notnull', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 And match response.codice == 'VER_026'
 And match response.dettaglio == 'Lo IUV (000000000000000000) non e\' conforme alle specifiche agid, application code (00) non valido per la stazione (11111111113_01)'

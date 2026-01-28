@@ -1,0 +1,13 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
+	},
+	"servizioPagoPaRecuperoRT": {
+		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"subscriptionKey" : "ABC123",
+		"abilitaGDE": true
+	},
+	"abilitato": true
+}

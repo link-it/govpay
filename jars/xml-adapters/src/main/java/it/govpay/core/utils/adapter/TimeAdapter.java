@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,19 +20,19 @@
 
 package it.govpay.core.utils.adapter;
 
-import java.util.Date;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.time.LocalTime;
 
-public class TimeAdapter extends XmlAdapter<String, Date> {
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
+public class TimeAdapter extends XmlAdapter<String, LocalTime> {
     @Override
-	public Date unmarshal(String value) {
-        return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.parseTime(value));
+	public LocalTime unmarshal(String value) {
+    	return DataTypeAdapterCXF.parseLocalTime(value);
     }
 
     @Override
-	public String marshal(Date value) {
-        return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.printTime(value));
+	public String marshal(LocalTime value) {
+    	return DataTypeAdapterCXF.printLocalTime(value);
     }
 
 }

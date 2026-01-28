@@ -38,6 +38,7 @@ Background:
 * def appIoPath = '/appio'
 * def enteRendicontazioniPath = '/enteRendicontazioni'
 * def maggioliPath = '/maggioli'
+* def oauth2TokenPath = '/oauth2/token'
 
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
@@ -235,9 +236,10 @@ Scenario: pathMatches(appIoPath+'/profiles/') && methodIs('get')
 Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'VRDGPP65B03A113N'
  	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
 	* def responseStatus = 401
-  * def responseBody401 = {} 
-  * eval responseBody401.statusCode = 401
-  * eval responseBody401.message = 'Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription.'
+	* copy responseBody401 = appIoResponseProblem
+	* eval responseBody401.title = 'Unauhtorized'
+  * eval responseBody401.status = 401
+  * eval responseBody401.detail = 'Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription.'
 	* def response = responseBody401
 	
 # Utente non registrato
@@ -349,6 +351,19 @@ Scenario: pathMatches(maggioliPath) && methodIs('post')
    </soap:Body>
 </soap:Envelope>
 """
+
+# Servizio Oauth2 Token Path
+Scenario: pathMatches(oauth2TokenPath) && methodIs('post')
+* def responseStatus = 200
+* def response =
+"""
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjM0NTI3NzE2LCJleHAiOjE2MzQ1Mjc4MTZ9.9g4S9D9lQW9IwzKQ7w6UEXtuG1zNRQYtZiUK8-SPq6o",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "read write"
+}
+""" 
 
 Scenario:
 	* def responseStatus = 404

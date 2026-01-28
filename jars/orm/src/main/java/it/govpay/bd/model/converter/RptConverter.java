@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,12 +20,12 @@
 package it.govpay.bd.model.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
@@ -35,6 +35,8 @@ import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
+	
+	private RptConverter() {}
 
 	public static List<Rpt> toDTOList(List<it.govpay.orm.RPT> applicazioneLst) throws CodificaInesistenteException {
 		List<Rpt> lstDTO = new ArrayList<>();
@@ -68,7 +70,7 @@ public class RptConverter {
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
 		if(vo.getImportoTotalePagato() != null)
-			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
+			dto.setImportoTotalePagato(vo.getImportoTotalePagato());
 		dto.setIuv(vo.getIuv());
 		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
 		dto.setPspRedirectURL(vo.getPspRedirectURL());
@@ -89,8 +91,7 @@ public class RptConverter {
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
 		dto.setCodPsp(vo.getCodPsp());
-		if(vo.getTipoVersamento() != null)
-			dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
+		dto.setTipoVersamento(vo.getTipoVersamento());
 		if(vo.getTipoIdentificativoAttestante() != null)
 			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
@@ -108,7 +109,7 @@ public class RptConverter {
 		vo.setCodCarrello(dto.getCodCarrello());
 		vo.setCodDominio(dto.getCodDominio());
 		if(dto.getEsitoPagamento() != null)
-			vo.setCodEsitoPagamento(dto.getEsitoPagamento().getCodifica());
+			vo.setCodEsitoPagamento(BigInteger.valueOf(dto.getEsitoPagamento().getCodifica()));
 		vo.setCodMsgRichiesta(dto.getCodMsgRichiesta());
 		vo.setCodMsgRicevuta(dto.getCodMsgRicevuta());
 		vo.setCodSessione(dto.getCodSessione());
@@ -125,7 +126,7 @@ public class RptConverter {
 		idVersamento.setId(dto.getIdVersamento());
 		vo.setIdVersamento(idVersamento);
 		if(dto.getImportoTotalePagato() != null)
-			vo.setImportoTotalePagato(dto.getImportoTotalePagato().doubleValue());
+			vo.setImportoTotalePagato(dto.getImportoTotalePagato());
 		vo.setIuv(dto.getIuv());
 		
 		if(dto.getModelloPagamento() != null)
@@ -153,8 +154,7 @@ public class RptConverter {
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setCodIntermediarioPsp(dto.getCodIntermediarioPsp());
 		vo.setCodPsp(dto.getCodPsp());
-		if(dto.getTipoVersamento() != null)
-			vo.setTipoVersamento(dto.getTipoVersamento().getCodifica());
+		vo.setTipoVersamento(dto.getTipoVersamento());
 		if(dto.getTipoIdentificativoAttestante() != null)
 			vo.setTipoIdentificativoAttestante(dto.getTipoIdentificativoAttestante().name());
 		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());

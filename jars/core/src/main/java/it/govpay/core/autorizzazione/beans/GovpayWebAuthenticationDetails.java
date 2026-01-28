@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.autorizzazione.beans;
 
 import java.util.Collections;
@@ -6,13 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+
+import it.govpay.core.utils.LogUtils;
 
 /***
  * Estrae  dalla request tutti gli headers indicati nella lista.
@@ -59,66 +80,66 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 
 
 	private Map<String, List<String>> extractHeaders(Logger log, HttpServletRequest request, List<String> headersNames) {
-		Map<String, List<String>> headerValues = new HashMap<>();
+		Map<String, List<String>> headerValuesMap = new HashMap<>();
 		for (String headerName : headersNames) {
 			Enumeration<String> headers = request.getHeaders(headerName);
 			List<String> list = Collections.list(headers);
-			log.debug("Header: ["+headerName+"] Valore ["+StringUtils.join(list, ",")+"]");
-			headerValues.put(headerName, list); 
+			LogUtils.logDebug(log, "Header: ["+headerName+"] Valore ["+StringUtils.join(list, ",")+"]");
+			headerValuesMap.put(headerName, list); 
 		}
-		return headerValues;
+		return headerValuesMap;
 	}
 
 	private Map<String, Object> extractAttributes(Logger log, HttpServletRequest request, List<String> headersNames) {
-		Map<String, Object> headerValues = new HashMap<>();
+		Map<String, Object> headerValuesMap = new HashMap<>();
 
 		HttpSession session = request.getSession(false);
 		if(session != null) {
 			for (String headerName : headersNames) {
 				Object attribute = session.getAttribute(headerName);
-				log.debug("Attributo: ["+headerName+"] Valore ["+attribute+"]");
+				LogUtils.logDebug(log, "Attributo: ["+headerName+"] Valore ["+attribute+"]");
 				
 				if(attribute != null) {
-					headerValues.put(headerName, attribute);
+					headerValuesMap.put(headerName, attribute);
 				} else {
-					headerValues.put(headerName, ObjectUtils.NULL);
+					headerValuesMap.put(headerName, ObjectUtils.NULL);
 				}
 			}
 		}
-		return headerValues;
+		return headerValuesMap;
 	}
 
 	private Map<String, List<String>> extractHeaders(Logger log, HttpServletRequest request, Map<String,String> headersMap) {
-		Map<String, List<String>> headerValues = new HashMap<>();
+		Map<String, List<String>> headerValuesMap = new HashMap<>();
 		// per ogni header previsto cerco l'header SPID corrispondente
 		for (String headerName : headersMap.keySet()) {
 			String nomeHeader = headersMap.get(headerName);
 			Enumeration<String> headers = request.getHeaders(nomeHeader);
 			List<String> list = Collections.list(headers);
-			log.debug("Proprieta': ["+headerName+"] Letta dall'header: ["+nomeHeader+"] contiene valore ["+StringUtils.join(list, ",")+"]");
-			headerValues.put(headerName, list); 
+			LogUtils.logDebug(log, "Proprieta': ["+headerName+"] Letta dall'header: ["+nomeHeader+"] contiene valore ["+StringUtils.join(list, ",")+"]");
+			headerValuesMap.put(headerName, list); 
 		}
-		return headerValues;
+		return headerValuesMap;
 	}
 
 	private Map<String, Object> extractAttributes(Logger log, HttpServletRequest request, Map<String,String> headersMap) {
-		Map<String, Object> headerValues = new HashMap<>();
+		Map<String, Object> headerValuesMap = new HashMap<>();
 		// per ogni header previsto cerco l'header SPID corrispondente
 		HttpSession session = request.getSession(false);
 		if(session != null) {
 			for (String headerName : headersMap.keySet()) {
 				String nomeHeader = headersMap.get(headerName);
 				Object attribute = session.getAttribute(nomeHeader);
-				log.debug("Proprieta': ["+headerName+"] Letta dall'attributo: ["+nomeHeader+"] contiene valore [" + attribute+"]");
+				LogUtils.logDebug(log, "Proprieta': ["+headerName+"] Letta dall'attributo: ["+nomeHeader+"] contiene valore [" + attribute+"]");
 				
 				if(attribute != null) {
-					headerValues.put(headerName, attribute);
+					headerValuesMap.put(headerName, attribute);
 				} else {
-					headerValues.put(headerName, ObjectUtils.NULL);
+					headerValuesMap.put(headerName, ObjectUtils.NULL);
 				}
 			}
 		}
-		return headerValues;
+		return headerValuesMap;
 	}
 
 	public Map<String, List<String>> getHeaderValues() {

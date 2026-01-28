@@ -110,7 +110,7 @@ And match response ==
 }
 """
 
-
+@test-rifiutato
 Scenario: Ricerca transazioni SPID filtrati per data e esito = 'RIFIUTATO'
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})

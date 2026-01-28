@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste;
 
 import java.io.UnsupportedEncodingException;
@@ -58,13 +77,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 			
 			it.govpay.orm.VersamentoIncasso versamento = ((JDBCVersamentoIncassoServiceSearch)this.getVersamentoIncassoServiceSearch()).get(id);
 			return VersamentoIncassoConverter.toDTO(versamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | MultipleResultException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -87,17 +100,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().IUV_VERSAMENTO,iuv);
 			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().find(exp);
 			return VersamentoIncassoConverter.toDTO(versamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -120,17 +123,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().NUMERO_AVVISO,numeroAvviso);
 			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().find(exp);
 			return VersamentoIncassoConverter.toDTO(versamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -157,24 +150,8 @@ public class VersamentiIncassiBD  extends BasicBD {
 			
 			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().find(exp);
 			
-//			IdVersamento id = new IdVersamento();
-//			IdApplicazione idApplicazioneOrm = new IdApplicazione();
-//			idApplicazioneOrm.setId(idApplicazione);
-//			id.setIdApplicazione(idApplicazioneOrm);
-//			id.setCodVersamentoEnte(codVersamentoEnte);
-//			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().get(id);
 			return VersamentoIncassoConverter.toDTO(versamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -207,17 +184,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 
 			it.govpay.orm.VersamentoIncasso versamento =  this.getVersamentoIncassoServiceSearch().find(exp);
 			return VersamentoIncassoConverter.toDTO(versamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException| ExpressionException | MultipleResultException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -226,19 +193,19 @@ public class VersamentiIncassiBD  extends BasicBD {
 		}
 	}
 	
-	public VersamentoIncassoFilter newFilter() throws ServiceException {
+	public VersamentoIncassoFilter newFilter() {
 		return new VersamentoIncassoFilter(this.getVersamentoIncassoServiceSearch());
 	}
 
-	public VersamentoIncassoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public VersamentoIncassoFilter newFilter(boolean simpleSearch) {
 		return new VersamentoIncassoFilter(this.getVersamentoIncassoServiceSearch(),simpleSearch);
 	}
 	
 	public long count(VersamentoIncassoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(VersamentoIncassoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -256,7 +223,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(VersamentoIncassoFilter filter) throws ServiceException {
+	private long countConLimitEngine(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -276,15 +243,14 @@ public class VersamentiIncassiBD  extends BasicBD {
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -292,7 +258,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -306,8 +272,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -338,11 +303,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 				versamentoLst.add(VersamentoIncassoConverter.toDTO(versamentoVO));
 			}
 			return versamentoLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | CodificaInesistenteException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

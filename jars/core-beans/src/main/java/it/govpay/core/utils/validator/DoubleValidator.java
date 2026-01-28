@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.validator;
 
 import java.text.DecimalFormat;
@@ -27,11 +46,8 @@ public class DoubleValidator {
 		DecimalFormatSymbols symbols = this.df.getDecimalFormatSymbols();
 		
 		int i = value.lastIndexOf(symbols.getDecimalSeparator());
-		if(i != -1) {
-//			System.out.println("Il campo " + this.fieldName + " contiene un valore non valido: " + value + " has "+value.substring(i + 1).length()+" digits after dot");
-			if(value.substring(i + 1).length() > 2) {
-				throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_CONTIENE_UN_VALORE_NON_VALIDO, this.fieldName));
-			} 
+		if(i != -1 && value.substring(i + 1).length() > 2) {
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_CONTIENE_UN_VALORE_NON_VALIDO, this.fieldName));
 		}
 		return this;
 	}

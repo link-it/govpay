@@ -1,8 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.model.converter;
-
-import java.math.BigDecimal;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Incasso;
 import it.govpay.model.Incasso.StatoIncasso;
@@ -10,6 +25,8 @@ import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;
 
 public class IncassoConverter {
+	
+	private IncassoConverter() {}
 
 	public static Incasso toDTO(it.govpay.orm.Incasso vo) {
 			Incasso dto = new Incasso();
@@ -25,7 +42,7 @@ public class IncassoConverter {
 			if(vo.getIdOperatore() != null)
 				dto.setIdApplicazione(vo.getIdOperatore().getId());
 			
-			dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
+			dto.setImporto(vo.getImporto());
 			dto.setTrn(vo.getTrn());
 			dto.setIbanAccredito(vo.getIbanAccredito());
 			dto.setSct(vo.getSct());
@@ -56,7 +73,7 @@ public class IncassoConverter {
 			idOperatore.setId(dto.getIdOperatore());
 			vo.setIdOperatore(idOperatore);
 		}
-		vo.setImporto(dto.getImporto().doubleValue());
+		vo.setImporto(dto.getImporto());
 		vo.setTrn(dto.getTrn());
 		vo.setIbanAccredito(dto.getIbanAccredito());
 		vo.setSct(dto.getSct());

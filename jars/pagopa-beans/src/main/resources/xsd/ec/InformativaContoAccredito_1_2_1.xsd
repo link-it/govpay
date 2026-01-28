@@ -4,7 +4,7 @@
         <xs:documentation>Informativa Conto Accredito</xs:documentation>
     </xs:annotation>
 
-    <xs:element name="informativaContoAccredito " type="ctInformativaContoAccredito" />
+    <xs:element name="informativaContoAccredito" type="ctInformativaContoAccredito" />
 
     <xs:simpleType name="stText35">
         <xs:restriction base="xs:string">

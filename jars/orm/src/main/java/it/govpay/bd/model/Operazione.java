@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -47,6 +47,7 @@ public class Operazione extends it.govpay.model.Operazione{
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.applicazione;
@@ -63,6 +64,7 @@ public class Operazione extends it.govpay.model.Operazione{
 				StampeBD stampeBD = new StampeBD(bd);
 				this.stampa = stampeBD.getStampa(this.getIdStampa());
 			} catch (NotFoundException e) {
+				// donothing
 			}
 		} 
 		return this.stampa;

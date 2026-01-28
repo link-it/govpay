@@ -1,51 +1,70 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 
+import it.govpay.core.exceptions.ConfigException;
+
 public class CSVSerializerProperties {
 	
-	private transient Logger log = null;
-	
-	private static final String propertiesPath = "/csv_serializer.properties";
+	private static final String PROPERTIES_PATH = "/csv_serializer.properties";
 
 	
 	private static CSVSerializerProperties instance;
 	private Properties reader;
 	
-	public CSVSerializerProperties(Logger log) throws Exception{
-		this.log = log;
-		
+	private CSVSerializerProperties(Logger log) throws ConfigException, IOException {
 		this.reader = new Properties();
 		java.io.InputStream properties = null;
 		try{  
-			properties = CSVSerializerProperties.class.getResourceAsStream(CSVSerializerProperties.propertiesPath);
+			properties = CSVSerializerProperties.class.getResourceAsStream(CSVSerializerProperties.PROPERTIES_PATH);
 			if(properties==null){
-				throw new Exception("Properties "+CSVSerializerProperties.propertiesPath+" not found");
+				throw new ConfigException("Properties "+CSVSerializerProperties.PROPERTIES_PATH+" not found");
 			}
 			this.reader.load(properties);
 			properties.close();
-		}catch(java.io.IOException e) {
-			this.log.error("Riscontrato errore durante la lettura del file '"+CSVSerializerProperties.propertiesPath+"': "+e.getMessage(),e);
+		}catch(IOException e) {
+			LogUtils.logError(log, "Riscontrato errore durante la lettura del file '"+CSVSerializerProperties.PROPERTIES_PATH+"': "+e.getMessage(),e);
 			try{
-				if(properties!=null)
-					properties.close();
-			}catch(Exception er){}
+				properties.close();
+			}catch(Exception er){
+				//donothing
+			}
 			throw e;
 		}	
 	}
 
 	
 	
-	private static synchronized void initialize(org.slf4j.Logger log) throws Exception{
+	private static synchronized void initialize(org.slf4j.Logger log) throws ConfigException, IOException {
 
 		if(CSVSerializerProperties.instance==null)
 			CSVSerializerProperties.instance = new CSVSerializerProperties(log);	
 
 	}
 
-	public static CSVSerializerProperties getInstance(org.slf4j.Logger log) throws Exception{
+	public static synchronized CSVSerializerProperties getInstance(org.slf4j.Logger log) throws ConfigException, IOException {
 
 		if(CSVSerializerProperties.instance==null)
 			CSVSerializerProperties.initialize(log);

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
 import java.util.ArrayList;
@@ -24,6 +43,8 @@ import it.govpay.model.Rpt.StatoRpt;
 
 public class PagamentoPortaleUtils {
 	
+	private PagamentoPortaleUtils() {}
+	
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentoPortaleUtils.class);
 
 	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, Rpt rptCorrente, BasicBD bd) throws ServiceException {
@@ -46,7 +67,7 @@ public class PagamentoPortaleUtils {
 				pagamentiPortaleBD.enableSelectForUpdate();
 			}
 			
-			log.debug("Leggo pagamento portale id ["+idPagamentoPortale+"]"); 
+			log.debug("Leggo pagamento portale id [{}]", idPagamentoPortale); 
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
 			
 			List<Rpt> findAll = null;
@@ -60,11 +81,11 @@ public class PagamentoPortaleUtils {
 				
 				findAll = rptBD.findAll(filter);
 				
-				log.debug("Trovate  ["+findAll.size()+"] RPT associate"); 
+				log.debug("Trovate  [{}] RPT associate",findAll.size()); 
 			} else {
 				findAll = new ArrayList<>();
 				findAll.add(rptCorrente);
-				log.debug("Il nuovo stato del pagamento portale verra' deciso utilizzando ["+findAll.size()+"] RPT associata."); 
+				log.debug("Il nuovo stato del pagamento portale verra' deciso utilizzando [{}] RPT associata.",findAll.size()); 
 			}
 			
 			boolean updateStato = true;
@@ -72,14 +93,12 @@ public class PagamentoPortaleUtils {
 			int numeroNonEseguiti = 0;
 			int numeroFalliti = 0;
 			String descrizioneStato = null;
-			//int numeroResidui = 0;
 			for (int i = 0; i <findAll.size(); i++) {
 				Rpt rpt  = findAll.get(i);
-				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
+				log.debug("RPT corrente [{}] Stato [{}] EsitoPagamento [{}]", rpt.getId(), rpt.getStato(), rpt.getEsitoPagamento());
 				StatoRpt stato = rpt.getStato();
-				if(it.govpay.model.Rpt.stati_pendenti.contains(stato)) {
-					log.debug("RPT corrente ["+rpt.getId()+"] e' in uno stato pendente ["+rpt.getStato()+ "], il nuovo stato del pagamento sara' 'IN_CORSO'.");
-//						rpt.getEsitoPagamento() == null) {
+				if(it.govpay.model.Rpt.getStatiPendenti().contains(stato)) {
+					log.debug("RPT corrente [{}] e' in uno stato pendente [{}], il nuovo stato del pagamento sara' 'IN_CORSO'.", rpt.getId(), rpt.getStato());
 					updateStato = false;
 					break;
 				}
@@ -102,7 +121,7 @@ public class PagamentoPortaleUtils {
 							numeroNonEseguiti ++;
 						}  
 					} else {
-						log.debug("RPT corrente ["+rpt.getId()+"] in stato non pendente ["+rpt.getStato()+ "] ma esito pagamento null, il nuovo stato del pagamento sara' 'IN_CORSO'.");
+						log.debug("RPT corrente [{}] in stato non pendente [{}] ma esito pagamento null, il nuovo stato del pagamento sara' 'IN_CORSO'.", rpt.getId(), rpt.getStato());
 						 // in corso aspetto che terminino tutte
 						updateStato = false;
 						break;
@@ -110,7 +129,7 @@ public class PagamentoPortaleUtils {
 				}
 			}
 			
-			log.debug("Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"], #Fallite ["+numeroFalliti+"]"); 
+			log.debug("Esito analisi rpt Update [{}] #OK [{}], #KO [{}], #Fallite [{}]", updateStato, numeroEseguiti, numeroNonEseguiti, numeroFalliti); 
 			
 			if(updateStato) {
 				if(numeroFalliti == findAll.size()) {
@@ -133,7 +152,7 @@ public class PagamentoPortaleUtils {
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
 			
-			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] nuovo Stato ["+pagamentoPortale.getStato()+"], nuovo CodiceStato ["+pagamentoPortale.getCodiceStato()+"]"); 
+			log.debug("Update pagamento portale id [{}] nuovo Stato [{}], nuovo CodiceStato [{}]",idPagamentoPortale, pagamentoPortale.getStato(), pagamentoPortale.getCodiceStato()); 
 			
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false, true);
 			
@@ -141,8 +160,9 @@ public class PagamentoPortaleUtils {
 			if(bd == null) {
 				pagamentiPortaleBD.disableSelectForUpdate();
 			}
-			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] completato "); 
+			log.debug("Update pagamento portale id [{}] completato ", idPagamentoPortale); 
 		} catch (NotFoundException e) {
+			//donothing
 		} finally {
 			if(pagamentiPortaleBD != null && bd == null) {
 				pagamentiPortaleBD.closeConnection();

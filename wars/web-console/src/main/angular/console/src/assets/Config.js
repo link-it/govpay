@@ -1,0 +1,143 @@
+(function (global) {
+
+  function addScript(file) {
+    document.write('<script src="' + file + '"></script>');
+  }
+
+  function hostname() {
+    return this.location.protocol + '//' + this.location.host;
+  }
+
+  function httpDocumentsRoot() {
+    return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni/documenti
+  }
+
+  // Map key generators
+  function _mkg() {
+    return {
+      ANGULAR2_JSON_SCHEMA_FORM: 'angular2-json-schema-form',
+      SURVEYJS_FORM: 'surveyjs'
+    };
+  }
+
+  // JSON Schema form generators list selection
+  function generatori() {
+    return [
+      { label: 'Angular Json schema form', value: _mkg().ANGULAR2_JSON_SCHEMA_FORM },
+      { label: 'SurveyJS', value: _mkg().SURVEYJS_FORM }
+    ];
+  }
+
+  // Default application name/title
+  function _applicationName() {
+    const _NAME = 'GovPay';
+    document.title = _NAME;
+    return _NAME;
+  }
+
+  const _HTTP_DOCUMENTS_ROOT = httpDocumentsRoot();
+
+  global.GovPayConfig = {
+    HOST_NAME: hostname(),
+    INFO: {
+      DOCUMENTS: {
+        ENABLED: true,
+        HTTP_DOCUMENTS_ROOT: _HTTP_DOCUMENTS_ROOT,
+        LICENSE: _HTTP_DOCUMENTS_ROOT + '/LICENSE',
+        MANUALE_UTENTE: _HTTP_DOCUMENTS_ROOT + '/GovPay-ManualeUtente.pdf'
+      },
+      NEWS: {
+        ENABLED: true,
+        URL: 'https://api.github.com/repos/link-it/GovPay/releases' // URL GovPay Github distribuzioni
+      },
+      APP_NAME: _applicationName(), // Default application name
+      PROGETTO_GOVPAY: 'https://github.com/link-it/GovPay' // URL GovPay Github
+    },
+    BADGE_FILTER: {
+      HOUR: 1, // Ore, (filtro badge)
+      TIMER: 30000, // Millisecondi, (timer badge)
+      QUERY_PARAMETERS: {
+        IN_CORSO: '',
+        IN_CORSO_VERIFICATI: '',
+        FALLITI: '&severitaDa=4',
+        FALLITI_VERIFICATI: '&severitaDa=4'
+      }
+    },
+    GENERATORI: generatori(),
+    MGK: _mkg(),
+    EXTERNAL_JS_PROCEDURE_URL: 'Converter.js', //Http URL al file Js per conversioni esterne (caricamento tracciati)
+    BASIC: {
+      ENABLED: true,
+      HTTP_ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1',
+      HTTP_LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1/logout'
+    },
+    SPID: {
+      ENABLED: false,
+      HTTPS_ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/spid/v1',
+      HTTPS_LOGOUT_SERVICE: 'https://spcoop.it/govpay/frontend/api/pagamento/rs/spid/v1/logout',
+      SERVICE_TARGET: 'http://localhost:4200/',
+      ACTION_FORM_URL: 'https://lab.link.it/Shibboleth.sso/Login',
+      PROVIDERS: {
+        SPID_TEST: 'https://idp.spid.gov.it',
+        ARUBA: 'https://sp.agenziaentrate.gov.it/rp/aruba/s3',
+        INFOCERT: 'https://sp.agenziaentrate.gov.it/rp/infocert/s3',
+        INTESA: 'https://sp.agenziaentrate.gov.it/rp/intesa/s3',
+        LEPIDA: 'https://sp.agenziaentrate.gov.it/rp/lepida/s3',
+        NAMIRIAL: 'https://sp.agenziaentrate.gov.it/rp/namirial/s3',
+        POSTE: 'https://sp.agenziaentrate.gov.it/rp/poste/s3',
+        REGISTER: 'https://sp.agenziaentrate.gov.it/rp/register/s3',
+        SIELTE: 'https://sp.agenziaentrate.gov.it/rp/sielte/s3',
+        TIM: 'https://sp.agenziaentrate.gov.it/rp/titt/s3'
+      }
+    },
+    IAM: {
+      ENABLED: false,
+      LOGIN_URL: 'https://lab.link.it/Login',
+      ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1',
+      LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1/logout'
+    },
+    OAUTH2: {
+      ENABLED: true,
+      LOGIN_URL: 'http://localhost:8180/realms/master/protocol/openid-connect/auth',
+      ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/oauth2/v1',
+      LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/oatuh2/v1/logout',
+      REDIRECT_URI: 'http://localhost:4200/',
+      CLIENT_ID: 'govpay-backoffice',
+      GRANT_TYPE: 'authorization_code',
+      TOKEN_URL: 'http://localhost:8180/realms/master/protocol/openid-connect/token',
+      CODE_CHALLENGE_METHOD: 'S256',
+      SCOPE: 'profile',
+      RESPONSE_TYPE: 'code',
+      TOKEN_KEY: 'access_token',
+      BOX_TITLE: 'Autenticazione OAUTH2',
+      BUTTON_LABEL: 'Accedi'
+    },
+    GESTIONE_PASSWORD: {
+      ENABLED: true
+    },
+    PREFERENCES: {
+      TIMEOUT: false,            // Http timeout NN(millisec)|false
+      MAX_EXPORT_LIMIT: 200,     // Max page elements
+      MAX_THREAD_EXPORT_LIMIT: 5, // Max sincro calls
+      POLLING_TRACCIATI: 5000    // Timeout per tracciati NN(millisec)|false
+    },
+    GESTIONE_PAGAMENTI: {
+      ENABLED: true // abilita la sezione pagamenti
+    },
+    GESTIONE_RISCOSSIONI: {
+      ENABLED: true  // abilita la sezione riscossioni
+    },
+	MANUTENZIONE: {
+	  RECUPERO_RT: {
+	    ENABLED: true // abilita la funzione di recupero ricevute da pagopa
+	  },
+	  INVIA_POSIZIONI_DEBITORIE_ACA: {
+	    ENABLED: false // abilita il comando per l'invio posizioni debitorie ACA
+	  }
+	}
+  };
+
+  addScript('assets/config/app-config.js');
+  addScript('assets/config/mappingTipiEvento.js');
+
+})(window);

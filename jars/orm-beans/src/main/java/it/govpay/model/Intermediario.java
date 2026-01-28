@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -21,18 +21,29 @@ package it.govpay.model;
 
 public class Intermediario extends BasicModel{
 	private static final long serialVersionUID = 1L;
-	
+
+	public static final String CONNETTORE_RECUPERO_RT_SUFFIX= "_RT";
+	public static final String CONNETTORE_ACA_SUFFIX= "_ACA";
+	public static final String CONNETTORE_GPD_SUFFIX= "_GPD";
+	public static final String CONNETTORE_FR_SUFFIX= "_FR";
+
 	private Long id;
 	private String codIntermediario;
 	private String denominazione;
     private Connettore connettorePdd;
+    private Connettore connettorePddRecuperoRT;
+    private Connettore connettorePddACA;
+    private Connettore connettorePddGPD;
+    private Connettore connettorePddFR;
     private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
     
     private String principal;
     private String principalOriginale;
     
-    public Intermediario() {}
+    public Intermediario() {
+    	//donothing
+    }
         
 	@Override
 	public Long getId() {
@@ -66,31 +77,27 @@ public class Intermediario extends BasicModel{
 		this.denominazione = nomeSPC;
 	}
 	
-	public Connettore getConnettorePddAvvisatura() {
-		Connettore cAvvisatura = new Connettore(this.connettorePdd);
-		cAvvisatura.setUrl(cAvvisatura.getUrlServiziAvvisatura());
-		return cAvvisatura;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		Intermediario intermediario = null;
-		if(obj instanceof Intermediario) {
-			intermediario = (Intermediario) obj;
+		if(obj instanceof Intermediario in) {
+			intermediario = in;
 		} else {
 			return false;
 		}
-		
-		boolean equal = 
+
+		return
 				equals(this.codIntermediario, intermediario.getCodIntermediario()) &&
 				equals(this.denominazione, intermediario.getDenominazione()) &&
 				equals(this.connettorePdd, intermediario.getConnettorePdd()) &&
+				equals(this.connettorePddRecuperoRT, intermediario.getConnettorePddRecuperoRT()) &&
+				equals(this.connettorePddACA, intermediario.getConnettorePddACA()) &&
+				equals(this.connettorePddGPD, intermediario.getConnettorePddGPD()) &&
+				equals(this.connettorePddFR, intermediario.getConnettorePddFR()) &&
 				equals(this.connettoreSftp, intermediario.getConnettoreSftp()) &&
 				equals(this.principal, intermediario.getPrincipal()) &&
 				equals(this.principalOriginale, intermediario.getPrincipalOriginale()) &&
 				this.abilitato == intermediario.isAbilitato();
-		
-		return equal;
 	}
 	
 	@Override
@@ -122,4 +129,35 @@ public class Intermediario extends BasicModel{
 		this.principalOriginale = principalOriginale;
 	}
 
+	public void setConnettorePddRecuperoRT(Connettore connettorePddRecuperoRT) {
+		this.connettorePddRecuperoRT = connettorePddRecuperoRT;
+	}
+
+	public Connettore getConnettorePddRecuperoRT() {
+		return connettorePddRecuperoRT;
+	}
+
+	public Connettore getConnettorePddACA() {
+		return connettorePddACA;
+	}
+
+	public void setConnettorePddACA(Connettore connettorePddACA) {
+		this.connettorePddACA = connettorePddACA;
+	}
+
+	public Connettore getConnettorePddGPD() {
+		return connettorePddGPD;
+	}
+
+	public void setConnettorePddGPD(Connettore connettorePddGPD) {
+		this.connettorePddGPD = connettorePddGPD;
+	}
+
+	public Connettore getConnettorePddFR() {
+		return connettorePddFR;
+	}
+
+	public void setConnettorePddFR(Connettore connettorePddFR) {
+		this.connettorePddFR = connettorePddFR;
+	}
 }

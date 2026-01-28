@@ -1,6 +1,6 @@
 <#setting locale="en_US">
 <#setting number_format="0.##">
-<#assign jsonUtilities = class["org.openspcoop2.utils.json.JSONUtils"].getInstance()>
+<#assign jsonUtilities = class["it.govpay.core.utils.rawutils.JSONUtils"].getInstance()>
 <#assign request = jsonUtilities.getAsNode(jsonPath.read("$"))>
 <#assign calendar = class["java.util.Calendar"]>
 <#assign now = new("java.util.Date")>

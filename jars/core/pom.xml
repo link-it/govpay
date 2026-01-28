@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.3</version>
+		<version>3.8.2</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -18,48 +18,6 @@
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
-
-        <profiles>
-                <profile>
-                        <id>java-11</id>
-                        <activation>
-                                <activeByDefault>true</activeByDefault>
-                        </activation>
-
-                        <dependencies>
-                                <dependency>
-                                        <groupId>javax.xml.bind</groupId>
-                                        <artifactId>jaxb-api</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                                <dependency>
-                                        <groupId>com.sun.xml.bind</groupId>
-                                        <artifactId>jaxb-core</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                                <dependency>
-                                        <groupId>com.sun.xml.bind</groupId>
-                                        <artifactId>jaxb-impl</artifactId>
-                                        <exclusions>
-                                                <exclusion>
-                                                        <groupId>*</groupId>
-                                                        <artifactId>*</artifactId>
-                                                </exclusion>
-                                        </exclusions>
-                                </dependency>
-                        </dependencies>
-                </profile>
-        </profiles>
 
 	<dependencies>
 
@@ -98,7 +56,7 @@
 			<artifactId>stampe</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>jppapdp-beans</artifactId>
@@ -108,11 +66,6 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
 		</dependency>
 
 		<dependency>
@@ -132,14 +85,29 @@
 			</exclusions>
 		</dependency>
 
+	    <dependency>
+	        <groupId>org.apache.cxf</groupId>
+	        <artifactId>cxf-rt-rs-security-oauth2</artifactId>
+	    </dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.xml.soap</groupId>
+			<artifactId>jakarta.xml.soap-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.messaging.saaj</groupId>
+			<artifactId>saaj-impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -149,83 +117,98 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.santuario</groupId>
 			<artifactId>xmlsec</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-joda</artifactId>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
-			<groupId>com.jcraft</groupId>
+			<groupId>com.github.mwiede</groupId>
 			<artifactId>jsch</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-logger</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-transport</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-csv</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-sonde</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-date</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-resources</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-service</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-regexp</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-mail</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
 		</dependency>
-		
+
 		<dependency>
-    		<groupId>org.openspcoop2.utils</groupId>
+			<groupId>org.gov4j.govway</groupId>
+			<artifactId>openspcoop2_utils-random</artifactId>
+		</dependency>
+
+		<dependency>
+    		<groupId>org.gov4j.govway</groupId>
 		    <artifactId>openspcoop2_utils-json</artifactId>
 		</dependency>
 
@@ -237,6 +220,26 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jcl</artifactId>
 		</dependency>
 
 		<!-- Spring Security -->
@@ -260,9 +263,32 @@
 		</dependency>
 
 		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-oauth2-jose</artifactId>
+	    </dependency>
+	    <dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-oauth2-client</artifactId>
+	    </dependency>
+   	    <dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-oauth2-resource-server</artifactId>
+	    </dependency>
+	    
+	    <dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-client</artifactId>
 		</dependency>
+
+		<dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-core</artifactId>
+        </dependency>
 
 		<!-- Json Path -->
 		<dependency>
@@ -302,10 +328,46 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+		</dependency>
+
 		<dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>

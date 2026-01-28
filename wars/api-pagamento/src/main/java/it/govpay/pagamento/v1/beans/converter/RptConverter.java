@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v1.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -19,8 +38,10 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.MessaggiPagoPARptUtils;
 import it.govpay.core.utils.MessaggiPagoPAUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -43,10 +64,12 @@ public class RptConverter {
 
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		try {
-			if(rpt.getXmlRpt() != null) {
+			byte[] xmlRpt = (byte[]) MessaggiPagoPARptUtils.getMessaggioRPT(rpt, FormatoRicevuta.RAW, false); // conversione nel vecchio formato viene fatta in seguito
+			if(xmlRpt != null) {
 				switch (rpt.getVersione()) {
 				case SANP_230:
-					CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+				case RPTSANP230_RTV2:
+					CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(xmlRpt, false);
 
 					CtSoggettoVersante soggettoVersante = ctRpt.getSoggettoVersante();
 
@@ -101,44 +124,46 @@ public class RptConverter {
 					rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
 					break;
 				case SANP_240:
-					PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
-					
-					CtPaymentPA data = paGetPaymentRes_RPT.getData();
-					
+				case RPTV1_RTV2:
+					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentResRPT(xmlRpt, false);
+
+					CtPaymentPA data = paGetPaymentRes.getData();
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						data.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
-						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes_RPT, rpt);
+						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes, rpt);
 						rsModel.setRpt(ConverterUtils.getRptJson(ctRpt2));
 					} else {
-						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes_RPT));
+						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes));
 					}
 					break;
 				case SANP_321_V2:
-					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
-					
+				case RPTV2_RTV1:
+					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2ResponseRPT(xmlRpt, false);
+
 					CtPaymentPAV2 dataV2 = paGetPaymentV2Response.getData();
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						dataV2.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
 						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, rpt);
 						rsModel.setRpt(ConverterUtils.getRptJson(ctRpt2));
@@ -211,44 +236,47 @@ public class RptConverter {
 					rsModel.setRt(ConverterUtils.getRtJson(ctRt));
 					break;
 				case SANP_240:
-					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
-					
-					CtReceipt data = paSendRTReq_RT.getReceipt();
-					
+				case RPTV2_RTV1:
+					PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
+
+					CtReceipt data = paSendRTReq.getReceipt();
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						data.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
-						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq_RT, rpt);
+						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq, rpt);
 						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
 					} else {
-						rsModel.setRt(ConverterUtils.getRtJson(paSendRTReq_RT));
+						rsModel.setRt(ConverterUtils.getRtJson(paSendRTReq));
 					}
 					break;
 				case SANP_321_V2:
-					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
-					
+				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
+					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
+
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						dataV2.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
 						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTV2Request, rpt);
 						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
@@ -275,10 +303,12 @@ public class RptConverter {
 
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		try {
-			if(rpt.getXmlRpt() != null) {
+			byte[] xmlRpt = (byte[]) MessaggiPagoPARptUtils.getMessaggioRPT(rpt, FormatoRicevuta.RAW, false); // conversione nel vecchio formato viene fatta in seguito
+			if(xmlRpt != null) {
 				switch (rpt.getVersione()) {
 				case SANP_230:
-					CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+				case RPTSANP230_RTV2:
+					CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(xmlRpt, false);
 
 					CtSoggettoVersante soggettoVersante = ctRpt.getSoggettoVersante();
 
@@ -334,44 +364,46 @@ public class RptConverter {
 					rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
 					break;
 				case SANP_240:
-					PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
-					
-					CtPaymentPA data = paGetPaymentRes_RPT.getData();
-					
+				case RPTV1_RTV2:
+					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentResRPT(xmlRpt, false);
+
+					CtPaymentPA data = paGetPaymentRes.getData();
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						data.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
-						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes_RPT, rpt);
+						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes, rpt);
 						rsModel.setRpt(ConverterUtils.getRptJson(ctRpt2));
 					} else {
-						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes_RPT));
+						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes));
 					}
 					break;
 				case SANP_321_V2:
-					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
-					
+				case RPTV2_RTV1:
+					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2ResponseRPT(xmlRpt, false);
+
 					CtPaymentPAV2 dataV2 = paGetPaymentV2Response.getData();
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						dataV2.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
 						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, rpt);
 						rsModel.setRpt(ConverterUtils.getRptJson(ctRpt2));
@@ -445,44 +477,47 @@ public class RptConverter {
 					rsModel.setRt(ConverterUtils.getRtJson(ctRt));
 					break;
 				case SANP_240:
-					PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
-					
-					CtReceipt data = paSendRTReq_RT.getReceipt();
-					
+				case RPTV2_RTV1:
+					PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
+
+					CtReceipt data = paSendRTReq.getReceipt();
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						data.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
-						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq_RT, rpt);
+						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq, rpt);
 						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
 					} else {
-						rsModel.setRt(ConverterUtils.getRtJson(paSendRTReq_RT));
+						rsModel.setRt(ConverterUtils.getRtJson(paSendRTReq));
 					}
 					break;
 				case SANP_321_V2:
-					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
-					
+				case RPTV1_RTV2:
+				case RPTSANP230_RTV2:
+					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
+
 					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 						// in questa versione non sono presenti informazioni sul versante
 					}
-					
+
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 						// in questa versione non sono presenti informazioni sul versante
-						
+
 						// imposto il soggetto pagatore a null
 						dataV2.setDebtor(null);
 					}
-					
+
 					if(convertiMessaggioPagoPAV2InPagoPAV1) {
 						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTV2Request, rpt);
 						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));

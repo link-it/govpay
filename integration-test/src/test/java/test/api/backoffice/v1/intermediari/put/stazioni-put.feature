@@ -44,3 +44,38 @@ And match response ==
 	versione : 'V1'
 }
 """
+
+Scenario: Configurazione stazione V2
+
+* def stazione = read('classpath:test/api/backoffice/v1/intermediari/put/msg/stazione.json')
+* set stazione.password = null
+* set stazione.versione = 'V2'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediario
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario, 'stazioni', idStazione
+And headers basicAutenticationHeader
+And request stazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario, 'stazioni', idStazione
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	idStazione : '#(idStazione)',
+	abilitato : true,
+	domini : '#ignore',
+	versione : 'V2'
+}
+"""

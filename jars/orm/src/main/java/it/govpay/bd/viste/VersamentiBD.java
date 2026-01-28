@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste;
 
 import java.io.UnsupportedEncodingException;
@@ -40,19 +59,19 @@ public class VersamentiBD  extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public VersamentoFilter newFilter() throws ServiceException {
+	public VersamentoFilter newFilter() {
 		return new VersamentoFilter(this.getVistaVersamentoServiceSearch());
 	}
 
-	public VersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public VersamentoFilter newFilter(boolean simpleSearch) {
 		return new VersamentoFilter(this.getVistaVersamentoServiceSearch(),simpleSearch);
 	}
 	
 	public long count(VersamentoFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
 	
-	private long _countSenzaLimit(VersamentoFilter filter) throws ServiceException {
+	private long countSenzaLimitEngine(VersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -70,7 +89,7 @@ public class VersamentiBD  extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(VersamentoFilter filter) throws ServiceException {
+	private long countConLimitEngine(VersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -90,7 +109,6 @@ public class VersamentiBD  extends BasicBD {
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
 				);
@@ -98,7 +116,7 @@ public class VersamentiBD  extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -106,7 +124,7 @@ public class VersamentiBD  extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -120,8 +138,7 @@ public class VersamentiBD  extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -145,18 +162,12 @@ public class VersamentiBD  extends BasicBD {
 			
 			List<Versamento> versamentoLst = new ArrayList<>();
 
-//			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
-
 			List<it.govpay.orm.VistaVersamento> versamentoVOLst = this.getVistaVersamentoServiceSearch().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.VistaVersamento versamentoVO: versamentoVOLst) {
 				versamentoLst.add(VersamentoConverter.toDTO(versamentoVO));
 			}
 			return versamentoLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | CodificaInesistenteException |  UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

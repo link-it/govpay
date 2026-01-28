@@ -1,5 +1,5 @@
 import { AfterContentChecked, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatDialog } from '@angular/material';
 
 import { LinkService } from './services/link.service';
 import { UtilService } from './services/util.service';
@@ -7,6 +7,7 @@ import { GovpayService } from './services/govpay.service';
 
 import { NavigationEnd, Router } from '@angular/router';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
+import { ConfermaForzaOperazioneDialogComponent } from './elements/conferma-forza-operazione-dialog/conferma-forza-operazione-dialog.component';
 
 import { IModalDialog } from './classes/interfaces/IModalDialog';
 import { ModalBehavior } from './classes/modal-behavior';
@@ -69,7 +70,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
   // IModalDialog implementation
   json: any;
 
-  constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
+  constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService, private dialog: MatDialog) {
     this._extraSideNavQueryMatches = this.ls.checkLargeMediaMatch();
     this.router.events.filter(event => event instanceof NavigationEnd).subscribe((ne: NavigationEnd) => {
       let sub = this.ls.getRouterStateConfig(ne.urlAfterRedirects.split('?')[0]);
@@ -205,6 +206,11 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
       case UtilService.URL_GIORNALE_EVENTI+UtilService.URL_DETTAGLIO:
         a.push({ label: Voce.VISTA_COMPLETA, type: UtilService.VISTA_COMPLETA_EVENTO_JSON });
         break;
+      case UtilService.URL_RICEVUTE:
+        if(!UtilService.GESTIONE_RISCOSSIONI.ENABLED){
+          a.push({ label: 'Prospetto riscossioni attese', type: UtilService.EXPORT_PROSPETTO_RISCOSSIONI });
+        }
+        break;
       case UtilService.URL_RISCOSSIONI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_RISCOSSIONI });
         a.push({ label: 'Prospetto riscossioni attese', type: UtilService.EXPORT_PROSPETTO_RISCOSSIONI });
@@ -217,6 +223,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         break;
       case UtilService.URL_RENDICONTAZIONI+UtilService.URL_DETTAGLIO:
         a.push({ label: 'Scarica flusso XML', type: UtilService.EXPORT_FLUSSO_XML });
+        a.push({ label: 'Scarica flusso CSV', type: UtilService.EXPORT_FLUSSO_CSV });
         break;
       case UtilService.URL_INCASSI+UtilService.URL_DETTAGLIO:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_INCASSO });
@@ -272,6 +279,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
             a.push({label: 'Scarica tracciato stampe avvisi', type: UtilService.EXPORT_TRACCIATO_AVVISI});
           }
         }
+        break;
+      case UtilService.URL_RICEVUTE+UtilService.URL_DETTAGLIO:
+        a.push({ label: 'Stampa ricevuta', type: UtilService.STAMPA_RICEVUTA });
         break;
     }
     return a;
@@ -355,37 +365,51 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
           break;
         case 'Rendicontazioni e Incassi':
           UtilService.USER_ACL.hasRendiIncassi = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false, sort: 0 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false, sort: 4 });
+          // this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false, sort: 0 });
           // this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
-          this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 3 });
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 5 });
+          if(UtilService.GESTIONE_RISCOSSIONI.ENABLED){
+            // this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
+            this._sideNavSetup.menu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 3 });
+          }
           break;
         case 'Pagamenti':
           UtilService.USER_ACL.hasPagamenti = true;
-          this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
-          if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
-            UtilService.USER_ACL.hasPagamentiePendenze = true;
-            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 2 });
+          if(UtilService.GESTIONE_PAGAMENTI.ENABLED){
+            this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
           }
+          // if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
+          //   UtilService.USER_ACL.hasPagamentiePendenze = true;
+          //   this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 2 });
+          //   this._sideNavSetup.menu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 2 });
+          // }
           break;
         case 'Pendenze':
           UtilService.USER_ACL.hasPendenze = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
-          this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false, sort: 2 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_RICEVUTE, name: UtilService.TXT_RICEVUTE, xhttp: false, icon: false, sort: 2 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false, sort: 0 });
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
-            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 3 });
+            // this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 3 });
+            this._sideNavSetup.menu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 6 });
           }
           break;
         case 'Giornale degli Eventi':
           UtilService.USER_ACL.hasGdE = true;
-          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false, sort: 4 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false, sort: 7 });
           break;
         case 'Configurazione e manutenzione':
           UtilService.USER_ACL.hasConfig = true;
           // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false, sort: # });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false, sort: 0 });
-          this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
+          if(UtilService.GESTIONE_MANUTENZIONE.RECUPERO_RT.ENABLED){
+          	this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RT, name: UtilService.TXT_MAN_RICEVUTE, xhttp: true, icon: false, sort: 1 });
+          }
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RESET_CACHE, name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: 2 });
+          if(UtilService.GESTIONE_MANUTENZIONE.INVIA_POSIZIONI_DEBITORIE_ACA.ENABLED){
+          	this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_INVIA_POSIZIONI_DEBITORIE_ACA, name: UtilService.TXT_MAN_POSIZIONI_DEBITORIE_ACA, xhttp: true, icon: false, sort: 3 });
+          }
           UtilService.USER_ACL.hasSetting = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           if (UtilService.USER_ACL.hasSetting) {
             this._sideNavSetup.esaMenu.push({ link: UtilService.URL_IMPOSTAZIONI, name: UtilService.TXT_IMPOSTAZIONI, xhttp: false, icon: false, sort: 0 });
@@ -453,9 +477,10 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
     let _keepOpen = this.ls.checkLargeMediaMatch().matches;
     if(event.target.xhttp) {
       switch(event.target.link) {
-        case UtilService.URL_RECUPERO_RPT_PENDENTI:
+        case UtilService.URL_RECUPERO_RT:
         case UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI:
         case UtilService.URL_RESET_CACHE:
+        case UtilService.URL_INVIA_POSIZIONI_DEBITORIE_ACA:
           this._instantService(event.target.link);
           break;
         default:
@@ -490,6 +515,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         case UtilService.EXPORT_FLUSSO_XML:
         case UtilService.EXPORT_INCASSO:
           (_componentRef)?_componentRef.instance.exportData():null;
+          break;
+        case UtilService.EXPORT_FLUSSO_CSV:
+          (_componentRef)?_componentRef.instance.exportData('csv'):null;
           break;
         case UtilService.EXPORT_TRACCIATO_RICHIESTA:
         case UtilService.EXPORT_TRACCIATO_AVVISI:
@@ -561,11 +589,19 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
   /**
    * Instant service from menu
    * @param {string} link
+   * @param {boolean} force
    * @private
    */
-  protected _instantService(link: string) {
+  protected _instantService(link: string, force: boolean = false) {
     let _service = UtilService.URL_OPERAZIONI+link;
-    this.gps.getDataService(_service).subscribe(
+
+    // Add force query parameter if true
+    let _serviceUrl = _service;
+    if(force) {
+      _serviceUrl += '?force=true';
+    }
+
+    this.gps.getDataService(_serviceUrl).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
         if(response && response.status) {
@@ -576,14 +612,19 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
                 _msg = 'Processo di acquisizione rendicontazioni completato.';
               }
               break;
-            case UtilService.URL_OPERAZIONI+UtilService.URL_RECUPERO_RPT_PENDENTI:
+            case UtilService.URL_OPERAZIONI+UtilService.URL_RECUPERO_RT:
               if(response.status == 200) {
-                _msg = 'Processo di acquisizione pagamenti completato.';
+                _msg = 'Processo di recupero ricevute completato.';
               }
               break;
             case UtilService.URL_OPERAZIONI+UtilService.URL_RESET_CACHE:
               if(response.status == 200) {
                 _msg = response.body.descrizione || 'Azzeramento cache completato.';
+              }
+              break;
+            case UtilService.URL_OPERAZIONI+UtilService.URL_INVIA_POSIZIONI_DEBITORIE_ACA:
+              if(response.status == 200) {
+                _msg = response.body.descrizione || 'Invio posizioni debitorie ACA attivato.';
               }
               break;
           }
@@ -592,7 +633,32 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
       },
       (error) => {
         this.gps.updateSpinner(false);
-        this.us.onError(error);
+
+        // Check if error is 502 and service is acquisizione rendicontazioni
+        if(error.status === 502 && _service === UtilService.URL_OPERAZIONI+UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI) {
+          // Show confirmation dialog with "Forza operazione" option
+          const dialogRef = this.dialog.open(ConfermaForzaOperazioneDialogComponent, {
+            width: '450px',
+            data: {
+              titolo: 'Errore durante l\'acquisizione rendicontazioni',
+              messaggio: 'Il servizio batch non è disponibile o è già in esecuzione. Vuoi forzare l\'operazione?'
+            }
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            if(result === true) {
+              // User confirmed with forzaOperazione checked
+              this._instantService(link, true);
+            } else if(result === false) {
+              // User confirmed with forzaOperazione unchecked
+              this._instantService(link, false);
+            }
+            // If result is null, user cancelled - do nothing
+          });
+        } else {
+          // For other errors, use default error handling
+          this.us.onError(error);
+        }
       });
   }
 

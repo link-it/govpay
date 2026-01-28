@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.math.BigDecimal;
@@ -31,10 +50,11 @@ import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 
 public class TracciatiConverter {
 
+	private TracciatiConverter() {}
 
 	public static Tracciato toRsModel(it.govpay.bd.model.Tracciato tracciato) {
 		Tracciato rsModel = new Tracciato();
@@ -100,12 +120,12 @@ public class TracciatiConverter {
 		}
 
 		try {
-			if(tracciato.getRawRichiesta() == null) {
-
-			} else {
+			if(tracciato.getRawRichiesta() != null) {
 				rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
 			}
-		}catch(Exception e) {}
+		}catch(Exception e) {
+			//donothing
+		}
 
 		return rsModel;
 	}
@@ -258,7 +278,7 @@ public class TracciatiConverter {
 		try {
 			risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
 		} catch(Exception e) {
-
+			//donothing
 		}
 
 		PendenzaPost pendenzaPost = null;
@@ -271,6 +291,7 @@ public class TracciatiConverter {
 				annullamentoPendenza = AnnullamentoPendenza.parse(new String(operazione.getDatiRichiesta()));
 				rsModel.setRichiesta(annullamentoPendenza);
 			} catch(Exception e1) {
+				//donothing
 			}
 		}
 
@@ -311,6 +332,7 @@ public class TracciatiConverter {
 			if(dominio != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
+			//donothing
 		}
 	}
 
@@ -328,6 +350,7 @@ public class TracciatiConverter {
 			if(dominio != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
+			//donothing
 		}
 
 		Versamento versamento = opCaricamento.getVersamento();

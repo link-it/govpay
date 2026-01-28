@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,10 +20,11 @@
 package it.govpay.model;
 
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
 
@@ -100,7 +101,7 @@ public class Evento extends BasicModel {
 	private Long idFr;
 	private Long idIncasso;
 	
-	private Integer severita;
+	private BigInteger severita;
 	
 	private String clusterId;
 	private String transactionId;
@@ -387,11 +388,11 @@ public class Evento extends BasicModel {
 		this.idIncasso = idIncasso;
 	}
 
-	public Integer getSeverita() {
+	public BigInteger getSeverita() {
 		return severita;
 	}
 
-	public void setSeverita(Integer severita) {
+	public void setSeverita(BigInteger severita) {
 		this.severita = severita;
 	}
 

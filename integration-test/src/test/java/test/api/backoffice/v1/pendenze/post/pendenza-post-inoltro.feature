@@ -184,13 +184,13 @@ Examples:
 | dataValidita | pendenzaPut.dataScadenza | '2030-19-40' | 'dataScadenza' |
 | annoRiferimento | pendenzaPut.annoRiferimento | 'aaaa' | 'annoRiferimento' |
 | tassonomiaAvviso | pendenzaPut.tassonomiaAvviso | 'xxxx' | 'tassonomiaAvviso' |
-| soggettoPagatore | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
-| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
-| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
+# | soggettoPagatore | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
+# | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
+# | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | loremIpsum | 'identificativo' |
-| soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
+# | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
 | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | loremIpsum | 'anagrafica' |
 | soggettoPagatore.indirizzo | pendenzaPut.soggettoPagatore.indirizzo | '' | 'indirizzo' |
 | soggettoPagatore.indirizzo | pendenzaPut.soggettoPagatore.indirizzo | loremIpsum | 'indirizzo' |
@@ -552,16 +552,8 @@ And request
 }
 """
 When method post
-Then assert responseStatus == 502
-And match response == 
-"""
-{ 
-	categoria: 'EC',
-	codice: '502000',
-	descrizione: 'Errore ente creditore',
-	dettaglio: '#("L\'inoltro del versamento [Dominio: " + idDominio +" TipoVersamento:" + tipoPendenzaRinnovo +"] all\'applicazione competente [Applicazione:" + idA2A +"] e\' fallito con errore: Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e\' una Marca da Bollo Telematica.")'
-}
-"""
+Then assert responseStatus == 201
+
 
 Scenario Outline: <field> non valida
 

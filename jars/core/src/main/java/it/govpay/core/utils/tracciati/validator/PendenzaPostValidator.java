@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.tracciati.validator;
 
 import java.math.BigDecimal;
@@ -46,22 +65,22 @@ public class PendenzaPostValidator  implements IValidable{
 			validaCausale( this.pendenzaVerificata.getCausale());
 			
 			Soggetto soggetto = this.pendenzaVerificata.getSoggettoPagatore();
-			if(soggetto == null)
-				throw new ValidationException("Il campo soggettoPagatore non deve essere vuoto.");
-			
-			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
-			
-			soggettoPagatoreValidator.validaTipo("soggettoPagatore.tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
-			soggettoPagatoreValidator.validaIdentificativo("soggettoPagatore.identificativo", soggetto.getIdentificativo());
-			soggettoPagatoreValidator.validaAnagrafica("soggettoPagatore.anagrafica", soggetto.getAnagrafica());
-			soggettoPagatoreValidator.validaIndirizzo("soggettoPagatore.indirizzo", soggetto.getIndirizzo());
-			soggettoPagatoreValidator.validaCivico("soggettoPagatore.civico", soggetto.getCivico());
-			soggettoPagatoreValidator.validaCap("soggettoPagatore.cap", soggetto.getCap());
-			soggettoPagatoreValidator.validaLocalita("soggettoPagatore.localita", soggetto.getLocalita());
-			soggettoPagatoreValidator.validaProvincia("soggettoPagatore.provincia", soggetto.getProvincia());
-			soggettoPagatoreValidator.validaNazione("soggettoPagatore.nazione", soggetto.getNazione());
-			soggettoPagatoreValidator.validaEmail("soggettoPagatore.email", soggetto.getEmail());
-			soggettoPagatoreValidator.validaCellulare("soggettoPagatore.cellulare", soggetto.getCellulare());
+			// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+			if(soggetto != null) {
+				SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
+				
+				soggettoPagatoreValidator.validaTipo("soggettoPagatore.tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
+				soggettoPagatoreValidator.validaIdentificativoNonObbligatorio("soggettoPagatore.identificativo", soggetto.getIdentificativo());
+				soggettoPagatoreValidator.validaAnagraficaNonObbligatoria("soggettoPagatore.anagrafica", soggetto.getAnagrafica());
+				soggettoPagatoreValidator.validaIndirizzo("soggettoPagatore.indirizzo", soggetto.getIndirizzo());
+				soggettoPagatoreValidator.validaCivico("soggettoPagatore.civico", soggetto.getCivico());
+				soggettoPagatoreValidator.validaCap("soggettoPagatore.cap", soggetto.getCap());
+				soggettoPagatoreValidator.validaLocalita("soggettoPagatore.localita", soggetto.getLocalita());
+				soggettoPagatoreValidator.validaProvincia("soggettoPagatore.provincia", soggetto.getProvincia());
+				soggettoPagatoreValidator.validaNazione("soggettoPagatore.nazione", soggetto.getNazione());
+				soggettoPagatoreValidator.validaEmail("soggettoPagatore.email", soggetto.getEmail());
+				soggettoPagatoreValidator.validaCellulare("soggettoPagatore.cellulare", soggetto.getCellulare());
+			}
 			
 			validaImporto(this.pendenzaVerificata.getImporto());
 			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());
@@ -77,7 +96,7 @@ public class PendenzaPostValidator  implements IValidable{
 			if(this.pendenzaVerificata.getVoci() == null || this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci non deve essere vuoto.");
 
-			if(this.pendenzaVerificata.getVoci().size() < 1)
+			if(this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci deve avere almeno 1 elemento.");
 
 			if(this.pendenzaVerificata.getVoci().size() > 5)
@@ -333,7 +352,7 @@ public class PendenzaPostValidator  implements IValidable{
 	}	
 	
 	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
-		if(allegati != null && allegati.size() >0 ) {
+		if(allegati != null && !allegati.isEmpty() ) {
 			for(NuovoAllegatoPendenza allegato: allegati) {
 				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
 				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);

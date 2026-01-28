@@ -1,8 +1,27 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.math.BigDecimal;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -31,6 +50,8 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {
+	
+	private RiscossioniConverter() {}
 
 	public static RiscossioneIndex toRsModelIndex(it.govpay.bd.viste.model.Pagamento dto) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -110,66 +131,6 @@ public class RiscossioniConverter {
 
 		return rsModel;
 	}
-
-//	public static RiscossioneIndex toRsModelIndex(Pagamento input) {
-//		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-//		RiscossioneIndex rsModel = new RiscossioneIndex();
-//		try {
-//			rsModel.setIdDominio(input.getCodDominio());
-//			rsModel.setIuv(input.getIuv());
-//			rsModel.setIur(input.getIur());
-//			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-//
-//			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
-//			rsModel.setIdVocePendenza(input.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
-//			Rpt rpt = input.getRpt(null);
-//			if(rpt!= null)
-//				rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
-//			rsModel.setImporto(input.getImportoPagato());
-//			rsModel.setData(input.getDataPagamento());
-//			Stato stato = input.getStato();
-//			switch(stato) {
-//			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
-//				break;
-//			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
-//				break;
-//			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-//				break;
-//			default:
-//				break;
-//			}
-//
-//			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
-//				rsModel.setTipo(TipoRiscossione.ENTRATA);
-//			} else {
-//				rsModel.setTipo(TipoRiscossione.MBT);
-//			}
-//
-//			rsModel.setCommissioni(input.getCommissioniPsp());
-//			Allegato allegato = new Allegato();
-//			allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
-//			if(input.getTipoAllegato() != null)
-//				allegato.setTipo(TipoEnum.fromCodifica(input.getTipoAllegato().toString()));
-//
-//			if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
-//				byte[] xmlMarca = input.getAllegato();
-//				try {
-//					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
-//				} catch (JAXBException | SAXException e) {
-//					allegato.setContenuto(new MarcaDaBollo());
-//				}
-//			}
-//			rsModel.setAllegato(allegato);
-//
-//			if(input.getIncasso(null)!=null)
-//				rsModel.setIncasso(UriBuilderUtils.getIncassiByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
-//
-//		} catch(ServiceException e) {
-//			LoggerWrapperFactory.getLogger(BaseRsService.class).error("Errore nella conversione del pagamento: " + e.getMessage(), e);
-//		}
-//
-//		return rsModel;
-//	}
 
 	public static Riscossione toRsModel(Pagamento input, SingoloVersamento singoloVersamento, Versamento versamento, Rpt rpt, Incasso incasso) throws IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);

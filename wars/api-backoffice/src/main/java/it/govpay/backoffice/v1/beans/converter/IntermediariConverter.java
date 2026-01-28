@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import org.springframework.security.core.Authentication;
@@ -9,6 +28,8 @@ import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 
 public class IntermediariConverter {
 
+	private IntermediariConverter() {}
+
 	public static PutIntermediarioDTO getPutIntermediarioDTO(IntermediarioPost intermediarioPost, String idIntermediario, Authentication user) {
 		PutIntermediarioDTO putIntermediarioDTO = new PutIntermediarioDTO(user);
 
@@ -19,6 +40,22 @@ public class IntermediariConverter {
 		intermediario.setCodIntermediario(idIntermediario);
 		if(intermediarioPost.getServizioPagoPa() != null) {
 			intermediario.setConnettorePdd(ConnettorePagopaConverter.getConnettore(intermediarioPost.getServizioPagoPa()));
+
+		}
+		if(intermediarioPost.getServizioPagoPaRecuperoRT() != null) {
+			intermediario.setConnettorePddRecuperoRT(ConnettorePagopaRecuperoRTConverter.getConnettore(intermediarioPost.getServizioPagoPaRecuperoRT(), idIntermediario));
+
+		}
+		if(intermediarioPost.getServizioPagoPaACA() != null) {
+			intermediario.setConnettorePddACA(ConnettorePagopaACAConverter.getConnettore(intermediarioPost.getServizioPagoPaACA(), idIntermediario));
+
+		}
+		if(intermediarioPost.getServizioPagoPaGPD() != null) {
+			intermediario.setConnettorePddGPD(ConnettorePagopaGPDConverter.getConnettore(intermediarioPost.getServizioPagoPaGPD(), idIntermediario));
+
+		}
+		if(intermediarioPost.getServizioPagoPaFR() != null) {
+			intermediario.setConnettorePddFR(ConnettorePagopaFRConverter.getConnettore(intermediarioPost.getServizioPagoPaFR(), idIntermediario));
 
 		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
@@ -45,8 +82,25 @@ public class IntermediariConverter {
 		.principalPagoPa(i.getPrincipalOriginale())
 		.servizioPagoPa(ConnettorePagopaConverter.toRsModel(i.getConnettorePdd()));
 
-		if(i.getConnettoreSftp()!=null)
+		if(i.getConnettorePddRecuperoRT()!=null) {
+			rsModel.setServizioPagoPaRecuperoRT(ConnettorePagopaRecuperoRTConverter.toRsModel(i.getConnettorePddRecuperoRT()));
+		}
+
+		if(i.getConnettorePddACA()!=null) {
+			rsModel.setServizioPagoPaACA(ConnettorePagopaACAConverter.toRsModel(i.getConnettorePddACA()));
+		}
+
+		if(i.getConnettorePddGPD()!=null) {
+			rsModel.setServizioPagoPaGPD(ConnettorePagopaGPDConverter.toRsModel(i.getConnettorePddGPD()));
+		}
+
+		if(i.getConnettorePddFR()!=null) {
+			rsModel.setServizioPagoPaFR(ConnettorePagopaFRConverter.toRsModel(i.getConnettorePddFR()));
+		}
+
+		if(i.getConnettoreSftp()!=null) {
 			rsModel.setServizioFtp(ConnettoreSftpConverter.toRsModel(i.getConnettoreSftp()));
+		}
 
 		return rsModel;
 	}

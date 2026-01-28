@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -51,8 +51,6 @@ import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.model.Intermediario;
 
@@ -66,10 +64,10 @@ public class IntermediariDAO extends BaseDAO{
 		super(useCacheData);
 	}
 	
-	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException {
 		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
 		IntermediariBD intermediariBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putIntermediarioDTO.getIdOperatore());
 		try {
 			intermediariBD = new IntermediariBD(configWrapper);
 			IntermediarioFilter filter = intermediariBD.newFilter(false);
@@ -91,16 +89,15 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
 		} finally {
-			if(intermediariBD != null)
-				intermediariBD.closeConnection();
+			intermediariBD.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
-	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
+	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, UnprocessableEntityException{
 		PutStazioneDTOResponse stazioneDTOResponse = new PutStazioneDTOResponse();
 		StazioniBD stazioniBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putStazioneDTO.getIdOperatore());
 		try {
 			try {
 				// inserisco l'iddominio
@@ -136,7 +133,7 @@ public class IntermediariDAO extends BaseDAO{
 		return stazioneDTOResponse;
 	}
 
-	public FindIntermediariDTOResponse findIntermediari(FindIntermediariDTO listaIntermediariDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public FindIntermediariDTOResponse findIntermediari(FindIntermediariDTO listaIntermediariDTO) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		IntermediariBD intermediariBD = null;
 		try {
@@ -173,24 +170,23 @@ public class IntermediariDAO extends BaseDAO{
 			return new FindIntermediariDTOResponse(count, findAll);
 
 		} finally {
-			if(intermediariBD != null)
-				intermediariBD.closeConnection();
+			intermediariBD.closeConnection();
 		}
 	}
 
-	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, ServiceException, NotAuthenticatedException {
+	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws IntermediarioNonTrovatoException, ServiceException {
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-			GetIntermediarioDTOResponse response = new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(configWrapper, getIntermediarioDTO.getCodIntermediario()));
-			return response;
+			return new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(configWrapper, getIntermediarioDTO.getCodIntermediario()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException("Intermediario " + getIntermediarioDTO.getCodIntermediario() + " non censito in Anagrafica");
 		} finally {
+			// donothing
 		}
 	}
 
 
-	public FindStazioniDTOResponse findStazioni(FindStazioniDTO findStazioniDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public FindStazioniDTOResponse findStazioni(FindStazioniDTO findStazioniDTO) throws ServiceException {
 		StazioniBD stazioneBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
@@ -229,12 +225,11 @@ public class IntermediariDAO extends BaseDAO{
 			
 			return new FindStazioniDTOResponse(count, findAll);
 		} finally {
-			if(stazioneBD != null)
-				stazioneBD.closeConnection();
+			stazioneBD.closeConnection();
 		}
 	}
 
-	public GetStazioneDTOResponse getStazione(GetStazioneDTO getStazioneDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, StazioneNonTrovataException, ServiceException, NotAuthenticatedException { 
+	public GetStazioneDTOResponse getStazione(GetStazioneDTO getStazioneDTO) throws IntermediarioNonTrovatoException, StazioneNonTrovataException, ServiceException { 
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 			try {

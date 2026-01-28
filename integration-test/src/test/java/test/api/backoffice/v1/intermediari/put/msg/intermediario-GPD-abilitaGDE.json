@@ -1,0 +1,13 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
+	},
+	"servizioPagoPaGPD": {
+		"url": '#(ndpsym_url + "/pagopa/gpd/api/v1/debt-positions")',
+		"subscriptionKey" : "GPD123456",
+		"abilitaGDE": true
+	},
+	"abilitato": true
+}

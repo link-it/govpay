@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
@@ -11,7 +30,6 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "urlRPT",
-"urlAvvisatura",
 "auth",
 "subscriptionKey",
 })
@@ -20,15 +38,12 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
   @JsonProperty("urlRPT")
   private String urlRPT = null;
 
-  @JsonProperty("urlAvvisatura")
-  private String urlAvvisatura = null;
-
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   @JsonProperty("subscriptionKey")
   private String subscriptionKey = null;
-  
+
   /**
    * Dati di integrazione al servizio web RPT
    **/
@@ -46,22 +61,6 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
   }
 
   /**
-   * Dati di integrazione al servizio web di Avvisatura Digitale
-   **/
-  public ConnettorePagopa urlAvvisatura(String urlAvvisatura) {
-    this.urlAvvisatura = urlAvvisatura;
-    return this;
-  }
-
-  @JsonProperty("urlAvvisatura")
-  public String getUrlAvvisatura() {
-    return urlAvvisatura;
-  }
-  public void setUrlAvvisatura(String urlAvvisatura) {
-    this.urlAvvisatura = urlAvvisatura;
-  }
-
-  /**
    **/
   public ConnettorePagopa auth(TipoAutenticazione auth) {
     this.auth = auth;
@@ -70,7 +69,7 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
 
   @JsonProperty("auth")
   public TipoAutenticazione getAuth() {
-    return this.auth;
+    return auth;
   }
   public void setAuth(TipoAutenticazione auth) {
     this.auth = auth;
@@ -96,19 +95,18 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     ConnettorePagopa connettorePagopa = (ConnettorePagopa) o;
     return Objects.equals(urlRPT, connettorePagopa.urlRPT) &&
-        Objects.equals(urlAvvisatura, connettorePagopa.urlAvvisatura) &&
         Objects.equals(auth, connettorePagopa.auth) &&
         Objects.equals(subscriptionKey, connettorePagopa.subscriptionKey);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(urlRPT, urlAvvisatura, auth, subscriptionKey);
+    return Objects.hash(urlRPT, auth, subscriptionKey);
   }
 
   public static ConnettorePagopa parse(String json) throws IOException {
@@ -126,7 +124,6 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
     sb.append("class ConnettorePagopa {\n");
 
     sb.append("    urlRPT: ").append(toIndentedString(urlRPT)).append("\n");
-    sb.append("    urlAvvisatura: ").append(toIndentedString(urlAvvisatura)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");
     sb.append("}");
@@ -148,7 +145,6 @@ public class ConnettorePagopa extends JSONSerializable implements IValidable{
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("urlRPT", this.urlRPT).notNull().minLength(1).maxLength(255).isUrl();
-		vf.getValidator("urlAvvisatura", this.urlAvvisatura).minLength(1).maxLength(255).isUrl();
 		vf.getValidator("auth", this.auth).validateFields();
 		vf.getValidator("subscriptionKey", this.subscriptionKey).minLength(1).maxLength(255);
 	}

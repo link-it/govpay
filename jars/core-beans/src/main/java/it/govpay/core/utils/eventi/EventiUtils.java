@@ -1,8 +1,27 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.eventi;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Categoria;
@@ -17,6 +36,10 @@ import it.govpay.model.configurazione.GdeInterfaccia;
 import it.govpay.model.configurazione.Giornale;
 
 public class EventiUtils {
+	
+	private EventiUtils() {
+		// Util class
+	}
 
 	public static GdeInterfaccia getConfigurazioneComponente(Componente componente, Giornale giornale) {
 		switch(componente) {
@@ -34,15 +57,11 @@ public class EventiUtils {
 			return giornale.getApiPendenze();
 		case API_BACKEND_IO:
 			return giornale.getApiBackendIO();
-		case API_USER:
-		case API_WC: 
+		case API_USER, API_WC: 
 			return null;
 		case API_MAGGIOLI_JPPA:
 			return giornale.getApiMaggioliJPPA();
-		case API_MYPIVOT:
-		case API_SECIM:
-		case API_GOVPAY:
-		case API_HYPERSIC_APK:
+		case API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK:
 			return EventiUtils.getConfigurazioneTracciatiNotificaPagamenti();
 		case GOVPAY:
 			return null;
@@ -137,7 +156,7 @@ public class EventiUtils {
 			tutto il resto
 	 * */
 	public static boolean isOperazioneScrittura(String operazione) {
-		if(EventoContext.Azione.NODOCHIEDICOPIART.toString().equals(operazione) 
+		return EventoContext.Azione.NODOCHIEDICOPIART.toString().equals(operazione) 
 				|| EventoContext.Azione.NODOCHIEDISTATORPT.toString().equals(operazione) 
 				|| EventoContext.Azione.NODOINVIARPT.toString().equals(operazione) 
 				|| EventoContext.Azione.NODOINVIACARRELLORPT.toString().equals(operazione) 
@@ -151,14 +170,11 @@ public class EventiUtils {
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAGETPAYMENT.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PASENDRT.equals(operazione)
-				) {
-			return true;
-		}
-		return false;
+				;
 	}
 
 	public static boolean isOperazioneScritturaTracciatiNotificaPagamenti(String operazione) {
-		if(EventoContext.APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL.equals(operazione)
+		return EventoContext.APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM.equals(operazione)
 				|| EventoContext.APIMYPIVOT_TIPOEVENTO_PIVOTSILINVIAFLUSSO.equals(operazione)
 				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOEMAIL.equals(operazione)
@@ -172,18 +188,11 @@ public class EventiUtils {
 				|| EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIPAGAMENTI.toString().equals(operazione)
 				|| EventoContext.APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOFILESYSTEM.equals(operazione)
-				) {
-			return true;
-		}
-		return false;
+				;
 	}
 
 	public static boolean isOperazioneScritturaConnettoreMaggioliJPPA(String operazione) {
-		if(EventoContext.APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO.equals(operazione)
-				) {
-			return true;
-		}
-		return false;
+		return EventoContext.APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO.equals(operazione);
 	}
 
 	public static EventoContext creaEventoContext(Categoria categoriaEvento, RuoloEvento role) {
@@ -197,8 +206,7 @@ public class EventiUtils {
 
 	public static HttpMethod getHttpMethod(String httpMethod) {
 		if(StringUtils.isNotEmpty(httpMethod)) {
-			HttpMethod http = HttpMethod.valueOf(httpMethod);
-			return http;
+			return HttpMethod.valueOf(httpMethod);
 		}
 		return null;
 	}
@@ -247,17 +255,9 @@ public class EventiUtils {
 	public static boolean isRequestLettura(HttpMethod httpMethod) {
 		if(httpMethod != null ) {
 			switch (httpMethod) {
-			case GET:
-			case OPTIONS:
-			case HEAD:
-			case TRACE:
+			case GET, OPTIONS, HEAD, TRACE:
 				return true;
-			case DELETE:
-			case LINK:
-			case PATCH:
-			case POST:
-			case PUT:
-			case UNLINK:
+			case DELETE, LINK, PATCH, POST, PUT, UNLINK:
 				return false;
 			}
 		}
@@ -267,17 +267,9 @@ public class EventiUtils {
 	public static boolean isRequestScrittura(HttpMethod httpMethod) {
 		if(httpMethod != null ) {
 			switch (httpMethod) {
-			case PUT:
-			case POST:
-			case DELETE:
-			case PATCH:
-			case LINK:
-			case UNLINK:
+			case PUT, POST, DELETE, PATCH, LINK, UNLINK:
 				return true;
-			case GET:
-			case OPTIONS:
-			case HEAD:
-			case TRACE:
+			case GET, OPTIONS, HEAD, TRACE:
 				return false;
 			}
 		}

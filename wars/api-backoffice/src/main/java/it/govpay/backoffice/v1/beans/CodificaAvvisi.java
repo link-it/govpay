@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
@@ -130,26 +149,16 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
 public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		if(this.codificaIuv != null)
-			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); //.pattern("[0-9]{1,15}");
+			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); // controllo spostato nel validatore del core.
 
 		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
 
-		if(this.generazioneIuvInterna.booleanValue()) {
-
-			// regExpIuv obbligatoria se generazioneIuvInterna e' selezionato
-			if(this.regExpIuv == null)
-				throw new ValidationException("Il campo regExpIuv non puo' essere vuoto quando e' selezionato il campo generazioneIuvInterna.");
+		if(this.generazioneIuvInterna.booleanValue() && this.regExpIuv == null) {
+			throw new ValidationException("Il campo regExpIuv non puo' essere vuoto quando e' selezionato il campo generazioneIuvInterna.");
 		}
 
 		if(this.regExpIuv != null)
 			vf.getValidator("regExpIuv", this.regExpIuv).minLength(1).maxLength(1024);
-//			try {
-//				Pattern.compile(this.regExpIuv);
-//			} catch(PatternSyntaxException e) {
-//			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
-//			}
-
-
 	}
 }
 

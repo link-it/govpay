@@ -4,7 +4,7 @@ Connettore per l'esportazione dei pagamenti verso HyperSIC di APKappa
 ---------------------------------------------------------------------
 
 Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay in formato compatibile con
-l'applicativo di riconciliazione HyperSIC di APKappa. 
+l'applicativo di riconciliazione HyperSIC di APKappa.
 
 .. figure:: ../../_images/48ConnettoreHyperSIC.png
    :align: center
@@ -24,18 +24,18 @@ l'applicativo di riconciliazione HyperSIC di APKappa.
    "Invia tracciato come allegato", "Se selezionata la consegna email, indica se il tracciato deve essere inserito in allegato o riferito con un link."
    "Base URL link download", "Se deselezionato l'invio come allegato, indica la base URL del link di download. Deve puntare alla risorsa /tracciatiNotificaPagamenti delle API di backoffice"
    "Path", "Se selezionata la consegna File System, specifica il path sul server dove verranno depositati i file. Accertarsi che la directory esista e che siano forniti i diritti necessari alla scrittura dei file"
-  
+
 Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina.
 
-Il servizio di esportazione di HyperSIC non contempla i pagamenti non rendicontati (riconciliazione singola), pertanto 
-le riscossioni non rendicontate per piu' di 5 gg vengono incluse in un csv separato avente la medesima sintassi, 
-ma con i campi relativi al flusso di rendicontazione vuoti e con progressivo flusso = 999.  
+Il servizio di esportazione di HyperSIC non contempla i pagamenti non rendicontati (riconciliazione singola), pertanto
+le riscossioni non rendicontate per più di 5 gg vengono incluse in un csv separato avente la medesima sintassi,
+ma con i campi relativi al flusso di rendicontazione vuoti e con progressivo flusso = 999.
 
 Versione 2.3
 ~~~~~~~~~~~~
 
 Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizioni Rendicontazioni pagoPA v2.3<APK pagoPA Tracciato Import Rendicontazione V2.3.docx>` valorizzando i campi con le seguenti convenzioni:
- 
+
 .. csv-table:: *Valori di esportazione*
    :header: "Campo", "Descrizione"
    :widths: 40,60
@@ -47,14 +47,14 @@ Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizi
    "CodiceDebitore","<vuoto>"
    "CFPIVADebitore","pendenza.soggettoDebitore.identificativo"
    "NominativoDebitore","pendenza.soggettoDebitore.anagrafica"
-   "CodiceDebito","documento.identificativo oppure pendenza.idPendenza" 
-   "DataEmissione","pendenza.dataCaricamento" 
-   "CausaleDebito","pendenza.causale" 
-   "ImportoDebito","pendenza.importo" 
+   "CodiceDebito","documento.identificativo oppure pendenza.idPendenza"
+   "DataEmissione","pendenza.dataCaricamento"
+   "CausaleDebito","pendenza.causale"
+   "ImportoDebito","pendenza.importo"
    "CodiceRata","documento.numeroRata"
-   "CodiceAvviso","pendenza.numeroAvviso" 
-   "CodiceIUV","flussoRendicontazione.rendicontazione.iuv" 
-   "DataScadenza","pendenza.dataScadenza" 
+   "CodiceAvviso","pendenza.numeroAvviso"
+   "CodiceIUV","flussoRendicontazione.rendicontazione.iuv"
+   "DataScadenza","pendenza.dataScadenza"
    "DataPagamento","flussoRendicontazione.rendicontazione.data"
    "ImportoPagato","flussoRendicontazione.rendicontazione.importo"
    "IstitutoMittente","flussoRendicontazione.ragione_sociale_psp"
@@ -64,14 +64,14 @@ Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizi
    "DataRiversamento","flussoRendicontazione.dataRegolamento"
    "Annotazioni",""
    "LivelloContabile1","Se vocependenza.contabilita.quota[0] = null, tutto a null.
-   Se quota[0].accertamento = null allora LivelloContabile = CAP 
+   Se quota[0].accertamento = null allora LivelloContabile = CAP
    altrimenti LivelloContabile = ACC"
-   "CodificaContabile1","Se LivelloContabile = CAP 
+   "CodificaContabile1","Se LivelloContabile = CAP
    allora CodificaContabile = {quota[0].annoEsercizio}/{quota[0].capitolo}
    altrimenti CodificaContabile = {quota[0].annoEsercizio}/{contabilita.accertamento}"
    "QuotaContabile1","quota[0].importo"
    "Altre quote contabili","Come nel caso della prima, fino alle 10 consentite"
-   
+
 Alcune note sul processo di produzione del CSV:
 
 * Il CSV APKappa non contempla il carattere di escape, pertanto eventuali punti e virgola vegono rimossi dai valori.

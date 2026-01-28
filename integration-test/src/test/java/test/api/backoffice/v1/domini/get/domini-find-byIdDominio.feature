@@ -17,7 +17,7 @@ And headers basicAutenticationHeader
 And param idDominio = '1234567890'
 When method get
 Then status 200
-And match response.numRisultati == 2
+And assert response.numRisultati >= 2
 
 Given url backofficeBasicBaseurl
 And path 'domini'

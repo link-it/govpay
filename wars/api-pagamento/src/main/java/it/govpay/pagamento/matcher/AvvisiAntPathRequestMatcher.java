@@ -1,14 +1,34 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.matcher;
 
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -18,6 +38,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
+import it.govpay.core.dao.pagamenti.exception.AvvisoNonDisponibileException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.model.configurazione.Hardening;
 import it.govpay.pagamento.v2.controller.BaseController;
@@ -25,6 +46,7 @@ import it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestM
 
 public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher {
 
+	private static final String HEADER_NAME_ACCEPT = "Accept";
 	private static final Log logger = LogFactory.getLog(AvvisiAntPathRequestMatcher.class);
 	private static final String PARAMETER_UUID = "UUID";
 
@@ -59,7 +81,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 					// id dominio e' il path in posizione 1
 					idDominio = split[0];
 					// iuv e' il path in posizione 2
-					iuv = split[1];	
+					iuv = split[1];
 				}
 			}
 
@@ -78,7 +100,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 					if(uuid != null) {
 						logger.debug("Parametro "+PARAMETER_UUID+" trovato, controllo disponibilita' avviso nel sistema...");
 						if(idDominio != null && iuv != null) {
-							authorizedUUID = authorizedPathMatch && checkDirittiAvviso(request, idDominio, iuv, uuid); //se hai diritto di vedere la risorsa passi altrimenti controllo il captcha
+							authorizedUUID = checkDirittiAvviso(request, idDominio, iuv, uuid); //se hai diritto di vedere la risorsa passi altrimenti controllo il captcha
 						} else { // parametri non validi
 							authorizedUUID = false;
 						}
@@ -93,7 +115,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				// 2. Controllo del captcha se UUID = null oppure se non ho passato il controllo con UUID
 				if(!authorizedUUID) {
 					logger.debug("Applico controllo tramite validazione ReCaptcha...");
-					authorizedPathMatch = authorizedPathMatch && this.applicaControlloReCaptcha(request, setting);
+					authorizedPathMatch = this.applicaControlloReCaptcha(request, setting);
 					logger.debug("Controllo tramite validazione ReCaptcha completato.");
 				}
 
@@ -103,12 +125,12 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				authorizedPathMatch = true; // se il controllo e' disabilitato passo
 			}
 
-			// se ho richiesto un pdf devo sempre controllare se l'identificativo della pendenza e' tra quelli in sessione 
+			// se ho richiesto un pdf devo sempre controllare se l'identificativo della pendenza e' tra quelli in sessione
 			if(authorizedPathMatch && this.richiestoPdf(request)) {
 				if(idDominio != null && iuv != null) { // controllo presenza dei parametri di identificazione dell'avviso
 					try {
 						logger.debug("Richiesto avviso in formato pdf, controllo identificativi in sessione...");
-						authorizedPathMatch = authorizedPathMatch && checkDirittiAvvisoSessione(request, idDominio, iuv);
+						authorizedPathMatch = checkDirittiAvvisoSessione(request, idDominio, iuv);
 					}catch(Throwable e) {
 						logger.error("Errore durante il check disponibilita' avviso: " + e.getMessage(), e);
 						authorizedPathMatch = false;
@@ -116,19 +138,19 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				} else { // parametri non validi
 					authorizedPathMatch = false;
 				}
-			} 
+			}
 		}
 
 		return authorizedPathMatch;
 	}
 
 	private boolean richiestoPdf(HttpServletRequest request) {
-		String acceptH = request.getHeader("Accept");
+		String acceptH = request.getHeader(HEADER_NAME_ACCEPT);
 		if(acceptH == null) {
-			acceptH = request.getHeader("Accept".toUpperCase());
+			acceptH = request.getHeader(HEADER_NAME_ACCEPT.toUpperCase());
 		}
 		if(acceptH == null) {
-			acceptH = request.getHeader("Accept".toLowerCase());
+			acceptH = request.getHeader(HEADER_NAME_ACCEPT.toLowerCase());
 		}
 		if(acceptH == null) {
 			acceptH = "";
@@ -158,22 +180,22 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 				Map<String, String> listaAvvisi = null;
 				if(iuv.length() == 18) {
-					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 				} else {
 					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 				}
-				
+
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista avvisi: ["+((listaAvvisi!= null && listaAvvisi.size() > 0 )? (StringUtils.join(listaAvvisi.keySet(), ",")): "non presente")+"]");
 
 				if(listaAvvisi != null && listaAvvisi.size() > 0) {
 					if(listaAvvisi.containsKey(chiaveAvviso)) {
 						logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista avvisi, effettuo controllo uuid...");
-						Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+						Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
 
 						if(listaIdentificativi.containsKey(chiavePendenza)) {
 							Versamento versamento = listaIdentificativi.get(chiavePendenza);
-	
+
 							if(versamento.getIdSessione() != null && uuid.equals(versamento.getIdSessione())) {
 								logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+", UUID: "+uuid+"] presente in lista pendenze, autorizzazione concessa.");
 								return true;
@@ -185,7 +207,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 			if(iuv.length() == 18)
 				getAvvisoDTO.setNumeroAvviso(iuv);
-			else 
+			else
 				getAvvisoDTO.setIuv(iuv);
 			getAvvisoDTO.setIdentificativoCreazionePendenza(uuid);
 			GetAvvisoDTOResponse checkDisponibilitaAvviso = avvisiDAO.checkDisponibilitaAvviso(getAvvisoDTO, versamentiBD);
@@ -219,19 +241,19 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			String chiaveAvviso = idDominio+iuv;
 			if(session!= null) {
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
-				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+((listaIdentificativi!= null && listaIdentificativi.size() > 0 ) ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 				if(iuv.length() == 18) {
-					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
 				} else {
 					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 				}
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista avvisi: ["+((listaAvvisi!= null && listaAvvisi.size() > 0 ) ? (StringUtils.join(listaAvvisi.keySet(), ",")): "non presente")+"]");
-		
+
 				if(listaAvvisi != null && listaAvvisi.size() > 0) {
 					if(listaAvvisi.containsKey(chiaveAvviso)) {
 						logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista avvisi, effettuo controllo id Pendenza...");
-						
+
 						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
 
 						if(listaIdentificativi.containsKey(chiavePendenza)) {
@@ -240,7 +262,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 						}
 					}
 				}
-				
+
 				logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] non presente in lista pendenze, effettuo controllo su DB.");
 			}
 
@@ -249,7 +271,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), idDominio);
 			if(iuv.length() == 18)
 				getAvvisoDTO.setNumeroAvviso(iuv);
-			else 
+			else
 				getAvvisoDTO.setIuv(iuv);
 			getAvvisoDTO.setFormato(FormatoAvviso.JSON);
 			GetAvvisoDTOResponse checkDisponibilitaAvviso = avvisiDAO.getAvviso(getAvvisoDTO, versamentiBD, configWrapper);
@@ -259,7 +281,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 			if(session!= null) {
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
-				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 
 				if(listaIdentificativi != null && listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
@@ -273,13 +295,23 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			}
 
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] completato con esito ["+(authorized ? "accesso consentito" : "accesso negato")+"].");
-		} catch(PendenzaNonTrovataException e){
+		} catch(PendenzaNonTrovataException | AvvisoNonDisponibileException e){
 			return false;
 		}catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile effettuare il check disponibilita' avviso: "+ e.getMessage(), e);
 		}	finally {
-			if(versamentiBD != null)
+			if(versamentiBD != null) {
+				// ripristino autocommit
+				try {
+					if(!versamentiBD.isAutoCommit() ) {
+						versamentiBD.setAutoCommit(true);
+					}
+				} catch (ServiceException e) {
+					//donothing
+				}
+				
 				versamentiBD.closeConnection();
+			}
 		}
 
 		return authorized;

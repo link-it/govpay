@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -29,6 +29,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
+	
+	private ApplicazioneConverter() {}
 
 	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreIntegrazione) throws CodificaInesistenteException {
 		Applicazione dto = new Applicazione();
@@ -59,7 +61,7 @@ public class ApplicazioneConverter {
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setId(dto.getIdUtenza());
 		try {
-			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.subject));
+			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.SUBJECT));
 		} catch (Exception e) {
 			idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
 		}

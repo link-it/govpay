@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -19,9 +19,10 @@
  */
 package it.govpay.model;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
 
@@ -46,7 +47,7 @@ public class Iuv extends BasicModel {
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per TipoIUV. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoIUV.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per TipoIUV. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(TipoIUV.values())));
 		}
 		
 	}

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.utils.serializer;
 
 import java.io.InputStream;
@@ -31,9 +33,10 @@ import java.io.InputStream;
  */
 public class JaxbDeserializer extends AbstractDeserializer {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Object _xmlToObj(InputStream is, Class<?> c) throws Exception {
-		return org.openspcoop2.utils.xml.JaxbUtils.xmlToObj(is, c);
+	protected <T> T _xmlToObj(InputStream is, Class<T> c) throws Exception {
+		return (T) org.openspcoop2.utils.xml.JaxbUtils.xmlToObj(is, c);
 	}
 		
 }

@@ -69,7 +69,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Scenario: Caricamento pendenza multibeneficiario 
 
@@ -124,6 +124,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Verifico la notifica di terminazione
 
+* call sleep(10000)
+
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
@@ -163,7 +165,7 @@ And request {postale:true,mybank:false,abilitato:true, descrizione:'#(ibanAccred
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 
 * def idPendenza = getCurrentTimeMillis()
@@ -216,6 +218,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response == read('classpath:test/api/backoffice/v1/pendenze/get/msg/notifica-attivazione-multibeneficiario.json')
 
 # Verifico la notifica di terminazione
+
+* call sleep(10000)
 
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')

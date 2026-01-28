@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans.converter;
 
 import java.util.List;
@@ -12,11 +31,11 @@ import it.govpay.pagamento.v2.beans.TipoPendenzaForm;
 import it.govpay.pagamento.v2.beans.UnitaOperativa;
 
 public class DominiConverter {
-	
+
 	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) {
 		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
-		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 		rsModel.setCivico(dominio.getAnagrafica().getCivico());
@@ -34,17 +53,17 @@ public class DominiConverter {
 		}
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setTipiPendenza(UriBuilderUtils.getTipiPendenzaByDominio(dominio.getCodDominio()));
-		
+
 		return rsModel;
 	}
-	
+
 //	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
 //		return toRsModel(dominio, null, null, null);
 //	}
 	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst) {
 		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
-		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 		rsModel.setCivico(dominio.getAnagrafica().getCivico());
@@ -60,10 +79,10 @@ public class DominiConverter {
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
-		
+
 //		if(uoLst != null) {
 //			List<UnitaOperativa> unitaOperative = new ArrayList<>();
-//			
+//
 //			for(it.govpay.bd.model.UnitaOperativa uo: uoLst) {
 //				unitaOperative.add(toUnitaOperativaRsModel(uo));
 //			}
@@ -72,7 +91,7 @@ public class DominiConverter {
 //
 //		if(ibanAccreditoLst != null) {
 //			List<ContiAccredito> contiAccredito = new ArrayList<>();
-//			
+//
 //			for(it.govpay.bd.model.IbanAccredito iban: ibanAccreditoLst) {
 //				contiAccredito.add(toIbanRsModel(iban));
 //			}
@@ -81,19 +100,19 @@ public class DominiConverter {
 //
 //		if(tributoLst != null) {
 //			List<Entrata> entrate = new ArrayList<>();
-//			
+//
 //			for(Tributo tributo: tributoLst) {
 //				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito()));
 //			}
 //			rsModel.setEntrate(entrate);
 //		}
-		
+
 		return rsModel;
 	}
-	
+
 	public static UnitaOperativa toUnitaOperativaRsModel(it.govpay.bd.model.UnitaOperativa uo) {
 		UnitaOperativa rsModel = new UnitaOperativa();
-		
+
 		rsModel.setCap(uo.getAnagrafica().getRagioneSociale());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());
 		rsModel.setIdUnitaOperativa(uo.getCodUo());
@@ -108,32 +127,32 @@ public class DominiConverter {
 		rsModel.setTel(uo.getAnagrafica().getTelefono());
 		rsModel.setFax(uo.getAnagrafica().getFax());
 		rsModel.setArea(uo.getAnagrafica().getArea());
-		
+
 		return rsModel;
 	}
-	
+
 	public static TipoPendenza toTipoPendenzaRsModel(GetTipoPendenzaDominioDTOResponse response) {
 		return toTipoPendenzaRsModel(response.getTipoVersamento());
 	}
-	
+
 	public static TipoPendenza toTipoPendenzaRsModel(it.govpay.bd.model.TipoVersamentoDominio tipoVersamentoDominio) {
 		TipoPendenza rsModel = new TipoPendenza();
-		
+
 		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
 		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento());
-		
+
 		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo());
-			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione())); 
+			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione()));
 			if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazione() !=null)
 				form.setImpaginazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazione()));
 			rsModel.setForm(form);
 		}
-		
+
 		rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizione()));
-		
+
 		return rsModel;
 	}
-	
+
 }

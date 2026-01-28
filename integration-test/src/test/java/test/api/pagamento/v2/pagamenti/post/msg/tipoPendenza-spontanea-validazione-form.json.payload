@@ -1,4 +1,5 @@
 {
+	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
 	"required": [
 		"numero"
@@ -8,7 +9,7 @@
 			"type": "integer",
 			"minimum": 1,
 			"maximum": 101,
-  			"exclusiveMaximum": true
+  			"exclusiveMaximum": 101
 		}
 	}
 }

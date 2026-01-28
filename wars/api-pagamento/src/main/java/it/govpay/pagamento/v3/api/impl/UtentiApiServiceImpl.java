@@ -1,10 +1,29 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v3.api.impl;
 
 import java.text.MessageFormat;
 
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -23,21 +42,22 @@ import it.govpay.pagamento.v3.beans.converter.ProfiloConverter;
  *
  */
 public class UtentiApiServiceImpl extends BaseApiServiceImpl implements UtentiApi {
-	
+
 	public UtentiApiServiceImpl() {
 		super("profilo", UtentiApiServiceImpl.class);
 	}
-	
+
     /**
      * Elenco delle acl associate all&#x27;utenza chiamante
      *
      */
-    public Response getProfilo() {
+    @Override
+	public Response getProfilo() {
     	this.buildContext();
 		Authentication user = this.getUser();
 		String methodName = "getProfilo";
  		String transactionId = ContextThreadLocal.get().getTransactionId();
- 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+ 		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
  		try{
  			UtentiDAO utentiDAO = new UtentiDAO();
 
@@ -45,7 +65,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl implements UtentiAp
 
  			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
- 			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+ 			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
  			return this.handleResponseOk(Response.status(Status.OK).entity(profilo),transactionId).build();
 
  		}catch (Exception e) {
@@ -54,32 +74,32 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl implements UtentiAp
  			this.logContext(ContextThreadLocal.get());
  		}
     }
-    
+
     /**
      * Logout
      *
      */
-    public Response logout() {
+    @Override
+	public Response logout() {
     	this.buildContext();
-    	String methodName = "logout";  
+    	String methodName = "logout";
  		String transactionId = ContextThreadLocal.get().getTransactionId();
- 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+ 		this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
  		try{
  			if(this.request.getSession() != null) {
  				HttpSession session = this.request.getSession();
  				session.invalidate();
  			}
 
- 			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+ 			this.logDebug(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
  			return this.handleResponseOk(Response.ok(),transactionId).build();
  		}catch (Exception e) {
  			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
  		} finally {
  			this.logContext(ContextThreadLocal.get());
  		}
-        
-        
-    }
-    
-}
 
+
+    }
+
+}

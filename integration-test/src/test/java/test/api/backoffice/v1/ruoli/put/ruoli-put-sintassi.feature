@@ -32,7 +32,7 @@ Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | acl | acl | 'XXXX' | 'acl' |
 | acl | acl | [ { servizio: null, autorizzazioni: [ 'R' ] } ] | 'servizio' |
-| acl | acl | [ { servizio: 'xxxx', autorizzazioni: 'R' } ] | 'servizio' |
+| acl | acl | [ { servizio: 'xxxx', autorizzazioni: ['R'] } ] | 'servizio' |
 | acl | acl | [ { servizio: 'Pagamenti', autorizzazioni: [ 'Q' ] } ] | 'autorizzazioni' |
 | acl | acl | [ { servizio: 'Pagamenti', autorizzazioni: null } ] | 'autorizzazioni' |
 | acl | acl | [ { servizio: 'Pagamenti', autorizzazioni: 'R' } ] | 'autorizzazioni' |

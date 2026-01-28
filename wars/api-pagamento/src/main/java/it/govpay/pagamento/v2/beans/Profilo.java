@@ -1,10 +1,27 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,25 +35,25 @@ import it.govpay.core.beans.JSONSerializable;
 "identityData",
 })
 public class Profilo extends JSONSerializable {
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("domini")
   private List<Dominio> domini = new ArrayList<>();
-  
+
   @JsonProperty("tipiPendenza")
   private List<TipoPendenzaIndex> tipiPendenza = new ArrayList<>();
-  
+
   @JsonProperty("acl")
   private List<Acl> acl = new ArrayList<>();
-  
+
   @JsonProperty("anagrafica")
   private Soggetto anagrafica = null;
-  
+
   @JsonProperty("identityData")
   private Object identityData = null;
-  
+
   /**
    * Nome o principal dell'utenza
    **/
@@ -165,7 +182,7 @@ public class Profilo extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");

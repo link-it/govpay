@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -30,6 +30,8 @@ import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdVersamento;
 
 public class PromemoriaConverter {
+	
+	private PromemoriaConverter() {}
 
 	public static it.govpay.orm.Promemoria toVO(Promemoria dto) {
 		it.govpay.orm.Promemoria vo = new it.govpay.orm.Promemoria();

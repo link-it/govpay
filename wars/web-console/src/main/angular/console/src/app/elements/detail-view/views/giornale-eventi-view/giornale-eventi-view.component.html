@@ -18,4 +18,68 @@
       </div>
     </div>
   </mat-card>
+
+  <mat-card class="shadow no-border-radius mb-4" *ngIf="dettaglioRichiesta.length > 0">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">Messaggio di richiesta</p>
+    <div class="d-block" *ngIf="dettaglioRichiesta.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of dettaglioRichiesta" [info]="item"></link-key-value-view>
+    </div>
+
+    <ng-container *ngIf="_json.parametriRichiesta">
+      <div class="container p-0" *ngIf="_json.parametriRichiesta.headers">
+        <div class="row lh-130 regular-16 mt-2 mb-2 break-all">
+          <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">Header:</div>
+          <div class="col-12 col-sm-8">
+            <link-table-view [data]="_json.parametriRichiesta.headers" [attributes]="_tableAttributes"></link-table-view>
+          </div>
+        </div>
+      </div>
+
+      <div class="container p-0" *ngIf="_json.parametriRichiesta.payload">
+        <div class="row lh-130 regular-16 mb-2 break-all">
+          <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">Payload:</div>
+          <div class="col-12 col-sm-8">
+            <link-payload-view
+              [data]="_json"
+              [attribute]="'parametriRichiesta'"
+              [showCopy]="true"
+              (copied)="onCopied($event)">
+            </link-payload-view>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </mat-card>
+
+  <mat-card class="shadow no-border-radius mb-4" *ngIf="dettaglioRisposta.length > 0">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">Messaggio di risposta</p>
+    <div class="d-block" *ngIf="dettaglioRisposta.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of dettaglioRisposta" [info]="item"></link-key-value-view>
+    </div>
+
+    <ng-container *ngIf="_json.parametriRisposta">
+      <div class="container p-0" *ngIf="_json.parametriRichiesta.headers">
+        <div class="row lh-130 regular-16 mt-2 mb-2 break-all">
+          <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">Header:</div>
+          <div class="col-12 col-sm-8">
+            <link-table-view [data]="_json.parametriRisposta.headers" [attributes]="_tableAttributes"></link-table-view>
+          </div>
+        </div>
+      </div>
+
+      <div class="container p-0" *ngIf="_json.parametriRisposta.payload">
+        <div class="row lh-130 regular-16 mb-2 break-all">
+          <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">Payload:</div>
+          <div class="col-12 col-sm-8">
+            <link-payload-view
+              [data]="_json"
+              [attribute]="'parametriRisposta'"
+              [showCopy]="true"
+              (copied)="onCopied($event)">
+            </link-payload-view>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </mat-card>
 </div>

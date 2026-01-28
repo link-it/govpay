@@ -1,13 +1,20 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=master)
+<p align="center">
+<img src="https://www.link.it/wp-content/uploads/2025/01/logo-govpay.svg" alt="GovPay Logo" width="200"/>
+</p>
+
+# GovPay - Porta di accesso al sistema pagoPA
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=link-it_govpay&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=link-it_govpay)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon)](https://jenkins.link.it/govpay/job/govpay/job/master/)
+[![Docker](https://github.com/link-it/govpay/blob/master/docs/_images/docker.svg)](https://hub.docker.com/r/linkitaly/govpay)
 [![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=master)](https://govpay.readthedocs.io/it/latest/?badge=master)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/master/LICENSE)
 
-# GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
 ## Documentazione
 
-- [Read the docs](https://govpay.readthedocs.io/it/latest/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/master/))
+- [Read the docs](https://govpay.readthedocs.io/it/master/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/master/))
 
 ## Contatti
 
@@ -50,7 +57,7 @@ quale si rimanda per una descrizione piu' estesa.
 * Codifica dati per analisi pagamenti: possibilità di codificare ogni tipologia di tributo / incasso al fine di analizzare le tipologie di entrate e la relativa diffusione
 * Fascicolo del cittadino: possibilità per il cittadino, dopo essersi autenticato, di visionare tutte le posizioni debitorie a proprio carico
 * Interoperabilità con contabilità: servizi REST per l'integrazione dei software di contabilità presente nell'Ente per il caricamento/interrogazione delle posizioni e delle relative imputazioni contabili se presenti
-* Interoperabilità con gestionali: servizi REST per l'integrazione dei software gestionali presenti nell'Ente Creditore	
+* Interoperabilità con gestionali: servizi REST per l'integrazione dei software gestionali presenti nell'Ente Creditore
 * Integrabilità con altri front-end: la piattaforma di pagamento può essere configurata per utilizzare front-end non nativi
 
 ### Servizi a valore aggiunto non individuati dal quadro sinottico
@@ -65,7 +72,7 @@ quale si rimanda per una descrizione piu' estesa.
 GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
 http://www.gov4j.it/govpay
 
-Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -79,4 +86,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-

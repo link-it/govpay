@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 /**
  * 
  */
@@ -10,10 +29,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.crypt.Password;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -21,7 +40,6 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BDConfigWrapper;
-//import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -32,6 +50,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.CryptoUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -48,6 +67,8 @@ import it.govpay.model.exception.CodificaInesistenteException;
  * 
  */
 public class UtenzaPatchUtils {
+	
+	private UtenzaPatchUtils() {}
 
 	public static final String PATH_TIPI_PENDENZA = "/tipiPendenza";
 	public static final String PATH_DOMINI = "/domini";
@@ -79,7 +100,7 @@ public class UtenzaPatchUtils {
 	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA = "autodeterminazione";
 
 	
-	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException {
+	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException, UtilsException {
 
 		if(PATH_ACL.equals(op.getPath())) {
 			patchACL(op, utenza, configWrapper);
@@ -96,7 +117,7 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 	
-	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException {
+	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException, UtilsException {
 		if(PATH_PASSWORD.equals(op.getPath())) {
 			patchPassword(op, utenza, false, configWrapper);
 		} else {
@@ -107,7 +128,7 @@ public class UtenzaPatchUtils {
 	}
 
 	private static void patchPassword(PatchOp op, Utenza utenza, boolean consentiPasswordNull, BDConfigWrapper configWrapper)
-			throws ValidationException, ServiceException, NotFoundException {
+			throws ValidationException, ServiceException, NotFoundException, UtilsException {
 		
 		String nuovaPassword = null;
 		// se ricevo un value null effettuo il reset
@@ -125,8 +146,7 @@ public class UtenzaPatchUtils {
 			validatoreId.validaPassword("password", nuovaPasswordToCrypt);
 			
 			// cifratura dalla nuova password 
-			Password password = new Password();
-			nuovaPassword = password.cryptPw(nuovaPasswordToCrypt);
+			nuovaPassword = CryptoUtils.cryptPw(nuovaPasswordToCrypt);
 		} else {
 			if(!consentiPasswordNull)
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
@@ -142,8 +162,7 @@ public class UtenzaPatchUtils {
 			
 			utenzaBD.updateUtenza(utenza);
 		}finally {
-			if(utenzaBD != null)
-				utenzaBD.closeConnection();
+			utenzaBD.closeConnection();
 		}
 
 	}
@@ -205,8 +224,7 @@ public class UtenzaPatchUtils {
 			
 			utenzaBD.updateUtenza(utenza);
 		}finally {
-			if(utenzaBD != null)
-				utenzaBD.closeConnection();
+			utenzaBD.closeConnection();
 		}
 
 		utenza.setTipiVersamento(null);
@@ -219,9 +237,7 @@ public class UtenzaPatchUtils {
 		if(!(op.getValue() instanceof String || op.getValue() instanceof Dominio)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 		
 		// la patch puo' essere un oggetto complesso o un iddominio
-		if(op.getValue() instanceof String) {
-			String dominio = (String) op.getValue();
-
+		if(op.getValue() instanceof String dominio) {
 			if(dominio.equals(DOMINI_STAR)) {
 				switch(op.getOp()) {
 				case ADD: utenza.setAutorizzazioneDominiStar(true);
@@ -251,8 +267,7 @@ public class UtenzaPatchUtils {
 				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 				}
 			}
-		} else if(op.getValue() instanceof Dominio) {
-			Dominio dominio = (Dominio) op.getValue();
+		} else if(op.getValue() instanceof Dominio dominio) {
 
 			if(dominio.getCodDominio().equals(DOMINI_STAR)) {
 				switch(op.getOp()) {
@@ -318,8 +333,7 @@ public class UtenzaPatchUtils {
 			
 			utenzaBD.updateUtenza(utenza);
 		}finally {
-			if(utenzaBD != null)
-				utenzaBD.closeConnection();
+			utenzaBD.closeConnection();
 		}
 
 		utenza.setDominiUo(null);
@@ -356,17 +370,13 @@ public class UtenzaPatchUtils {
 				else
 					aclBD.updateAcl(acl);
 				break;
-	//		case REPLACE:
-	//			aclBD.updateAcl(acl);
-	//			break;
 			case DELETE: 
 				aclBD.deleteAcl(acl);
 				break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
 		}finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 	}
 
@@ -411,8 +421,7 @@ public class UtenzaPatchUtils {
 			}
 			
 		}finally {
-			if(aclBD != null)
-				aclBD.closeConnection();
+			aclBD.closeConnection();
 		}
 	}
 

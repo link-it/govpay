@@ -1,6 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.model;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.openspcoop2.utils.serialization.IDeserializer;
@@ -11,6 +31,7 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.Connettore;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
@@ -28,6 +49,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String KEY_APP_IO_BATCH = "app_io_batch";
 	public static final String KEY_AVVISATURA_MAIL = "avvisatura_mail";
 	public static final String KEY_AVVISATURA_APP_IO = "avvisatura_app_io";
+	public static final String COD_CONNETTORE_GDE = "govpay_gde_api";
 
 
 	private Properties properties = new Properties();
@@ -44,6 +66,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private AvvisaturaViaMail avvisaturaViaMail;
 	private AvvisaturaViaAppIo avvisaturaViaAppIo;
 	private AppIOBatch batchSpedizioneAppIo;
+	private Connettore servizioGDE;
 
 	public Giornale getGiornale() throws IOException {
 		if(this.giornale == null) {
@@ -108,9 +131,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	}
 
 	private String _getJson(Object objToSerialize) throws IOException {
+		return _getJson(objToSerialize, Arrays.asList("jsonIdFilter"));
+	}
+
+	private String _getJson(Object objToSerialize, List<String> excludes) throws IOException {
 		try {
 			SerializationConfig serializationConfig = new SerializationConfig();
-			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setExcludes(excludes);
 			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			return serializer.getObject(objToSerialize); 
@@ -161,7 +188,8 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	}
 
 	public String getBatchSpedizioneAppIoJson() throws IOException {
-		return this._getJson(this.getBatchSpedizioneAppIo());
+		// escludiamo il campo versione dalla serializzazione
+		return this._getJson(this.getBatchSpedizioneAppIo(), Arrays.asList("jsonIdFilter", "tipo", "versione"));
 	}
 
 	public AvvisaturaViaMail getAvvisaturaViaMail()  throws IOException {
@@ -192,5 +220,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 
 	public String getAvvisaturaViaAppIoJson() throws IOException {
 		return this._getJson(this.getAvvisaturaViaAppIo());
+	}
+
+	public Connettore getServizioGDE() {
+		return servizioGDE;
+	}
+
+	public void setServizioGDE(Connettore servizioGDE) {
+		this.servizioGDE = servizioGDE;
 	}
 }

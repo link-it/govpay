@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -160,7 +160,7 @@ public class RptBuilder {
 		rpt.setCodPsp(codPsp);
 		rpt.setCodIntermediarioPsp(codIntermediarioPsp);
 		rpt.setCodCanale(codCanale);
-		rpt.setTipoVersamento(tipoVersamento);
+		rpt.setTipoVersamento(tipoVersamento != null ? tipoVersamento.getCodifica() : null);
 		rpt.setIdVersamento(versamento.getId());
 		rpt.setVersamento(versamento);
 		rpt.setIuv(iuv);
@@ -178,16 +178,17 @@ public class RptBuilder {
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
-		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
-		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione.toString()));
+		ctRpt.setDataOraMessaggioRichiesta(DateUtils.toLocalDateTime(rpt.getDataMsgRichiesta()));
+		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione));
 		ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante));
 		ctRpt.setSoggettoPagatore(RptBuilder.buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
 		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
-		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
+		datiVersamento.setDataEsecuzionePagamento(DateUtils.toLocalDate(rpt.getDataMsgRichiesta()));
 		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
-		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(tipoVersamento.getCodifica()));
+		StTipoVersamento stTipoVersamento = tipoVersamento != null ? StTipoVersamento.fromValue(tipoVersamento.getCodifica()) : StTipoVersamento.OTH;
+		datiVersamento.setTipoVersamento(stTipoVersamento);
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
@@ -250,7 +251,7 @@ public class RptBuilder {
 		return soggettoDebitore;
 	}
 
-	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
+	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) {
 
 		CtEnteBeneficiario enteBeneficiario = new CtEnteBeneficiario();
 		CtIdentificativoUnivocoPersonaG idUnivocoBeneficiario = new CtIdentificativoUnivocoPersonaG();
@@ -267,23 +268,16 @@ public class RptBuilder {
 		enteBeneficiario.setNazioneBeneficiario(RptBuilder.getNotEmpty(anagrafica.getNazione()));
 		enteBeneficiario.setProvinciaBeneficiario(RptBuilder.getNotEmpty(anagrafica.getProvincia()));
 
-		if(!uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
-			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
-				enteBeneficiario.setCodiceUnitOperBeneficiario(uo.getAnagrafica().getCodUnivoco());
-			if(uo.getAnagrafica().getRagioneSociale() != null && uo.getAnagrafica().getRagioneSociale().trim().length()>0)
-				enteBeneficiario.setDenomUnitOperBeneficiario(uo.getAnagrafica().getRagioneSociale());
-			if(uo.getAnagrafica().getIndirizzo() != null && uo.getAnagrafica().getIndirizzo().trim().length()>0)
-				enteBeneficiario.setIndirizzoBeneficiario(uo.getAnagrafica().getIndirizzo());
-			if(uo.getAnagrafica().getCivico() != null && uo.getAnagrafica().getCivico().trim().length()>0)
-				enteBeneficiario.setCivicoBeneficiario(uo.getAnagrafica().getCivico());
-			if(uo.getAnagrafica().getCap() != null && uo.getAnagrafica().getCap().trim().length()>0)
-				enteBeneficiario.setCapBeneficiario(uo.getAnagrafica().getCap());
-			if(uo.getAnagrafica().getLocalita() != null && uo.getAnagrafica().getLocalita().trim().length()>0)
-				enteBeneficiario.setLocalitaBeneficiario(uo.getAnagrafica().getLocalita());
-			if(uo.getAnagrafica().getProvincia() != null && uo.getAnagrafica().getProvincia().trim().length()>0)
-				enteBeneficiario.setProvinciaBeneficiario(uo.getAnagrafica().getProvincia());
-			if(uo.getAnagrafica().getNazione() != null && uo.getAnagrafica().getNazione().trim().length()>0)
-				enteBeneficiario.setNazioneBeneficiario(uo.getAnagrafica().getNazione());
+		Anagrafica anagraficaUo = uo.getAnagrafica();
+		if(!uo.getCodUo().equals(it.govpay.model.Dominio.EC) && anagraficaUo != null) {
+			enteBeneficiario.setCodiceUnitOperBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getCodUnivoco()));
+			enteBeneficiario.setDenomUnitOperBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getRagioneSociale()));
+			enteBeneficiario.setIndirizzoBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getIndirizzo()));
+			enteBeneficiario.setCivicoBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getCivico()));
+			enteBeneficiario.setCapBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getCap()));
+			enteBeneficiario.setLocalitaBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getLocalita()));
+			enteBeneficiario.setProvinciaBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getProvincia()));
+			enteBeneficiario.setNazioneBeneficiario(RptBuilder.getNotEmpty(anagraficaUo.getNazione()));
 		}
 		return enteBeneficiario;
 	}

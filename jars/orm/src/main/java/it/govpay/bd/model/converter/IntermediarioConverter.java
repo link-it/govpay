@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -29,6 +29,8 @@ import org.openspcoop2.utils.certificate.PrincipalType;
 import it.govpay.model.Intermediario;
 
 public class IntermediarioConverter {
+	
+	private IntermediarioConverter() {}
 
 	public static List<Intermediario> toDTOList(List<it.govpay.orm.Intermediario> intermediarioLst) {
 		List<Intermediario> lstDTO = new ArrayList<>();
@@ -58,21 +60,37 @@ public class IntermediarioConverter {
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setDenominazione(dto.getDenominazione());
 		vo.setCodConnettorePdd(dto.getCodIntermediario());
-		
+
 		if(dto.getConnettorePdd()!= null) {
 			dto.getConnettorePdd().setIdConnettore(dto.getCodIntermediario());
 		}
-		
+
 		if(dto.getConnettoreSftp()!=null)
 			vo.setCodConnettoreFtp(dto.getConnettoreSftp().getIdConnettore());
-		
+
 		try {
-			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.subject));
+			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.SUBJECT));
 		} catch (UtilsException e) {
 			vo.setPrincipal(dto.getPrincipal());
 		}
 		vo.setPrincipalOriginale(dto.getPrincipalOriginale());
-		
+
+		if(dto.getConnettorePddRecuperoRT()!= null) {
+			vo.setCodConnettoreRecuperoRT(dto.getConnettorePddRecuperoRT().getIdConnettore());
+		}
+
+		if(dto.getConnettorePddACA()!= null) {
+			vo.setCodConnettoreACA(dto.getConnettorePddACA().getIdConnettore());
+		}
+
+		if(dto.getConnettorePddGPD()!= null) {
+			vo.setCodConnettoreGPD(dto.getConnettorePddGPD().getIdConnettore());
+		}
+
+		if(dto.getConnettorePddFR()!= null) {
+			vo.setCodConnettoreFR(dto.getConnettorePddFR().getIdConnettore());
+		}
+
 		return vo;
 	}
 

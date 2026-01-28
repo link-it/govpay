@@ -20,6 +20,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentoBaseurl
+And configure cookies = null
 And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 
@@ -12,6 +31,7 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "giornaleEventi",
+"servizioGDE",
 "tracciatoCsv",
 "hardening",
 "mailBatch",
@@ -23,6 +43,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
 
   @JsonProperty("giornaleEventi")
   private Giornale giornaleEventi = null;
+
+  @JsonProperty("servizioGDE")
+  private ConnettoreGde servizioGDE = null;
 
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
@@ -55,6 +78,21 @@ public class Configurazione extends JSONSerializable implements IValidable{
   }
   public void setGiornaleEventi(Giornale giornaleEventi) {
     this.giornaleEventi = giornaleEventi;
+  }
+
+  /**
+   **/
+  public Configurazione servizioGDE(ConnettoreGde servizioGDE) {
+    this.servizioGDE = servizioGDE;
+    return this;
+  }
+
+  @JsonProperty("servizioGDE")
+  public ConnettoreGde getServizioGDE() {
+    return servizioGDE;
+  }
+  public void setServizioGDE(ConnettoreGde servizioGDE) {
+    this.servizioGDE = servizioGDE;
   }
 
   /**
@@ -157,6 +195,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     }
     Configurazione configurazione = (Configurazione) o;
     return Objects.equals(giornaleEventi, configurazione.giornaleEventi) &&
+        Objects.equals(servizioGDE, configurazione.servizioGDE) &&
         Objects.equals(tracciatoCsv, configurazione.tracciatoCsv) &&
         Objects.equals(hardening, configurazione.hardening) &&
         Objects.equals(mailBatch, configurazione.mailBatch) &&
@@ -167,7 +206,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, avvisaturaMail, avvisaturaAppIO, appIOBatch);
+    return Objects.hash(giornaleEventi, servizioGDE, tracciatoCsv, hardening, mailBatch, avvisaturaMail, avvisaturaAppIO, appIOBatch);
   }
 
   public static Configurazione parse(String json) throws IOException {
@@ -185,6 +224,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     sb.append("class Configurazione {\n");
 
     sb.append("    giornaleEventi: ").append(toIndentedString(giornaleEventi)).append("\n");
+    sb.append("    servizioGDE: ").append(toIndentedString(servizioGDE)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("    hardening: ").append(toIndentedString(hardening)).append("\n");
     sb.append("    mailBatch: ").append(toIndentedString(mailBatch)).append("\n");
@@ -210,6 +250,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("giornaleEventi", this.giornaleEventi).notNull().validateFields();
+	vf.getValidator("servizioGDE", this.servizioGDE).notNull().validateFields();
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).notNull().validateFields();
 	vf.getValidator("hardening", this.hardening).notNull().validateFields();
 	vf.getValidator("mailBatch", this.mailBatch).notNull().validateFields();

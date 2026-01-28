@@ -1,49 +1,86 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ragioneria.v3.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotNull;
 
 public class FlussoRendicontazioneIndex   {
 
-  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "Identificativo del flusso di rendicontazione")
+  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", requiredMode = RequiredMode.REQUIRED, description = "Identificativo del flusso di rendicontazione")
  /**
    * Identificativo del flusso di rendicontazione
   **/
   private String idFlusso = null;
 
-  @Schema(required = true, description = "Data di emissione del flusso")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data di emissione del flusso")
  /**
    * Data di emissione del flusso
   **/
   private Date dataFlusso = null;
 
-  @Schema(required = true, description = "Data di acquisizione del flusso")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data di acquisizione del flusso")
  /**
    * Data di acquisizione del flusso
   **/
   private Date data = null;
 
-  @Schema(example = "idriversamento12345", required = true, description = "Identificativo dell'operazione di riversamento assegnato dal psp debitore")
+  @Schema(example = "idriversamento12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo dell'operazione di riversamento assegnato dal psp debitore")
  /**
    * Identificativo dell'operazione di riversamento assegnato dal psp debitore
   **/
   private String trn = null;
 
-  @Schema(required = true, description = "Data dell'operazione di riversamento fondi")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Data dell'operazione di riversamento fondi")
  /**
    * Data dell'operazione di riversamento fondi
   **/
   private Date dataRegolamento = null;
 
-  @Schema(example = "ABI-12345", required = true, description = "Identificativo dell'istituto mittente")
+  @Schema(description = "Data di pubblicazione del flusso di rendicontazione")
+ /**
+   * Data di pubblicazione del flusso di rendicontazione
+  **/
+  private Date dataOraPubblicazione = null;
+
+  @Schema(description = "Data di aggiornamento del flusso di rendicontazione")
+ /**
+   * Data di aggiornamento del flusso di rendicontazione
+  **/
+  private Date dataOraAggiornamento = null;
+
+  @Schema(example = "1", description = "Numero di revisione del flusso di rendicontazione")
+ /**
+   * Numero di revisione del flusso di rendicontazione
+  **/
+  private Long revisione = null;
+
+  @Schema(example = "ABI-12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo dell'istituto mittente")
  /**
    * Identificativo dell'istituto mittente
   **/
@@ -55,22 +92,22 @@ public class FlussoRendicontazioneIndex   {
   **/
   private String bicRiversamento = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Dominio dominio = null;
 
-  @Schema(example = "3", required = true, description = "numero di pagamenti oggetto della rendicontazione")
+  @Schema(example = "3", requiredMode = RequiredMode.REQUIRED, description = "numero di pagamenti oggetto della rendicontazione")
  /**
    * numero di pagamenti oggetto della rendicontazione
   **/
   private BigDecimal numeroPagamenti = null;
 
-  @Schema(example = "100.01", required = true, description = "somma degli importi rendicontati")
+  @Schema(example = "100.01", requiredMode = RequiredMode.REQUIRED, description = "somma degli importi rendicontati")
  /**
    * somma degli importi rendicontati
   **/
   private Double importoTotale = null;
 
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private StatoFlussoRendicontazione stato = null;
 
   @Schema(description = "")
@@ -170,6 +207,62 @@ public class FlussoRendicontazioneIndex   {
 
   public FlussoRendicontazioneIndex dataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
+    return this;
+  }
+
+ /**
+   * Data di pubblicazione del flusso di rendicontazione
+   * @return dataOraPubblicazione
+  **/
+  @JsonProperty("dataOraPubblicazione")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  public Date getDataOraPubblicazione() {
+    return dataOraPubblicazione;
+  }
+
+  public void setDataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+  }
+
+  public FlussoRendicontazioneIndex dataOraPubblicazione(Date dataOraPubblicazione) {
+    this.dataOraPubblicazione = dataOraPubblicazione;
+    return this;
+  }
+
+ /**
+   * Data di aggiornamento del flusso di rendicontazione
+   * @return dataOraAggiornamento
+  **/
+  @JsonProperty("dataOraAggiornamento")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  public Date getDataOraAggiornamento() {
+    return dataOraAggiornamento;
+  }
+
+  public void setDataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+  }
+
+  public FlussoRendicontazioneIndex dataOraAggiornamento(Date dataOraAggiornamento) {
+    this.dataOraAggiornamento = dataOraAggiornamento;
+    return this;
+  }
+
+ /**
+   * Numero di revisione del flusso di rendicontazione
+   * @return revisione
+  **/
+  @JsonProperty("revisione")
+  public Long getRevisione() {
+    return revisione;
+  }
+
+  public void setRevisione(Long revisione) {
+    this.revisione = revisione;
+  }
+
+  public FlussoRendicontazioneIndex revisione(Long revisione) {
+    this.revisione = revisione;
     return this;
   }
 
@@ -320,6 +413,9 @@ public class FlussoRendicontazioneIndex   {
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
+    sb.append("    dataOraPubblicazione: ").append(toIndentedString(dataOraPubblicazione)).append("\n");
+    sb.append("    dataOraAggiornamento: ").append(toIndentedString(dataOraAggiornamento)).append("\n");
+    sb.append("    revisione: ").append(toIndentedString(revisione)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
     sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");

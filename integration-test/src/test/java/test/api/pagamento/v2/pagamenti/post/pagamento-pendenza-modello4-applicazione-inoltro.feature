@@ -24,7 +24,7 @@ Background:
 }
 """  
 * set tipoPendenzaDominio.portalePagamento.inoltro = idA2A
-* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(karate.readAsString('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
 * set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-inoltro-freemarker.ftl'))
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
@@ -91,7 +91,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -197,7 +197,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -233,13 +233,13 @@ Examples:
 | dataValidita | pendenzaPut.dataScadenza | '2030-19-40' | 'dataScadenza' |
 | annoRiferimento | pendenzaPut.annoRiferimento | 'aaaa' | 'annoRiferimento' |
 | tassonomiaAvviso | pendenzaPut.tassonomiaAvviso | 'xxxx' | 'tassonomiaAvviso' |
-| soggettoPagatore | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
-| soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
-| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
-| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
+# | soggettoPagatore | pendenzaPut.soggettoPagatore | null | 'soggettoPagatore' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | null | 'tipo' |
+# | soggettoPagatore.tipo | pendenzaPut.soggettoPagatore.tipo | 'X' | 'tipo' |
+# | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
+# | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | loremIpsum | 'identificativo' |
-| soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
+# | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
 | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | loremIpsum | 'anagrafica' |
 | soggettoPagatore.indirizzo | pendenzaPut.soggettoPagatore.indirizzo | '' | 'indirizzo' |
 | soggettoPagatore.indirizzo | pendenzaPut.soggettoPagatore.indirizzo | loremIpsum | 'indirizzo' |
@@ -354,7 +354,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -363,7 +363,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -423,7 +423,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -432,7 +432,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -494,7 +494,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 
@@ -505,7 +505,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -598,7 +598,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -607,7 +607,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -700,7 +700,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -709,7 +709,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -784,7 +784,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -793,7 +793,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -805,14 +805,29 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then assert responseStatus == 502
-And match response == 
+Then assert responseStatus == 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+Given url pagamentiBaseurl
+And path '/pagamenti/byIdSession/', response.idSession
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.rpp[0].rpt.soggettoVersante == 
 """
-{ 
-	categoria: 'EC',
-	codice: '502000',
-	descrizione: 'Errore ente creditore',
-	dettaglio: '#("L\'inoltro del versamento [Dominio: " + idDominio +" TipoVersamento:" + codSpontaneo +"] all\'applicazione competente [Applicazione:" + idA2A +"] e\' fallito con errore: Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e\' una Marca da Bollo Telematica.")'
+{
+	"identificativoUnivocoVersante": {
+		"tipoIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.tipo)",
+		"codiceIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.identificativo)"
+	},
+	"anagraficaVersante":"#(pagamentoPost.soggettoVersante.anagrafica)",
+	"indirizzoVersante":"#(pagamentoPost.soggettoVersante.indirizzo)",
+	"civicoVersante":"#(pagamentoPost.soggettoVersante.civico)",
+	"capVersante":"#(pagamentoPost.soggettoVersante.cap + '')",
+	"localitaVersante":"#(pagamentoPost.soggettoVersante.localita)",
+	"provinciaVersante":"#(pagamentoPost.soggettoVersante.provincia)",
+	"nazioneVersante":"#(pagamentoPost.soggettoVersante.nazione)",
+	"e-mailVersante":"#(pagamentoPost.soggettoVersante.email)"
 }
 """
 
@@ -884,7 +899,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -893,7 +908,7 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,12 +20,9 @@
 package it.govpay.core.business;
 
 
-import java.text.MessageFormat;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -40,6 +37,8 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
+import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Iuv.TipoIUV;
 
 public class Iuv {
@@ -47,9 +46,10 @@ public class Iuv {
 	private static Logger log = LoggerWrapperFactory.getLogger(Iuv.class);
 
 	public Iuv() {
+		// donothing
 	}
 
-	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, BasicBD bd) throws GovPayException, ServiceException, UtilsException {
+	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, BasicBD bd) throws GovPayException, ServiceException {
 
 		// Build prefix
 		IContext ctx = ContextThreadLocal.get();
@@ -67,9 +67,9 @@ public class Iuv {
 			}
 			it.govpay.model.Iuv iuv = null;
 
-			log.debug(MessageFormat.format("Generazione dello IUV di tipo [{0}] per il versamento [Id: {1}, IdA2A: {2}, IdDominio: {3}] in corso...", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio()));
+			log.debug("Generazione dello IUV di tipo [{}] per il versamento [Id: {}, IdA2A: {}, IdDominio: {}] in corso...", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio());
 
-			log.debug(MessageFormat.format("Prefisso IUV [{0}]", prefix));
+			log.debug("Prefisso IUV [{}]", prefix);
 
 			if(type.equals(TipoIUV.NUMERICO)) {
 				// il prefisso deve essere numerico
@@ -77,29 +77,23 @@ public class Iuv {
 					try {
 						Long.parseLong(prefix);
 					} catch (NumberFormatException e) {
-						ctx.getApplicationLogger().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", appContext.getPagamentoCtx().getAllIuvPropsString(applicazione));
+						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_GENERAZIONE_IUV_PREFIX_FAIL, dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", appContext.getPagamentoCtx().getAllIuvPropsString(applicazione));
 						throw new GovPayException(EsitoOperazione.VER_028,prefix, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), dominio.getIuvPrefix());
 					}
 				}
 				iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.NUMERICO, prefix);
 			} else {
-				// Il prefisso deve avere solo caratteri ammissibili
-				if(prefix.matches("[a-zA-Z0-9]*"))
-					iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, prefix);
-				else {
-					ctx.getApplicationLogger().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico", appContext.getPagamentoCtx().getAllIuvPropsString(applicazione));
-					throw new GovPayException(EsitoOperazione.VER_029,prefix, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), dominio.getIuvPrefix());
-				}
+				throw new GovPayException("Generazione di IUV di tipo ISO11694 non supportata. Verificare la configurazione.", EsitoOperazione.INTERNAL);
 			}
 
-			ctx.getApplicationLogger().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_GENERAZIONE_IUV_OK, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 
-			log.debug(MessageFormat.format("Generazione dello IUV di tipo [{0}] per il versamento [Id: {1}, IdA2A: {2}, IdDominio: {3}] completata IUV: [{4}].", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio(), iuv.getIuv()));
+			log.debug("Generazione dello IUV di tipo [{}] per il versamento [Id: {}, IdA2A: {}, IdDominio: {}] completata IUV: [{}].", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio(), iuv.getIuv());
 
 			return iuv.getIuv();
 
 		} finally {
-			if(iuvBD != null && bd == null) {
+			if(bd == null) {
 				iuvBD.closeConnection();
 			}
 		}
@@ -114,10 +108,9 @@ public class Iuv {
 		return TipoIUV.NUMERICO;
 	}
 
-	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) throws GovPayException, ServiceException, UtilsException {
+	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) {
 		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode())) {
-			//			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
-			ContextThreadLocal.get().getApplicationLogger().log("iuv.checkIUVNumericoWarn", dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ContextThreadLocal.get(), MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_IUV_CHECK_IUV_NUMERICO_WARN, dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
 		}
 	}
 

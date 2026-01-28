@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.Incasso;
@@ -44,7 +46,7 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.TRN = new Field("trn",java.lang.String.class,"Incasso",Incasso.class);
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Incasso",Incasso.class);
 		this.CAUSALE = new Field("causale",java.lang.String.class,"Incasso",Incasso.class);
-		this.IMPORTO = new Field("importo",java.lang.Double.class,"Incasso",Incasso.class);
+		this.IMPORTO = new Field("importo",java.math.BigDecimal.class,"Incasso",Incasso.class);
 		this.DATA_VALUTA = new Field("dataValuta",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_CONTABILE = new Field("dataContabile",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_ORA_INCASSO = new Field("dataOraIncasso",java.util.Date.class,"Incasso",Incasso.class);
@@ -68,7 +70,7 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.TRN = new ComplexField(father,"trn",java.lang.String.class,"Incasso",Incasso.class);
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Incasso",Incasso.class);
 		this.CAUSALE = new ComplexField(father,"causale",java.lang.String.class,"Incasso",Incasso.class);
-		this.IMPORTO = new ComplexField(father,"importo",java.lang.Double.class,"Incasso",Incasso.class);
+		this.IMPORTO = new ComplexField(father,"importo",java.math.BigDecimal.class,"Incasso",Incasso.class);
 		this.DATA_VALUTA = new ComplexField(father,"dataValuta",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_CONTABILE = new ComplexField(father,"dataContabile",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_ORA_INCASSO = new ComplexField(father,"dataOraIncasso",java.util.Date.class,"Incasso",Incasso.class);

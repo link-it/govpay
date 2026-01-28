@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste;
 
 import java.io.UnsupportedEncodingException;
@@ -20,7 +39,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.viste.filters.EntrataPrevistaFilter;
 import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.bd.viste.model.converter.EntrataPrevistaConverter;
-import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.model.VistaRiscossioniModel;
 
 public class EntratePrevisteBD extends BasicBD {
@@ -41,11 +59,11 @@ public class EntratePrevisteBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
-	public EntrataPrevistaFilter newFilter() throws ServiceException {
+	public EntrataPrevistaFilter newFilter() {
 		return new EntrataPrevistaFilter(this.getVistaRiscossioniServiceSearch());
 	}
 
-	public EntrataPrevistaFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public EntrataPrevistaFilter newFilter(boolean simpleSearch) {
 		return new EntrataPrevistaFilter(this.getVistaRiscossioniServiceSearch(),simpleSearch);
 	}
 
@@ -81,9 +99,7 @@ public class EntratePrevisteBD extends BasicBD {
 				entratePrevisteLst.add(EntrataPrevistaConverter.toDTO(riscossioneVO));
 			}
 			return entratePrevisteLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (NotImplementedException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -105,7 +121,6 @@ public class EntratePrevisteBD extends BasicBD {
 				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
-//			exp.equals(model.STATO, Stato.INCASSATO.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.COD_TIPO_VERSAMENTO, listaTipiPendenza);
@@ -126,13 +141,7 @@ public class EntratePrevisteBD extends BasicBD {
 				entratePrevisteLst.add(EntrataPrevistaConverter.toDTO(riscossioneVO));
 			}
 			return entratePrevisteLst;
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -154,7 +163,6 @@ public class EntratePrevisteBD extends BasicBD {
 				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
-//			exp.equals(model.STATO, Stato.INCASSATO.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.COD_TIPO_VERSAMENTO, listaTipiPendenza);
@@ -168,11 +176,7 @@ public class EntratePrevisteBD extends BasicBD {
 			NonNegativeNumber count = this.getVistaRiscossioniServiceSearch().count(exp);
 			
 			return count.longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

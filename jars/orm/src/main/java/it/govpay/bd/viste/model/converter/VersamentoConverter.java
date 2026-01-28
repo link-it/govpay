@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.model.converter;
 
 import java.io.UnsupportedEncodingException;
@@ -16,6 +35,8 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class VersamentoConverter {
+	
+	private VersamentoConverter() {}
 
 	public static List<Versamento> toDTOList(List<it.govpay.orm.VistaVersamento> versamenti) throws CodificaInesistenteException, UnsupportedEncodingException {
 		List<Versamento> lstDTO = new ArrayList<>();
@@ -104,19 +125,8 @@ public class VersamentoConverter {
 		dto.setIdSessione(vo.getIdSessione());
 
 		dto.setDataPagamento(vo.getDataPagamento());
-		if(vo.getImportoPagato() != null)
-			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		if(vo.getImportoIncassato() != null)
-			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
-		if(vo.getStatoPagamento() != null)
-			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
-		dto.setIuvPagamento(vo.getIuvPagamento());
-
-		dto.setDataPagamento(vo.getDataPagamento());
-		if(vo.getImportoPagato() != null)
-			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		if(vo.getImportoIncassato() != null)
-			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
+		dto.setImportoPagato(vo.getImportoPagato());
+		dto.setImportoIncassato(vo.getImportoIncassato());
 		if(vo.getStatoPagamento() != null)
 			dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 		dto.setIuvPagamento(vo.getIuvPagamento());
@@ -143,12 +153,8 @@ public class VersamentoConverter {
 				dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
 			}
@@ -166,6 +172,9 @@ public class VersamentoConverter {
 
 		dto.setProprieta(vo.getProprieta());
 
+		dto.setDataUltimaModificaAca(vo.getDataUltimaModificaAca());
+		dto.setDataUltimaComunicazioneAca(vo.getDataUltimaComunicazioneAca());
+		
 		return dto;
 	}
 

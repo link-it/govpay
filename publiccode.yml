@@ -1,8 +1,8 @@
-# This repository adheres to the publiccode.yml standard by including this 
+# This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.2'
+publiccodeYmlVersion: '0.4.0'
 applicationSuite: GovStar
 categories:
   - payment-gateway
@@ -12,8 +12,8 @@ dependsOn:
     - name: Java
       optional: false
       version: ''
-      versionMax: ''
-      versionMin: '8'
+      versionMax: '21'
+      versionMin: '21'
 description:
   it:
     apiDocumentation: 'https://govpay.readthedocs.io/it/latest/integrazione/api/index.html'
@@ -51,12 +51,11 @@ description:
         verticali di contabilità
       - Profilazione degli operatori di cruscotto
       - Plugin di integrazione ad applicativi di terze parti
-    genericName: Gateway di integrazione a pagoPA
     longDescription: |
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
       l'adesione a pagoPA necessari alla realizzazione di pagamenti, dovuti o
       spontanei, sia ad iniziativa Ente che ad iniziativa PSP nonché alla loro
-      riconciliazione in tesoreria. 
+      riconciliazione in tesoreria.
 
 
       Fornisce un cruscotto di gestione che implementa i servizi di "Tavolo
@@ -73,13 +72,13 @@ description:
       riconciliazione contabile in tesoreria delle riscossioni effettuate. Le
       stesse operazioni sono comunque disponibili anche sul cruscotto di
       gestione per gli operatori, tramite compilazione di form o file upload di
-      tracciati record. 
+      tracciati record.
 
 
       Di seguito le funzionalita fornite dal prodotto ed individuate dal [quadro
       sinottico dei
       servizi](https://www.pagopa.gov.it/it/pubbliche-amministrazioni/quadro-sinottico/)
-      al quale si rimanda per una descrizione più estesa. 
+      al quale si rimanda per una descrizione più estesa.
 
 
       **Servizi minimi**
@@ -92,7 +91,7 @@ description:
       - Modelli di pagamento
 
 
-      **Servizi base** 
+      **Servizi base**
 
 
       - Profilazione personale EC con diversi ruoli e permessi
@@ -118,7 +117,7 @@ description:
       - Riconciliazione
 
 
-      **Servizi a valore aggiunto** 
+      **Servizi a valore aggiunto**
 
 
       - Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi
@@ -157,10 +156,6 @@ description:
       (APKappa)
     shortDescription: Gateway di integrazione alla piattaforma di pagamento pagoPA.
 developmentStatus: stable
-inputTypes:
-  - text/xml
-  - application/json
-  - text/csv
 intendedAudience:
   scope:
     - government
@@ -193,24 +188,14 @@ maintenance:
       email: nardi@link.it
       name: Lorenzo Nardi
       phone: '+39050504639'
-  contractors:
-    - name: Link.it
-      until: '2023-12-31'
-      website: 'https://www.link.it'
   type: community
 name: GovPay
-outputTypes:
-  - text/xml
-  - application/json
-  - application/zip
-  - text/csv
-  - application/pdf
 platforms:
   - web
-releaseDate: '2023-06-23'
+releaseDate: '2026-01-09'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: 3.7.3
+softwareVersion: 3.8.2
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche

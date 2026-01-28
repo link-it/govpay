@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pendenze.v2.beans.converter;
 
 import java.util.Collections;
@@ -8,12 +27,12 @@ import it.govpay.pendenze.v2.beans.Acl;
 import it.govpay.pendenze.v2.beans.TipoServizio;
 
 public class AclConverter {
-	
+
 	public static Acl toRsModel(it.govpay.bd.model.Acl acl) {
 		Acl rsModel = new Acl();
 		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
-		
+
 		TipoServizio serv = null;
 		if(acl.getServizio() != null) {
 			switch(acl.getServizio()) {
@@ -50,19 +69,19 @@ public class AclConverter {
 				break;
 			}
 		}
-		
+
 		// se l'acl non deve uscire allora ritorno null
 		if(serv ==null)
 			return null;
-		
+
 		rsModel.setServizio(serv);
-		
+
 		if(acl.getListaDiritti() != null) {
 			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
 			Collections.sort(autorizzazioni);
 			rsModel.autorizzazioni(autorizzazioni);
 		}
-		
+
 		return rsModel;
 	}
 }

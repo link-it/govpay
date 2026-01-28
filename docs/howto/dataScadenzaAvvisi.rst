@@ -1,0 +1,48 @@
+.. _howto_dataScadenzaAvvisi:
+
+Gestione della data scadenza negli avvisi PagoPA
+================================================
+
+All'interno dell'avviso PagoPA è presente la sezione **Quanto e quando pagare** contenente le informazioni sul quanto pagare, in che modalità e con le relative scadenze.
+
+.. figure:: ./_images/quantoQuandoPagare.png
+   :align: center
+
+   Sezione **Quanto e quando pagare** dell'avviso di pagamento PagoPA
+
+L'etichetta **entro il** mostra al cittadino debitore una data che può assumere diversi significati in base alle date definite nella pendenza al momento del caricamento su GovPay.
+
+Data scadenza e data validità nelle richieste json
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+E' possibile indicare all'interno di una pendenza tre differenti date opzionali:
+
+.. code-block:: json
+  :caption: Data scadenza, data validità e data scadenza avviso all'interno di una pendenza
+
+  {
+    ...
+    "dataValidita": "2023-11-30",
+    "dataScadenza": "2023-12-31",
+    "proprieta": {
+                  "dataScadenzaAvviso": "2023-12-31"
+                  }
+    ...
+  }
+
+La **data validità** indica fino a quando è valido l'importo corrente dell'avviso di pagamento. Un pagamento effettuato dopo questa data comporterà il ricalcolo e l'aggiornamento dell'importo in base alle procedure di integrazione previste.
+
+D'altra parte, la **data scadenza** rappresenta la data successiva alla quale l'avviso di pagamento scade e non può più essere pagato.
+
+La **data scadenza avviso** consente di personalizzare la data visualizzata sull'avviso di pagamento, sostituendo quella impostata tramite le precedenti proprietà.
+
+Se durante il caricamento della pendenza non viene specificata alcuna data, allora nell'avviso l'etichetta **entro il** verrà omessa e non verrà visualizzata alcuna data.
+
+Gestione automatica della data validità
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Il sistema consente di visualizzare una data sull'avviso di pagamento per le pendenze che non specificano alcuna data, indicando il numero dei giorni di validità da assegnare alla pendenza attraverso la proprietà di sistema:
+
+  -  **it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita=GG**
+
+la data visualizzata nell'avviso sarà calcolata come la somma tra la data di creazione della pendenza e il numero di giorni definito nella proprietà.

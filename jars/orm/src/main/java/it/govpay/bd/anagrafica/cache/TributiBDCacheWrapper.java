@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -24,6 +24,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+import org.openspcoop2.utils.cache.CacheType;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -32,7 +33,7 @@ import it.govpay.bd.anagrafica.TributiBD;
 public class TributiBDCacheWrapper extends AbstractCacheWrapper {
 
 	public TributiBDCacheWrapper(boolean initializeCache, Logger log) throws UtilsException {
-		super("tributi", initializeCache, log);
+		super(CacheType.JCS, "tributi", initializeCache, log);
 	}
 
 	@Override

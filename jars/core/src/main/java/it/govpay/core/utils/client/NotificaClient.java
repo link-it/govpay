@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -38,16 +38,17 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.ec.v1.converter.NotificaAttivazioneConverter;
 import it.govpay.core.ec.v1.converter.NotificaTerminazioneConverter;
 import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Notifica;
 import it.govpay.model.Versionabile.Versione;
@@ -70,8 +71,8 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 	private List<Pagamento> pagamenti;
 	private boolean convertiMessaggioPagoPAV2InPagoPAV1;
 
-	public NotificaClient(Applicazione applicazione, Rpt rpt, Versamento versamento, List<Pagamento> pagamenti, String operationID, Giornale giornale) throws ClientException, ServiceException {
-		super(applicazione, TipoConnettore.NOTIFICA);
+	public NotificaClient(Applicazione applicazione, Rpt rpt, Versamento versamento, List<Pagamento> pagamenti, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException, ServiceException {
+		super(applicazione, TipoConnettore.NOTIFICA, eventoCtx);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.operationID = operationID;
 		this.applicazione = applicazione;
@@ -79,9 +80,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		this.versamento = versamento;
 		this.pagamenti = pagamenti;
 
-		this.componente = Componente.API_ENTE;
 		this.setGiornale(giornale);
-		this.getEventoCtx().setComponente(this.componente);
 		this.convertiMessaggioPagoPAV2InPagoPAV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 	}
 
@@ -117,7 +116,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug(MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})",	notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
+		LogUtils.logDebug(log, MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})",	notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -125,7 +124,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
-		String swaggerOperationID = this.getSwaggerOperationIdApiV1(notifica, rpt);
+		String swaggerOperationID = this.getSwaggerOperationIdApiV1(notifica);
 
 		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
@@ -170,7 +169,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getSwaggerOperationIdApiV1(Notifica notifica, Rpt rpt) { 
+	public String getSwaggerOperationIdApiV1(Notifica notifica) { 
 		String swaggerOperationID = "";
 
 		switch (notifica.getTipo()) {
@@ -180,7 +179,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -201,7 +200,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -212,7 +211,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug(MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})", notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
+		LogUtils.logDebug(log, MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})", notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -220,7 +219,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.PUT;
-		String swaggerOperationID = this.getSwaggerOperationIdApiV2(notifica, rpt);
+		String swaggerOperationID = this.getSwaggerOperationIdApiV2(notifica);
 
 		switch (notifica.getTipo()) {
 		
@@ -259,18 +258,14 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 
 		try {
 			jsonBody = this.getMessaggioRichiestaApiV2(notifica, rpt, applicazione, versamento, pagamenti);
-		} catch (ServiceException e) {
-			throw new GovPayException(e);
-		} catch (UnsupportedEncodingException e) {
-			throw new GovPayException(e);
-		} catch (IOException e) {
+		} catch (ServiceException | UnsupportedEncodingException | IOException e) {
 			throw new GovPayException(e);
 		}
 
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 	
-	public String getSwaggerOperationIdApiV2(Notifica notifica, Rpt rpt) { 
+	public String getSwaggerOperationIdApiV2(Notifica notifica) { 
 		String swaggerOperationID = "";
 
 		switch (notifica.getTipo()) {
@@ -280,7 +275,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -298,7 +293,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
+			LogUtils.logWarn(log, MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -337,6 +332,9 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 	}
 	
 	public String getRptKey() {
-		return RptUtils.getRptKey(this.rpt);
+		if(this.rpt != null) {
+			return this.rpt.getRptKey();
+		}
+		return "";
 	}
 }

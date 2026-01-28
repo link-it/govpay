@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
@@ -39,6 +58,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "servizioMaggioliJPPA",
 "intermediato",
 "tassonomiaPagoPA",
+"scaricaFr",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
 
@@ -131,7 +151,10 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 
   @JsonProperty("tassonomiaPagoPA")
   private String tassonomiaPagoPA = null;
-
+  
+  @JsonProperty("scaricaFr")
+  private Boolean scaricaFr = null;
+  
   /**
    * Ragione sociale del beneficiario
    **/
@@ -605,6 +628,22 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     this.tassonomiaPagoPA = tassonomiaPagoPA;
   }
 
+  /**
+   * Indica se devono essere scaricati i flussi di rendicontazione per l'EC
+   **/
+  public DominioPost scaricaFr(Boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+    return this;
+  }
+
+  @JsonProperty("scaricaFr")
+  public Boolean getScaricaFr() {
+    return scaricaFr;
+  }
+  public void setScaricaFr(Boolean scaricaFr) {
+    this.scaricaFr = scaricaFr;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -642,12 +681,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(servizioHyperSicAPKappa, dominioPost.servizioHyperSicAPKappa) &&
         Objects.equals(servizioMaggioliJPPA, dominioPost.servizioMaggioliJPPA) &&
         Objects.equals(intermediato, dominioPost.intermediato) &&
-        Objects.equals(tassonomiaPagoPA, dominioPost.tassonomiaPagoPA);
+        Objects.equals(tassonomiaPagoPA, dominioPost.tassonomiaPagoPA) &&
+        Objects.equals(scaricaFr, dominioPost.scaricaFr);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, intermediato, tassonomiaPagoPA);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, intermediato, tassonomiaPagoPA, scaricaFr);
   }
 
   public static DominioPost parse(String json) throws IOException {
@@ -693,6 +733,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    servizioMaggioliJPPA: ").append(toIndentedString(servizioMaggioliJPPA)).append("\n");
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
+    sb.append("    scaricaFr: ").append(toIndentedString(scaricaFr)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -727,6 +768,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("web", this.web).minLength(1).maxLength(255);
 			vf.getValidator("area", this.area).minLength(1).maxLength(255);
 			vf.getValidator("abilitato", this.abilitato).notNull();
+			vf.getValidator("scaricaFr", this.scaricaFr).notNull();
 
 			if(this.intermediato == null || this.intermediato) {
 				vf.getValidator("gln", this.gln).length(13).pattern("(^([0-9]){13}$)");

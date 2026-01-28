@@ -19,3 +19,17 @@ Le operazioni disponibili sono:
 -  *Resetta la cache*: svuota la cache delle configurazioni per rendere immediatamente
    operative le eventuali modifiche effettuate dall'operatore. La cache viene normalmente
    svuotata ogni ora. 
+
+Data la migrazione verso il modello unico di pagamento che non prevede le funzionalità di recupero pagamenti, la voce *Recupera Pagamenti* è nascosta di default.
+Per abilitarla si deve intervenire sulla seguente proprietà:
+
+.. code-block:: javascript
+   :linenos:
+
+   global.GovPayConfig = {
+       MANUTENZIONE: {
+   	  RECUPERO_PAGAMENTI: {
+   	    ENABLED: true // abilita la funzione di recupero pagamenti
+   	  }
+   	}
+   };

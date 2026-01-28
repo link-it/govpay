@@ -22,6 +22,10 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL,
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
+	cod_connettore_recupero_rt VARCHAR(35),
+	cod_connettore_aca VARCHAR(35),
+	cod_connettore_gpd VARCHAR(35),
+	cod_connettore_fr VARCHAR(35),
 	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	principal VARCHAR(4000) NOT NULL,
@@ -129,6 +133,7 @@ CREATE TABLE domini
 	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BIT NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
+	scarica_fr BIT NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT,
@@ -143,6 +148,7 @@ CREATE TABLE domini
 
 -- index
 CREATE UNIQUE INDEX index_domini_1 ON domini (cod_dominio);
+CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 
 
 
@@ -580,6 +586,8 @@ CREATE TABLE versamenti
 	avv_app_io_data_prom_scadenza DATETIME2,
 	avv_app_io_prom_scad_notificat BIT,
 	proprieta VARCHAR(max),
+	data_ultima_modifica_aca DATETIME2,
+	data_ultima_comunicazione_aca DATETIME2,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -610,6 +618,8 @@ CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
+CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 
 
 
@@ -631,6 +641,7 @@ CREATE TABLE singoli_versamenti
 	indice_dati INT NOT NULL,
 	descrizione_causale_rpt VARCHAR(140),
 	contabilita VARCHAR(max),
+	metadata VARCHAR(max),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,
@@ -756,7 +767,7 @@ CREATE TABLE rpt
 	cod_sessione_portale VARCHAR(255),
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
 	psp_redirect_url VARCHAR(512),
-	xml_rpt VARBINARY(MAX) NOT NULL,
+	xml_rpt VARBINARY(MAX),
 	data_aggiornamento_stato DATETIME2 NOT NULL,
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url VARCHAR(max),
@@ -770,7 +781,7 @@ CREATE TABLE rpt
 	cod_canale VARCHAR(35),
 	cod_psp VARCHAR(35),
 	cod_intermediario_psp VARCHAR(35),
-	tipo_versamento VARCHAR(4),
+	tipo_versamento VARCHAR(35),
 	tipo_identificativo_attestante VARCHAR(1),
 	identificativo_attestante VARCHAR(35),
 	denominazione_attestante VARCHAR(70),
@@ -798,42 +809,12 @@ CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
+CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
+CREATE INDEX idx_rpt_data_msg_ricevuta ON rpt (data_msg_ricevuta);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
 -- ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
 -- ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE INDEX idx_rpt_id_transazione (iuv, ccp, cod_dominio);
 -- L'esecuzione viene completata con esito: NOTICE:  ALTER TABLE / ADD CONSTRAINT USING INDEX will rename index "idx_rpt_id_transazione" to "unique_rpt_id_transazione"
-
-
-
-CREATE TABLE rr
-(
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	ccp VARCHAR(35) NOT NULL,
-	cod_msg_revoca VARCHAR(35) NOT NULL,
-	data_msg_revoca DATETIME2 NOT NULL,
-	data_msg_esito DATETIME2,
-	stato VARCHAR(35) NOT NULL,
-	descrizione_stato VARCHAR(512),
-	importo_totale_richiesto DECIMAL(15,2) NOT NULL,
-	cod_msg_esito VARCHAR(35),
-	importo_totale_revocato DECIMAL(15,2),
-	xml_rr VARBINARY(MAX) NOT NULL,
-	xml_er VARBINARY(MAX),
-	cod_transazione_rr VARCHAR(36),
-	cod_transazione_er VARCHAR(36),
-	-- fk/pk columns
-	id BIGINT IDENTITY,
-	id_rpt BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT pk_rr PRIMARY KEY (id)
-);
-
--- index
-CREATE UNIQUE INDEX index_rr_1 ON rr (cod_msg_revoca);
 
 
 
@@ -850,11 +831,9 @@ CREATE TABLE notifiche
 	id BIGINT IDENTITY,
 	id_applicazione BIGINT NOT NULL,
 	id_rpt BIGINT,
-	id_rr BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 );
 
@@ -926,33 +905,6 @@ CREATE TABLE promemoria
 
 
 
-CREATE TABLE iuv
-(
-	prg BIGINT NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	application_code INT NOT NULL,
-	data_generazione DATE NOT NULL,
-	tipo_iuv VARCHAR(1) NOT NULL,
-	cod_versamento_ente VARCHAR(35),
-	aux_digit INT NOT NULL DEFAULT 0,
-	-- fk/pk columns
-	id BIGINT IDENTITY,
-	id_applicazione BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_iuv PRIMARY KEY (id)
-);
-
--- index
-CREATE UNIQUE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
-CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
-
-
-
 CREATE TABLE incassi
 (
 	trn VARCHAR(35) NOT NULL,
@@ -1001,17 +953,23 @@ CREATE TABLE fr
 	numero_pagamenti BIGINT,
 	importo_totale_pagamenti DECIMAL(15,2),
 	cod_bic_riversamento VARCHAR(35),
-	xml VARBINARY(MAX) NOT NULL,
-	ragione_sociale_psp VARCHAR(70),
-	ragione_sociale_dominio VARCHAR(70),
+	xml VARBINARY(MAX),
+	ragione_sociale_psp VARCHAR(255),
+	ragione_sociale_dominio VARCHAR(255),
 	obsoleto BIT NOT NULL,
+	data_ora_pubblicazione DATETIME2,
+	data_ora_aggiornamento DATETIME2,
+	revisione BIGINT,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_incasso BIGINT,
+	id_dominio BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_2 UNIQUE (cod_dominio,cod_flusso,cod_psp,revisione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_fr_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
@@ -1019,6 +977,7 @@ CREATE TABLE fr
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
+CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
 
 
 
@@ -1047,12 +1006,10 @@ CREATE TABLE pagamenti
 	id BIGINT IDENTITY,
 	id_rpt BIGINT,
 	id_singolo_versamento BIGINT,
-	id_rr BIGINT,
 	id_incasso BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
@@ -1093,6 +1050,9 @@ CREATE TABLE rendicontazioni
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+CREATE INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni (id_singolo_versamento);
+CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
+CREATE INDEX idx_rnd_data ON rendicontazioni (data);
 
 
 
@@ -1138,6 +1098,8 @@ CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+CREATE INDEX idx_evt_fk_inc ON eventi (id_incasso);
+CREATE INDEX idx_evt_fk_trac ON eventi (id_tracciato);
 
 
 
@@ -1290,7 +1252,6 @@ ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
 
 ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
@@ -1401,7 +1362,8 @@ CREATE VIEW v_riscossioni AS (
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
     versamenti.data_creazione AS data_creazione,
-    singoli_versamenti.contabilita AS contabilita
+    singoli_versamenti.contabilita AS contabilita,
+    singoli_versamenti.metadata AS metadata 
    FROM fr
    JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
    LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1611,6 +1573,7 @@ CREATE VIEW v_eventi_vers AS (
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
     fr.cod_dominio AS fr_cod_dominio,
+    fr.id_dominio AS fr_id_dominio,
     fr.cod_flusso AS fr_cod_flusso,
     fr.stato AS fr_stato,
     fr.descrizione_stato AS fr_descrizione_stato,
@@ -1626,6 +1589,9 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
     fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
     fr.obsoleto AS fr_obsoleto,
+    fr.data_ora_pubblicazione AS fr_data_ora_pubblicazione,
+    fr.data_ora_aggiornamento AS fr_data_ora_aggiornamento,
+    fr.revisione AS fr_revisione,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,
@@ -1644,6 +1610,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -1853,7 +1820,6 @@ SELECT
 	pagamenti.tipo AS tipo,                  
 	pagamenti.id_rpt AS id_rpt,                  
 	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
-	pagamenti.id_rr AS id_rr,                  
 	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,
@@ -1939,6 +1905,8 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
     versamenti.proprieta,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -1954,6 +1922,7 @@ CREATE VIEW v_vrs_non_rnd AS
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
     singoli_versamenti.contabilita AS sng_contabilita,
+    singoli_versamenti.metadata AS sng_metadata,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -2040,6 +2009,6 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN rpt ON pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
-  
-  
+
+ 
 

@@ -3,7 +3,7 @@
 Configurazione dell'avvisatura al cittadino via Email
 -----------------------------------------------------
 
-Se dalle impostazioni e' stato correttamente configurato il server di posta, è possibile
+Se dalle impostazioni è stato correttamente configurato il server di posta, è possibile
 predisporre delle comunicazioni automatiche verso il cittadino via e-mail. Queste comunicazioni
 sono ovviamente attivate se tra i dati anagrafici del cittadino viene indicato un indirizzo e-mail valido.
 

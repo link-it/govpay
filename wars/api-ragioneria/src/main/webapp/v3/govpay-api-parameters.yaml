@@ -119,13 +119,21 @@ components:
       required: false
       schema:
         type: string
+    escludiObsoleti:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: false
     idA2A:
       name: idA2A
       in: query
       description: Identificativo del gestionale ente
       required: false
       schema:
-        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'   
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'
     idDominio:
       name: idDominio
       in: query
@@ -164,9 +172,9 @@ components:
         pattern: '(^([0-9A-Za-z]){1,35}$)'
       example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'  
     idRicevuta:
-      name: iuv
+      name: idRicevuta
       in: query
-      description: Identificativo del versamento
+      description: Identificativo della ricevuta
       required: false
       schema:
         type: string    
@@ -207,7 +215,13 @@ components:
         type: boolean
         default: true
       example: true
-   
+    numeroAvviso:
+      name: numeroAvviso
+      in: query
+      description: "Numero identificativo dell'avviso pagoPA"
+      required: false
+      schema: 
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/NumeroAvviso'
     ordinamento:
       name: ordinamento
       in: query

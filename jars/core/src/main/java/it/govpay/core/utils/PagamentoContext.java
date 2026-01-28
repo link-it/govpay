@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
 import java.util.Calendar;
@@ -100,10 +119,9 @@ public class PagamentoContext {
 			props.put(codApplicazioneIuvKey, applicazione.getCodApplicazioneIuv());
 		}
 		
-		if(this.versamentoCtx != null) {
-			if(this.versamentoCtx.getCodificaIuv() != null)
-				props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
-				props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
+		if(this.versamentoCtx != null && this.versamentoCtx.getCodificaIuv() != null) {
+			props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
+			props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
 		}
 		
 		Calendar now = Calendar.getInstance(); 
@@ -125,7 +143,7 @@ public class PagamentoContext {
 	}
 	
 	public String getAllIuvPropsString(Applicazione applicazione) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("Custom Props { ");
 		if(this.iuvProps != null) {
 			for(String key : this.iuvProps.keySet()) {
@@ -135,10 +153,8 @@ public class PagamentoContext {
 		sb.append("} Default Props { ");
 		
 		Map<String,String> props = this.getDefaultIuvProps(applicazione);
-		if(props != null) {
-			for(String key : props.keySet()) {
-				sb.append("[" + key + "=" + props.get(key) + "] ");
-			}
+		for(String key : props.keySet()) {
+			sb.append("[" + key + "=" + props.get(key) + "] ");
 		}
 		sb.append("}");
 		return sb.toString();

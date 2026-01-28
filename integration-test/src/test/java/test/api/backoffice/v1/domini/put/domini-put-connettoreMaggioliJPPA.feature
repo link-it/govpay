@@ -74,7 +74,7 @@ Examples:
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | emailAllegato | emailAllegato | null | 'emailAllegato' |
 | principal | principal | null | 'principal' |
 | principal | principal | [ '#(loremIpsum)' ] | 'principal' |

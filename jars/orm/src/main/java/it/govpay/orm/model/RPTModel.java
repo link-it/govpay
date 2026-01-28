@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.RPT;
@@ -60,8 +62,8 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.MODELLO_PAGAMENTO = new Field("modelloPagamento",java.lang.String.class,"RPT",RPT.class);
 		this.COD_MSG_RICEVUTA = new Field("codMsgRicevuta",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_MSG_RICEVUTA = new Field("dataMsgRicevuta",java.util.Date.class,"RPT",RPT.class);
-		this.COD_ESITO_PAGAMENTO = new Field("codEsitoPagamento",java.lang.Integer.class,"RPT",RPT.class);
-		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
+		this.COD_ESITO_PAGAMENTO = new Field("codEsitoPagamento",java.math.BigInteger.class,"RPT",RPT.class);
+		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.math.BigDecimal.class,"RPT",RPT.class);
 		this.XML_RT = new Field("xmlRT",byte[].class,"RPT",RPT.class);
 		this.COD_CANALE = new Field("codCanale",java.lang.String.class,"RPT",RPT.class);
 		this.COD_PSP = new Field("codPsp",java.lang.String.class,"RPT",RPT.class);
@@ -104,8 +106,8 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.MODELLO_PAGAMENTO = new ComplexField(father,"modelloPagamento",java.lang.String.class,"RPT",RPT.class);
 		this.COD_MSG_RICEVUTA = new ComplexField(father,"codMsgRicevuta",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_MSG_RICEVUTA = new ComplexField(father,"dataMsgRicevuta",java.util.Date.class,"RPT",RPT.class);
-		this.COD_ESITO_PAGAMENTO = new ComplexField(father,"codEsitoPagamento",java.lang.Integer.class,"RPT",RPT.class);
-		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
+		this.COD_ESITO_PAGAMENTO = new ComplexField(father,"codEsitoPagamento",java.math.BigInteger.class,"RPT",RPT.class);
+		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.math.BigDecimal.class,"RPT",RPT.class);
 		this.XML_RT = new ComplexField(father,"xmlRT",byte[].class,"RPT",RPT.class);
 		this.COD_CANALE = new ComplexField(father,"codCanale",java.lang.String.class,"RPT",RPT.class);
 		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"RPT",RPT.class);

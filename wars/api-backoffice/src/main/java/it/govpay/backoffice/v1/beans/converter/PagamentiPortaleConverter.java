@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
@@ -20,6 +39,8 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PagamentiPortaleConverter {
+	
+	private PagamentiPortaleConverter() {}
 
 	public static final String PENDENZE_KEY = "pendenze";
 	public static final String VOCI_PENDENZE_KEY = "voci";
@@ -29,10 +50,10 @@ public class PagamentiPortaleConverter {
 	public static final String IUV_KEY = "iuv";
 
 	public static Pagamento toRsModel(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
-		return toRsModel(dto.getPagamento(), dto.getListaRpp(),dto.getEventi());
+		return toRsModel(dto.getPagamento(), dto.getListaRpp());
 	}
 
-	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale,List<LeggiRptDTOResponse> listaRpp, List<Evento> eventi) throws ServiceException, IOException {
+	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale,List<LeggiRptDTOResponse> listaRpp) throws ServiceException, IOException {
 		Pagamento rsModel = new Pagamento();
 
 		PagamentoPost pagamentiPortaleRequest = null;
@@ -51,7 +72,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setSoggettoVersante(AnagraficaConverter.toSoggettoRsModel(AnagraficaConverter.toAnagrafica(pagamentiPortaleRequest.getSoggettoVersante())));
 				rsModel.setAutenticazioneSoggetto(it.govpay.backoffice.v1.beans.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 			} catch (IOException e) {
-
+				// donothing
 			}
 		}
 
@@ -74,22 +95,6 @@ public class PagamentiPortaleConverter {
 			rsModel.setRpp(rpp);
 		}
 
-//		if(eventi !=null && !eventi.isEmpty()) { TODO togliere
-//			List<Nota> note = new ArrayList<>();
-//			for(Evento evento: eventi) {
-//				switch (evento.getCategoriaEvento()) {
-//				case INTERFACCIA:
-//					break;
-//				case INTERNO:
-//				case UTENTE:
-//				default:
-//					note.add(NoteConverter.toRsModel(evento));
-//					break;
-//				}
-//			}
-//			rsModel.setNote(note);
-//		}
-
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
@@ -98,7 +103,7 @@ public class PagamentiPortaleConverter {
 			rsModel.setModello(ModelloPagamento.PSP);
 		}
 
-		rsModel.setSeverita(pagamentoPortale.getSeverita());
+		rsModel.setSeverita(pagamentoPortale.getSeverita() != null ? pagamentoPortale.getSeverita().intValue() : null);
 
 		return rsModel;
 	}
@@ -122,7 +127,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setSoggettoVersante(AnagraficaConverter.toSoggettoRsModel(AnagraficaConverter.toAnagrafica(pagamentiPortaleRequest.getSoggettoVersante())));
 				rsModel.setAutenticazioneSoggetto(it.govpay.backoffice.v1.beans.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 			} catch (IOException e) {
-
+				// donothing
 			}
 		}
 		rsModel.setId(pagamentoPortale.getIdSessione());
@@ -137,23 +142,6 @@ public class PagamentiPortaleConverter {
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
 		rsModel.setImporto(pagamentoPortale.getImporto());
-
-//		if(dto.getEventi() !=null && !dto.getEventi() .isEmpty()) { TODO togliere
-//			List<Nota> note = new ArrayList<>();
-//			for(Evento evento: dto.getEventi()) {
-//				switch (evento.getCategoriaEvento()) {
-//				case INTERFACCIA:
-//					break;
-//				case INTERNO:
-//				case UTENTE:
-//				default:
-//					note.add(NoteConverter.toRsModel(evento));
-//					break;
-//				}
-//			}
-//			rsModel.setNote(note);
-//		}
-
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
@@ -162,7 +150,7 @@ public class PagamentiPortaleConverter {
 			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
 		}
 
-		rsModel.setSeverita(pagamentoPortale.getSeverita());
+		rsModel.setSeverita(pagamentoPortale.getSeverita() != null ? pagamentoPortale.getSeverita().intValue() : null);
 
 		return rsModel;
 

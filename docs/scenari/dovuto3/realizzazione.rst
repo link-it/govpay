@@ -24,7 +24,7 @@ L’ente creditore, alla predisposizione di una nuova pendenza, ottiene la stamp
 Distinguiamo:
 
 - Caso **Alimentazione Pendenza su GovPay** 
-	È sufficiente indicare nella richiesta di caricamento di una pendenza (invocando l’operazione PUT /pendenze/{idA2A}/{idPendenza} delle API Pendenze) il parametro **stampaAvviso** valorizzato a **true**. Inoltre, nel caso vengo valorizzato a **true** anche il parametro **avvisaturaDigitale**, si istruisce GovPay a gestire in autonomia i processi di avvisatura digitale previsti da pagoPA, aprendo, aggiornando e chiudendo la posizione debitoria associata alla pendenza nelle varie fasi del ciclo di vita del pagamento.
+	È sufficiente indicare nella richiesta di caricamento di una pendenza (invocando l’operazione PUT /pendenze/{idA2A}/{idPendenza} delle API Pendenze) il parametro **stampaAvviso** valorizzato a **true**.
 
 - Caso **Solo generazione avviso senza caricamento pendenza**
 	il Gestionale Pendenze può avvisare in autonomia il pagamento generando internamente il numero avviso identificativo e non alimentare l’archivio dei pagamenti in attesa di GovPay.

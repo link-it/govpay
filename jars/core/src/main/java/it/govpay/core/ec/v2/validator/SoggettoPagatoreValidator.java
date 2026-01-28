@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.ec.v2.validator;
 
 import it.govpay.core.utils.validator.CostantiValidazione;
@@ -75,11 +94,31 @@ public class SoggettoPagatoreValidator{
 	}
 
 	public void validaTipo(String fieldName, String tipo) throws it.govpay.core.exceptions.ValidationException {
-		this.vf.getValidator(fieldName, tipo).notNull();
+		this.vf.getValidator(fieldName, tipo).minLength(1).maxLength(1);
 	}
 	
 	public void validaTipo(String fieldName, Enum<?> tipo) throws it.govpay.core.exceptions.ValidationException {
-		this.vf.getValidator(fieldName, tipo).notNull();
+		this.vf.getValidator(fieldName, tipo);
+	}
+	
+	/**
+	 * Versione modificata del metodo validaAnagrafica per consentire di accettare pendenze che non definiscono il soggetto debitore o i suoi identificativi 
+	 * @param fieldName
+	 * @param anagrafica
+	 * @throws it.govpay.core.exceptions.ValidationException
+	 */
+	public void validaAnagraficaNonObbligatoria(String fieldName, String anagrafica) throws it.govpay.core.exceptions.ValidationException{
+		this.vf.getValidator(fieldName, anagrafica).maxLength(70);
+	}
+
+	/**
+	 * Versione modificata del metodo validaIdentificativo per consentire di accettare pendenze che non definiscono il soggetto debitore o i suoi identificativi 
+	 * @param fieldName
+	 * @param identificativo
+	 * @throws it.govpay.core.exceptions.ValidationException
+	 */
+	public void validaIdentificativoNonObbligatorio(String fieldName, String identificativo) throws it.govpay.core.exceptions.ValidationException{
+		this.vf.getValidator(fieldName, identificativo).maxLength(16);
 	}
 }
 

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.math.BigDecimal;
@@ -5,29 +24,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
 import it.govpay.backoffice.v1.beans.Segnalazione;
 import it.govpay.backoffice.v1.beans.StatoFlussoRendicontazione;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 
 public class FlussiRendicontazioneConverter {
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, ValidationException {
+	private FlussiRendicontazioneConverter() {}
+
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws IOException {
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setIdPsp(fr.getCodPsp());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setIdDominio(fr.getCodDominio());
@@ -77,6 +102,9 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
+		rsModel.setDataOraPubblicazione(fr.getDataOraPubblicazione());
+		rsModel.setDataOraAggiornamento(fr.getDataOraAggiornamento());
+		rsModel.setRevisione(fr.getRevisione() != null ? fr.getRevisione() : 1L);
 		rsModel.setIdPsp(fr.getCodPsp());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setIdDominio(fr.getCodDominio());
@@ -111,15 +139,18 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, IOException, ValidationException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws IOException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 
 		Rendicontazione rendicontazione = dto.getRendicontazione();
 
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
-		if(rendicontazione.getIndiceDati()!=null)
+		if(rendicontazione.getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
 
@@ -138,12 +169,16 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione, SingoloVersamento singoloVersamento) throws ServiceException, IOException, ValidationException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione, SingoloVersamento singoloVersamento) throws ServiceException, IOException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
-		if(rendicontazione.getIndiceDati()!=null)
+		if(rendicontazione.getIndiceDati()!=null) {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		} else {
+			rsModel.setIndice(BigDecimal.ONE);
+		}
 
 		rsModel.setImporto(rendicontazione.getImporto());
 
@@ -166,8 +201,9 @@ public class FlussiRendicontazioneConverter {
 			rpt = rendicontazione.getPagamento(null).getRpt(null);
 			incasso = rendicontazione.getPagamento(null).getIncasso(null);
 		} else {
-			if(singoloVersamento == null)
-				singoloVersamento = rendicontazione.getSingoloVersamento(null);
+			if(singoloVersamento == null) {
+				singoloVersamento = rendicontazione.getSingoloVersamento(configWrapper);
+			}
 		}
 		Versamento versamento = singoloVersamento.getVersamentoBD(null);
 

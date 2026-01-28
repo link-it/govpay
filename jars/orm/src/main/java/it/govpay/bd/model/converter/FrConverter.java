@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -19,15 +19,17 @@
  */
 package it.govpay.bd.model.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIncasso;
 
 public class FrConverter {
+	
+	private FrConverter() {}
 
 	public static List<Fr> toDTOList(List<it.govpay.orm.FR> lst) {
 		List<Fr> lstDTO = new ArrayList<>();
@@ -49,14 +51,20 @@ public class FrConverter {
 		dto.setDataAcquisizione(vo.getDataAcquisizione());
 		dto.setDataFlusso(vo.getDataOraFlusso());
 		dto.setDataRegolamento(vo.getDataRegolamento());
+		dto.setDataOraPubblicazione(vo.getDataOraPubblicazione());
+		dto.setDataOraAggiornamento(vo.getDataOraAggiornamento());
+		if(vo.getRevisione() != null)
+			dto.setRevisione(vo.getRevisione().longValue());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
-		dto.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getImportoTotalePagamenti()));
+		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
 		dto.setIur(vo.getIur());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
 		dto.setXml(vo.getXml());
 		if(vo.getIdIncasso() != null)
 			dto.setIdIncasso(vo.getIdIncasso().getId());
+		if(vo.getIdDominio() != null)
+			dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setRagioneSocialeDominio(vo.getRagioneSocialeDominio());
 		dto.setRagioneSocialePsp(vo.getRagioneSocialePsp());
 		dto.setObsoleto(vo.getObsoleto());
@@ -73,9 +81,13 @@ public class FrConverter {
 		vo.setDataAcquisizione(dto.getDataAcquisizione());
 		vo.setDataOraFlusso(dto.getDataFlusso());
 		vo.setDataRegolamento(dto.getDataRegolamento());
+		vo.setDataOraPubblicazione(dto.getDataOraPubblicazione());
+		vo.setDataOraAggiornamento(dto.getDataOraAggiornamento());
+		if(dto.getRevisione() != null)
+			vo.setRevisione(java.math.BigInteger.valueOf(dto.getRevisione()));
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti().doubleValue());
+		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti());
 		vo.setIur(dto.getIur());
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
 		vo.setObsoleto(dto.getObsoleto());
@@ -87,7 +99,13 @@ public class FrConverter {
 			idIncasso.setId(dto.getIdIncasso());
 			vo.setIdIncasso(idIncasso);
 		}
-		
+
+		if(dto.getIdDominio() != null) {
+			IdDominio idDominio = new IdDominio();
+			idDominio.setId(dto.getIdDominio());
+			vo.setIdDominio(idDominio);
+		}
+
 		vo.setRagioneSocialeDominio(dto.getRagioneSocialeDominio());
 		vo.setRagioneSocialePsp(dto.getRagioneSocialePsp());
 		return vo;

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.model.converter;
 
 import java.io.UnsupportedEncodingException;
@@ -9,6 +28,8 @@ import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class EntrataPrevistaConverter {
+	
+	private EntrataPrevistaConverter() {}
 
 	public static List<EntrataPrevista> toDTOList(List<it.govpay.orm.VistaRiscossioni> listaVistaRiscossioni) throws UnsupportedEncodingException {
 		List<EntrataPrevista> lstDTO = new ArrayList<>();
@@ -27,13 +48,10 @@ public class EntrataPrevistaConverter {
 		dto.setCodFlusso(vo.getCodFlusso());
 		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
-		//		dto.setData(vo.getData());
 		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setFrIur(vo.getFrIur());
-		if(vo.getImportoPagato()!= null)
-			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		if(vo.getImportoTotalePagamenti()!= null)	
-			dto.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getImportoTotalePagamenti()));
+		dto.setImportoPagato(vo.getImportoPagato());
+		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
 		dto.setIndiceDati(vo.getIndiceDati());
 		dto.setIur(vo.getIur());
 		dto.setIuv(vo.getIuv());
@@ -66,18 +84,15 @@ public class EntrataPrevistaConverter {
 				dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
 				dto.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
-				//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
-				//					dto.setGiorniSoglia(Integer.parseInt(gg));
 			} else {
 				dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
 			}
 		}
 
 		dto.setContabilita(vo.getContabilita());
+		dto.setMetadata(vo.getMetadata());
 
 		return dto;
 	}

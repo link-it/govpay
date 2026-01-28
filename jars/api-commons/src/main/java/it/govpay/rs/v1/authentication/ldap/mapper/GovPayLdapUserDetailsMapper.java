@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.rs.v1.authentication.ldap.mapper;
 
 import java.util.Collection;
@@ -17,14 +36,13 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.util.Assert;
 
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO;
 import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 
 /**
  * Based on {@link LdapUserDetailsMapper}, aggiunge le informazioni lette dal db di GovPay a quelle ricevute dall'autenticatore Ldap.
- * 
- * 
- * @author zulio
+ *
+ *
+ * @author pintori@link.it
  *
  */
 public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
@@ -45,7 +63,7 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 	public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> authorities) {
 		String dn = ctx.getNameInNamespace();
 
-		this.logger.debug("Mapping user details from context with DN: " + dn);
+		this.logger.debug("Mapping user details from context with DN: {}", dn);
 
 		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setDn(dn);
@@ -64,8 +82,7 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 			String[] rolesForAttribute = ctx.getStringAttributes(this.roleAttributes[i]);
 
 			if (rolesForAttribute == null) {
-				this.logger.debug("Couldn't read role attribute '"
-						+ this.roleAttributes[i] + "' for user " + dn);
+				this.logger.debug("Couldn't read role attribute '{}' for user {}", this.roleAttributes[i], dn);
 				continue;
 			}
 
@@ -138,9 +155,9 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 	 * if this attribute should be ignored.
 	 */
 	protected GrantedAuthority createAuthority(Object role) {
-		if (role instanceof String) {
+		if (role instanceof String roleString) {
 			if (this.convertToUpperCase) {
-				role = ((String) role).toUpperCase();
+				role = roleString.toUpperCase();
 			}
 			return new SimpleGrantedAuthority(this.rolePrefix + role);
 		}

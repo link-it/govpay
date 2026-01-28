@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -34,14 +34,25 @@ public class Connettore extends Versionabile {
 	public static final String P_SSLTYPE_NAME = "SSLTYPE";
 	public static final String P_HTTPUSER_NAME = "HTTPUSER";
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
-	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per il servizio RPT
-	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
+	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per i servizi verso PagoPA
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
+	public static final String P_ABILITA_GDE = "ABILITA_GDE";
+	public static final String P_ABILITATO = "ABILITATO";
+	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";
+	public static final String P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME = "HTTP_HEADER_AUTH_HEADER_VALUE";
+	
+	public static final String P_API_KEY_AUTH_API_KEY_NAME = "API_KEY_AUTH_API_KEY_NAME";
+	public static final String P_API_KEY_AUTH_API_ID_NAME = "API_KEY_AUTH_API_ID_NAME";
+	
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME = "OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME = "OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME = "OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME = "OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME";
 	
 	public enum EnumAuthType {
-		SSL, HTTPBasic, NONE
+		SSL, HTTPBasic, HTTP_HEADER, API_KEY, OAUTH2_CLIENT_CREDENTIALS, NONE
 	}
 	
 	public enum EnumSslType {
@@ -66,10 +77,19 @@ public class Connettore extends Versionabile {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
-	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
 	private String subscriptionKeyValue;
-	
+	private String httpHeaderName;
+	private String httpHeaderValue;
+	private String apiKey;
+	private String apiId;
+	private String oauth2ClientCredentialsClientId;
+	private String oauth2ClientCredentialsClientSecret;
+	private String oauth2ClientCredentialsUrlTokenEndpoint;
+	private String oauth2ClientCredentialsScope;
+	private boolean abilitaGDE = false;
+	private boolean abilitato = false;
+
 	public Connettore() {
 	}
 	
@@ -90,7 +110,16 @@ public class Connettore extends Versionabile {
 		this.tipoAutenticazione = src.tipoAutenticazione;
 		this.tipoSsl = src.tipoSsl;
 		this.url = src.url;
-		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
+		this.httpHeaderName = src.httpHeaderName;
+		this.httpHeaderValue = src.httpHeaderValue;
+		this.apiKey = src.apiKey;
+		this.apiId = src.apiId;
+		this.oauth2ClientCredentialsClientId = src.oauth2ClientCredentialsClientId;
+		this.oauth2ClientCredentialsClientSecret = src.oauth2ClientCredentialsClientSecret;
+		this.oauth2ClientCredentialsUrlTokenEndpoint = src.oauth2ClientCredentialsUrlTokenEndpoint;
+		this.oauth2ClientCredentialsScope = src.oauth2ClientCredentialsScope;
+		this.abilitaGDE = src.abilitaGDE;
+		this.abilitato = src.abilitato;
 	}
 		
 	public String getIdConnettore() {
@@ -186,16 +215,70 @@ public class Connettore extends Versionabile {
 	public Tipo getTipo() {
 		return Tipo.valueOf(super.getVersione().getApi());
 	}
-	public String getUrlServiziAvvisatura() {
-		return urlServiziAvvisatura;
-	}
-	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
-		this.urlServiziAvvisatura = urlServiziAvvisatura;
-	}
 	public String getSubscriptionKeyValue() {
 		return subscriptionKeyValue;
 	}
 	public void setSubscriptionKeyValue(String subscriptionKeyValue) {
 		this.subscriptionKeyValue = subscriptionKeyValue;
+	}
+	public String getHttpHeaderName() {
+		return httpHeaderName;
+	}
+	public void setHttpHeaderName(String httpHeaderName) {
+		this.httpHeaderName = httpHeaderName;
+	}
+	public String getHttpHeaderValue() {
+		return httpHeaderValue;
+	}
+	public void setHttpHeaderValue(String httpHeaderValue) {
+		this.httpHeaderValue = httpHeaderValue;
+	}
+	public String getApiKey() {
+		return apiKey;
+	}
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+	public String getApiId() {
+		return apiId;
+	}
+	public void setApiId(String apiId) {
+		this.apiId = apiId;
+	}
+	public String getOauth2ClientCredentialsClientId() {
+		return oauth2ClientCredentialsClientId;
+	}
+	public void setOauth2ClientCredentialsClientId(String oauth2ClientCredentialsClientId) {
+		this.oauth2ClientCredentialsClientId = oauth2ClientCredentialsClientId;
+	}
+	public String getOauth2ClientCredentialsClientSecret() {
+		return oauth2ClientCredentialsClientSecret;
+	}
+	public void setOauth2ClientCredentialsClientSecret(String oauth2ClientCredentialsClientSecret) {
+		this.oauth2ClientCredentialsClientSecret = oauth2ClientCredentialsClientSecret;
+	}
+	public String getOauth2ClientCredentialsUrlTokenEndpoint() {
+		return oauth2ClientCredentialsUrlTokenEndpoint;
+	}
+	public void setOauth2ClientCredentialsUrlTokenEndpoint(String oauth2ClientCredentialsUrlTokenEndpoint) {
+		this.oauth2ClientCredentialsUrlTokenEndpoint = oauth2ClientCredentialsUrlTokenEndpoint;
+	}
+	public String getOauth2ClientCredentialsScope() {
+		return oauth2ClientCredentialsScope;
+	}
+	public void setOauth2ClientCredentialsScope(String oauth2ClientCredentialsScope) {
+		this.oauth2ClientCredentialsScope = oauth2ClientCredentialsScope;
+	}
+	public boolean isAbilitaGDE() {
+		return abilitaGDE;
+	}
+	public void setAbilitaGDE(boolean abilitaGDE) {
+		this.abilitaGDE = abilitaGDE;
+	}
+	public boolean isAbilitato() {
+		return abilitato;
+	}
+	public void setAbilitato(boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 }

@@ -36,7 +36,7 @@ components:
       schema:
         $ref: 'govpay-api-schemas.yaml#/components/schemas/IdRicevuta' 
     PathIdTipoPendenza:
-      name: idPendenza
+      name: idTipoPendenza
       in: path
       description: Identificativo della tipologia di pendenza
       required: true

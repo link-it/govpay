@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   version: "1.4.0"
   title: GovPay - API Ragioneria
+  description: 'GovPay - API Ragioneria V1 sono deprecate'
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -27,6 +28,7 @@ paths:
       summary: Elenco degli importi riscossi o stornati
       tags:
         - Riscossioni
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -137,6 +139,7 @@ paths:
       summary: Dettaglio di una riscossione
       tags:
         - Riscossioni
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -185,6 +188,7 @@ paths:
       summary: Elenco dei flussi di rendicontazione acquisitie da PagoPa
       tags:
         - Rendicontazioni
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -268,6 +272,7 @@ paths:
       summary: Acquisizione di un flusso di rendicontazione
       tags:
         - Rendicontazioni
+      deprecated: true
       parameters:
         - in: path
           name: idFlusso
@@ -300,6 +305,7 @@ paths:
       operationId: getFlussoRendicontazioneByIdEData
       tags:
         - Rendicontazioni
+      deprecated: true
       parameters:
         - in: path
           name: idFlusso
@@ -338,6 +344,7 @@ paths:
       summary: Elenco dei movimenti di cassa riconciliati
       tags:
         - Riconciliazioni
+      deprecated: true
       parameters:
         - in: query
           name: pagina
@@ -413,6 +420,7 @@ paths:
       summary: Registrazione di un movimento di cassa
       tags:
         - Riconciliazioni
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -446,6 +454,7 @@ paths:
       summary: Dettaglio di un movimento di cassa
       tags:
         - Riconciliazioni
+      deprecated: true
       parameters:
         - in: path
           name: idDominio
@@ -480,6 +489,7 @@ paths:
       summary: Autorizzazioni associate all'utenza chiamante
       tags:
         - Utenti
+      deprecated: true
       responses:
         '200':
           description: Elenco dei ruoli associati all'utenza chiamante

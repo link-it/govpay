@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.dao.jdbc.converter;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -156,13 +158,6 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".data_richiesta";
 			}else{
 				return "data_richiesta";
-			}
-		}
-		if(field.equals(Versamento.model().IUV.IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
-			}else{
-				return "iuv";
 			}
 		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
@@ -585,6 +580,20 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "proprieta";
 			}
 		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_MODIFICA_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ultima_modifica_aca";
+			}else{
+				return "data_ultima_modifica_aca";
+			}
+		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ultima_comunicazione_aca";
+			}else{
+				return "data_ultima_comunicazione_aca";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -636,9 +645,6 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
 			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(Versamento.model().IUV.IUV)){
-			return this.toTable(Versamento.model().IUV, returnAlias);
 		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
 			return this.toTable(Versamento.model(), returnAlias);
@@ -820,6 +826,12 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().PROPRIETA)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_MODIFICA_ACA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -865,9 +877,6 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
-		}
-		if(model.equals(Versamento.model().IUV)){
-			return "iuv";
 		}
 		if(model.equals(Versamento.model().ID_DOCUMENTO)){
 			return "documenti";

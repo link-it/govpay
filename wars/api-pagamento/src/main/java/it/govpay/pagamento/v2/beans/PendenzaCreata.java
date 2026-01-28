@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.pagamento.v2.beans;
 
 
@@ -6,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -47,100 +63,100 @@ import it.govpay.core.beans.JSONSerializable;
 "pdf",
 })
 public class PendenzaCreata extends JSONSerializable {
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   @JsonProperty("unitaOperativa")
   private UnitaOperativa unitaOperativa = null;
-  
+
   @JsonProperty("stato")
   private StatoPendenza stato = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @JsonProperty("iuvAvviso")
   private String iuvAvviso = null;
-  
+
   @JsonProperty("iuvPagamento")
   private String iuvPagamento = null;
-  
+
   @JsonProperty("dataPagamento")
   private Date dataPagamento = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
-  
+
   @JsonProperty("cartellaPagamento")
   private String cartellaPagamento = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
-  
+
   @JsonProperty("direzione")
   private String direzione = null;
-  
+
   @JsonProperty("divisione")
   private String divisione = null;
-  
+
   @JsonProperty("tipo")
   private TipoPendenzaTipologia tipo = null;
-  
+
   @JsonProperty("UUID")
   private String UUID = null;
-  
+
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
-  
+
   @JsonProperty("voci")
   private List<VocePendenza> voci = null;
-  
+
   @JsonProperty("rpp")
-  private List<RppIndex> rpp = new ArrayList<RppIndex>();
-  
+  private List<RppIndex> rpp = new ArrayList<>();
+
   @JsonProperty("pagamenti")
-  private List<PagamentoIndex> pagamenti = new ArrayList<PagamentoIndex>();
-  
+  private List<PagamentoIndex> pagamenti = new ArrayList<>();
+
   @JsonProperty("pdf")
   private String pdf = null;
-  
+
   /**
    * Identificativo del gestionale responsabile della pendenza
    **/
@@ -674,7 +690,7 @@ public class PendenzaCreata extends JSONSerializable {
   }
 
   public static PendenzaCreata parse(String json) throws it.govpay.core.exceptions.IOException {
-    return (PendenzaCreata) parse(json, PendenzaCreata.class);
+    return parse(json, PendenzaCreata.class);
   }
 
   @Override

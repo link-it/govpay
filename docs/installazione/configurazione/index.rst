@@ -18,8 +18,8 @@ Produzione dell'installer dai sorgenti
 
 La compilazione dei sorgenti richiede:
 
-- Maven 3.5 o successivo
-- Java 1.8 o successivo
+- Maven 3.8 o successivo
+- Java 21
 
 L'installer può essere prodotto con la seguente procedura:
 
@@ -78,11 +78,11 @@ contesto di installazione nell'ambiente di esercizio.
 
 Devono essere inserite le seguenti informazioni:
 
--  **Application Server:** selezionare uno degli application server proposti
 -  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
-   -  **file di configurazione personalizzati**
-   -  **loghi dei psp**
+ -  **file di configurazione personalizzati**
+ -  **file di configurazione Log4j personalizzati**
+ -  **file di configurazione di Spring Security personalizzati**
 
 -  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per inserire i diversi file di tracciamento prodotti.
 -  **Visualizza Impostazioni Avanzate**: opzioni per abilitare funzionalità avanzate del prodotto, saranno visualizzate in un passaggio più avanti.
@@ -91,11 +91,7 @@ Devono essere inserite le seguenti informazioni:
 Riferimenti Accesso GovPay
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Questo passaggio prevede che vengano inseriti i dati per l'accesso all'istanza di GovPay e le credenziali del cruscotto di gestione:
-
--  **Protocollo di Trasporto:** indicare il protocollo di trasporto attivo (HTTP | HTTPS)
--  **Nome Host o IP:** inserire l'hostname tramite il quale saranno raggiungibili i servizi di GovPay (ad esempio la console di monitoraggio).
--  **Porta:** indicare la porta
+Questo passaggio prevede che vengano inserite le credenziali del cruscotto di gestione:
 
 Credenziali dell'utente amministratore:
 
@@ -121,9 +117,9 @@ l'accesso al database di esercizio di GovPay.
    :alt: Pagina relativa alle informazioni di accesso al database
    :align: center
    :name: InstallazioneInformazioniAccessoDB
-   
+
    Informazioni accesso al DB
-   
+
 
 -  **Hostname**: indirizzo per raggiungere il database
 -  **Porta**: la porta da associare all’hostname per la connessione al
@@ -133,13 +129,40 @@ l'accesso al database di esercizio di GovPay.
 -  **Username**: l’utente con diritti di lettura/scrittura sul database
    sopra indicato.
 -  **Password**: la password dell’utente del database.
--  **Nome modulo driver postgres**: il nome del modulo con cui è stato deployato il driver JDBC in wildfly
 
 .. note::
-    Il nome del modulo driver viene richiesto sono in caso di istallazione su PostgreSQL
-   
-.. note::
     Non è necessario che il database e l'utente indicato esistano in questa fase. Potranno essere creati nella successiva fase di dispiegamento purché i dati relativi coincidano con i valori inseriti in questi campi del wizard.
+
+Servizi Backoffice
+~~~~~~~~~~~~~~~~~~
+
+Nella schermata "Servizi Backoffice" si devono inserire i riferimenti alle BaseURL delle risorse utilizzate dal cruscotto.
+
+.. figure:: ../_images/INS07_ConfigurazioneServiziCruscotto.png
+   :alt: Pagina relativa alle baseURL dei servizi utilizzati dal cruscotto
+   :align: center
+   :name: InstallazioneConfigurazioneServiziCruscotto
+
+   Configurazione Servizi Cruscotto
+
+
+-  **Base path risorse statiche console**: BaseURL dove il cruscotto ricerca le risorse statiche
+-  **Base path API Backoffice**: BaseURL delle API-Backoffice
+
+File di configurazione Console Backoffice
+~~~~~~~~~~~~~~~~~~
+
+Nella schermata "File di configurazione Console Backoffice" si deve inserire il riferimento al file di configurazione utilizzato dal cruscotto.
+
+.. figure:: ../_images/INS08_ConfigurazioneConsoleBackoffice.png
+   :alt: Path relativo al file di configurazione utilizzato dal cruscotto
+   :align: center
+   :name: InstallazioneConfigurazioneConsoleBackoffice
+
+   File di configurazione Console Backoffice
+
+
+-  **Path del file di configurazione della console**: Il path del file di configurazione della console
 
 
 Configurazioni Avanzate
@@ -151,10 +174,10 @@ La schermata "Configurazioni Avanzate" è presente solo se nel passaggio "Inform
    :alt: Pagina relativa alle configurazioni avanzate
    :align: center
    :name: InstallazioneConfigurazioniAvanzate
-   
+
    Configurazioni Avanzate
-   
-Configurazione Spring Security
+
+**Configurazione Spring Security**
 
 -  **Usa file di configurazione esterni:** opzione che abilita i file di configurazione esterni di Spring per l'accesso alle funzionalità avanzate, come la configurazione delle modalità di autenticazione (:ref:`inst_dispiegamento_auth`).
 
@@ -171,10 +194,67 @@ questo processo.
    :alt: Pagina relativa alla fine dell'installazione
    :align: center
    :name: InstallazioneTerminata
-   
+
    Installazione terminata
-   
-   
+
+
 I files presenti nella directory **dist** dovranno essere utilizzati
 nella fase successiva di dispiegamento di GovPay.
 
+
+Componenti Aggiuntivi
+---------------------
+
+GovPay può essere esteso con componenti aggiuntivi che forniscono funzionalità opzionali.
+Questi componenti sono distribuiti separatamente e possono essere installati in base alle esigenze.
+
+govpay-aca-batch
+~~~~~~~~~~~~~~~~
+
+Batch per l'invio delle posizioni debitorie all'Archivio Centralizzato degli Avvisi (ACA) di pagoPA.
+
+- **Repository:** https://github.com/link-it/govpay-aca-batch
+- **Release:** https://github.com/link-it/govpay-aca-batch/releases
+
+Questo componente consente di:
+
+- Sincronizzare le pendenze di GovPay con l'ACA
+- Gestire l'invio massivo delle posizioni debitorie
+- Monitorare lo stato delle comunicazioni con l'ACA
+
+Il batch può essere schedulato per eseguire periodicamente l'invio delle posizioni debitorie
+non ancora comunicate o aggiornate.
+
+govpay-fdr-batch
+~~~~~~~~~~~~~~~~
+
+Batch per l'acquisizione dei Flussi di Rendicontazione (FdR) da pagoPA.
+
+- **Repository:** https://github.com/link-it/govpay-fdr-batch
+- **Release:** https://github.com/link-it/govpay-fdr-batch/releases
+
+Questo componente consente di:
+
+- Scaricare automaticamente i flussi di rendicontazione dalla piattaforma pagoPA
+- Elaborare e importare i flussi nel database di GovPay
+- Gestire la riconciliazione automatica dei pagamenti
+
+Il batch può essere schedulato per eseguire periodicamente il download e l'elaborazione
+dei nuovi flussi di rendicontazione disponibili.
+
+govpay-gde-api
+~~~~~~~~~~~~~~
+
+API per il Giornale degli Eventi (GDE) esterno.
+
+- **Repository:** https://github.com/link-it/govpay-gde-api
+- **Release:** https://github.com/link-it/govpay-gde-api/releases
+
+Questo componente espone API REST per:
+
+- Ricevere e archiviare gli eventi generati da GovPay
+- Consultare lo storico degli eventi
+- Integrare il giornale eventi con sistemi esterni di monitoraggio
+
+Il servizio GDE può essere configurato come endpoint esterno per la registrazione
+degli eventi, consentendo una gestione centralizzata del logging applicativo.

@@ -424,8 +424,8 @@ A partire dall'oggetto versamento, lo script estrae la causale, generando l'ogge
 .. code-block:: none
 
    Gentile ${versamento.getAnagraficaDebitore().getRagioneSociale()},
-   le notifichiamo che e' stata elevata una sanzione amministrativa a suo carico: verbale n. ${versamento.getCodVersamentoEnte()}.
-   Puo' effettuare il pagamento on-line dal portale ${dominio.getRagioneSociale()} al seguente indirizzo:
+   le notifichiamo che è stata elevata una sanzione amministrativa a suo carico: verbale n. ${versamento.getCodVersamentoEnte()}.
+   Può effettuare il pagamento on-line dal portale ${dominio.getRagioneSociale()} al seguente indirizzo:
    https://demo.govcloud.it/govpay-portal/?idDominio=01234567890&numeroAvviso=${versamento.getNumeroAvviso()}.
    Oppure stampare l'avviso che trova allegato alla presente email per effettuare il pagamento presso un qualsiasi
    prestatore di servizi di pagamento aderente al circuito pagoPA.

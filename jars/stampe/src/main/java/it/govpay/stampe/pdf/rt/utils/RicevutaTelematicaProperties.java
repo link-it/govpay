@@ -1,8 +1,26 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.stampe.pdf.rt.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -10,16 +28,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.PropertyNotFoundException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.stampe.pdf.Costanti;
 
 public class RicevutaTelematicaProperties {
-	
+
 	private static final String PROPERTIES_FILE = "/ricevutaTelematica.properties";
 	public static final String DEFAULT_PROPS = "default";
 
@@ -43,7 +62,7 @@ public class RicevutaTelematicaProperties {
 
 	private Properties[] props  = null;
 
-	public RicevutaTelematicaProperties(String govpayResourceDir)  throws ConfigException {
+	private RicevutaTelematicaProperties(String govpayResourceDir)  throws ConfigException {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR
@@ -68,7 +87,7 @@ public class RicevutaTelematicaProperties {
 				if(this.govpayResourceDir != null) {
 					File resourceDirFile = new File(this.govpayResourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception(MessageFormat.format(Costanti.ERROR_MSG_IL_PATH_PASSATO_COME_PARAMTERO_0_NON_ESISTE_O_NON_E_UN_FOLDER, this.govpayResourceDir));
+						throw new ConfigException(MessageFormat.format(Costanti.ERROR_MSG_IL_PATH_PASSATO_COME_PARAMTERO_0_NON_ESISTE_O_NON_E_UN_FOLDER, this.govpayResourceDir));
 
 
 					File gpConfigFile = new File(this.govpayResourceDir + PROPERTIES_FILE);
@@ -76,17 +95,15 @@ public class RicevutaTelematicaProperties {
 						props0 = new Properties();
 						try(InputStream isExt = new FileInputStream(gpConfigFile)) {
 							props0.load(isExt);
-						} catch (FileNotFoundException e) {
-							throw new ConfigException(e);
 						} catch (IOException e) {
 							throw new ConfigException(e);
 						} 
 						this.propMap.put(DEFAULT_PROPS, props0);
-						log.info(MessageFormat.format(Costanti.INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0, gpConfigFile.getAbsolutePath()));
+						LogUtils.logInfo(log, Costanti.INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0, gpConfigFile.getAbsolutePath());
 					}
 				}
 			} catch (Exception e) {
-				log.warn(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0_PROPERTY_IGNORATA, e.getMessage()));
+				LogUtils.logWarn(log, MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0_PROPERTY_IGNORATA, e.getMessage()));
 			}
 
 			// carico tutti i file che definiscono configurazioni diverse di avvisi pagamento
@@ -102,8 +119,6 @@ public class RicevutaTelematicaProperties {
 						Properties p = new Properties();
 						try(InputStream isExt = new FileInputStream(f)) {
 							p.load(isExt);
-						} catch (FileNotFoundException e) {
-							throw new ConfigException(e);
 						} catch (IOException e) {
 							throw new ConfigException(e);
 						}
@@ -111,13 +126,13 @@ public class RicevutaTelematicaProperties {
 						key = key.replaceAll("ricevutaTelematica.", "");
 						// la configurazione di defaut e' gia'stata caricata
 						if(!key.equals("ricevutaTelematica")) {
-							log.info(MessageFormat.format(Costanti.INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0, key));
+							LogUtils.logInfo(log, Costanti.INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0, key);
 							this.propMap.put(key, p);
 						}
 					}
 			}
 		} catch (IOException e) {
-			log.error(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0, e.getMessage()));
+			LogUtils.logError(log, Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0, e.getMessage());
 			throw new ConfigException(e);
 		}
 	}
@@ -132,10 +147,10 @@ public class RicevutaTelematicaProperties {
 					throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA, name));
 				else return null;
 			} else {
-				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_CONFIGURAZIONE_0_1, name, value));
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_CONFIGURAZIONE_0_1, name, value);
 			}
 		} else {
-			log.debug(MessageFormat.format(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_SISTEMA_0_1, name, value));
+			LogUtils.logDebug(log, Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_SISTEMA_0_1, name, value);
 		}
 
 		return value.trim();
@@ -145,12 +160,14 @@ public class RicevutaTelematicaProperties {
 		String value = null;
 		Properties p = this.getProperties(idprops);
 
-		try { value = getProperty(name, p, required); } catch (Exception e) { }
+		try { value = getProperty(name, p, required); } catch (PropertyNotFoundException e) {
+			// donothing
+		}
 		if(value != null && !value.trim().isEmpty()) {
 			return value;
 		}
 
-		log.debug(MessageFormat.format(Costanti.DEBUG_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
+		LogUtils.logDebug(log, Costanti.DEBUG_MSG_PROPRIETA_NON_TROVATA_IN_CONFIGURAZIONE, name, idprops);
 
 		if(required) 
 			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
@@ -169,7 +186,7 @@ public class RicevutaTelematicaProperties {
 		Properties p = this.propMap.get(id);
 
 		if(p == null) {
-			log.debug(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
+			LogUtils.logDebug(log, Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id);
 			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
 		}
 
@@ -183,38 +200,38 @@ public class RicevutaTelematicaProperties {
 	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws PropertyNotFoundException {
 		Properties p = null;
 		String key = null;
-	
-		// 1. ricerca delle properties per la chiave "codDominio.codTributo";
+
+		// 1. ricerca delle properties per la chiave "codDominio -> codTributo"
 		if(StringUtils.isNotEmpty(codTributo) && StringUtils.isNotEmpty(codDominio)) {
 			key = codDominio + "." + codTributo;
 			try{
-				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key));
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key);
 				p = this.getProperties(key);
 			}catch(Exception e){
-				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage()));
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage());
 			}
 		}
 
 		// 2 . ricerca per codDominio
-		if(StringUtils.isNotEmpty(codDominio)) {
-			if(p == null){
-				key = codDominio;
-				try{
-					log.debug(MessageFormat.format(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key));
-					p = this.getProperties(key);
-				}catch(Exception e){
-					log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage()));
-				}
+		if(StringUtils.isNotEmpty(codDominio) && p == null){
+			key = codDominio;
+			try{
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key);
+				p = this.getProperties(key);
+			}catch(Exception e){
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage());
 			}
 		}
 
 		// utilizzo le properties di default
-		try{
-			log.debug(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_DI_DEFAULT);
-			p = this.getProperties(null);
-		}catch(PropertyNotFoundException e){
-			log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_DI_DEFAULT_0, e.getMessage()));
-			throw e;
+		if(p == null){
+			try{
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_DI_DEFAULT);
+				p = this.getProperties(null);
+			}catch(PropertyNotFoundException e){
+				LogUtils.logDebug(log, Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_DI_DEFAULT_0, e.getMessage());
+				throw e;
+			}
 		}
 
 		return p;

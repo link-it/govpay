@@ -1,0 +1,111 @@
+{
+   "idA2A":"#(idA2A)",
+   "idPendenza":"#(idPendenza + '')",
+   "rpt":{
+         "creditorReferenceId":"#(iuv)",
+         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "dueDate":"#ignore",
+         "retentionDate":null,
+         "lastPayment": null,
+         "description":"#notnull",
+         "companyName":"#(dominio.ragioneSociale)",
+         "officeName":null,
+         "debtor":{
+            "uniqueIdentifier":{
+               "entityUniqueIdentifierType":"#(pendenzaPut.soggettoPagatore.tipo)",
+               "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
+            },
+            "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+            "streetName":null,
+            "civicNumber":null,
+            "postalCode":null,
+            "city":null,
+            "stateProvinceRegion":null,
+            "country":null,
+            "e-mail":null
+         },
+         "transferList":{
+            "transfer":[
+               {
+                  "idTransfer":1,
+                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
+                  "fiscalCodePA":"#(idDominio)",
+                  "IBAN":"#(ibanAccredito)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Simulazione Acquisizione RT attivata fuori GovPay.')",
+                  "transferCategory":"9/CodiceContabilita",
+                  "metadata":"##null"
+               }
+            ]
+         },
+         "metadata":null
+   },
+   "rt": {
+         "receiptId":"#notnull",
+         "noticeNumber":"#notnull",
+         "fiscalCode":"#(idDominio)",
+         "outcome":"OK",
+         "creditorReferenceId":"#(iuv)",
+         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "description":"#notnull",
+         "companyName":"#(dominio.ragioneSociale)",
+         "officeName":null,
+         "debtor":{
+            "uniqueIdentifier":{
+               "entityUniqueIdentifierType":"#(pendenzaPut.soggettoPagatore.tipo)",
+               "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
+            },
+            "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+            "streetName":null,
+            "civicNumber":null,
+            "postalCode":null,
+            "city":null,
+            "stateProvinceRegion":null,
+            "country":null,
+            "e-mail":null
+         },
+         "transferList":{
+            "transfer":[
+               {
+                  "idTransfer":1,
+                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
+                  "fiscalCodePA":"#(idDominio)",
+                  "IBAN":"#(ibanAccredito)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Simulazione Acquisizione RT attivata fuori GovPay.')",
+                  "transferCategory":"9/CodiceContabilita",
+                  "metadata":"##null"
+               }
+            ]
+         },
+         "idPSP":"#notnull",
+         "pspFiscalCode":"#notnull",
+         "pspPartitaIVA":null,
+         "PSPCompanyName":"#notnull",
+         "idChannel":"#notnull",
+         "channelDescription":"#notnull",
+         "payer":null,
+         "paymentMethod": "##string",
+         "fee":"1.00",
+         "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+         "applicationDate":"#ignore",
+         "transferDate":"#notnull",
+         "standIn":true,
+         "metadata":null
+   },
+	"riscossioni":[
+	   {
+	      "idDominio":"#(idDominio)",
+	      "iuv":"#(iuv)",
+	      "iur":"#notnull",
+	      "indice":1,
+	      "pendenza":"#('/pendenze/' + idA2A + '/' + idPendenza)",
+	      "idVocePendenza":"#(pendenzaPut.voci[0].idVocePendenza)",
+	      "rpp":"#notnull",
+	      "stato":"RISCOSSA",
+	      "tipo":"ENTRATA",
+	      "importo": "#(pendenzaPut.importo)",
+	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+	      "commissioni": 1.00,
+	      "allegato":null
+	   }
+	]
+}

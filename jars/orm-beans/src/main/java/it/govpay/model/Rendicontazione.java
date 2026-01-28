@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,11 +20,13 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
 
@@ -33,7 +35,7 @@ public class Rendicontazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
 	public enum EsitoRendicontazione {
-		ESEGUITO(0), REVOCATO(3), ESEGUITO_SENZA_RPT(9);
+		ESEGUITO(0), REVOCATO(3), ESEGUITO_STANDIN(4), ESEGUITO_STANDIN_SENZA_RPT(8),  ESEGUITO_SENZA_RPT(9);
 
 		private int codifica;
 
@@ -46,15 +48,15 @@ public class Rendicontazione extends BasicModel {
 		}
 
 		public static EsitoRendicontazione toEnum(String codifica) throws CodificaInesistenteException {
-			return toEnum(Integer.parseInt(codifica));
+			return toEnum(new BigInteger(codifica));
 		}
 
-		public static EsitoRendicontazione toEnum(int codifica) throws CodificaInesistenteException {
+		public static EsitoRendicontazione toEnum(BigInteger codifica) throws CodificaInesistenteException {
 			for(EsitoRendicontazione p : EsitoRendicontazione.values()){
-				if(p.getCodifica() == codifica)
+				if(p.getCodifica() == codifica.intValue())
 					return p;
 			}
-			throw new CodificaInesistenteException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoRendicontazione. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoRendicontazione.values())));
 		}
 	}
 	
@@ -64,7 +66,7 @@ public class Rendicontazione extends BasicModel {
 	private Long id;
 	private String iuv;
 	private String iur;
-	private Integer indiceDati;
+	private BigInteger indiceDati;
 	
 	private BigDecimal importo;
 	private Date data;
@@ -170,8 +172,8 @@ public class Rendicontazione extends BasicModel {
 	}
 	
 	private String marshall(List<Anomalia> anomalie) {
-		if(anomalie == null || anomalie.size() == 0) return "";
-		StringBuffer sb = new StringBuffer();
+		if(anomalie == null || anomalie.isEmpty()) return "";
+		StringBuilder sb = new StringBuilder();
 		
 		for(Anomalia a : anomalie){
 			sb.append(a.codAnomalia);
@@ -200,10 +202,10 @@ public class Rendicontazione extends BasicModel {
 		}
 		return list;
 	}
-	public Integer getIndiceDati() {
+	public BigInteger getIndiceDati() {
 		return this.indiceDati;
 	}
-	public void setIndiceDati(Integer indiceDati) {
+	public void setIndiceDati(BigInteger indiceDati) {
 		this.indiceDati = indiceDati;
 	}
 	public Long getIdSingoloVersamento() {

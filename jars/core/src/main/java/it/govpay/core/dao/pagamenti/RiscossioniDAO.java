@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
@@ -21,15 +40,14 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class RiscossioniDAO extends BaseDAO{
 
 	public RiscossioniDAO() {
+		super();
 	}
 
-	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
+	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException {
 		it.govpay.bd.viste.PagamentiBD pagamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -85,12 +103,11 @@ public class RiscossioniDAO extends BaseDAO{
 
 			return new ListaRiscossioniDTOResponse(count, resList);
 		}finally {
-			if(pagamentiBD != null)
-				pagamentiBD.closeConnection();
+			pagamentiBD.closeConnection();
 		}
 	}
 
-	public LeggiRiscossioneDTOResponse leggiRiscossione(LeggiRiscossioneDTO leggiRiscossioniDTO) throws ServiceException,RiscossioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiRiscossioneDTOResponse leggiRiscossione(LeggiRiscossioneDTO leggiRiscossioniDTO) throws ServiceException,RiscossioneNonTrovataException {
 		LeggiRiscossioneDTOResponse response = new LeggiRiscossioneDTOResponse();
 		PagamentiBD pagamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -113,14 +130,13 @@ public class RiscossioniDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e.getMessage(), e);
 		} finally {
-			if(pagamentiBD != null)
-				pagamentiBD.closeConnection();
+			pagamentiBD.closeConnection();
 		}
 		return response;
 	}
 
 	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
-			throws ServiceException, NotFoundException {
+			throws ServiceException {
 		
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 		Versamento versamento = singoloVersamento.getVersamentoBD(bd);
@@ -141,7 +157,7 @@ public class RiscossioniDAO extends BaseDAO{
 	}
 
 	private void populatePagamentoRagioneria(it.govpay.bd.viste.model.Pagamento dto, BasicBD bd, BDConfigWrapper configWrapper)
-			throws ServiceException, NotFoundException {
+			throws ServiceException {
 		
 		Pagamento pagamento = dto.getPagamento();
 			
@@ -160,13 +176,6 @@ public class RiscossioniDAO extends BaseDAO{
 		
 		dto.setSingoloVersamento(singoloVersamento);
 		dto.setVersamento(versamento);
-		
-//		pagamento.getRpt(bd);
-//		pagamento.getDominio(configWrapper);
-//		pagamento.getRendicontazioni(bd);
-//		pagamento.getIncasso(bd);
-		
-		
 	}
 
 }

@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
@@ -102,6 +103,8 @@ And param riversamento = '0'
 When method get
 
 * call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+
+* call sleep(3000)
 
 * def dataEnd = getDateTime()
 

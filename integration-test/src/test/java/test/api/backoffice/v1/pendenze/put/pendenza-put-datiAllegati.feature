@@ -33,3 +33,4 @@ Examples:
 | [ "datoAllegato1" , "datoAllegato2" ] |
 | [ 10 , 20 ] |
 | [ datoAllegato1: 10 , datoAllegato2: 20 ] |
+| { "datoAllegato1": 10 , "datoAllegato2": 20 } |

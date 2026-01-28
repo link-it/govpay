@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.beans.tracciati;
 
 import java.math.BigDecimal;
@@ -9,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.exceptions.IOException;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
@@ -130,11 +150,11 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
 	  }
     
   }
-  public void setStato(String stato) throws Exception{
+  public void setStato(String stato) throws CodificaInesistenteException{
 	  if(stato != null) {
 		  this.stato = StatoEnum.fromValue(stato);
 		  if(this.stato == null)
-			  throw new Exception("valore ["+stato+"] non ammesso per la property stato");
+			  throw new CodificaInesistenteException("valore ["+stato+"] non ammesso per la property stato");
 	  }
   }
 

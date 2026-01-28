@@ -31,6 +31,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   protected _SPIDInfo: any = UtilService.SPID;
   protected _IAMInfo: any = UtilService.IAM;
   protected _BASICInfo: any = UtilService.BASIC;
+  protected _OAUTH2Info: any = UtilService.OAUTH2;
 
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
   protected versione: any;
@@ -46,6 +47,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         this.hasPagamenti = false;
         this.hasAuthentication = false;
         this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
+      } else if(_profilo) {
+        this.initDashboard();
       }
     });
     this.govpaySubscription = UtilService.govpayBehavior.subscribe((_govpay: any) => {
@@ -113,7 +116,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   initDashboard() {
     if(UtilService.PROFILO_UTENTE) {
       this.hasAuthentication = true;
-      this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
+      this.hasPagamenti = UtilService.USER_ACL.hasPagamenti && UtilService.GESTIONE_PAGAMENTI.ENABLED;
       if(this.hasPagamenti) {
         this.initBadges();
       }

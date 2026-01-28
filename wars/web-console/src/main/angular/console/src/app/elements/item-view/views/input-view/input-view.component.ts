@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormInput } from '../../../../classes/view/form-input';
 import { IFormComponent } from '../../../../classes/interfaces/IFormComponent';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Voce } from '../../../../services/voce.service';
 
 @Component({
   selector: 'link-input-view',
@@ -39,6 +40,14 @@ export class InputViewComponent implements IFormComponent {
         }
       }
     }
+  }
+
+  isWarning(value: string): boolean {
+    if (value && this.json.warning && this.json.pattern) {
+      var pattern = new RegExp(this.json.pattern);
+      return !pattern.test(value);
+    }
+    return false;
   }
 
   _checkFloating(placeholder: string) {

@@ -1,6 +1,27 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,13 +42,13 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
 
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonIgnore
   private VersioneStazione versioneEnum = null;
-  
+
   @JsonProperty("versione")
   private String versione = null;
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -74,7 +95,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   public void setVersioneEnum(VersioneStazione versione) {
     this.versioneEnum = versione;
   }
-  
+
   /**
    **/
   public StazionePost versione(String versione) {
@@ -122,7 +143,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazionePost {\n");
-    
+
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
@@ -145,9 +166,20 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
 		vf.getValidator("abilitato", this.abilitato).notNull();
 		vf.getValidator("versione", this.versione).notNull();
+
+		// valore versione non valido
+		VersioneStazione versioneStazione = VersioneStazione.fromValue(this.getVersione());
+		if(versioneStazione == null) {
+			throw new ValidationException("Codifica inesistente per versione. Valore fornito [" + this.getVersione() + "] valori possibili " + ArrayUtils.toString(VersioneStazione.values()));
+		}
+
+		if(versioneStazione.equals(VersioneStazione.V1)) {
+			vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
+		} else {
+			vf.getValidator("password", this.password).maxLength(35);
+		}
 	}
 }
 

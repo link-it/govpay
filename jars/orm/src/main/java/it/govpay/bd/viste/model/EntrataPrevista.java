@@ -1,7 +1,27 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.viste.model;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -23,7 +43,7 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private BigDecimal importoTotalePagamenti;
 	private BigDecimal importoPagato;
 	private String codSingoloVersamentoEnte;
-	private Integer indiceDati;
+	private BigInteger indiceDati;
 	private String codVersamentoEnte;
 	private String codApplicazione;
 	private Date dataPagamento;
@@ -47,6 +67,7 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private String numeroAvviso;
 	private String contabilita;
 	private Date dataCreazione;
+	private String metadata;
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -108,10 +129,10 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
 		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
 	}
-	public Integer getIndiceDati() {
+	public BigInteger getIndiceDati() {
 		return indiceDati;
 	}
-	public void setIndiceDati(Integer indiceDati) {
+	public void setIndiceDati(BigInteger indiceDati) {
 		this.indiceDati = indiceDati;
 	}
 	public String getCodVersamentoEnte() {
@@ -292,6 +313,12 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 		}
 		
 		return result;
+	}
+	public String getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
 	}
 	
 }

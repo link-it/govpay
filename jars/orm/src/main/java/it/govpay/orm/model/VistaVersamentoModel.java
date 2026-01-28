@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
 package it.govpay.orm.model;
 
 import it.govpay.orm.VistaVersamento;
@@ -49,7 +51,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VistaVersamento",VistaVersamento.class));
-		this.IUV = new it.govpay.orm.model.IuvSearchModel(new Field("iuv",it.govpay.orm.IuvSearch.class,"VistaVersamento",VistaVersamento.class));
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -89,8 +90,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -108,6 +109,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DOC_DESCRIZIONE = new Field("docDescrizione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -123,7 +126,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"VistaVersamento",VistaVersamento.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VistaVersamento",VistaVersamento.class));
-		this.IUV = new it.govpay.orm.model.IuvSearchModel(new ComplexField(father,"iuv",it.govpay.orm.IuvSearch.class,"VistaVersamento",VistaVersamento.class));
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -163,8 +165,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
-		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
+		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.math.BigDecimal.class,"VistaVersamento",VistaVersamento.class);
 		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -182,6 +184,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DOC_DESCRIZIONE = new ComplexField(father,"docDescrizione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -202,8 +206,6 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
-	 
-	public it.govpay.orm.model.IuvSearchModel IUV = null;
 	 
 	public IField IMPORTO_TOTALE = null;
 	 
@@ -320,6 +322,10 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public IField DOC_DESCRIZIONE = null;
 	 
 	public IField PROPRIETA = null;
+	 
+	public IField DATA_ULTIMA_MODIFICA_ACA = null;
+	 
+	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
 	 
 
 	@Override

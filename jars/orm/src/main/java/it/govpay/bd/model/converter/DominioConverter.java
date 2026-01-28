@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -30,16 +30,8 @@ import it.govpay.orm.IdStazione;
 
 public class DominioConverter {
 
-//	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BDConfigWrapper configWrapper) throws ServiceException {
-//		List<Dominio> lstDTO = new ArrayList<>();
-//		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
-//			for(it.govpay.orm.Dominio anagrafica: anagraficaLst){
-//				lstDTO.add(toDTO(anagrafica, configWrapper));
-//			}
-//		}
-//		return lstDTO;
-//	}
-
+	private DominioConverter() {}
+	
 	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
 			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, 
 			ConnettoreNotificaPagamenti connettoreHyperSicAPKappa, ConnettoreNotificaPagamenti connettoreMaggioliJPPA) throws ServiceException {
@@ -68,6 +60,7 @@ public class DominioConverter {
 		dto.setConnettoreMaggioliJPPA(connettoreMaggioliJPPA);
 		dto.setIntermediato(vo.isIntermediato());
 		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
+		dto.setScaricaFr(vo.isScaricaFr());
 		return dto;
 	}
 
@@ -124,6 +117,7 @@ public class DominioConverter {
 		
 		vo.setIntermediato(dto.isIntermediato());
 		vo.setTassonomiaPagoPA(dto.getTassonomiaPagoPA());
+		vo.setScaricaFr(dto.isScaricaFr());
 		
 		return vo;
 	}

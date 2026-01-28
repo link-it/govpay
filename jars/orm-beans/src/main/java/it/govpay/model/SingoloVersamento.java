@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -20,8 +20,9 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import it.govpay.model.exception.CodificaInesistenteException;
 
@@ -37,7 +38,8 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		IMPOSTA_BOLLO("01", "Imposta di bollo");
 		
 		private static final String[] VALORI_POSSIBILI = { "Imposta di bollo" };
-		private String codificaPagoPA, codificaJson;
+		private String codificaPagoPA;
+		private String codificaJson;
 		TipoBollo(String codificaPagoPA, String codificaJson) {
 			this.codificaPagoPA = codificaPagoPA;
 			this.codificaJson = codificaJson;
@@ -72,10 +74,11 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String codContabilita;
 	private String datiAllegati;
 	private String descrizione;
-	private Integer indiceDati;
+	private BigInteger indiceDati;
 	private String descrizioneCausaleRPT;
 	private String contabilita;
 	private Long idDominio;
+	private String metadata;
 	
 	
 	@Override
@@ -194,7 +197,17 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 
 	@Override
 	public int compareTo(SingoloVersamento sv) {
-		return this.codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
+		return this.indiceDati.compareTo(sv.getIndiceDati());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public Long getIdIbanAppoggio() {
@@ -205,11 +218,11 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.idIbanAppoggio = idIbanAppoggio;
 	}
 
-	public Integer getIndiceDati() {
+	public BigInteger getIndiceDati() {
 		return indiceDati;
 	}
 
-	public void setIndiceDati(Integer indiceDati) {
+	public void setIndiceDati(BigInteger indiceDati) {
 		this.indiceDati = indiceDati;
 	}
 
@@ -236,6 +249,13 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
 	}
-	
+
+	public String getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
+	}
 }
 

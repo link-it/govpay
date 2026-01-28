@@ -1,9 +1,28 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.model.converter;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
@@ -14,6 +33,8 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.model.IdUnitaOperativa;
 
 public class UtenzaConverter {
+	
+	private UtenzaConverter() {}
 	
 	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BDConfigWrapper configWrapper) throws ServiceException {
 		Utenza dto = new Utenza();
@@ -59,7 +80,7 @@ public class UtenzaConverter {
 		it.govpay.orm.Utenza vo = new it.govpay.orm.Utenza();
 		vo.setId(dto.getId());
 		try {
-			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.subject));
+			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.SUBJECT));
 		} catch (Exception e) {
 			vo.setPrincipal(dto.getPrincipal());
 		}

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.pagamento;
 
 import java.io.ByteArrayInputStream;
@@ -68,9 +87,7 @@ public class AllegatiBD extends BasicBD {
 			
 			it.govpay.orm.Allegato vo = ((JDBCAllegatoServiceSearch)this.getAllegatoService()).get(id);
 			return AllegatoConverter.toDTO(vo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -156,11 +173,7 @@ public class AllegatiBD extends BasicBD {
 				
 				prepareStatement.executeUpdate();
 				
-			} catch (SQLException e) {
-				throw new ServiceException(e);
-			} catch (SQLQueryObjectException e) {
-				throw new ServiceException(e);
-			} catch (ExpressionException e) {
+			} catch (SQLException | SQLQueryObjectException | ExpressionException e) {
 				throw new ServiceException(e);
 			} finally {
 				try {
@@ -200,12 +213,22 @@ public class AllegatiBD extends BasicBD {
 
 			Connection underlyingConnection = null;
 			org.postgresql.PGConnection pgConnection = null;
+			Method method = null;
 			try {
-				Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+				method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+				
+			} catch (NoSuchMethodException | SecurityException | IllegalArgumentException e) {
+				log.trace("Installazione WF con driver postgresql non installato come modulo oppure un'installazione tomcat: " + e.getMessage(), e);
+			} 
+			
+			try {
 
-				Object invoke = method.invoke(wrappedConnection);
-
-				underlyingConnection = (Connection) invoke;
+				if(method != null) {
+					Object invoke = method.invoke(wrappedConnection);
+					underlyingConnection = (Connection) invoke;
+				} else {
+					underlyingConnection = wrappedConnection;
+				}
 
 				if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
 					pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
@@ -236,7 +259,7 @@ public class AllegatiBD extends BasicBD {
 							oututStreamDestinazione.close();
 					}
 				}
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 				throw new ServiceException(e);
 			} catch (SQLException e) {
@@ -347,12 +370,12 @@ public class AllegatiBD extends BasicBD {
 				  ORDER BY data_richiesta 
 				  LIMIT K
 				  ) a
-				);
+				)
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.NOME));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.NOME), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+//			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -360,7 +383,7 @@ public class AllegatiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -374,8 +397,7 @@ public class AllegatiBD extends BasicBD {
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
 			
 			return count.longValue();
@@ -416,7 +438,6 @@ public class AllegatiBD extends BasicBD {
 
 			eseguiRicerca(model, allegatoFetch, idMappingResolutionBehaviour, lstAllegatoVO, fields, pagExpr);
 
-			//			List<it.govpay.orm.Allegato> lstAllegatoVO = this.getAllegatoService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Allegato allegatoVO: lstAllegatoVO) {
 				lst.add(AllegatoConverter.toDTO(allegatoVO));
 			}
@@ -439,9 +460,6 @@ public class AllegatiBD extends BasicBD {
 		fields.add(model.TIPO);
 		fields.add(model.DATA_CREAZIONE);
 		fields.add(model.DESCRIZIONE);
-//		if(includiRawContenuto) {
-//			fields.add(model.RAW_CONTENUTO);
-//		}
 		fields.add(new CustomField("id_versamento", Long.class, "id_versamento", converter.toTable(model)));
 		return fields;
 	}

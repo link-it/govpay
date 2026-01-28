@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
 import java.io.ByteArrayOutputStream;
@@ -9,8 +28,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -38,7 +57,9 @@ import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.jppapdp.beans.utils.JaxbUtils;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.QuotaContabilita;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDatiVersamentoRT;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDettagliImporto;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDettaglioImporto;
@@ -59,6 +80,8 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.StTipoVersamento;
 
 public class MaggioliJPPAUtils {
+	
+	private MaggioliJPPAUtils() {}
 
 	// root element elemento di input
 	public static final String INVIA_ESITO_PAGAMENTO_RICHIESTA_ROOT_ELEMENT_NAME = "InviaEsitoPagamentoRichiesta"; 
@@ -66,7 +89,14 @@ public class MaggioliJPPAUtils {
 	public static final String CDATA_TOKEN_START = "<![CDATA["; 
 	public static final String CDATA_TOKEN_END = "]]>"; 
 
-	private static XMLInputFactory xif = XMLInputFactory.newInstance();
+	private static XMLInputFactory xif;
+
+	static {
+		xif = XMLInputFactory.newInstance();
+		// Protezione XXE (XML External Entity)
+		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+		xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+	}
 
 	public static void writeJPPAPdPInternalMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
 		baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
@@ -231,11 +261,14 @@ public class MaggioliJPPAUtils {
 		}
 		break;
 		case SANP_240:
+		case RPTV2_RTV1:
 		{
 			popolaRicevutaDaRPT24(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}
 		break;
 		case SANP_321_V2:
+		case RPTV1_RTV2:
+		case RPTSANP230_RTV2:
 		{
 			popolaRicevutaDaRPT32(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}
@@ -283,7 +316,7 @@ public class MaggioliJPPAUtils {
 		popolaIstitutoAttestanteRT23(ricevutaTelematica, rt);
 		popoloaParametriPSP(ricevutaTelematica, rpt);
 		ricevutaTelematica.setRicevutaXML(new String(rpt.getXmlRt()));
-		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(rt.getRiferimentoDataRichiesta()));
+		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(DateUtils.toJavaDate(rt.getRiferimentoDataRichiesta())));
 		ricevutaTelematica.setRiferimentoMessaggioRichiesta(rt.getRiferimentoMessaggioRichiesta());
 		popolaSoggettoPagatoreRT23(ricevutaTelematica, rt);
 		popolaSoggettoVersanteRT23(ricevutaTelematica, rt);
@@ -407,7 +440,7 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaRicevutaDaRPT24(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTReq paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
@@ -499,7 +532,7 @@ public class MaggioliJPPAUtils {
 	}
 	
 	private static void popolaRicevutaDaRPT32(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTV2Request paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
@@ -596,7 +629,18 @@ public class MaggioliJPPAUtils {
 		datiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica()+"");
 		datiPagamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		datiPagamento.setImportoTotalePagato(rpt.getImportoTotalePagato());
-		switch(rpt.getTipoVersamento()) {
+		
+		TipoVersamento tvRpt = TipoVersamento.OTHER;
+		
+		if(rpt.getTipoVersamento() != null) {
+			try {
+				tvRpt = TipoVersamento.toEnum(rpt.getTipoVersamento());
+			} catch(CodificaInesistenteException e){
+				// lanciata nel caso di stringa non riconosciuta, lascio other
+			}
+		}
+		
+		switch(tvRpt) {
 		case ADDEBITO_DIRETTO:
 			datiPagamento.setTipoVersamento(StTipoVersamento.AD);
 			break;

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -89,7 +89,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toExpression() throws ServiceException {
+	public IExpression toExpressionEngine() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -297,11 +297,11 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
+	public IExpression toSimpleSearchExpressionEngine() throws ServiceException {
 		try {
 			VistaPagamentoFieldConverter pagamentoFieldConverter = new VistaPagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
-			IExpression newExpression = super._toSimpleSearchExpression();
+			IExpression newExpression = super.toSimpleSearchExpressionEngine();
 
 			if(this.getIdRr() != null) {
 				IExpression newExpressionRR = this.newExpression();

@@ -11,6 +11,10 @@
         <global-method-security secured-annotations="enabled">
         </global-method-security>
         
+        <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		</b:bean>
+        
         <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
     		<b:property name="allowUrlEncodedSlash" value="true"/>
     		<b:property name="allowUrlEncodedPercent" value="true"/>
@@ -117,19 +121,7 @@
         
         <!-- DEFAULT_BASIC_GOVPAY_PROVIDER_END -->
         
-         <!-- DEFAULT_BASIC_WILDFLY_PROVIDER_START
-         
-        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
-			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
-		</b:bean>
-		
-        <authentication-manager id="authenticationManager">
-	 			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
-        </authentication-manager>
-        
-        DEFAULT_BASIC_WILDFLY_PROVIDER_END -->
-        
-        <b:bean id="http403ForbiddenEntryPointGenerale" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**" >

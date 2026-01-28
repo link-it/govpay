@@ -109,6 +109,7 @@ Examples:
 | tassonomiaPagoPA | '07' |
 | tassonomiaPagoPA | '08' |
 | tassonomiaPagoPA | '09' |
+| tassonomiaPagoPA | '10' |
 | tassonomiaPagoPA | '11' |
 | tassonomiaPagoPA | '12' |
 

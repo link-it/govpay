@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.rs.v1.authentication.recaptcha.beans;
 
 import java.math.BigDecimal;
@@ -50,38 +69,35 @@ public class CaptchaResponse extends JSONSerializable{
 		if(errors == null) {
 			return false;
 		}
+		
 		for(ErrorCode error : errors) {
-			switch(error) {
-			case InvalidResponse:
-			case MissingResponse:
+			if (error.equals(ErrorCode.MISSING_SECRET) || error.equals(ErrorCode.INVALID_SECRET)) {
 				return true;
-			default:
-				return false;
-			}
+			} 
 		}
 		return false;
 	}
 
-	static enum ErrorCode {
-		MissingSecret,     InvalidSecret,
-		MissingResponse,   InvalidResponse,
-		BadRequest,		TimeoutOrDuplicate;
+	enum ErrorCode {
+	    MISSING_SECRET,     INVALID_SECRET,
+	    MISSING_RESPONSE,   INVALID_RESPONSE,
+	    BAD_REQUEST,        TIMEOUT_OR_DUPLICATE;
 
-		private static Map<String, ErrorCode> errorsMap = new HashMap<>(4);
+	    private static Map<String, ErrorCode> errorsMap = HashMap.newHashMap(6);
 
-		static {
-			errorsMap.put("missing-input-secret",   MissingSecret);
-			errorsMap.put("invalid-input-secret",   InvalidSecret);
-			errorsMap.put("missing-input-response", MissingResponse);
-			errorsMap.put("invalid-input-response", InvalidResponse);
-			errorsMap.put("bad-request", BadRequest);
-			errorsMap.put("timeout-or-duplicate", TimeoutOrDuplicate);
-		}
+	    static {
+	        errorsMap.put("missing-input-secret",   MISSING_SECRET);
+	        errorsMap.put("invalid-input-secret",   INVALID_SECRET);
+	        errorsMap.put("missing-input-response", MISSING_RESPONSE);
+	        errorsMap.put("invalid-input-response", INVALID_RESPONSE);
+	        errorsMap.put("bad-request", BAD_REQUEST);
+	        errorsMap.put("timeout-or-duplicate", TIMEOUT_OR_DUPLICATE);
+	    }
 
-		@JsonCreator
-		public static ErrorCode forValue(String value) {
-			return errorsMap.get(value.toLowerCase());
-		}
+	    @JsonCreator
+	    public static ErrorCode forValue(String value) {
+	        return errorsMap.get(value.toLowerCase());
+	    }
 	}
 
 	public boolean isSuccess() {

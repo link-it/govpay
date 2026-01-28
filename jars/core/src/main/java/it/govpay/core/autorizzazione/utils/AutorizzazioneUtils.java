@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.autorizzazione.utils;
 
 import java.util.ArrayList;
@@ -6,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +45,9 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovPayLdapJwt;
+import it.govpay.core.autorizzazione.beans.GovpayLdapOauth2Details;
+import it.govpay.core.autorizzazione.beans.GovpayLdapOidcOauth2Details;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.model.Acl.Diritti;
@@ -33,17 +55,32 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AutorizzazioneUtils {
+	
+	private AutorizzazioneUtils() {}
 
 	public static final String DIRITTI = "diritti";
 	public static final String PASSWORD_DEFAULT_VALUE = "UTENZA_SENZA_PASSWORD";
+	
+	public static String generaPasswordUtenza() {
+		return PASSWORD_DEFAULT_VALUE;
+	}
 
 	public static GovpayLdapUserDetails getAuthenticationDetails(Authentication authentication) {
 		if(authentication == null)
 			return null;
 
 		Object object = authentication.getPrincipal();
-		if(object instanceof GovpayLdapUserDetails)
-			return (GovpayLdapUserDetails) object;
+		if(object instanceof GovpayLdapUserDetails govpayLdapUserDetails)
+			return govpayLdapUserDetails;
+		
+		if(object instanceof GovpayLdapOauth2Details govpayLdapOauth2Details)
+			return govpayLdapOauth2Details.toGovpayLdapUserDetails();
+		
+		if(object instanceof GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details)
+			return govpayLdapOidcOauth2Details.toGovpayLdapUserDetails();
+		
+		if(object instanceof GovPayLdapJwt govPayLdapJwt)
+			return govPayLdapJwt.toGovpayLdapUserDetails();
 		
 		return null;
 	}
@@ -53,12 +90,57 @@ public class AutorizzazioneUtils {
 			return null;
 
 		Object principalObj = authentication.getPrincipal();
-		if(principalObj instanceof GovpayLdapUserDetails)
-			return ((GovpayLdapUserDetails) principalObj).getIdentificativo();
+		if(principalObj instanceof GovpayLdapUserDetails govpayLdapUserDetails)
+			return govpayLdapUserDetails.getIdentificativo();
 
-		if(principalObj instanceof UserDetails)
-			return ((UserDetails) principalObj).getUsername();
+		if(principalObj instanceof UserDetails userDetails)
+			return userDetails.getUsername();
+		
+		if(principalObj instanceof GovpayLdapOauth2Details govpayLdapOauth2Details)
+			return govpayLdapOauth2Details.getIdentificativo();
+		
+		if(principalObj instanceof GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details)
+			return govpayLdapOidcOauth2Details.getIdentificativo();
+		
+		if(principalObj instanceof GovPayLdapJwt govPayLdapJwt)
+			return govPayLdapJwt.getIdentificativo();
 
+		return null;
+	}
+	
+	public static Long getIdOperatore(Authentication authentication) {
+		if(authentication == null)
+			return null;
+		
+		Object principalObj = authentication.getPrincipal();
+		if(principalObj instanceof GovpayLdapUserDetails govpayLdapUserDetails) {
+			Operatore operatore = govpayLdapUserDetails.getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		if(principalObj instanceof GovpayLdapOauth2Details govpayLdapOauth2Details) {
+			Operatore operatore = govpayLdapOauth2Details.getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		if(principalObj instanceof GovpayLdapOidcOauth2Details govpayLdapOidcOauth2Details) {
+			Operatore operatore = govpayLdapOidcOauth2Details.getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		if(principalObj instanceof GovPayLdapJwt govPayLdapJwt) {
+			Operatore operatore = govPayLdapJwt.getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
 		return null;
 	}
 
@@ -68,7 +150,7 @@ public class AutorizzazioneUtils {
 		Utenza utenza = null;
 		Applicazione applicazione = null;
 		Operatore operatore = null;
-		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		TIPO_UTENZA tipoUtenza = null;
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -108,7 +190,7 @@ public class AutorizzazioneUtils {
 		utenza.setAutenticazione(authType);
 		utenza.setApiName(apiName);
 		
-		String password = StringUtils.isNotBlank(utenza.getPassword()) ? utenza.getPassword() : PASSWORD_DEFAULT_VALUE;
+		String password = StringUtils.isNotBlank(utenza.getPassword()) ? utenza.getPassword() : generaPasswordUtenza();
 
 		GovpayLdapUserDetails userDetails = getUserDetail(username, password, username, authorities);
 		userDetails.setApplicazione(applicazione);
@@ -140,7 +222,7 @@ public class AutorizzazioneUtils {
 		Utenza utenza = null;
 		Applicazione applicazione = null;
 		Operatore operatore = null;
-		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		TIPO_UTENZA tipoUtenza = null;
 		// lettura dell'applicazione / operatore dal db, nel sistema dove si e' autenticato puo' essere passato tramite un autenticazione esterna che non prevede la lettura dell'utenza dalla base dati.
 		Utenza utenzaFromSession = userDetailFromSession.getUtenza();
 		Map<String, List<String>> headersFromSession = utenzaFromSession != null ? utenzaFromSession.getHeaders() : new HashMap<>();
@@ -246,7 +328,7 @@ public class AutorizzazioneUtils {
 		utenza.setAutenticazione(authType);
 		utenza.setApiName(apiName);
 
-		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
+		GovpayLdapUserDetails userDetails = getUserDetail(username, generaPasswordUtenza(), username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
 
@@ -316,7 +398,7 @@ public class AutorizzazioneUtils {
 		utenza.setAutenticazione(authType);
 		utenza.setApiName(apiName);
 
-		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
+		GovpayLdapUserDetails userDetails = getUserDetail(username, generaPasswordUtenza(), username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
 

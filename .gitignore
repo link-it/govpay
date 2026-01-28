@@ -1,3 +1,6 @@
+# dipendenze terze parti
+/dependencies
+
 # custom property filters
 /src/main/resources/filters/*
 

@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v3.feature')
 
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
 Scenario: Riconciliazioni da applicazione autorizzata per dominio_1 e dominio_2
 
 * def applicazione = read('msg/applicazione_dominio1e2.json')
@@ -16,7 +18,7 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url ragioneriaBaseurl

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.thread;
 
 import java.text.SimpleDateFormat;
@@ -17,6 +36,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.orm.IdTracciato;
@@ -49,11 +69,11 @@ public class CreaStampeTracciatoThread implements Runnable {
 	public void run() {
 		ContextThreadLocal.set(this.ctx);
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-		this.stampe = new ArrayList<PrintAvvisoDTOResponse>();
+		this.stampe = new ArrayList<>();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		SimpleDateFormat newSimpleDateFormatGGMMAAAA = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		try {
-			log.debug(this.nomeThread + ": creazione stampe di " + this.versamenti.size() + " versamenti...");
+			LogUtils.logDebug(log, this.nomeThread + ": creazione stampe di " + this.versamenti.size() + " versamenti...");
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 			
 			for (Versamento versamento : versamenti) {
@@ -65,7 +85,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 						Documento documento = versamento.getDocumento(configWrapper);
 						
 						if(documento != null) {
-							log.debug(this.getNomeThread() + ": stampa in corso [Doc:" + documento.getCodDocumento() + " NumeroAvviso:" + versamento.getNumeroAvviso());
+							LogUtils.logDebug(log, this.getNomeThread() + ": stampa in corso [Doc:" + documento.getCodDocumento() + " NumeroAvviso:" + versamento.getNumeroAvviso());
 							PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
 							printDocumentoDTO.setDocumento(documento);
 							printDocumentoDTO.setUpdate(true);
@@ -75,7 +95,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 							printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
 							printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
 						} else {
-							log.debug(this.getNomeThread() + ": stampa in corso [Pendenza:" + versamento.getCodVersamentoEnte() + " NumeroAvviso:" + versamento.getNumeroAvviso());
+							LogUtils.logDebug(log, this.getNomeThread() + ": stampa in corso [Pendenza:" + versamento.getCodVersamentoEnte() + " NumeroAvviso:" + versamento.getNumeroAvviso());
 							PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 							printAvvisoDTO.setUpdate(true);
 							printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
@@ -91,12 +111,12 @@ public class CreaStampeTracciatoThread implements Runnable {
 						this.stampe.add(printAvvisoDTOResponse);
 						
 						if(documento != null) {
-							log.debug(this.getNomeThread() + ": stampa eseguita [Doc:" + documento.getCodDocumento() + " NumeroAvviso:" + versamento.getNumeroAvviso());
+							LogUtils.logDebug(log, this.getNomeThread() + ": stampa eseguita [Doc:" + documento.getCodDocumento() + " NumeroAvviso:" + versamento.getNumeroAvviso());
 						} else {
-							log.debug(this.getNomeThread() + ": stampa eseguita [Pendenza:" + versamento.getCodVersamentoEnte() + " NumeroAvviso:" + versamento.getNumeroAvviso());
+							LogUtils.logDebug(log, this.getNomeThread() + ": stampa eseguita [Pendenza:" + versamento.getCodVersamentoEnte() + " NumeroAvviso:" + versamento.getNumeroAvviso());
 						}
 					} else {
-						log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
+						LogUtils.logDebug(log, "Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
 								+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");
 					}
 					stampeOk ++;
@@ -107,7 +127,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 			}
 		} finally {
 			this.completed = true;
-			log.debug("Stampe prodotte: " + this.stampe.size());
+			LogUtils.logDebug(log, "Stampe prodotte: " + this.stampe.size());
 			ContextThreadLocal.unset();
 		}
 		

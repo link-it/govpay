@@ -1,10 +1,29 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -21,6 +40,7 @@ import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -28,6 +48,8 @@ import it.govpay.model.TipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class OperatoriConverter {
+	
+	private OperatoriConverter() {}
 
 	public static PutOperatoreDTO getPutOperatoreDTO(OperatorePost operatoreRequest, String principal,	Authentication user) throws NotAuthorizedException, CodificaInesistenteException{
 		PutOperatoreDTO putOperatoreDTO = new PutOperatoreDTO(user);
@@ -63,7 +85,7 @@ public class OperatoriConverter {
 					if(tipiVersamentoAutorizzati == null)
 						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 
-					if(tipiVersamentoAutorizzati.size() > 0) {
+					if(!tipiVersamentoAutorizzati.isEmpty()) {
 						throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'operatore a tutti i tipi pendenza");
 					}
 
@@ -73,7 +95,7 @@ public class OperatoriConverter {
 					break;
 				}
 
-				idTipiVersamento.add(id.toString());
+				idTipiVersamento.add(id);
 			}
 
 			putOperatoreDTO.setCodTipiVersamento(idTipiVersamento);
@@ -86,16 +108,15 @@ public class OperatoriConverter {
 
 			if(operatoreRequest.getDomini() != null && !operatoreRequest.getDomini().isEmpty()) {
 				for (Object object : operatoreRequest.getDomini()) {
-					if(object instanceof String) {
-						String idDominio = (String) object;
+					if(object instanceof String idDominio) {
 						if(idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
 							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 
 							if(dominiAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-							if(dominiAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							if(!dominiAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_OPERATORE_A_TUTTI_GLI_ENTI_CREDITORI);
 							}
 
 							appAuthDominiAll = true;
@@ -103,16 +124,15 @@ public class OperatoriConverter {
 							break;
 						}
 						domini.add(DominiConverter.getDominioCommons(idDominio));
-					} else if(object instanceof DominioProfiloPost) {
-						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+					} else if(object instanceof DominioProfiloPost dominioProfiloPost) {
 						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
 							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 
 							if(dominiAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-							if(dominiAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							if(!dominiAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_OPERATORE_A_TUTTI_GLI_ENTI_CREDITORI);
 							}
 
 							appAuthDominiAll = true;
@@ -138,8 +158,8 @@ public class OperatoriConverter {
 							if(dominiAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 
-							if(dominiAutorizzati.size() > 0) {
-								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							if(!dominiAutorizzati.isEmpty()) {
+								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_GLI_ENTI_CREDITORI_NON_PUO_DUNQUE_AUTORIZZARE_L_OPERATORE_A_TUTTI_GLI_ENTI_CREDITORI);
 							}
 
 							appAuthDominiAll = true;
@@ -234,7 +254,7 @@ public class OperatoriConverter {
 			rsModel.setAcl(aclList);
 		}
 
-		if(operatore.getUtenza().getRuoli() != null && operatore.getUtenza().getRuoli().size() > 0) {
+		if(operatore.getUtenza().getRuoli() != null && !operatore.getUtenza().getRuoli().isEmpty()) {
 			List<Ruolo> ruoli = new ArrayList<>();
 
 			for (String idRuolo : operatore.getUtenza().getRuoli()) {

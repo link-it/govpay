@@ -174,5 +174,8 @@
 		"abilitato": true,
 	    "url": "http://localhost/",
 	    "timeToLive": 10000
-	}
+	},
+	"servizioGDE" :{
+    	"abilitato": false
+    }
 }

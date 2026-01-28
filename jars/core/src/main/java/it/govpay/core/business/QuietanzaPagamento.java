@@ -1,13 +1,33 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.business;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -40,6 +60,7 @@ public class QuietanzaPagamento {
 	private SimpleDateFormat sdfDataOraMinuti = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public QuietanzaPagamento() {
+		//donothing
 	}
 
 	public byte[] creaPdfQuietanzaPagamento(Rendicontazione rendicontazione, Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento, Fr fr) throws ServiceException {
@@ -48,7 +69,7 @@ public class QuietanzaPagamento {
 			QuietanzaPagamentoProperties quietanzaPagamentoProperties = QuietanzaPagamentoProperties.getInstance();
 			Dominio dominio = versamento.getDominio(configWrapper);
 			String codDominio = dominio.getCodDominio();
-			QuietanzaPagamentoInput input = fromRendicontazione(dominio, rendicontazione, pagamento, singoloVersamento, versamento, fr, configWrapper);
+			QuietanzaPagamentoInput input = fromRendicontazione(dominio, rendicontazione, pagamento, singoloVersamento, versamento, fr);
 			
 			File jasperFile = null; 
 			if(GovpayConfig.getInstance().getTemplateQuietanzaPagamento() != null) {
@@ -63,7 +84,7 @@ public class QuietanzaPagamento {
 		}
 	}
 
-	private QuietanzaPagamentoInput fromRendicontazione(Dominio dominio, Rendicontazione rendicontazione, Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento, Fr fr, BDConfigWrapper configWrapper) throws Exception{
+	private QuietanzaPagamentoInput fromRendicontazione(Dominio dominio, Rendicontazione rendicontazione, Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento, Fr fr) throws UnsupportedEncodingException {
 		QuietanzaPagamentoInput input = new QuietanzaPagamentoInput();
 
 		this.impostaAnagraficaEnteCreditore(dominio, input);
@@ -103,7 +124,7 @@ public class QuietanzaPagamento {
 		String descrizione = RptBuilder.buildCausaleSingoloVersamento(pagamento.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT());
 		
 		voce.setDescrizione(descrizione);
-		voce.setIdRiscossione(pagamento.getIur());
+		voce.setIdRiscossione(rendicontazione.getIur());
 		voce.setImporto(pagamento.getImportoPagato().doubleValue());
 		voce.setStato(pagamento.getImportoPagato().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
 
@@ -114,7 +135,7 @@ public class QuietanzaPagamento {
 		return elencoVoci;
 	}
 
-	private void impostaAnagraficaEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) throws ServiceException {
+	private void impostaAnagraficaEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) {
 		String codDominio = dominio.getCodDominio();
 
 		input.setEnteDenominazione(dominio.getRagioneSociale());
@@ -126,7 +147,7 @@ public class QuietanzaPagamento {
 		this.impostaIndirizzoEnteCreditore(dominio, input);
 	}
 
-	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) throws ServiceException {
+	private void impostaIndirizzoEnteCreditore(it.govpay.bd.model.Dominio dominio, QuietanzaPagamentoInput input) {
 		Anagrafica anagraficaEnteCreditore = dominio.getAnagrafica();
 		if(anagraficaEnteCreditore != null) {
 			String indirizzo = StringUtils.isNotEmpty(anagraficaEnteCreditore.getIndirizzo()) ? anagraficaEnteCreditore.getIndirizzo() : "";
@@ -148,7 +169,7 @@ public class QuietanzaPagamento {
 		}
 	}
 
-	private void impostaIndirizzoSoggettoPagatore(QuietanzaPagamentoInput input, Anagrafica soggettoPagatore) throws ServiceException {
+	private void impostaIndirizzoSoggettoPagatore(QuietanzaPagamentoInput input, Anagrafica soggettoPagatore) {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getIndirizzo()) ? soggettoPagatore.getIndirizzo() : "";
 			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivico()) ? soggettoPagatore.getCivico() : "";
@@ -224,9 +245,7 @@ public class QuietanzaPagamento {
 			
 			return this.creaRPTFromRendicontazione(rendicontazione, pagamento, singoloVersamento, versamento, fr, configWrapper);
 		} finally {
-			if(versamentiBD != null) {
-				versamentiBD.closeConnection();
-			}
+			versamentiBD.closeConnection();
 		}
 	}
 }

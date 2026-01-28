@@ -1,6 +1,25 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+ * http://www.gov4j.it/govpay
+ *
+ * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.bd.model.converter;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +32,8 @@ import it.govpay.orm.IdPagamento;
 import it.govpay.orm.IdSingoloVersamento;
 
 public class RendicontazioneConverter {
+	
+	private RendicontazioneConverter() {}
 
 	public static Rendicontazione toDTO(it.govpay.orm.Rendicontazione vo) throws CodificaInesistenteException {
 		Rendicontazione dto = new Rendicontazione();
@@ -21,7 +42,7 @@ public class RendicontazioneConverter {
 		dto.setIuv(vo.getIuv());
 		dto.setIur(vo.getIur());
 		dto.setIndiceDati(vo.getIndiceDati());
-		dto.setImporto(BigDecimal.valueOf(vo.getImportoPagato()));
+		dto.setImporto(vo.getImportoPagato());
 		dto.setData(vo.getData());
 		dto.setEsito(EsitoRendicontazione.toEnum(vo.getEsito()));
 		dto.setStato(StatoRendicontazione.valueOf(vo.getStato()));
@@ -41,9 +62,9 @@ public class RendicontazioneConverter {
 		vo.setIur(dto.getIur());
 		vo.setIndiceDati(dto.getIndiceDati());
 
-		vo.setImportoPagato(dto.getImporto().doubleValue());
+		vo.setImportoPagato(dto.getImporto());
 		vo.setData(dto.getData());
-		vo.setEsito(dto.getEsito().getCodifica());
+		vo.setEsito(BigInteger.valueOf(dto.getEsito().getCodifica()));
 		vo.setStato(dto.getStato().toString());
 		vo.setAnomalie(dto.getAnomalieString());
 		
