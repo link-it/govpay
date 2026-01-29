@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -337,7 +338,11 @@ public class RendicontazioniBD extends BasicBD {
 			
 			exp.and();
 			exp.greaterThan(model.DATA, c.getTime());
-			
+
+			// Ordinamento per data decrescente (recuperiamo prima le RT piu' recenti)
+			exp.sortOrder(SortOrder.DESC);
+			exp.addOrder(model.DATA);
+
 			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst = this.getRendicontazioneService().findAll(exp);
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {

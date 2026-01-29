@@ -338,7 +338,7 @@ public class Operazioni{
 					// effettuo la spedizione solo per le applicazioni che hanno il connettore configurato.
 					if(applicazione.getConnettoreIntegrazione() != null) {
 						int offset = 0;
-						int limit = (2 * threadNotificaPoolSize);
+						int limit = (GovpayConfig.getInstance().getNumeroNotifichePerThread() * threadNotificaPoolSize);
 						List<InviaNotificaThread> threads = new ArrayList<>();
 						List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 
@@ -427,7 +427,7 @@ public class Operazioni{
 
 				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotificaAppIO();
 				int offset = 0;
-				int limit = (2 * threadNotificaPoolSize);
+				int limit = (GovpayConfig.getInstance().getNumeroNotifichePerThread() * threadNotificaPoolSize);
 				List<InviaNotificaAppIoThread> threads = new ArrayList<>();
 				List<NotificaAppIo> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit);
 
@@ -1001,9 +1001,9 @@ public class Operazioni{
 		if(connettore != null && connettore.isAbilitato()) {
 			log.debug("Scheduling spedizione Tracciati {} per il Dominio [{}]...", nomeConnettore,	codDominio);
 			TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(tipoTracciato);
-			
+
 			int offset = 0;
-			int limit = (2 * threadNotificaPoolSize);
+			int limit = (GovpayConfig.getInstance().getNumeroNotifichePerThread() * threadNotificaPoolSize);
 			List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
 			List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, connettore, ctx);
 			
