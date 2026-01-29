@@ -21,6 +21,7 @@ package it.govpay.core.utils.thread;
 
 
 import java.text.MessageFormat;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -63,25 +64,29 @@ import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.eventi.DatiPagoPA;
 
 public class RecuperaRTThread implements Runnable {
-	
+
 	private static final String MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2 = "Errore durante il recupero della ricevuta [CodDominio: {0}, IUV: {1}, IUR: {2}]: {3}";
 	private static final String ERROR_MSG_ERRORE_NEL_RECUPERO_RT_COD_DOMINIO_IUR = "Errore nel recupero della ricevuta [CodDominio: {0}, IUV: {1}, Iur: {2}]";
 	private static final String ERROR_MSG_ERRORE_INIT_CLIENT_RECUPERO_RT_COD_DOMINIO_IUR = "Errore durante la init del client di recupero RT [CodDominio: {0}, IUV: {1}, Iur: {2}]";
-	
+	private static final int HTTP_TOO_MANY_REQUESTS = 429;
+
 	private static Logger log = LoggerWrapperFactory.getLogger(RecuperaRTThread.class);
 	private Rendicontazione rendicontazione;
 	private Dominio dominio = null;
 	private boolean completed = false;
 	private boolean errore = false;
+	private boolean rateLimited = false;
 	private String esitoOperazione = null;
-	
+
 	private IContext ctx = null;
 	private Giornale giornale;
 	private Intermediario intermediario = null;
 	private Stazione stazione = null;
+	private AtomicBoolean stopFlag = null;
 
-	public RecuperaRTThread(Dominio dominio, Rendicontazione rendicontazione, IContext ctx) throws ServiceException, IOException {
+	public RecuperaRTThread(Dominio dominio, Rendicontazione rendicontazione, IContext ctx, AtomicBoolean stopFlag) throws ServiceException, IOException {
 		this.ctx = ctx;
+		this.stopFlag = stopFlag;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.rendicontazione = rendicontazione;
 		this.dominio = dominio;
@@ -96,6 +101,16 @@ public class RecuperaRTThread implements Runnable {
 		IContext cctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) cctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, cctx.getTransactionId());
+
+		// Verifica se e' stato richiesto lo stop (es. per rate limiting)
+		if(this.stopFlag != null && this.stopFlag.get()) {
+			this.completed = true;
+			this.esitoOperazione = "Thread interrotto per rate limiting.";
+			log.info("Recupero RT interrotto per rate limiting.");
+			ContextThreadLocal.unset();
+			return;
+		}
+
 		RecuperaRTNodoClient client = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
@@ -145,11 +160,21 @@ public class RecuperaRTThread implements Runnable {
 			this.errore = true;
 			this.esitoOperazione = MessageFormat.format(MSG_ERRORE_RICEVUTA_COD_DOMINIO_0_IUR_1_NON_RECUPERATA_2, codDominio, iuv, iur, e.getMessage());
 			log.error(MessageFormat.format(ERROR_MSG_ERRORE_NEL_RECUPERO_RT_COD_DOMINIO_IUR, codDominio, iuv, iur), e);
+
+			// Gestione rate limiting (HTTP 429)
+			if(e.getResponseCode() != null && e.getResponseCode() == HTTP_TOO_MANY_REQUESTS) {
+				this.rateLimited = true;
+				if(this.stopFlag != null) {
+					this.stopFlag.set(true);
+					log.warn("Ricevuto HTTP 429 (Too Many Requests), segnalo stop a tutti i thread.");
+				}
+			}
+
 			if(client != null) {
 				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
 				eventoCtx.setEsito(Esito.FAIL);
 				eventoCtx.setDescrizioneEsito(e.getMessage());
-			}	
+			}
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, cctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RECUPERO_RT_RECUPERO_RT_FAIL_KEY, codDominio, iuv, iur, e.getMessage());
 		} catch (NdpException e) {
 			this.errore = true;
@@ -218,7 +243,11 @@ public class RecuperaRTThread implements Runnable {
 	public String getEsitoOperazione() {
 		return esitoOperazione;
 	}
-	
+
+	public boolean isRateLimited() {
+		return this.rateLimited;
+	}
+
 	public static void popolaEventoCooperazione(Dominio dominio, Intermediario intermediario, Stazione stazione, EventoContext eventoContext) {
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodStazione(stazione.getCodStazione());

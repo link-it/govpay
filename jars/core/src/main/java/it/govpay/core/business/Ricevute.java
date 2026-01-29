@@ -22,6 +22,7 @@ package it.govpay.core.business;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -94,11 +95,13 @@ public class Ricevute {
 							log.debug("Recupero RT per il Dominio [{}] completato, non sono state trovate RT da recuperare.", codDominio);
 						} else {
 							log.info("Recupero RT per il Dominio [{}] trovate [{}] RT da recuperare.", codDominio, rendicontazioniSenzaPagamento.size());
-							
+
 							List<RecuperaRTThread> threads = new ArrayList<>();
-							
+							// Flag condiviso per segnalare stop a tutti i thread in caso di rate limiting (HTTP 429)
+							AtomicBoolean stopFlag = new AtomicBoolean(false);
+
 							for (Rendicontazione rendicontazione : rendicontazioniSenzaPagamento) {
-								RecuperaRTThread sender = new RecuperaRTThread(dominio, rendicontazione, ctx);
+								RecuperaRTThread sender = new RecuperaRTThread(dominio, rendicontazione, ctx, stopFlag);
 								ThreadExecutorManager.getExecutorRecuperaRT().execute(sender);
 								threads.add(sender);
 							}
@@ -143,6 +146,7 @@ public class Ricevute {
 	private void attendiTerminazioneThreads(List<String> response, List<RecuperaRTThread> threads) {
 		// Aspetto che abbiano finito tutti
 		int numeroErrori = 0;
+		int numeroRateLimited = 0;
 		while(true){
 			try {
 				Thread.sleep(2000);
@@ -153,19 +157,24 @@ public class Ricevute {
 			}
 			boolean completed = true;
 			for(RecuperaRTThread sender : threads) {
-				if(!sender.isCompleted()) 
+				if(!sender.isCompleted())
 					completed = false;
 			}
 
-			if(completed) { 
+			if(completed) {
 				for(RecuperaRTThread sender : threads) {
-					if(sender.isErrore()) 
+					if(sender.isErrore())
 						numeroErrori ++;
-					
+					if(sender.isRateLimited())
+						numeroRateLimited ++;
+
 					response.add(sender.getEsitoOperazione());
 				}
 				int numOk = threads.size() - numeroErrori;
 				log.debug(Operazioni.DEBUG_MSG_COMPLETATA_ESECUZIONE_DEI_0_THREADS_OK_1_ERRORE_2, threads.size(), numOk, numeroErrori);
+				if(numeroRateLimited > 0) {
+					log.warn("Recupero RT interrotto per rate limiting (HTTP 429). Thread con rate limit: {}", numeroRateLimited);
+				}
 				break; // esco
 			}
 		}

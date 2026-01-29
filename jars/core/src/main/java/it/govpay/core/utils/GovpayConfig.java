@@ -83,6 +83,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	private int dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	private int dimensionePoolThreadRecuperoRT;
+	private int numeroNotifichePerThread;
 	private String ksLocation;
 	private String ksPassword;
 	private String ksAlias;
@@ -240,6 +241,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 		this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
 		this.dimensionePoolThreadRecuperoRT = 10;
+		this.numeroNotifichePerThread = 2;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -432,6 +434,7 @@ public class GovpayConfig {
 			this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, 10);
 			this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA", this.props, false, 10);
 			this.dimensionePoolThreadRecuperoRT = getIntegerProperty(log, "it.govpay.thread.pool.recuperoRT", this.props, false, 10);
+			this.numeroNotifichePerThread = getIntegerProperty(log, "it.govpay.batch.notifiche.perThread", this.props, false, 2);
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
 			if(mLogClassString != null && !mLogClassString.isEmpty())
@@ -1058,6 +1061,10 @@ public class GovpayConfig {
 
 	public int getDimensionePoolThreadRecuperoRT() {
 		return dimensionePoolThreadRecuperoRT;
+	}
+
+	public int getNumeroNotifichePerThread() {
+		return numeroNotifichePerThread;
 	}
 
 	public String getKsLocation() {
