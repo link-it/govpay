@@ -1,3 +1,22 @@
+2026-01-30  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.8.3-SNAPSHOT
+
+2026-01-30  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiPagopa]
+	Risolto Bug #848
+	Corretta gestione della sonda Stand-In pagoPA per domini non intermediati dalla stazione.
+	Spostato il controllo del numeroAvviso della sonda ('000000000000000000') prima della verifica del dominio
+	per restituire sempre PAA_PAGAMENTO_SCONOSCIUTO invece di PAA_ID_DOMINIO_ERRATO.
+	Aggiunto test di integrazione per verificare il comportamento con dominio non intermediato.
+
+	* [GovPayConsole]
+	Risolto Bug #844
+	Corretta visualizzazione dei dettagli delle ricevute (RT) acquisite tramite il batch di recupero RT.
+	Aggiunta retrocompatibilita' per gestire sia la struttura rt.receipt che la struttura rt diretta.
+	Modificati i componenti: pagamenti-view, ricevute-view, pendenze-view, side-list.
+
 2026-01-07  Giuliano Pintori <pintori@link.it>
 
 	* Rilasciata versione 3.8.2
