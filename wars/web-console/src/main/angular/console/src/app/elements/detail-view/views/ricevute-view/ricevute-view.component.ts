@@ -70,9 +70,11 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
       iuv = this.json.rt.datiPagamento.identificativoUnivocoVersamento;
       idRicevuta = this.json.rt.datiPagamento.CodiceContestoPagamento;
     } else {
-      idDominio = this.json.rt.fiscalCode;
-      iuv = this.json.rt.creditorReferenceId;
-      idRicevuta = this.json.rt.receiptId;
+      // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+      const receipt = this.json.rt.receipt ? this.json.rt.receipt : this.json.rt;
+      idDominio = receipt.fiscalCode;
+      iuv = receipt.creditorReferenceId;
+      idRicevuta = receipt.receiptId;
     }
     let _url = `${UtilService.URL_RICEVUTE}/${idDominio}/${iuv}/${idRicevuta}`;
     this.gps.getDataService(_url).subscribe(
@@ -120,8 +122,12 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
     if(_pendenza.idPendenza) {
       this.info.extraInfo.push({ label: Voce.ID_PENDENZA+': ', value: _pendenza.idPendenza });
     }
-    if(_json.rt && _json.rt.receiptId) {
-      this.info.extraInfo.push({ label: Voce.ID_RICEVUTA+': ', value: _json.rt.receiptId });
+    if(_json.rt) {
+      // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+      const receiptForId = _json.rt.receipt ? _json.rt.receipt : _json.rt;
+      if(receiptForId.receiptId) {
+        this.info.extraInfo.push({ label: Voce.ID_RICEVUTA+': ', value: receiptForId.receiptId });
+      }
     }
     if(_pendenza.dataPagamento) {
       this.info.extraInfo.push({ label: Voce.DATA_PAGAMENTO+': ', value: moment(_pendenza.dataPagamento).format('DD/MM/YYYY') });
@@ -174,9 +180,11 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
         }
         }
     } else {
-      if (_json.rt && _json.rt.transferList && _json.rt.transferList.transfer) {
-        this._paymentsSum = _json.rt.paymentAmount;
-        this.importi = _json.rt.transferList.transfer.map(function(item) {
+      // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+      const receipt = (_json.rt && _json.rt.receipt) ? _json.rt.receipt : _json.rt;
+      if (receipt && receipt.transferList && receipt.transferList.transfer) {
+        this._paymentsSum = receipt.paymentAmount;
+        this.importi = receipt.transferList.transfer.map(function(item) {
           let _std = new NewStandardCollapse();
           _std.motivo = 'force_elenco';
           _std.titolo = new Dato({ value: item.remittanceInformation });
@@ -192,7 +200,7 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           if(item.fiscalCodePA) {
             _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: item.fiscalCodePA, type: 'string' });
           } else {
-          _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.companyName} (${_json.rt.fiscalCode})`, type: 'string' });
+          _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${receipt.companyName} (${receipt.fiscalCode})`, type: 'string' });
           }
           if(item.IBAN) {
             _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.IBAN, type: 'string' });
@@ -217,15 +225,15 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           return p;
         }, this);
       }
-      if (_json.rt) {
-        if(_json.rt.idPSP) {
-          this.datiPsp.push({label: Voce.ID_PSP, value: _json.rt.idPSP});
+      if (receipt) {
+        if(receipt.idPSP) {
+          this.datiPsp.push({label: Voce.ID_PSP, value: receipt.idPSP});
         }
-        if(_json.rt.PSPCompanyName) {
-          this.datiPsp.push({label: Voce.DENOMINAZIONE, value: _json.rt.PSPCompanyName});
+        if(receipt.PSPCompanyName) {
+          this.datiPsp.push({label: Voce.DENOMINAZIONE, value: receipt.PSPCompanyName});
         }
-        if(_json.rt.idChannel) {
-          this.datiPsp.push({label: Voce.CANALE, value: Dato.concatStrings([_json.rt.channelDescription, _json.rt.idChannel], ', ')});
+        if(receipt.idChannel) {
+          this.datiPsp.push({label: Voce.CANALE, value: Dato.concatStrings([receipt.channelDescription, receipt.idChannel], ', ')});
         }
       }
     }
@@ -243,9 +251,11 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
       iuv = this.json.rt.datiPagamento.identificativoUnivocoVersamento;
       idRicevuta = this.json.rt.datiPagamento.CodiceContestoPagamento;
     } else {
-      idDominio = this.json.rt.fiscalCode;
-      iuv = this.json.rt.creditorReferenceId;
-      idRicevuta = this.json.rt.receiptId;
+      // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+      const receipt = this.json.rt.receipt ? this.json.rt.receipt : this.json.rt;
+      idDominio = receipt.fiscalCode;
+      iuv = receipt.creditorReferenceId;
+      idRicevuta = receipt.receiptId;
     }
     let _query = 'idDominio='+idDominio+'&iuv='+iuv; //+'&ccp='+idRicevuta
     this.__getEventi(_url, _query);
@@ -387,9 +397,11 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
       iuv = this.json.rt.datiPagamento.identificativoUnivocoVersamento;
       idRicevuta = this.json.rt.datiPagamento.CodiceContestoPagamento;
     } else {
-      idDominio = this.json.rt.fiscalCode;
-      iuv = this.json.rt.creditorReferenceId;
-      idRicevuta = this.json.rt.receiptId;
+      // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+      const receipt = this.json.rt.receipt ? this.json.rt.receipt : this.json.rt;
+      idDominio = receipt.fiscalCode;
+      iuv = receipt.creditorReferenceId;
+      idRicevuta = receipt.receiptId;
     }
     let _url = `${UtilService.URL_RICEVUTE}/${idDominio}/${iuv}/${idRicevuta}/rt`;
 

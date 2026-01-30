@@ -319,10 +319,12 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
               }
             }
             if (item.rt) {
-              _istituto = (item.rt.PSPCompanyName || '');
-			  const _date = item.rt.paymentDateTime?moment(item.rt.paymentDateTime).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE;
+              // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+              const receipt = item.rt.receipt ? item.rt.receipt : item.rt;
+              _istituto = (receipt.PSPCompanyName || '');
+			  const _date = receipt.paymentDateTime?moment(receipt.paymentDateTime).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE;
               stStrings.push(Voce.DATA+': '+_date);
-              const _ccp = (item.rt.receiptId)?item.rt.receiptId:Voce.NON_PRESENTE;
+              const _ccp = (receipt.receiptId)?receipt.receiptId:Voce.NON_PRESENTE;
               stStrings.push(Voce.ID_RICEVUTA+': '+_ccp);
             } else {
 				stStrings.push(Voce.DATA+': '+Voce.NON_PRESENTE);	
