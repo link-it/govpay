@@ -766,9 +766,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_RICEVUTE:
         const versione620: boolean = !!(item.rpt && item.rt.versioneOggetto && item.rt.versioneOggetto === '6.2.0');
-        const _iuv2 = versione620?item.rt.datiPagamento.identificativoUnivocoVersamento:item.rt.creditorReferenceId;
-        const _importo = versione620?item.rt.datiPagamento.importoTotalePagato:item.rt.paymentAmount;
-        const _dataPagamento = versione620?item.rt.dataOraMessaggioRicevuta:item.rt.paymentDateTime;
+        // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+        const receipt = (item.rt && item.rt.receipt) ? item.rt.receipt : item.rt;
+        const _iuv2 = versione620?item.rt.datiPagamento.identificativoUnivocoVersamento:receipt.creditorReferenceId;
+        const _importo = versione620?item.rt.datiPagamento.importoTotalePagato:receipt.paymentAmount;
+        const _dataPagamento = versione620?item.rt.dataOraMessaggioRicevuta:receipt.paymentDateTime;
         _stdTC = new TwoCols();
         _stdTC.generalTemplate = true;
         _stdTC.gtTextUL = item.pendenza.causale;

@@ -158,14 +158,16 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         }
       } else {
         const soggetto: string[] = [];
-        if (_rpp0.rt && _rpp0.rt.receipt) {
-          _istituto = (_rpp0.rt.receipt.PSPCompanyName || '');
-          if (_rpp0.rt && _rpp0.rt.receipt && _rpp0.rt.receipt.payer) {
-            if (_rpp0.rt.receipt.payer.fullName) {
-              soggetto.push(_rpp0.rt.receipt.payer.fullName);
+        if (_rpp0.rt) {
+          // Retrocompatibilita': se esiste rt.receipt usa quello, altrimenti rt e' gia' il receipt
+          const receipt = _rpp0.rt.receipt ? _rpp0.rt.receipt : _rpp0.rt;
+          _istituto = (receipt.PSPCompanyName || '');
+          if (receipt.payer) {
+            if (receipt.payer.fullName) {
+              soggetto.push(receipt.payer.fullName);
             }
-            if (_rpp0.rt.receipt.payer.uniqueIdentifier && _rpp0.rt.receipt.payer.uniqueIdentifier.entityUniqueIdentifierValue) {
-              soggetto.push(_rpp0.rt.receipt.payer.uniqueIdentifier.entityUniqueIdentifierValue);
+            if (receipt.payer.uniqueIdentifier && receipt.payer.uniqueIdentifier.entityUniqueIdentifierValue) {
+              soggetto.push(receipt.payer.uniqueIdentifier.entityUniqueIdentifierValue);
             }
           }
         }

@@ -1126,6 +1126,19 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
+			// controllo se e' un nav della sonda pagoPA (Stand-In check)
+			// Il check viene effettuato PRIMA della verifica del dominio per evitare che
+			// l'errore PAA_ID_DOMINIO_ERRATO venga interpretato da Stand-In come disservizio
+			if(IuvUtils.isNavSondaPagoPA(numeroAvviso)) {
+				log.debug(MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV, codDominio, numeroAvviso);
+				NdpException e = new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				response = creaRispostaSondaPagoPA(e);
+				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, "0", "", MSG_NESSUNA_CAUSALE);
+				appContext.getEventoCtx().setEsito(Esito.OK);
+				log.debug(MSG_LOG_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV_COMPLETATO, codDominio, numeroAvviso);
+				return response;
+			}
+
 			log.debug(MSG_LOG_VERIFICA_DOMINIO);
 			Dominio dominio;
 			try {
@@ -1137,17 +1150,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			log.debug(MSG_LOG_VERIFICA_VERSAMENTO);
 
-			// controllo se e' un nav della sonda pagoPA
-			if(IuvUtils.isNavSondaPagoPA(numeroAvviso)) {
-				log.debug(MSG_LOG_RICEVUTO_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV, codDominio, numeroAvviso);
-				NdpException e = new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
-				response = creaRispostaSondaPagoPA(e);
-				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, "0", "", MSG_NESSUNA_CAUSALE);
-				appContext.getEventoCtx().setEsito(Esito.OK);
-				log.debug(MSG_LOG_CHECK_SONDA_PAGO_PA_PER_IL_DOMINIO_E_NAV_COMPLETATO, codDominio, numeroAvviso);
-				return response;
-			}
-			
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
