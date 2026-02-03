@@ -42,11 +42,8 @@ public class ConnettoreNotificaPagamenti extends Connettore {
 	public static final String P_EMAIL_ALLEGATO = "EMAIL_ALLEGATO";
 	public static final String P_DOWNLOAD_BASE_URL = "DOWNLOAD_BASE_URL";
 	public static final String P_INTERVALLO_CREAZIONE_TRACCIATO = "INTERV_CREAZ_TRAC";
-	
 	public static final String P_PRINCIPAL_MAGGIOLI = "PRINCIPAL_MAGGIOLI";
-	
-	
-	
+
 	public enum TipoConnettore {
 		WEB_SERVICE, EMAIL, FILE_SYSTEM, REST;
 	}
@@ -74,9 +71,9 @@ public class ConnettoreNotificaPagamenti extends Connettore {
 	private List<String> contenuti;
 	private boolean emailAllegato;
 	private String downloadBaseURL;
-	private String principalMaggioli;
 	private Integer intervalloCreazioneTracciato;
-	
+	private String principalMaggioli;
+
 	public ConnettoreNotificaPagamenti() {
 		// default value per intervallo creazione = 24 ore
 		this.intervalloCreazioneTracciato = 24;
@@ -201,19 +198,19 @@ public class ConnettoreNotificaPagamenti extends Connettore {
 		this.emailAllegato = emailAllegato;
 	}
 
-	public String getPrincipalMaggioli() {
-		return principalMaggioli;
-	}
-
-	public void setPrincipalMaggioli(String principalMaggioli) {
-		this.principalMaggioli = principalMaggioli;
-	}
-	
 	public Integer getIntervalloCreazioneTracciato() {
 		return intervalloCreazioneTracciato;
 	}
 
 	public void setIntervalloCreazioneTracciato(Integer intervalloCreazioneTracciato) {
 		this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
+	}
+
+	public String getPrincipalMaggioli() {
+		return principalMaggioli;
+	}
+
+	public void setPrincipalMaggioli(String principalMaggioli) {
+		this.principalMaggioli = principalMaggioli;
 	}
 }

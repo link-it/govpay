@@ -81,7 +81,6 @@ public class GovpayConfig {
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
-	private int dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	private int dimensionePoolThreadRecuperoRT;
 	private String ksLocation;
 	private String ksPassword;
@@ -178,9 +177,6 @@ public class GovpayConfig {
 	private Integer connectionTimeoutAppIO;
 	private Integer readTimeoutAppIO;
 	private Integer connectionRequestTimeoutAppIO;
-	private Integer connectionTimeoutMaggioliJPPA;
-	private Integer readTimeoutMaggioliJPPA;
-	private Integer connectionRequestTimeoutMaggioliJPPA;
 
 	private String templateQuietanzaPagamento;
 
@@ -238,7 +234,6 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
-		this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
 		this.dimensionePoolThreadRecuperoRT = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
@@ -310,9 +305,6 @@ public class GovpayConfig {
 		this.readTimeoutAppIO = 180000;
 		this.connectionTimeoutAppIO = 10000;
 		this.connectionRequestTimeoutAppIO = 180000;
-		this.readTimeoutMaggioliJPPA = 180000;
-		this.connectionTimeoutMaggioliJPPA = 10000;
-		this.connectionRequestTimeoutMaggioliJPPA = 180000;
 
 		this.aggiornamentoValiditaMandatorio = false;
 
@@ -430,7 +422,6 @@ public class GovpayConfig {
 			this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento", this.props, false, 10);
 			this.dimensionePoolThreadCaricamentoTracciati = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati", this.props, false, 10);
 			this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, 10);
-			this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA", this.props, false, 10);
 			this.dimensionePoolThreadRecuperoRT = getIntegerProperty(log, "it.govpay.thread.pool.recuperoRT", this.props, false, 10);
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
@@ -686,10 +677,6 @@ public class GovpayConfig {
 			this.connectionTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionTimeout", this.props, false, 10000);
 			this.readTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionRequestTimeout", this.props, false, 10000);
-
-			this.connectionTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionTimeout", this.props, false, 10000);
-			this.readTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.readTimeout", this.props, false, 180000);
-			this.connectionRequestTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, 10000);
 
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
@@ -1052,10 +1039,6 @@ public class GovpayConfig {
 		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
-	public int getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli() {
-		return dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
-	}
-
 	public int getDimensionePoolThreadRecuperoRT() {
 		return dimensionePoolThreadRecuperoRT;
 	}
@@ -1326,18 +1309,6 @@ public class GovpayConfig {
 
 	public Integer getConnectionRequestTimeoutAppIO() {
 		return connectionRequestTimeoutAppIO;
-	}
-
-	public Integer getConnectionTimeoutMaggioliJPPA() {
-		return connectionTimeoutMaggioliJPPA;
-	}
-
-	public Integer getReadTimeoutMaggioliJPPA() {
-		return readTimeoutMaggioliJPPA;
-	}
-
-	public Integer getConnectionRequestTimeoutMaggioliJPPA() {
-		return connectionRequestTimeoutMaggioliJPPA;
 	}
 
 	public Integer getTimeoutInvioRPTModello3Millis() {

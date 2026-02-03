@@ -898,10 +898,7 @@ public class Operazioni{
 					
 					// HyperSicAPKappa
 					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreHyperSicAPKappa(), "HyperSicAPKappa", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
-					
-					// Maggioli JPPA
-					Operazioni.eseguiElaborazioneTracciatiNotificaPagamenti(ctx, dominio, dominio.getConnettoreMaggioliJPPA(), "Maggioli JPPA", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
-					
+
 				}
 				
 				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
@@ -967,9 +964,6 @@ public class Operazioni{
 
 					// HyperSicAPKappa
 					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreHyperSicAPKappa(), "HyperSicAPKappa", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
-
-					// Maggioli JPPA
-					Operazioni.spedizioneTracciatiNotificaPagamentiConnettore(ctx, configWrapper, dominio, dominio.getConnettoreMaggioliJPPA(), "Maggioli JPPA", it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
 
 				}
 				

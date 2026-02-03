@@ -18,7 +18,6 @@
 		<module>fonts-titilliumWeb</module>
 		<module>xml-adapters</module>
 		<module>pagopa-beans</module>
-		<module>jppapdp-beans</module>
 		<module>appio-beans</module>
 		<module>orm-beans</module>
 		<module>orm</module>

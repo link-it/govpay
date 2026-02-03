@@ -211,7 +211,6 @@ public class StartupUtils {
 		try {
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
-			it.govpay.jppapdp.beans.utils.JaxbUtils.init();
 			ThreadExecutorManager.setup();
 			GovpayStampe.init(log, gpConfig.getResourceDir());
 		} catch (UtilsException | JAXBException | SAXException | ConfigException e) {

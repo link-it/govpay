@@ -46,7 +46,7 @@ public class Dominio extends BasicModel {
 	private ConnettoreNotificaPagamenti connettoreGovPay;
 	private ConnettoreNotificaPagamenti connettoreHyperSicAPKappa;
 	private ConnettoreNotificaPagamenti connettoreMaggioliJPPA;
-		
+
 	private boolean intermediato;
 	
 	private String tassonomiaPagoPA;
@@ -190,20 +190,20 @@ public class Dominio extends BasicModel {
 		this.connettoreHyperSicAPKappa = connettoreHyperSicAPKappa;
 	}
 
-	public boolean isIntermediato() {
-		return intermediato;
-	}
-
-	public void setIntermediato(boolean intermediato) {
-		this.intermediato = intermediato;
-	}
-
 	public ConnettoreNotificaPagamenti getConnettoreMaggioliJPPA() {
 		return connettoreMaggioliJPPA;
 	}
 
 	public void setConnettoreMaggioliJPPA(ConnettoreNotificaPagamenti connettoreMaggioliJPPA) {
 		this.connettoreMaggioliJPPA = connettoreMaggioliJPPA;
+	}
+
+	public boolean isIntermediato() {
+		return intermediato;
+	}
+
+	public void setIntermediato(boolean intermediato) {
+		this.intermediato = intermediato;
 	}
 
 	public String getTassonomiaPagoPA() {

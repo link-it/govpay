@@ -128,9 +128,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		GOVPAYINVIATRACCIATOFILESYSTEM("govpayInviaTracciatoFileSystem"), 
 		GOVPAYINVIATRACCIATOEMAIL("govpayInviaTracciatoEmail"),
 		GOVPAYINVIATRACCIATOREST("govpayInviaTracciatoRest"),
-		HYPERSICAPKAPPAINVIATRACCIATOEMAIL("hyperSicAPKappaInviaTracciatoEmail"), 
-		HYPERSICAPKAPPAINVIATRACCIATOFILESYSTEM("hyperSicAPKappaInviaTracciatoFileSystem"),
-		MAGGIOLIJPPAINVIATRACCIATOEMAIL("maggioliJppaInviaTracciatoEmail");
+		HYPERSICAPKAPPAINVIATRACCIATOEMAIL("hyperSicAPKappaInviaTracciatoEmail"),
+		HYPERSICAPKAPPAINVIATRACCIATOFILESYSTEM("hyperSicAPKappaInviaTracciatoFileSystem");
 
 		private String value;
 
@@ -201,9 +200,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		case HYPERSIC_APK:
 			this.componente = Componente.API_HYPERSIC_APK;
-			break;
-		case MAGGIOLI_JPPA:
-			this.componente = Componente.API_MAGGIOLI_JPPA;
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
@@ -680,9 +676,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		case HYPERSIC_APK:
 			this.eventoCtx.setTipoEvento(Operazione.HYPERSICAPKAPPAINVIATRACCIATOEMAIL.name());
 			break;
-		case MAGGIOLI_JPPA:
-			this.eventoCtx.setTipoEvento(Operazione.MAGGIOLIJPPAINVIATRACCIATOEMAIL.name());
-			break;
 		}
 
 		dumpRequest.setContentType(CONTENT_TYPE_TEXT_PLAIN);
@@ -832,10 +825,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tipoTracciatoString = ""; 
 			break;
 		case HYPERSIC_APK:
-			tipoTracciatoString = " per l'importazione in APKappa"; 
-			break;
-		case MAGGIOLI_JPPA:
-			tipoTracciatoString = " inviati al servizio Maggioli JPPA"; 
+			tipoTracciatoString = " per l'importazione in APKappa";
 			break;
 		}
 
@@ -894,8 +884,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			case HYPERSIC_APK:
 				this.eventoCtx.setTipoEvento(Operazione.HYPERSICAPKAPPAINVIATRACCIATOFILESYSTEM.name());
 				break;
-			case MAGGIOLI_JPPA:
-				throw new ServiceException("Modalita' di spedizione non valida");
 			}
 
 			dumpRequest.setContentType("application/zip");

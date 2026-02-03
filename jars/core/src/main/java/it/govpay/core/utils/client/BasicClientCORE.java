@@ -386,11 +386,6 @@ public abstract class BasicClientCORE {
 			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutAppIO();
 			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutAppIO();
 			break;
-		case MAGGIOLI_JPPA:
-			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutMaggioliJPPA();
-			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutMaggioliJPPA();
-			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutMaggioliJPPA();
-			break;
 		case BATCH_ACA:
 			this.readTimeout = GovpayConfig.getInstance().getBatchAcaReadTimeout();
 			this.connectionTimeout = GovpayConfig.getInstance().getBatchAcaConnectionTimeout();
