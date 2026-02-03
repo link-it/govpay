@@ -100,14 +100,8 @@ public class GovpayConfig {
 	private long timeoutBatch;
 
 	private boolean batchCaricamentoTracciati;
-	private boolean timeoutPendentiModello3;
-	private Integer timeoutPendentiModello3Mins;
-	private boolean timeoutPendentiModello1;
-	private Integer timeoutPendentiModello1Mins;
 
 	private Integer timeoutPendentiModello3SANP24Mins;
-
-	private Integer timeoutInvioRPTModello3Millis;
 
 	private Properties[] props;
 
@@ -256,12 +250,7 @@ public class GovpayConfig {
 		this.batchOn=true;
 		this.pddAuthEnable = true;
 		this.batchCaricamentoTracciati = false;
-		this.timeoutPendentiModello3 = false;
-		this.timeoutPendentiModello3Mins = null;
-		this.timeoutPendentiModello1 = false;
-		this.timeoutPendentiModello1Mins = null;
 		this.timeoutPendentiModello3SANP24Mins = 30;
-		this.timeoutInvioRPTModello3Millis = 100;
 
 		this.appName = null;
 		this.ambienteDeploy = null;
@@ -526,26 +515,6 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
 
-			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
-			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
-				try{
-					this.timeoutPendentiModello3Mins = Integer.parseInt(timeoutPendentiString);
-					this.timeoutPendentiModello3 = true;
-				} catch(NumberFormatException nfe) {
-					log.warn("La proprieta \"it.govpay.modello3.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
-				}
-			}
-
-			String timeoutPendentiModello1String = getProperty("it.govpay.modello1.timeoutPagamento", props, false, log);
-			if(timeoutPendentiModello1String != null && !timeoutPendentiModello1String.equalsIgnoreCase("false")) {
-				try{
-					this.timeoutPendentiModello1Mins = Integer.parseInt(timeoutPendentiModello1String);
-					this.timeoutPendentiModello1 = true;
-				} catch(NumberFormatException nfe) {
-					log.warn("La proprieta \"it.govpay.modello1.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
-				}
-			}
-
 			String timeoutPendentiModello3SANP24String = getProperty("it.govpay.modello3.sanp24.timeoutPagamento", props, false, log);
 			if(timeoutPendentiModello3SANP24String != null) {
 				try{
@@ -697,20 +666,6 @@ public class GovpayConfig {
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
 				this.aggiornamentoValiditaMandatorio = true;
-
-			String timeoutInvioRPTModello3MillisString = getProperty("it.govpay.modello3.timeoutInvioRPT", this.props, false, log);
-			try{
-				this.timeoutInvioRPTModello3Millis = Integer.parseInt(timeoutInvioRPTModello3MillisString);
-
-				if(this.timeoutInvioRPTModello3Millis < 0 || this.timeoutInvioRPTModello3Millis > 1000) {
-					log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" trovata con valore non valido [{}], viene impostata con valore di default 100 ms", this.timeoutInvioRPTModello3Millis);
-					this.timeoutInvioRPTModello3Millis = 100;
-				}
-
-			} catch(NullPointerException | NumberFormatException t) {
-				log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" impostata con valore di default 100 ms");
-				this.timeoutInvioRPTModello3Millis = 100;
-			}
 
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
 
@@ -1139,22 +1094,6 @@ public class GovpayConfig {
 		return batchCaricamentoTracciati;
 	}
 
-	public boolean isTimeoutPendentiModello3() {
-		return timeoutPendentiModello3;
-	}
-
-	public Integer getTimeoutPendentiModello3Mins() {
-		return timeoutPendentiModello3Mins;
-	}
-
-	public boolean isTimeoutPendentiModello1() {
-		return timeoutPendentiModello1;
-	}
-
-	public Integer getTimeoutPendentiModello1Mins() {
-		return timeoutPendentiModello1Mins;
-	}
-
 	public Integer getTimeoutPendentiModello3SANP24Mins() {
 		return timeoutPendentiModello3SANP24Mins;
 	}
@@ -1345,10 +1284,6 @@ public class GovpayConfig {
 
 	public Integer getConnectionRequestTimeoutMaggioliJPPA() {
 		return connectionRequestTimeoutMaggioliJPPA;
-	}
-
-	public Integer getTimeoutInvioRPTModello3Millis() {
-		return timeoutInvioRPTModello3Millis;
 	}
 
 	public String getCheckoutBaseURL() {

@@ -280,8 +280,6 @@ public class RtUtils extends NdpValidationUtils {
 				}
 			}
 			
-			boolean isCarrello = RtUtils.isCarrelloRpt(rpt);
-			
 			// Faccio adesso la select for update, altrimenti in caso di 
 			// ricezione di due RT afferenti allo stesso carrello di pagamento
 			// vado in deadlock tra la getRpt precedente e la findAll seguente
@@ -622,15 +620,6 @@ public class RtUtils extends NdpValidationUtils {
 				rptBD.closeConnection();
 			}
 		}
-	}
-
-	public static boolean isCarrelloRpt(Rpt rpt) {
-		boolean isCarrello = false;
-		// e' un pagamento modello 1 con carrello se la versione e' SANP_230
-		if(rpt != null && (rpt.getVersione().equals(VersioneRPT.SANP_230) && rpt.getModelloPagamento().equals(it.govpay.model.Rpt.modelloPagamentoWISP20))){
-			isCarrello = true;
-		}
-		return isCarrello;
 	}
 	
 	public static Pagamento creaNuovoPagamento(String iuv, String receiptId, IContext ctx, BDConfigWrapper configWrapper,

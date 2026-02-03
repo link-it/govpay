@@ -1,5 +1,32 @@
 2026-01-30  Giuliano Pintori <pintori@link.it>
 
+	* Rilasciata versione 3.9.0-SNAPSHOT
+
+2026-01-30  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM, GovPayCore, GovPayApiPagamento, GovPayConsole, Database]
+	Aggiunta funzionalità #836
+	Rimosso il supporto al Modello 1 pagoPA (nodoInviaCarrelloRPT) e alle API-Pagamento.
+	Rimosse tabelle pagamenti_portale e pag_port_versamenti.
+	Rimossa vista v_pagamenti_portale.
+	Rimossi model PagamentoPortale, PagamentoPortaleVersamento e VistaPagamentoPortale.
+	Eliminate API-Pagamento e WebConnector non piu' necessarie.
+	Rimossa possibilita' di abilitare la sezione pagamenti nel cruscotto.
+	Eliminati riferimenti alla primitiva nodoInviaCarrelloRPT.
+	Aggiornati script di creazione db e aggiunte patch 3.9.
+	Rivisti test di integrazione.
+
+	* [GovPayCore]
+	Aggiunta funzionalità #841
+	Aggiunta possibilita' di configurare il numero di notifiche da assegnare ad ogni thread di spedizione.
+	Nuova proprieta': it.govpay.batch.notifiche.perThread
+
+	* [GovPayConsole]
+	Risolto Bug #847
+	Aggiunta proprieta' mancante al file di configurazione della console.
+
+2026-01-30  Giuliano Pintori <pintori@link.it>
+
 	* Rilasciata versione 3.8.3-SNAPSHOT
 
 2026-01-30  Giuliano Pintori <pintori@link.it>
