@@ -116,7 +116,6 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_SECIM,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_GOV_PAY,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().INTERMEDIATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().TASSONOMIA_PAGO_PA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().SCARICA_FR,false),"?");
@@ -140,7 +139,6 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreSecim(),Dominio.model().COD_CONNETTORE_SECIM.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreGovPay(),Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreHyperSicAPK(),Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreMaggioliJPPA(),Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIntermediato(),Dominio.model().INTERMEDIATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getTassonomiaPagoPA(),Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getScaricaFr(),Dominio.model().SCARICA_FR.getFieldType()),
@@ -261,8 +259,6 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreGovPay(), Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreHyperSicAPK(), Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreMaggioliJPPA(), Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().INTERMEDIATO,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getIntermediato(), Dominio.model().INTERMEDIATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().TASSONOMIA_PAGO_PA,false), "?");

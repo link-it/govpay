@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { Voce } from '../../../../../../services/voce.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UtilService } from '../../../../../../services/util.service';
-import { MatSelectChange } from '@angular/material';
-import { SimpleListItem } from '../../../../../simple-list-card/simple-list-card.component';
-import { SslConfigComponent } from '../../../ssl-config/ssl-config.component';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { TimePickerDialogComponent } from '../../../../../item-view/views/date-picker-view/date-picker-view.component';
+import * as moment from 'moment';
 
 const SEPARATORE: string = ', ';
 
@@ -15,188 +14,183 @@ const SEPARATORE: string = ', ';
   styleUrls: ['./connettore-maggioli.component.scss']
 })
 export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, AfterViewInit {
-  @ViewChild('sslConfig') sslConfig: SslConfigComponent;
 
   _Voce = Voce;
-  Util = UtilService;
   @Input() fGroup: FormGroup;
   @Input() json: any;
   @Input() parent: any;
 
   pattern: string = '^(|([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+((,\\s)(([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+)*$';
-  maggioliAbilitato: boolean;
-  tipoConnettore: FormControl = new FormControl('');
-  maggioliModalita: string = '';
-  _option: any = { hasOption: false, hasAllOption: false };
-  _all: any = { descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTI_TIPI_PENDENZA.value };
-  _tipiPendenza: any[] = (UtilService.PROFILO_UTENTE.tipiPendenza || []);
-
+  maggioliAbilitato: boolean = false;
+  _inviaTracciatoEsito: boolean = false;
   _isAllegatoEmail: boolean = false;
+  _dataUltimaRT: Date = null;
 
-  protected versioni: any[] = [ 'SOAP v1' ];
-  protected sslTypeValue: string = '';
-
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit() {
     this.fGroup.addControl('maggioliAbilitato_ctrl', new FormControl(false));
-    this.fGroup.addControl('versione_ctrl', new FormControl(''));
-    this.fGroup.addControl('tipoConnettore_ctrl', this.tipoConnettore);
-    this.fGroup.addControl('tipiPendenza_ctrl', new FormControl(''));
+    this.fGroup.addControl('url_ctrl', new FormControl(''));
+    this.fGroup.addControl('username_ctrl', new FormControl(''));
+    this.fGroup.addControl('password_ctrl', new FormControl(''));
+    this.fGroup.addControl('inviaTracciatoEsito_ctrl', new FormControl(false));
+    this.fGroup.addControl('fileSystemPath_ctrl', new FormControl(''));
     this.fGroup.addControl('emailIndirizzi_ctrl', new FormControl(''));
     this.fGroup.addControl('emailSubject_ctrl', new FormControl(''));
     this.fGroup.addControl('emailAllegato_ctrl', new FormControl(false));
-    this.fGroup.addControl('downloadBaseUrl_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('principal_ctrl', new FormControl(''));
-    this.fGroup.addControl('url_ctrl', new FormControl(''));
-    this.fGroup.addControl('versioneApi_ctrl', new FormControl('', null));
+    this.fGroup.addControl('downloadBaseUrl_ctrl', new FormControl(''));
+    this.fGroup.addControl('dataUltimaRT_ctrl', new FormControl(null));
   }
 
   ngAfterViewInit() {
-    if(this.json) {
+    if (this.json) {
       this.fGroup.controls['maggioliAbilitato_ctrl'].setValue(this.json.abilitato || false);
-      this.fGroup.controls['versione_ctrl'].setValue(this.json.versione || '');
-      this.fGroup.controls['tipoConnettore_ctrl'].setValue(this.json.tipoConnettore || '');
-      this.fGroup.controls['tipiPendenza_ctrl'].setValue(this.json.tipiPendenza || '');
+      if (this.json.url) {
+        this.fGroup.controls['url_ctrl'].setValue(this.json.url);
+      }
+      if (this.json.auth) {
+        this.fGroup.controls['username_ctrl'].setValue(this.json.auth.username || '');
+        this.fGroup.controls['password_ctrl'].setValue(this.json.auth.password || '');
+      }
+      this.fGroup.controls['inviaTracciatoEsito_ctrl'].setValue(this.json.inviaTracciatoEsito || false);
+      if (this.json.fileSystemPath) {
+        this.fGroup.controls['fileSystemPath_ctrl'].setValue(this.json.fileSystemPath);
+      }
       if (this.json.emailIndirizzi) {
         this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
       }
       this.fGroup.controls['emailSubject_ctrl'].setValue(this.json.emailSubject || '');
       this.fGroup.controls['emailAllegato_ctrl'].setValue(this.json.emailAllegato || false);
-      if (!this.json.emailAllegato) {
-        this.fGroup.controls['downloadBaseUrl_ctrl'].setValue(this.json.downloadBaseUrl || '');
+      if (this.json.downloadBaseUrl) {
+        this.fGroup.controls['downloadBaseUrl_ctrl'].setValue(this.json.downloadBaseUrl);
       }
-      // if (this.json.contenuti) {
-      //   this.fGroup.controls['contenuti_ctrl'].setValue(this.json.contenuti || '');
-      // }
-      if (this.json.principal) {
-        this.fGroup.controls['principal_ctrl'].setValue(this.json.principal);
+
+      this._inviaTracciatoEsito = this.json.inviaTracciatoEsito || false;
+      this._isAllegatoEmail = this.json.emailAllegato || false;
+      if (this.json.dataUltimaRT) {
+        this._dataUltimaRT = new Date(this.json.dataUltimaRT);
+        this.fGroup.controls['dataUltimaRT_ctrl'].setValue(this._dataUltimaRT);
       }
-      if (this.json.url) {
-        this.fGroup.controls['url_ctrl'].setValue(this.json.url);
-      }
-      if (this.json.versioneApi) {
-        this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.versioneApi);
-      }
-      this.__bools(this.json.tipiPendenza);
-      this._allegatoChange({ checked: this.json.emailAllegato });
+
       setTimeout(() => {
         this._onChangeMaggioli({ checked: this.json.abilitato }, 'maggioliAbilitato_ctrl');
-        this._onChangeMaggioli({ value: this.json.tipoConnettore }, 'tipoConnettore_ctrl');
       });
     }
-  }
-
-  protected _tipoChange(event: MatSelectChange) {
-    this._option.hasAllOption = false;
-    this._option.hasOption = false;
-    this.__bools(event.value);
-  }
-
-  protected __bools(values: any[]) {
-    (values || []).forEach(value => {
-      if (value.idTipoPendenza === '*') {
-        this._option.hasAllOption = true;
-        this._option.hasOption = false;
-      } else {
-        this._option.hasAllOption = false;
-        this._option.hasOption = true;
-      }
-    });
   }
 
   _onChangeMaggioli(event: any, type: string) {
     if (type === 'maggioliAbilitato_ctrl') {
       this.maggioliAbilitato = event.checked;
     }
-    if (type === 'tipoConnettore_ctrl') {
-      this.maggioliModalita = event.value;
-    }
-    this.fGroup.controls['tipoConnettore_ctrl'].clearValidators();
-    this.fGroup.controls['tipiPendenza_ctrl'].clearValidators();
 
-    this.fGroup.controls['principal_ctrl'].clearValidators();
+    // Clear all validators
     this.fGroup.controls['url_ctrl'].clearValidators();
-    this.fGroup.controls['versioneApi_ctrl'].clearValidators();
-    if (this.sslConfig) {
-      this.sslConfig.clearValidators();
-    }
+    this.fGroup.controls['username_ctrl'].clearValidators();
+    this.fGroup.controls['password_ctrl'].clearValidators();
+    this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
     this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
     this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
-    this.fGroup.controls['versione_ctrl'].clearValidators();
+
     if (this.maggioliAbilitato) {
-      this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required);
-      // EMAIL
-      if (this.maggioliModalita === UtilService.CONNETTORE_MODALITA_EMAIL) {
+      // URL e auth sono sempre obbligatori quando abilitato
+      this.fGroup.controls['url_ctrl'].setValidators(Validators.required);
+      this.fGroup.controls['username_ctrl'].setValidators(Validators.required);
+      this.fGroup.controls['password_ctrl'].setValidators(Validators.required);
+
+      if (this._inviaTracciatoEsito) {
+        this.fGroup.controls['fileSystemPath_ctrl'].setValidators(Validators.required);
         this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]);
         if (!this._isAllegatoEmail) {
-          this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators([Validators.required]);
+          this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators(Validators.required);
         }
-        this.fGroup.controls['versione_ctrl'].setValidators(Validators.required);
-      }
-      this.fGroup.controls['principal_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['url_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['versioneApi_ctrl'].setValidators(Validators.required);
-      if (this.sslConfig) {
-        this.sslConfig.setValidatorsRequired();
       }
     }
-    this.fGroup.controls['tipoConnettore_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    this.fGroup.controls['versione_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    this.fGroup.controls['versioneApi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+
+    // Update validity
+    this.fGroup.controls['url_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['username_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['password_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['fileSystemPath_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['emailIndirizzi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['downloadBaseUrl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    this.fGroup.controls['principal_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    this.fGroup.controls['url_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+  }
+
+  _onChangeInviaTracciatoEsito(event: any) {
+    this._inviaTracciatoEsito = event.checked || false;
+    this._onChangeMaggioli({ checked: this.maggioliAbilitato }, 'maggioliAbilitato_ctrl');
   }
 
   protected _allegatoChange(event: any) {
     this._isAllegatoEmail = event.checked || false;
-    (event.checked)?this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators():this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators(Validators.required);
-    (event.checked)?this.fGroup.controls['downloadBaseUrl_ctrl'].disable():this.fGroup.controls['downloadBaseUrl_ctrl'].enable();
+    if (event.checked) {
+      this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
+      this.fGroup.controls['downloadBaseUrl_ctrl'].disable();
+    } else {
+      if (this._inviaTracciatoEsito) {
+        this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators(Validators.required);
+      }
+      this.fGroup.controls['downloadBaseUrl_ctrl'].enable();
+    }
     this.fGroup.controls['downloadBaseUrl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
   }
 
-  _pendenzaCmpFn(p1: any, p2: any): boolean {
-    return (p1 && p2)?(p1.idTipoPendenza === p2.idTipoPendenza):(p1 === p2);
+  protected _overlayTimepicker(event: any) {
+    let _dp = this._dataUltimaRT || new Date();
+    event.preventDefault();
+    event.stopPropagation();
+    let timeDialog = this.dialog.open(TimePickerDialogComponent, {
+      data: _dp
+    } as MatDialogConfig);
+
+    timeDialog.afterClosed().subscribe(orario => {
+      if (orario) {
+        let _date = this.fGroup.controls['dataUltimaRT_ctrl'].value;
+        if (!_date) {
+          _date = new Date();
+        }
+        let _md = moment(_date).set('hour', orario.hh).set('minute', orario.mm);
+        _date = new Date(_md.year(), _md.month(), _md.date(), _md.hour(), _md.minute());
+        this.fGroup.controls['dataUltimaRT_ctrl'].setValue(_date);
+        this._dataUltimaRT = _date;
+      }
+    });
   }
 
   mapToJson(): any {
     let _info = this.fGroup.value;
-    let _json:any = {};
+    let _json: any = {};
 
     _json.abilitato = (_info['maggioliAbilitato_ctrl'] || false);
-    if (_json.abilitato) {
-      _json.tipiPendenza = _info['tipiPendenza_ctrl']?_info['tipiPendenza_ctrl'].map((p: any) => {
-        return {
-          idTipoPendenza: p.idTipoPendenza,
-          descrizione: p.descrizione,
-        };
-      }):null;
-      _json.versione = _info['versione_ctrl'] || null;
-      _json.tipoConnettore = _info['tipoConnettore_ctrl'] || null;
-      _json.principal = _info['principal_ctrl'] || null;
-      _json.auth = this.sslConfig.mapToJson();
-      _json.url = _info['url_ctrl']?_info['url_ctrl']:null;
-      _json.versioneApi = _info['versioneApi_ctrl']?_info['versioneApi_ctrl']:null;
 
-      if(_json.principal == null) { delete _json.principal; }
-      if(_json.auth == null) { delete _json.auth; }
-      if(_json.url == null) { delete _json.url; }
-      if (_json.tipoConnettore === UtilService.CONNETTORE_MODALITA_EMAIL) {
-        _json.emailIndirizzi = _info['emailIndirizzi_ctrl']?_info['emailIndirizzi_ctrl'].split(SEPARATORE):null;
+    // URL e credenziali vengono sempre salvate
+    _json.url = _info['url_ctrl'] || null;
+    _json.auth = {
+      username: _info['username_ctrl'] || null,
+      password: _info['password_ctrl'] || null
+    };
+
+    // dataUltimaRT viene sempre salvata se presente
+    if (_info['dataUltimaRT_ctrl']) {
+      _json.dataUltimaRT = _info['dataUltimaRT_ctrl'];
+    }
+
+    if (_json.abilitato) {
+      _json.inviaTracciatoEsito = _info['inviaTracciatoEsito_ctrl'] || false;
+
+      if (_json.inviaTracciatoEsito) {
+        _json.fileSystemPath = _info['fileSystemPath_ctrl'] || null;
+        _json.emailIndirizzi = _info['emailIndirizzi_ctrl'] ? _info['emailIndirizzi_ctrl'].split(SEPARATORE) : null;
         _json.emailSubject = _info['emailSubject_ctrl'] || null;
         _json.emailAllegato = _info['emailAllegato_ctrl'] || false;
-        if (_info['emailAllegato_ctrl'] === false) {
+        if (!_json.emailAllegato) {
           _json.downloadBaseUrl = _info['downloadBaseUrl_ctrl'] || null;
         }
       }
     }
 
+    // Rimuovi campi null (ma non dataUltimaRT)
     Object.keys(_json).forEach(key => {
-      if (_json[key] === null) {
+      if (_json[key] === null && key !== 'dataUltimaRT') {
         delete _json[key];
       }
     });

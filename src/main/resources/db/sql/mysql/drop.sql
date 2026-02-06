@@ -42,6 +42,7 @@ DROP TABLE acl;
 DROP TABLE connettori;
 DROP TABLE operatori;
 DROP TABLE utenze_domini;
+DROP TABLE jppa_config;
 DROP TABLE uo;
 DROP TABLE tributi;
 DROP TABLE tipi_tributo;

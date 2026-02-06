@@ -130,7 +130,6 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
 	cod_connettore_hyper_sic_apk VARCHAR(255),
-	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BIT NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
 	scarica_fr BIT NOT NULL,
@@ -251,6 +250,27 @@ CREATE TABLE uo
 
 -- index
 CREATE UNIQUE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+
+
+
+CREATE TABLE jppa_config
+(
+	cod_dominio VARCHAR(35) NOT NULL,
+	cod_connettore VARCHAR(255),
+	abilitato BIT NOT NULL,
+	data_ultima_rt DATETIME2,
+	-- fk/pk columns
+	id BIGINT IDENTITY,
+	id_dominio BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_jppa_config_1 UNIQUE (id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_jpc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_jppa_config PRIMARY KEY (id)
+);
+
+-- index
+CREATE UNIQUE INDEX index_jppa_config_1 ON jppa_config (cod_dominio);
 
 
 

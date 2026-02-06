@@ -52,6 +52,7 @@ import it.govpay.orm.IdFr;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdIntermediario;
+import it.govpay.orm.IdJppaConfig;
 import it.govpay.orm.IdNotifica;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.IdOperazione;
@@ -75,6 +76,7 @@ import it.govpay.orm.IdVersamento;
 import it.govpay.orm.IdVistaRiscossione;
 import it.govpay.orm.Incasso;
 import it.govpay.orm.Intermediario;
+import it.govpay.orm.JppaConfig;
 import it.govpay.orm.Notifica;
 import it.govpay.orm.NotificaAppIO;
 import it.govpay.orm.Operatore;
@@ -1698,6 +1700,69 @@ public abstract class AbstractDeserializer extends org.openspcoop2.generic_proje
 	
 	/*
 	 =================================================================================
+	 Object: id-jppa-config
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdJppaConfig}
+	 * @return Object type {@link it.govpay.orm.IdJppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdJppaConfig readIdJppaConfig(String fileName) throws DeserializerException {
+		return (IdJppaConfig) this.xmlToObj(fileName, IdJppaConfig.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdJppaConfig}
+	 * @return Object type {@link it.govpay.orm.IdJppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdJppaConfig readIdJppaConfig(File file) throws DeserializerException {
+		return (IdJppaConfig) this.xmlToObj(file, IdJppaConfig.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdJppaConfig}
+	 * @return Object type {@link it.govpay.orm.IdJppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdJppaConfig readIdJppaConfig(InputStream in) throws DeserializerException {
+		return (IdJppaConfig) this.xmlToObj(in, IdJppaConfig.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdJppaConfig}
+	 * @return Object type {@link it.govpay.orm.IdJppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdJppaConfig readIdJppaConfig(byte[] in) throws DeserializerException {
+		return (IdJppaConfig) this.xmlToObj(in, IdJppaConfig.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdJppaConfig}
+	 * @return Object type {@link it.govpay.orm.IdJppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdJppaConfig readIdJppaConfigFromString(String in) throws DeserializerException {
+		return (IdJppaConfig) this.xmlToObj(in.getBytes(), IdJppaConfig.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: id-acl
 	 =================================================================================
 	*/
@@ -2259,6 +2324,69 @@ public abstract class AbstractDeserializer extends org.openspcoop2.generic_proje
 	 */
 	public Utenza readUtenzaFromString(String in) throws DeserializerException {
 		return (Utenza) this.xmlToObj(in.getBytes(), Utenza.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: JppaConfig
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.JppaConfig}
+	 * @return Object type {@link it.govpay.orm.JppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public JppaConfig readJppaConfig(String fileName) throws DeserializerException {
+		return (JppaConfig) this.xmlToObj(fileName, JppaConfig.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.JppaConfig}
+	 * @return Object type {@link it.govpay.orm.JppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public JppaConfig readJppaConfig(File file) throws DeserializerException {
+		return (JppaConfig) this.xmlToObj(file, JppaConfig.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.JppaConfig}
+	 * @return Object type {@link it.govpay.orm.JppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public JppaConfig readJppaConfig(InputStream in) throws DeserializerException {
+		return (JppaConfig) this.xmlToObj(in, JppaConfig.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.JppaConfig}
+	 * @return Object type {@link it.govpay.orm.JppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public JppaConfig readJppaConfig(byte[] in) throws DeserializerException {
+		return (JppaConfig) this.xmlToObj(in, JppaConfig.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.JppaConfig}
+	 * @return Object type {@link it.govpay.orm.JppaConfig}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public JppaConfig readJppaConfigFromString(String in) throws DeserializerException {
+		return (JppaConfig) this.xmlToObj(in.getBytes(), JppaConfig.class);
 	}	
 	
 	

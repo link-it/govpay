@@ -18,6 +18,29 @@ And request dominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Scenario: Salvataggio URL e credenziali con abilitato false
+
+* def dominioDisabilitato = read('classpath:test/api/backoffice/v1/domini/put/msg/dominio-connettore-maggioliJPPA.json')
+* set dominioDisabilitato.servizioMaggioliJPPA.abilitato = false
+* set dominioDisabilitato.servizioMaggioliJPPA.url = 'http://test.disabilitato.it'
+* set dominioDisabilitato.servizioMaggioliJPPA.auth = { username: 'user_disabled', password: 'pwd_disabled' }
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominioDisabilitato
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.servizioMaggioliJPPA.abilitato == false
+And match response.servizioMaggioliJPPA.url == 'http://test.disabilitato.it'
+And match response.servizioMaggioliJPPA.auth == { username: 'user_disabled', password: 'pwd_disabled' }
+
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo email (<field>)
 
 * set dominio.servizioMaggioliJPPA.<field> = <value>
@@ -38,21 +61,18 @@ Then status 200
 And match response.servizioMaggioliJPPA.<field> == checkValue
 
 Examples:
-| field | value | retValue | 
+| field | value | retValue |
 | abilitato | false | false |
-| versione | '1.0' | '1.0' |
+| inviaTracciatoEsito | true | true |
+| inviaTracciatoEsito | false | false |
+| fileSystemPath | '/tmp/nuovoPath' | '/tmp/nuovoPath' |
 | emailIndirizzi | ['pec2@creditore.it'] | ['pec2@creditore.it'] |
 | emailIndirizzi | ['pec2@creditore.it' , 'pec3@creditore.it' ] | ['pec2@creditore.it' , 'pec3@creditore.it' ] |
-| emailSubject | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' |
-| tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
-| tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| emailSubject | '[Govpay] Export pagamenti MaggioliJPPA' | '[Govpay] Export pagamenti MaggioliJPPA' |
 | emailAllegato | false | false |
-| url | 'http://prova.it' | 'http://prova.it' |
-| versioneApi | 'SOAP v1' | 'SOAP v1' |
-| auth | { username: 'usr', password: 'pwd' } | { username: 'usr', password: 'pwd' } |
-| auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} |{ tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} |
-| auth | { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} | { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |
-| principal | 'username' | 'username' |
+| downloadBaseUrl | 'http://download.it/tracciati' | 'http://download.it/tracciati' |
+| url | 'http://nuovaurl.it' | 'http://nuovaurl.it' |
+| auth | { username: 'usr2', password: 'pwd2' } | { username: 'usr2', password: 'pwd2' } |
 
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo email <field> non valida
 
@@ -70,14 +90,11 @@ Then status 400
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| versioneZip | versioneZip | null | 'versioneZip' |
+| inviaTracciatoEsito | inviaTracciatoEsito | null | 'inviaTracciatoEsito' |
+| fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
-| tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
-| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'tipiPendenza' |
 | emailAllegato | emailAllegato | null | 'emailAllegato' |
-| principal | principal | null | 'principal' |
-| principal | principal | [ '#(loremIpsum)' ] | 'principal' |
 
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo email <field> non valida
 
@@ -118,26 +135,9 @@ Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | url | url | null | 'url' |
 | url | url | 'xxxx' | 'url' |
-| versioneApi | versioneApi | 'xxxx' | 'versioneApi' |
-| auth.tipo | auth | { } | 'tipo' |
+| auth | auth | null | 'auth' |
+| auth | auth | { } | 'username' |
 | auth.username | auth | { username: null, password: 'pwd' } | 'username' |
+| auth.username | auth | { password: 'pwd' } | 'username' |
 | auth.password | auth | { username: 'usr', password: null } | 'password' |
-| auth.tipo | auth | { tipo: null, ksLocation: '/tmp/keystore.jks', ksPassword: null, tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd'	} | 'tipo' |
-| auth.tipo | auth | { tipo: 'xxx', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd'	} | 'tipo' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: null, ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'ksLocation' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: null, tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'ksPassword' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: null, tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsLocation' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: null, tsType: 'JKS', sslType: 'TLSv1.2'	}|  'tsPassword' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: null, sslType: 'TLSv1.2'	}|  'tsType' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'XXX', sslType: 'TLSv1.2'	}|  'tsType' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: null	}|  'sslType' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} |  'sslType' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: null, ksPKeyPasswd: 'ksPKeyPasswd'	} |  'ksType' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'XXX', ksPKeyPasswd: 'ksPKeyPasswd'	} |  'ksType' |
-| auth.ksLocation | auth | { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	, ksType: 'JKS', ksPKeyPasswd:  null } |  'ksPKeyPasswd' |
-| auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: null, tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsLocation' |
-| auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: null, tsType: 'JKS', sslType: 'TLSv1.2'	} |  'tsPassword' |
-| auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: null, sslType: 'TLSv1.2'	} |  'tsType' |
-| auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'XXX', sslType: 'TLSv1.2'	} |  'tsType' |
-| auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: null	} |  'sslType' |
-| auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} |  'sslType' |
+| auth.password | auth | { username: 'usr' } | 'password' |

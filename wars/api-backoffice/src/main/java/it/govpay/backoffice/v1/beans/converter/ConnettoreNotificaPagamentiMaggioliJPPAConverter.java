@@ -19,29 +19,13 @@
  */
 package it.govpay.backoffice.v1.beans.converter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA.TipoConnettoreEnum;
-import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA.VersioneApiEnum;
-import it.govpay.backoffice.v1.beans.TipoPendenzaProfiloIndex;
-import it.govpay.backoffice.v1.controllers.ApplicazioniController;
-import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.beans.Costanti;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
-import it.govpay.model.TipoVersamento;
-import it.govpay.model.Versionabile;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
@@ -52,95 +36,20 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 
 		connettore.setAbilitato(connector.getAbilitato());
+		connettore.setTipoTracciato(tipo.name());
+		connettore.setTipoConnettore(TipoConnettore.EMAIL);
+
+		// URL e credenziali vengono sempre salvate indipendentemente dal flag abilitato
+		connettore.setUrl(connector.getUrl());
+		ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
 
 		if(Boolean.TRUE.equals(connector.getAbilitato())) {
-			connettore.setTipoTracciato(tipo.name());
-			connettore.setPrincipalMaggioli(connector.getPrincipal());
-
-			if(connector.getTipiPendenza() != null) {
-				List<String> idTipiVersamento = new ArrayList<>();
-
-				for (Object object : connector.getTipiPendenza()) {
-					if(object instanceof String idTipoPendenza) {
-						if(idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
-							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-
-							if(tipiVersamentoAutorizzati == null)
-								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-
-							if(!tipiVersamentoAutorizzati.isEmpty()) {
-								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA);
-							}
-
-							idTipiVersamento.clear();
-							break;
-						}
-
-						idTipiVersamento.add(idTipoPendenza);
-
-
-					} else if(object instanceof TipoPendenzaProfiloIndex tipoPendenzaPost) {
-						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
-							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-
-							if(tipiVersamentoAutorizzati == null)
-								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-
-							if(!tipiVersamentoAutorizzati.isEmpty()) {
-								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA);
-							}
-
-							idTipiVersamento.clear();
-							break;
-						}
-
-						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
-
-					} else if(object instanceof java.util.LinkedHashMap) {
-						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
-						TipoPendenzaProfiloIndex tipoPendenzaPost = new TipoPendenzaProfiloIndex();
-						if(map.containsKey("idTipoPendenza"))
-							tipoPendenzaPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
-						if(map.containsKey("descrizione")) {
-							tipoPendenzaPost.setDescrizione((String) map.get("descrizione"));
-						}
-
-						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
-							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-
-							if(tipiVersamentoAutorizzati == null)
-								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-
-							if(!tipiVersamentoAutorizzati.isEmpty()) {
-								throw AuthorizationManager.toNotAuthorizedException(user, Costanti.MSG_L_UTENZA_NON_E_ASSOCIATA_A_TUTTI_I_TIPI_PENDENZA_NON_PUO_DUNQUE_AUTORIZZARE_L_APPLICAZIONE_A_TUTTI_I_TIPI_PENDENZA_O_ABILITARE_L_AUTODETERMINAZIONE_DEI_TIPI_PENDENZA);
-							}
-
-							idTipiVersamento.clear();
-							break;
-						}
-						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
-					}
-				}
-				connettore.setTipiPendenza(idTipiVersamento);
-			}
-
-			switch (connector.getTipoConnettore()) {
-			case EMAIL:
-				connettore.setVersioneCsv(connector.getVersione());
-				connettore.setTipoConnettore(TipoConnettore.EMAIL);
-				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
-				connettore.setEmailSubject(connector.getEmailSubject());
-				connettore.setEmailAllegato(connector.getEmailAllegato());
-				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
-
-				ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
-
-				connettore.setUrl(connector.getUrl());
-				if(connector.getVersioneApi() != null)
-					connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
-
-				break;
-			}
+			connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
+			connettore.setEmailSubject(connector.getEmailSubject());
+			connettore.setEmailAllegato(connector.getEmailAllegato() != null ? connector.getEmailAllegato() : false);
+			connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
+			connettore.setFileSystemPath(connector.getFileSystemPath());
+			connettore.setInviaTracciatoEsito(connector.getInviaTracciatoEsito() != null ? connector.getInviaTracciatoEsito() : false);
 		}
 
 		return connettore;
@@ -148,53 +57,22 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 
 	public static it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA toRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) throws ServiceException {
 		it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA rsModel = new it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		rsModel.setAbilitato(connettore.isAbilitato());
+		rsModel.setDataUltimaRT(connettore.getDataUltimaRt());
+
+		// URL e credenziali vengono sempre restituite indipendentemente dal flag abilitato
+		rsModel.setUrl(connettore.getUrl());
+		if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
+			rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
+
 		if(connettore.isAbilitato()) {
-			switch (connettore.getTipoConnettore()) {
-			case EMAIL:
-				rsModel.setVersione(connettore.getVersioneCsv());
-				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
-				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
-				rsModel.setEmailSubject(connettore.getEmailSubject());
-				rsModel.setEmailAllegato(connettore.isEmailAllegato());
-				rsModel.setDownloadBaseUrl(connettore.getDownloadBaseURL());
-				if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
-					rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
-				rsModel.setUrl(connettore.getUrl());
-				if(connettore.getVersione() != null)
-					rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());
-				break;
-			case WEB_SERVICE, FILE_SYSTEM, REST:
-				break;
-			}
-
-			List<Object> idTipiPendenza = null;
-			List<String> tipiPendenza = connettore.getTipiPendenza();
-			if(tipiPendenza != null) {
-				idTipiPendenza = new ArrayList<>();
-				if(tipiPendenza.isEmpty()) {
-					TipoPendenzaProfiloIndex tPI = new TipoPendenzaProfiloIndex();
-					tPI.setIdTipoPendenza(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR);
-					tPI.setDescrizione(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR_LABEL);
-					idTipiPendenza.add(tPI);
-				} else {
-					for(String codTipoVersamento: tipiPendenza) {
-						try {
-							TipoPendenzaProfiloIndex tPI = new TipoPendenzaProfiloIndex();
-							TipoVersamento tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, codTipoVersamento);
-							tPI.setIdTipoPendenza(tipoVersamento.getCodTipoVersamento());
-							tPI.setDescrizione(tipoVersamento.getDescrizione());
-							idTipiPendenza.add(tPI);
-						} catch (NotFoundException e) {
-						}
-					}
-				}
-			}
-
-			rsModel.setTipiPendenza(idTipiPendenza);
-			rsModel.setPrincipal(connettore.getPrincipalMaggioli());
+			rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
+			rsModel.setEmailSubject(connettore.getEmailSubject());
+			rsModel.setEmailAllegato(connettore.isEmailAllegato());
+			rsModel.setDownloadBaseUrl(connettore.getDownloadBaseURL());
+			rsModel.setFileSystemPath(connettore.getFileSystemPath());
+			rsModel.setInviaTracciatoEsito(connettore.isInviaTracciatoEsito());
 		}
 		return rsModel;
 	}

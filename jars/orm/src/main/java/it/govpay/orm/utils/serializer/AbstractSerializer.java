@@ -57,6 +57,7 @@ import it.govpay.orm.IdFr;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdIntermediario;
+import it.govpay.orm.IdJppaConfig;
 import it.govpay.orm.IdNotifica;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.IdOperazione;
@@ -80,6 +81,7 @@ import it.govpay.orm.IdVersamento;
 import it.govpay.orm.IdVistaRiscossione;
 import it.govpay.orm.Incasso;
 import it.govpay.orm.Intermediario;
+import it.govpay.orm.JppaConfig;
 import it.govpay.orm.Notifica;
 import it.govpay.orm.NotificaAppIO;
 import it.govpay.orm.Operatore;
@@ -3166,6 +3168,124 @@ public abstract class AbstractSerializer {
 	
 	/*
 	 =================================================================================
+	 Object: id-jppa-config
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>idJppaConfig</var>
+	 * @param idJppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,IdJppaConfig idJppaConfig) throws SerializerException {
+		this.objToXml(fileName, IdJppaConfig.class, idJppaConfig, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>idJppaConfig</var>
+	 * @param idJppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,IdJppaConfig idJppaConfig,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, IdJppaConfig.class, idJppaConfig, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param file Xml file to serialize the object <var>idJppaConfig</var>
+	 * @param idJppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,IdJppaConfig idJppaConfig) throws SerializerException {
+		this.objToXml(file, IdJppaConfig.class, idJppaConfig, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param file Xml file to serialize the object <var>idJppaConfig</var>
+	 * @param idJppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,IdJppaConfig idJppaConfig,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, IdJppaConfig.class, idJppaConfig, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param out OutputStream to serialize the object <var>idJppaConfig</var>
+	 * @param idJppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,IdJppaConfig idJppaConfig) throws SerializerException {
+		this.objToXml(out, IdJppaConfig.class, idJppaConfig, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param out OutputStream to serialize the object <var>idJppaConfig</var>
+	 * @param idJppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,IdJppaConfig idJppaConfig,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, IdJppaConfig.class, idJppaConfig, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param idJppaConfig Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(IdJppaConfig idJppaConfig) throws SerializerException {
+		return this.objToXml(IdJppaConfig.class, idJppaConfig, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param idJppaConfig Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(IdJppaConfig idJppaConfig,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(IdJppaConfig.class, idJppaConfig, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param idJppaConfig Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(IdJppaConfig idJppaConfig) throws SerializerException {
+		return this.objToXml(IdJppaConfig.class, idJppaConfig, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>idJppaConfig</var> of type {@link it.govpay.orm.IdJppaConfig}
+	 * 
+	 * @param idJppaConfig Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(IdJppaConfig idJppaConfig,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(IdJppaConfig.class, idJppaConfig, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: id-acl
 	 =================================================================================
 	*/
@@ -4222,6 +4342,124 @@ public abstract class AbstractSerializer {
 	 */
 	public String toString(Utenza utenza,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(Utenza.class, utenza, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: JppaConfig
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>jppaConfig</var>
+	 * @param jppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,JppaConfig jppaConfig) throws SerializerException {
+		this.objToXml(fileName, JppaConfig.class, jppaConfig, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>jppaConfig</var>
+	 * @param jppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,JppaConfig jppaConfig,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, JppaConfig.class, jppaConfig, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param file Xml file to serialize the object <var>jppaConfig</var>
+	 * @param jppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,JppaConfig jppaConfig) throws SerializerException {
+		this.objToXml(file, JppaConfig.class, jppaConfig, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param file Xml file to serialize the object <var>jppaConfig</var>
+	 * @param jppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,JppaConfig jppaConfig,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, JppaConfig.class, jppaConfig, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param out OutputStream to serialize the object <var>jppaConfig</var>
+	 * @param jppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,JppaConfig jppaConfig) throws SerializerException {
+		this.objToXml(out, JppaConfig.class, jppaConfig, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param out OutputStream to serialize the object <var>jppaConfig</var>
+	 * @param jppaConfig Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,JppaConfig jppaConfig,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, JppaConfig.class, jppaConfig, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param jppaConfig Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(JppaConfig jppaConfig) throws SerializerException {
+		return this.objToXml(JppaConfig.class, jppaConfig, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param jppaConfig Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(JppaConfig jppaConfig,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(JppaConfig.class, jppaConfig, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param jppaConfig Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(JppaConfig jppaConfig) throws SerializerException {
+		return this.objToXml(JppaConfig.class, jppaConfig, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>jppaConfig</var> of type {@link it.govpay.orm.JppaConfig}
+	 * 
+	 * @param jppaConfig Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(JppaConfig jppaConfig,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(JppaConfig.class, jppaConfig, prettyPrint).toString();
 	}
 	
 	

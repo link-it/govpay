@@ -117,6 +117,10 @@ public class ConnettoreNotificaPagamentiConverter {
 					dto.setIntervalloCreazioneTracciato(Integer.parseInt(connettore.getValore()));
 				}
 
+				if(ConnettoreNotificaPagamenti.P_INVIA_TRACCIATO_ESITO.equals(connettore.getCodProprieta())) {
+					dto.setInviaTracciatoEsito(Boolean.parseBoolean(connettore.getValore()));
+				}
+
 
 				// ereditato da connettore
 				
@@ -516,7 +520,13 @@ public class ConnettoreNotificaPagamentiConverter {
 		voEmailAllegato.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_ALLEGATO);
 		voEmailAllegato.setValore(Boolean.toString(connettore.isEmailAllegato()));
 		voList.add(voEmailAllegato);
-		
+
+		it.govpay.orm.Connettore voInviaTracciatoEsito = new it.govpay.orm.Connettore();
+		voInviaTracciatoEsito.setCodConnettore(connettore.getIdConnettore());
+		voInviaTracciatoEsito.setCodProprieta(ConnettoreNotificaPagamenti.P_INVIA_TRACCIATO_ESITO);
+		voInviaTracciatoEsito.setValore(Boolean.toString(connettore.isInviaTracciatoEsito()));
+		voList.add(voInviaTracciatoEsito);
+
 		return voList;
 	}
 	

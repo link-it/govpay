@@ -31,6 +31,7 @@
 								<linkit:sql-table object-name="TipoTributo" object-type="TipoTributo"/>
 								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
 								<linkit:sql-table object-name="Uo" object-type="Uo"/>
+								<linkit:sql-table object-name="JppaConfig" object-type="JppaConfig"/>
 								<linkit:sql-table object-name="UtenzaDominio" object-type="UtenzaDominio"/>
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
@@ -481,6 +482,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
+	<xsd:complexType name="id-jppa-config">
+		<xsd:sequence>
+			<xsd:element name="codDominio" type="String35"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<!-- Configurazione -->
 
 	<xsd:element name="Configurazione" type="Configurazione"/>
@@ -570,7 +577,6 @@
 			<xsd:element name="codConnettoreSecim" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreHyperSicAPK" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="codConnettoreMaggioliJPPA" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 			<xsd:element name="tassonomiaPagoPA" type="String35" minOccurs="0"/>
 			<xsd:element name="scaricaFr" type="xsd:boolean"/>
@@ -5018,5 +5024,41 @@
 			<xsd:element name="rawContenuto" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
+	<!-- JPPA Config -->
+
+	<xsd:element name="JppaConfig" type="JppaConfig"/>
+	<xsd:complexType name="JppaConfig">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-jppa-config"/>
+					<linkit:sql-table-mapping generate-sql="true" name="jppa_config"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_jpc"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-column name="id_dominio"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="codConnettore" type="String255"/>
+			<xsd:element name="abilitato" type="xsd:boolean"/>
+			<xsd:element name="dataUltimaRt" type="xsd:dateTime" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
 </xsd:schema>

@@ -131,7 +131,6 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
 	cod_connettore_gov_pay VARCHAR(255) COMMENT 'Identificativo connettore govpay',
 	cod_connettore_hyper_sic_apk VARCHAR(255) COMMENT 'Identificativo connettore hypersic_apk',
-	cod_connettore_maggioli_jppa VARCHAR(255) COMMENT 'Identificativo connettore maggioli jppa',
 	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	tassonomia_pago_pa VARCHAR(35) COMMENT 'Tassonomia PagoPA ente creditore',
 	scarica_fr BOOLEAN NOT NULL COMMENT 'Indica se scaricare i flussi di rendicontazione',
@@ -252,6 +251,27 @@ CREATE TABLE uo
 
 -- index
 CREATE UNIQUE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+
+
+
+CREATE TABLE jppa_config
+(
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del dominio',
+	cod_connettore VARCHAR(255) COMMENT 'Identificativo del connettore',
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	data_ultima_rt DATETIME(3) DEFAULT 0 COMMENT 'Data ultima RT notificata correttamente',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
+	-- unique constraints
+	CONSTRAINT unique_jppa_config_1 UNIQUE (id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_jpc_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_jppa_config PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs ROW_FORMAT DYNAMIC;
+
+-- index
+CREATE UNIQUE INDEX index_jppa_config_1 ON jppa_config (cod_dominio);
 
 
 

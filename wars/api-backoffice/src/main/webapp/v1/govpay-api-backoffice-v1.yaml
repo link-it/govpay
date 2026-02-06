@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.47.0"
+  version: "1.48.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -8178,24 +8178,20 @@ components:
       type: object
       required:
         - abilitato
-        - tipoConnettore
-        - principal
+        - auth
+        - url
       properties:
         abilitato:
           type: boolean
           description: Indica se il connettore e' abilitato
           example: true
-        tipoConnettore:
+        inviaTracciatoEsito:
+          type: boolean
+          description: Indica se inviare il tracciato di esito
+          example: true
+        fileSystemPath:
           type: string
-          enum:
-            - 'EMAIL'
-        versione:
-          type: string
-          example: '1.0'
-          description: Versione del servizio.
-        principal:
-          type: string
-          description: principal autenticato dalla chiamata di Maggioli
+          description: Path nel quale verra' salvato il tracciato
         emailIndirizzi:
           type: array
           items:
@@ -8210,32 +8206,16 @@ components:
         downloadBaseUrl:
           type: string
           description: URL base del link dove scaricare il tracciato
-        tipiPendenza:
-          type: array
-          description: tipi pendenza da includere nel tracciato
-          items:
-            type: object
-            oneOf:
-              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
-              - type: string
-                description: identificativo tipo pendenza
-                example:
-                  SEGRETERIA
         url:
           type: string
           description: URL Base del servizio rest di ricezione dei dati
-        versioneApi:
-          type: string
-          enum:
-            - 'SOAP v1'
-          description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
-        contenuti:
-          type: array
-          description: Lista dei contenuti da inviare al servizio REST
-          items:
-            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+        dataUltimaRT:
+          type: string
+          format: date-time
+          description: Date time dell'ultima RT processata con successo
+          example: '2020-12-31 12:34:00Z'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

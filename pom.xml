@@ -143,6 +143,7 @@
 		<commons.pool2.version>2.12.1</commons.pool2.version>
 		<commons.net.version>3.12.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
+		<com.sun.mail.version>1.6.8</com.sun.mail.version><!-- CVE-2025-7962 -->
 		<commons.beanutils.version>1.11.0</commons.beanutils.version>
 
 		<!-- xmlsec -->
@@ -1497,6 +1498,20 @@
 	            <groupId>org.apache.commons</groupId>
 	            <artifactId>commons-email</artifactId>
 	            <version>${commons.email.version}</version>
+	            <exclusions>
+	            	<!-- CVE-2025-7962: SMTP Injection vulnerability fixed in 1.6.8 / 2.0.4 -->
+	            	<exclusion>
+	            		<groupId>com.sun.mail</groupId>
+	            		<artifactId>jakarta.mail</artifactId>
+	            	</exclusion>
+	            </exclusions>
+           </dependency>
+
+           <!-- CVE-2025-7962: versione corretta jakarta.mail -->
+           <dependency>
+	            <groupId>com.sun.mail</groupId>
+	            <artifactId>jakarta.mail</artifactId>
+	            <version>${com.sun.mail.version}</version>
            </dependency>
 
            <dependency>

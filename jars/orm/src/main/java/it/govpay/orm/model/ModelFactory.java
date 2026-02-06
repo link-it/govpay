@@ -123,5 +123,7 @@ public class ModelFactory {
 	
 	public static AllegatoModel ALLEGATO = new AllegatoModel();
 	
+	public static JppaConfigModel JPPA_CONFIG = new JppaConfigModel();
+	
 
 }

@@ -128,7 +128,6 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
 	cod_connettore_hyper_sic_apk VARCHAR(255),
-	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BOOLEAN NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
 	scarica_fr BOOLEAN NOT NULL,
@@ -144,6 +143,7 @@ CREATE TABLE domini
 	CONSTRAINT pk_domini PRIMARY KEY (id)
 );
 
+-- index
 CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 
 
@@ -245,6 +245,27 @@ CREATE TABLE uo
 	-- fk/pk keys constraints
 	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_uo PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_jppa_config start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE jppa_config
+(
+	cod_dominio VARCHAR(35) NOT NULL,
+	cod_connettore VARCHAR(255),
+	abilitato BOOLEAN NOT NULL,
+	data_ultima_rt TIMESTAMP,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_jppa_config') NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_jppa_config_1 UNIQUE (id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_jpc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_jppa_config PRIMARY KEY (id)
 );
 
 

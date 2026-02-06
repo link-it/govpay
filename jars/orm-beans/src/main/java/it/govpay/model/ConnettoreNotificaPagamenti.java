@@ -19,6 +19,7 @@
  */
 package it.govpay.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class ConnettoreNotificaPagamenti extends Connettore {
@@ -42,7 +43,7 @@ public class ConnettoreNotificaPagamenti extends Connettore {
 	public static final String P_EMAIL_ALLEGATO = "EMAIL_ALLEGATO";
 	public static final String P_DOWNLOAD_BASE_URL = "DOWNLOAD_BASE_URL";
 	public static final String P_INTERVALLO_CREAZIONE_TRACCIATO = "INTERV_CREAZ_TRAC";
-	public static final String P_PRINCIPAL_MAGGIOLI = "PRINCIPAL_MAGGIOLI";
+	public static final String P_INVIA_TRACCIATO_ESITO = "INVIA_TRACCIATO_ESITO";
 
 	public enum TipoConnettore {
 		WEB_SERVICE, EMAIL, FILE_SYSTEM, REST;
@@ -72,7 +73,8 @@ public class ConnettoreNotificaPagamenti extends Connettore {
 	private boolean emailAllegato;
 	private String downloadBaseURL;
 	private Integer intervalloCreazioneTracciato;
-	private String principalMaggioli;
+	private boolean inviaTracciatoEsito;
+	private Date dataUltimaRt;
 
 	public ConnettoreNotificaPagamenti() {
 		// default value per intervallo creazione = 24 ore
@@ -206,11 +208,19 @@ public class ConnettoreNotificaPagamenti extends Connettore {
 		this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
 	}
 
-	public String getPrincipalMaggioli() {
-		return principalMaggioli;
+	public boolean isInviaTracciatoEsito() {
+		return inviaTracciatoEsito;
 	}
 
-	public void setPrincipalMaggioli(String principalMaggioli) {
-		this.principalMaggioli = principalMaggioli;
+	public void setInviaTracciatoEsito(boolean inviaTracciatoEsito) {
+		this.inviaTracciatoEsito = inviaTracciatoEsito;
+	}
+
+	public Date getDataUltimaRt() {
+		return dataUltimaRt;
+	}
+
+	public void setDataUltimaRt(Date dataUltimaRt) {
+		this.dataUltimaRt = dataUltimaRt;
 	}
 }
