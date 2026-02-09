@@ -81,7 +81,7 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 			StreamingOutput zipStream;
 
 			// Per tracciati Maggioli JPPA leggi dal filesystem anziche' dal database
-			if(ConnettoreNotificaPagamenti.Tipo.MAGGIOLI_JPPA.name().equals(tracciato.getTipo())) {
+			if(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA.equals(tracciato.getTipo())) {
 				// Recupera il dominio per ottenere il path del filesystem
 				BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, true);
 				DominiBD dominiBD = new DominiBD(configWrapper);

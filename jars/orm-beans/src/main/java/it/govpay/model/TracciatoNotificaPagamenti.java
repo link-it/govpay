@@ -36,7 +36,7 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	
 	public enum FORMATO_TRACCIATO { CSV }
 	
-	public enum TIPO_TRACCIATO { MYPIVOT, SECIM, GOVPAY, HYPERSIC_APK }
+	public enum TIPO_TRACCIATO { MYPIVOT, SECIM, GOVPAY, HYPERSIC_APK, MAGGIOLI_JPPA }
 	
 	private static List<STATO_ELABORAZIONE> statiNonTerminaliWS = new ArrayList<>();
 	
