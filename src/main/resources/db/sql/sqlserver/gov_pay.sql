@@ -995,6 +995,7 @@ CREATE TABLE fr
 
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE UNIQUE INDEX index_fr_2 ON fr (cod_dominio,cod_flusso,cod_psp,revisione);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
@@ -1055,6 +1056,7 @@ CREATE TABLE rendicontazioni
 	data DATETIME2,
 	stato VARCHAR(35) NOT NULL,
 	anomalie VARCHAR(max),
+	esegui_recupero_rt BIT NOT NULL DEFAULT 'true',
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_fr BIGINT NOT NULL,

@@ -2599,6 +2599,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="eseguiRecuperoRt" type="xsd:boolean" default="true"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

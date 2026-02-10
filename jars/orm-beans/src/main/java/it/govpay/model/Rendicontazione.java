@@ -76,6 +76,7 @@ public class Rendicontazione extends BasicModel {
 	private long idFr;
 	private Long idPagamento;
 	private Long idSingoloVersamento;
+	private boolean eseguiRecuperoRt;
 	
 	@Override
 	public Long getId() {
@@ -213,6 +214,12 @@ public class Rendicontazione extends BasicModel {
 	}
 	public void setIdSingoloVersamento(Long idSingoloVersamento) {
 		this.idSingoloVersamento = idSingoloVersamento;
+	}
+	public boolean isEseguiRecuperoRt() {
+		return eseguiRecuperoRt;
+	}
+	public void setEseguiRecuperoRt(boolean eseguiRecuperoRt) {
+		this.eseguiRecuperoRt = eseguiRecuperoRt;
 	}
 	
 }

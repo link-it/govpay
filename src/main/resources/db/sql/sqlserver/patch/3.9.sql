@@ -26,3 +26,8 @@ WHERE d.cod_connettore_maggioli_jppa IS NOT NULL;
 
 -- Rimozione colonna cod_connettore_maggioli_jppa da domini
 ALTER TABLE domini DROP COLUMN cod_connettore_maggioli_jppa;
+
+-- 10/02/2026 Nuova colonna esegui_recupero_rt su rendicontazioni
+ALTER TABLE rendicontazioni ADD esegui_recupero_rt BIT;
+UPDATE rendicontazioni SET esegui_recupero_rt = 1;
+ALTER TABLE rendicontazioni ALTER COLUMN esegui_recupero_rt BIT NOT NULL;

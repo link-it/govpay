@@ -47,6 +47,7 @@ import java.io.Serializable;
  * 			&lt;element name="idFR" type="{http://www.govpay.it/orm}id-fr" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="idPagamento" type="{http://www.govpay.it/orm}id-pagamento" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="eseguiRecuperoRt" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -71,7 +72,8 @@ import java.io.Serializable;
   	"anomalie",
   	"idFR",
   	"idPagamento",
-  	"idSingoloVersamento"
+  	"idSingoloVersamento",
+  	"eseguiRecuperoRt"
   }
 )
 
@@ -170,6 +172,18 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBeanWithId 
     this.idSingoloVersamento = idSingoloVersamento;
   }
 
+  public boolean isEseguiRecuperoRt() {
+    return this.eseguiRecuperoRt;
+  }
+
+  public boolean getEseguiRecuperoRt() {
+    return this.eseguiRecuperoRt;
+  }
+
+  public void setEseguiRecuperoRt(boolean eseguiRecuperoRt) {
+    this.eseguiRecuperoRt = eseguiRecuperoRt;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.RendicontazioneModel modelStaticInstance = null;
@@ -227,5 +241,9 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBeanWithId 
 
   @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
   protected IdSingoloVersamento idSingoloVersamento;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="eseguiRecuperoRt",required=true,nillable=false,defaultValue="true")
+  protected boolean eseguiRecuperoRt = true;
 
 }

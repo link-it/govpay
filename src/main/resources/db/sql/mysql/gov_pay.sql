@@ -988,6 +988,7 @@ CREATE TABLE fr
 
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE UNIQUE INDEX index_fr_2 ON fr (cod_dominio,cod_flusso,cod_psp,revisione);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
@@ -1043,6 +1044,7 @@ CREATE TABLE rendicontazioni
 	data DATETIME(3) DEFAULT now() COMMENT 'Data di rendicontazione',
 	stato VARCHAR(35) NOT NULL COMMENT 'Stato della rendicontazione',
 	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nella rendicontazione',
+	esegui_recupero_rt BOOLEAN NOT NULL DEFAULT true COMMENT 'indica se eseguire il recupero della ricevuta da pagoPA',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_fr BIGINT NOT NULL COMMENT 'Riferimento al flusso di rendicontazione',

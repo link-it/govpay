@@ -127,6 +127,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().DATA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ANOMALIE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ESEGUI_RECUPERO_RT,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_fr","?");
 		sqlQueryObjectInsert.addInsertField("id_pagamento","?");
 		sqlQueryObjectInsert.addInsertField("id_singolo_versamento","?");
@@ -142,6 +143,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getData(),Rendicontazione.model().DATA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getStato(),Rendicontazione.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getAnomalie(),Rendicontazione.model().ANOMALIE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getEseguiRecuperoRt(),Rendicontazione.model().ESEGUI_RECUPERO_RT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_fr,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_singoloVersamento,Long.class)
@@ -264,6 +266,8 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getStato(), Rendicontazione.model().STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ANOMALIE,false), "?");
 		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getAnomalie(), Rendicontazione.model().ANOMALIE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ESEGUI_RECUPERO_RT,false), "?");
+		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getEseguiRecuperoRt(), Rendicontazione.model().ESEGUI_RECUPERO_RT.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_fr","?");
 		}
