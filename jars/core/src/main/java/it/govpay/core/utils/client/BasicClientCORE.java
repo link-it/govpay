@@ -396,6 +396,11 @@ public abstract class BasicClientCORE {
 			this.connectionTimeout = GovpayConfig.getInstance().getBatchFdrConnectionTimeout();
 			this.connectionRequestTimeout = GovpayConfig.getInstance().getBatchFdrConnectionRequestTimeout();
 			break;
+		case BATCH_RECUPERO_RT:
+			this.readTimeout = GovpayConfig.getInstance().getBatchRecuperoRtReadTimeout();
+			this.connectionTimeout = GovpayConfig.getInstance().getBatchRecuperoRtConnectionTimeout();
+			this.connectionRequestTimeout = GovpayConfig.getInstance().getBatchRecuperoRtConnectionRequestTimeout();
+			break;
 		case GOVPAY:
 		default:
 			this.readTimeout = GovpayConfig.getInstance().getReadTimeout();

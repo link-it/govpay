@@ -7,6 +7,8 @@ pipeline {
   environment {
     // Rileva il branch Git corrente
     GIT_BRANCH_NAME = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+    // Rileva la versione del progetto dal pom.xml
+    PROJECT_VERSION = sh(script: 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
 
     JACOCO_EXEC    = "/tmp/jacoco.exec"
     JACOCO_XML     = "target/jacoco.xml"
@@ -24,6 +26,7 @@ pipeline {
           echo "Pipeline Build Information"
           echo "================================"
           echo "Git Branch: ${env.GIT_BRANCH_NAME}"
+          echo "Project Version: ${env.PROJECT_VERSION}"
           echo "Build Number: ${env.BUILD_NUMBER}"
           echo "Job Name: ${env.JOB_NAME}"
           echo "Workspace: ${env.WORKSPACE}"
@@ -34,7 +37,7 @@ pipeline {
     stage('cleanup') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
-        sh 'cd ${DOCKER_COMPOSE_DIR} && sudo docker compose down -v && cd - || true'
+        sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose down -v && cd - || true'
         sh '/opt/apache-maven-3.6.3/bin/mvn clean'
       }
     }
@@ -64,7 +67,7 @@ pipeline {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
         sh 'sudo systemctl start wildfly-28.0.1.Final@ndpsym tomcat_govpay'
         sh 'sudo docker start mailhog'
-        sh 'cd ${DOCKER_COMPOSE_DIR} && sudo docker compose up -d && cd -'
+        sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose up -d && cd -'
 	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }
@@ -74,7 +77,7 @@ pipeline {
       }
       post {
         always {
-			sh 'cd ${DOCKER_COMPOSE_DIR} && sudo docker compose down -v && cd -'
+			sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose down -v && cd -'
 			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym wildfly-28.0.1.Final@ndpsym tomcat_govpay'
 			sh 'sudo docker stop mailhog'
             junit 'integration-test/target/surefire-reports/*.xml'

@@ -107,6 +107,32 @@ public class BatchUtils {
 	}
 
 	/**
+	 * Attiva il batch Recupero RT esterno.
+	 *
+	 * @param ctx context di esecuzione
+	 * @param force forza l'esecuzione del batch anche se già in esecuzione
+	 * @return messaggio di conferma
+	 * @throws it.govpay.core.exceptions.GovPayException in caso di errore nell'invocazione del batch
+	 */
+	public static String attivaBatchRecuperoRt(IContext ctx, boolean force) throws it.govpay.core.exceptions.GovPayException {
+		// Recupera configurazione batch Recupero RT
+		String endpointUrl = GovpayConfig.getInstance().getBatchRecuperoRtEndpointUrl();
+
+		if(StringUtils.isEmpty(endpointUrl)) {
+			String errorMsg = MessageFormat.format("URL endpoint non configurato per il batch [{0}]", Operazioni.BATCH_RECUPERO_RT);
+			log.error(errorMsg);
+			throw new it.govpay.core.exceptions.GovPayException(errorMsg, it.govpay.core.beans.EsitoOperazione.INTERNAL);
+		}
+
+		// Crea connettore
+		Connettore connettore = new Connettore();
+		connettore.setUrl(endpointUrl);
+		connettore.setTipoAutenticazione(EnumAuthType.NONE);
+
+		return attivaBatchEsterno(ctx, Operazioni.BATCH_RECUPERO_RT, TipoDestinatario.BATCH_RECUPERO_RT, connettore, force);
+	}
+
+	/**
 	 * Attiva un batch esterno invocando l'endpoint HTTP esposto dal batch.
 	 *
 	 * @param ctx context di esecuzione

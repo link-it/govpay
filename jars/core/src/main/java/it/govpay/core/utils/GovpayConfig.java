@@ -221,6 +221,11 @@ public class GovpayConfig {
 	private int batchFdrReadTimeout;
 	private int batchFdrConnectionRequestTimeout;
 
+	private String batchRecuperoRtEndpointUrl;
+	private int batchRecuperoRtConnectionTimeout;
+	private int batchRecuperoRtReadTimeout;
+	private int batchRecuperoRtConnectionRequestTimeout;
+
 	private List<String> navSondaPagoPA;
 	
 	private String warName = Costanti.GOVPAY.toLowerCase();
@@ -348,6 +353,11 @@ public class GovpayConfig {
 		this.batchFdrConnectionTimeout = 5000; // 5 secondi
 		this.batchFdrReadTimeout = 30000; // 30 secondi
 		this.batchFdrConnectionRequestTimeout = 5000; // 5 secondi
+
+		this.batchRecuperoRtEndpointUrl = null;
+		this.batchRecuperoRtConnectionTimeout = 5000; // 5 secondi
+		this.batchRecuperoRtReadTimeout = 30000; // 30 secondi
+		this.batchRecuperoRtConnectionRequestTimeout = 5000; // 5 secondi
 
 		this.navSondaPagoPA = new ArrayList<>();
 
@@ -859,6 +869,39 @@ public class GovpayConfig {
 					this.batchFdrConnectionRequestTimeout = Integer.parseInt(batchFdrConnectionRequestTimeoutString);
 				} catch (NumberFormatException e) {
 					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.fdr.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchFdrConnectionRequestTimeoutString);
+				}
+			}
+
+			// Batch Recupero RT
+			String batchRecuperoRtEndpointUrlString = getProperty("it.govpay.batch.recuperoRT.endpoint.url", this.props, false, log);
+			if(batchRecuperoRtEndpointUrlString != null && StringUtils.isNotEmpty(batchRecuperoRtEndpointUrlString)) {
+				this.batchRecuperoRtEndpointUrl = batchRecuperoRtEndpointUrlString;
+			}
+
+			String batchRecuperoRtConnectionTimeoutString = getProperty("it.govpay.batch.recuperoRT.endpoint.connectionTimeout", this.props, false, log);
+			if(batchRecuperoRtConnectionTimeoutString != null && StringUtils.isNotEmpty(batchRecuperoRtConnectionTimeoutString)) {
+				try {
+					this.batchRecuperoRtConnectionTimeout = Integer.parseInt(batchRecuperoRtConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.recuperoRT.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchRecuperoRtConnectionTimeoutString);
+				}
+			}
+
+			String batchRecuperoRtReadTimeoutString = getProperty("it.govpay.batch.recuperoRT.endpoint.readTimeout", this.props, false, log);
+			if(batchRecuperoRtReadTimeoutString != null && StringUtils.isNotEmpty(batchRecuperoRtReadTimeoutString)) {
+				try {
+					this.batchRecuperoRtReadTimeout = Integer.parseInt(batchRecuperoRtReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.recuperoRT.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchRecuperoRtReadTimeoutString);
+				}
+			}
+
+			String batchRecuperoRtConnectionRequestTimeoutString = getProperty("it.govpay.batch.recuperoRT.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchRecuperoRtConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchRecuperoRtConnectionRequestTimeoutString)) {
+				try {
+					this.batchRecuperoRtConnectionRequestTimeout = Integer.parseInt(batchRecuperoRtConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.recuperoRT.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchRecuperoRtConnectionRequestTimeoutString);
 				}
 			}
 
@@ -1441,6 +1484,22 @@ public class GovpayConfig {
 
 	public int getBatchFdrConnectionRequestTimeout() {
 		return batchFdrConnectionRequestTimeout;
+	}
+
+	public String getBatchRecuperoRtEndpointUrl() {
+		return batchRecuperoRtEndpointUrl;
+	}
+
+	public int getBatchRecuperoRtConnectionTimeout() {
+		return batchRecuperoRtConnectionTimeout;
+	}
+
+	public int getBatchRecuperoRtReadTimeout() {
+		return batchRecuperoRtReadTimeout;
+	}
+
+	public int getBatchRecuperoRtConnectionRequestTimeout() {
+		return batchRecuperoRtConnectionRequestTimeout;
 	}
 
 	public List<String> getNavSondaPagoPA() {

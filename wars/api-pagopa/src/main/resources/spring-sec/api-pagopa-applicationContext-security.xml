@@ -18,6 +18,44 @@
         <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
 		</b:bean>
+		
+        <!-- INTERNAL_BASIC_START -->
+
+        <b:bean id="basicAuthenticationEntryPointInternal" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+        
+        <b:bean id="govpayPasswordEncoderInternal" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
+
+        <b:bean id="userDetailServiceUtenzeInternal" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="authType" value="BASIC" />
+        </b:bean>
+
+		<authentication-manager id="authenticationManagerInternal">
+                <authentication-provider user-service-ref="userDetailServiceUtenzeInternal">
+                	<password-encoder ref="govpayPasswordEncoderInternal"/>
+                </authentication-provider>
+        </authentication-manager>
+
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManagerInternal" pattern="/internal/.*" request-matcher="regex">
+
+                <csrf disabled="true"/>
+
+                <intercept-url pattern=".*/internal/.*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*/internal/.*" access="isFullyAuthenticated()" />
+
+                <http-basic entry-point-ref="basicAuthenticationEntryPointInternal" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+
+        <!-- INTERNAL_BASIC_END -->
         
         
         <!-- BASIC_START 
@@ -143,7 +181,7 @@
         </http>
       	
       	 LDAP_END -->
-        
+
         <!-- SSL_START -->
         
         <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
@@ -370,7 +408,6 @@
         </http>
         
         OAUTH2_END -->
-        
         
 </b:beans>
         
