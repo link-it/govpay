@@ -91,6 +91,10 @@ public class IntermediarioConverter {
 			vo.setCodConnettoreFR(dto.getConnettorePddFR().getIdConnettore());
 		}
 
+		if(dto.getConnettorePddBackofficeEC()!= null) {
+			vo.setCodConnettoreBackofficeEC(dto.getConnettorePddBackofficeEC().getIdConnettore());
+		}
+
 		return vo;
 	}
 

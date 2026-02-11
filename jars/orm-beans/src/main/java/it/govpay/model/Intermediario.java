@@ -26,6 +26,7 @@ public class Intermediario extends BasicModel{
 	public static final String CONNETTORE_ACA_SUFFIX= "_ACA";
 	public static final String CONNETTORE_GPD_SUFFIX= "_GPD";
 	public static final String CONNETTORE_FR_SUFFIX= "_FR";
+	public static final String CONNETTORE_BOEC_SUFFIX= "_BOEC";
 
 	private Long id;
 	private String codIntermediario;
@@ -35,6 +36,7 @@ public class Intermediario extends BasicModel{
     private Connettore connettorePddACA;
     private Connettore connettorePddGPD;
     private Connettore connettorePddFR;
+    private Connettore connettorePddBackofficeEC;
     private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
     
@@ -94,6 +96,7 @@ public class Intermediario extends BasicModel{
 				equals(this.connettorePddACA, intermediario.getConnettorePddACA()) &&
 				equals(this.connettorePddGPD, intermediario.getConnettorePddGPD()) &&
 				equals(this.connettorePddFR, intermediario.getConnettorePddFR()) &&
+				equals(this.connettorePddBackofficeEC, intermediario.getConnettorePddBackofficeEC()) &&
 				equals(this.connettoreSftp, intermediario.getConnettoreSftp()) &&
 				equals(this.principal, intermediario.getPrincipal()) &&
 				equals(this.principalOriginale, intermediario.getPrincipalOriginale()) &&
@@ -159,5 +162,13 @@ public class Intermediario extends BasicModel{
 
 	public void setConnettorePddFR(Connettore connettorePddFR) {
 		this.connettorePddFR = connettorePddFR;
+	}
+
+	public Connettore getConnettorePddBackofficeEC() {
+		return connettorePddBackofficeEC;
+	}
+
+	public void setConnettorePddBackofficeEC(Connettore connettorePddBackofficeEC) {
+		this.connettorePddBackofficeEC = connettorePddBackofficeEC;
 	}
 }

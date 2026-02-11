@@ -80,6 +80,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_ACA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_GPD,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FR,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FTP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().PRINCIPAL,false),"?");
@@ -95,6 +96,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreACA(),Intermediario.model().COD_CONNETTORE_ACA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreGPD(),Intermediario.model().COD_CONNETTORE_GPD.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreFR(),Intermediario.model().COD_CONNETTORE_FR.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreBackofficeEC(),Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreFtp(),Intermediario.model().COD_CONNETTORE_FTP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getDenominazione(),Intermediario.model().DENOMINAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getPrincipal(),Intermediario.model().PRINCIPAL.getFieldType()),
@@ -165,6 +167,8 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreGPD(), Intermediario.model().COD_CONNETTORE_GPD.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FR,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreFR(), Intermediario.model().COD_CONNETTORE_FR.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC,false), "?");
+		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreBackofficeEC(), Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FTP,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreFtp(), Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false), "?");

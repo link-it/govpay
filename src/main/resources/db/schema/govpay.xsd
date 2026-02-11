@@ -676,6 +676,7 @@
 			<xsd:element name="codConnettoreACA" type="String35" minOccurs="0"/>
 			<xsd:element name="codConnettoreGPD" type="String35" minOccurs="0"/>
 			<xsd:element name="codConnettoreFR" type="String35" minOccurs="0"/>
+			<xsd:element name="codConnettoreBackofficeEC" type="String35" minOccurs="0"/>
 			<xsd:element name="codConnettoreFtp" type="String35" minOccurs="0"/>
 			<xsd:element name="denominazione" type="xsd:string"/>
 			<xsd:element name="principal" type="String4000"/>

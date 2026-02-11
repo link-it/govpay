@@ -24,5 +24,10 @@
 		"subscriptionKey" : "FR123456",
 		"abilitaGDE": false
 	},
+	"servizioPagoPaBackofficeEC": {
+		"url": '#(ndpsym_url + "/pagopa/backoffice/api/v1/ec")',
+		"subscriptionKey" : "BOEC123456",
+		"abilitaGDE": false
+	},
 	"abilitato": true
 }

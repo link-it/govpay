@@ -156,6 +156,7 @@ public class JDBCIntermediarioServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(Intermediario.model().COD_CONNETTORE_ACA);
 			fields.add(Intermediario.model().COD_CONNETTORE_GPD);
 			fields.add(Intermediario.model().COD_CONNETTORE_FR);
+			fields.add(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC);
 			fields.add(Intermediario.model().COD_CONNETTORE_FTP);
 			fields.add(Intermediario.model().DENOMINAZIONE);
 			fields.add(Intermediario.model().PRINCIPAL);

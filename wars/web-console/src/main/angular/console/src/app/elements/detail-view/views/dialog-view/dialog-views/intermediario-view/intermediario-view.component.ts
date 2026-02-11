@@ -16,6 +16,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
   @ViewChild('sslConfigACA') sslConfigACA: SslConfigComponent;
   @ViewChild('sslConfigGPD') sslConfigGPD: SslConfigComponent;
   @ViewChild('sslConfigFR') sslConfigFR: SslConfigComponent;
+  @ViewChild('sslConfigBackofficeEC') sslConfigBackofficeEC: SslConfigComponent;
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
@@ -26,6 +27,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
   protected _isSubscriptionKeyACARequired: boolean = false;
   protected _isSubscriptionKeyGPDRequired: boolean = false;
   protected _isSubscriptionKeyFRRequired: boolean = false;
+  protected _isSubscriptionKeyBackofficeECRequired: boolean = false;
 
   constructor() { }
 
@@ -45,12 +47,15 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     this.fGroup.addControl('subscriptionKeyGPD_ctrl', new FormControl('', []));
 	this.fGroup.addControl('urlFR_ctrl', new FormControl('', []));
     this.fGroup.addControl('subscriptionKeyFR_ctrl', new FormControl('', []));
+	this.fGroup.addControl('urlBackofficeEC_ctrl', new FormControl('', []));
+    this.fGroup.addControl('subscriptionKeyBackofficeEC_ctrl', new FormControl('', []));
 	// FormGroup dedicati per i componenti SSL
 	this.fGroup.addControl('sslAuthPagoPa', new FormGroup({}));
 	this.fGroup.addControl('sslAuthPagoPaRecuperoRT', new FormGroup({}));
 	this.fGroup.addControl('sslAuthPagoPaACA', new FormGroup({}));
 	this.fGroup.addControl('sslAuthPagoPaGPD', new FormGroup({}));
 	this.fGroup.addControl('sslAuthPagoPaFR', new FormGroup({}));
+	this.fGroup.addControl('sslAuthPagoPaBackofficeEC', new FormGroup({}));
   }
 
   ngAfterViewInit() {
@@ -93,6 +98,13 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
           this.fGroup.controls['subscriptionKeyFR_ctrl'].setValue(_fr.subscriptionKey);
 		  this._isSubscriptionKeyFRRequired = _fr.url?true:false;
 		  this.fGroup.controls['subscriptionKeyFR_ctrl'].setValidators(_fr.url?[Validators.required]:[]);
+        }
+		if (this.json.servizioPagoPaBackofficeEC) {
+          const _boec = this.json.servizioPagoPaBackofficeEC;
+          this.fGroup.controls['urlBackofficeEC_ctrl'].setValue(_boec.url?_boec.url:'');
+          this.fGroup.controls['subscriptionKeyBackofficeEC_ctrl'].setValue(_boec.subscriptionKey);
+		  this._isSubscriptionKeyBackofficeECRequired = _boec.url?true:false;
+		  this.fGroup.controls['subscriptionKeyBackofficeEC_ctrl'].setValidators(_boec.url?[Validators.required]:[]);
         }
       }
     });
@@ -153,6 +165,15 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
 	    _json.servizioPagoPaFR['auth'] = this.sslConfigFR.mapToJson();
 	    if(_json.servizioPagoPaFR.auth == null) { delete _json.servizioPagoPaFR.auth; }
 	}
+	if(_info['urlBackofficeEC_ctrl'] != null && _info['urlBackofficeEC_ctrl'] != ''){
+		_json.servizioPagoPaBackofficeEC = {
+	      auth: null,
+	      url: _info['urlBackofficeEC_ctrl'],
+	      subscriptionKey: _info['subscriptionKeyBackofficeEC_ctrl']?_info['subscriptionKeyBackofficeEC_ctrl']:null
+	    };
+	    _json.servizioPagoPaBackofficeEC['auth'] = this.sslConfigBackofficeEC.mapToJson();
+	    if(_json.servizioPagoPaBackofficeEC.auth == null) { delete _json.servizioPagoPaBackofficeEC.auth; }
+	}
     return _json;
   }
   
@@ -203,6 +224,19 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
         if(trigger.value.trim() !== '') {
           _tc.setValidators((_ti==0)?Validators.required:null);
 		  this._isSubscriptionKeyFRRequired = true;
+        }
+        _tc.updateValueAndValidity();
+      });
+    }
+
+  protected _onBackofficeECUrlChange(trigger: any, targets: string) {
+      targets.split('|').forEach((_target, _ti) => {
+        const _tc = this.fGroup.controls[_target];
+        _tc.clearValidators();
+		this._isSubscriptionKeyBackofficeECRequired = false;
+        if(trigger.value.trim() !== '') {
+          _tc.setValidators((_ti==0)?Validators.required:null);
+		  this._isSubscriptionKeyBackofficeECRequired = true;
         }
         _tc.updateValueAndValidity();
       });

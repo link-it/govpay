@@ -258,3 +258,26 @@ Examples:
 | subscriptionKey | intermediarioFR.servizioPagoPaFR.subscriptionKey | loremIpsum |  'subscriptionKey' |
 
 
+Scenario Outline: servizioPagoPaBackofficeEC.<field> non valida
+
+* def intermediarioBackofficeEC = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-BackofficeEC.json')
+* set <fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBackofficeEC
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| url | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.url | null |  'url' |
+| url | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.url | 'htttttttp://aaa.it' |  'url' |
+| subscriptionKey | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.subscriptionKey | '' |  'subscriptionKey' |
+| subscriptionKey | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.subscriptionKey | loremIpsum |  'subscriptionKey' |
+
+

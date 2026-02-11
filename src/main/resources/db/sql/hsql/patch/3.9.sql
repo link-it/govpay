@@ -35,3 +35,6 @@ ALTER TABLE domini DROP COLUMN cod_connettore_maggioli_jppa;
 ALTER TABLE rendicontazioni ADD COLUMN esegui_recupero_rt BOOLEAN;
 UPDATE rendicontazioni SET esegui_recupero_rt = TRUE;
 ALTER TABLE rendicontazioni ALTER COLUMN esegui_recupero_rt SET NOT NULL;
+
+-- 11/02/2026 Nuova colonna cod_connettore_backoffice_ec su intermediari
+ALTER TABLE intermediari ADD COLUMN cod_connettore_backoffice_ec VARCHAR(35);

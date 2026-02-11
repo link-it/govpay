@@ -174,6 +174,14 @@ public class IntermediariBD extends BasicBD {
 			Connettore connettorePddFR = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePddFR(connettorePddFR);
 		}
+		if(intermediarioVO.getCodConnettoreBackofficeEC() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreBackofficeEC());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			Connettore connettorePddBackofficeEC = ConnettoreConverter.toDTO(connettori);
+			intermediario.setConnettorePddBackofficeEC(connettorePddBackofficeEC);
+		}
 		if(intermediarioVO.getCodConnettoreFtp() != null) {
 			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFtp());
@@ -249,6 +257,12 @@ public class IntermediariBD extends BasicBD {
 				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddFR().getIdConnettore());
 			}
 
+			if(intermediario.getConnettorePddBackofficeEC() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddBackofficeEC());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddBackofficeEC().getIdConnettore());
+			}
+
 			if(intermediario.getConnettoreSftp() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
@@ -310,6 +324,12 @@ public class IntermediariBD extends BasicBD {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddFR());
 				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddFR().getIdConnettore());
+			}
+
+			if(intermediario.getConnettorePddBackofficeEC() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddBackofficeEC());
+				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddBackofficeEC().getIdConnettore());
 			}
 
 			if(intermediario.getConnettoreSftp() != null) {

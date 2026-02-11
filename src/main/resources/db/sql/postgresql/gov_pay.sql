@@ -25,6 +25,7 @@ CREATE TABLE intermediari
 	cod_connettore_aca VARCHAR(35),
 	cod_connettore_gpd VARCHAR(35),
 	cod_connettore_fr VARCHAR(35),
+	cod_connettore_backoffice_ec VARCHAR(35),
 	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	principal VARCHAR(4000) NOT NULL,

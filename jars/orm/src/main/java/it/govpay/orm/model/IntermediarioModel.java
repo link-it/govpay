@@ -49,6 +49,7 @@ public class IntermediarioModel extends AbstractModel<Intermediario> {
 		this.COD_CONNETTORE_ACA = new Field("codConnettoreACA",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_GPD = new Field("codConnettoreGPD",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_FR = new Field("codConnettoreFR",java.lang.String.class,"Intermediario",Intermediario.class);
+		this.COD_CONNETTORE_BACKOFFICE_EC = new Field("codConnettoreBackofficeEC",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_FTP = new Field("codConnettoreFtp",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.DENOMINAZIONE = new Field("denominazione",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Intermediario",Intermediario.class);
@@ -67,6 +68,7 @@ public class IntermediarioModel extends AbstractModel<Intermediario> {
 		this.COD_CONNETTORE_ACA = new ComplexField(father,"codConnettoreACA",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_GPD = new ComplexField(father,"codConnettoreGPD",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_FR = new ComplexField(father,"codConnettoreFR",java.lang.String.class,"Intermediario",Intermediario.class);
+		this.COD_CONNETTORE_BACKOFFICE_EC = new ComplexField(father,"codConnettoreBackofficeEC",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_FTP = new ComplexField(father,"codConnettoreFtp",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.DENOMINAZIONE = new ComplexField(father,"denominazione",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Intermediario",Intermediario.class);
@@ -88,7 +90,9 @@ public class IntermediarioModel extends AbstractModel<Intermediario> {
 	public IField COD_CONNETTORE_GPD = null;
 	 
 	public IField COD_CONNETTORE_FR = null;
-	 
+
+	public IField COD_CONNETTORE_BACKOFFICE_EC = null;
+
 	public IField COD_CONNETTORE_FTP = null;
 	 
 	public IField DENOMINAZIONE = null;

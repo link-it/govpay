@@ -27,6 +27,7 @@ CREATE TABLE intermediari
 	cod_connettore_aca VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio aca pagopa',
 	cod_connettore_gpd VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio gpd pagopa',
 	cod_connettore_fr VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio acquisizione-fr pagopa',
+	cod_connettore_backoffice_ec VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio backoffice-ec pagopa',
 	cod_connettore_ftp VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore ftp verso pagopa',
 	denominazione VARCHAR(255) NOT NULL COMMENT 'Nome dell\'intermediario',
 	principal VARCHAR(756) NOT NULL COMMENT 'Principal in forma canonica con cui si autentica l\'intermediario a govpay',
