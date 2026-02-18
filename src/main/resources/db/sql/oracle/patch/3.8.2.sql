@@ -13,7 +13,7 @@ ALTER TABLE fr ADD data_ora_pubblicazione TIMESTAMP;
 
 
 -- 03/11/2025 Reso opzionale il campo xml della tabella fr
-ALTER TABLE fr MODIFY xml BLOB NULL;
+ALTER TABLE fr MODIFY xml NULL;
 
 
 -- 03/11/2025 Aggiunti campi data_ora_aggiornamento e revisione alla tabella fr
