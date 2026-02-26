@@ -18,6 +18,7 @@ function() {
 
 	var config = {
 			env: env,
+			ndpsym_docker_base_url: 'http://host.docker.internal:8180/govpay-ndpsym',
 			govpay_url: 'http://localhost:8080',
 			govpay_backoffice_user: 'gpadmin',
 			govpay_backoffice_password: 'Password1!',
@@ -47,6 +48,7 @@ function() {
 			govpay_api_user_url : 'http://localhost:8080/govpay-api-user',
 			govpay_web_connector_url : 'http://localhost:8080/govpay-web-connector',
 			smtpsym_url: 'http://localhost:8025/api',
+			govpay_operazioni_baseurl: 'http://localhost:8080/govpay-api-backoffice/rs/basic/v1/operazioni',
 	};
 	
 	if (env == 'wildfly') {
@@ -68,6 +70,7 @@ function() {
 		config.govpay_api_jppapdp_url = 'http://localhost:8080/govpay/backend/api/jppapdp';
 		config.govpay_api_user_url = 'http://localhost:8080/govpay/frontend/api/user';
 		config.govpay_web_connector_url = 'http://localhost:8080/govpay/frontend/web/connector';
+		config.govpay_operazioni_baseurl = 'http://localhost:8080/govpay/backend/api/backoffice/rs/basic/v1/operazioni';
 	}
 	
 	return config;

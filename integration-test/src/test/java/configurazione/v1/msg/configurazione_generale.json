@@ -139,6 +139,7 @@
 		"abilitato": false
 	},
 	"servizioGDE" :{
-    	"abilitato": false
+    	"abilitato": true,
+    	"url": "http://govpay-gde:10002"
     }
 }

@@ -26,6 +26,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -75,6 +76,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
   
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataUltimaRT")
   private Date dataUltimaRT = null;
   

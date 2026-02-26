@@ -39,6 +39,6 @@ public class RecuperoRT extends AbstractTask {
 	
 	@Override
 	protected boolean isAbilitato() {
-		return GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRT();
+		return GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRT() && !GovpayConfig.getInstance().isBatchRecuperoRTEsterno();
 	}
 }

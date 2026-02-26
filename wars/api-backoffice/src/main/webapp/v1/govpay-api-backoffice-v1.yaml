@@ -5001,6 +5001,12 @@ components:
           $ref: '#/components/schemas/servizioFtp'
         servizioPagoPaRecuperoRT:
           $ref: '#/components/schemas/connettorePagopaRecuperoRT'
+        servizioPagoPaACA:
+          $ref: '#/components/schemas/connettorePagopaACA'
+        servizioPagoPaGPD:
+          $ref: '#/components/schemas/connettorePagopaGPD'
+        servizioPagoPaFR:
+          $ref: '#/components/schemas/connettorePagopaFR'
         servizioPagoPaBackofficeEC:
           $ref: '#/components/schemas/connettorePagopaBackofficeEC'
         abilitato:
@@ -7936,6 +7942,63 @@ components:
           type: string
           description: Dati di integrazione al servizio web Backoffice EC di PagoPA
           example: https://api.platform.pagopa.it/backoffice/helpdesk/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettorePagopaACA:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio ACA (Avvisi di Cortesia e Attualizzazione) di PagoPA
+          example: https://api.platform.pagopa.it/aca/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettorePagopaGPD:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio GPD (Gestione Posizioni Debitorie) di PagoPA
+          example: https://api.platform.pagopa.it/gpd/api/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettorePagopaFR:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio Flussi di Rendicontazione di PagoPA
+          example: https://api.platform.pagopa.it/fdr/service/v1
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
         subscriptionKey:

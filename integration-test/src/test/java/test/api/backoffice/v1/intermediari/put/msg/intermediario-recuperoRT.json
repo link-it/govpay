@@ -5,8 +5,13 @@
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaRecuperoRT": {
-		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/bizEvents")',
 		"subscriptionKey" : "ABC123",
+		"abilitaGDE": false
+	},
+	"servizioPagoPaFR": {
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/fdr-org/service/v1")',
+		"subscriptionKey" : "FR123456",
 		"abilitaGDE": false
 	},
 	"abilitato": true

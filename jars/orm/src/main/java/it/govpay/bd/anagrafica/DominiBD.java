@@ -335,6 +335,7 @@ public class DominiBD extends BasicBD {
 				jppaConfig.setCodDominio(dominio.getCodDominio());
 				jppaConfig.setCodConnettore(dominio.getConnettoreMaggioliJPPA().getIdConnettore());
 				jppaConfig.setAbilitato(dominio.getConnettoreMaggioliJPPA().isAbilitato());
+				jppaConfig.setDataUltimaRt(dominio.getConnettoreMaggioliJPPA().getDataUltimaRt());
 				IdDominio idDominio = new IdDominio();
 				idDominio.setId(dominio.getId());
 				jppaConfig.setIdDominio(idDominio);
@@ -479,6 +480,7 @@ public class DominiBD extends BasicBD {
 				jppaConfig.setCodDominio(dominio.getCodDominio());
 				jppaConfig.setCodConnettore(dominio.getConnettoreMaggioliJPPA().getIdConnettore());
 				jppaConfig.setAbilitato(dominio.getConnettoreMaggioliJPPA().isAbilitato());
+				jppaConfig.setDataUltimaRt(dominio.getConnettoreMaggioliJPPA().getDataUltimaRt());
 				IdDominio idDominio = new IdDominio();
 				idDominio.setId(dominio.getId());
 				jppaConfig.setIdDominio(idDominio);

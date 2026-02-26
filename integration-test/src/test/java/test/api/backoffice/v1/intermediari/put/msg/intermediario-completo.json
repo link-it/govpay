@@ -5,27 +5,27 @@
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaRecuperoRT": {
-		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/bizEvents")',
 		"subscriptionKey" : "RT123456",
 		"abilitaGDE": false
 	},
 	"servizioPagoPaACA": {
-		"url": '#(ndpsym_url + "/pagopa/api/v1/notices")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/aca")',
 		"subscriptionKey" : "ACA123456",
 		"abilitaGDE": false
 	},
 	"servizioPagoPaGPD": {
-		"url": '#(ndpsym_url + "/pagopa/gpd/api/v1/debt-positions")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/gpd/api/v1/debt-positions")',
 		"subscriptionKey" : "GPD123456",
 		"abilitaGDE": false
 	},
 	"servizioPagoPaFR": {
-		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/fdr-org/service/v1")',
 		"subscriptionKey" : "FR123456",
 		"abilitaGDE": false
 	},
 	"servizioPagoPaBackofficeEC": {
-		"url": '#(ndpsym_url + "/pagopa/backoffice/api/v1/ec")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/backoffice/api/v1/ec")',
 		"subscriptionKey" : "BOEC123456",
 		"abilitaGDE": false
 	},

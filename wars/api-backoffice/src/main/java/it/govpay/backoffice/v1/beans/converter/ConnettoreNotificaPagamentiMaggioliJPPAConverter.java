@@ -39,6 +39,8 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 		connettore.setTipoTracciato(tipo.name());
 		connettore.setTipoConnettore(TipoConnettore.EMAIL);
 
+		connettore.setDataUltimaRt(connector.getDataUltimaRT());
+
 		// URL e credenziali vengono sempre salvate indipendentemente dal flag abilitato
 		connettore.setUrl(connector.getUrl());
 		ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());

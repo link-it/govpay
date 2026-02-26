@@ -55,6 +55,7 @@ import it.govpay.core.business.Rendicontazioni.DownloadRendicontazioniResponse;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.batch.BatchUtils;
 import it.govpay.core.utils.client.BasicClientCORE;
 import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
@@ -83,6 +84,8 @@ public class Operazioni{
 	public static final String RND = "update-rnd";
 	public static final String BATCH_ACA = "batch_aca";
 	public static final String BATCH_FDR = "batch_fdr";
+	public static final String BATCH_IBAN = "batch_iban";
+	public static final String BATCH_MAGGIOLI = "batch_maggioli";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
 	public static final String CHECK_NTFY = "check-ntfy";
@@ -510,7 +513,13 @@ public class Operazioni{
 
 	public static String resetCacheAnagrafica(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		return resetCacheAnagrafica(configWrapper);
+		String result = resetCacheAnagrafica(configWrapper);
+
+		// Reset cache batch esterni
+		String batchResult = BatchUtils.clearCacheAllBatch(ctx);
+		log.info("Reset cache batch esterni:\n{}", batchResult);
+
+		return result + "\n\nReset cache batch esterni:\n" + batchResult;
 	}
 
 	public static String resetCacheAnagrafica(BDConfigWrapper configWrapper){

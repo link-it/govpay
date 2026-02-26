@@ -1,3 +1,90 @@
+2026-02-26  Giuliano Pintori <pintori@link.it>
+
+	* Rilasciata versione 3.9.0
+
+2026-02-25  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice, GovPayORM]
+	Aggiunta funzionalità #851
+	Aggiunta persistenza del campo dataUltimaRT nella configurazione del connettore Maggioli JPPA.
+	Aggiunto mapping nel converter ConnettoreNotificaPagamentiMaggioliJPPAConverter per la deserializzazione del campo dalla request.
+	Aggiunta impostazione del campo dataUltimaRt nel record JppaConfig durante la creazione e l'aggiornamento del dominio in DominiBD.
+	Aggiunta annotazione @JsonFormat per la corretta serializzazione/deserializzazione del timestamp nel bean ConnettoreNotificaPagamentiMaggioliJPPA.
+
+	* [IntegrationTest]
+	Aggiunta funzionalità #851
+	Aggiornato test rpp-recuperoRT.feature: modificato tipoEvento da getOrganizationReceiptIur a getOrganizationReceiptIuvIur.
+	Aggiornati parametri di ricerca eventi GDE da idA2A/idPendenza a idDominio/iuv.
+	Aggiornata URL attesa per la verifica della richiesta con il path /paymentoptions/{iuv}.
+	Resi opzionali i campi idA2A, idPendenza, sottotipoEsito e datiPagoPA nei match di verifica degli eventi.
+
+	* [IntegrationTest]
+	Aggiunta funzionalità
+	Aggiornato test modello3-pagamento-maggioli-italset.feature: aggiunta impostazione del campo dataUltimaRT
+	nella configurazione del connettore Maggioli con il timestamp di inizio esecuzione del test.
+
+2026-02-18  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayDB]
+	Risolto Bug
+	Fix patch 3.8.2.sql per Oracle. Aggiunte risorse mancanti.
+
+2026-02-11  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice, GovPayORM, GovPayDB] Issue #852
+	Aggiunta funzionalità
+	Aggiunta gestione del connettore verso il servizio backoffice EC di pagoPA.
+	Aggiornato modello ORM Intermediario, converter, servizi JDBC e schema DB.
+	Aggiunte patch SQL 3.9 per tutti i database supportati (PostgreSQL, Oracle, MySQL, HSQL, SQL Server).
+	Aggiornati test di integrazione per i nuovi connettori intermediario.
+
+	* [GovPayCore, GovPayApiPagoPA] Issue #851
+	Aggiunta funzionalità
+	Supporto al batch RT: aggiunta nuova colonna esegui_recupero_rt alla tabella rendicontazioni.
+	Aggiunta autorizzazione accesso batch alle API-PagoPA.
+	Aggiunta possibilita' di invocare il batch recupero RT esterno dal cruscotto.
+	Aggiornata configurazione GovpayConfig, BatchUtils, OperazioniDAO e TipoDestinatario.
+
+2026-02-10  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM] Issue #851
+	Aggiunta funzionalità
+	Aggiunta colonna esegui_recupero_rt per supporto al batch di recupero RT.
+
+	* [GovPayORM]
+	Risolto Bug
+	Corretto bug gestione parametro ordinamento nella lista dei flussi di rendicontazione.
+
+2026-02-09  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore]
+	Fix segnalazioni sonar.
+
+2026-02-06  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, GovPayORM, IntegrationTest] Issue #837
+	Aggiunta funzionalità
+	Aggiunto supporto alle nuove tabelle del batch Maggioli (JppaConfig).
+	Eliminato servizio SOAP Maggioli deprecato.
+	Risolta vulnerabilita' CVE-2025-7962.
+	Aggiornati test di integrazione per il connettore Maggioli JPPA.
+
+	* Corretto script prepareSetup.sh eliminando i riferimenti al WAR JPPA non piu' presente.
+
+2026-02-03  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore, GovPayApiPagoPA] Issue #837
+	Aggiunta funzionalità
+	Eliminato WS Jppa-PDP e servizio di spedizione notifiche SOAP.
+	Rimosso modulo jppapdp-beans e relativi riferimenti.
+	Aggiornati EventoContext, GovpayConfig, Operazioni, TipoDestinatario e ThreadExecutorManager.
+
+2026-01-27  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayConsole] Issue #847
+	Risolto Bug
+	Aggiunta proprieta' mancante al file di configurazione della console.
+
 2026-01-07  Giuliano Pintori <pintori@link.it>
 
 	* Rilasciata versione 3.8.2

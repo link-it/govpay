@@ -40,6 +40,7 @@ public class AcquisizioneRendicontazioni extends AbstractTask {
 	@Override
 	protected boolean isAbilitato() {
 		return GovpayConfig.getInstance().isBatchOn()
-				&& GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni();
+				&& GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()
+						&& !GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioniEsterno();
 	}
 }
