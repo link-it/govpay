@@ -24,6 +24,7 @@ import java.util.List;
 
 import it.govpay.core.beans.Lista;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ListaTipiPendenza extends Lista<TipoPendenza> {
 
 	public ListaTipiPendenza(List<TipoPendenza> tipiEntrata, URI requestUri, Long count, Integer pagina, Integer limit) {

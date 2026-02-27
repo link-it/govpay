@@ -63,6 +63,7 @@ import it.govpay.pagamento.v3.beans.VincoloPagamento;
 import it.govpay.pagamento.v3.beans.VoceDescrizioneImporto;
 import it.govpay.pagamento.v3.beans.VocePendenzaPagata;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzeConverter {
 
 	public static PendenzaArchivio toPendenzaArchivioRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, UnsupportedEncodingException, IOException {

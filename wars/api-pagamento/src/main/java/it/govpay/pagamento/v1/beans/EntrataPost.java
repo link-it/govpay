@@ -31,6 +31,7 @@ import it.govpay.core.beans.JSONSerializable;
 "codiceContabilita",
 "abilitato",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("contoAccredito")

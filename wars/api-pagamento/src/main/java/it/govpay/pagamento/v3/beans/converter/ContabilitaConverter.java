@@ -32,6 +32,7 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.pagamento.v3.beans.Contabilita;
 import it.govpay.pagamento.v3.beans.QuotaContabilita;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ContabilitaConverter {
 
 	public static Contabilita toRsModel(String contabilitaJson) throws IOException {

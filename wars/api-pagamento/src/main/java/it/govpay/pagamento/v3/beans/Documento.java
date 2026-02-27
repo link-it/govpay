@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Documento extends TipoRiferimentoDocumento  {
 
   @Schema(example = "abcdef12345_1", required = true, description = "Identificativo del documento")

@@ -75,6 +75,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v3.beans.FaultBean;
 import it.govpay.pagamento.v3.beans.FaultBean.CategoriaEnum;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class BaseApiServiceImpl {
 
 	public static final String PARAMETRO_CONTENT_DISPOSITION = Costanti.PARAMETRO_CONTENT_DISPOSITION;

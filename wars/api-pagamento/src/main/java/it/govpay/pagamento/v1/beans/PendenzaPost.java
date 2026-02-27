@@ -55,6 +55,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 	"idPendenza",
 	"idDebitore",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("idDominio")

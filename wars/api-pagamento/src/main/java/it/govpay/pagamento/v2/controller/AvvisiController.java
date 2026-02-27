@@ -54,6 +54,7 @@ import it.govpay.pagamento.v2.beans.LinguaSecondaria;
 import it.govpay.pagamento.v2.beans.StatoAvviso;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class AvvisiController extends BaseController {
 
 	public AvvisiController(String nomeServizio,Logger log) {

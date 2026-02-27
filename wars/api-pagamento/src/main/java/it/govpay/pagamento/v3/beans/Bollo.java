@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Definisce i dati di un bollo telematico
  **/
 @Schema(description="Definisce i dati di un bollo telematico")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
   public enum TipoBolloEnum {
     _01("01");

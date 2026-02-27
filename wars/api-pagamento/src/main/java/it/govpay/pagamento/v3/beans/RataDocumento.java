@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RataDocumento  implements OneOfTipoRiferimentoDocumento  {
 
   @Schema(example = "1", required = true, description = "Rata del documento")

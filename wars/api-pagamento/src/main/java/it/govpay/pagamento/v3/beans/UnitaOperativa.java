@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class UnitaOperativa   {
 
   @Schema(example = "1.23456789E+9", description = "Codice fiscale")

@@ -32,6 +32,7 @@ import it.govpay.pagamento.v3.beans.Allegato.TipoEnum;
 import it.govpay.pagamento.v3.beans.RiscossioneVocePagata;
 import it.govpay.pagamento.v3.beans.TipoRiscossione;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RiscossioniConverter {
 
 	public static RiscossioneVocePagata toRiscossioneVocePagataRsModel(it.govpay.bd.model.Pagamento input) {

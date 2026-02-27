@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.govpay.core.beans.Costanti;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Lista   {
 
   @Schema(example = "100", description = "")

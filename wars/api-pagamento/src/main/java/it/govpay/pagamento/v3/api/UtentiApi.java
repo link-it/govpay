@@ -39,6 +39,7 @@ import it.govpay.pagamento.v3.beans.Profilo;
  *
  */
 @Path("/")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public interface UtentiApi  {
 
     /**

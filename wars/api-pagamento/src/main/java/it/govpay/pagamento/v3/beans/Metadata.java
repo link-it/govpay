@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Metadata Custom da inserire nella ricevuta di pagamento
  **/
 @Schema(description="Metadata Custom da inserire nella ricevuta di pagamento")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Metadata   {
 
   @Schema(description = "")

@@ -31,6 +31,7 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "dettaglio",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Segnalazione extends JSONSerializable {
 
   @JsonProperty("data")

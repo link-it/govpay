@@ -50,6 +50,7 @@ import it.govpay.core.exceptions.ValidationException;
 "pendenze",
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Pagamento extends JSONSerializable {
 
   @JsonProperty("urlRitorno")

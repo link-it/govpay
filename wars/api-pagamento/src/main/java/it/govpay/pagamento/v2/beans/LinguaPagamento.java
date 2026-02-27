@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Indica la lingua da utilizzare durante il pagamento sul Checkout
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum LinguaPagamento {
 
 

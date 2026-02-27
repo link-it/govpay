@@ -62,6 +62,7 @@ import it.govpay.core.beans.JSONSerializable;
 "pagamenti",
 "pdf",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("idA2A")

@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * PSP che ha gestito la transazione di pagamento ed emesso la ricevuta
  **/
 @Schema(description="PSP che ha gestito la transazione di pagamento ed emesso la ricevuta")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RicevutaIstitutoAttestante   {
 
   @Schema(description = "Identificativo del PSP assegnato da pagoPA")

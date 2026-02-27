@@ -40,6 +40,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 
 @Path("/pagamenti")
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Pagamenti extends BaseRsServiceV1{
 
 

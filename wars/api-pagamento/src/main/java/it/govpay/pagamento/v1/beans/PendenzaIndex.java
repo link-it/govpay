@@ -51,6 +51,7 @@ import it.govpay.core.beans.JSONSerializable;
 "rpp",
 "pagamenti",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzaIndex extends JSONSerializable {
 
   @JsonProperty("nome")

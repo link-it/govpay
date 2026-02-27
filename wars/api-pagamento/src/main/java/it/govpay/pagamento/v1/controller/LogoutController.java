@@ -34,6 +34,7 @@ import org.springframework.security.core.Authentication;
 
 
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class LogoutController extends BaseController {
 
      public LogoutController(String nomeServizio,Logger log) {

@@ -43,6 +43,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "pendenze",
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class NuovoPagamento extends JSONSerializable implements IValidable {
 
   @JsonProperty("urlRitorno")

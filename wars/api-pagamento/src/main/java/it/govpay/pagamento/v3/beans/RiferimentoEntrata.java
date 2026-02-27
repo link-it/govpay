@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
  **/
 @Schema(description="Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RiferimentoEntrata  implements OneOfTipoRiferimentoVocePendenza  {
 
   @Schema(example = "SRV-12345", required = true, description = "")

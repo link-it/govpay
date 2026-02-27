@@ -48,6 +48,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "ibanAppoggio",
 "tipoContabilita",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("idVocePendenza")

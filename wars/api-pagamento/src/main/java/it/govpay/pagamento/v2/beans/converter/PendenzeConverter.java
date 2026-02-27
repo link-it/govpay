@@ -70,6 +70,7 @@ import it.govpay.pagamento.v2.beans.VoceDescrizioneImporto;
 import it.govpay.pagamento.v2.beans.VocePendenza;
 import it.govpay.pagamento.v2.beans.VocePendenza.TipoBolloEnum;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzeConverter {
 
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, UnsupportedEncodingException, IOException, ValidationException {

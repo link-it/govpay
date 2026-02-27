@@ -25,6 +25,7 @@ import java.util.List;
 
 import it.govpay.core.beans.Lista;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ListaPagamentiIndex extends Lista<it.govpay.pagamento.v1.beans.PagamentoIndex> {
 
 	public ListaPagamentiIndex(List<it.govpay.pagamento.v1.beans.PagamentoIndex> pagamentiPortale, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {

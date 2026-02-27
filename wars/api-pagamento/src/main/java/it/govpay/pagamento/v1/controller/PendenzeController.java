@@ -62,6 +62,7 @@ import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
 
 
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzeController extends BaseController {
 
      public PendenzeController(String nomeServizio,Logger log) {

@@ -33,6 +33,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "quote",
 "proprietaCustom",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Contabilita extends JSONSerializable implements IValidable {
 
   @JsonProperty("quote")

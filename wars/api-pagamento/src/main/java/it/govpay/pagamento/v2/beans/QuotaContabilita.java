@@ -41,6 +41,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "categoria",
 "articolo",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class QuotaContabilita extends JSONSerializable implements IValidable {
 
   @JsonProperty("capitolo")

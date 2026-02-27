@@ -32,6 +32,7 @@ import it.govpay.core.beans.JSONSerializable;
 "servizio",
 "autorizzazioni",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class AclPost extends JSONSerializable {
 
   @JsonProperty("ruolo")

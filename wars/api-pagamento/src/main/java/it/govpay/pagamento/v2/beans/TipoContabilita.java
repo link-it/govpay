@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Tipologia di codifica del capitolo di bilancio
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TipoContabilita {
 
 

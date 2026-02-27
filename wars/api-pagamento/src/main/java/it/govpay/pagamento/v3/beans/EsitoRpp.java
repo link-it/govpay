@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Esito della richiesta di pagamento:  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum EsitoRpp {
   IN_CORSO("IN_CORSO"),
 

@@ -22,6 +22,7 @@ package it.govpay.pagamento.v1.beans.converter;
 import it.govpay.pagamento.v1.beans.Soggetto;
 import it.govpay.pagamento.v1.beans.Soggetto.TipoEnum;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class AnagraficaConverter {
 
 

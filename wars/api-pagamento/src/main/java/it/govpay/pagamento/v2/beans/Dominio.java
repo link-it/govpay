@@ -44,6 +44,7 @@ import it.govpay.core.beans.JSONSerializable;
 "unitaOperative",
 "tipiPendenza",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Dominio extends JSONSerializable {
 
   @JsonProperty("idDominio")

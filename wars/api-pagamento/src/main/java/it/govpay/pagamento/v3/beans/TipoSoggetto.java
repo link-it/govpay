@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * tipologia di soggetto, se persona fisica (F) o giuridica (G)
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TipoSoggetto {
   G("G"),
 

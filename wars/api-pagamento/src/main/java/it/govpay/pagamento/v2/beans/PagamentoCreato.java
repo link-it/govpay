@@ -31,6 +31,7 @@ import it.govpay.core.beans.JSONSerializable;
 "redirect",
 "idSession",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentoCreato extends JSONSerializable {
 
   @JsonProperty("id")

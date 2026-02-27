@@ -43,6 +43,7 @@ import it.govpay.core.beans.JSONSerializable;
 "ibanAppoggio",
 "tipoContabilita",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class VocePendenza extends JSONSerializable {
 
   @JsonProperty("idVocePendenza")

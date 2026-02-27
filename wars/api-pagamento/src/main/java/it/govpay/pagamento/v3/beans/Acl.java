@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Acl   {
 
   @Schema(example = "Operatore", description = "ruolo a cui si applica l'acl")

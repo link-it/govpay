@@ -65,6 +65,7 @@ import it.govpay.pagamento.v2.beans.TipoAutenticazioneSoggetto;
 import it.govpay.pagamento.v2.beans.TipoSoggetto;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentiPortaleConverter {
 
 	private PagamentiPortaleConverter() {}

@@ -34,6 +34,7 @@ import it.govpay.core.beans.JSONSerializable;
 "anagrafica",
 "identityData",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Profilo extends JSONSerializable {
 
   @JsonProperty("nome")

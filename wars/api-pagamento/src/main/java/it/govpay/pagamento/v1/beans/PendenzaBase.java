@@ -41,6 +41,7 @@ import it.govpay.core.beans.JSONSerializable;
 "tassonomia",
 "tassonomiaAvviso",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzaBase extends JSONSerializable {
 
   @JsonProperty("nome")

@@ -70,6 +70,7 @@ import it.govpay.pagamento.v2.beans.FaultBean.CategoriaEnum;
  * @version $ Rev: 12563 $, $Date: 22 feb 2018 $
  *
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public abstract class BaseController {
 
 	public static final String PARAMETRO_CONTENT_DISPOSITION = Costanti.PARAMETRO_CONTENT_DISPOSITION;

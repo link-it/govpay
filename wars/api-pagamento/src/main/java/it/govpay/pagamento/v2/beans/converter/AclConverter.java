@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import it.govpay.pagamento.v2.beans.TipoServizio;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class AclConverter {
 
 	public static it.govpay.pagamento.v2.beans.Acl toRsModel(it.govpay.bd.model.Acl acl) {

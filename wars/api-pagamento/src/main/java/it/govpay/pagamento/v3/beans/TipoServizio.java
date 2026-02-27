@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Gets or Sets TipoServizio
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TipoServizio {
   ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
 

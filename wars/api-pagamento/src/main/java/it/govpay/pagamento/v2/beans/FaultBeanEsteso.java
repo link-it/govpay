@@ -32,6 +32,7 @@ import it.govpay.core.beans.JSONSerializable;
 "id",
 "location",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class FaultBeanEsteso extends JSONSerializable {
 
 	  /**

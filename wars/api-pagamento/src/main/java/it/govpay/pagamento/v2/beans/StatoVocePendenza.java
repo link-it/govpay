@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Stato della voce di pagamento
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum StatoVocePendenza {
 
 

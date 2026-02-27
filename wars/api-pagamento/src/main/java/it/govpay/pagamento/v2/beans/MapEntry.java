@@ -33,6 +33,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "key",
 "value",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class MapEntry extends JSONSerializable implements IValidable {
 
   @JsonProperty("key")
