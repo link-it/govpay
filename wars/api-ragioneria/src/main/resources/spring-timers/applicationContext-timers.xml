@@ -18,8 +18,8 @@
 	<task:scheduled-tasks scheduler="myScheduler">
         <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
-        <!-- Check data reset della cache tutti i giorni ogni minuto -->
-        <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="0 * * * * ?" />
+        <!-- Check data reset della cache -->
+        <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="${it.govpay.batch.cacheCheck.cron}" />
         
         <!-- Check riconciliazioni da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchElaborazioneRiconciliazioniCheck" method="exec" cron="0/5 * * * * ?" />

@@ -50,8 +50,8 @@
         <task:scheduled ref="batchSpedizioneNotificheAppIoCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
-        <!-- Check data reset della cache tutti i giorni ogni minuto -->
-        <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="0 * * * * ?" />
+        <!-- Check data reset della cache -->
+        <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="${it.govpay.batch.cacheCheck.cron}" />
         <!-- Check tracciati da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchElaborazioneTracciatiCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Elaborazione tracciati viene eseguito tutti i giorni ogni 30 minuti -->

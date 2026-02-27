@@ -17,6 +17,9 @@ pipeline {
 
     // sudo docker compose path
     DOCKER_COMPOSE_DIR = "/etc/govpay/docker"
+
+    // Cron expression per il check di reset della cache anagrafica (default: ogni 10 secondi per la testsuite)
+    CACHE_CHECK_CRON = "0/10 * * * * ?"
   }
   stages {
     stage('info') {
@@ -43,7 +46,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD' 
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -D"it.govpay.batch.cacheCheck.cron=${CACHE_CHECK_CRON}" -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD' 
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
