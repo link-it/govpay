@@ -20,27 +20,18 @@
 package it.govpay.backoffice.v1.controllers;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.TracciatiNotificaPagamentiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoNotificaPagamentiDTO;
-import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -78,40 +69,7 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 
 			String zipFileName = (tracciato.getNomeFile().contains(".") ? tracciato.getNomeFile().substring(0, tracciato.getNomeFile().lastIndexOf(".")) : tracciato.getNomeFile()) + ".zip";
 
-			StreamingOutput zipStream;
-
-			// Per tracciati Maggioli JPPA leggi dal filesystem anziche' dal database
-			if(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA.equals(tracciato.getTipo())) {
-				// Recupera il dominio per ottenere il path del filesystem
-				BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, true);
-				DominiBD dominiBD = new DominiBD(configWrapper);
-				Dominio dominio = dominiBD.getDominio(tracciato.getIdDominio());
-				ConnettoreNotificaPagamenti connettore = dominio.getConnettoreMaggioliJPPA();
-
-				if(connettore == null || connettore.getFileSystemPath() == null) {
-					throw new NonTrovataException("Configurazione connettore Maggioli JPPA non trovata per il dominio");
-				}
-
-				String fileSystemPath = connettore.getFileSystemPath();
-				String filePath = fileSystemPath + File.separator + tracciato.getNomeFile();
-				File file = new File(filePath);
-
-				if(!file.exists()) {
-					throw new NonTrovataException("Il file del tracciato non e' presente nel filesystem: " + filePath);
-				}
-
-				zipStream = new StreamingOutput() {
-					@Override
-					public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
-						try (FileInputStream fis = new FileInputStream(file)) {
-							IOUtils.copy(fis, output);
-						}
-					}
-				};
-			} else {
-				// Per altri tipi di tracciato leggi dal database
-				zipStream = tracciatiDAO.leggiBlobTracciato(id, secID, idDomini, it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
-			}
+			StreamingOutput zipStream = tracciatiDAO.leggiBlobTracciato(id, secID, idDomini, it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
 
 			this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName);
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header(Costanti.HEADER_NAME_CONTENT_DISPOSITION, Costanti.PREFIX_CONTENT_DISPOSITION_ATTACHMENT_FILENAME+zipFileName+Costanti.SUFFIX_CONTENT_DISPOSITION),transactionId).build();

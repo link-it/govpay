@@ -23,7 +23,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
   pattern: string = '^(|([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+((,\\s)(([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+)*$';
   maggioliAbilitato: boolean = false;
   _inviaTracciatoEsito: boolean = false;
-  _isAllegatoEmail: boolean = false;
+  _isAllegatoEmail: boolean = true;
   _dataUltimaRT: Date = null;
 
   constructor(private dialog: MatDialog) { }
@@ -37,7 +37,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
     this.fGroup.addControl('fileSystemPath_ctrl', new FormControl(''));
     this.fGroup.addControl('emailIndirizzi_ctrl', new FormControl(''));
     this.fGroup.addControl('emailSubject_ctrl', new FormControl(''));
-    this.fGroup.addControl('emailAllegato_ctrl', new FormControl(false));
+    this.fGroup.addControl('emailAllegato_ctrl', new FormControl(true));
     this.fGroup.addControl('downloadBaseUrl_ctrl', new FormControl(''));
     this.fGroup.addControl('dataUltimaRT_ctrl', new FormControl(null));
   }
@@ -60,13 +60,13 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
         this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
       }
       this.fGroup.controls['emailSubject_ctrl'].setValue(this.json.emailSubject || '');
-      this.fGroup.controls['emailAllegato_ctrl'].setValue(this.json.emailAllegato || false);
+      this.fGroup.controls['emailAllegato_ctrl'].setValue(true);
       if (this.json.downloadBaseUrl) {
         this.fGroup.controls['downloadBaseUrl_ctrl'].setValue(this.json.downloadBaseUrl);
       }
 
       this._inviaTracciatoEsito = this.json.inviaTracciatoEsito || false;
-      this._isAllegatoEmail = this.json.emailAllegato || false;
+      this._isAllegatoEmail = true;
       if (this.json.dataUltimaRT) {
         this._dataUltimaRT = new Date(this.json.dataUltimaRT);
         this.fGroup.controls['dataUltimaRT_ctrl'].setValue(this._dataUltimaRT);
@@ -100,9 +100,6 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
       if (this._inviaTracciatoEsito) {
         this.fGroup.controls['fileSystemPath_ctrl'].setValidators(Validators.required);
         this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]);
-        if (!this._isAllegatoEmail) {
-          this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators(Validators.required);
-        }
       }
     }
 
@@ -181,10 +178,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
         _json.fileSystemPath = _info['fileSystemPath_ctrl'] || null;
         _json.emailIndirizzi = _info['emailIndirizzi_ctrl'] ? _info['emailIndirizzi_ctrl'].split(SEPARATORE) : null;
         _json.emailSubject = _info['emailSubject_ctrl'] || null;
-        _json.emailAllegato = _info['emailAllegato_ctrl'] || false;
-        if (!_json.emailAllegato) {
-          _json.downloadBaseUrl = _info['downloadBaseUrl_ctrl'] || null;
-        }
+        _json.emailAllegato = true;
       }
     }
 
