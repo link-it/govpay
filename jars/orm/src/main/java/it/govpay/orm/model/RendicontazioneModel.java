@@ -55,13 +55,14 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 		this.ID_PAGAMENTO = new it.govpay.orm.model.IdPagamentoModel(new Field("idPagamento",it.govpay.orm.IdPagamento.class,"Rendicontazione",Rendicontazione.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Rendicontazione",Rendicontazione.class));
 		this.ESEGUI_RECUPERO_RT = new Field("eseguiRecuperoRt",boolean.class,"Rendicontazione",Rendicontazione.class);
-	
+		this.NOTIFICA_INVIATA = new Field("notificaInviata",boolean.class,"Rendicontazione",Rendicontazione.class);
+
 	}
-	
+
 	public RendicontazioneModel(IField father){
-	
+
 		super(father);
-	
+
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.math.BigInteger.class,"Rendicontazione",Rendicontazione.class);
@@ -74,7 +75,8 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 		this.ID_PAGAMENTO = new it.govpay.orm.model.IdPagamentoModel(new ComplexField(father,"idPagamento",it.govpay.orm.IdPagamento.class,"Rendicontazione",Rendicontazione.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Rendicontazione",Rendicontazione.class));
 		this.ESEGUI_RECUPERO_RT = new ComplexField(father,"eseguiRecuperoRt",boolean.class,"Rendicontazione",Rendicontazione.class);
-	
+		this.NOTIFICA_INVIATA = new ComplexField(father,"notificaInviata",boolean.class,"Rendicontazione",Rendicontazione.class);
+
 	}
 	
 	
@@ -102,7 +104,9 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
 	 
 	public IField ESEGUI_RECUPERO_RT = null;
-	 
+
+	public IField NOTIFICA_INVIATA = null;
+
 
 	@Override
 	public Class<Rendicontazione> getModeledClass(){

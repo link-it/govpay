@@ -419,6 +419,13 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "esegui_recupero_rt";
 			}
 		}
+		if(field.equals(Rendicontazione.model().NOTIFICA_INVIATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".notifica_inviata";
+			}else{
+				return "notifica_inviata";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -580,6 +587,9 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ESEGUI_RECUPERO_RT)){
+			return this.toTable(Rendicontazione.model(), returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().NOTIFICA_INVIATA)){
 			return this.toTable(Rendicontazione.model(), returnAlias);
 		}
 

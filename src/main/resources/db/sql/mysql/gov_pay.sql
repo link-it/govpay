@@ -1046,6 +1046,7 @@ CREATE TABLE rendicontazioni
 	stato VARCHAR(35) NOT NULL COMMENT 'Stato della rendicontazione',
 	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nella rendicontazione',
 	esegui_recupero_rt BOOLEAN NOT NULL DEFAULT true COMMENT 'indica se eseguire il recupero della ricevuta da pagoPA',
+	notifica_inviata BOOLEAN NOT NULL DEFAULT false COMMENT 'indica se la notifica e stata inviata',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_fr BIGINT NOT NULL COMMENT 'Riferimento al flusso di rendicontazione',

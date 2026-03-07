@@ -74,6 +74,8 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "anomalie", Rendicontazione.model().ANOMALIE.getFieldType()));
 				setParameter(object, "setEseguiRecuperoRt", Rendicontazione.model().ESEGUI_RECUPERO_RT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "esegui_recupero_rt", Rendicontazione.model().ESEGUI_RECUPERO_RT.getFieldType()));
+				setParameter(object, "setNotificaInviata", Rendicontazione.model().NOTIFICA_INVIATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "notifica_inviata", Rendicontazione.model().NOTIFICA_INVIATA.getFieldType()));
 				return object;
 			}
 			
@@ -114,6 +116,8 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"anomalie"));
 				setParameter(object, "setEseguiRecuperoRt", Rendicontazione.model().ESEGUI_RECUPERO_RT.getFieldType(),
 					this.getObjectFromMap(map,"eseguiRecuperoRt"));
+				setParameter(object, "setNotificaInviata", Rendicontazione.model().NOTIFICA_INVIATA.getFieldType(),
+					this.getObjectFromMap(map,"notificaInviata"));
 				return object;
 			}
 			

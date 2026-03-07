@@ -73,7 +73,8 @@ import java.io.Serializable;
   	"idFR",
   	"idPagamento",
   	"idSingoloVersamento",
-  	"eseguiRecuperoRt"
+  	"eseguiRecuperoRt",
+  	"notificaInviata"
   }
 )
 
@@ -245,5 +246,21 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBeanWithId 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="eseguiRecuperoRt",required=true,nillable=false,defaultValue="true")
   protected boolean eseguiRecuperoRt = true;
+
+  public boolean isNotificaInviata() {
+    return this.notificaInviata;
+  }
+
+  public boolean getNotificaInviata() {
+    return this.notificaInviata;
+  }
+
+  public void setNotificaInviata(boolean notificaInviata) {
+    this.notificaInviata = notificaInviata;
+  }
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="notificaInviata",required=true,nillable=false,defaultValue="false")
+  protected boolean notificaInviata = false;
 
 }

@@ -747,6 +747,7 @@ public class Rendicontazioni {
 							for(Rendicontazione r : fr.getRendicontazioni()) {
 								r.setIdFr(fr.getId());
 								r.setEseguiRecuperoRt(true); // imposto il default value previsto dal batch recupero RT
+								r.setNotificaInviata(false); // imposto il default value previsto dal batch notifica
 								rendicontazioniBD.insert(r);
 							}
 							rendicontazioniBD.commit();

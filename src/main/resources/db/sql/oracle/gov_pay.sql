@@ -1468,6 +1468,7 @@ CREATE TABLE rendicontazioni
 	stato VARCHAR2(35 CHAR) NOT NULL,
 	anomalie CLOB,
 	esegui_recupero_rt NUMBER NOT NULL,
+	notifica_inviata NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_fr NUMBER NOT NULL,
@@ -1488,6 +1489,7 @@ CREATE INDEX idx_rnd_fk_pagamenti ON rendicontazioni (id_pagamento);
 CREATE INDEX idx_rnd_data ON rendicontazioni (data);
 
 ALTER TABLE rendicontazioni MODIFY esegui_recupero_rt DEFAULT 1;
+ALTER TABLE rendicontazioni MODIFY notifica_inviata DEFAULT 0;
 
 CREATE TRIGGER trg_rendicontazioni
 BEFORE

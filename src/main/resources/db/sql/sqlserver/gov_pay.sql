@@ -1058,6 +1058,7 @@ CREATE TABLE rendicontazioni
 	stato VARCHAR(35) NOT NULL,
 	anomalie VARCHAR(max),
 	esegui_recupero_rt BIT NOT NULL DEFAULT 'true',
+	notifica_inviata BIT NOT NULL DEFAULT 'false',
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_fr BIGINT NOT NULL,

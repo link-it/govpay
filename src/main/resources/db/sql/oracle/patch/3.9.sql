@@ -45,3 +45,8 @@ ALTER TABLE rendicontazioni MODIFY esegui_recupero_rt NOT NULL;
 
 -- 11/02/2026 Nuova colonna cod_connettore_backoffice_ec su intermediari
 ALTER TABLE intermediari ADD cod_connettore_backoffice_ec VARCHAR2(35);
+
+-- 04/03/2026 Nuova colonna notifica_inviata su rendicontazioni
+ALTER TABLE rendicontazioni ADD notifica_inviata NUMBER;
+UPDATE rendicontazioni SET notifica_inviata = 0;
+ALTER TABLE rendicontazioni MODIFY notifica_inviata NOT NULL;

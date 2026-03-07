@@ -1086,6 +1086,7 @@ CREATE TABLE rendicontazioni
 	stato VARCHAR(35) NOT NULL,
 	anomalie TEXT,
 	esegui_recupero_rt BOOLEAN NOT NULL DEFAULT true,
+	notifica_inviata BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_rendicontazioni') NOT NULL,
 	id_fr BIGINT NOT NULL,

@@ -2601,6 +2601,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="eseguiRecuperoRt" type="xsd:boolean" default="true"/>
+			<xsd:element name="notificaInviata" type="xsd:boolean" default="false"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

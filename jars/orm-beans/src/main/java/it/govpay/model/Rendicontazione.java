@@ -77,6 +77,7 @@ public class Rendicontazione extends BasicModel {
 	private Long idPagamento;
 	private Long idSingoloVersamento;
 	private boolean eseguiRecuperoRt;
+	private boolean notificaInviata;
 	
 	@Override
 	public Long getId() {
@@ -221,5 +222,11 @@ public class Rendicontazione extends BasicModel {
 	public void setEseguiRecuperoRt(boolean eseguiRecuperoRt) {
 		this.eseguiRecuperoRt = eseguiRecuperoRt;
 	}
-	
+	public boolean isNotificaInviata() {
+		return notificaInviata;
+	}
+	public void setNotificaInviata(boolean notificaInviata) {
+		this.notificaInviata = notificaInviata;
+	}
+
 }
