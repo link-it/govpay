@@ -1,3 +1,16 @@
+2026-03-07  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM, GovPayDB]
+	Aggiunta funzionalità #853
+	Aggiunta colonna notifica_inviata alla tabella rendicontazioni per supporto al nuovo batch di notifica.
+	Aggiornato modello ORM Rendicontazione, converter, field converter, fetch e servizi JDBC.
+	Aggiunte patch SQL 3.9 per tutti i database supportati (PostgreSQL, Oracle, MySQL, HSQL, SQL Server).
+
+	* [GovPayApiBackoffice]
+	Risolto Bug
+	Corretta validazione pattern email/pec nei bean DominioPost, UnitaOperativaPost e Soggetto.
+	Allineata regex al pattern pagoPA stEMail. Sostituita regex hardcoded con costante CostantiValidazione.PATTERN_EMAIL.
+
 2026-02-26  Giuliano Pintori <pintori@link.it>
 
 	* Rilasciata versione 3.9.0
