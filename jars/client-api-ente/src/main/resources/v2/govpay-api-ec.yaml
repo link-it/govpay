@@ -14,7 +14,7 @@ info:
     - La data di validità presente nella pendenza oggetto del pagamento è decorsa.
     
     Le informazioni restituite dal servizio vanno ad aggiornare la pendenza negli archivi di GovPay ed utilizzate per perfezionare il pagamento. 
-  version: "2.0.0"
+  version: "2.1.1"
   title: "GovPay - API Notifica e Verifica"
   contact:
     name: GitHub Project Page
@@ -28,6 +28,7 @@ servers:
 tags:
   - name: Verifica pendenze
   - name: Notifica ricevute
+  - name: Notifica rendicontazioni
 paths:
   '/avvisi/{idDominio}/{numeroAvviso}':
     get:
@@ -158,6 +159,36 @@ paths:
           $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
         '500':
           $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable' 
+  '/rendicontazioni':
+    post:
+      operationId: notificaRendicontazione
+      summary: Notifica di una rendicontazione
+      description: >-
+        Notifica di una singola rendicontazione relativa ad un flusso di rendicontazione pagoPA.
+      tags:
+        - Notifica rendicontazioni
+      requestBody:
+        description: Dati della rendicontazione
+        content:
+          application/json:
+            schema:
+              $ref: 'govpay-api-schemas.yaml#/components/schemas/NuovaRendicontazione'
+            examples:
+              standard:
+                $ref: 'govpay-api-examples.yaml#/components/examples/NuovaRendicontazione'
+      responses:
+        '200':
+          description: Rendicontazione acquisita nuovamente
+        '201':
+          description: Rendicontazione acquisita
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
   '/ricevute/{idDominio}/{iuv}/{idRicevuta}':
     put:
       operationId: notificaRicevuta
