@@ -305,6 +305,3 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }
-
-
-

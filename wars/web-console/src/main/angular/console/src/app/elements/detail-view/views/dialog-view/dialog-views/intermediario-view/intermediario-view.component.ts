@@ -128,7 +128,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     };
     _json.servizioPagoPa['auth'] = this.sslConfig.mapToJson();
     if(_json.servizioPagoPa.auth == null) { delete _json.servizioPagoPa.auth; }
-	
+
 	if(_info['urlRecuperoRT_ctrl'] != null && _info['urlRecuperoRT_ctrl'] != ''){
 		_json.servizioPagoPaRecuperoRT = {
 	      auth: null,
@@ -176,7 +176,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
 	}
     return _json;
   }
-  
+
   protected _onRecuperoRTUrlChange(trigger: any, targets: string) {
       targets.split('|').forEach((_target, _ti) => {
         const _tc = this.fGroup.controls[_target];

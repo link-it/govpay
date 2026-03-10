@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -55,22 +55,22 @@ public class IntermediariBD extends BasicBD {
 	public IntermediariBD(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
+
 	public IntermediariBD(String idTransaction) {
 		super(idTransaction);
 	}
-	
+
 	public IntermediariBD(String idTransaction, boolean useCache) {
 		super(idTransaction, useCache);
 	}
-	
+
 	public IntermediariBD(BDConfigWrapper configWrapper) {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**
 	 * Recupera l'intermediario tramite l'id fisico
-	 * 
+	 *
 	 * @param idEnte
 	 * @return
 	 * @throws NotFoundException se l'ente non esiste.
@@ -88,7 +88,7 @@ public class IntermediariBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getIntermediarioService()).get(id);
 			return this.getIntermediario(intermediarioVO);
 
@@ -103,7 +103,7 @@ public class IntermediariBD extends BasicBD {
 
 	/**
 	 * Recupera l'intermediario tramite l'id logico
-	 * 
+	 *
 	 * @param codEnte
 	 * @return
 	 * @throws NotFoundException se l'ente non esiste.
@@ -115,10 +115,10 @@ public class IntermediariBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			IExpression expr = this.getIntermediarioService().newExpression();
 			expr.equals(it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO, codIntermediario);
-			
+
 			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().find(expr);
 
 			return this.getIntermediario(intermediarioVO);
@@ -196,7 +196,7 @@ public class IntermediariBD extends BasicBD {
 
 	/**
 	 * Recupera la lista degli intermediari censiti sul sistema
-	 * 
+	 *
 	 * @return
 	 * @throws ServiceException in caso di errore DB.
 	 */
@@ -216,7 +216,7 @@ public class IntermediariBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			it.govpay.orm.Intermediario vo = IntermediarioConverter.toVO(intermediario);
 			IdIntermediario id = this.getIntermediarioService().convertToId(vo);
 
@@ -232,7 +232,7 @@ public class IntermediariBD extends BasicBD {
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePdd());
 				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePdd().getIdConnettore());
 			}
-			
+
 			if(intermediario.getConnettorePddRecuperoRT() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddRecuperoRT());
@@ -290,7 +290,7 @@ public class IntermediariBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			it.govpay.orm.Intermediario vo = IntermediarioConverter.toVO(intermediario);
 
 			this.getIntermediarioService().create(vo);
@@ -301,7 +301,7 @@ public class IntermediariBD extends BasicBD {
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePdd());
 				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePdd().getIdConnettore());
 			}
-			
+
 			if(intermediario.getConnettorePddRecuperoRT() != null) {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddRecuperoRT());
@@ -348,7 +348,7 @@ public class IntermediariBD extends BasicBD {
 		}
 
 	}
-	
+
 	private void insertConnettore(List<it.govpay.orm.Connettore> voConnettoreLst, String idConnettore) throws ServiceException {
 		try {
 			IExpression expDelete = this.getConnettoreService().newExpression();
@@ -361,14 +361,14 @@ public class IntermediariBD extends BasicBD {
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
-		
+
 	}
 
 
 	public IntermediarioFilter newFilter() throws ServiceException {
 		return new IntermediarioFilter(this.getIntermediarioService());
 	}
-	
+
 	public IntermediarioFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new IntermediarioFilter(this.getIntermediarioService(),simpleSearch);
 	}
@@ -376,14 +376,14 @@ public class IntermediariBD extends BasicBD {
 	public long count(IntermediarioFilter filter) throws ServiceException {
 		return filter.isEseguiCountConLimit() ? this.countConLimitEngine(filter) : this.countSenzaLimitEngine(filter);
 	}
-	
+
 	private long countSenzaLimitEngine(IntermediarioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 				filter.setExpressionConstructor(this.getIntermediarioService());
 			}
-			
+
 			return this.getIntermediarioService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -393,58 +393,58 @@ public class IntermediariBD extends BasicBD {
 			}
 		}
 	}
-	
+
 	private long countConLimitEngine(IntermediarioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
-			
+
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			
+
 			IntermediarioModel model = it.govpay.orm.Intermediario.model();
-			IntermediarioFieldConverter converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			IntermediarioFieldConverter converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			/*
-			SELECT count(distinct id) 
+			SELECT count(distinct id)
 				FROM
 				  (
 				  SELECT versamenti.id
 				  FROM versamenti
 				  WHERE ...restrizioni di autorizzazione o ricerca...
-				  ORDER BY data_richiesta 
+				  ORDER BY data_richiesta
 				  LIMIT K
 				  ) a
 				)
 			*/
-			
+
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_INTERMEDIARIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_INTERMEDIARIO), "id");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
-			
+
 			// creo condizioni
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
-			
+
 			sqlQueryObjectInterno.setLimit(limitInterno);
-			
+
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
 			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
-			
+
 			String sql = sqlQueryObjectDistinctID.createSQLQuery();
 			List<Class<?>> returnTypes = new ArrayList<>();
 			returnTypes.add(Long.class); // Count
-			
+
 			List<List<Object>> nativeQuery = this.getIntermediarioService().nativeQuery(sql, returnTypes, parameters);
-			
+
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
 				count = BasicBD.getValueOrNull(row.get(0), Long.class);
 			}
-			
+
 			return count.longValue();
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
@@ -463,7 +463,7 @@ public class IntermediariBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 				filter.setExpressionConstructor(this.getIntermediarioService());
 			}
-			
+
 			List<Intermediario> lst = new ArrayList<>();
 			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Intermediario intermediarioVO: lstIntermediarioVO) {

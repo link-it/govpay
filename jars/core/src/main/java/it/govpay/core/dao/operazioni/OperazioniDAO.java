@@ -112,10 +112,10 @@ public class OperazioniDAO extends BaseDAO{
 
 			response.setDescrizioneStato(esitoOperazione);
 			response.setStato(0);
-			response.setNome(leggiOperazioneDTO.getIdOperazione()); 
+			response.setNome(leggiOperazioneDTO.getIdOperazione());
 		} catch (NotFoundException e) {
 			throw new OperazioneNonTrovataException(e.getMessage(), e);
-		} 
+		}
 		return response;
 	}
 

@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  options { 
+  options {
     disableConcurrentBuilds()
     buildDiscarder(logRotator(numToKeepStr: '2', artifactNumToKeepStr: '2'))
   }
@@ -46,7 +46,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -D"it.govpay.batch.cacheCheck.cron=${CACHE_CHECK_CRON}" -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD' 
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -D"it.govpay.batch.cacheCheck.cron=${CACHE_CHECK_CRON}" -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -76,7 +76,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test' 
+        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test'
       }
       post {
         always {
@@ -97,13 +97,13 @@ pipeline {
 	      classArgs=\$(find . -type d -path "*/target/classes" \
 	                  | sed "s#^#--classfiles #" \
 	                  | xargs)
-	
+
 	      # raccogliamo tutte le sorgenti dei moduli
 	      srcArgs=\$(find . -type d -path "*/src/main/java" \
 	                | sed "s#^#--sourcefiles #" \
 	                | xargs)
-	
-          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
+
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV}
            """
 	    sh """
 	    	XML_REPORT=\$(pwd)/${JACOCO_XML}
