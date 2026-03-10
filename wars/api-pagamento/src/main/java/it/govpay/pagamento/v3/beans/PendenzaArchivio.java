@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Rappresentazione di una posizione debitoria
  **/
 @Schema(description="Rappresentazione di una posizione debitoria")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzaArchivio extends PendenzaPagata  {
 
   @Schema(required = true, description = "")

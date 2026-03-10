@@ -44,6 +44,7 @@ import it.govpay.model.configurazione.Hardening;
 import it.govpay.pagamento.v2.controller.BaseController;
 import it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestMatcher;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher {
 
 	private static final String HEADER_NAME_ACCEPT = "Accept";

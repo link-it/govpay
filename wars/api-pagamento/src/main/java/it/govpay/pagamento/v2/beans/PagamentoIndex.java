@@ -46,6 +46,7 @@ import it.govpay.core.exceptions.ValidationException;
 "pendenze",
 "rpp",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("urlRitorno")

@@ -35,6 +35,7 @@ import it.govpay.rs.v2.BaseRsServiceV2;
 
 @Path("/allegati")
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Allegati extends BaseRsServiceV2{
 
 	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/{0}";

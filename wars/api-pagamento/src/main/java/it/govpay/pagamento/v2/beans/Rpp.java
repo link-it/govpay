@@ -33,6 +33,7 @@ import it.govpay.core.beans.JSONSerializable;
 "rt",
 "pendenza",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Rpp extends JSONSerializable {
 
   @JsonProperty("stato")

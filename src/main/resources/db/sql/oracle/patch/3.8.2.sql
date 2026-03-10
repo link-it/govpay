@@ -13,7 +13,7 @@ ALTER TABLE fr ADD data_ora_pubblicazione TIMESTAMP;
 
 
 -- 03/11/2025 Reso opzionale il campo xml della tabella fr
-ALTER TABLE fr MODIFY xml BLOB NULL;
+ALTER TABLE fr MODIFY xml NULL;
 
 
 -- 03/11/2025 Aggiunti campi data_ora_aggiornamento e revisione alla tabella fr
@@ -120,32 +120,32 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
     versamenti.proprieta as vrs_proprieta,
-    pagamenti.cod_dominio AS pag_cod_dominio,             
-	pagamenti.iuv AS pag_iuv,                     
-	pagamenti.indice_dati AS pag_indice_dati,             
-	pagamenti.importo_pagato AS pag_importo_pagato,          
-	pagamenti.data_acquisizione AS pag_data_acquisizione,       
-	pagamenti.iur AS pag_iur,                     
-	pagamenti.data_pagamento AS pag_data_pagamento,          
-	pagamenti.commissioni_psp AS pag_commissioni_psp,         
-	pagamenti.tipo_allegato AS pag_tipo_allegato,           
-	pagamenti.allegato AS pag_allegato,                
+    pagamenti.cod_dominio AS pag_cod_dominio,
+	pagamenti.iuv AS pag_iuv,
+	pagamenti.indice_dati AS pag_indice_dati,
+	pagamenti.importo_pagato AS pag_importo_pagato,
+	pagamenti.data_acquisizione AS pag_data_acquisizione,
+	pagamenti.iur AS pag_iur,
+	pagamenti.data_pagamento AS pag_data_pagamento,
+	pagamenti.commissioni_psp AS pag_commissioni_psp,
+	pagamenti.tipo_allegato AS pag_tipo_allegato,
+	pagamenti.allegato AS pag_allegato,
 	pagamenti.data_acquisizione_revoca AS pag_data_acquisizione_revoca,
-	pagamenti.causale_revoca AS pag_causale_revoca,          
-	pagamenti.dati_revoca AS pag_dati_revoca,             
-	pagamenti.importo_revocato AS pag_importo_revocato,        
-	pagamenti.esito_revoca AS pag_esito_revoca,            
-	pagamenti.dati_esito_revoca AS pag_dati_esito_revoca,       
-	pagamenti.stato AS pag_stato,                  
-	pagamenti.tipo AS pag_tipo,                  
+	pagamenti.causale_revoca AS pag_causale_revoca,
+	pagamenti.dati_revoca AS pag_dati_revoca,
+	pagamenti.importo_revocato AS pag_importo_revocato,
+	pagamenti.esito_revoca AS pag_esito_revoca,
+	pagamenti.dati_esito_revoca AS pag_dati_esito_revoca,
+	pagamenti.stato AS pag_stato,
+	pagamenti.tipo AS pag_tipo,
 	rpt.iuv AS rpt_iuv,
 	rpt.ccp AS rpt_ccp,
 	incassi.trn AS rnc_trn
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
-     LEFT JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento 
-     LEFT JOIN pagamenti on rendicontazioni.id_pagamento = pagamenti.id 
+     LEFT JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento
+     LEFT JOIN pagamenti on rendicontazioni.id_pagamento = pagamenti.id
      LEFT JOIN rpt on pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
 
@@ -432,31 +432,31 @@ CREATE VIEW v_rendicontazioni_ext AS
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
 
 CREATE VIEW v_riscossioni AS (
- SELECT 
+ SELECT
     fr.cod_dominio AS cod_dominio,
     rendicontazioni.iuv AS iuv,
     rendicontazioni.iur AS iur,
-    fr.cod_flusso AS cod_flusso, 
+    fr.cod_flusso AS cod_flusso,
     fr.iur AS fr_iur,
     fr.data_regolamento AS data_regolamento,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     rendicontazioni.importo_pagato AS importo_pagato,
     rendicontazioni.data AS data_pagamento,
-    singoli_versamenti.cod_singolo_versamento_ente as cod_singolo_versamento_ente, 
-    rendicontazioni.indice_dati as indice_dati, 
+    singoli_versamenti.cod_singolo_versamento_ente as cod_singolo_versamento_ente,
+    rendicontazioni.indice_dati as indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
     applicazioni.cod_applicazione AS cod_applicazione,
     versamenti.debitore_identificativo AS identificativo_debitore,
     versamenti.cod_anno_tributario AS anno,
     tipi_versamento.cod_tipo_versamento AS cod_tipo_versamento,
-    tipi_tributo.cod_tributo AS cod_entrata, 
+    tipi_tributo.cod_tributo AS cod_entrata,
     tipi_versamento.descrizione AS descr_tipo_versamento,
     versamenti.debitore_anagrafica AS debitore_anagrafica,
-    fr.cod_psp AS cod_psp, 
+    fr.cod_psp AS cod_psp,
     fr.ragione_sociale_psp AS ragione_sociale_psp,
     versamenti.cod_rata AS cod_rata,
-    versamenti.id_documento AS id_documento,    
+    versamenti.id_documento AS id_documento,
     versamenti.causale_versamento AS causale_versamento,
     versamenti.importo_totale AS importo_versamento,
     versamenti.numero_avviso AS numero_avviso,
@@ -464,7 +464,7 @@ CREATE VIEW v_riscossioni AS (
     versamenti.data_scadenza AS data_scadenza,
     versamenti.data_creazione AS data_creazione,
     singoli_versamenti.contabilita AS contabilita,
-    singoli_versamenti.metadata AS metadata 
+    singoli_versamenti.metadata AS metadata
    FROM fr
    JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
    LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -479,4 +479,3 @@ CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 
 -- Aggiunta unique constraint su fr per verificare esistenza flusso rendicontazione
 ALTER TABLE fr ADD CONSTRAINT unique_fr_2 UNIQUE (cod_dominio, cod_flusso, cod_psp, revisione);
-

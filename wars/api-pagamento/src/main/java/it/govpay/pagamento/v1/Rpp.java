@@ -37,6 +37,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 
 @Path("/rpp")
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Rpp extends BaseRsServiceV1{
 
 

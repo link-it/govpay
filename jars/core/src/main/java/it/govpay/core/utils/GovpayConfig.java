@@ -81,7 +81,6 @@ public class GovpayConfig {
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
-	private int dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	private int dimensionePoolThreadRecuperoRT;
 	private String ksLocation;
 	private String ksPassword;
@@ -178,9 +177,6 @@ public class GovpayConfig {
 	private Integer connectionTimeoutAppIO;
 	private Integer readTimeoutAppIO;
 	private Integer connectionRequestTimeoutAppIO;
-	private Integer connectionTimeoutMaggioliJPPA;
-	private Integer readTimeoutMaggioliJPPA;
-	private Integer connectionRequestTimeoutMaggioliJPPA;
 
 	private String templateQuietanzaPagamento;
 
@@ -205,6 +201,9 @@ public class GovpayConfig {
 	private boolean batchSpedizionePromemoria;
 	private boolean batchRecuperoRT;
 
+	private boolean batchAcquisizioneRendicontazioniEsterno;
+	private boolean batchRecuperoRTEsterno;
+
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 
 	private boolean controlloPasswordBackwardCompatibilityMD5;
@@ -225,8 +224,23 @@ public class GovpayConfig {
 	private int batchFdrReadTimeout;
 	private int batchFdrConnectionRequestTimeout;
 
+	private String batchRecuperoRtEndpointUrl;
+	private int batchRecuperoRtConnectionTimeout;
+	private int batchRecuperoRtReadTimeout;
+	private int batchRecuperoRtConnectionRequestTimeout;
+
+	private String batchIbanEndpointUrl;
+	private int batchIbanConnectionTimeout;
+	private int batchIbanReadTimeout;
+	private int batchIbanConnectionRequestTimeout;
+
+	private String batchMaggioliEndpointUrl;
+	private int batchMaggioliConnectionTimeout;
+	private int batchMaggioliReadTimeout;
+	private int batchMaggioliConnectionRequestTimeout;
+
 	private List<String> navSondaPagoPA;
-	
+
 	private String warName = Costanti.GOVPAY.toLowerCase();
 
 	public GovpayConfig(InputStream is, String warName) throws IOException {
@@ -238,7 +252,6 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
-		this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
 		this.dimensionePoolThreadRecuperoRT = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
@@ -310,9 +323,6 @@ public class GovpayConfig {
 		this.readTimeoutAppIO = 180000;
 		this.connectionTimeoutAppIO = 10000;
 		this.connectionRequestTimeoutAppIO = 180000;
-		this.readTimeoutMaggioliJPPA = 180000;
-		this.connectionTimeoutMaggioliJPPA = 10000;
-		this.connectionRequestTimeoutMaggioliJPPA = 180000;
 
 		this.aggiornamentoValiditaMandatorio = false;
 
@@ -339,6 +349,9 @@ public class GovpayConfig {
 		this.batchSpedizionePromemoria = false;
 		this.batchRecuperoRT = false;
 
+		this.batchAcquisizioneRendicontazioniEsterno = false;
+		this.batchRecuperoRTEsterno = false;
+
 		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 
 		this.controlloPasswordBackwardCompatibilityMD5 = false;
@@ -356,6 +369,21 @@ public class GovpayConfig {
 		this.batchFdrConnectionTimeout = 5000; // 5 secondi
 		this.batchFdrReadTimeout = 30000; // 30 secondi
 		this.batchFdrConnectionRequestTimeout = 5000; // 5 secondi
+
+		this.batchRecuperoRtEndpointUrl = null;
+		this.batchRecuperoRtConnectionTimeout = 5000; // 5 secondi
+		this.batchRecuperoRtReadTimeout = 30000; // 30 secondi
+		this.batchRecuperoRtConnectionRequestTimeout = 5000; // 5 secondi
+
+		this.batchIbanEndpointUrl = null;
+		this.batchIbanConnectionTimeout = 5000; // 5 secondi
+		this.batchIbanReadTimeout = 30000; // 30 secondi
+		this.batchIbanConnectionRequestTimeout = 5000; // 5 secondi
+
+		this.batchMaggioliEndpointUrl = null;
+		this.batchMaggioliConnectionTimeout = 5000; // 5 secondi
+		this.batchMaggioliReadTimeout = 30000; // 30 secondi
+		this.batchMaggioliConnectionRequestTimeout = 5000; // 5 secondi
 
 		this.navSondaPagoPA = new ArrayList<>();
 
@@ -430,7 +458,6 @@ public class GovpayConfig {
 			this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento", this.props, false, 10);
 			this.dimensionePoolThreadCaricamentoTracciati = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati", this.props, false, 10);
 			this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, 10);
-			this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA", this.props, false, 10);
 			this.dimensionePoolThreadRecuperoRT = getIntegerProperty(log, "it.govpay.thread.pool.recuperoRT", this.props, false, 10);
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
@@ -687,10 +714,6 @@ public class GovpayConfig {
 			this.readTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionRequestTimeout", this.props, false, 10000);
 
-			this.connectionTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionTimeout", this.props, false, 10000);
-			this.readTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.readTimeout", this.props, false, 180000);
-			this.connectionRequestTimeoutMaggioliJPPA = getIntegerProperty(log, "it.govpay.client.maggioli.connectionRequestTimeout", this.props, false, 10000);
-
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
 				this.aggiornamentoValiditaMandatorio = true;
@@ -788,6 +811,14 @@ public class GovpayConfig {
 			if(batchRecuperoRTString != null && Boolean.valueOf(batchRecuperoRTString))
 				this.batchRecuperoRT = true;
 
+			String batchAcquisizioneRendicontazioniModalitaString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.modalita", this.props, false, log);
+			if(batchAcquisizioneRendicontazioniModalitaString != null && batchAcquisizioneRendicontazioniModalitaString.equalsIgnoreCase("esterno"))
+				this.batchAcquisizioneRendicontazioniEsterno = true;
+
+			String batchRecuperoRTModalitaString = getProperty("it.govpay.batch.recuperoRT.modalita", this.props, false, log);
+			if(batchRecuperoRTModalitaString != null && batchRecuperoRTModalitaString.equalsIgnoreCase("esterno"))
+				this.batchRecuperoRTEsterno = true;
+
 			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
 			if(StringUtils.isNotEmpty(keywordsS)) {
 				String[] split = keywordsS.split(",");
@@ -875,6 +906,105 @@ public class GovpayConfig {
 				}
 			}
 
+			// Batch Recupero RT
+			String batchRecuperoRtEndpointUrlString = getProperty("it.govpay.batch.recuperoRT.endpoint.url", this.props, false, log);
+			if(batchRecuperoRtEndpointUrlString != null && StringUtils.isNotEmpty(batchRecuperoRtEndpointUrlString)) {
+				this.batchRecuperoRtEndpointUrl = batchRecuperoRtEndpointUrlString;
+			}
+
+			String batchRecuperoRtConnectionTimeoutString = getProperty("it.govpay.batch.recuperoRT.endpoint.connectionTimeout", this.props, false, log);
+			if(batchRecuperoRtConnectionTimeoutString != null && StringUtils.isNotEmpty(batchRecuperoRtConnectionTimeoutString)) {
+				try {
+					this.batchRecuperoRtConnectionTimeout = Integer.parseInt(batchRecuperoRtConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.recuperoRT.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchRecuperoRtConnectionTimeoutString);
+				}
+			}
+
+			String batchRecuperoRtReadTimeoutString = getProperty("it.govpay.batch.recuperoRT.endpoint.readTimeout", this.props, false, log);
+			if(batchRecuperoRtReadTimeoutString != null && StringUtils.isNotEmpty(batchRecuperoRtReadTimeoutString)) {
+				try {
+					this.batchRecuperoRtReadTimeout = Integer.parseInt(batchRecuperoRtReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.recuperoRT.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchRecuperoRtReadTimeoutString);
+				}
+			}
+
+			String batchRecuperoRtConnectionRequestTimeoutString = getProperty("it.govpay.batch.recuperoRT.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchRecuperoRtConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchRecuperoRtConnectionRequestTimeoutString)) {
+				try {
+					this.batchRecuperoRtConnectionRequestTimeout = Integer.parseInt(batchRecuperoRtConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.recuperoRT.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchRecuperoRtConnectionRequestTimeoutString);
+				}
+			}
+
+			// Batch IBAN
+			String batchIbanEndpointUrlString = getProperty("it.govpay.batch.iban.endpoint.url", this.props, false, log);
+			if(batchIbanEndpointUrlString != null && StringUtils.isNotEmpty(batchIbanEndpointUrlString)) {
+				this.batchIbanEndpointUrl = batchIbanEndpointUrlString;
+			}
+
+			String batchIbanConnectionTimeoutString = getProperty("it.govpay.batch.iban.endpoint.connectionTimeout", this.props, false, log);
+			if(batchIbanConnectionTimeoutString != null && StringUtils.isNotEmpty(batchIbanConnectionTimeoutString)) {
+				try {
+					this.batchIbanConnectionTimeout = Integer.parseInt(batchIbanConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.iban.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchIbanConnectionTimeoutString);
+				}
+			}
+
+			String batchIbanReadTimeoutString = getProperty("it.govpay.batch.iban.endpoint.readTimeout", this.props, false, log);
+			if(batchIbanReadTimeoutString != null && StringUtils.isNotEmpty(batchIbanReadTimeoutString)) {
+				try {
+					this.batchIbanReadTimeout = Integer.parseInt(batchIbanReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.iban.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchIbanReadTimeoutString);
+				}
+			}
+
+			String batchIbanConnectionRequestTimeoutString = getProperty("it.govpay.batch.iban.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchIbanConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchIbanConnectionRequestTimeoutString)) {
+				try {
+					this.batchIbanConnectionRequestTimeout = Integer.parseInt(batchIbanConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.iban.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchIbanConnectionRequestTimeoutString);
+				}
+			}
+
+			// Batch Maggioli
+			String batchMaggioliEndpointUrlString = getProperty("it.govpay.batch.maggioli.endpoint.url", this.props, false, log);
+			if(batchMaggioliEndpointUrlString != null && StringUtils.isNotEmpty(batchMaggioliEndpointUrlString)) {
+				this.batchMaggioliEndpointUrl = batchMaggioliEndpointUrlString;
+			}
+
+			String batchMaggioliConnectionTimeoutString = getProperty("it.govpay.batch.maggioli.endpoint.connectionTimeout", this.props, false, log);
+			if(batchMaggioliConnectionTimeoutString != null && StringUtils.isNotEmpty(batchMaggioliConnectionTimeoutString)) {
+				try {
+					this.batchMaggioliConnectionTimeout = Integer.parseInt(batchMaggioliConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.maggioli.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchMaggioliConnectionTimeoutString);
+				}
+			}
+
+			String batchMaggioliReadTimeoutString = getProperty("it.govpay.batch.maggioli.endpoint.readTimeout", this.props, false, log);
+			if(batchMaggioliReadTimeoutString != null && StringUtils.isNotEmpty(batchMaggioliReadTimeoutString)) {
+				try {
+					this.batchMaggioliReadTimeout = Integer.parseInt(batchMaggioliReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.maggioli.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchMaggioliReadTimeoutString);
+				}
+			}
+
+			String batchMaggioliConnectionRequestTimeoutString = getProperty("it.govpay.batch.maggioli.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchMaggioliConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchMaggioliConnectionRequestTimeoutString)) {
+				try {
+					this.batchMaggioliConnectionRequestTimeout = Integer.parseInt(batchMaggioliConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.maggioli.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchMaggioliConnectionRequestTimeoutString);
+				}
+			}
+
 			String navSondaPagoPAS = getProperty("it.govpay.pagoPA.sonda.nav", props, false, log);
 			if(StringUtils.isNotEmpty(navSondaPagoPAS)) {
 				String[] split = navSondaPagoPAS.split(",");
@@ -896,18 +1026,18 @@ public class GovpayConfig {
 				File resourceDirFile = new File(escape(this.resourceDir));
 				if(!resourceDirFile.isDirectory())
 					throw new ConfigException(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
-				
+
 				File log4j2ConfigFile = null;
 				if(this.log4j2Config != null) {
 					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Verifico esistenza configurazione log4j: {}", this.log4j2Config);
 					log4j2ConfigFile = new File(this.log4j2Config);
 				}
-				
+
 				if((log4j2ConfigFile == null || !log4j2ConfigFile.exists()) && StringUtils.isNotBlank(this.warName)) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + this.warName + "-"+ LOG4J2_XML_FILE_NAME);
 					LoggerWrapperFactory.getLogger("boot").info("Ricerco configurazione log4j specifica per il war {} nel file: {}", this.warName , log4j2ConfigFile.toURI());
 				}
-				
+
 				if(log4j2ConfigFile == null || !log4j2ConfigFile.exists()) {
 					log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
 					LoggerWrapperFactory.getLogger("boot").info("Configurazione log4j specifica per il war {} non presente, ricerco configurazione unica esterna nel file: {}", this.warName , log4j2ConfigFile.toURI());
@@ -1050,10 +1180,6 @@ public class GovpayConfig {
 
 	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
 		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
-	}
-
-	public int getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli() {
-		return dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	}
 
 	public int getDimensionePoolThreadRecuperoRT() {
@@ -1328,18 +1454,6 @@ public class GovpayConfig {
 		return connectionRequestTimeoutAppIO;
 	}
 
-	public Integer getConnectionTimeoutMaggioliJPPA() {
-		return connectionTimeoutMaggioliJPPA;
-	}
-
-	public Integer getReadTimeoutMaggioliJPPA() {
-		return readTimeoutMaggioliJPPA;
-	}
-
-	public Integer getConnectionRequestTimeoutMaggioliJPPA() {
-		return connectionRequestTimeoutMaggioliJPPA;
-	}
-
 	public Integer getTimeoutInvioRPTModello3Millis() {
 		return timeoutInvioRPTModello3Millis;
 	}
@@ -1420,6 +1534,14 @@ public class GovpayConfig {
 		return batchRecuperoRT;
 	}
 
+	public boolean isBatchAcquisizioneRendicontazioniEsterno() {
+		return batchAcquisizioneRendicontazioniEsterno;
+	}
+
+	public boolean isBatchRecuperoRTEsterno() {
+		return batchRecuperoRTEsterno;
+	}
+
 	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
@@ -1470,6 +1592,54 @@ public class GovpayConfig {
 
 	public int getBatchFdrConnectionRequestTimeout() {
 		return batchFdrConnectionRequestTimeout;
+	}
+
+	public String getBatchRecuperoRtEndpointUrl() {
+		return batchRecuperoRtEndpointUrl;
+	}
+
+	public int getBatchRecuperoRtConnectionTimeout() {
+		return batchRecuperoRtConnectionTimeout;
+	}
+
+	public int getBatchRecuperoRtReadTimeout() {
+		return batchRecuperoRtReadTimeout;
+	}
+
+	public int getBatchRecuperoRtConnectionRequestTimeout() {
+		return batchRecuperoRtConnectionRequestTimeout;
+	}
+
+	public String getBatchIbanEndpointUrl() {
+		return batchIbanEndpointUrl;
+	}
+
+	public int getBatchIbanConnectionTimeout() {
+		return batchIbanConnectionTimeout;
+	}
+
+	public int getBatchIbanReadTimeout() {
+		return batchIbanReadTimeout;
+	}
+
+	public int getBatchIbanConnectionRequestTimeout() {
+		return batchIbanConnectionRequestTimeout;
+	}
+
+	public String getBatchMaggioliEndpointUrl() {
+		return batchMaggioliEndpointUrl;
+	}
+
+	public int getBatchMaggioliConnectionTimeout() {
+		return batchMaggioliConnectionTimeout;
+	}
+
+	public int getBatchMaggioliReadTimeout() {
+		return batchMaggioliReadTimeout;
+	}
+
+	public int getBatchMaggioliConnectionRequestTimeout() {
+		return batchMaggioliConnectionRequestTimeout;
 	}
 
 	public List<String> getNavSondaPagoPA() {

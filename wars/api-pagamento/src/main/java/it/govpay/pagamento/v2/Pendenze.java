@@ -39,6 +39,7 @@ import it.govpay.rs.v2.BaseRsServiceV2;
 
 @Path("/pendenze")
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Pendenze extends BaseRsServiceV2{
 
 

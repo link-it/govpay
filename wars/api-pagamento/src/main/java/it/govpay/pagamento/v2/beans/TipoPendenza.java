@@ -32,6 +32,7 @@ import it.govpay.core.beans.JSONSerializable;
 "form",
 "visualizzazione",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class TipoPendenza extends JSONSerializable {
 
   @JsonProperty("idTipoPendenza")

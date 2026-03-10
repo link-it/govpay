@@ -118,6 +118,7 @@ import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdVersamento;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentiPortaleDAO extends BaseDAO {
 
 	public static final String PATH_NOTA = PendenzeDAO.PATH_NOTA;

@@ -181,16 +181,34 @@ public class DominiBD extends BasicBD {
 	private ConnettoreNotificaPagamenti getConnettoreMaggioliJPPA(it.govpay.orm.Dominio dominioVO) throws ServiceException {
 		try {
 			ConnettoreNotificaPagamenti connettoreMaggioliJPPA = null;
-			
-			if(dominioVO.getCodConnettoreMaggioliJPPA()!= null) {
-				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
-				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreMaggioliJPPA());
-				connettoreMaggioliJPPA = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
+
+			// Cerca nella tabella jppa_config
+			IExpression expJppaConfig = this.getJppaConfigService().newExpression();
+			expJppaConfig.equals(it.govpay.orm.JppaConfig.model().ID_DOMINIO.COD_DOMINIO, dominioVO.getCodDominio());
+
+			it.govpay.orm.JppaConfig jppaConfig = null;
+			try {
+				jppaConfig = this.getJppaConfigService().find(expJppaConfig);
+			} catch (NotFoundException e) {
+				// JppaConfig non configurato per questo dominio
+				return null;
 			}
+
+			// Se abilitato e con connettore configurato, carica le proprietà del connettore
+			if(jppaConfig.getCodConnettore() != null) {
+				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
+				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, jppaConfig.getCodConnettore());
+				connettoreMaggioliJPPA = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
+				if(connettoreMaggioliJPPA != null) {
+					connettoreMaggioliJPPA.setAbilitato(jppaConfig.isAbilitato());
+					connettoreMaggioliJPPA.setDataUltimaRt(jppaConfig.getDataUltimaRt());
+				}
+			}
+
 			return connettoreMaggioliJPPA;
-		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException | MultipleResultException e) {
 			throw new ServiceException(e);
-		} 
+		}
 	}
 
 	/**
@@ -296,6 +314,11 @@ public class DominiBD extends BasicBD {
 				}
 			}
 			
+			// Elimina eventuale record esistente da jppa_config
+			IExpression expJppaConfigDelete = this.getJppaConfigService().newExpression();
+			expJppaConfigDelete.equals(it.govpay.orm.JppaConfig.model().ID_DOMINIO.COD_DOMINIO, dominio.getCodDominio());
+			this.getJppaConfigService().deleteAll(expJppaConfigDelete);
+
 			if(dominio.getConnettoreMaggioliJPPA() != null) {
 				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMaggioliJPPA());
 
@@ -306,10 +329,21 @@ public class DominiBD extends BasicBD {
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
+
+				// Crea nuovo record in jppa_config
+				it.govpay.orm.JppaConfig jppaConfig = new it.govpay.orm.JppaConfig();
+				jppaConfig.setCodDominio(dominio.getCodDominio());
+				jppaConfig.setCodConnettore(dominio.getConnettoreMaggioliJPPA().getIdConnettore());
+				jppaConfig.setAbilitato(dominio.getConnettoreMaggioliJPPA().isAbilitato());
+				jppaConfig.setDataUltimaRt(dominio.getConnettoreMaggioliJPPA().getDataUltimaRt());
+				IdDominio idDominio = new IdDominio();
+				idDominio.setId(dominio.getId());
+				jppaConfig.setIdDominio(idDominio);
+				this.getJppaConfigService().create(jppaConfig);
 			}
-			
+
 			this.emitAudit(dominio);
-			
+
 			if(this.isAtomica()) {
 				this.commit();
 			}
@@ -425,6 +459,11 @@ public class DominiBD extends BasicBD {
 				this.getConnettoreService().deleteAll(expDelete);
 			}
 			
+			// Elimina sempre il vecchio record da jppa_config
+			IExpression expJppaConfigDelete = this.getJppaConfigService().newExpression();
+			expJppaConfigDelete.equals(it.govpay.orm.JppaConfig.model().ID_DOMINIO.COD_DOMINIO, dominio.getCodDominio());
+			this.getJppaConfigService().deleteAll(expJppaConfigDelete);
+
 			if(dominio.getConnettoreMaggioliJPPA() != null) {
 				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMaggioliJPPA());
 
@@ -435,12 +474,23 @@ public class DominiBD extends BasicBD {
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
+
+				// Crea nuovo record in jppa_config
+				it.govpay.orm.JppaConfig jppaConfig = new it.govpay.orm.JppaConfig();
+				jppaConfig.setCodDominio(dominio.getCodDominio());
+				jppaConfig.setCodConnettore(dominio.getConnettoreMaggioliJPPA().getIdConnettore());
+				jppaConfig.setAbilitato(dominio.getConnettoreMaggioliJPPA().isAbilitato());
+				jppaConfig.setDataUltimaRt(dominio.getConnettoreMaggioliJPPA().getDataUltimaRt());
+				IdDominio idDominio = new IdDominio();
+				idDominio.setId(dominio.getId());
+				jppaConfig.setIdDominio(idDominio);
+				this.getJppaConfigService().create(jppaConfig);
 			} else {
 				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreMaggioliJPPA(dominio.getCodDominio()));
 				this.getConnettoreService().deleteAll(expDelete);
 			}
-			
+
 			this.emitAudit(dominio);
 			if(this.isAtomica()) {
 				this.commit();

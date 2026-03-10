@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Ricevuta di pagamento originale emessa da pagoPA
  **/
 @Schema(description="Ricevuta di pagamento originale emessa da pagoPA")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RicevutaRt   {
   public enum TipoEnum {
     CTRICEVUTATELEMATICA("ctRicevutaTelematica"),

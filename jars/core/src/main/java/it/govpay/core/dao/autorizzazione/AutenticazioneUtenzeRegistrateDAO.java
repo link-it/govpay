@@ -153,6 +153,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			this.debug(transactionId,MessageFormat.format("Utenza [{0}] trovata, lettura del dettaglio in corso...", username));
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, configWrapper, this.getApiName(), this.getAuthType());
 			userDetails.setIdTransazioneAutenticazione(transactionId);
+			//utenza interna batch
+			userDetails.setUtenzaBatch(this.isUtenzaBatch());
 			this.debug(transactionId,MessageFormat.format("Utenza [{0}] trovata, lettura del dettaglio completata.", username));
 			return userDetails;
 		} catch(it.govpay.core.exceptions.NotFoundException e){
@@ -228,6 +230,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			this.debug(transactionId,MessageFormat.format("Utenza ldap [{0}] trovata, lettura del dettaglio in corso...", username));
 			GovpayLdapUserDetails userDetailFromUtenzaLdap = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetail, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaLdap.setIdTransazioneAutenticazione(transactionId);
+			//utenza interna batch
+			userDetailFromUtenzaLdap.setUtenzaBatch(this.isUtenzaBatch());
 			this.debug(transactionId,MessageFormat.format("Utenza ldap [{0}] trovata, lettura del dettaglio completata.", username));
 			return userDetailFromUtenzaLdap;
 		} catch(it.govpay.core.exceptions.NotFoundException e){

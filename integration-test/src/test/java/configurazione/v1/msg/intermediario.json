@@ -4,5 +4,30 @@
 	"servizioPagoPa": {
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
+	"servizioPagoPaRecuperoRT": {
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/bizEvents")',
+		"subscriptionKey" : "RT123456",
+		"abilitaGDE": true
+	},
+	"servizioPagoPaACA": {
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/aca")',
+		"subscriptionKey" : "ACA123456",
+		"abilitaGDE": true
+	},
+	"servizioPagoPaFR": {
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/fdr-org/service/v1")',
+		"subscriptionKey" : "FR123456",
+		"abilitaGDE": true
+	},
+	"servizioPagoPaGPD": {
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/aca")',
+		"subscriptionKey" : "GPD123456",
+		"abilitaGDE": true
+	},
+	"servizioPagoPaBackofficeEC": {
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/backoffice/external/ec/v1")',
+		"subscriptionKey" : "BOEC123456",
+		"abilitaGDE": true
+	},
 	"abilitato": true
 }

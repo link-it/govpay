@@ -87,6 +87,7 @@ export class Voce {
   public static DATA_ULTIMA_COMUNICAZIONE_ACA: string = 'Ultimo invio all\'ACA';
   public static DATA_ULTIMA_MODIFICA_ACA: string = 'Ultimo aggiornamento dati ACA';
   public static DATA_ULTIMO_AGGIORNAMENTO: string = 'Ultimo aggiornamento';
+  public static DATA_ULTIMA_RT: string = 'Data ultima RT';
   public static DATA_VALUTA_INCASSO: string = 'Data valuta incasso';
   public static DATA_VALIDITA: string = 'Data validità';
   public static DATA_VALIDITA_AVVISO: string = 'Data validità avviso';
@@ -120,6 +121,7 @@ export class Voce {
   public static ESITO: string = 'Esito';
 
   public static FAX: string = 'Fax';
+  public static FILE_SYSTEM_PATH: string = 'Path file system';
   public static FORM: string = 'Form';
   public static FORMATO: string = 'Formato';
   public static FRUITORE: string = 'Fruitore';
@@ -179,6 +181,7 @@ export class Voce {
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
   public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';
+  public static INVIA_TRACCIATO_ESITO: string = 'Invia tracciato esito';
   public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';

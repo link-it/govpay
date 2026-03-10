@@ -35,6 +35,7 @@ import it.govpay.rs.v2.BaseRsServiceV2;
 
 @Path("/avvisi")
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Avvisi extends BaseRsServiceV2{
 
 

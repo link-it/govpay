@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * modalita' di autenticazione del soggetto versante
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TipoAutenticazioneSoggetto {
 
 

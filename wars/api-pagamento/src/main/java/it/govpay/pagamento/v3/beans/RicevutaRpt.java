@@ -31,6 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Richiesta di pagamento originale inviata a pagoPA
  **/
 @Schema(description="Richiesta di pagamento originale inviata a pagoPA")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RicevutaRpt   {
   public enum TipoEnum {
     CTRICHIESTAPAGAMENTOTELEMATICO("ctRichiestaPagamentoTelematico"),

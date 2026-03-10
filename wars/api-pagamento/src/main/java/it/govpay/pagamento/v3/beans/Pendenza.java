@@ -38,6 +38,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Dati della pendenza
  **/
 @Schema(description="Dati della pendenza")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Pendenza   {
 
   @Schema(example = "A2A-12345", required = true, description = "Identificativo del gestionale responsabile della pendenza")

@@ -20,20 +20,18 @@
 package it.govpay.pagamento.v2.controller;
 
 
-import java.text.MessageFormat;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.slf4j.Logger;
-import org.springframework.security.core.Authentication;
 
 
-
-
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class LogoutController extends BaseController {
 
      public LogoutController(String nomeServizio,Logger log) {

@@ -46,6 +46,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "linguaSecondariaInformativaImportoAvviso",
 "dataScandenzaAvviso",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ProprietaPendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("linguaSecondaria")

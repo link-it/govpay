@@ -56,6 +56,7 @@ import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
 import it.govpay.pagamento.v1.beans.VocePendenza;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentiPortaleConverter {
 
 	public static final String PENDENZE_KEY = "pendenze";

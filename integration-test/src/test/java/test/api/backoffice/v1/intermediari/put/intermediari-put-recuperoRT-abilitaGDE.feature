@@ -15,7 +15,7 @@ Background:
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaRecuperoRT": {
-		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/bizEvents")',
 		"subscriptionKey" : "ABC123",
 		"abilitaGDE": false
 	},
@@ -78,7 +78,7 @@ Scenario: Configurazione connettore RecuperoRT senza campo abilitaGDE (default f
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaRecuperoRT": {
-		"url": '#(ndpsym_url + "/pagopa/rs/bizEvents")',
+		"url": '#(ndpsym_docker_base_url + "/pagopa/rs/bizEvents")',
 		"subscriptionKey" : "ABC123"
 	},
 	"abilitato": true

@@ -33,6 +33,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 
 @Path("/logout")
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Logout extends BaseRsServiceV1{
 
 

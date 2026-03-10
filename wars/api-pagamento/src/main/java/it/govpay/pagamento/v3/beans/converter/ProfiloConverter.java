@@ -30,6 +30,7 @@ import it.govpay.pagamento.v3.beans.Profilo;
 import it.govpay.pagamento.v3.beans.Soggetto;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ProfiloConverter {
 
 	/**

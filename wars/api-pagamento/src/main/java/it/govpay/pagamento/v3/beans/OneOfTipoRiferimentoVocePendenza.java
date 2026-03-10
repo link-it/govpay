@@ -22,6 +22,7 @@ package it.govpay.pagamento.v3.beans;
 /**
 * OneOfTipoRiferimentoVocePendenza
 */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public interface OneOfTipoRiferimentoVocePendenza {
 
 }

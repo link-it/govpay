@@ -42,6 +42,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"lingua",
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("pendenze")

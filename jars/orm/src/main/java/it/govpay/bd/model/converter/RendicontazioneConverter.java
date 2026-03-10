@@ -51,7 +51,9 @@ public class RendicontazioneConverter {
 			dto.setIdPagamento(vo.getIdPagamento().getId());
 		if(vo.getIdSingoloVersamento() != null)
 			dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
-		
+		dto.setEseguiRecuperoRt(vo.isEseguiRecuperoRt());
+		dto.setNotificaInviata(vo.isNotificaInviata());
+
 		return dto;
 	}
 
@@ -83,6 +85,8 @@ public class RendicontazioneConverter {
 			idSingoloVersamento.setId(dto.getIdSingoloVersamento());
 			vo.setIdSingoloVersamento(idSingoloVersamento);
 		}
+		vo.setEseguiRecuperoRt(dto.isEseguiRecuperoRt());
+		vo.setNotificaInviata(dto.isNotificaInviata());
 		return vo;
 	}
 

@@ -27,7 +27,7 @@ package it.govpay.core.utils.logger;
 public class MessaggioDiagnosticoCostanti {
 
 	private MessaggioDiagnosticoCostanti() {/*static only*/}
-	
+
 	public static final String MSG_DIAGNOSTICO_RT_ERRORE_AUTORIZZAZIONE = "rt.erroreAutorizzazione";
 	public static final String MSG_DIAGNOSTICO_RT_ERRORE_NO_AUTORIZZAZIONE = "rt.erroreNoAutorizzazione";
 	public static final String MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK = "pagamento.invioRptAttivataOk";
@@ -71,10 +71,6 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_VERIFICA_VERIFICA = "verifica.verifica";
 	public static final String MSG_DIAGNOSTICO_VERIFICA_VERIFICA_KO = "verifica.verificaKo";
 	public static final String MSG_DIAGNOSTICO_VERIFICA_MODELLO4_VERIFICA_KO = "verifica.modello4verificaKo";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_INVIO_NOTIFICA_PAGAMENTO = "jppapdp.invioNotificaPagamento";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_INVIO_NOTIFICA_PAGAMENTO_STATO_RPT_NON_VALIDO = "jppapdp.invioNotificaPagamentoStatoRptNonValido";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_INVIO_NOTIFICA_PAGAMENTO_OK = "jppapdp.invioNotificaPagamentoOk";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_INVIO_NOTIFICA_PAGAMENTO_FAIL = "jppapdp.invioNotificaPagamentoFail";
 	public static final String MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_KO_KEY = "tracciatoNotificaPagamenti.restKo";
 	public static final String MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_OK_KEY = "tracciatoNotificaPagamenti.restOk";
 	public static final String MSG_DIAGNOSTICO_TRACCIATO_NOTIFICA_PAGAMENTI_REST_CONTENUTO_KO_KEY = "tracciatoNotificaPagamenti.restContenutoKo";
@@ -120,9 +116,6 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_FAULT = "ndp_client.invioRichiestaFault";
 	public static final String MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_OK = "ndp_client.invioRichiestaOk";
 	public static final String MSG_DIAGNOSTICO_NDP_CLIENT_INVIO_RICHIESTA_KO = "ndp_client.invioRichiestaKo";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA_KO = "jppapdp_client.invioRichiestaKo";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA_OK = "jppapdp_client.invioRichiestaOk";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_CLIENT_INVIO_RICHIESTA = "jppapdp_client.invioRichiesta";
 	public static final String MSG_DIAGNOSTICO_VERSAMENTO_INSERIMENTO_OK = "versamento.inserimentoOk";
 	public static final String MSG_DIAGNOSTICO_VERSAMENTO_AGGIORAMENTO_OK = "versamento.aggioramentoOk";
 	public static final String MSG_DIAGNOSTICO_WS_RICEVUTA_RICHIESTA_KO = "ws.ricevutaRichiestaKo";
@@ -202,11 +195,6 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_VERIFICA_SCADUTO_KEY = "verifica.Scaduto";
 	public static final String MSG_DIAGNOSTICO_VERIFICA_FAIL_KEY = "verifica.Fail";
 	public static final String MSG_DIAGNOSTICO_VERIFICA_VALIDITA_KEY = "verifica.validita";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_ERRORE_AUTORIZZAZIONE = "jppapdp.erroreAutorizzazione";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_OK = "jppapdp.ricezioneRecuperaRTOk";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_PARAMETRI = "jppapdp.ricezioneRecuperaRTParametri";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT = "jppapdp.ricezioneRecuperaRT";
-	public static final String MSG_DIAGNOSTICO_JPPAPDP_RICEZIONE_RECUPERA_RT_KO = "jppapdp.ricezioneRecuperaRTKo";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_OK = "rendicontazioni.acquisizioneOk";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA = "rendicontazioni.acquisizioneFlussoOkAnomalia";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK = "rendicontazioni.acquisizioneFlussoOk";
@@ -228,7 +216,7 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO = "rendicontazioni.acquisizioneFlussiKo";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL = "rendicontazioni.acquisizioneFlussiFail";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI = "rendicontazioni.acquisizioneFlussi";
-	
+
 	public static final String PROPERTY_COD_CANALE = "codCanale";
 	public static final String PROPERTY_COD_PSP = "codPsp";
 	public static final String PROPERTY_IUV = "iuv";
@@ -252,5 +240,5 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String PROPERTY_COD_MESSAGGIO_RICEVUTA = "codMessaggioRicevuta";
 	public static final String PROPERTY_IMPORTO = "importo";
 	public static final String PROPERTY_COD_ESITO_PAGAMENTO = "codEsitoPagamento";
-	
+
 }

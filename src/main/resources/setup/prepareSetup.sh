@@ -23,7 +23,6 @@ DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
 GOVPAY=../../../../ear/target/govpay.ear
 GOVPAY_BO=../../../../wars/api-backoffice/target/govpay-api-backoffice.war
-GOVPAY_JPPA=../../../../wars/api-jppapdp/target/govpay-api-jppapdp.war
 GOVPAY_PAG=../../../../wars/api-pagamento/target/govpay-api-pagamento.war
 GOVPAY_PP=../../../../wars/api-pagopa/target/govpay-api-pagopa.war
 GOVPAY_PEN=../../../../wars/api-pendenze/target/govpay-api-pendenze.war
@@ -118,7 +117,7 @@ if [ "$AS" = "ear" ]; then
 
 elif [ "$AS" = "tomcat" ]; then
     # Se AS è 'tomcat', verifica e copia tutti i war
-    WAR_FILES=("${GOVPAY_BO}" "${GOVPAY_JPPA}" "${GOVPAY_PAG}" "${GOVPAY_PP}" "${GOVPAY_PEN}" "${GOVPAY_RAG}" "${GOVPAY_USR}" "${GOVPAY_WC}" "${GOVPAY_CONSOLE}")
+    WAR_FILES=("${GOVPAY_BO}" "${GOVPAY_PAG}" "${GOVPAY_PP}" "${GOVPAY_PEN}" "${GOVPAY_RAG}" "${GOVPAY_USR}" "${GOVPAY_WC}" "${GOVPAY_CONSOLE}")
 
     for WAR_FILE in "${WAR_FILES[@]}"; do
         if [ ! -e "${WAR_FILE}" ]; then

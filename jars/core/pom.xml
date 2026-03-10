@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.8.2</version>
+		<version>3.9.0</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -54,12 +54,6 @@
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>stampe</artifactId>
-			<type>jar</type>
-		</dependency>
-
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>jppapdp-beans</artifactId>
 			<type>jar</type>
 		</dependency>
 
@@ -130,7 +124,7 @@
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 		</dependency>
-		
+
 		<dependency>
 		    <groupId>com.fasterxml.jackson.datatype</groupId>
 		    <artifactId>jackson-datatype-joda</artifactId>
@@ -274,7 +268,7 @@
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-oauth2-resource-server</artifactId>
 	    </dependency>
-	    
+
 	    <dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
@@ -327,6 +321,19 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.mail</groupId>
+					<artifactId>jakarta.mail</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- CVE-2025-7962: usa versione sicura di jakarta.mail -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>jakarta.mail</artifactId>
+			<version>${com.sun.mail.version}</version>
 		</dependency>
 
 		<dependency>

@@ -53,6 +53,16 @@ public class AuthorizationManager {
 
 	public static final String CODICE_FISCALE_CITTADINO = "cf_cittadino";
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";
+	
+	public static boolean isUtenzaBatch(Authentication authentication) throws NotAuthorizedException { 
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		
+		if(details == null) {
+			throw new NotAuthorizedException("Utenza non autorizzata: impossibile identificare il tipo di utenza.");
+		}
+		
+		return details.isUtenzaBatch();
+	}
 
 	public static boolean checkPrincipal(Authentication authentication, String principalToCheck) throws NotAuthorizedException { 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);

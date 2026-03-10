@@ -109,12 +109,12 @@ public class DominioConverter {
 			dto.getConnettoreHyperSicAPKappa().setIdConnettore(DominiBD.getIDConnettoreHyperSicAPKappa(dto.getCodDominio()));
 			vo.setCodConnettoreHyperSicAPK(dto.getConnettoreHyperSicAPKappa().getIdConnettore());
 		}
-		
+
+		// Il connettore MaggioliJPPA è gestito nella tabella jppa_config, non in domini
 		if(dto.getConnettoreMaggioliJPPA()!= null) {
 			dto.getConnettoreMaggioliJPPA().setIdConnettore(DominiBD.getIDConnettoreMaggioliJPPA(dto.getCodDominio()));
-			vo.setCodConnettoreMaggioliJPPA(dto.getConnettoreMaggioliJPPA().getIdConnettore());
 		}
-		
+
 		vo.setIntermediato(dto.isIntermediato());
 		vo.setTassonomiaPagoPA(dto.getTassonomiaPagoPA());
 		vo.setScaricaFr(dto.isScaricaFr());

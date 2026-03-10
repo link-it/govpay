@@ -22,6 +22,7 @@ package it.govpay.pagamento.v1.beans.converter;
 import it.govpay.pagamento.v1.beans.TipoContabilita;
 import it.govpay.pagamento.v1.beans.TipoEntrata;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class EntrateConverter {
 
 	public static TipoEntrata toTipoEntrataRsModel(it.govpay.model.TipoTributo tributo) {

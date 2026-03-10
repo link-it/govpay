@@ -77,6 +77,7 @@ import it.govpay.pagamento.v1.beans.RppIndex;
 import it.govpay.pagamento.v1.beans.converter.RptConverter;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RppController extends BaseController {
 
 	public RppController(String nomeServizio,Logger log) {

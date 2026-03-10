@@ -46,6 +46,7 @@ import it.govpay.core.utils.thread.RecuperaRTThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Intermediario;
 
+@Deprecated(forRemoval = true, since = "3.9.0")
 public class Ricevute {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Ricevute.class);

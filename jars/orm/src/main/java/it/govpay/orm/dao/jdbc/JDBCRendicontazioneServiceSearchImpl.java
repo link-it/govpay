@@ -163,6 +163,8 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 			fields.add(Rendicontazione.model().DATA);
 			fields.add(Rendicontazione.model().STATO);
 			fields.add(Rendicontazione.model().ANOMALIE);
+			fields.add(Rendicontazione.model().ESEGUI_RECUPERO_RT);
+			fields.add(Rendicontazione.model().NOTIFICA_INVIATA);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

@@ -47,7 +47,7 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
-
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class AllegatiController extends BaseController {
 
 	public AllegatiController(String nomeServizio,Logger log) {

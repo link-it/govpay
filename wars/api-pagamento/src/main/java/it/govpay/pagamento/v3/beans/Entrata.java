@@ -31,6 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Definisce i dettagli di una entrata.
  **/
 @Schema(description="Definisce i dettagli di una entrata.")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Entrata  implements OneOfTipoRiferimentoVocePendenza  {
 
   @Schema(example = "IT60X0542811101000000123456", required = true, description = "")

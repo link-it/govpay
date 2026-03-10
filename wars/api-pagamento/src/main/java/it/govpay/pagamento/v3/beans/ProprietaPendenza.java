@@ -32,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Dati supporto per la gestione del ciclo di vita della pendenza.
  **/
 @Schema(description="Dati supporto per la gestione del ciclo di vita della pendenza.")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ProprietaPendenza   {
 
   @Schema(description = "")

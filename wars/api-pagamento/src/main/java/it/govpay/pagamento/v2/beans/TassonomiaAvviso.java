@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Macro categoria della pendenza Agid
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TassonomiaAvviso {
 
 

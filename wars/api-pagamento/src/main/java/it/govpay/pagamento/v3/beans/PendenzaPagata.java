@@ -32,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * Dati della pendenza con voci
  **/
 @Schema(description="Dati della pendenza con voci")
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PendenzaPagata extends Pendenza  {
 
   @Schema(description = "")

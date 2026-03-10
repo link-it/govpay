@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica  * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno  * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TipoRiscossione {
   ENTRATA("ENTRATA"),
 

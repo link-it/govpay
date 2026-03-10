@@ -1,4 +1,4 @@
-Feature: Test nuovi connettori PagoPA per intermediari (ACA, GPD, FR)
+Feature: Test nuovi connettori PagoPA per intermediari (ACA, GPD, FR, BackofficeEC)
 
 Background:
 
@@ -80,6 +80,30 @@ And match response.servizioPagoPaFR.url == '#present'
 And match response.servizioPagoPaFR.subscriptionKey == 'FR123456'
 
 
+Scenario: Configurazione intermediario con servizio BackofficeEC
+
+* def intermediarioBackofficeEC = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-BackofficeEC.json')
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBackofficeEC
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set intermediarioBackofficeEC.idIntermediario = idIntermediario
+* set intermediarioBackofficeEC.stazioni = '#ignore'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == intermediarioBackofficeEC
+And match response.servizioPagoPaBackofficeEC.url == '#present'
+And match response.servizioPagoPaBackofficeEC.subscriptionKey == 'BOEC123456'
+
+
 Scenario: Configurazione intermediario con tutti i connettori PagoPA
 
 * def intermediarioCompleto = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-completo.json')
@@ -109,6 +133,8 @@ And match response.servizioPagoPaGPD.url == '#present'
 And match response.servizioPagoPaGPD.subscriptionKey == 'GPD123456'
 And match response.servizioPagoPaFR.url == '#present'
 And match response.servizioPagoPaFR.subscriptionKey == 'FR123456'
+And match response.servizioPagoPaBackofficeEC.url == '#present'
+And match response.servizioPagoPaBackofficeEC.subscriptionKey == 'BOEC123456'
 
 
 Scenario: Aggiornamento intermediario esistente aggiungendo connettore ACA
@@ -122,7 +148,7 @@ And request intermediarioBase
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set intermediarioBase.servizioPagoPaACA = { "url": '#(ndpsym_url + "/pagopa/api/v1/notices")', "subscriptionKey": "ACA123456", "abilitaGDE": false }
+* set intermediarioBase.servizioPagoPaACA = { "url": '#(ndpsym_url + "/pagopa/rs/aca")', "subscriptionKey": "ACA123456", "abilitaGDE": false }
 
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
@@ -173,3 +199,92 @@ When method get
 Then status 200
 And match response == intermediarioBase
 And match response.servizioPagoPaACA == '#notpresent'
+
+
+Scenario: Aggiornamento intermediario esistente aggiungendo connettore BackofficeEC
+
+* def intermediarioBase = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario.json')
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBase
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set intermediarioBase.servizioPagoPaBackofficeEC = { "url": '#(ndpsym_url + "/pagopa/backoffice/api/v1/ec")', "subscriptionKey": "BOEC123456", "abilitaGDE": false }
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBase
+When method put
+Then status 200
+
+* set intermediarioBase.idIntermediario = idIntermediario
+* set intermediarioBase.stazioni = '#ignore'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == intermediarioBase
+And match response.servizioPagoPaBackofficeEC.url == '#present'
+
+
+Scenario: Rimozione connettore BackofficeEC da intermediario
+
+* def intermediarioBackofficeEC = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-BackofficeEC.json')
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBackofficeEC
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* def intermediarioBase = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario.json')
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBase
+When method put
+Then status 200
+
+* set intermediarioBase.idIntermediario = idIntermediario
+* set intermediarioBase.stazioni = '#ignore'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == intermediarioBase
+And match response.servizioPagoPaBackofficeEC == '#notpresent'
+
+
+Scenario: Configurazione intermediario con servizio BackofficeEC e abilitaGDE
+
+* def intermediarioBackofficeECGDE = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario-BackofficeEC-abilitaGDE.json')
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioBackofficeECGDE
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set intermediarioBackofficeECGDE.idIntermediario = idIntermediario
+* set intermediarioBackofficeECGDE.stazioni = '#ignore'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == intermediarioBackofficeECGDE
+And match response.servizioPagoPaBackofficeEC.url == '#present'
+And match response.servizioPagoPaBackofficeEC.subscriptionKey == 'BOEC123456'
+And match response.servizioPagoPaBackofficeEC.abilitaGDE == true

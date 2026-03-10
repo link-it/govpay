@@ -36,7 +36,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.LogUtils;
 
 public class OperazioniDAO extends BaseDAO{
-	
+
 	public static final String ACQUISIZIONE_RENDICONTAZIONI = "acquisizioneRendicontazioni";
 	public static final String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
 	public static final String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
@@ -50,22 +50,23 @@ public class OperazioniDAO extends BaseDAO{
 	public static final String CHIUSURA_RPT_SCADUTE = "chiusuraRptScadute";
 	public static final String RECUPERO_RT = "recuperoRT";
 	public static final String INVIA_POSIZIONI_DEBITORIE_ACA = "inviaPosizioniDebitorieAca";
+	public static final String INVIA_NOTIFICHE_MAGGIOLI = "inviaNotificheMaggioli";
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException, GovPayException {
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
-		
+
 		String idOperazioneForLog = LogUtils.sanitizeForLog(leggiOperazioneDTO.getIdOperazione());
 		LogUtils.logInfo(log, "Richiesta operazione [{}]...", idOperazioneForLog);
-		
+
 		try {
 			IContext ctx = ContextThreadLocal.get();
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
-				// Se il batch e' abilitato usa il batch interno, altrimenti attiva il batch esterno
-				if(it.govpay.core.utils.GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()) {
-					esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
-				} else {
+				// Se la modalita' e' esterna attiva il batch esterno, altrimenti usa il batch interno
+				if(it.govpay.core.utils.GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioniEsterno()) {
 					esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchFdr(ctx, leggiOperazioneDTO.isForzaEsecuzione());
+				} else {
+					esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
 				}
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(CHIUSURA_RPT_SCADUTE)){
 				esitoOperazione = it.govpay.core.business.Operazioni.chiusuraRptScadute(ctx);
@@ -92,32 +93,39 @@ public class OperazioniDAO extends BaseDAO{
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneRiconciliazioni();
 				esitoOperazione = "Elaborazione Riconciliazioni schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RECUPERO_RT)){
-				it.govpay.core.business.Operazioni.setEseguiRecuperoRT();
-				esitoOperazione = "Recupero RT schedulato";
+				// Se la modalita' e' esterna attiva il batch esterno, altrimenti usa il batch interno
+				if(it.govpay.core.utils.GovpayConfig.getInstance().isBatchRecuperoRTEsterno()) {
+					esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchRecuperoRt(ctx, leggiOperazioneDTO.isForzaEsecuzione());
+				} else {
+					it.govpay.core.business.Operazioni.setEseguiRecuperoRT();
+					esitoOperazione = "Recupero RT schedulato";
+				}
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(INVIA_POSIZIONI_DEBITORIE_ACA)){
 				esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchAca(ctx, leggiOperazioneDTO.isForzaEsecuzione());
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(INVIA_NOTIFICHE_MAGGIOLI)){
+				esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchMaggioli(ctx, leggiOperazioneDTO.isForzaEsecuzione());
 			} else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
-			
+
 			LogUtils.logInfo(log, "Operazione [{}] completata con esito [{}]", idOperazioneForLog, esitoOperazione);
-			
+
 			response.setDescrizioneStato(esitoOperazione);
 			response.setStato(0);
-			response.setNome(leggiOperazioneDTO.getIdOperazione()); 
+			response.setNome(leggiOperazioneDTO.getIdOperazione());
 		} catch (NotFoundException e) {
 			throw new OperazioneNonTrovataException(e.getMessage(), e);
-		} 
+		}
 		return response;
 	}
 
 	public ListaOperazioniDTOResponse listaOperazioni() {
 		BasicBD bd = null;
-		
+
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			List<LeggiOperazioneDTOResponse> results = new ArrayList<>();
-			
+
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));
 			results.add(new LeggiOperazioneDTOResponse(CHIUSURA_RPT_SCADUTE));
 			results.add(new LeggiOperazioneDTOResponse(GESTIONE_PROMEMORIA));
@@ -131,6 +139,7 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_RICONCILIAZIONI));
 			results.add(new LeggiOperazioneDTOResponse(RECUPERO_RT));
 			results.add(new LeggiOperazioneDTOResponse(INVIA_POSIZIONI_DEBITORIE_ACA));
+			results.add(new LeggiOperazioneDTOResponse(INVIA_NOTIFICHE_MAGGIOLI));
 
 			return new ListaOperazioniDTOResponse((long) results.size(), results);
 		}finally {
@@ -138,5 +147,5 @@ public class OperazioniDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
-	
+
 }

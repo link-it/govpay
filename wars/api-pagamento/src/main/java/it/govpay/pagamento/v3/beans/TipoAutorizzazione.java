@@ -21,6 +21,7 @@ package it.govpay.pagamento.v3.beans;
 
 import java.util.ArrayList;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class TipoAutorizzazione extends ArrayList<String>  {
 
   private static final long serialVersionUID = 1L;

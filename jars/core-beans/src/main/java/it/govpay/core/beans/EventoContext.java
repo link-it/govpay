@@ -72,10 +72,6 @@ public class EventoContext implements Serializable {
 
 	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
 
-	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO = "maggioliInviaEsitoPagamento";
-	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_RECUPERART = "maggioliRecuperaRT";
-	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIATRACCIATOEMAIL = "maggioliJppaInviaTracciatoEmail";
-
 	public static final String GOVPAY_TIPOEVENTO_GOVPAYPAGAMENTOESEGUITOSENZARPT = "govpayPagamentoEseguitoSenzaRPT";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";

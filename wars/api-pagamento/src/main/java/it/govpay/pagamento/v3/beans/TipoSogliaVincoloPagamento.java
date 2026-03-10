@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Indica se il pagamento deve avvenire entro o oltre la soglia di giorni indicata
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum TipoSogliaVincoloPagamento {
   ENTRO("ENTRO"),
 

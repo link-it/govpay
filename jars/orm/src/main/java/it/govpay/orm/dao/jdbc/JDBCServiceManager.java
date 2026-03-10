@@ -60,6 +60,8 @@ import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIncassoServiceSearch;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.IIntermediarioServiceSearch;
+import it.govpay.orm.dao.IJppaConfigService;
+import it.govpay.orm.dao.IJppaConfigServiceSearch;
 import it.govpay.orm.dao.INotificaAppIOService;
 import it.govpay.orm.dao.INotificaAppIOServiceSearch;
 import it.govpay.orm.dao.INotificaService;
@@ -1721,6 +1723,37 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 		return new JDBCAllegatoService(this);
 	}
 	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:JppaConfig type:JppaConfig
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.JppaConfig}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.JppaConfig}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IJppaConfigServiceSearch getJppaConfigServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCJppaConfigServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.JppaConfig}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.JppaConfig}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IJppaConfigService getJppaConfigService() throws ServiceException,NotImplementedException{
+		return new JDBCJppaConfigService(this);
+	}
 	
 	
 	

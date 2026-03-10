@@ -1,0 +1,13 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
+	},
+	"servizioPagoPaBackofficeEC": {
+		"url": '#(ndpsym_url + "/pagopa/backoffice/api/v1/ec")',
+		"subscriptionKey" : "BOEC123456",
+		"abilitaGDE": true
+	},
+	"abilitato": true
+}

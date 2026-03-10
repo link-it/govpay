@@ -65,7 +65,7 @@ import it.govpay.pagamento.v2.beans.UnitaOperativa;
 import it.govpay.pagamento.v2.beans.converter.DominiConverter;
 
 
-
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class DominiController extends BaseController {
 
      public DominiController(String nomeServizio,Logger log) {

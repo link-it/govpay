@@ -30,6 +30,7 @@ import it.govpay.core.beans.JSONSerializable;
 "codiceContabilita",
 "idEntrata",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class TipoEntrata extends JSONSerializable {
 
   @JsonProperty("descrizione")

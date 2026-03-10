@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.8.2</version>
+	<version>3.9.0</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -12,7 +12,7 @@
 			<id>govpay-ear</id>
 			<properties>
 				<javaVersion>21</javaVersion>
-				
+
 				<!-- versioni jar -->
 				<!-- angus-mail-->
 				<angus-mail.version>2.0.4</angus-mail.version>
@@ -143,6 +143,7 @@
 		<commons.pool2.version>2.12.1</commons.pool2.version>
 		<commons.net.version>3.12.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
+		<com.sun.mail.version>1.6.8</com.sun.mail.version><!-- CVE-2025-7962 -->
 		<commons.beanutils.version>1.11.0</commons.beanutils.version>
 
 		<!-- xmlsec -->
@@ -848,7 +849,7 @@
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.v3.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-jaxrs2-jakarta</artifactId>
@@ -856,7 +857,7 @@
 				<exclusions>
 					<exclusion>
 						<groupId>org.yaml</groupId>
-						<artifactId>snakeyaml</artifactId>					
+						<artifactId>snakeyaml</artifactId>
 					</exclusion>
 					<exclusion>
 						<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
@@ -1188,7 +1189,7 @@
 				<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
 				<artifactId>jackson-jakarta-rs-json-provider</artifactId>
@@ -1212,7 +1213,7 @@
   				<artifactId>jackson-dataformat-yaml</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency>
-	        
+
 	        <dependency>
 			    <groupId>com.fasterxml.jackson.datatype</groupId>
 			    <artifactId>jackson-datatype-joda</artifactId>
@@ -1497,6 +1498,20 @@
 	            <groupId>org.apache.commons</groupId>
 	            <artifactId>commons-email</artifactId>
 	            <version>${commons.email.version}</version>
+	            <exclusions>
+	            	<!-- CVE-2025-7962: SMTP Injection vulnerability fixed in 1.6.8 / 2.0.4 -->
+	            	<exclusion>
+	            		<groupId>com.sun.mail</groupId>
+	            		<artifactId>jakarta.mail</artifactId>
+	            	</exclusion>
+	            </exclusions>
+           </dependency>
+
+           <!-- CVE-2025-7962: versione corretta jakarta.mail -->
+           <dependency>
+	            <groupId>com.sun.mail</groupId>
+	            <artifactId>jakarta.mail</artifactId>
+	            <version>${com.sun.mail.version}</version>
            </dependency>
 
            <dependency>
@@ -1504,13 +1519,13 @@
 	            <artifactId>commons-net</artifactId>
 	            <version>${commons.net.version}</version>
            </dependency>
-           
+
            <dependency>
 			    <groupId>commons-beanutils</groupId>
 			    <artifactId>commons-beanutils</artifactId>
 			    <version>${commons.beanutils.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
@@ -1648,7 +1663,7 @@
 					<artifactId>javassist</artifactId>
 				    <version>${javassist.version}</version>
 				</dependency>
-				
+
 				<dependency>
 					<groupId>org.yaml</groupId>
 					<artifactId>snakeyaml</artifactId>

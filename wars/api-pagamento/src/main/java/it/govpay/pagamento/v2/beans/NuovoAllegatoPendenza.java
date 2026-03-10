@@ -36,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "descrizione",
 "contenuto",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidable{
 
   @JsonProperty("nome")

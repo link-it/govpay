@@ -87,7 +87,7 @@ import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 import it.govpay.pagamento.v2.beans.converter.RptConverter;
 
 
-
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentiController extends BaseController {
 
 	private SerializationConfig serializationConfig;

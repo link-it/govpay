@@ -43,6 +43,7 @@ import it.govpay.core.utils.validator.IValidable;
 	 "email",
 	 "cellulare",
  })
+@Deprecated(since = "3.9.0", forRemoval = true)
  public class Soggetto extends JSONSerializable implements IValidable {
 
 

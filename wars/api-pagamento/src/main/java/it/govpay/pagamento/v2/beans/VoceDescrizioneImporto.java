@@ -32,6 +32,7 @@ import it.govpay.core.utils.validator.IValidable;
 "voce",
 "importo",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class VoceDescrizioneImporto extends JSONSerializable implements IValidable{
 
   @JsonProperty("voce")

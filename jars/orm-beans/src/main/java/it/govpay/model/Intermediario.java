@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -26,6 +26,7 @@ public class Intermediario extends BasicModel{
 	public static final String CONNETTORE_ACA_SUFFIX= "_ACA";
 	public static final String CONNETTORE_GPD_SUFFIX= "_GPD";
 	public static final String CONNETTORE_FR_SUFFIX= "_FR";
+	public static final String CONNETTORE_BOEC_SUFFIX= "_BOEC";
 
 	private Long id;
 	private String codIntermediario;
@@ -35,16 +36,17 @@ public class Intermediario extends BasicModel{
     private Connettore connettorePddACA;
     private Connettore connettorePddGPD;
     private Connettore connettorePddFR;
+    private Connettore connettorePddBackofficeEC;
     private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
-    
+
     private String principal;
     private String principalOriginale;
-    
+
     public Intermediario() {
     	//donothing
     }
-        
+
 	@Override
 	public Long getId() {
 		return this.id;
@@ -76,7 +78,7 @@ public class Intermediario extends BasicModel{
 	public void setDenominazione(String nomeSPC) {
 		this.denominazione = nomeSPC;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		Intermediario intermediario = null;
@@ -94,12 +96,13 @@ public class Intermediario extends BasicModel{
 				equals(this.connettorePddACA, intermediario.getConnettorePddACA()) &&
 				equals(this.connettorePddGPD, intermediario.getConnettorePddGPD()) &&
 				equals(this.connettorePddFR, intermediario.getConnettorePddFR()) &&
+				equals(this.connettorePddBackofficeEC, intermediario.getConnettorePddBackofficeEC()) &&
 				equals(this.connettoreSftp, intermediario.getConnettoreSftp()) &&
 				equals(this.principal, intermediario.getPrincipal()) &&
 				equals(this.principalOriginale, intermediario.getPrincipalOriginale()) &&
 				this.abilitato == intermediario.isAbilitato();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -159,5 +162,13 @@ public class Intermediario extends BasicModel{
 
 	public void setConnettorePddFR(Connettore connettorePddFR) {
 		this.connettorePddFR = connettorePddFR;
+	}
+
+	public Connettore getConnettorePddBackofficeEC() {
+		return connettorePddBackofficeEC;
+	}
+
+	public void setConnettorePddBackofficeEC(Connettore connettorePddBackofficeEC) {
+		this.connettorePddBackofficeEC = connettorePddBackofficeEC;
 	}
 }

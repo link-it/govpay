@@ -40,6 +40,7 @@ import it.govpay.core.beans.JSONSerializable;
 "web",
 "area",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class UnitaOperativa extends JSONSerializable {
 
   @JsonProperty("idUnitaOperativa")

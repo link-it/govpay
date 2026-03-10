@@ -23,6 +23,7 @@ import it.govpay.core.beans.Costanti;
 import it.govpay.core.utils.GpContext;
 import it.govpay.web.listener.BaseInitListener;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class InitListener extends BaseInitListener {
 	
 	@Override

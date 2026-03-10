@@ -57,10 +57,8 @@ public class EventiUtils {
 			return giornale.getApiPendenze();
 		case API_BACKEND_IO:
 			return giornale.getApiBackendIO();
-		case API_USER, API_WC: 
+		case API_USER, API_WC:
 			return null;
-		case API_MAGGIOLI_JPPA:
-			return giornale.getApiMaggioliJPPA();
 		case API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK:
 			return EventiUtils.getConfigurazioneTracciatiNotificaPagamenti();
 		case GOVPAY:
@@ -191,10 +189,6 @@ public class EventiUtils {
 				;
 	}
 
-	public static boolean isOperazioneScritturaConnettoreMaggioliJPPA(String operazione) {
-		return EventoContext.APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO.equals(operazione);
-	}
-
 	public static EventoContext creaEventoContext(Categoria categoriaEvento, RuoloEvento role) {
 		EventoContext eventoCtx = new EventoContext();
 		eventoCtx.setCategoriaEvento(categoriaEvento);
@@ -215,17 +209,10 @@ public class EventiUtils {
 		if(componente.equals(Componente.API_PAGOPA)) {
 			if(operazione != null)
 				return !isOperazioneScrittura(operazione);
-			else 
+			else
 				return false;
 		}
-		
-		if(componente.equals(Componente.API_MAGGIOLI_JPPA)) {
-			if(operazione != null)
-				return !isOperazioneScritturaConnettoreMaggioliJPPA(operazione);
-			else 
-				return false;
-		}
-		
+
 		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY) || componente.equals(Componente.API_HYPERSIC_APK)) {
 			if(operazione != null)
 				return !isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
@@ -240,11 +227,7 @@ public class EventiUtils {
 		if(componente.equals(Componente.API_PAGOPA)) {
 			return isOperazioneScrittura(operazione);
 		}
-		
-		if(componente.equals(Componente.API_MAGGIOLI_JPPA)) {
-			return isOperazioneScritturaConnettoreMaggioliJPPA(operazione);
-		}
-		
+
 		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY) || componente.equals(Componente.API_HYPERSIC_APK)) {
 			return isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
 		}

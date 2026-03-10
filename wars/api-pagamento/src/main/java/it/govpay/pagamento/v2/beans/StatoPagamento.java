@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Stato del pagamento  * IN_CORSO: Pagamento in corso  * ANNULLATO: Pagamento annullato dall'utente o scaduto per timeout  * FALLITO: Pagamento non perfezionato per errori della piattaforma  * ESEGUITO: Pagamento concluso con successo  * NON_ESEGUITO: Processo concluso senza il perfezionamento del pagamento  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum StatoPagamento {
 
 

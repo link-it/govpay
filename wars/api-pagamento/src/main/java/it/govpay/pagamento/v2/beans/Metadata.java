@@ -36,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
  **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "mapEntries",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Metadata extends JSONSerializable implements IValidable {
 
   @JsonProperty("mapEntries")

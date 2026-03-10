@@ -1,12 +1,14 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 -- DROP INDEX index_stampe_1 ON stampe ;
 -- DROP INDEX index_batch_1 ON batch ;
+-- DROP INDEX index_fr_2 ON fr ;
 -- DROP INDEX index_fr_1 ON fr ;
 -- DROP INDEX index_incassi_1 ON incassi ;
 -- DROP INDEX index_tipi_vers_domini_1 ON tipi_vers_domini ;
 -- DROP INDEX index_tipi_versamento_1 ON tipi_versamento ;
 -- DROP INDEX index_connettori_1 ON connettori ;
 -- DROP INDEX index_operatori_1 ON operatori ;
+-- DROP INDEX index_jppa_config_1 ON jppa_config ;
 -- DROP INDEX index_uo_1 ON uo ;
 -- DROP INDEX index_tributi_1 ON tributi ;
 -- DROP INDEX index_tipi_tributo_1 ON tipi_tributo ;
@@ -25,6 +27,7 @@
 -- DROP INDEX idx_evt_id_sessione ON eventi ;
 -- DROP INDEX idx_evt_fk_vrs ON eventi ;
 -- DROP INDEX idx_evt_data ON eventi ;
+-- DROP INDEX idx_rnd_data ON rendicontazioni ;
 -- DROP INDEX idx_rnd_fk_pagamenti ON rendicontazioni ;
 -- DROP INDEX idx_rnd_fk_singoli_versamenti ON rendicontazioni ;
 -- DROP INDEX idx_rnd_iuv ON rendicontazioni ;
@@ -32,10 +35,12 @@
 -- DROP INDEX idx_pag_data_acq ON pagamenti ;
 -- DROP INDEX idx_pag_fk_sng ON pagamenti ;
 -- DROP INDEX idx_pag_fk_rpt ON pagamenti ;
+-- DROP INDEX idx_fr_id_dominio ON fr ;
 -- DROP INDEX idx_fr_data_acq ON fr ;
 -- DROP INDEX idx_fr_cod_flusso ON fr ;
 -- DROP INDEX idx_nai_da_spedire ON notifiche_app_io ;
 -- DROP INDEX idx_ntf_da_spedire ON notifiche ;
+-- DROP INDEX idx_rpt_data_msg_ricevuta ON rpt ;
 -- DROP INDEX idx_rpt_ric_pend_scad ON rpt ;
 -- DROP INDEX idx_rpt_data_msg_richiesta ON rpt ;
 -- DROP INDEX idx_rpt_fk_prt ON rpt ;
@@ -105,6 +110,7 @@ DROP TABLE acl;
 DROP TABLE connettori;
 DROP TABLE operatori;
 DROP TABLE utenze_domini;
+DROP TABLE jppa_config;
 DROP TABLE uo;
 DROP TABLE tributi;
 DROP TABLE tipi_tributo;

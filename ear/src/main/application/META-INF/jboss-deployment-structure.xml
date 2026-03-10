@@ -29,15 +29,6 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</exclusions>
 	</sub-deployment>
-	<sub-deployment name="api-jppapdp-${project.version}.war">
-		<exclusions>
-			<module name="org.apache.cxf" />
-			<module name="org.springframework.spring" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</exclusions>
-	</sub-deployment>
 	<sub-deployment
 		name="web-connector-${project.version}.war">
 		<exclusions>

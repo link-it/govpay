@@ -36,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "iban",
 "bic",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ContoAddebito extends JSONSerializable implements IValidable {
 
   @JsonProperty("iban")

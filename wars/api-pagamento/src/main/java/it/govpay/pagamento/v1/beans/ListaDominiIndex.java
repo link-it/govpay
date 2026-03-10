@@ -24,6 +24,7 @@ import java.util.List;
 
 import it.govpay.core.beans.Lista;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ListaDominiIndex extends Lista<DominioIndex> {
 
 	public ListaDominiIndex(List<DominioIndex> domini, URI requestUri, Long count, Integer pagina, Integer limit) {

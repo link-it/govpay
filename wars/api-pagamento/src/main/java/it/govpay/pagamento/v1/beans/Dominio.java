@@ -51,6 +51,7 @@ import it.govpay.core.beans.JSONSerializable;
 "contiAccredito",
 "entrate",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class Dominio extends JSONSerializable {
 
   @JsonProperty("ragioneSociale")

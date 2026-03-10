@@ -27,7 +27,7 @@ public class AcquisizioneRendicontazioni extends AbstractTask {
 
 	public AcquisizioneRendicontazioni() {
 		super(org.slf4j.LoggerFactory.getLogger(AcquisizioneRendicontazioni.class), CostantiTask.ACQUISIZIONE_RENDICONTAZIONI);
-	} 
+	}
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
@@ -36,10 +36,11 @@ public class AcquisizioneRendicontazioni extends AbstractTask {
 			it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
 		}
 	}
-	
+
 	@Override
 	protected boolean isAbilitato() {
 		return GovpayConfig.getInstance().isBatchOn()
-				&& GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni();
+				&& GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()
+						&& !GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioniEsterno();
 	}
 }

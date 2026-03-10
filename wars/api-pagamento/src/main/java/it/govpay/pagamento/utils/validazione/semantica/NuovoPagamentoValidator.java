@@ -27,6 +27,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class NuovoPagamentoValidator {
 	private ValidatorFactory vf;
 	public NuovoPagamentoValidator() {

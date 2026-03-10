@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Gets or Sets LinguaSecondaria
  */
+@Deprecated(since = "3.9.0", forRemoval = true)
 public enum LinguaSecondaria {
 
 

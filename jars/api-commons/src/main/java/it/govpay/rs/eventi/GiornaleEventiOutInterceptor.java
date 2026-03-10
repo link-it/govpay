@@ -88,7 +88,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 			if(eventoCtx.getDettaglioRisposta() == null)
 				eventoCtx.setDettaglioRisposta(new DettaglioRisposta());
 
-			if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA) || this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_MAGGIOLI_JPPA)) {
+			if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA)) {
 				@SuppressWarnings("unchecked")
 				Map<String, List<String>> responseHeaders = (Map<String, List<String>>)message.get(Message.PROTOCOL_HEADERS);
 				if (responseHeaders != null) {

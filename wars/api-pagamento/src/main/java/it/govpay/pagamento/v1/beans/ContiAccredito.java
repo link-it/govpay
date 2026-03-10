@@ -31,6 +31,7 @@ import it.govpay.core.beans.JSONSerializable;
 "abilitato",
 "iban",
 })
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ContiAccredito extends JSONSerializable {
 
   @JsonProperty("bic")

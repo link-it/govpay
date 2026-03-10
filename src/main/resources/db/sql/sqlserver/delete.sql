@@ -27,6 +27,7 @@ DELETE FROM acl;
 DELETE FROM connettori;
 DELETE FROM operatori;
 DELETE FROM utenze_domini;
+DELETE FROM jppa_config;
 DELETE FROM uo;
 DELETE FROM tributi;
 DELETE FROM tipi_tributo;

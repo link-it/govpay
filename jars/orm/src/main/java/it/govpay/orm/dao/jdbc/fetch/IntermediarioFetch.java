@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -35,7 +35,7 @@ import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 import it.govpay.orm.Intermediario;
 
 
-/**     
+/**
  * IntermediarioFetch
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -47,9 +47,9 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 
 	@Override
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
-		
+
 		try{
-			GenericJDBCParameterUtilities jdbcParameterUtilities =  
+			GenericJDBCParameterUtilities jdbcParameterUtilities =
 					new GenericJDBCParameterUtilities(tipoDatabase);
 
 			if(model.equals(Intermediario.model())){
@@ -68,6 +68,8 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_gpd", Intermediario.model().COD_CONNETTORE_GPD.getFieldType()));
 				setParameter(object, "setCodConnettoreFR", Intermediario.model().COD_CONNETTORE_FR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_fr", Intermediario.model().COD_CONNETTORE_FR.getFieldType()));
+				setParameter(object, "setCodConnettoreBackofficeEC", Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_backoffice_ec", Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType()));
 				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_ftp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
@@ -80,20 +82,20 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Intermediario.model().ABILITATO.getFieldType()));
 				return object;
 			}
-			
+
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
-			}	
-					
+			}
+
 		}catch(Exception e){
 			throw new ServiceException("Model ["+model.toString()+"] occurs error in fetch: "+e.getMessage(),e);
 		}
-		
+
 	}
-	
+
 	@Override
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , Map<String,Object> map ) throws ServiceException {
-		
+
 		try{
 
 			if(model.equals(Intermediario.model())){
@@ -112,6 +114,8 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettoreGPD"));
 				setParameter(object, "setCodConnettoreFR", Intermediario.model().COD_CONNETTORE_FR.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreFR"));
+				setParameter(object, "setCodConnettoreBackofficeEC", Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreBackofficeEC"));
 				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreFtp"));
 				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
@@ -124,27 +128,27 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			}
-			
+
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
-			}	
-					
+			}
+
 		}catch(Exception e){
 			throw new ServiceException("Model ["+model.toString()+"] occurs error in fetch: "+e.getMessage(),e);
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public IKeyGeneratorObject getKeyGeneratorObject( IModel<?> model )  throws ServiceException {
-		
+
 		try{
 
 			if(model.equals(Intermediario.model())){
 				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("intermediari","id","seq_intermediari","intermediari_init_seq");
 			}
-			
+
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by getKeyGeneratorObject: "+this.getClass().getName());
 			}
@@ -152,7 +156,7 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 		}catch(Exception e){
 			throw new ServiceException("Model ["+model.toString()+"] occurs error in getKeyGeneratorObject: "+e.getMessage(),e);
 		}
-		
+
 	}
 
 }

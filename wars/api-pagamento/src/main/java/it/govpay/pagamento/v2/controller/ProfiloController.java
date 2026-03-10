@@ -19,13 +19,6 @@
  */
 package it.govpay.pagamento.v2.controller;
 
-import java.text.MessageFormat;
-
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
-
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -34,7 +27,12 @@ import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.pagamento.v2.beans.Profilo;
 import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class ProfiloController extends BaseController {
 
      public ProfiloController(String nomeServizio,Logger log) {

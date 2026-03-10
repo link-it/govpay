@@ -30,6 +30,7 @@ import it.govpay.pagamento.v2.beans.TipoPendenza;
 import it.govpay.pagamento.v2.beans.TipoPendenzaForm;
 import it.govpay.pagamento.v2.beans.UnitaOperativa;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class DominiConverter {
 
 	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) {

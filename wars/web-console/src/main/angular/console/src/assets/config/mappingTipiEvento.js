@@ -158,7 +158,8 @@
 	  IOrganizationsController_getAllPublishedFlows: 'Richiesto elenco FR a pagoPA (v2)',
 	  IOrganizationsController_getSinglePublishedFlow: 'Richiesto flusso rendicontazioni a pagoPA (v2)',
 	  IOrganizationsController_getPaymentsFromPublishedFlow: 'Richiesti pagamenti FR a pagoPA (v2)',
-	  getOrganizationReceiptIur: 'Richiesta RT a pagoPA',
+	  getOrganizationReceiptIuvIur: 'Recuperata RT da pagoPA',
+	  rt_batch_paSendRTV2: 'Inviata a GovPay RT recuperata da pagoPA',
 	  paDemandPaymentNotice: 'Ricevuta richiesta avviso pagamento da pagoPA (v2)',
 	  getOrganizationDebtPositions: 'Richiesto elenco posizioni debitorie a pagoPA',
 	  createPosition: 'Inviata posizione debitoria a pagoPA',
@@ -176,6 +177,7 @@
       paaInviaEsitoStorno: 'Ricevuta ER da pagoPA (Legacy)',
       paaInviaRichiestaRevoca: 'Ricevuta ER da pagoPA (Legacy)',
       paaVerificaRPT: 'Ricevuta verifica RPT da pagoPA (Legacy)',
+	  getOrganizationReceiptIur: 'Richiesta RT a pagoPA',
 	  healthCheck: 'Health check pagoPA'
     },
     API_PENDENZE: {
@@ -226,10 +228,9 @@
       hyperSicAPKappaInviaTracciatoFileSystem: 'Salvato flusso HyperSIC - APKappa su file system'
     },
     API_MAGGIOLI_JPPA: {
-      maggioliInviaEsitoPagamento: 'Inviata notifica di pagamento al connettore Maggioli JPPA',
+      postPagamentiV2UsingPOST: 'Inviata notifica di pagamento al connettore Maggioli JPPA',
       maggioliJppaInviaTracciatoEmail: 'Spedito tracciato di esito Maggioli JPPA via Email',
-      maggioliRecuperaRT: 'Richiesta recupera RT dal client Maggioli JPPA',
-      maggioliVerificaPagamentoInAttesa: 'Richiesta verifica pagamento dal client Maggioli JPPA'
+      loginUsingPOST: 'Inviata richiesta di login al backend Maggioli JPPA'
     },
     API_MYPIVOT: {
       pivotInviaTracciatoEmail: 'Spedito flusso myPivot via Email',

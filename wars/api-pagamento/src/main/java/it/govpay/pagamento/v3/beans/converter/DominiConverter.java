@@ -22,6 +22,7 @@ package it.govpay.pagamento.v3.beans.converter;
 import it.govpay.pagamento.v3.beans.Dominio;
 import it.govpay.pagamento.v3.beans.UnitaOperativa;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class DominiConverter {
 
 

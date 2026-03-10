@@ -24,6 +24,7 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import it.govpay.pagamento.v2.beans.TipoPendenza;
 import it.govpay.pagamento.v2.beans.TipoPendenzaForm;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class TipiPendenzaConverter {
 
 	public static TipoPendenza toTipoPendenzaRsModel(it.govpay.model.TipoVersamento tipoVersamento) {

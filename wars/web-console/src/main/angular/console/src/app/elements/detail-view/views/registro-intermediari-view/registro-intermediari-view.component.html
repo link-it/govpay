@@ -28,6 +28,10 @@
     <div class="d-block" *ngIf="connettoreFR.length != 0">
       <link-key-value-view *ngFor="let item of connettoreFR" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
     </div>
+    <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="connettoreBackofficeEC.length != 0">Servizio Backoffice EC</p>
+    <div class="d-block" *ngIf="connettoreBackofficeEC.length != 0">
+      <link-key-value-view *ngFor="let item of connettoreBackofficeEC" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    </div>
   </mat-card>
   <mat-card class="shadow no-border-radius pb-0">
     <div class="d-flex flex-row">

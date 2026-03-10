@@ -21,6 +21,7 @@ package it.govpay.pagamento.v1.beans;
 
 import it.govpay.core.beans.JSONSerializable;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class PagamentiPortaleResponseOk extends JSONSerializable {
 
 	private String id;

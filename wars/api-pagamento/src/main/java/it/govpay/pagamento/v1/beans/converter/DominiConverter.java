@@ -31,6 +31,7 @@ import it.govpay.pagamento.v1.beans.Entrata;
 import it.govpay.pagamento.v1.beans.TipoContabilita;
 import it.govpay.pagamento.v1.beans.UnitaOperativa;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class DominiConverter {
 
 	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) {

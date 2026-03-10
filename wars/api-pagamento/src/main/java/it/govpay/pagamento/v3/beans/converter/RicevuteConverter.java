@@ -66,6 +66,7 @@ import it.govpay.pagamento.v3.beans.RicevuteRisultati;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
+@Deprecated(since = "3.9.0", forRemoval = true)
 public class RicevuteConverter {
 
 	private RicevuteConverter () {}

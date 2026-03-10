@@ -1868,8 +1868,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
 
-				// Controllo autorizzazione
-				if(GovpayConfig.getInstance().isPddAuthEnable()){
+				// Controllo autorizzazione solo per le utenze non batch
+				if(GovpayConfig.getInstance().isPddAuthEnable() && !AuthorizationManager.isUtenzaBatch(authentication)){
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 
 					if(!authOk) {
