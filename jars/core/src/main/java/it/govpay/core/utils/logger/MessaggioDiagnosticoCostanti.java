@@ -27,7 +27,7 @@ package it.govpay.core.utils.logger;
 public class MessaggioDiagnosticoCostanti {
 
 	private MessaggioDiagnosticoCostanti() {/*static only*/}
-	
+
 	public static final String MSG_DIAGNOSTICO_RT_ERRORE_AUTORIZZAZIONE = "rt.erroreAutorizzazione";
 	public static final String MSG_DIAGNOSTICO_RT_ERRORE_NO_AUTORIZZAZIONE = "rt.erroreNoAutorizzazione";
 	public static final String MSG_DIAGNOSTICO_PAGAMENTO_INVIO_RPT_ATTIVATA_OK = "pagamento.invioRptAttivataOk";
@@ -216,7 +216,7 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_KO = "rendicontazioni.acquisizioneFlussiKo";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI_FAIL = "rendicontazioni.acquisizioneFlussiFail";
 	public static final String MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSI = "rendicontazioni.acquisizioneFlussi";
-	
+
 	public static final String PROPERTY_COD_CANALE = "codCanale";
 	public static final String PROPERTY_COD_PSP = "codPsp";
 	public static final String PROPERTY_IUV = "iuv";
@@ -240,5 +240,5 @@ public class MessaggioDiagnosticoCostanti {
 	public static final String PROPERTY_COD_MESSAGGIO_RICEVUTA = "codMessaggioRicevuta";
 	public static final String PROPERTY_IMPORTO = "importo";
 	public static final String PROPERTY_COD_ESITO_PAGAMENTO = "codEsitoPagamento";
-	
+
 }

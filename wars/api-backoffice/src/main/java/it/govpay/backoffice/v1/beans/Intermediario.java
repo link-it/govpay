@@ -331,6 +331,3 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

@@ -127,7 +127,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
-	
+
 	if(this.json.servizioPagoPaRecuperoRT) {
 	      _dettaglio.connettoreRT.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPaRecuperoRT.url }));
 	      if (this.json.servizioPagoPaRecuperoRT.subscriptionKey) {

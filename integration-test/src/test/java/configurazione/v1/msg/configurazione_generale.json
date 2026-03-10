@@ -84,8 +84,8 @@
 		}
 	},
 	"tracciatoCsv": {
-        "tipo": "freemarker", 
-   		"intestazione": "..intestazione..",	
+        "tipo": "freemarker",
+   		"intestazione": "..intestazione..",
         "richiesta": "..base64 freemarker..",
         "risposta": "..base64 freemarker.."
     },

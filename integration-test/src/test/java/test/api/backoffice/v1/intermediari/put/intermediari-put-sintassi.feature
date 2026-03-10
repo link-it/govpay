@@ -279,5 +279,3 @@ Examples:
 | url | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.url | 'htttttttp://aaa.it' |  'url' |
 | subscriptionKey | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.subscriptionKey | '' |  'subscriptionKey' |
 | subscriptionKey | intermediarioBackofficeEC.servizioPagoPaBackofficeEC.subscriptionKey | loremIpsum |  'subscriptionKey' |
-
-

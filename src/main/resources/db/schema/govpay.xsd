@@ -2047,7 +2047,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
+
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
@@ -2211,7 +2211,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
+
 			<xsd:element name="clusterId" type="String255" minOccurs="0"/>
 			<xsd:element name="transactionId" type="String255" minOccurs="0"/>
 		</xsd:sequence>
@@ -2343,7 +2343,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
+
 			<xsd:element name="metadata"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -3169,7 +3169,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
+
 			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>
 					<xsd:appinfo>

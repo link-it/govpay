@@ -58,18 +58,18 @@ public class Configurazione {
 	public it.govpay.bd.model.Configurazione getConfigurazione() throws ServiceException{
 		return this.getConfigurazione(new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true));
 	}
-	
+
 	public it.govpay.bd.model.Configurazione getConfigurazione(BDConfigWrapper configWrapper) throws ServiceException{
 		it.govpay.bd.model.Configurazione configurazione = null;
 		try {
 			configurazione = AnagraficaManager.getConfigurazione(configWrapper);
 			this.validaConfigurazione(configurazione);
 		}catch(IOException | NotFoundException e) {
-			LogUtils.logError(log, MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
+			LogUtils.logError(log, MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e);
 			throw new ServiceException(e);
 		}
 
-		return configurazione; 
+		return configurazione;
 	}
 
 	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione, Long idOperatore) throws ServiceException {
@@ -107,7 +107,7 @@ public class Configurazione {
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
 		}
-		
+
 		if(configurazione.getServizioGDE() == null) {
 			configurazione.setServizioGDE(configurazioneDefault.getServizioGDE());
 		}
@@ -116,32 +116,32 @@ public class Configurazione {
 	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws IOException {
 		if(configurazione.getGiornale() == null) {
 			configurazione.setGiornale(configurazioneDefault.getGiornale());
-		} 
-		
+		}
+
 		if(configurazione.getGiornale().getApiBackendIO() == null) {
 			configurazione.getGiornale().setApiBackendIO(configurazioneDefault.getGiornale().getApiBackendIO());
 		}
-		
+
 		if(configurazione.getGiornale().getApiBackoffice() == null) {
 			configurazione.getGiornale().setApiBackoffice(configurazioneDefault.getGiornale().getApiBackoffice());
 		}
-		
+
 		if(configurazione.getGiornale().getApiEnte() == null) {
 			configurazione.getGiornale().setApiEnte(configurazioneDefault.getGiornale().getApiEnte());
 		}
-		
+
 		if(configurazione.getGiornale().getApiPagamento() == null) {
 			configurazione.getGiornale().setApiPagamento(configurazioneDefault.getGiornale().getApiPagamento());
 		}
-		
+
 		if(configurazione.getGiornale().getApiPagoPA() == null) {
 			configurazione.getGiornale().setApiPagoPA(configurazioneDefault.getGiornale().getApiPagoPA());
 		}
-		
+
 		if(configurazione.getGiornale().getApiPendenze() == null) {
 			configurazione.getGiornale().setApiPendenze(configurazioneDefault.getGiornale().getApiPendenze());
 		}
-		
+
 		if(configurazione.getGiornale().getApiRagioneria() == null) {
 			configurazione.getGiornale().setApiRagioneria(configurazioneDefault.getGiornale().getApiRagioneria());
 		}
@@ -151,14 +151,14 @@ public class Configurazione {
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
 
-		configurazione.setGiornale(this.getGiornaleDefault()); 
-		configurazione.setConfigurazioneTracciatoCsv(this.getTracciatoCsvDefault()); 
-		configurazione.setHardening(this.getHardeningDefault()); 
-		configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
-		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
+		configurazione.setGiornale(this.getGiornaleDefault());
+		configurazione.setConfigurazioneTracciatoCsv(this.getTracciatoCsvDefault());
+		configurazione.setHardening(this.getHardeningDefault());
+		configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault());
+		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault());
 		configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
-		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
-		
+		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault());
+
 		Connettore servizioGDE = new Connettore();
 		servizioGDE.setAbilitato(false);
 		servizioGDE.setIdConnettore(it.govpay.bd.model.Configurazione.COD_CONNETTORE_GDE);
@@ -273,7 +273,7 @@ public class Configurazione {
 		apiRagioneriaScritture.setLog(LogEnum.SEMPRE);
 		apiRagioneria.setScritture(apiRagioneriaScritture);
 		giornale.setApiRagioneria(apiRagioneria);
-		
+
 		GdeInterfaccia apiBackendAppIO = new GdeInterfaccia();
 		GdeEvento apiBackendAppIOLetture = new GdeEvento();
 		apiBackendAppIOLetture.setDump(DumpEnum.SEMPRE);
