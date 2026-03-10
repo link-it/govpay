@@ -101,6 +101,35 @@
           project.setUserProperty('springsec_location','/WEB-INF')
        }      
 	
+       // Batch esterni
+       def batchAca = properties['antinstaller_batch_aca']
+       if (batchAca) {
+          def acaUrl = properties['antinstaller_batch_aca_url']
+          project.setUserProperty('it.govpay.batch.aca.endpoint.url', acaUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.aca.endpoint.url','')
+       }
+
+       def batchFdr = properties['antinstaller_batch_fdr']
+       if (batchFdr) {
+          def fdrUrl = properties['antinstaller_batch_fdr_url']
+          project.setUserProperty('it.govpay.batch.acquisizioneRendicontazioni.modalita','esterno')
+          project.setUserProperty('it.govpay.batch.fdr.endpoint.url', fdrUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.acquisizioneRendicontazioni.modalita','interno')
+          project.setUserProperty('it.govpay.batch.fdr.endpoint.url','')
+       }
+
+       def batchRecuperoRt = properties['antinstaller_batch_recupero_rt']
+       if (batchRecuperoRt) {
+          def rtUrl = properties['antinstaller_batch_recupero_rt_url']
+          project.setUserProperty('it.govpay.batch.recuperoRT.modalita','esterno')
+          project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.recuperoRT.modalita','interno')
+          project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url','')
+       }
+
 	   def basepathAPIBO = properties['antinstaller_govpay_backend_api_base_url']
 	       if (basepathAPIBO) {
 	          project.setUserProperty('antinstaller_govpay_backend_api_form_base_url',basepathAPIBO+'/rs/form/v1')

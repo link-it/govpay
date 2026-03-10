@@ -36,8 +36,6 @@
 		<directory defaultValue="/etc/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
 		<comment displayText="" />
 		<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
-		<comment displayText="" />
-		<checkbox property="antinstaller_advanced" displayText="Visualizza impostazioni avanzate" defaultValue="false" />
 	</page>
 
 	<page name="informazioniApplicative" type="input" displayText="Riferimenti accesso GovPay">
@@ -135,9 +133,33 @@
 		<comment explanatoryText="Indicare il path del file di configurazione della console" />
 	</page>
 
-	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true">
+	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate">
 		<comment displayText="Configurazione Spring Security" title="true" />
 		<checkbox property="antinstaller_springsec_ext" displayText="Usa file di configurazione esterni" defaultValue="false" />
+		<comment displayText="" />
+		<comment displayText="Batch Esterni" title="true" />
+		<comment explanatoryText="Selezionare i batch esterni da abilitare." />
+		<checkbox property="antinstaller_batch_aca" displayText="Batch ACA - Archivio Centralizzato Avvisi" defaultValue="false" />
+		<checkbox property="antinstaller_batch_fdr" displayText="Batch FdR - Flussi di Rendicontazione" defaultValue="false" />
+		<checkbox property="antinstaller_batch_recupero_rt" displayText="Batch Recupero RT - Ricevute Telematiche" defaultValue="false" />
+	</page>
+
+	<page name="batchAcaConfig" type="input" displayText="Configurazione Batch ACA" ifProperty="${antinstaller_batch_aca}=true">
+		<comment displayText="Batch ACA - Archivio Centralizzato Avvisi" title="true" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint del batch ACA esterno." />
+		<validated defaultValue="http://localhost:10001/api/batch" property="antinstaller_batch_aca_url" displayText="Base URL" regex=".+" />
+	</page>
+
+	<page name="batchFdrConfig" type="input" displayText="Configurazione Batch FdR" ifProperty="${antinstaller_batch_fdr}=true">
+		<comment displayText="Batch FdR - Flussi di Rendicontazione" title="true" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint del batch FdR esterno." />
+		<validated defaultValue="http://localhost:10005/api/batch" property="antinstaller_batch_fdr_url" displayText="Base URL" regex=".+" />
+	</page>
+
+	<page name="batchRecuperoRtConfig" type="input" displayText="Configurazione Batch Recupero RT" ifProperty="${antinstaller_batch_recupero_rt}=true">
+		<comment displayText="Batch Recupero RT - Ricevute Telematiche" title="true" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint del batch Recupero RT esterno." />
+		<validated defaultValue="http://localhost:10006/api/batch" property="antinstaller_batch_recupero_rt_url" displayText="Base URL" regex=".+" />
 	</page>
 
 	<page name="Fine" displayText="Installazione" type="progress" showTargets="true" target="setup_completo" />

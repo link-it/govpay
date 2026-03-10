@@ -242,6 +242,18 @@ Questo componente consente di:
 Il batch può essere schedulato per eseguire periodicamente il download e l'elaborazione
 dei nuovi flussi di rendicontazione disponibili.
 
+govpay-rt-batch
+~~~~~~~~~~~~~~~~
+
+Batch per il recupero delle Ricevute Telematiche (RT) mancanti dal Nodo pagoPA.
+
+Questo componente consente di:
+
+- Individuare le rendicontazioni prive della corrispondente ricevuta di pagamento, più vecchie di una soglia temporale configurabile (default: 15 giorni)
+- Recuperare automaticamente le RT mancanti invocando l'endpoint ``GET /organizations/{codDominio}/receipts/{iur}`` del Nodo pagoPA
+- Persistere le ricevute recuperate nel database di GovPay e aggiornare lo stato delle rendicontazioni
+- Registrare tutte le operazioni nel Giornale degli Eventi (GDE)
+
 govpay-gde-api
 ~~~~~~~~~~~~~~
 
