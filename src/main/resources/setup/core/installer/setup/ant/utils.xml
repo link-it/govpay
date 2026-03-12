@@ -43,6 +43,15 @@
         			<filter token="GOVPAY_BACKEND_API_PUBLIC_BASE_URL" value="${antinstaller_govpay_backend_api_public_base_url}" />
         			<filter token="GOVPAY_CONFIG_JS_FILE_PATH" value="${antinstaller_govpay_backend_gui_config_js_path}" />
 
+				<!-- Batch esterni -->
+				<filter token="BATCH_ACA_ENDPOINT_URL" value="${it.govpay.batch.aca.endpoint.url}" />
+				<filter token="BATCH_FDR_MODALITA" value="${it.govpay.batch.acquisizioneRendicontazioni.modalita}" />
+				<filter token="BATCH_FDR_ENDPOINT_URL" value="${it.govpay.batch.fdr.endpoint.url}" />
+				<filter token="BATCH_RECUPERO_RT_MODALITA" value="${it.govpay.batch.recuperoRT.modalita}" />
+				<filter token="BATCH_RECUPERO_RT_ENDPOINT_URL" value="${it.govpay.batch.recuperoRT.endpoint.url}" />
+				<filter token="BATCH_IBAN_ENDPOINT_URL" value="${it.govpay.batch.iban.endpoint.url}" />
+				<filter token="BATCH_NOTIFICA_ENDPOINT_URL" value="${it.govpay.batch.notifica.endpoint.url}" />
+
 		        </filterset>
 		</copy>
 		<delete file="@{template}" />
