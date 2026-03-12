@@ -135,6 +135,30 @@ public class BatchUtils {
 	}
 
 	/**
+	 * Attiva il batch Notifica esterno.
+	 *
+	 * @param ctx context di esecuzione
+	 * @param force forza l'esecuzione del batch anche se già in esecuzione
+	 * @return messaggio di conferma
+	 * @throws it.govpay.core.exceptions.GovPayException in caso di errore nell'invocazione del batch
+	 */
+	public static String attivaBatchNotifica(IContext ctx, boolean force) throws it.govpay.core.exceptions.GovPayException {
+		String endpointUrl = GovpayConfig.getInstance().getBatchNotificaEndpointUrl();
+
+		if(StringUtils.isEmpty(endpointUrl)) {
+			String errorMsg = MessageFormat.format(URL_ENDPOINT_NON_CONFIGURATO_PER_IL_BATCH_0, Operazioni.BATCH_NOTIFICA);
+			log.error(errorMsg);
+			throw new it.govpay.core.exceptions.GovPayException(errorMsg, it.govpay.core.beans.EsitoOperazione.INTERNAL);
+		}
+
+		Connettore connettore = new Connettore();
+		connettore.setUrl(endpointUrl);
+		connettore.setTipoAutenticazione(EnumAuthType.NONE);
+
+		return attivaBatchEsterno(ctx, Operazioni.BATCH_NOTIFICA, TipoDestinatario.BATCH_NOTIFICA, connettore, force);
+	}
+
+	/**
 	 * Attiva il batch Maggioli esterno.
 	 *
 	 * @param ctx context di esecuzione
@@ -221,6 +245,14 @@ public class BatchUtils {
 	}
 
 	/**
+	 * Recupera lo stato corrente del batch Notifica.
+	 */
+	public static String getStatusBatchNotifica(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
+		String endpointUrl = GovpayConfig.getInstance().getBatchNotificaEndpointUrl();
+		return getStatusBatchEsterno(ctx, Operazioni.BATCH_NOTIFICA, TipoDestinatario.BATCH_NOTIFICA, endpointUrl);
+	}
+
+	/**
 	 * Recupera lo stato corrente del batch Maggioli.
 	 */
 	public static String getStatusBatchMaggioli(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
@@ -276,6 +308,14 @@ public class BatchUtils {
 	public static String getLastExecutionBatchRecuperoRt(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
 		String endpointUrl = GovpayConfig.getInstance().getBatchRecuperoRtEndpointUrl();
 		return getLastExecutionBatchEsterno(ctx, Operazioni.BATCH_RECUPERO_RT, TipoDestinatario.BATCH_RECUPERO_RT, endpointUrl);
+	}
+
+	/**
+	 * Recupera informazioni sull'ultima esecuzione del batch Notifica.
+	 */
+	public static String getLastExecutionBatchNotifica(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
+		String endpointUrl = GovpayConfig.getInstance().getBatchNotificaEndpointUrl();
+		return getLastExecutionBatchEsterno(ctx, Operazioni.BATCH_NOTIFICA, TipoDestinatario.BATCH_NOTIFICA, endpointUrl);
 	}
 
 	/**
@@ -337,6 +377,14 @@ public class BatchUtils {
 	}
 
 	/**
+	 * Recupera informazioni sulla prossima esecuzione pianificata del batch Notifica.
+	 */
+	public static String getNextExecutionBatchNotifica(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
+		String endpointUrl = GovpayConfig.getInstance().getBatchNotificaEndpointUrl();
+		return getNextExecutionBatchEsterno(ctx, Operazioni.BATCH_NOTIFICA, TipoDestinatario.BATCH_NOTIFICA, endpointUrl);
+	}
+
+	/**
 	 * Recupera informazioni sulla prossima esecuzione pianificata del batch Maggioli.
 	 */
 	public static String getNextExecutionBatchMaggioli(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
@@ -392,6 +440,14 @@ public class BatchUtils {
 	public static String clearCacheBatchRecuperoRt(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
 		String endpointUrl = GovpayConfig.getInstance().getBatchRecuperoRtEndpointUrl();
 		return clearCacheBatchEsterno(ctx, Operazioni.BATCH_RECUPERO_RT, TipoDestinatario.BATCH_RECUPERO_RT, endpointUrl);
+	}
+
+	/**
+	 * Svuota la cache del batch Notifica.
+	 */
+	public static String clearCacheBatchNotifica(IContext ctx) throws it.govpay.core.exceptions.GovPayException {
+		String endpointUrl = GovpayConfig.getInstance().getBatchNotificaEndpointUrl();
+		return clearCacheBatchEsterno(ctx, Operazioni.BATCH_NOTIFICA, TipoDestinatario.BATCH_NOTIFICA, endpointUrl);
 	}
 
 	/**
@@ -511,6 +567,23 @@ public class BatchUtils {
 			}
 		} else {
 			result.append("IBAN: SKIPPED (non configurato)\n");
+			skippedCount++;
+		}
+
+		// Batch Notifica
+		String notificaUrl = GovpayConfig.getInstance().getBatchNotificaEndpointUrl();
+		if (StringUtils.isNotEmpty(notificaUrl)) {
+			try {
+				clearCacheBatchNotifica(ctx);
+				result.append("Notifica: OK\n");
+				successCount++;
+			} catch (Exception e) {
+				result.append("Notifica: ERRORE - ").append(e.getMessage()).append("\n");
+				errorCount++;
+				log.warn("Errore durante il reset cache batch Notifica: {}", e.getMessage());
+			}
+		} else {
+			result.append("Notifica: SKIPPED (non configurato)\n");
 			skippedCount++;
 		}
 

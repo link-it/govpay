@@ -234,6 +234,11 @@ public class GovpayConfig {
 	private int batchIbanReadTimeout;
 	private int batchIbanConnectionRequestTimeout;
 
+	private String batchNotificaEndpointUrl;
+	private int batchNotificaConnectionTimeout;
+	private int batchNotificaReadTimeout;
+	private int batchNotificaConnectionRequestTimeout;
+
 	private String batchMaggioliEndpointUrl;
 	private int batchMaggioliConnectionTimeout;
 	private int batchMaggioliReadTimeout;
@@ -379,6 +384,11 @@ public class GovpayConfig {
 		this.batchIbanConnectionTimeout = 5000; // 5 secondi
 		this.batchIbanReadTimeout = 30000; // 30 secondi
 		this.batchIbanConnectionRequestTimeout = 5000; // 5 secondi
+
+		this.batchNotificaEndpointUrl = null;
+		this.batchNotificaConnectionTimeout = 5000; // 5 secondi
+		this.batchNotificaReadTimeout = 30000; // 30 secondi
+		this.batchNotificaConnectionRequestTimeout = 5000; // 5 secondi
 
 		this.batchMaggioliEndpointUrl = null;
 		this.batchMaggioliConnectionTimeout = 5000; // 5 secondi
@@ -969,6 +979,39 @@ public class GovpayConfig {
 					this.batchIbanConnectionRequestTimeout = Integer.parseInt(batchIbanConnectionRequestTimeoutString);
 				} catch (NumberFormatException e) {
 					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.iban.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchIbanConnectionRequestTimeoutString);
+				}
+			}
+
+			// Batch Notifica
+			String batchNotificaEndpointUrlString = getProperty("it.govpay.batch.notifica.endpoint.url", this.props, false, log);
+			if(batchNotificaEndpointUrlString != null && StringUtils.isNotEmpty(batchNotificaEndpointUrlString)) {
+				this.batchNotificaEndpointUrl = batchNotificaEndpointUrlString;
+			}
+
+			String batchNotificaConnectionTimeoutString = getProperty("it.govpay.batch.notifica.endpoint.connectionTimeout", this.props, false, log);
+			if(batchNotificaConnectionTimeoutString != null && StringUtils.isNotEmpty(batchNotificaConnectionTimeoutString)) {
+				try {
+					this.batchNotificaConnectionTimeout = Integer.parseInt(batchNotificaConnectionTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.notifica.endpoint.connectionTimeout': {}. Assunto valore di default: 5000", batchNotificaConnectionTimeoutString);
+				}
+			}
+
+			String batchNotificaReadTimeoutString = getProperty("it.govpay.batch.notifica.endpoint.readTimeout", this.props, false, log);
+			if(batchNotificaReadTimeoutString != null && StringUtils.isNotEmpty(batchNotificaReadTimeoutString)) {
+				try {
+					this.batchNotificaReadTimeout = Integer.parseInt(batchNotificaReadTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.notifica.endpoint.readTimeout': {}. Assunto valore di default: 30000", batchNotificaReadTimeoutString);
+				}
+			}
+
+			String batchNotificaConnectionRequestTimeoutString = getProperty("it.govpay.batch.notifica.endpoint.connectionRequestTimeout", this.props, false, log);
+			if(batchNotificaConnectionRequestTimeoutString != null && StringUtils.isNotEmpty(batchNotificaConnectionRequestTimeoutString)) {
+				try {
+					this.batchNotificaConnectionRequestTimeout = Integer.parseInt(batchNotificaConnectionRequestTimeoutString);
+				} catch (NumberFormatException e) {
+					log.warn("Valore non valido per la proprieta' 'it.govpay.batch.notifica.endpoint.connectionRequestTimeout': {}. Assunto valore di default: 5000", batchNotificaConnectionRequestTimeoutString);
 				}
 			}
 
@@ -1624,6 +1667,22 @@ public class GovpayConfig {
 
 	public int getBatchIbanConnectionRequestTimeout() {
 		return batchIbanConnectionRequestTimeout;
+	}
+
+	public String getBatchNotificaEndpointUrl() {
+		return batchNotificaEndpointUrl;
+	}
+
+	public int getBatchNotificaConnectionTimeout() {
+		return batchNotificaConnectionTimeout;
+	}
+
+	public int getBatchNotificaReadTimeout() {
+		return batchNotificaReadTimeout;
+	}
+
+	public int getBatchNotificaConnectionRequestTimeout() {
+		return batchNotificaConnectionRequestTimeout;
 	}
 
 	public String getBatchMaggioliEndpointUrl() {

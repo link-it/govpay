@@ -73,7 +73,6 @@ cp -r ${SQL}/* core.template/installer/sql/
 rm -f core.template/installer/sql/*.sql
 rm -f core.template/installer/sql/*/delete.sql
 rm -f core.template/installer/sql/*/drop.sql
-cp ${SQL}/init.sql core.template/installer/sql/
 echo "Prepare sql script [completed]"
 
 # Prepare Datasource

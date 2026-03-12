@@ -85,6 +85,7 @@ public class Operazioni{
 	public static final String BATCH_ACA = "batch_aca";
 	public static final String BATCH_FDR = "batch_fdr";
 	public static final String BATCH_IBAN = "batch_iban";
+	public static final String BATCH_NOTIFICA = "batch_notifica";
 	public static final String BATCH_MAGGIOLI = "batch_maggioli";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";

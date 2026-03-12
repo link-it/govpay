@@ -1,12 +1,12 @@
 
 <project name="setup" basedir=".">
-	
+
 	<description>
         	SETUP
 	</description>
 
 	<import file="local_env.xml" />
-	
+
 	<!-- estensione di ant (if .... ) -->
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
           <classpath>
@@ -19,17 +19,17 @@
               <pathelement location="${lib}/ant/groovy-ant-3.0.23.jar"/>
           </classpath>
         </taskdef>
-	
+
 	<import file="./ant/properties-build.xml" />
 	<import file="./ant/ds-build.xml" />
 	<import file="./ant/sql-build.xml" />
-	
-	
+
+
 	<property name="librerie" value="../lib/" />
 	<property name="archivi" value="../archivi/" />
 	<property name="sql" value="../sql/" />
 	<property name="datasource" value="../datasource/" />
-	
+
         <!-- Codifico le password -->
         <java classname="org.openspcoop2.utils.crypt.Password" fork="true" outputproperty="antinstaller_principal_pwd_md5">
                 <arg value="${antinstaller_principal_pwd}" />
@@ -37,14 +37,14 @@
                         <path location="${librerie}/shared/openspcoop2_utils-crypt-3.2.1.jar"/>
                 </classpath>
         </java>
-	
+
 	<!-- Ripulisce la distribuzione -->
 	<target name="installer_clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 	</target>
 
-	
+
 	<!-- Create the build directory structure used by compile -->
 	<target name="installer_init">
 		<mkdir dir="${build}" />
@@ -52,7 +52,7 @@
 		<mkdir dir="${dist}" />
 	</target>
 
-	
+
 	<target name="init_setup" depends="installer_clean,installer_init">
 		<if>
         	<equals arg1="${antinstaller_as}" arg2="wildfly28" />
@@ -60,7 +60,7 @@
 				<unzip src="${archivi}/govpay.ear" dest="${tmp_dir}/govpay" />
 			</then>
         </if>
-		
+
 		<if>
         	<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 			<then>
@@ -71,9 +71,9 @@
 		        </copy>
 			</then>
         </if>
-		
+
 	</target>
-		
+
 	<target name="setup_properties">
 		 <echo>
 		  $${antinstaller_work_folder}    => ${antinstaller_work_folder}
@@ -99,16 +99,53 @@
           project.setUserProperty('springsec_location','file:'+confpath)
        } else {
           project.setUserProperty('springsec_location','/WEB-INF')
-       }      
-	
-	   def basepathAPIBO = properties['antinstaller_govpay_backend_api_base_url']
-	       if (basepathAPIBO) {
-	          project.setUserProperty('antinstaller_govpay_backend_api_form_base_url',basepathAPIBO+'/rs/form/v1')
-			  project.setUserProperty('antinstaller_govpay_backend_api_public_base_url',basepathAPIBO+'/public')
-	       } else {
-			  project.setUserProperty('antinstaller_govpay_backend_api_form_base_url','/govpay-api-backoffice/rs/form/v1')
-			  project.setUserProperty('antinstaller_govpay_backend_api_public_base_url','/govpay-api-backoffice/public')
-	       }
+       }
+
+       // Batch esterni
+       def batchAca = properties['antinstaller_batch_aca']
+       if (batchAca) {
+          def acaUrl = properties['antinstaller_batch_aca_url']
+          project.setUserProperty('it.govpay.batch.aca.endpoint.url', acaUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.aca.endpoint.url','')
+       }
+
+       def batchFdr = properties['antinstaller_batch_fdr']
+       if (batchFdr) {
+          def fdrUrl = properties['antinstaller_batch_fdr_url']
+          project.setUserProperty('it.govpay.batch.acquisizioneRendicontazioni.modalita','esterno')
+          project.setUserProperty('it.govpay.batch.fdr.endpoint.url', fdrUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.acquisizioneRendicontazioni.modalita','interno')
+          project.setUserProperty('it.govpay.batch.fdr.endpoint.url','')
+       }
+
+       def batchRecuperoRt = properties['antinstaller_batch_recupero_rt']
+       if (batchRecuperoRt) {
+          def rtUrl = properties['antinstaller_batch_recupero_rt_url']
+          project.setUserProperty('it.govpay.batch.recuperoRT.modalita','esterno')
+          project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.recuperoRT.modalita','interno')
+          project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url','')
+       }
+
+       def batchIban = properties['antinstaller_batch_iban']
+       if (batchIban) {
+          def ibanUrl = properties['antinstaller_batch_iban_url']
+          project.setUserProperty('it.govpay.batch.iban.endpoint.url', ibanUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.iban.endpoint.url','')
+       }
+
+       def batchNotifica = properties['antinstaller_batch_notifica']
+       if (batchNotifica) {
+          def notificaUrl = properties['antinstaller_batch_notifica_url']
+          project.setUserProperty('it.govpay.batch.notifica.endpoint.url', notificaUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.notifica.endpoint.url','')
+       }
+
 </groovy>
 
     <!-- Se protocollo=https => autenticazione=ssl, altrimenti=basic -->
@@ -132,18 +169,18 @@
 		  $${springsec_location}    => ${springsec_location}
 		 </echo>
 
-		
+
 		<!-- GovPay EAR -->
 		<if>
 			<equals arg1="${antinstaller_as}" arg2="wildfly28" />
 			<then>
 				<foreach target="govpay_war_properties" param="file" >
-				   <fileset dir="${tmp_dir}/govpay/"> 
+				   <fileset dir="${tmp_dir}/govpay/">
 				     <include name="**/*.war"/>
 				   </fileset>
 				</foreach>
-		
-		
+
+
 				<antcall target="govpay_properties_settings">
 					<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
 				</antcall>
@@ -153,25 +190,25 @@
 				<antcall target="govpay_jboss_deployment_structure">
 					<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>
 				</antcall>
-		
+
 				<antcall target="dos2unix">
 					<param name="dir" value="${tmp_dir}/govpay/properties"/>
 					<param name="file" value="*.properties"/>
 				</antcall>
 			</then>
 		</if>
-		
+
 		<!-- Tomcat -->
 		<if>
 			<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 			<then>
 				<foreach target="govpay_war_properties_tomcat" param="file" >
-				   <fileset dir="${tmp_dir}/govpay/"> 
+				   <fileset dir="${tmp_dir}/govpay/">
 				     <include name="**/*.war"/>
 				   </fileset>
 				</foreach>
-		
-		
+
+
 <!--				<antcall target="govpay_properties_settings">-->
 <!--					<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>-->
 <!--				</antcall>-->
@@ -181,7 +218,7 @@
 <!--				<antcall target="govpay_jboss_deployment_structure">-->
 <!--					<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>-->
 <!--				</antcall>-->
-		
+
 <!--				<antcall target="dos2unix">-->
 <!--					<param name="dir" value="${tmp_dir}/govpay/properties"/>-->
 <!--					<param name="file" value="*.properties"/>-->
@@ -190,7 +227,7 @@
 		</if>
 
 	</target>
-		
+
 	<target name="setup_datasource">
 		<copy file="${datasource}/commons/context.datasource.xml" todir="${tmp_dir}"/>
 		<copy file="${datasource}/${antinstaller_tipo_database}/server.datasource.xml" todir="${tmp_dir}"/>
@@ -206,7 +243,7 @@
 			<header filtering="no" trimleading="yes">
 
 -- Init
-                
+
 			</header>
 			<filelist dir="${tmp_dir}" files="init.sql"/>
 		</concat>
@@ -232,7 +269,7 @@
           	<equals arg1="${antinstaller_springsec_ext}" arg2="true" />
 		  	<then>
             	<mkdir dir="${dist}/cfg" />
-	            
+
 		  		<if>
 					<equals arg1="${antinstaller_as}" arg2="wildfly28" />
 					<then>
@@ -243,7 +280,7 @@
 		        	    </foreach>
 		  			</then>
 		  		</if>
-		  		
+
 		  		<if>
 					<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 					<then>
@@ -264,26 +301,26 @@
 				<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
   			</then>
   		</if>
-		
+
 		<if>
 			<equals arg1="${antinstaller_as}" arg2="tomcat11" />
 			<then>
 				<copy todir="${dist}/archivi">
-					<fileset dir="${tmp_dir}/govpay"> 
+					<fileset dir="${tmp_dir}/govpay">
 						<include name="*.war" />
 					</fileset>
 				</copy>
   			</then>
   		</if>
-		
+
 		<mkdir dir="${dist}/datasource" />
 		<copy file="${tmp_dir}/context.datasource.xml" todir="${dist}/datasource" />
 		<copy file="${tmp_dir}/server.datasource.xml" todir="${dist}/datasource" />
 		<mkdir dir="${dist}/sql" />
 		<mkdir dir="${dist}/sql/patch" />
-		<copy file="${tmp_dir}/gov_pay.sql" todir="${dist}/sql"/>		
+		<copy file="${tmp_dir}/gov_pay.sql" todir="${dist}/sql"/>
 		<copy todir="${dist}/sql/patch">
-			<fileset dir="${sql}/${antinstaller_tipo_database}/patch"> 
+			<fileset dir="${sql}/${antinstaller_tipo_database}/patch">
 				<include name="**/*.sql" />
 			</fileset>
 		</copy>

@@ -85,7 +85,6 @@ Devono essere inserite le seguenti informazioni:
  -  **file di configurazione di Spring Security personalizzati**
 
 -  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per inserire i diversi file di tracciamento prodotti.
--  **Visualizza Impostazioni Avanzate**: opzioni per abilitare funzionalità avanzate del prodotto, saranno visualizzate in un passaggio più avanti.
 
 
 Riferimenti Accesso GovPay
@@ -168,7 +167,7 @@ Nella schermata "File di configurazione Console Backoffice" si deve inserire il 
 Configurazioni Avanzate
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-La schermata "Configurazioni Avanzate" è presente solo se nel passaggio "Informazioni Preliminari" è stata selezionata l'opzione "Visualizza Impostazioni Avanzate".
+La schermata "Configurazioni Avanzate" consente di configurare opzioni avanzate del prodotto.
 
 .. figure:: ../_images/INS06_ConfigurazioniAvanzate.png
    :alt: Pagina relativa alle configurazioni avanzate
@@ -180,6 +179,64 @@ La schermata "Configurazioni Avanzate" è presente solo se nel passaggio "Inform
 **Configurazione Spring Security**
 
 -  **Usa file di configurazione esterni:** opzione che abilita i file di configurazione esterni di Spring per l'accesso alle funzionalità avanzate, come la configurazione delle modalità di autenticazione (:ref:`inst_dispiegamento_auth`).
+
+
+Componenti Aggiuntivi
+~~~~~~~~~~~~~~~~~~~~~
+
+La schermata "Componenti Aggiuntivi" consente di selezionare i batch esterni da abilitare.
+
+.. figure:: ../_images/INS09_ConfigurazioneComponentiAggiuntivi.png
+   :alt: Pagina relativa alla selezione dei componenti aggiuntivi
+   :align: center
+   :name: InstallazioneComponentiAggiuntivi
+
+   Componenti Aggiuntivi
+
+I batch esterni disponibili sono:
+
+-  **Batch ACA:** invio delle posizioni debitorie all'Archivio Centralizzato degli Avvisi (ACA) di pagoPA
+-  **Batch FdR:** acquisizione dei Flussi di Rendicontazione (FdR) da pagoPA
+-  **Batch Recupero RT:** recupero delle Ricevute Telematiche (RT) mancanti dal Nodo pagoPA
+-  **Batch Verifica IBAN:** verifica della configurazione degli IBAN degli Enti Creditori
+-  **Batch Notifica Rendicontazioni:** notifica dei pagamenti completati salvo buon fine
+
+Per ciascun batch selezionato verrà presentata una schermata di configurazione dove inserire la **Base URL** dell'endpoint esposto dal batch.
+
+.. figure:: ../_images/INS10_ConfigurazioneACA.png
+   :alt: Pagina relativa alla configurazione del batch ACA
+   :align: center
+   :name: InstallazioneConfigurazioneBatchACA
+
+   Configurazione Batch ACA
+
+.. figure:: ../_images/INS11_ConfigurazioneFDR.png
+   :alt: Pagina relativa alla configurazione del batch FDR
+   :align: center
+   :name: InstallazioneConfigurazioneBatchFDR
+
+   Configurazione Batch FdR
+
+.. figure:: ../_images/INS12_ConfigurazioneRT.png
+   :alt: Pagina relativa alla configurazione del batch Recupero RT
+   :align: center
+   :name: InstallazioneConfigurazioneBatchRT
+
+   Configurazione Batch Recupero RT
+
+.. figure:: ../_images/INS13_ConfigurazioneIBAN.png
+   :alt: Pagina relativa alla configurazione del batch IBAN
+   :align: center
+   :name: InstallazioneConfigurazioneBatchIBAN
+
+   Configurazione Batch Verifica IBAN
+
+.. figure:: ../_images/INS14_ConfigurazioneNotifica.png
+   :alt: Pagina relativa alla configurazione del batch Notifica
+   :align: center
+   :name: InstallazioneConfigurazioneBatchNotifica
+
+   Configurazione Batch Notifica Rendicontazioni
 
 
 Installazione
@@ -241,6 +298,52 @@ Questo componente consente di:
 
 Il batch può essere schedulato per eseguire periodicamente il download e l'elaborazione
 dei nuovi flussi di rendicontazione disponibili.
+
+govpay-rt-batch
+~~~~~~~~~~~~~~~~
+
+Batch per il recupero delle Ricevute Telematiche (RT) mancanti dal Nodo pagoPA.
+
+- **Repository:** https://github.com/link-it/govpay-rt-batch
+- **Release:** https://github.com/link-it/govpay-rt-batch/releases
+
+Questo componente consente di:
+
+- Individuare le rendicontazioni prive della corrispondente ricevuta di pagamento, più vecchie di una soglia temporale configurabile (default: 15 giorni)
+- Recuperare automaticamente le RT mancanti invocando l'endpoint ``GET /organizations/{codDominio}/receipts/{iur}`` del Nodo pagoPA
+- Persistere le ricevute recuperate nel database di GovPay e aggiornare lo stato delle rendicontazioni
+- Registrare tutte le operazioni nel Giornale degli Eventi (GDE)
+
+govpay-iban-batch
+~~~~~~~~~~~~~~~~~
+
+Batch per la verifica della configurazione degli IBAN degli Enti Creditori.
+
+- **Repository:** https://github.com/link-it/govpay-iban-batch
+- **Release:** https://github.com/link-it/govpay-iban-batch/releases
+
+Questo componente consente di:
+
+- Verificare periodicamente la corretta configurazione degli IBAN associati agli Enti Creditori
+- Segnalare eventuali anomalie o disallineamenti nella configurazione
+
+Il batch può essere schedulato per eseguire periodicamente la verifica degli IBAN configurati.
+
+govpay-notifica-batch
+~~~~~~~~~~~~~~~~~~~~~
+
+Batch per la notifica dei pagamenti completati salvo buon fine.
+
+- **Repository:** https://github.com/link-it/govpay-notifica-batch
+- **Release:** https://github.com/link-it/govpay-notifica-batch/releases
+
+Questo componente consente di:
+
+- Inviare notifiche relative ai pagamenti completati con esito salvo buon fine
+- Gestire il ciclo di vita delle notifiche verso i sistemi degli Enti Creditori
+
+Il batch può essere schedulato per eseguire periodicamente l'invio delle notifiche
+per i pagamenti completati.
 
 govpay-gde-api
 ~~~~~~~~~~~~~~
