@@ -1,3 +1,32 @@
+2026-03-20  Giuliano Pintori <pintori@link.it>
+
+	* Avanzamento versione a 3.9.1-SNAPSHOT
+
+	* [Installer] Issue #853
+	Aggiunta funzionalità
+	Aggiunta configurazione batch esterni nell'installer: ACA, FdR, Recupero RT, Verifica IBAN, Notifica Rendicontazioni.
+	Aggiunta pagina "Componenti Aggiuntivi" per la selezione dei batch da abilitare.
+	Aggiunte pagine di configurazione condizionali per l'inserimento della Base URL di ciascun batch.
+	Rimossa opzione "Visualizza Impostazioni Avanzate" dalle Informazioni Preliminari (sempre visibili).
+	Rimossa sezione basepathAPIBO dal build.xml (sostituita da batch.iban).
+	Aggiornato meccanismo di sostituzione properties con token @TOKEN@ nel properties-filler.
+
+	* [GovPayCore] Issue #853
+	Aggiunta funzionalità
+	Aggiunto supporto batch Notifica in GovpayConfig: fields, defaults, lettura properties e getters.
+	Aggiunto supporto batch Notifica in BatchUtils: attivazione, stato, ultima/prossima esecuzione, clear cache.
+	Aggiunte costanti BATCH_NOTIFICA in Operazioni e TipoDestinatario.
+
+	* [Filtri di compilazione]
+	Aggiunta funzionalità
+	Aggiunte properties batch Notifica a tutti i filter di compilazione.
+	Aggiunte properties batch Recupero RT, IBAN, Maggioli ai filter wildfly e installer_wildfly.
+	Aggiunta connectionRequestTimeout batch Notifica a govpay.properties.
+
+	* [Documentazione]
+	Aggiornata documentazione installer con nuove schermate (INS09-INS14).
+	Aggiunti riferimenti ai progetti govpay-rt-batch, govpay-iban-batch e govpay-notifica-batch.
+
 2026-03-07  Giuliano Pintori <pintori@link.it>
 
 	* [GovPayORM, GovPayDB]
