@@ -150,9 +150,7 @@ public class VersamentiBD extends BasicBD {
 			
 			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField(CF_ID_DOMINIO, Long.class, CF_ID_DOMINIO, fieldConverter.toTable(it.govpay.orm.Versamento.model())), idDominio);
-			IExpression orIUV = this.getVersamentoService().newExpression();
-			orIUV.equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, iuv).or().equals(it.govpay.orm.Versamento.model().IUV_PAGAMENTO, iuv);
-			exp.and(orIUV);
+			exp.and().equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, iuv);
 			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
 			Versamento dto = VersamentoConverter.toDTO(versamento);
 			
