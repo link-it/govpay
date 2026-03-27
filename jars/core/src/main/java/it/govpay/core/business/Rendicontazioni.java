@@ -737,8 +737,10 @@ public class Rendicontazioni {
 									LogUtils.logInfo(log, "Trovata versione successiva del flusso [{}]. Il nuovo flusso viene marcato come obsoleto.", fr.getCodFlusso());
 									fr.setObsoleto(true);
 								}
+								fr.setRevisione(frEsistente.getRevisione() + 1);
 							} catch (NotFoundException e) {
 								LogUtils.logDebug(log, "Nessuna versione alternativa del flusso [{}].", fr.getCodFlusso());
+								fr.setRevisione(1L);
 							}
 
 							frBD.insertFr(fr);
