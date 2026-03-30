@@ -7,6 +7,9 @@ ALTER TABLE domini ADD COLUMN scarica_fr BOOLEAN;
 UPDATE domini SET scarica_fr = TRUE;
 ALTER TABLE domini ALTER COLUMN scarica_fr SET NOT NULL;
 
+-- Evito di scaricare i flussi per i domini non intermediati
+update domini set scarica_fr = FALSE where intermediato = FALSE;
+
 
 -- 01/11/2025 Issue #821 Aggiunta colonna data_ora_pubblicazione alla tabella fr
 ALTER TABLE fr ADD COLUMN data_ora_pubblicazione TIMESTAMP;
