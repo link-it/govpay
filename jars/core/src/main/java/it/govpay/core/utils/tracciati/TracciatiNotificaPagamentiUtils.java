@@ -26,6 +26,7 @@ import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -41,6 +42,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
+
+import it.govpay.core.utils.DateUtils;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
@@ -78,6 +81,9 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class TracciatiNotificaPagamentiUtils {
 	
+	private static final String CODICE_ISTITUTO_00000 = "00000";
+	private static final String PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI = "yyyyMMdd";
+
 	private TracciatiNotificaPagamentiUtils() {}
 	
 	private static final SecureRandom random = new SecureRandom();
@@ -271,7 +277,7 @@ public class TracciatiNotificaPagamentiUtils {
 	
 	public static String eliminaZeriASx(String importo){
 		// elimino eventuali zeri a sx, se il numero e' 0000 lascio l'ultimo zero.
-		while(importo.startsWith("0") && importo.length() > 0) {
+		while(importo.startsWith("0") && !importo.isEmpty()) {
 			importo = importo.substring(1);
 		}
 		
@@ -303,16 +309,15 @@ public class TracciatiNotificaPagamentiUtils {
 		String contabilitaString = singoloVersamento.getContabilita();
 		String tipoDovuto = null;
 		String bilancio = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 			
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
+				if(proprietaCustomObj instanceof String proprietaCustom) {
 					
-					if(proprietaCustom.length() > 0) {
+					if(!proprietaCustom.isEmpty()) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta tipoDovuto
 						if(parse.containsKey("tipoDovuto")) {
@@ -380,7 +385,7 @@ public class TracciatiNotificaPagamentiUtils {
 		// e-mailPagatore: rt.datiPagamento.soggettoPagatore.e-mailPagatore
 		linea.add(soggettoPagatore.getEMailPagatore());
 		// dataEsecuzionePagamento: rt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
+		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(DateUtils.toJavaDate(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento())));
 		// importoDovutoPagato: rt.datiPagamento.importoTotalePagato
 		linea.add(TracciatiNotificaPagamentiUtils.printImporto(datiPagamento.getImportoTotalePagato(), false));
 		// commissioneCaricoPa: vuoto
@@ -419,16 +424,15 @@ public class TracciatiNotificaPagamentiUtils {
 		String contabilitaString = singoloVersamento.getContabilita();
 		String tipoDovuto = null;
 		String bilancio = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 			
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
+				if(proprietaCustomObj instanceof String proprietaCustom) {
 					
-					if(proprietaCustom.length() > 0) {
+					if(!proprietaCustom.isEmpty()) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta tipoDovuto
 						if(parse.containsKey("tipoDovuto")) {
@@ -496,7 +500,7 @@ public class TracciatiNotificaPagamentiUtils {
 		// e-mailPagatore: ctReceipt.debtor.e-mailPagatore
 		linea.add(soggettoPagatore.getEMail());
 		// dataEsecuzionePagamento: rt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctReceipt.getPaymentDateTime()));
+		linea.add(ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE) : "");
 		// importoDovutoPagato: rt.datiPagamento.importoTotalePagato
 		linea.add(TracciatiNotificaPagamentiUtils.printImporto(ctReceipt.getPaymentAmount(), false));
 		// commissioneCaricoPa: vuoto
@@ -535,16 +539,15 @@ public class TracciatiNotificaPagamentiUtils {
 		String contabilitaString = singoloVersamento.getContabilita();
 		String tipoDovuto = null;
 		String bilancio = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 			
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
+				if(proprietaCustomObj instanceof String proprietaCustom) {
 					
-					if(proprietaCustom.length() > 0) {
+					if(!proprietaCustom.isEmpty()) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta tipoDovuto
 						if(parse.containsKey("tipoDovuto")) {
@@ -612,7 +615,7 @@ public class TracciatiNotificaPagamentiUtils {
 		// e-mailPagatore: ctReceipt.debtor.e-mailPagatore
 		linea.add(soggettoPagatore.getEMail());
 		// dataEsecuzionePagamento: rt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctReceipt.getPaymentDateTime()));
+		linea.add(ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE) : "");
 		// importoDovutoPagato: rt.datiPagamento.importoTotalePagato
 		linea.add(TracciatiNotificaPagamentiUtils.printImporto(ctReceipt.getPaymentAmount(), false));
 		// commissioneCaricoPa: vuoto
@@ -658,15 +661,14 @@ public class TracciatiNotificaPagamentiUtils {
 		String riferimentoCreditore = null;
 		String tipoflusso = null;
 		String tipoRiferimentoCreditore = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 			
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+				if(proprietaCustomObj instanceof String proprietaCustom) {
+					if(proprietaCustom != null && !proprietaCustom.isEmpty()) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta
 						if(parse.containsKey("riferimentoCreditore")) {
@@ -706,9 +708,8 @@ public class TracciatiNotificaPagamentiUtils {
 			case A:
 				codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
 				break;
-			case B:
-			case G:
-				codiceIstituto = "00000";
+			case B, G:
+				codiceIstituto = CODICE_ISTITUTO_00000;
 				break;
 			}
 		}
@@ -905,12 +906,12 @@ public class TracciatiNotificaPagamentiUtils {
 		sb.append(filler);
 		
 //		DATA PAGAMENTO	1056	1063	8	Numerico	8	0		versamento.data_pagamento
-		String dataPagamento = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
+		String dataPagamento = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(DateUtils.toJavaDate(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
 		TracciatiNotificaPagamentiUtils.validaCampo("DATA PAGAMENTO", dataPagamento, 8);
 		sb.append(dataPagamento);
-		
+
 //		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
-		String dataIncasso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
+		String dataIncasso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(DateUtils.toJavaDate(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
 		dataIncasso = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, entryKey, "DATA INCASSO", dataIncasso, 8, true, true);
 		TracciatiNotificaPagamentiUtils.validaCampo("DATA INCASSO", dataIncasso, 8);
 		sb.append(dataIncasso);
@@ -1019,15 +1020,14 @@ public class TracciatiNotificaPagamentiUtils {
 		String riferimentoCreditore = null;
 		String tipoflusso = null;
 		String tipoRiferimentoCreditore = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 			
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+				if(proprietaCustomObj instanceof String proprietaCustom) {
+					if(proprietaCustom != null && !proprietaCustom.isEmpty()) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta
 						if(parse.containsKey("riferimentoCreditore")) {
@@ -1058,11 +1058,9 @@ public class TracciatiNotificaPagamentiUtils {
 		}
 		
 //		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
-		String codiceIstituto = ctReceipt.getIdPSP();
+		String codiceIstituto = CODICE_ISTITUTO_00000; // ctReceipt.getIdPSP()
 		if(connettore.getCodiceIstituto() != null) {
 			codiceIstituto = connettore.getCodiceIstituto();
-		} else {
-			codiceIstituto = "00000";
 		}
 		
 		TracciatiNotificaPagamentiUtils.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
@@ -1257,12 +1255,12 @@ public class TracciatiNotificaPagamentiUtils {
 		sb.append(filler);
 		
 //		DATA PAGAMENTO	1056	1063	8	Numerico	8	0		versamento.data_pagamento
-		String dataPagamento = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctReceipt.getPaymentDateTime());
+		String dataPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ofPattern(PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI)) : "";
 		TracciatiNotificaPagamentiUtils.validaCampo("DATA PAGAMENTO", dataPagamento, 8);
 		sb.append(dataPagamento);
-		
+
 //		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
-		String dataIncasso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctReceipt.getPaymentDateTime());
+		String dataIncasso = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ofPattern(PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI)) : "";
 		dataIncasso = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, entryKey, "DATA INCASSO", dataIncasso, 8, true, true);
 		TracciatiNotificaPagamentiUtils.validaCampo("DATA INCASSO", dataIncasso, 8);
 		sb.append(dataIncasso);
@@ -1372,15 +1370,14 @@ public class TracciatiNotificaPagamentiUtils {
 		String riferimentoCreditore = null;
 		String tipoflusso = null;
 		String tipoRiferimentoCreditore = null;
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 			
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
-					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+				if(proprietaCustomObj instanceof String proprietaCustom) {
+					if(proprietaCustom != null && !proprietaCustom.isEmpty()) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta
 						if(parse.containsKey("riferimentoCreditore")) {
@@ -1411,11 +1408,9 @@ public class TracciatiNotificaPagamentiUtils {
 		}
 		
 //		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
-		String codiceIstituto = ctReceipt.getIdPSP();
+		String codiceIstituto = CODICE_ISTITUTO_00000; // ctReceipt.getIdPSP()
 		if(connettore.getCodiceIstituto() != null) {
 			codiceIstituto = connettore.getCodiceIstituto();
-		} else {
-			codiceIstituto = "00000";
 		}
 		
 		TracciatiNotificaPagamentiUtils.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
@@ -1610,12 +1605,12 @@ public class TracciatiNotificaPagamentiUtils {
 		sb.append(filler);
 		
 //		DATA PAGAMENTO	1056	1063	8	Numerico	8	0		versamento.data_pagamento
-		String dataPagamento = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctReceipt.getPaymentDateTime());
+		String dataPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ofPattern(PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI)) : "";
 		TracciatiNotificaPagamentiUtils.validaCampo("DATA PAGAMENTO", dataPagamento, 8);
 		sb.append(dataPagamento);
-		
+
 //		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
-		String dataIncasso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctReceipt.getPaymentDateTime());
+		String dataIncasso = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ofPattern(PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI)) : "";
 		dataIncasso = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, entryKey, "DATA INCASSO", dataIncasso, 8, true, true);
 		TracciatiNotificaPagamentiUtils.validaCampo("DATA INCASSO", dataIncasso, 8);
 		sb.append(dataIncasso);
@@ -1776,9 +1771,9 @@ public class TracciatiNotificaPagamentiUtils {
 //			singoloImportoPagato: da RT
 			linea.add(TracciatiNotificaPagamentiUtils.printImporto(ctDatiSingoloPagamentoRT.getSingoloImportoPagato(), false));
 //			dataEsitoSingoloPagamento: da RTrt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(DateUtils.toJavaDate(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento())));
 //			causaleVersamento: da RT rt.datiPagamento.datiSingoloPagamento[0].causaleVersamento
-			linea.add(ctDatiSingoloPagamentoRT.getCausaleVersamento()); 
+			linea.add(ctDatiSingoloPagamentoRT.getCausaleVersamento());
 //			datiSpecificiRiscossione: da RT rt.datiPagamento.datiSingoloPagamento[0].datiSpecificiRiscossione
 			linea.add(ctDatiSingoloPagamentoRT.getDatiSpecificiRiscossione());
 //			datiAllegati: da Pendenza
@@ -1790,7 +1785,7 @@ public class TracciatiNotificaPagamentiUtils {
 //			identificativoAttestante: da RT
 			linea.add(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
 			// contabilita
-			if(singoloVersamento.getContabilita() != null && singoloVersamento.getContabilita().length() > 0) {
+			if(singoloVersamento.getContabilita() != null && !singoloVersamento.getContabilita().isEmpty()) {
 				linea.add(singoloVersamento.getContabilita());
 			} else {
 				linea.add("");
@@ -1875,7 +1870,7 @@ public class TracciatiNotificaPagamentiUtils {
 //			singoloImportoPagato: da RT
 			linea.add(TracciatiNotificaPagamentiUtils.printImporto(ctTransferPA.getTransferAmount(), false));
 //			dataEsitoSingoloPagamento: da RTrt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctReceipt.getPaymentDateTime()));
+			linea.add(ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE) : "");
 //			causaleVersamento: da RT rt.datiPagamento.datiSingoloPagamento[0].causaleVersamento
 			linea.add(ctTransferPA.getRemittanceInformation()); 
 //			datiSpecificiRiscossione: da RT rt.datiPagamento.datiSingoloPagamento[0].datiSpecificiRiscossione
@@ -1889,7 +1884,7 @@ public class TracciatiNotificaPagamentiUtils {
 //			identificativoAttestante: da RT
 			linea.add(ctReceipt.getIdPSP());
 			// contabilita
-			if(singoloVersamento.getContabilita() != null && singoloVersamento.getContabilita().length() > 0) {
+			if(singoloVersamento.getContabilita() != null && !singoloVersamento.getContabilita().isEmpty()) {
 				linea.add(singoloVersamento.getContabilita());
 			} else {
 				linea.add("");
@@ -1974,7 +1969,7 @@ public class TracciatiNotificaPagamentiUtils {
 //			singoloImportoPagato: da RT
 			linea.add(TracciatiNotificaPagamentiUtils.printImporto(ctTransferPA.getTransferAmount(), false));
 //			dataEsitoSingoloPagamento: da RTrt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctReceipt.getPaymentDateTime()));
+			linea.add(ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE) : "");
 //			causaleVersamento: da RT rt.datiPagamento.datiSingoloPagamento[0].causaleVersamento
 			linea.add(ctTransferPA.getRemittanceInformation()); 
 //			datiSpecificiRiscossione: da RT rt.datiPagamento.datiSingoloPagamento[0].datiSpecificiRiscossione
@@ -1988,7 +1983,7 @@ public class TracciatiNotificaPagamentiUtils {
 //			identificativoAttestante: da RT
 			linea.add(ctReceipt.getIdPSP());
 			// contabilita
-			if(singoloVersamento.getContabilita() != null && singoloVersamento.getContabilita().length() > 0) {
+			if(singoloVersamento.getContabilita() != null && !singoloVersamento.getContabilita().isEmpty()) {
 				linea.add(singoloVersamento.getContabilita());
 			} else {
 				linea.add("");

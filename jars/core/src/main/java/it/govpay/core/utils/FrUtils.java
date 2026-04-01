@@ -24,6 +24,7 @@ import java.util.List;
 
 import jakarta.xml.bind.JAXBException;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
@@ -34,6 +35,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtIstitutoRicevente;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.StTipoIdentificativoUnivocoPersG;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.exceptions.NotFoundException;
@@ -43,6 +45,19 @@ public class FrUtils {
 
 	private FrUtils() {}
 
+	public static byte[] getXml(Fr fr, List<Rendicontazione> rendicontazioni) throws NotFoundException {
+		return getXmlInner(fr, rendicontazioni != null ? rendicontazioni.stream().map(Rendicontazione::getRendicontazione).toList() : null);
+	}
+	
+	public static byte[] getXml(Fr fr, BasicBD bd) throws ServiceException {
+		try {
+			return getXmlInner(fr, fr.getRendicontazioni(bd));
+		} catch(NotFoundException e) {
+			// il flusso passato come parametro in questo caso e' sicuramente valorizzato, quindi se non riesco a recuperare le rendicontazioni e' perche' non ci sono
+			return fr.getXml();
+		}
+	}
+	
 	/**
 	 * Restituisce l'XML del flusso di rendicontazione. Se l'XML originale non e' presente,
 	 * tenta di ricostruirlo a partire dai dati dell'FR e dalle rendicontazioni.
@@ -52,7 +67,7 @@ public class FrUtils {
 	 * @return byte array contenente l'XML del flusso
 	 * @throws NotFoundException se l'XML non e' presente e non puo' essere ricostruito
 	 */
-	public static byte[] getXml(Fr fr, List<Rendicontazione> rendicontazioni) throws NotFoundException {
+	public static byte[] getXmlInner(Fr fr, List<it.govpay.bd.model.Rendicontazione> rendicontazioni) throws NotFoundException {
 		if(fr == null) {
 			throw new NotFoundException("Flusso di rendicontazione non valorizzato");
 		}
@@ -84,7 +99,7 @@ public class FrUtils {
 	 * @throws JAXBException in caso di errore durante il marshalling
 	 * @throws SAXException in caso di errore durante la validazione
 	 */
-	public static byte[] buildXml(Fr fr, List<Rendicontazione> rendicontazioni) throws JAXBException, SAXException {
+	public static byte[] buildXml(Fr fr, List<it.govpay.bd.model.Rendicontazione> rendicontazioni) throws JAXBException, SAXException {
 		FlussoRiversamento flussoRiversamento = new FlussoRiversamento();
 
 		// Valorizzazione campi base del flusso
@@ -123,9 +138,7 @@ public class FrUtils {
 
 		// Dati singoli pagamenti
 		if(rendicontazioni != null && !rendicontazioni.isEmpty()) {
-			for(Rendicontazione vistaRendicontazione : rendicontazioni) {
-				// Accesso all'oggetto rendicontazione annidicato nella vista
-				it.govpay.bd.model.Rendicontazione rendicontazione = vistaRendicontazione.getRendicontazione();
+			for(it.govpay.bd.model.Rendicontazione rendicontazione : rendicontazioni) {
 
 				CtDatiSingoliPagamenti datiSingoliPagamenti = new CtDatiSingoliPagamenti();
 				datiSingoliPagamenti.setIdentificativoUnivocoVersamento(rendicontazione.getIuv());
