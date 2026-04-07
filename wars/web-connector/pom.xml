@@ -16,6 +16,7 @@
 
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
+		<it.govpay.log.name>govpay-web-connector</it.govpay.log.name>
 	</properties>
 
 	<dependencies>

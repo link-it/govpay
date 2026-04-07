@@ -16,6 +16,7 @@
 
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
+		<it.govpay.log.name>govpay-api-pagopa</it.govpay.log.name>
 	</properties>
 
 	<dependencies>

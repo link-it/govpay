@@ -90,6 +90,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
+		<it.govpay.log.name>govpay</it.govpay.log.name>
 		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
 
 		<!-- op2 -->
