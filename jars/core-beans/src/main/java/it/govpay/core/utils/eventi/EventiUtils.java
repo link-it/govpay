@@ -57,6 +57,8 @@ public class EventiUtils {
 			return giornale.getApiPendenze();
 		case API_BACKEND_IO:
 			return giornale.getApiBackendIO();
+		case API_MAGGIOLI_JPPA:
+			return giornale.getApiMaggioliJPPA();
 		case API_USER, API_WC:
 			return null;
 		case API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK:

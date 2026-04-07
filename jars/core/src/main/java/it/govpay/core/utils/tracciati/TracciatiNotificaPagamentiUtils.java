@@ -121,8 +121,9 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	
-	public static String creaNomeEntryFlussoRendicontazione(String idFlusso, String dataFlussoS) {
-		return TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+"_"+dataFlussoS+".xml";
+	public static String creaNomeEntryFlussoRendicontazione(String idFlusso, String dataFlussoS, Long revisione) {
+		String revisioneS = revisione != null ? "_rev"+revisione : "";
+		return TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+"_"+dataFlussoS+revisioneS+".xml";
 	}
 
 	public static String creaNomeEntryRT(String idDominio, String iuv, String ccp) {
