@@ -122,7 +122,7 @@ public class TracciatiNotificaPagamentiUtils {
 	
 	
 	public static String creaNomeEntryFlussoRendicontazione(String idFlusso, String dataFlussoS, Long revisione) {
-		String revisioneS = revisione != null ? "_rev"+revisione : "";
+		String revisioneS = revisione != null ? "_rev"+revisione : "_rev1";
 		return TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+"_"+dataFlussoS+revisioneS+".xml";
 	}
 
@@ -139,27 +139,33 @@ public class TracciatiNotificaPagamentiUtils {
 		if(fileName.startsWith(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX)) {
 			fileName = fileName.substring(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX.length());
 		}
-		
+
 		if(fileName.endsWith(".xml")) {
 			fileName = fileName.substring(0, fileName.lastIndexOf(".xml"));
 		}
-		
+
+		// rimuovo il suffisso _rev<N> aggiunto da creaNomeEntryFlussoRendicontazione
+		fileName = fileName.replaceAll("_rev\\d+$", "");
+
 		fileName = fileName.substring(0, fileName.lastIndexOf("_"));
-		
+
 		return fileName;
 	}
-	
+
 	public static String getDataFlussoRendicontazione(String fileName) {
 		if(fileName.startsWith(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX)) {
 			fileName = fileName.substring(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX.length());
 		}
-		
+
 		if(fileName.endsWith(".xml")) {
 			fileName = fileName.substring(0, fileName.lastIndexOf(".xml"));
 		}
-		
+
+		// rimuovo il suffisso _rev<N> aggiunto da creaNomeEntryFlussoRendicontazione
+		fileName = fileName.replaceAll("_rev\\d+$", "");
+
 		fileName = fileName.substring(fileName.lastIndexOf("_") + 1);
-		
+
 		return fileName;
 	}
 
