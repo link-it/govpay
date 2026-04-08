@@ -56,7 +56,6 @@
 				<javaVersion>21</javaVersion>
 				<!-- Nomi dei war -->
 				<api-backoffice-tomcat-war-name>govpay-api-backoffice</api-backoffice-tomcat-war-name>
-				<api-jppapdp-tomcat-war-name>govpay-api-jppapdp</api-jppapdp-tomcat-war-name>
 				<api-pagamento-tomcat-war-name>govpay-api-pagamento</api-pagamento-tomcat-war-name>
 				<api-pagopa-tomcat-war-name>govpay-api-pagopa</api-pagopa-tomcat-war-name>
 				<api-pendenze-tomcat-war-name>govpay-api-pendenze</api-pendenze-tomcat-war-name>
@@ -282,7 +281,7 @@
 		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnCVSS>11</owasp.plugin.failBuildOnCVSS>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
-
+		<owasp.ossindex.analyzer.enabled>false</owasp.ossindex.analyzer.enabled> <!-- Abilita/disabilita l'analisi delle vulnerabilità tramite OSS Index, se disabilitata viene usato il database CVE di NIST -->
 	</properties>
 
 	<dependencyManagement>
@@ -1757,6 +1756,8 @@
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
 							<!-- Disabilitato per evitare problemi SSL con GitHub -->
 							<!-- <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled> -->
+							<!-- Configurazione per disabilitare l'analizzatore OSS Index se non necessario -->
+							<ossindexAnalyzerEnabled>${owasp.ossindex.analyzer.enabled}</ossindexAnalyzerEnabled>
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>
