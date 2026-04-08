@@ -145,8 +145,9 @@ public class TracciatiNotificaPagamenti {
 			ultimoTracciatoCreatoPerTipo = tracciatiNotificaPagamentiBD.getUltimoTracciatoCreatoPerTipo(codDominio, this.tipoTracciato.toString(), connettore);
 
 			if(ultimoTracciatoCreatoPerTipo != null) {
+				String dataRtAFinestraLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(ultimoTracciatoCreatoPerTipo.getDataRtA());
 				log.debug("Elaborazione Tracciato {} per il Dominio [{}], dataA dell'ultimo tracciato [{}] calcolo nuova finestra temporale di [{}] ore.", this.tipoTracciato, codDominio,
-						SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(ultimoTracciatoCreatoPerTipo.getDataRtA()),numeroOreIntervallo);
+						dataRtAFinestraLog, numeroOreIntervallo);
 
 				Calendar c = Calendar.getInstance();
 				c.setTime(ultimoTracciatoCreatoPerTipo.getDataRtA());
@@ -160,16 +161,19 @@ public class TracciatiNotificaPagamenti {
 				Date dataRtA = c2.getTime();
 
 
+				String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+				String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
+				
 				switch (this.tipoTracciato) {
 				case MYPIVOT:
 				case SECIM:
 				case GOVPAY:
 					log.info("Elaborazione Tracciato {} per il Dominio [{}], nuovo intervallo ricerca RT: Da [{}] a [{}]", this.tipoTracciato, codDominio,
-							SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa),SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+							dataRtDaLog,dataRtALog);
 					break;
 				case HYPERSIC_APK:
 					log.info("Elaborazione Tracciato {} per il Dominio [{}], nuovo intervallo ricerca rendicontazioni: Da [{}] a [{}]", this.tipoTracciato, codDominio,
-							SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+							dataRtDaLog, dataRtALog);
 					break;
 				}
 
@@ -183,8 +187,9 @@ public class TracciatiNotificaPagamenti {
 
 				// se l'estremo dell'intervallo di ricerca e' nel futuro allora non devo eseguire l'elaborazione
 				if(dataRtA.getTime() > now.getTime()) {
+					String dataNowLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now);
 					log.info("Elaborazione Tracciato {} per il Dominio [{}], dataA [{}] successiva a NOW  [{}], non devo generare il tracciato", this.tipoTracciato, codDominio,
-							SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA),SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+							dataRtALog,dataNowLog);
 					return;
 				}
 
@@ -254,26 +259,25 @@ public class TracciatiNotificaPagamenti {
 					c3.add(Calendar.MILLISECOND, -1);
 					Date now = c3.getTime();
 
+					String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+					String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
+					
 					switch (this.tipoTracciato) {
-					case MYPIVOT:
-					case SECIM:
-					case GOVPAY:
-						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca RT: Da [{}] a [{}]", this.tipoTracciato, codDominio,SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+					case MYPIVOT, SECIM, GOVPAY:
+						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca RT: Da [{}] a [{}]", this.tipoTracciato, codDominio,dataRtDaLog, dataRtALog);
 						break;
 					case HYPERSIC_APK:
-						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca rendicontazioni: Da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca rendicontazioni: Da [{}] a [{}]", this.tipoTracciato, codDominio, dataRtDaLog, dataRtALog);
 						break;
 					}
 
 					if(dataRtA.getTime() < now.getTime()) {
 						switch (this.tipoTracciato) {
-						case MYPIVOT:
-						case SECIM:
-						case GOVPAY:
-							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRTA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+						case MYPIVOT, SECIM, GOVPAY:
+							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRTA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
 							break;
 						case HYPERSIC_APK:
-							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRendicontazioniA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRendicontazioniA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
 							break;
 						}
 						dataRtA = now;
@@ -301,14 +305,14 @@ public class TracciatiNotificaPagamenti {
 					dataRtA = c2.getTime();
 				}
 
+				String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+				String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
 				switch (this.tipoTracciato) {
-				case MYPIVOT:
-				case SECIM:
-				case GOVPAY:
-					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le RT comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+				case MYPIVOT, SECIM, GOVPAY:
+					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le RT comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, dataRtDaLog, dataRtALog);
 					break;
 				case HYPERSIC_APK:
-					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le rendicontazioni comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le rendicontazioni comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, dataRtDaLog, dataRtALog);
 					break;
 				}
 
@@ -420,7 +424,7 @@ public class TracciatiNotificaPagamenti {
 								}
 
 							} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-								log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+								LogUtils.logError(log, "Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 								throw new ServiceException(e);
 							}
 
@@ -447,9 +451,7 @@ public class TracciatiNotificaPagamenti {
 								throw new ServiceException(e);
 							}
 							break;
-						case DB2:
-						case DEFAULT:
-						case DERBY:
+						case DB2, DEFAULT, DERBY:
 						default:
 							throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 						}
@@ -492,9 +494,7 @@ public class TracciatiNotificaPagamenti {
 							case POSTGRESQL:
 								tracciatiNotificaPagamentiBD.updateFineElaborazioneCsvOid(tracciato,oid);
 								break;
-							case DB2:
-							case DEFAULT:
-							case DERBY:
+							case DB2, DEFAULT, DERBY:
 							default:
 								throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 							}
@@ -538,9 +538,7 @@ public class TracciatiNotificaPagamenti {
 		long progressivo = tracciatiNotificaPagamentiBD.generaProgressivoTracciato(dominio, this.tipoTracciato.toString(), "Tracciato_");
 		tracciato.setDataCreazione(new Date());
 		switch (this.tipoTracciato) {
-		case MYPIVOT:
-		case SECIM:
-		case GOVPAY:
+		case MYPIVOT, SECIM, GOVPAY:
 			tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
 			break;
 		case HYPERSIC_APK:
@@ -558,9 +556,7 @@ public class TracciatiNotificaPagamenti {
 		long entriesDaInserireNelTracciato = 0;
 
 		switch (this.tipoTracciato) {
-		case GOVPAY:
-		case MYPIVOT:
-		case SECIM:
+		case GOVPAY, MYPIVOT, SECIM:
 			log.debug("Elaborazione Tracciato {} per il Dominio [{}], verranno ricercate RT da inserire in un nuovo tracciato da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
 			entriesDaInserireNelTracciato = rptBD.countRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
 			log.trace("Elaborazione Tracciato {} per il Dominio [{}], trovate [{}] RT da inserire in un nuovo tracciato", this.tipoTracciato, codDominio, entriesDaInserireNelTracciato);
@@ -821,8 +817,11 @@ public class TracciatiNotificaPagamenti {
 
 		log.info("Creazione file di sintesi flussi in corso...");
 
+		String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+		String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
+		
 		log.info("Ricerco i flussi per il Dominio [{}], che hanno data acquisizione compresa tra le seguenti date: Da [{}] a [{}], in stato ACCETTATA, per i tipi pendenza [{}]",
-				codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA),((listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) ? StringUtils.join(listaTipiPendenza, ", ") : "tutti"));
+				codDominio, dataRtDaLog, dataRtALog,((listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) ? StringUtils.join(listaTipiPendenza, ", ") : "tutti"));
 
 		ZipEntry frOutputEntry = new ZipEntry(GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(frOutputEntry);
@@ -1282,8 +1281,7 @@ public class TracciatiNotificaPagamenti {
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
+				if(proprietaCustomObj instanceof String proprietaCustom) {
 					if(StringUtils.isNotEmpty(proprietaCustom)) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta
