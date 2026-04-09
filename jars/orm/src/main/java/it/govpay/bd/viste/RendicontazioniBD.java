@@ -409,7 +409,8 @@ public class RendicontazioniBD extends BasicBD {
 					exprFR.greaterEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso).and().lessEquals(FR.model().DATA_ORA_FLUSSO, dataA);
 					IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(exprFR);
 					pagExpr.offset(0).limit(1);
-					pagExpr.addOrder(FR.model().DATA_ORA_FLUSSO, SortOrder.DESC); // prendo il piu' recente
+					pagExpr.addOrder(FR.model().DATA_ORA_FLUSSO, SortOrder.DESC);
+					pagExpr.addOrder(FR.model().REVISIONE, SortOrder.DESC); // prendo la revisione piu' recente
 					
 					FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 					FRModel model = it.govpay.orm.FR.model();
