@@ -12,15 +12,6 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
 
 2.1 **Frontend:**
 
-      -  **/govpay-web-connector**
-
-         **web application per la gestione delle redirezioni durante i
-         flussi di pagamento**
-
-      -  **/govpay-api-pagamento**
-
-         **api per l'esecuzione dei pagamenti da parte del debitore**
-
       -  **/govpay-api-pagopa**
 
          **api per la gestione del colloquio con la piattaforma centrale
