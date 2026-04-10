@@ -5,7 +5,7 @@
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaFR": {
-		"url": '#(ndpsym_url + "/pagopa/reporting/api/v1/flows")',
+		"url": '#(ndpsym_url + "/pagopa/rs/fdr-org/service/v1")',
 		"subscriptionKey" : "FR123456",
 		"abilitaGDE": false
 	},

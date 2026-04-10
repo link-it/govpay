@@ -38,14 +38,10 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
          **api relative ai servizi di riconciliazione degli incassi con
          le pendenze/pagamenti di origine**
 
-      -  **/govpay-api-jppapdp**
-
-         **api relative ai servizi esposti per le comunicazioni con la piattaforma PagoPA Maggioli**
-
       -  **/govpay-api-backoffice**
 
          **api relative ai servizi di configurazione della piattaforma
-         (domini, applicazioni, operatori, ecc.)**    
+         (domini, applicazioni, operatori, ecc.)**
 
       -  **/govpay-console**
 
@@ -54,7 +50,7 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
 
 3. Verificare che i servizi esposti da GovPay verso pagoPA siano
    raggiungibili verificando sul browser le seguenti URL:
-   
+
 -  http://<hostname>:<port>/govpay-api-pagopa/PagamentiTelematiciCCPservice?wsdl
 -  http://<hostname>:<port>/govpay-api-pagopa/PagamentiTelematiciRTservice?wsdl
 
@@ -76,4 +72,3 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
 
 6. Completata l’installazione di GovPay, per proseguire con l'utilizzo
    del sistema si rimanda al “Manuale Utente”.
-

@@ -65,4 +65,15 @@
 			</jaxws:features>
 		</jaxws:endpoint>
 
+		<!-- Endpoint interno per applicativi con autenticazione BASIC -->
+		<jaxws:endpoint id="apiPagoPaCCPV1Internal" address="/internal/PagamentiTelematiciCCPservice" implementorClass="it.govpay.web.ws.PagamentiTelematiciCCPImpl">
+			<jaxws:handlers>
+				<b:ref bean="messageLoggingHandlerV1" />
+			</jaxws:handlers>
+			<jaxws:features>
+				<b:ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+				<b:ref bean="contextV1" />
+			</jaxws:features>
+		</jaxws:endpoint>
+
 </b:beans>

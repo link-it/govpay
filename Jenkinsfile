@@ -1,12 +1,14 @@
 pipeline {
   agent any
-  options { 
+  options {
     disableConcurrentBuilds()
     buildDiscarder(logRotator(numToKeepStr: '2', artifactNumToKeepStr: '2'))
   }
   environment {
     // Rileva il branch Git corrente
     GIT_BRANCH_NAME = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+    // Rileva la versione del progetto dal pom.xml
+    PROJECT_VERSION = sh(script: 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
 
     JACOCO_EXEC    = "/tmp/jacoco.exec"
     JACOCO_XML     = "target/jacoco.xml"
@@ -15,6 +17,9 @@ pipeline {
 
     // sudo docker compose path
     DOCKER_COMPOSE_DIR = "/etc/govpay/docker"
+
+    // Cron expression per il check di reset della cache anagrafica (default: ogni 10 secondi per la testsuite)
+    CACHE_CHECK_CRON = "0/10 * * * * ?"
   }
   stages {
     stage('info') {
@@ -24,6 +29,7 @@ pipeline {
           echo "Pipeline Build Information"
           echo "================================"
           echo "Git Branch: ${env.GIT_BRANCH_NAME}"
+          echo "Project Version: ${env.PROJECT_VERSION}"
           echo "Build Number: ${env.BUILD_NUMBER}"
           echo "Job Name: ${env.JOB_NAME}"
           echo "Workspace: ${env.WORKSPACE}"
@@ -34,13 +40,13 @@ pipeline {
     stage('cleanup') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
-        sh 'cd ${DOCKER_COMPOSE_DIR} && sudo docker compose down -v && cd - || true'
+        sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose down -v && cd - || true'
         sh '/opt/apache-maven-3.6.3/bin/mvn clean'
       }
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD' 
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -D"it.govpay.batch.cacheCheck.cron=${CACHE_CHECK_CRON}" -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -64,17 +70,17 @@ pipeline {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
         sh 'sudo systemctl start wildfly-28.0.1.Final@ndpsym tomcat_govpay'
         sh 'sudo docker start mailhog'
-        sh 'cd ${DOCKER_COMPOSE_DIR} && sudo docker compose up -d && cd -'
+        sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose up -d && cd -'
 	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test' 
+        sh 'cd ./integration-test; JAVA_HOME=/etc/alternatives/jre_1.8.0 /opt/apache-maven-3.6.3/bin/mvn clean test'
       }
       post {
         always {
-			sh 'cd ${DOCKER_COMPOSE_DIR} && sudo docker compose down -v && cd -'
+			sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose down -v && cd -'
 			sh 'sudo systemctl stop wildfly@govpay wildfly-26.1.3.Final@standalone wildfly-26.1.3.Final@ndpsym wildfly-28.0.1.Final@ndpsym tomcat_govpay'
 			sh 'sudo docker stop mailhog'
             junit 'integration-test/target/surefire-reports/*.xml'
@@ -91,13 +97,13 @@ pipeline {
 	      classArgs=\$(find . -type d -path "*/target/classes" \
 	                  | sed "s#^#--classfiles #" \
 	                  | xargs)
-	
+
 	      # raccogliamo tutte le sorgenti dei moduli
 	      srcArgs=\$(find . -type d -path "*/src/main/java" \
 	                | sed "s#^#--sourcefiles #" \
 	                | xargs)
-	
-          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV} 
+
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV}
            """
 	    sh """
 	    	XML_REPORT=\$(pwd)/${JACOCO_XML}

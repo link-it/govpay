@@ -737,8 +737,10 @@ public class Rendicontazioni {
 									LogUtils.logInfo(log, "Trovata versione successiva del flusso [{}]. Il nuovo flusso viene marcato come obsoleto.", fr.getCodFlusso());
 									fr.setObsoleto(true);
 								}
+								fr.setRevisione(frEsistente.getRevisione() + 1);
 							} catch (NotFoundException e) {
 								LogUtils.logDebug(log, "Nessuna versione alternativa del flusso [{}].", fr.getCodFlusso());
+								fr.setRevisione(1L);
 							}
 
 							frBD.insertFr(fr);
@@ -746,6 +748,8 @@ public class Rendicontazioni {
 
 							for(Rendicontazione r : fr.getRendicontazioni()) {
 								r.setIdFr(fr.getId());
+								r.setEseguiRecuperoRt(true); // imposto il default value previsto dal batch recupero RT
+								r.setNotificaInviata(false); // imposto il default value previsto dal batch notifica
 								rendicontazioniBD.insert(r);
 							}
 							rendicontazioniBD.commit();

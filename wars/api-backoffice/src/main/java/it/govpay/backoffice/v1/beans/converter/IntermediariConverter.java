@@ -58,6 +58,10 @@ public class IntermediariConverter {
 			intermediario.setConnettorePddFR(ConnettorePagopaFRConverter.getConnettore(intermediarioPost.getServizioPagoPaFR(), idIntermediario));
 
 		}
+		if(intermediarioPost.getServizioPagoPaBackofficeEC() != null) {
+			intermediario.setConnettorePddBackofficeEC(ConnettorePagopaBackofficeECConverter.getConnettore(intermediarioPost.getServizioPagoPaBackofficeEC(), idIntermediario));
+
+		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
 
 		if(intermediarioPost.getServizioFtp()!=null) {
@@ -96,6 +100,10 @@ public class IntermediariConverter {
 
 		if(i.getConnettorePddFR()!=null) {
 			rsModel.setServizioPagoPaFR(ConnettorePagopaFRConverter.toRsModel(i.getConnettorePddFR()));
+		}
+
+		if(i.getConnettorePddBackofficeEC()!=null) {
+			rsModel.setServizioPagoPaBackofficeEC(ConnettorePagopaBackofficeECConverter.toRsModel(i.getConnettorePddBackofficeEC()));
 		}
 
 		if(i.getConnettoreSftp()!=null) {

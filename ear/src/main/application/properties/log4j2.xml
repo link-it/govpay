@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 <Configuration>
+	<Properties>
+		<Property name="logName">${it.govpay.log.name}</Property>
+	</Properties>
+
 	<Appenders>
-		<RollingFile name="govpay" fileName="${it.govpay.log.folder}/govpay.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_core-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay" fileName="${it.govpay.log.folder}/${logName}.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_core-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -10,7 +14,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_orm" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_orm" fileName="${it.govpay.log.folder}/${logName}_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_orm-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -18,7 +22,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_bd" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_bd" fileName="${it.govpay.log.folder}/${logName}_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_orm-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -26,7 +30,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_boot" fileName="${it.govpay.log.folder}/govpay_boot.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_boot-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_boot" fileName="${it.govpay.log.folder}/${logName}_boot.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_boot-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -34,7 +38,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="STDOUT" fileName="${it.govpay.log.folder}/govpay_root.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_root-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="STDOUT" fileName="${it.govpay.log.folder}/${logName}_root.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_root-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -42,7 +46,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_transaction" fileName="${it.govpay.log.folder}/govpay_transaction.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_transaction-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_transaction" fileName="${it.govpay.log.folder}/${logName}_transaction.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_transaction-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -52,37 +56,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_diagnostic" fileName="${it.govpay.log.folder}/govpay_diagnostic.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout>
-				<Pattern>%m %n %n</Pattern>
-			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="50 MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="5" />
-		</RollingFile>
-		
-		<RollingFile name="govpay_notifica" fileName="${it.govpay.log.folder}/govpay_diagnostic_notifiche.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic_notifiche-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout>
-				<Pattern>%m %n %n</Pattern>
-			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="50 MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="5" />
-		</RollingFile>
-		
-		<RollingFile name="govpay_gw" fileName="${it.govpay.log.folder}/govpay_diagnostic_gw.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic_gw-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout>
-				<Pattern>%m %n %n</Pattern>
-			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="50 MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="5" />
-		</RollingFile>
-		
-		<RollingFile name="govpay_rendicontazione" fileName="${it.govpay.log.folder}/govpay_diagnostic_rendicontazione.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic_rendicontazione-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_diagnostic" fileName="${it.govpay.log.folder}/${logName}_diagnostic.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_diagnostic-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -92,7 +66,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_dump" fileName="${it.govpay.log.folder}/govpay_dump.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_dump-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_notifica" fileName="${it.govpay.log.folder}/${logName}_diagnostic_notifiche.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_diagnostic_notifiche-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -102,7 +76,37 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
-		<RollingFile name="govpay_event" fileName="${it.govpay.log.folder}/govpay_event.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_event-%d{yyyy-MM-dd}-%i.log.gz">
+		<RollingFile name="govpay_gw" fileName="${it.govpay.log.folder}/${logName}_diagnostic_gw.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_diagnostic_gw-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%m %n %n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+
+		<RollingFile name="govpay_rendicontazione" fileName="${it.govpay.log.folder}/${logName}_diagnostic_rendicontazione.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_diagnostic_rendicontazione-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%m %n %n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+
+		<RollingFile name="govpay_dump" fileName="${it.govpay.log.folder}/${logName}_dump.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_dump-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%m %n %n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+
+		<RollingFile name="govpay_event" fileName="${it.govpay.log.folder}/${logName}_event.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/${logName}_event-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -126,7 +130,7 @@
 		<Logger name="it.govpay" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
-		
+
 		<Logger name="org.apache.commons.jcs" level="INFO" additivity="false">
 			<AppenderRef ref="STDOUT" />
 		</Logger>
@@ -142,7 +146,7 @@
 		<Logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
-		
+
 		<Logger name="org.openspcoop2.utils.transport" level="${org.openspcoop2.utils.transport.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
@@ -166,7 +170,7 @@
 		<Logger name="diagnostic.rendicontazioni" level="ALL" additivity="false">
 			<AppenderRef ref="govpay_rendicontazione" />
 		</Logger>
-		
+
 		<Logger name="diagnostic.gw" level="ALL" additivity="false">
 			<AppenderRef ref="govpay_gw" />
 		</Logger>

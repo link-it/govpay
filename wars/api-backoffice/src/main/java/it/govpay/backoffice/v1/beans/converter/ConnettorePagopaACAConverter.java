@@ -37,6 +37,7 @@ public class ConnettorePagopaACAConverter {
 		connettore.setUrl(connector.getUrl());
 		connettore.setSubscriptionKeyValue(connector.getSubscriptionKey());
 		connettore.setAbilitaGDE(connector.getAbilitaGDE());
+		connettore.setAbilitato(true);
 
 		return connettore;
 	}

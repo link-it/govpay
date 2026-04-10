@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -30,7 +30,7 @@ import org.openspcoop2.utils.TipiDatabase;
 import it.govpay.orm.Intermediario;
 
 
-/**     
+/**
  * IntermediarioFieldConverter
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -41,7 +41,7 @@ import it.govpay.orm.Intermediario;
 public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 
 	private TipiDatabase databaseType;
-	
+
 	public IntermediarioFieldConverter(String databaseType){
 		this.databaseType = TipiDatabase.toEnumConstant(databaseType);
 	}
@@ -54,21 +54,21 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 	public IModel<?> getRootModel() throws ExpressionException {
 		return Intermediario.model();
 	}
-	
+
 	@Override
 	public TipiDatabase getDatabaseType() throws ExpressionException {
 		return this.databaseType;
 	}
-	
+
 
 
 	@Override
 	public String toColumn(IField field,boolean returnAlias,boolean appendTablePrefix) throws ExpressionException {
-		
-		// In the case of columns with alias, using parameter returnAlias​​, 
-		// it is possible to drive the choice whether to return only the alias or 
+
+		// In the case of columns with alias, using parameter returnAlias​​,
+		// it is possible to drive the choice whether to return only the alias or
 		// the full definition of the column containing the alias
-		
+
 		if(field.equals(Intermediario.model().COD_INTERMEDIARIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_intermediario";
@@ -111,6 +111,13 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_fr";
 			}
 		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_backoffice_ec";
+			}else{
+				return "cod_connettore_backoffice_ec";
+			}
+		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_connettore_ftp";
@@ -149,16 +156,16 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
-		
+
 	}
-	
+
 	@Override
 	public String toTable(IField field,boolean returnAlias) throws ExpressionException {
-		
-		// In the case of table with alias, using parameter returnAlias​​, 
-		// it is possible to drive the choice whether to return only the alias or 
+
+		// In the case of table with alias, using parameter returnAlias​​,
+		// it is possible to drive the choice whether to return only the alias or
 		// the full definition of the table containing the alias
-		
+
 		if(field.equals(Intermediario.model().COD_INTERMEDIARIO)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
@@ -175,6 +182,9 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FR)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){
@@ -195,23 +205,23 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 
 
 		return super.toTable(field,returnAlias);
-		
+
 	}
 
 	@Override
 	public String toTable(IModel<?> model,boolean returnAlias) throws ExpressionException {
-		
-		// In the case of table with alias, using parameter returnAlias​​, 
-		// it is possible to drive the choice whether to return only the alias or 
+
+		// In the case of table with alias, using parameter returnAlias​​,
+		// it is possible to drive the choice whether to return only the alias or
 		// the full definition of the table containing the alias
-		
+
 		if(model.equals(Intermediario.model())){
 			return "intermediari";
 		}
 
 
 		return super.toTable(model,returnAlias);
-		
+
 	}
 
 }

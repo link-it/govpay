@@ -9,7 +9,7 @@
 		<hidden property="antinstaller_product_version" value="PRODUCT_VERSION" />
 
 		<comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay" />
-		<comment explanatoryText="Copyright (c) 2014-2025 Link.it srl (http://www.link.it)." />
+		<comment explanatoryText="Copyright (c) 2014-2026	 Link.it srl (http://www.link.it)." />
 		<comment explanatoryText="" />
 		<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version." />
 		<comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details." />
@@ -20,11 +20,11 @@
 	<page name="informazioniente" type="input" displayText="Informazioni Preliminari">
 		<comment displayText="" />
 		<hidden property="antinstaller_log_level" value="INFO" />
-		
+
 		<hidden property="antinstaller_as" value="APPLICATION_SERVER" />
-		
+
 		<hidden property="antinstaller_jndi_name" value="JNDI_NAME" />
-		
+
 		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
 			<option value="postgresql" text="PostgreSQL" />
 			<option value="mysql" text="MySQL" />
@@ -36,8 +36,6 @@
 		<directory defaultValue="/etc/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
 		<comment displayText="" />
 		<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
-		<comment displayText="" />
-		<checkbox property="antinstaller_advanced" displayText="Visualizza impostazioni avanzate" defaultValue="false" />
 	</page>
 
 	<page name="informazioniApplicative" type="input" displayText="Riferimenti accesso GovPay">
@@ -102,7 +100,7 @@
 		<validated property="antinstaller_modulo_postgres" displayText="Nome modulo driver postgresql" regex=".+" />
 		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL" />
 	</page>
-	
+
 	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}!=wildfly28)">
 		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
 		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
@@ -117,27 +115,64 @@
 		<validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+" />
 		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
 	</page>
-	
+
 	<page name="informazioniserviziconsole" type="input" displayText="Servizi Backoffice" ifProperty="${antinstaller_as}==wildfly28">
 		<validated defaultValue="/govpay/backend/gui/backoffice/" property="antinstaller_govpay_backend_gui_base_path" displayText="Base path risorse statiche console" regex=".+" />
 		<validated defaultValue="/govpay/backend/api/backoffice" property="antinstaller_govpay_backend_api_base_url" displayText="Base path API Backoffice" regex=".+" />
 		<comment explanatoryText="Indicare i base path necessari al funzionamento della console" />
 	</page>
-	
+
 	<page name="informazioniserviziconsole" type="input" displayText="Servizi Backoffice" ifProperty="${antinstaller_as}!=wildfly28">
 		<validated defaultValue="/govpay-console/" property="antinstaller_govpay_backend_gui_base_path" displayText="Base path risorse statiche console" regex=".+" />
 		<validated defaultValue="/govpay-api-backoffice" property="antinstaller_govpay_backend_api_base_url" displayText="Base path API Backoffice" regex=".+" />
 		<comment explanatoryText="Indicare i base path necessari al funzionamento della console" />
 	</page>
-	
+
 	<page name="configurazioniavanzateconsole" type="input" displayText="File di configurazione Console Backoffice">
 		<validated defaultValue="assets/Config.js" property="antinstaller_govpay_backend_gui_config_js_path" displayText="Path del file di configurazione della console" regex=".+" />
 		<comment explanatoryText="Indicare il path del file di configurazione della console" />
 	</page>
 
-	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true">
+	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate">
 		<comment displayText="Configurazione Spring Security" title="true" />
 		<checkbox property="antinstaller_springsec_ext" displayText="Usa file di configurazione esterni" defaultValue="false" />
+		<comment displayText="" />
+	</page>
+
+	<page name="componentiAggiuntivi" type="input" displayText="Componenti Aggiuntivi">
+		<comment displayText="Abilitazione Componenti Aggiuntivi" title="true" />
+		<comment explanatoryText="Selezionare i componenti aggiuntivi da abilitare." />
+		<comment displayText="" />
+		<checkbox property="antinstaller_batch_aca" displayText="Batch ACA" defaultValue="false" />
+		<checkbox property="antinstaller_batch_fdr" displayText="Batch FdR" defaultValue="false" />
+		<checkbox property="antinstaller_batch_recupero_rt" displayText="Batch Recupero RT" defaultValue="false" />
+		<checkbox property="antinstaller_batch_iban" displayText="Batch Verifica IBAN" defaultValue="false" />
+		<checkbox property="antinstaller_batch_notifica" displayText="Batch Notifica Rendicontazioni" defaultValue="false" />
+	</page>
+
+	<page name="batchAcaConfig" type="input" displayText="Configurazione Batch ACA" ifProperty="${antinstaller_batch_aca}=true">
+		<validated defaultValue="http://localhost:10001/api/batch" property="antinstaller_batch_aca_url" displayText="Base URL" regex=".+" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
+	</page>
+
+	<page name="batchFdrConfig" type="input" displayText="Configurazione Batch FdR" ifProperty="${antinstaller_batch_fdr}=true">
+		<validated defaultValue="http://localhost:10005/api/batch" property="antinstaller_batch_fdr_url" displayText="Base URL" regex=".+" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
+	</page>
+
+	<page name="batchRecuperoRtConfig" type="input" displayText="Configurazione Batch Recupero RT" ifProperty="${antinstaller_batch_recupero_rt}=true">
+		<validated defaultValue="http://localhost:10006/api/batch" property="antinstaller_batch_recupero_rt_url" displayText="Base URL" regex=".+" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
+	</page>
+
+	<page name="batchIbanConfig" type="input" displayText="Configurazione Batch IBAN" ifProperty="${antinstaller_batch_iban}=true">
+		<validated defaultValue="http://localhost:10008/api/batch" property="antinstaller_batch_iban_url" displayText="Base URL" regex=".+" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
+	</page>
+
+	<page name="batchNotificaConfig" type="input" displayText="Configurazione Batch Notifica" ifProperty="${antinstaller_batch_notifica}=true">
+		<validated defaultValue="http://localhost:10009/api/batch" property="antinstaller_batch_notifica_url" displayText="Base URL" regex=".+" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
 	</page>
 
 	<page name="Fine" displayText="Installazione" type="progress" showTargets="true" target="setup_completo" />

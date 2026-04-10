@@ -42,6 +42,7 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 	private Utenza utenza;
 	private LdapUserDetails ldapUserDetailsImpl;
 	private String idTransazioneAutenticazione;
+	private boolean utenzaBatch = false;
 	
 	public String getIdentificativo() {
 		return this.utenza != null ? this.utenza.getIdentificativo() : this.getDn();
@@ -131,4 +132,10 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 	public void setIdTransazioneAutenticazione(String idTransazioneAutenticazione) {
 		this.idTransazioneAutenticazione = idTransazioneAutenticazione;
 	}
+	public void setUtenzaBatch(boolean utenzaBatch) {
+		this.utenzaBatch = utenzaBatch;
+	}
+	public boolean isUtenzaBatch() {
+        return utenzaBatch;
+    }
 }

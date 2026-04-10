@@ -494,6 +494,97 @@ components:
                 $ref: '#/components/schemas/Contabilita'
             metadata:
                 $ref: '#/components/schemas/Metadata'
+    NuovaRendicontazione:
+      type: object
+      required:
+        - idDominio
+        - iuv
+        - iur
+        - indice
+        - importo
+        - esito
+        - data
+        - idFlusso
+        - dataFlusso
+        - trn
+        - dataRegolamento
+        - idPsp
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale dell'Ente Creditore
+          example: '01234567890'
+        iuv:
+          type: string
+          description: Identificativo univoco versamento
+          example: 'RF23567483937849450550875'
+        iur:
+          type: string
+          description: Identificativo univoco riscossione
+          example: '1234acdc'
+        indice:
+          type: number
+          description: Indice pagamento
+          example: 1
+        importo:
+          type: number
+          description: Importo rendicontato
+          example: 10.01
+        esito:
+          type: number
+          description: Codice esito rendicontazione
+          enum:
+            - ESEGUITO
+            - REVOCATO
+            - ESEGUITO_STANDIN
+            - ESEGUITO_STANDIN_SENZA_RPT
+            - ESEGUITO_SENZA_RPT
+          example: ESEGUITO
+        data:
+          type: string
+          format: date-time
+          description: Data esito
+          example: '2020-12-31T10:27:27.903'
+        idFlusso:
+          type: string
+          description: Identificativo flusso di rendicontazione
+          example: '2017-11-21GovPAYPsp1-10:27:27.903'
+        dataFlusso:
+          type: string
+          format: date-time
+          description: Data flusso di rendicontazione
+          example: '2020-12-31T10:27:27.903'
+        trn:
+          type: string
+          description: Transaction reference number
+          example: 'idriversamento12345'
+        dataRegolamento:
+          type: string
+          format: date-time
+          description: Data regolamento
+          example: '2020-12-31T10:27:27.903'
+        dataOraPubblicazione:
+          type: string
+          format: date-time
+          description: Data e ora di pubblicazione del flusso
+          example: '2020-12-31T10:27:27.903'
+        dataOraAggiornamento:
+          type: string
+          format: date-time
+          description: Data e ora di aggiornamento del flusso
+          example: '2020-12-31T10:27:27.903'
+        idPsp:
+          type: string
+          description: Identificativo PSP
+          example: 'ABI-12345'
+        bicRiversamento:
+          type: string
+          description: BIC riversamento
+          example: 'BIC-12345'
+        revisione:
+          type: integer
+          nullable: true
+          description: Revisione della rendicontazione
     NuovoAllegatoPendenza:
       type: object
       required: 
@@ -798,6 +889,8 @@ components:
             Codice di esito dell'operazione rendicontata
              * 0 = Pagamento eseguito
              * 3 = Pagamento revocato
+             * 4 = Pagamento eseguito in modalita' stand-in
+	     * 8 = Pagamento eseguito stand-in in assenza di RPT
              * 9 = Pagamento eseguito in assenza di RPT
           example: 0
         data:

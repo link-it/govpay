@@ -5,7 +5,7 @@
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")'
 	},
 	"servizioPagoPaACA": {
-		"url": '#(ndpsym_url + "/pagopa/api/v1/notices")',
+		"url": '#(ndpsym_url + "/pagopa/rs/aca")',
 		"subscriptionKey" : "ACA123456",
 		"abilitaGDE": false
 	},

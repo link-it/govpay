@@ -90,6 +90,14 @@ public class CtPaymentPAV2Builder {
 
 		Dominio dominio = versamento.getDominio(configWrapper); 
 		UnitaOperativa uo = versamento.getUo(configWrapper);
+		
+		if (codCarrello == null) {
+			codCarrello = requestBody.getPaymentNote();
+		}
+		
+		if (codCarrello != null && codCarrello.length() > 35) {
+			codCarrello = codCarrello.substring(0, 35);
+		}
 
 		Rpt rpt = new Rpt();
 		rpt.setVersione(VersioneRPT.SANP_321_V2);

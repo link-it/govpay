@@ -518,7 +518,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       break;
       case this._CONNETTORE_MAGGIOLI:
         _std.titolo = new Dato({ value: 'Maggioli JPPA' });
-        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+        _std.sottotitolo = new Dato({ label: Voce.ABILITATO+': ', value: item.abilitato ? 'Sì' : 'No' });
       break;
     }
     return _std;

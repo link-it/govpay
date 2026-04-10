@@ -412,6 +412,20 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_singolo_versamento";
 			}
 		}
+		if(field.equals(Rendicontazione.model().ESEGUI_RECUPERO_RT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".esegui_recupero_rt";
+			}else{
+				return "esegui_recupero_rt";
+			}
+		}
+		if(field.equals(Rendicontazione.model().NOTIFICA_INVIATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".notifica_inviata";
+			}else{
+				return "notifica_inviata";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -571,6 +585,12 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ESEGUI_RECUPERO_RT)){
+			return this.toTable(Rendicontazione.model(), returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().NOTIFICA_INVIATA)){
+			return this.toTable(Rendicontazione.model(), returnAlias);
 		}
 
 

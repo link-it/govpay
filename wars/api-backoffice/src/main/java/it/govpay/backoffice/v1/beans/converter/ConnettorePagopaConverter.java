@@ -34,6 +34,7 @@ public class ConnettorePagopaConverter {
 
 		connettore.setUrl(connector.getUrlRPT());
 		connettore.setSubscriptionKeyValue(connector.getSubscriptionKey());
+		connettore.setAbilitato(true);
 
 		return connettore;
 	}

@@ -112,13 +112,13 @@ public class ConnettoreNotificaPagamentiConverter {
 				if(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL.equals(connettore.getCodProprieta())) {
 					dto.setDownloadBaseURL(connettore.getValore());
 				}
-				
-				if(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI.equals(connettore.getCodProprieta())) {
-					dto.setPrincipalMaggioli(connettore.getValore());
-				}
-				
+
 				if(ConnettoreNotificaPagamenti.P_INTERVALLO_CREAZIONE_TRACCIATO.equals(connettore.getCodProprieta())) {
 					dto.setIntervalloCreazioneTracciato(Integer.parseInt(connettore.getValore()));
+				}
+
+				if(ConnettoreNotificaPagamenti.P_INVIA_TRACCIATO_ESITO.equals(connettore.getCodProprieta())) {
+					dto.setInviaTracciatoEsito(Boolean.parseBoolean(connettore.getValore()));
 				}
 
 
@@ -438,15 +438,7 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setValore(connettore.getVersione().getApiLabel());
 			voList.add(vo);
 		}
-		
-		if(connettore.getPrincipalMaggioli() != null && !connettore.getPrincipalMaggioli().trim().isEmpty()) {
-			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI);
-			vo.setValore(connettore.getPrincipalMaggioli());
-			voList.add(vo);
-		}
-		
+
 		if(connettore.getHttpHeaderName() != null && !connettore.getHttpHeaderName().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
@@ -528,7 +520,13 @@ public class ConnettoreNotificaPagamentiConverter {
 		voEmailAllegato.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_ALLEGATO);
 		voEmailAllegato.setValore(Boolean.toString(connettore.isEmailAllegato()));
 		voList.add(voEmailAllegato);
-		
+
+		it.govpay.orm.Connettore voInviaTracciatoEsito = new it.govpay.orm.Connettore();
+		voInviaTracciatoEsito.setCodConnettore(connettore.getIdConnettore());
+		voInviaTracciatoEsito.setCodProprieta(ConnettoreNotificaPagamenti.P_INVIA_TRACCIATO_ESITO);
+		voInviaTracciatoEsito.setValore(Boolean.toString(connettore.isInviaTracciatoEsito()));
+		voList.add(voInviaTracciatoEsito);
+
 		return voList;
 	}
 	

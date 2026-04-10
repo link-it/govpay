@@ -40,6 +40,7 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 	protected boolean leggiUtenzaDaSessione = false;
 	private boolean userAutoSignup = false;
 	private String userAutoSignupDefaultRole = null;
+	private boolean utenzaBatch = false;
 	
 	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
 		throw new NotImplementedException("Operazione implementata");
@@ -117,7 +118,7 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 			sb.append("API: ").append(this.apiName);
 		}
 		if(this.authType != null) {
-			if(sb.length() > 0)
+			if(!sb.isEmpty())
 				sb.append(" | ");
 			
 			sb.append("AUTH: ").append(this.authType);
@@ -126,7 +127,7 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 			sb.append(" | Leggi Utenza da Sessione: ").append(this.leggiUtenzaDaSessione);
 		}
 		
-		if(sb.length() > 0)
+		if(!sb.isEmpty())
 			sb.append(" | ");
 		
 		if(this.userAutoSignup) {
@@ -137,18 +138,26 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 		
 		// Id transazione accesso DB
 		if(transactionId != null) {
-			if(sb.length() > 0)
+			if(!sb.isEmpty())
 				sb.append(" | ");
 			
 			sb.append("Id Transazione Autenticazione: ").append(transactionId);
 		}
 	
 		// messaggio
-		if(sb.length() > 0)
+		if(!sb.isEmpty())
 			sb.append(" | ");
 		
 		sb.append(msg);
 		
 		LogUtils.logDebug(log, sb.toString());
+	}
+	
+	public void setUtenzaBatch(boolean utenzaBatch) {
+        this.utenzaBatch = utenzaBatch;
+    }
+
+	public boolean isUtenzaBatch() {
+		return utenzaBatch;
 	}
 }

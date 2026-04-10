@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.9.0-SNAPSHOT</version>
+	<version>3.9.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -12,7 +12,7 @@
 			<id>govpay-ear</id>
 			<properties>
 				<javaVersion>21</javaVersion>
-				
+
 				<!-- versioni jar -->
 				<!-- angus-mail-->
 				<angus-mail.version>2.0.4</angus-mail.version>
@@ -56,7 +56,6 @@
 				<javaVersion>21</javaVersion>
 				<!-- Nomi dei war -->
 				<api-backoffice-tomcat-war-name>govpay-api-backoffice</api-backoffice-tomcat-war-name>
-				<api-jppapdp-tomcat-war-name>govpay-api-jppapdp</api-jppapdp-tomcat-war-name>
 				<api-pagopa-tomcat-war-name>govpay-api-pagopa</api-pagopa-tomcat-war-name>
 				<api-pendenze-tomcat-war-name>govpay-api-pendenze</api-pendenze-tomcat-war-name>
 				<api-ragioneria-tomcat-war-name>govpay-api-ragioneria</api-ragioneria-tomcat-war-name>
@@ -88,6 +87,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
+		<it.govpay.log.name>govpay</it.govpay.log.name>
 		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
 
 		<!-- op2 -->
@@ -117,10 +117,10 @@
 		<jersey.version>3.1.11</jersey.version>
 
 		<!-- Spring -->
-		<spring.version>6.2.11</spring.version>
+		<spring.version>6.2.17</spring.version>
 
 		<!-- Spring Security -->
-		<spring.security.version>6.5.4</spring.security.version>
+		<spring.security.version>6.5.9</spring.security.version>
 
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>3.3.3</spring.ldap.version>
@@ -141,6 +141,7 @@
 		<commons.pool2.version>2.12.1</commons.pool2.version>
 		<commons.net.version>3.12.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
+		<com.sun.mail.version>1.6.8</com.sun.mail.version><!-- CVE-2025-7962 -->
 		<commons.beanutils.version>1.11.0</commons.beanutils.version>
 
 		<!-- xmlsec -->
@@ -278,7 +279,7 @@
 		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnCVSS>11</owasp.plugin.failBuildOnCVSS>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
-
+		<owasp.ossindex.analyzer.enabled>false</owasp.ossindex.analyzer.enabled> <!-- Abilita/disabilita l'analisi delle vulnerabilità tramite OSS Index, se disabilitata viene usato il database CVE di NIST -->
 	</properties>
 
 	<dependencyManagement>
@@ -830,7 +831,7 @@
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.v3.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-jaxrs2-jakarta</artifactId>
@@ -838,7 +839,7 @@
 				<exclusions>
 					<exclusion>
 						<groupId>org.yaml</groupId>
-						<artifactId>snakeyaml</artifactId>					
+						<artifactId>snakeyaml</artifactId>
 					</exclusion>
 					<exclusion>
 						<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
@@ -1170,7 +1171,7 @@
 				<artifactId>jackson-jakarta-rs-xml-provider</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.jakarta.rs</groupId>
 				<artifactId>jackson-jakarta-rs-json-provider</artifactId>
@@ -1194,7 +1195,7 @@
   				<artifactId>jackson-dataformat-yaml</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency>
-	        
+
 	        <dependency>
 			    <groupId>com.fasterxml.jackson.datatype</groupId>
 			    <artifactId>jackson-datatype-joda</artifactId>
@@ -1479,6 +1480,20 @@
 	            <groupId>org.apache.commons</groupId>
 	            <artifactId>commons-email</artifactId>
 	            <version>${commons.email.version}</version>
+	            <exclusions>
+	            	<!-- CVE-2025-7962: SMTP Injection vulnerability fixed in 1.6.8 / 2.0.4 -->
+	            	<exclusion>
+	            		<groupId>com.sun.mail</groupId>
+	            		<artifactId>jakarta.mail</artifactId>
+	            	</exclusion>
+	            </exclusions>
+           </dependency>
+
+           <!-- CVE-2025-7962: versione corretta jakarta.mail -->
+           <dependency>
+	            <groupId>com.sun.mail</groupId>
+	            <artifactId>jakarta.mail</artifactId>
+	            <version>${com.sun.mail.version}</version>
            </dependency>
 
            <dependency>
@@ -1486,13 +1501,13 @@
 	            <artifactId>commons-net</artifactId>
 	            <version>${commons.net.version}</version>
            </dependency>
-           
+
            <dependency>
 			    <groupId>commons-beanutils</groupId>
 			    <artifactId>commons-beanutils</artifactId>
 			    <version>${commons.beanutils.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
@@ -1630,7 +1645,7 @@
 					<artifactId>javassist</artifactId>
 				    <version>${javassist.version}</version>
 				</dependency>
-				
+
 				<dependency>
 					<groupId>org.yaml</groupId>
 					<artifactId>snakeyaml</artifactId>
@@ -1723,6 +1738,8 @@
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
 							<!-- Disabilitato per evitare problemi SSL con GitHub -->
 							<!-- <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled> -->
+							<!-- Configurazione per disabilitare l'analizzatore OSS Index se non necessario -->
+							<ossindexAnalyzerEnabled>${owasp.ossindex.analyzer.enabled}</ossindexAnalyzerEnabled>
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>

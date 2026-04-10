@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.47.0"
+  version: "1.48.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5001,6 +5001,14 @@ components:
           $ref: '#/components/schemas/servizioFtp'
         servizioPagoPaRecuperoRT:
           $ref: '#/components/schemas/connettorePagopaRecuperoRT'
+        servizioPagoPaACA:
+          $ref: '#/components/schemas/connettorePagopaACA'
+        servizioPagoPaGPD:
+          $ref: '#/components/schemas/connettorePagopaGPD'
+        servizioPagoPaFR:
+          $ref: '#/components/schemas/connettorePagopaFR'
+        servizioPagoPaBackofficeEC:
+          $ref: '#/components/schemas/connettorePagopaBackofficeEC'
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
@@ -7924,6 +7932,82 @@ components:
           type: boolean
           description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
           example: false
+    connettorePagopaBackofficeEC:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio web Backoffice EC di PagoPA
+          example: https://api.platform.pagopa.it/backoffice/helpdesk/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettorePagopaACA:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio ACA (Avvisi di Cortesia e Attualizzazione) di PagoPA
+          example: https://api.platform.pagopa.it/aca/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettorePagopaGPD:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio GPD (Gestione Posizioni Debitorie) di PagoPA
+          example: https://api.platform.pagopa.it/gpd/api/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettorePagopaFR:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio Flussi di Rendicontazione di PagoPA
+          example: https://api.platform.pagopa.it/fdr/service/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
     connettoreNotificaPagamentiMyPivot:
       type: object
       required:
@@ -8178,24 +8262,20 @@ components:
       type: object
       required:
         - abilitato
-        - tipoConnettore
-        - principal
+        - auth
+        - url
       properties:
         abilitato:
           type: boolean
           description: Indica se il connettore e' abilitato
           example: true
-        tipoConnettore:
+        inviaTracciatoEsito:
+          type: boolean
+          description: Indica se inviare il tracciato di esito
+          example: true
+        fileSystemPath:
           type: string
-          enum:
-            - 'EMAIL'
-        versione:
-          type: string
-          example: '1.0'
-          description: Versione del servizio.
-        principal:
-          type: string
-          description: principal autenticato dalla chiamata di Maggioli
+          description: Path nel quale verra' salvato il tracciato
         emailIndirizzi:
           type: array
           items:
@@ -8210,32 +8290,16 @@ components:
         downloadBaseUrl:
           type: string
           description: URL base del link dove scaricare il tracciato
-        tipiPendenza:
-          type: array
-          description: tipi pendenza da includere nel tracciato
-          items:
-            type: object
-            oneOf:
-              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
-              - type: string
-                description: identificativo tipo pendenza
-                example:
-                  SEGRETERIA
         url:
           type: string
           description: URL Base del servizio rest di ricezione dei dati
-        versioneApi:
-          type: string
-          enum:
-            - 'SOAP v1'
-          description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
-        contenuti:
-          type: array
-          description: Lista dei contenuti da inviare al servizio REST
-          items:
-            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+        dataUltimaRT:
+          type: string
+          format: date-time
+          description: Date time dell'ultima RT processata con successo
+          example: '2020-12-31 12:34:00Z'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

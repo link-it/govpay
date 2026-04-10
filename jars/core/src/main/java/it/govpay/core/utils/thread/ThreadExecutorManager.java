@@ -36,7 +36,6 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorCaricamentoTracciatiStampeAvvisi;
 	private static ExecutorService executorCaricamentoTracciati;
 	private static ExecutorService executorSpedizioneTracciatiNotificaPagamenti;
-	private static ExecutorService executorSpedizioneNotificaPagamentoMaggioli;
 	private static ExecutorService executorRecuperaRT;
 	private static boolean initialized = false;
 
@@ -65,11 +64,7 @@ public class ThreadExecutorManager {
 			int threadSpedizioneTracciatiNotificaPagamentiPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione tracciati notifica pagamenti [NumThread: {}]", threadSpedizioneTracciatiNotificaPagamentiPoolSize);
 			executorSpedizioneTracciatiNotificaPagamenti = Executors.newFixedThreadPool(threadSpedizioneTracciatiNotificaPagamentiPoolSize);
-			
-			int threadSpedizioneNotificaPagamentoMaggioliPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione notifiche pagamento Maggioli [NumThread: {}]", threadSpedizioneNotificaPagamentoMaggioliPoolSize);
-			executorSpedizioneNotificaPagamentoMaggioli = Executors.newFixedThreadPool(threadSpedizioneNotificaPagamentoMaggioliPoolSize);
-			
+
 			int threadRecuperoRT = GovpayConfig.getInstance().getDimensionePoolThreadRecuperoRT();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di recupero RT [NumThread: {}]", threadRecuperoRT);
 			executorRecuperaRT = Executors.newFixedThreadPool(threadRecuperoRT);
@@ -113,12 +108,7 @@ public class ThreadExecutorManager {
 		while (!executorSpedizioneTracciatiNotificaPagamenti.isTerminated()) {
 			Thread.sleep(500);
 		}
-		
-		executorSpedizioneNotificaPagamentoMaggioli.shutdown();
-		while (!executorSpedizioneNotificaPagamentoMaggioli.isTerminated()) {
-			Thread.sleep(500);
-		}
-		
+
 		executorRecuperaRT.shutdown();
 		while (!executorRecuperaRT.isTerminated()) {
 			Thread.sleep(500);
@@ -148,11 +138,7 @@ public class ThreadExecutorManager {
 	public static ExecutorService getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti() {
 		return executorSpedizioneTracciatiNotificaPagamenti;
 	}
-	
-	public static ExecutorService getExecutorSpedizioneNotificaPagamentoMaggioli() {
-		return executorSpedizioneNotificaPagamentoMaggioli;
-	}
-	
+
 	public static ExecutorService getExecutorRecuperaRT() {
 		return executorRecuperaRT;
 	}

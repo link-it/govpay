@@ -54,8 +54,7 @@ public class Costanti {
 	public static final String WAR_NAME_API_PENDENZE = "GovPay-API-Pendenze";
 	public static final String WAR_NAME_API_RAGIONERIA = "GovPay-API-Ragioneria";
 	public static final String WAR_NAME_API_USER = "GovPay-API-User";
-	public static final String WAR_NAME_API_JPPAPDP = "GovPay-API-JppaPdP";
-	
+
 	/** COSTANTI NOMI CACHE ANAGRAFICA */
 	public static final String NOME_DOMINIO_CACHE_WEB_CONNECTOR = "it.govpay.cache.anagrafica.wc";
 	public static final String NOME_DOMINIO_CACHE_API_BACKOFFICE = "it.govpay.cache.anagrafica.backoffice";
@@ -64,8 +63,6 @@ public class Costanti {
 	public static final String NOME_DOMINIO_CACHE_API_PENDENZE = "it.govpay.cache.anagrafica.pendenze";
 	public static final String NOME_DOMINIO_CACHE_API_RAGIONERIA = "it.govpay.cache.anagrafica.ragioneria";
 	public static final String NOME_DOMINIO_CACHE_API_USER = "it.govpay.cache.anagrafica.user";
-	public static final String NOME_DOMINIO_CACHE_API_JPPAPDP = "it.govpay.cache.anagrafica.jppapdp";
-
 
 	/** COSTANTI OPERAZIONI VERIFICA PENDENZA*/
 

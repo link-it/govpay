@@ -54,9 +54,9 @@ sudo -u postgres createdb govpay -O govpay
 psql govpay govpay < dist/sql/gov_pay.sql
 
 echo "Creazione tabelle BATCH"
-psql govpay govpay < /etc/govpay/docker/sql/batch-aca.sql
-psql govpay govpay < /etc/govpay/docker/sql/batch-fdr.sql
-psql govpay govpay < /etc/govpay/docker/sql/tabelle_batch-create.sql
+psql govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/batch-aca.sql
+psql govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/batch-fdr.sql
+psql govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/tabelle_batch-create.sql
 
 #####
 ## SETUP API SECURITY SETTINGS

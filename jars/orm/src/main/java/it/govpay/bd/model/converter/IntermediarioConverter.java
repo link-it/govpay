@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -29,7 +29,7 @@ import org.openspcoop2.utils.certificate.PrincipalType;
 import it.govpay.model.Intermediario;
 
 public class IntermediarioConverter {
-	
+
 	private IntermediarioConverter() {}
 
 	public static List<Intermediario> toDTOList(List<it.govpay.orm.Intermediario> intermediarioLst) {
@@ -50,7 +50,7 @@ public class IntermediarioConverter {
 		dto.setDenominazione(vo.getDenominazione());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
-		return dto; 
+		return dto;
 	}
 
 	public static it.govpay.orm.Intermediario toVO(Intermediario dto) {
@@ -89,6 +89,10 @@ public class IntermediarioConverter {
 
 		if(dto.getConnettorePddFR()!= null) {
 			vo.setCodConnettoreFR(dto.getConnettorePddFR().getIdConnettore());
+		}
+
+		if(dto.getConnettorePddBackofficeEC()!= null) {
+			vo.setCodConnettoreBackofficeEC(dto.getConnettorePddBackofficeEC().getIdConnettore());
 		}
 
 		return vo;

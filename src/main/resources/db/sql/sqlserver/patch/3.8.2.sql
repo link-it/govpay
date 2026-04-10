@@ -7,6 +7,9 @@ ALTER TABLE domini ADD scarica_fr BIT;
 UPDATE domini SET scarica_fr = 1;
 ALTER TABLE domini ALTER COLUMN scarica_fr BIT NOT NULL;
 
+-- Evito di scaricare i flussi per i domini non intermediati
+update domini set scarica_fr = 0 where intermediato = 0;
+
 
 -- 01/11/2025 Issue #821 Aggiunta colonna data_ora_pubblicazione alla tabella fr
 ALTER TABLE fr ADD data_ora_pubblicazione DATETIME;
@@ -20,6 +23,39 @@ ALTER TABLE fr ALTER COLUMN xml VARBINARY(MAX) NULL;
 ALTER TABLE fr ADD data_ora_aggiornamento DATETIME;
 ALTER TABLE fr ADD revisione BIGINT;
 
+-- valorizzazione revisione con numero progressivo per ogni gruppo di record con stesso cod_dominio, cod_flusso e cod_psp ordinati per id
+SELECT id, cod_dominio, cod_flusso, cod_psp
+INTO tmp_fr_riqualifica
+FROM fr f
+WHERE EXISTS (
+    SELECT 1 FROM (
+        SELECT cod_dominio, cod_flusso, cod_psp
+        FROM fr
+        GROUP BY cod_dominio, cod_flusso, cod_psp
+        HAVING count(*) > 1
+    ) a
+    WHERE f.cod_dominio = a.cod_dominio
+      AND f.cod_flusso  = a.cod_flusso
+      AND f.cod_psp     = a.cod_psp
+);
+
+ALTER TABLE tmp_fr_riqualifica ADD CONSTRAINT tmp_id_riq UNIQUE (id);
+
+UPDATE fr SET revisione = 1;
+
+UPDATE fr
+SET fr.revisione = sub.rn
+FROM fr
+INNER JOIN (
+    SELECT id,
+           ROW_NUMBER() OVER (
+               PARTITION BY cod_dominio, cod_flusso, cod_psp
+               ORDER BY id
+           ) AS rn
+    FROM tmp_fr_riqualifica
+) sub ON fr.id = sub.id;
+
+DROP TABLE tmp_fr_riqualifica;
 
 -- 04/11/2025 Aggiornamento della vista rendicontazioni
 DROP VIEW v_rendicontazioni_ext;

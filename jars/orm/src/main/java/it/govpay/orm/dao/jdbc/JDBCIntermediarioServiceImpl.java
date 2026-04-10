@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2026 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -46,7 +46,7 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
 import it.govpay.orm.Intermediario;
 
-/**     
+/**
  * JDBCIntermediarioServiceImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
@@ -60,16 +60,16 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	@Override
 	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Intermediario intermediario, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
+
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
-				
+
 
 
 		// Object intermediario
@@ -80,6 +80,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_ACA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_GPD,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FR,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FTP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().PRINCIPAL,false),"?");
@@ -95,6 +96,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreACA(),Intermediario.model().COD_CONNETTORE_ACA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreGPD(),Intermediario.model().COD_CONNETTORE_GPD.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreFR(),Intermediario.model().COD_CONNETTORE_FR.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreBackofficeEC(),Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreFtp(),Intermediario.model().COD_CONNETTORE_FTP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getDenominazione(),Intermediario.model().DENOMINAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getPrincipal(),Intermediario.model().PRINCIPAL.getFieldType()),
@@ -103,7 +105,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		);
 		intermediario.setId(id);
 
-		
+
 	}
 
 	@Override
@@ -127,25 +129,25 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Intermediario intermediario, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
+
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObjectInsert.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
-		
-//		boolean setIdMappingResolutionBehaviour = 
+
+//		boolean setIdMappingResolutionBehaviour =
 //			(idMappingResolutionBehaviour==null) ||
 //			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
 //			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
-			
+
 
 
 		// Object intermediario
@@ -165,6 +167,8 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreGPD(), Intermediario.model().COD_CONNETTORE_GPD.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FR,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreFR(), Intermediario.model().COD_CONNETTORE_FR.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC,false), "?");
+		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreBackofficeEC(), Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FTP,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreFtp(), Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false), "?");
@@ -180,110 +184,110 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 
 		if(isUpdate_intermediario) {
 			// Update intermediario
-			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
+			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(),
 				lstObjects_intermediario.toArray(new JDBCObject[]{}));
 		}
 
 
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIntermediario id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
-				this._getMapTableToPKColumn(), 
+
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getIntermediarioFieldConverter().toTable(Intermediario.model()),
+				this._getMapTableToPKColumn(),
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getIntermediarioFieldConverter(), this, null, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIntermediario id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
-				this._getMapTableToPKColumn(), 
+
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getIntermediarioFieldConverter().toTable(Intermediario.model()),
+				this._getMapTableToPKColumn(),
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getIntermediarioFieldConverter(), this, condition, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIntermediario id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
-				this._getMapTableToPKColumn(), 
+
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getIntermediarioFieldConverter().toTable(Intermediario.model()),
+				this._getMapTableToPKColumn(),
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getIntermediarioFieldConverter(), this, updateModels);
-	}	
-	
+	}
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
-				this._getMapTableToPKColumn(), 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getIntermediarioFieldConverter().toTable(Intermediario.model()),
+				this._getMapTableToPKColumn(),
 				ids,
 				this.getIntermediarioFieldConverter(), this, null, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
-				this._getMapTableToPKColumn(), 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getIntermediarioFieldConverter().toTable(Intermediario.model()),
+				this._getMapTableToPKColumn(),
 				ids,
 				this.getIntermediarioFieldConverter(), this, condition, updateFields);
 	}
-	
+
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
-		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
-				this._getMapTableToPKColumn(), 
+		GenericJDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject,
+				this.getIntermediarioFieldConverter().toTable(Intermediario.model()),
+				this._getMapTableToPKColumn(),
 				ids,
 				this.getIntermediarioFieldConverter(), this, updateModels);
 	}
-	
+
 	@Override
 	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIntermediario oldId, Intermediario intermediario, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
-	
+
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, oldId)) {
 			this.update(jdbcProperties, log, connection, sqlQueryObject, oldId, intermediario,idMappingResolutionBehaviour);
 		} else {
 			this.create(jdbcProperties, log, connection, sqlQueryObject, intermediario,idMappingResolutionBehaviour);
 		}
-		
+
 	}
-	
+
 	@Override
 	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Intermediario intermediario, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
-		
+
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, tableId)) {
 			this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, intermediario,idMappingResolutionBehaviour);
 		} else {
 			this.create(jdbcProperties, log, connection, sqlQueryObject, intermediario,idMappingResolutionBehaviour);
 		}
 	}
-	
+
 	@Override
 	public void delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Intermediario intermediario) throws NotImplementedException,ServiceException,Exception {
-		
-		
+
+
 		Long longId = null;
 		if( (intermediario.getId()!=null) && (intermediario.getId()>0) ){
 			longId = intermediario.getId();
@@ -294,26 +298,26 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 			if(longId == null){
 				return; // entry not exists
 			}
-		}		
-		
+		}
+
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, longId);
-		
+
 	}
 
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long id) throws NotImplementedException,ServiceException,Exception {
-	
+
 		if(id==null){
 			throw new ServiceException("Id is null");
 		}
 		if(id!=null && id.longValue()<=0){
 			throw new ServiceException("Id is less equals 0");
 		}
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
+
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObject.newSQLQueryObject();
-		
+
 
 		// Object intermediario
 		sqlQueryObjectDelete.setANDLogicOperator(true);
@@ -322,7 +326,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 			sqlQueryObjectDelete.addWhereCondition("id=?");
 
 		// Delete intermediario
-		jdbcUtilities.execute(sqlQueryObjectDelete.createSQLDelete(), jdbcProperties.isShowSql(), 
+		jdbcUtilities.execute(sqlQueryObjectDelete.createSQLDelete(), jdbcProperties.isShowSql(),
 			new JDBCObject(id,Long.class));
 
 	}
@@ -337,12 +341,12 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 			return;
 		}
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, id);
-		
+
 	}
-	
+
 	@Override
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotImplementedException,ServiceException,Exception {
-		
+
 		return this.deleteAll(jdbcProperties, log, connection, sqlQueryObject, new JDBCExpression(this.getIntermediarioFieldConverter()));
 
 	}
@@ -351,29 +355,29 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 
 		java.util.List<Long> lst = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, new JDBCPaginatedExpression(expression));
-		
+
 		for(Long id : lst) {
 			this._delete(jdbcProperties, log, connection, sqlQueryObject, id);
 		}
-		
+
 		return new NonNegativeNumber(lst.size());
-	
+
 	}
 
 
 
 	// -- DB
-	
+
 	@Override
 	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotImplementedException, Exception {
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-	
+
 	@Override
 	public int nativeUpdate(JDBCServiceManagerProperties jdbcProperties, Logger log,Connection connection,ISQLQueryObject sqlObject, String sql,Object ... param) throws ServiceException,NotImplementedException, Exception {
-	
+
 		return org.openspcoop2.generic_project.dao.jdbc.utils.GenericJDBCUtilities.nativeUpdate(jdbcProperties, log, connection, sqlObject,
 																							sql,param);
-	
+
 	}
 }

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
@@ -761,8 +762,8 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("localita", this.localita).minLength(1).maxLength(35);
 			vf.getValidator("provincia", this.provincia).minLength(1).maxLength(35);
 			vf.getValidator("nazione", this.nazione).length(2).pattern("(^[A-Z]{2,2}$)");
-			vf.getValidator("email", this.email).minLength(1).maxLength(255).pattern("(^([\\w\\.\\-_]+)?\\w+@[\\w-_]+(\\.\\w+){1,}$)");
-			vf.getValidator("pec", this.pec).minLength(1).maxLength(255).pattern("(^([\\w\\.\\-_]+)?\\w+@[\\w-_]+(\\.\\w+){1,}$)");
+			vf.getValidator("email", this.email).minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_EMAIL);
+			vf.getValidator("pec", this.pec).minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_EMAIL);
 			vf.getValidator("tel", this.tel).minLength(1).maxLength(255);
 			vf.getValidator("fax", this.fax).minLength(1).maxLength(255);
 			vf.getValidator("web", this.web).minLength(1).maxLength(255);

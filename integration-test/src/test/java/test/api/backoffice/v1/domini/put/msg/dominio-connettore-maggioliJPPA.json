@@ -23,15 +23,14 @@
   "area": "Affari generali e istituzionali",
   "servizioMaggioliJPPA" : {
   		"abilitato" : true,
-  		"tipoConnettore" : "EMAIL",
-  		"emailIndirizzi" : [ "pec@creditore.it" ],
-  		"emailAllegato" :  true,
-  		"downloadBaseUrl" : "#(govpay_url + '/servizioDownloadTracciati')",
-  		"versione" : "1.0",
-  		"tipiPendenza" : [ "*" ],
-  		"principal" : "maggioli",
   		"url" : "http://prova.it",
-  		"versioneApi" : "SOAP v1"
+  		"auth" : { "username": "usr", "password": "pwd" },
+  		"inviaTracciatoEsito" : true,
+  		"fileSystemPath" : "/tmp/tracciati",
+  		"emailIndirizzi" : [ "pec@creditore.it" ],
+  		"emailSubject" : "[GovPay] Tracciato esito",
+  		"emailAllegato" :  true,
+  		"downloadBaseUrl" : "#(govpay_url + '/servizioDownloadTracciati')"
   },
   "intermediato": "true",
   "scaricaFr": "true"

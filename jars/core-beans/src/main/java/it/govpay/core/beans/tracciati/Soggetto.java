@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -366,7 +367,7 @@ public void validate() throws it.govpay.core.exceptions.ValidationException {
 		 vf.getValidator("localita", this.localita).minLength(1).maxLength(35);
 		 vf.getValidator("provincia", this.provincia).minLength(1).maxLength(70);
 		 vf.getValidator("nazione", this.nazione).pattern("[A-Z]{2,2}");
-		 vf.getValidator("email", this.email).pattern("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)");
+		 vf.getValidator("email", this.email).maxLength(255).pattern(CostantiValidazione.PATTERN_EMAIL);
 		 vf.getValidator("cellulare", this.cellulare).pattern("\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}");
 	 }
 }

@@ -26,6 +26,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   @Input() connettoreACA = [];
   @Input() connettoreGPD = [];
   @Input() connettoreFR = [];
+  @Input() connettoreBackofficeEC = [];
   @Input() stazioni = [];
 
   @Input() json: any;
@@ -59,7 +60,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dettaglio = { informazioni: [], connettoriSoap: [] , connettoreRT: [], connettoreACA: [], connettoreGPD: [], connettoreFR: [] };
+    let _dettaglio = { informazioni: [], connettoriSoap: [] , connettoreRT: [], connettoreACA: [], connettoreGPD: [], connettoreFR: [], connettoreBackofficeEC: [] };
     _dettaglio.informazioni.push(new Dato({ label: Voce.DENOMINAZIONE, value: this.json.denominazione }));
     _dettaglio.informazioni.push(new Dato({ label: Voce.ID_INTERMEDIARIO, value: this.json.idIntermediario }));
     _dettaglio.informazioni.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
@@ -126,7 +127,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
-	
+
 	if(this.json.servizioPagoPaRecuperoRT) {
 	      _dettaglio.connettoreRT.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPaRecuperoRT.url }));
 	      if (this.json.servizioPagoPaRecuperoRT.subscriptionKey) {
@@ -379,6 +380,69 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
 	      }
 	    }
 
+	if(this.json.servizioPagoPaBackofficeEC) {
+	      _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPaBackofficeEC.url }));
+	      if (this.json.servizioPagoPaBackofficeEC.subscriptionKey) {
+	        _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPaBackofficeEC.subscriptionKey }));
+	      }
+	      if(this.json.servizioPagoPaBackofficeEC.auth) {
+	        if(this.json.servizioPagoPaBackofficeEC.auth.clientId) {
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID, value: this.json.servizioPagoPaBackofficeEC.auth.clientId }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET, value: this.json.servizioPagoPaBackofficeEC.auth.clientSecret }));
+	          if(this.json.servizioPagoPaBackofficeEC.auth.scope) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioPagoPaBackofficeEC.auth.scope }));
+	          }
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT, value: this.json.servizioPagoPaBackofficeEC.auth.urlTokenEndpoint }));
+	        }
+	        if(this.json.servizioPagoPaBackofficeEC.auth.apiId) {
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.API_ID, value: this.json.servizioPagoPaBackofficeEC.auth.apiId }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.API_KEY, value: this.json.servizioPagoPaBackofficeEC.auth.apiKey }));
+	        }
+	        if(this.json.servizioPagoPaBackofficeEC.auth.headerName) {
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.HEADER_NAME, value: this.json.servizioPagoPaBackofficeEC.auth.headerName }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.HEADER_VALUE, value: this.json.servizioPagoPaBackofficeEC.auth.headerValue }));
+	        }
+	        if(this.json.servizioPagoPaBackofficeEC.auth.username) {
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.BASIC }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.USERNAME, value: this.json.servizioPagoPaBackofficeEC.auth.username }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioPagoPaBackofficeEC.auth.password }));
+	        }
+	        if(this.json.servizioPagoPaBackofficeEC.auth.tipo) {
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SSL }));
+	          _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.TIPO, value: this.json.servizioPagoPaBackofficeEC.auth.tipo }));
+	          if(this.json.servizioPagoPaBackofficeEC.auth.sslType) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.SSL_CFG_TYPE, value: this.json.servizioPagoPaBackofficeEC.auth.sslType }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.tsType) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.TRUST_STORE_TYPE, value: this.json.servizioPagoPaBackofficeEC.auth.tsType }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.tsLocation) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioPagoPaBackofficeEC.auth.tsLocation }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.tsPassword) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioPagoPaBackofficeEC.auth.tsPassword }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.ksType) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.KEY_STORE_TYPE, value: this.json.servizioPagoPaBackofficeEC.auth.ksType }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.ksLocation) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioPagoPaBackofficeEC.auth.ksLocation }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.ksPassword) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioPagoPaBackofficeEC.auth.ksPassword }));
+	          }
+	          if(this.json.servizioPagoPaBackofficeEC.auth.ksPKeyPasswd) {
+	            _dettaglio.connettoreBackofficeEC.push(new Dato({label: Voce.KEY_STORE_PWD_PRIVATE_KEY, value: this.json.servizioPagoPaBackofficeEC.auth.ksPKeyPasswd }));
+	          }
+	        }
+	      } else {
+	        _dettaglio.connettoreBackofficeEC.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
+	      }
+	    }
+
     this.elencoStazioni();
     this.informazioni = _dettaglio.informazioni.slice(0);
     this.connettoriSoap = _dettaglio.connettoriSoap.slice(0);
@@ -386,6 +450,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
 	this.connettoreACA = _dettaglio.connettoreACA.slice(0);
 	this.connettoreGPD = _dettaglio.connettoreGPD.slice(0);
 	this.connettoreFR = _dettaglio.connettoreFR.slice(0);
+	this.connettoreBackofficeEC = _dettaglio.connettoreBackofficeEC.slice(0);
   }
 
   protected elencoStazioni() {

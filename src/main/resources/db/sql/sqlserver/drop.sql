@@ -8,6 +8,7 @@
 -- DROP INDEX index_tipi_versamento_1 ON tipi_versamento ;
 -- DROP INDEX index_connettori_1 ON connettori ;
 -- DROP INDEX index_operatori_1 ON operatori ;
+-- DROP INDEX index_jppa_config_1 ON jppa_config ;
 -- DROP INDEX index_uo_1 ON uo ;
 -- DROP INDEX index_tributi_1 ON tributi ;
 -- DROP INDEX index_tipi_tributo_1 ON tipi_tributo ;
@@ -99,6 +100,7 @@ DROP TABLE acl;
 DROP TABLE connettori;
 DROP TABLE operatori;
 DROP TABLE utenze_domini;
+DROP TABLE jppa_config;
 DROP TABLE uo;
 DROP TABLE tributi;
 DROP TABLE tipi_tributo;

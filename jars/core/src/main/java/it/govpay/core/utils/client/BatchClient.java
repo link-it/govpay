@@ -66,7 +66,7 @@ public class BatchClient extends BasicClientCORE {
 	}
 
 	/**
-	 * Invoca il batch esterno tramite GET HTTP.
+	 * Invoca il batch esterno tramite GET /run.
 	 *
 	 * @param force Forza l'esecuzione del batch anche se già in esecuzione
 	 * @return Response body in byte array
@@ -74,12 +74,55 @@ public class BatchClient extends BasicClientCORE {
 	 */
 	public byte[] invokeBatch(boolean force) throws ClientException {
 		List<Property> headerProperties = new ArrayList<>();
-		// Aggiungi il parametro force come query parameter
-		String pathWithParams = "";
+		String pathWithParams = "/run";
 		if(force) {
-			pathWithParams = "?force=true";
+			pathWithParams = "/run?force=true";
 		}
-		return this.getJson(pathWithParams, headerProperties, this.getOperationId());
+		return this.getJson(pathWithParams, headerProperties, this.getOperationId() + "_run");
+	}
+
+	/**
+	 * Recupera lo stato corrente del batch tramite GET /status.
+	 *
+	 * @return Response body in byte array (JSON BatchStatusInfo)
+	 * @throws ClientException In caso di errore durante l'invocazione
+	 */
+	public byte[] getStatus() throws ClientException {
+		List<Property> headerProperties = new ArrayList<>();
+		return this.getJson("/status", headerProperties, this.getOperationId() + "_status");
+	}
+
+	/**
+	 * Recupera informazioni sull'ultima esecuzione completata tramite GET /lastExecution.
+	 *
+	 * @return Response body in byte array (JSON LastExecutionInfo)
+	 * @throws ClientException In caso di errore durante l'invocazione
+	 */
+	public byte[] getLastExecution() throws ClientException {
+		List<Property> headerProperties = new ArrayList<>();
+		return this.getJson("/lastExecution", headerProperties, this.getOperationId() + "_lastExecution");
+	}
+
+	/**
+	 * Recupera informazioni sulla prossima esecuzione pianificata tramite GET /nextExecution.
+	 *
+	 * @return Response body in byte array (JSON NextExecutionInfo)
+	 * @throws ClientException In caso di errore durante l'invocazione
+	 */
+	public byte[] getNextExecution() throws ClientException {
+		List<Property> headerProperties = new ArrayList<>();
+		return this.getJson("/nextExecution", headerProperties, this.getOperationId() + "_nextExecution");
+	}
+
+	/**
+	 * Svuota la cache dell'applicazione tramite GET /cache/clear.
+	 *
+	 * @return Response body in byte array
+	 * @throws ClientException In caso di errore durante l'invocazione
+	 */
+	public byte[] clearCache() throws ClientException {
+		List<Property> headerProperties = new ArrayList<>();
+		return this.getJson("/cache/clear", headerProperties, this.getOperationId() + "_clearCache");
 	}
 
 	public String getCodiceBatch() {

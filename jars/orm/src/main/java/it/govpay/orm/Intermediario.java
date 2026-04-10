@@ -67,6 +67,7 @@ import java.io.Serializable;
   	"codConnettoreACA",
   	"codConnettoreGPD",
   	"codConnettoreFR",
+  	"codConnettoreBackofficeEC",
   	"codConnettoreFtp",
   	"denominazione",
   	"principal",
@@ -128,6 +129,14 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
 
   public void setCodConnettoreFR(java.lang.String codConnettoreFR) {
     this.codConnettoreFR = codConnettoreFR;
+  }
+
+  public java.lang.String getCodConnettoreBackofficeEC() {
+    return this.codConnettoreBackofficeEC;
+  }
+
+  public void setCodConnettoreBackofficeEC(java.lang.String codConnettoreBackofficeEC) {
+    this.codConnettoreBackofficeEC = codConnettoreBackofficeEC;
   }
 
   public java.lang.String getCodConnettoreFtp() {
@@ -213,6 +222,10 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreFR",required=false,nillable=false)
   protected java.lang.String codConnettoreFR;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreBackofficeEC",required=false,nillable=false)
+  protected java.lang.String codConnettoreBackofficeEC;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreFtp",required=false,nillable=false)

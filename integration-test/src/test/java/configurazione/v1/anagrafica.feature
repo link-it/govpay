@@ -357,6 +357,32 @@ And request applicazione_2
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+#### creazione applicazione batch
+Given url backofficeBaseurl
+And path 'applicazioni', 'gpBatch'
+And headers basicAutenticationHeader
+And request
+"""
+{
+	"principal": "gpBatch",
+	"password": "Password1!",
+	"domini": ["*"],
+	"tipiPendenza": ["*"],
+	"apiPagamenti": true,
+	"apiPendenze": true,
+	"apiRagioneria": true,
+	"acl": [
+		{ "servizio": "Pagamenti", "autorizzazioni": [ "R", "W" ] },
+		{ "servizio": "Pendenze", "autorizzazioni": [ "R", "W" ] },
+		{ "servizio": "Rendicontazioni e Incassi", "autorizzazioni": [ "R", "W" ] },
+		{ "servizio": "Giornale degli Eventi", "autorizzazioni": [ "R", "W" ] }
+	],
+	"abilitato": true
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 #### Confiugrazione simulatore
 
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')

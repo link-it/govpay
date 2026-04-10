@@ -1,13 +1,13 @@
 <jboss-deployment-structure>
-	<!-- Make sub deployments isolated by default, so they cannot see each others 
+	<!-- Make sub deployments isolated by default, so they cannot see each others
 		classes without a Class-Path entry -->
 	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
-	<!-- This corresponds to the top level deployment. For a war this is the 
+	<!-- This corresponds to the top level deployment. For a war this is the
 		war's module, for an ear -->
-	<!-- This is the top level ear module, which contains all the classes in 
+	<!-- This is the top level ear module, which contains all the classes in
 		the EAR's lib folder -->
 	<deployment>
-		${it.govpay.orm.driverdependency}	
+		${it.govpay.orm.driverdependency}
 		<exclude-subsystems>
 			<subsystem name="jaxrs" />
 			<subsystem name="webservices" />
@@ -21,15 +21,6 @@
 		</exclusions>
 	</deployment>
 	<sub-deployment name="api-pagopa-${project.version}.war">
-		<exclusions>
-			<module name="org.apache.cxf" />
-			<module name="org.springframework.spring" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</exclusions>
-	</sub-deployment>
-	<sub-deployment name="api-jppapdp-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.cxf" />
 			<module name="org.springframework.spring" />

@@ -30,4 +30,13 @@
 	<property name="antinstaller_govpay_backend_api_form_base_url" value="/govpay-api-backoffice/rs/form/v1" />
     <property name="antinstaller_govpay_backend_api_public_base_url" value="/govpay-api-backoffice/public" />
 	<property name="antinstaller_govpay_backend_gui_config_js_path" value="assets/Config.js" />
+
+	<!-- Batch esterni: valori di default -->
+	<property name="it.govpay.batch.aca.endpoint.url" value="" />
+	<property name="it.govpay.batch.acquisizioneRendicontazioni.modalita" value="interno" />
+	<property name="it.govpay.batch.fdr.endpoint.url" value="" />
+	<property name="it.govpay.batch.recuperoRT.modalita" value="interno" />
+	<property name="it.govpay.batch.recuperoRT.endpoint.url" value="" />
+	<property name="it.govpay.batch.iban.endpoint.url" value="" />
+	<property name="it.govpay.batch.notifica.endpoint.url" value="" />
 </project>
