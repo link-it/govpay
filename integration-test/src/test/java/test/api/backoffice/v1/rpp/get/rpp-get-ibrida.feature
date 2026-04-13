@@ -6,7 +6,6 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 

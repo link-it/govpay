@@ -8,14 +8,15 @@ Background:
 
 Scenario: Ricerca transazioni SPID filtrati per data
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
-Given url pagamentiBaseurl
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeBaseurl
 And path '/logout'
 And headers spidHeadersVerdi
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
@@ -48,15 +49,15 @@ And match response ==
 
 Scenario: Ricerca transazioni SPID filtrati per data, numero risultati e pagina
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/logout'
 And headers spidHeadersVerdi
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
@@ -81,15 +82,15 @@ And match response ==
 
 Scenario: Ricerca transazioni SPID filtrati per data e esito = 'IN_CORSO'
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/logout'
 And headers spidHeadersVerdi
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
@@ -113,15 +114,15 @@ And match response ==
 @test-rifiutato
 Scenario: Ricerca transazioni SPID filtrati per data e esito = 'RIFIUTATO'
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/logout'
 And headers spidHeadersVerdi
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
@@ -144,15 +145,15 @@ And match response ==
 
 Scenario: Ricerca transazioni SPID filtrati per data e esito = 'ESEGUITO'
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/logout'
 And headers spidHeadersVerdi
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
@@ -180,15 +181,15 @@ And match response ==
 
 Scenario: Ricerca transazioni SPID filtrati per data e stato = 'NON_ESEGUITO'
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/logout'
 And headers spidHeadersVerdi
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
+Given url backofficeBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine

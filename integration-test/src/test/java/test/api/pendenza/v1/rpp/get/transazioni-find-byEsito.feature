@@ -6,11 +6,17 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* def idPendenza = getCurrentTimeMillis()
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+
+* def versionePagamento = 2
+* def tipoRicevuta = "R01"
+* def riversamentoCumulativo = "true"
+
+* configure followRedirects = false
+* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 
 Scenario: Filtro su data
 
@@ -19,100 +25,53 @@ Scenario: Filtro su data
 * def idPendenza = getCurrentTimeMillis()
 * def idPendenza1 = idPendenza
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-When method post
-Then status 201
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
-* def responseRpt1 = response 
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response == esitoVerifyPayment
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Attivo il pagamento 
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = 'n_a'
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+
 * def dataRptEnd1 = getDateTime()
 
-* def idPendenza = getCurrentTimeMillis()
-* def idPendenza2 = idPendenza
+# Verifico la notifica di terminazione
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-When method post
-Then status 201
+* def ccp = 'n_a'
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
-* def responseRpt2 = response 
-* def dataRptEnd2 = getDateTime()
-
-# Ho avviato due pagamenti. Verifico i filtri.
-
-Given url pendenzeBaseurl
-And path '/rpp'
-And param esito = 'IN_CORSO' 
-And param idPendenza = idPendenza1
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-And match response.risultati[0].pendenza contains '#(""+idPendenza1)'
-And match response.risultati[0].rt == '#notpresent'
-
-Given url pendenzeBaseurl
-And path '/rpp'
-And param esito = 'IN_CORSO' 
-And param idPendenza = idPendenza2
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-And match response.risultati[0].pendenza contains '#(""+idPendenza2)' 
-
-# Fine verifiche. Completo i pagamenti
-
- 
-* def idSession = responseRpt1.idSession
-
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
-When method get
-
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
-
-* def dataRtEnd1 = getDateTime()
-
-* def idSession = responseRpt2.idSession
-
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R02'
-And param riversamento = '0'
-When method get
-
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* def ccp =  ccp_numero_avviso
+* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
 
 * def dataRtEnd2 = getDateTime()
 
@@ -139,28 +98,6 @@ And match response ==
 And match response.risultati[0].pendenza contains '#(""+idPendenza1)'
 And match response.risultati[0].rt == '#notnull'
 And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '0'
-
-Given url pendenzeBaseurl
-And path '/rpp'
-And param esito = 'NON_ESEGUITO' 
-And param idPendenza = idPendenza2
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-And match response.risultati[0].pendenza contains '#(""+idPendenza2)'
-And match response.risultati[0].rt == '#notnull'
-And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '1'
 
 
 Scenario: Controllo di sintassi sul valore del filtro per esito

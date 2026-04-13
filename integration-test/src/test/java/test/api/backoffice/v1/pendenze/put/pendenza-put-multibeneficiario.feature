@@ -116,52 +116,6 @@ And match response == read('msg/pendenza-get_multibeneficiario.json')
 * match response.voci[1].stato == 'Non eseguito'
 
 
-Scenario: Caricamento pendenza multibeneficiario e pagamento spontaneo
-
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
-* set pendenzaPut.idTipoPendenza = codLibero
-
-Given url pendenzeBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers idA2ABasicAutenticationHeader
-And request pendenzaPut
-When method put
-Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
-
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
-
-* set pagamentoPost.soggettoVersante = 
-"""
-{
-  "tipo": "F",
-  "identificativo": "RSSMRA30A01H501I",
-  "anagrafica": "Mario Rossi",
-  "indirizzo": "Piazza della Vittoria",
-  "civico": "10/A",
-  "cap": 0,
-  "localita": "Roma",
-  "provincia": "Roma",
-  "nazione": "IT",
-  "email": "mario.rossi@host.eu",
-  "cellulare": "+39 000-1234567"
-}
-"""
-
-Given url pagamentiBaseurl
-And path '/pagamenti'
-And headers idA2ABasicAutenticationHeader
-And request pagamentoPost
-When method post
-Then status 422
-And match response == { categoria: 'RICHIESTA', codice: 'VER_038', descrizione: 'Richiesta non valida', dettaglio: '#notnull', id: '#notnull', location: '#notnull'  }
-And match response.dettaglio == '#("La pendenza (IdA2A:"+ idA2A +" Id:"+ idPendenza +") e\' di tipo multibeneficiario non consentito per pagamenti spontanei.")'
-
-
-
 Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp
 
 * def idPendenza = getCurrentTimeMillis()
@@ -276,52 +230,6 @@ And match response == read('msg/pendenza-get_multibeneficiario.json')
 * match response.voci[0].stato == 'Non eseguito'
 * match response.voci[1].indice == 2
 * match response.voci[1].stato == 'Non eseguito'
-
-
-Scenario: Caricamento pendenza multibeneficiario definita e pagamento spontaneo
-
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('msg/pendenza-put_multibeneficiario_riferimento.json')
-* set pendenzaPut.idTipoPendenza = codLibero
-
-Given url pendenzeBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers idA2ABasicAutenticationHeader
-And request pendenzaPut
-When method put
-Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
-
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
-
-* set pagamentoPost.soggettoVersante = 
-"""
-{
-  "tipo": "F",
-  "identificativo": "RSSMRA30A01H501I",
-  "anagrafica": "Mario Rossi",
-  "indirizzo": "Piazza della Vittoria",
-  "civico": "10/A",
-  "cap": 0,
-  "localita": "Roma",
-  "provincia": "Roma",
-  "nazione": "IT",
-  "email": "mario.rossi@host.eu",
-  "cellulare": "+39 000-1234567"
-}
-"""
-
-Given url pagamentiBaseurl
-And path '/pagamenti'
-And headers idA2ABasicAutenticationHeader
-And request pagamentoPost
-When method post
-Then status 422
-And match response == { categoria: 'RICHIESTA', codice: 'VER_038', descrizione: 'Richiesta non valida', dettaglio: '#notnull', id: '#notnull', location: '#notnull'  }
-And match response.dettaglio == '#("La pendenza (IdA2A:"+ idA2A +" Id:"+ idPendenza +") e\' di tipo multibeneficiario non consentito per pagamenti spontanei.")'
-
 
 
 Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziativa psp
