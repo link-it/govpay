@@ -50,7 +50,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -147,7 +147,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -186,7 +186,7 @@ Scenario Outline: <field> non valida
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -214,7 +214,7 @@ Scenario Outline: <field> non valida
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -252,7 +252,7 @@ Scenario: Numero voci eccessivo
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains 'voci'
@@ -289,7 +289,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -332,7 +332,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -380,7 +380,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>

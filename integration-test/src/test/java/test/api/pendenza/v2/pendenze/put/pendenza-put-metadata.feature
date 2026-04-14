@@ -85,8 +85,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* def versionePagamento = 3
-
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_monovoce_definito.json')
 * set pendenzaPut.voci[0].metadata = metadataCustom
@@ -103,7 +101,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp_numero_avviso = response.ccp
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
 

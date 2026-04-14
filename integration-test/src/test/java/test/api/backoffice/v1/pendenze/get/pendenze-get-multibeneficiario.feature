@@ -9,8 +9,6 @@ Background:
 
 * configure followRedirects = false
 
-* def versionePagamento = 2
-
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/api/backoffice/v1/pendenze/get/msg/getPayment-response-ok-multibeneficiario.json')
 

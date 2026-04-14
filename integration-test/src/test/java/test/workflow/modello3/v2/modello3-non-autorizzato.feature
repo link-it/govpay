@@ -10,8 +10,6 @@ Background:
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 
-* def versionePagamento = 2
-
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader

@@ -10,7 +10,6 @@ Background:
 
 * def pathServizio = '/riscossioni'
 
-* def versionePagamento = 2
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 

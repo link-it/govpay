@@ -252,7 +252,6 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 # eseguo il pagamento
 
 * def numeroAvviso = response.numeroAvviso
-* def versionePagamento = 2
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo

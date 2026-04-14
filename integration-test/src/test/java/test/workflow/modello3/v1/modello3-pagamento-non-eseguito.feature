@@ -22,7 +22,7 @@ Scenario: Pagamento eseguito dovuto precaricato
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R02"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione

@@ -135,7 +135,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """
 	{
@@ -152,7 +152,6 @@ Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp co
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
 * set pendenzaPut.idTipoPendenza = codLibero
-* def versionePagamento = 2
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -177,7 +176,6 @@ Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp co
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * set pendenzaPut.numeroAvviso = numeroAvviso
 * set pendenzaPut.idTipoPendenza = codLibero
-* def versionePagamento = 2
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -251,7 +249,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """
 	{
@@ -268,7 +266,6 @@ Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziati
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario_riferimento.json')
 * set pendenzaPut.idTipoPendenza = codLibero
-* def versionePagamento = 2
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -293,7 +290,6 @@ Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziati
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * set pendenzaPut.numeroAvviso = numeroAvviso
 * set pendenzaPut.idTipoPendenza = codLibero
-* def versionePagamento = 2
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

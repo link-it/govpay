@@ -30,7 +30,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Scenario: Verifica pagamento
 
 * def numeroAvviso = '000000000000000000'
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == faultBean
 
 Scenario: Attiva pagamento
@@ -40,5 +40,5 @@ Scenario: Attiva pagamento
 * def ccp = '1'
 * def importo = 10.01
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean

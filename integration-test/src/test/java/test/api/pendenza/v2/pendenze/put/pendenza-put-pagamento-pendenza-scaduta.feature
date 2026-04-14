@@ -48,7 +48,7 @@ And match response == pendenzaGet
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 Given url pendenzeBaseurl
@@ -91,7 +91,7 @@ And match response == pendenzaGet
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 Given url pendenzeBaseurl
@@ -143,7 +143,7 @@ And match response == pendenzaGet
 # Attivo il pagamento tramite il simulatore
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

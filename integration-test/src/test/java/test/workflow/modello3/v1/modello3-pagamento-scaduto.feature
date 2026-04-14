@@ -30,7 +30,7 @@ Scenario: Attivazione RPT scaduta precaricata
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 Scenario: Attivazione RPT scaduta non precaricato
@@ -42,7 +42,7 @@ Scenario: Attivazione RPT scaduta non precaricato
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 
@@ -52,7 +52,7 @@ Scenario: Verifica RPT scaduta precaricata
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == faultBean
 
 
@@ -62,7 +62,7 @@ Scenario: Verifica RPT scaduta non precaricato
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == faultBean
 
 Scenario: Attivazione RPT scaduta non precaricato
@@ -74,7 +74,7 @@ Scenario: Attivazione RPT scaduta non precaricato
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 Scenario: Verifica RPT scaduta non precaricato
@@ -83,5 +83,5 @@ Scenario: Verifica RPT scaduta non precaricato
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso-scaduto.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == faultBean

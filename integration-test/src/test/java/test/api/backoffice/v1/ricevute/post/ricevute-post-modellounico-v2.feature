@@ -36,8 +36,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* def versionePagamento = 3
-
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -69,7 +67,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
@@ -183,8 +181,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* def versionePagamento = 3
-
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -216,7 +212,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione

@@ -17,7 +17,7 @@ Background:
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 * call read('classpath:utils/pa-notifica-attivazione.feature')
@@ -28,7 +28,7 @@ Background:
 
 Scenario: Verifica rifiutata perche' pagamento gia' eseguito
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == 
 """
 {
@@ -41,7 +41,7 @@ Scenario: Verifica rifiutata perche' pagamento gia' eseguito
 """
 Scenario: Attivazione rifiutata perche' pagamento gia' eseguito
 
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """
 {

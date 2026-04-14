@@ -1,17 +1,17 @@
-Feature: Attivazione della rpt API SANP 2.4
+Feature: Attivazione della rpt API SANP 2.4 V2
 
-#		PAGAMENTO_ESEGUITO_SENZA_RPT ("R00"), 
-#		PAGAMENTO_ESEGUITO ("R01"), 
-#		PAGAMENTO_NON_ESEGUITO ("R02"), 
-#		PAGAMENTO_PARZIALMENTE_ESEGUITO ("R03"), 
-#		DECORRENZA_TERMINI ("R04"), 
-#		DECORRENZA_TERMINI_PARZIALE ("R05"), 
+#		PAGAMENTO_ESEGUITO_SENZA_RPT ("R00"),
+#		PAGAMENTO_ESEGUITO ("R01"),
+#		PAGAMENTO_NON_ESEGUITO ("R02"),
+#		PAGAMENTO_PARZIALMENTE_ESEGUITO ("R03"),
+#		DECORRENZA_TERMINI ("R04"),
+#		DECORRENZA_TERMINI_PARZIALE ("R05"),
 #		PAGAMENTO_ESEGUITO_SENZA_RPT_CON_RT("R12");
- 
+
 Background:
 
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
-* def versionePagamento = '2'
+* def versionePagamento = '3'
 
 Scenario:
 

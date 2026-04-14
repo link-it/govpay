@@ -23,7 +23,7 @@ Scenario: Attivazione RPT con importo errato dovuto precaricato
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 Scenario: Attivazione RPT con importo errato dovuto non precaricato
@@ -37,5 +37,5 @@ Scenario: Attivazione RPT con importo errato dovuto non precaricato
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT

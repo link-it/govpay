@@ -19,7 +19,7 @@ Scenario: Evento verifica pendenza annullata
 * set pendenzaPut.descrizioneStato = descrizioneStato
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -94,7 +94,7 @@ Scenario: Evento verifica pendenza scaduta
 * set pendenzaPut.stato = 'SCADUTA'
 * set pendenzaPut.descrizioneStato = descrizioneStato
 * call read('classpath:utils/pa-prepara-avviso-scaduto.feature')
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -163,7 +163,7 @@ Scenario: Evento verifica pendenza sconosciuta
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -235,7 +235,7 @@ Scenario: Evento verifica pendenza
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -320,7 +320,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -405,7 +405,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -506,7 +506,7 @@ And request pendenza
 When method post
 Then status 200
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 

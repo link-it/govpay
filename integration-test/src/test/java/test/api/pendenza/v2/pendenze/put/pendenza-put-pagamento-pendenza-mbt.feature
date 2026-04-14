@@ -65,7 +65,7 @@ Then status 200
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 @test2
@@ -98,7 +98,6 @@ Then status 200
 
 # Attivo il pagamento 
 
-* def versionePagamento = 2
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean2
@@ -151,9 +150,8 @@ Then status 200
 
 # Attivo il pagamento 
 
-* def versionePagamento = 3
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 
 # Verifico la notifica di attivazione

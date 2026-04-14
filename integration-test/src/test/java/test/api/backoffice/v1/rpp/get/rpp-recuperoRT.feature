@@ -57,7 +57,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_4
-* def versionePagamento = 3
 
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -95,7 +94,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * print '[RecuperoRT-V2] Inizio attivazione pagamento (paGetPayment)'
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * print '[RecuperoRT-V2] Fine attivazione pagamento'
 # * match response.dati == esitoGetPayment
 
@@ -278,7 +277,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_4
-* def versionePagamento = 2
 
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -414,239 +412,6 @@ And match response.rt.versioneOggetto == '#notpresent'
 # gde
 
 * print '[RecuperoRT-MU] Inizio verifica GDE'
-
-Given url backofficeBaseurl
-And path '/eventi'
-And param idDminio = idDominio
-And param iuv = iuv
-And param tipoEvento = 'getOrganizationReceiptIuvIur'
-And param messaggi = true
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: '#number',
-	numPagine: '#number',
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '#ignore',
-	risultati: '#array'
-}
-"""
-And match response.risultati[0] ==
-"""
-{  
-	"id": "#notnull",
-	"idDominio":"#(idDominio)",
-	"iuv":"#ignore",
-	"ccp":"#ignore",
-	"idA2A": "##null",
-	"idPendenza": "##null",
-	"componente": "API_PAGOPA",
-	"categoriaEvento": "INTERFACCIA",
-	"ruolo": "CLIENT",
-	"tipoEvento": "getOrganizationReceiptIuvIur",
-	"sottotipoEvento": "##null",
-	"esito": "OK",
-	"sottotipoEsito": "##null",
-	"dettaglioEsito": "##null",
-	"dataEvento": "#notnull",
-	"durataEvento": "#notnull",
-	"datiPagoPA" : "##null",
-	"clusterId" : "#notnull",
-	"transactionId" : "#notnull",
-	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#notnull",
-		"method": "GET",
-		"headers": "#array",
-		"payload": "##null"
-	},
-	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"status": 200,
-		"headers": "#array",
-		"payload": "#notnull"
-	}
-}
-"""
-And match response.risultati[0].parametriRichiesta.url == ndpsym_docker_base_url + '/pagopa/rs/bizEvents/organizations/' + idDominio_4 + '/receipts/' + ccpDet + '/paymentoptions/' + iuvDet
-
-@modello1
-Scenario: Recupero RT per una transanzazione SANP 2.3.0
-
-# Configurazione dell'applicazione
-
-* print '[RecuperoRT-M1] Inizio configurazione applicazione'
-
-* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
-* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
-* set applicazione.servizioIntegrazione.versioneApi = 'REST v1'
-
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A
-And headers gpAdminBasicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-
-* print '[RecuperoRT-M1] Fine configurazione applicazione'
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
-
-* def idDominio = idDominio_4
-* def versionePagamento = 2
-
-* def dataRptStart = getDateTime()
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-
-* print '[RecuperoRT-M1] Inizio caricamento avviso, idPendenza:', idPendenza
-* call read('classpath:utils/pa-carica-avviso.feature')
-* def responsePut = response
-* def numeroAvviso = response.numeroAvviso
-* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
-* def importo = pendenzaPut.importo
-* print '[RecuperoRT-M1] Fine caricamento avviso, numeroAvviso:', numeroAvviso, 'iuv:', iuv
-
-Given url backofficeBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
-
-* match response.numeroAvviso == responsePut.numeroAvviso
-* match response.stato == 'NON_ESEGUITA'
-* match response.voci == '#[1]'
-* match response.voci[0].indice == 1
-* match response.voci[0].stato == 'Non eseguito'
-
-# pagamento modello 1
-
-* print '[RecuperoRT-M1] Inizio pagamento modello 1'
-
-* def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-
-Given url pagamentoBaseurl
-And path '/pagamenti'
-And headers basicAutenticationHeader
-And request pagamentoPost
-When method post
-Then status 201
-And match response == { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
-
-* configure followRedirects = false
-* def idSession = response.idSession
-* def tipoRicevuta = "R01"
-* def cumulativo = "1"
-
-* print '[RecuperoRT-M1] Esecuzione pagamento sul simulatore NdP, idSession:', idSession
-
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = tipoRicevuta
-And param riversamento = cumulativo
-And headers basicAutenticationHeader
-When method get
-Then status 302
-
-* print '[RecuperoRT-M1] Fine pagamento modello 1'
-
-# Il simulatore non manda la ricevuta. Genero FR
-
-* print '[RecuperoRT-M1] Attesa prima di generare le rendicontazioni...'
-* call sleep(60000)
-
-* print '[RecuperoRT-M1] Inizio generazione rendicontazioni sul simulatore NdP'
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* print '[RecuperoRT-M1] Fine generazione rendicontazioni sul simulatore NdP'
-
-* print '[RecuperoRT-M1] Attesa prima di acquisire le rendicontazioni...'
-* call sleep(60000)
-
-* print '[RecuperoRT-M1] Inizio acquisizione rendicontazioni'
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
-* print '[RecuperoRT-M1] Fine acquisizione rendicontazioni'
-
-# Sleep per attendere acquisizione FR
-
-* print '[RecuperoRT-M1] Attesa completamento acquisizione FR...'
-* call sleep(60000)
-
-# Esecuzione del batch di recupero RT
-
-* print '[RecuperoRT-M1] Inizio batch recupero RT'
-* call read('classpath:utils/govpay-op-recupero-rt.feature')
-* print '[RecuperoRT-M1] Fine batch recupero RT'
-
-# Sleep per attendere esecuzione batch
-
-* print '[RecuperoRT-M1] Attesa completamento batch recupero RT...'
-* call sleep(60000)
-
-* def dataRptEnd2 = getDateTime()
-* print '[RecuperoRT-M1] Inizio verifica RPP con retry'
-
-* configure retry = { count: 25, interval: 20000 }
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param esito = 'ESEGUITO' 
-And param idPendenza = idPendenza
-And headers gpAdminBasicAutenticationHeader
-And retry until response.numRisultati == 1
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza)'
-And match response.risultati[0].rt == '#notnull'
-And match response.risultati[0].rpt.versioneOggetto == '6.2.0'
-And match response.risultati[0].rt.versioneOggetto == '#notpresent'
-
-* print '[RecuperoRT-M1] Fine verifica RPP'
-
-* def idDominioDet = response.risultati[0].rt.fiscalCode
-* def iuvDet = response.risultati[0].rt.creditorReferenceId
-* def ccpDet = response.risultati[0].rt.receiptId
-
-# dettaglio rpp
-
-* print '[RecuperoRT-M1] Inizio verifica dettaglio RPP'
-
-Given url backofficeBaseurl
-And path '/rpp', idDominioDet, iuvDet, ccpDet
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response.pendenza.idPendenza == '#(""+idPendenza)'
-And match response.rt == '#notnull'
-And match response.rpt.versioneOggetto == '6.2.0'
-And match response.rt.versioneOggetto == '#notpresent'
-
-* print '[RecuperoRT-M1] Fine verifica dettaglio RPP'
-
-# gde
-
-* print '[RecuperoRT-M1] Inizio verifica GDE'
 
 Given url backofficeBaseurl
 And path '/eventi'

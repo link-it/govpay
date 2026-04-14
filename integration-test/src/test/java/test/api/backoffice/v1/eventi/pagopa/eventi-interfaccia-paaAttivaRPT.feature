@@ -21,7 +21,7 @@ Scenario: Eventi attiva pendenza annullata
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -113,7 +113,7 @@ Scenario: Evento attiva pendenza scaduta
 * call read('classpath:utils/pa-prepara-avviso-scaduto.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -199,7 +199,7 @@ Scenario: Evento attiva pendenza sconosciuta
 
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -288,7 +288,7 @@ Scenario: Evento attiva pendenza
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -388,7 +388,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * call sleep(1000)
 
@@ -486,7 +486,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * call sleep(1000)
 
@@ -588,7 +588,7 @@ When method post
 Then status 200
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 * call sleep(1000)
 

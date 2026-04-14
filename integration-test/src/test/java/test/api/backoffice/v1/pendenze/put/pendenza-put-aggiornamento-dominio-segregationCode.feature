@@ -6,7 +6,6 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def gpAdminBasicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
-* def versionePagamento = 2
 
 Scenario: Pagamento di una pendenza modello 3 per un dominio che cambia il codice di segregazione con auxdigit = 0
 

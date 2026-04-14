@@ -37,7 +37,7 @@ Then status 200
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 Scenario: Attivazione RPT annullata non precaricato
@@ -51,7 +51,7 @@ Scenario: Attivazione RPT annullata non precaricato
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 
@@ -68,7 +68,7 @@ Then status 200
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == faultBean
 
 
@@ -80,5 +80,5 @@ Scenario: Verifica RPT annullata non precaricato
 * set pendenzaPut.descrizioneStato = 'Test annullamento'
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == faultBean

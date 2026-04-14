@@ -18,8 +18,6 @@ Background:
 
 Scenario: Filtro su retrocompatibilitaMessaggiPagoPAV1 per una RPT SANP 2.4.0
 
-* def versionePagamento = 2
-
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -342,8 +340,6 @@ And match response /RT/versioneOggetto == '6.2.0'
 
 
 Scenario: Filtro su retrocompatibilitaMessaggiPagoPAV1 per una RPT SANP 2.4.0 entrata definita
-
-* def versionePagamento = 2
 
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -671,8 +667,6 @@ And match response /RT/versioneOggetto == '6.2.0'
 
 Scenario: Filtro su retrocompatibilitaMessaggiPagoPAV1 per una RPT SANP 2.4.0 con MBT
 
-* def versionePagamento = 3
-
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
@@ -725,7 +719,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * def esitoGetPaymentV2 = read('classpath:test/workflow/modello3/v2/msg/getPaymentV2-bollo-response-ok.json')
 * match response.dati == esitoGetPaymentV2
 

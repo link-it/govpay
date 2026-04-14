@@ -31,21 +31,9 @@ Then status 201
 
 # Attivo il pagamento tramite il simulatore (atteso errore per IBAN errato)
 
-* def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
-* def versionePagamento = 2
 * def tipoRicevuta = "R02"
-
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = tipoRicevuta
-And param ibanAccredito = ibanAccreditoErrato
-And param riversamentoCumulativo = 0
-And param versione = versionePagamento
-When method get
-Then assert responseStatus == 200
+* def ibanAccredito = ibanAccreditoErrato
+* def riversamentoCumulativo = 0
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 

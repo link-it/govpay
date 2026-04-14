@@ -31,7 +31,7 @@ Scenario: Attivazione RPT pendenza precaricata con data validita decorsa
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 Scenario: Attivazione RPT pendenza precaricata con data validita decorsa e aggiornata tramite le API di verifica
@@ -48,7 +48,7 @@ Scenario: Attivazione RPT pendenza precaricata con data validita decorsa e aggio
 * def importo = pendenzaPut.importo
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 
@@ -86,6 +86,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 

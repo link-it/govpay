@@ -22,14 +22,14 @@ Scenario: Verifica tutti gli eventi di un Pagamento eseguito dovuto non precaric
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.esitoVerificaRPT == esitoVerificaRPT
 * def ccp = response.ccp
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione
@@ -337,7 +337,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 
 # Verifico il pagamento
 
-# * call read('classpath:utils/psp-verifica-rpt.feature')
+# * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 # * match response.esitoVerificaRPT == esitoVerificaRPT
 # * def ccp = response.ccp
 * def ccp = getCurrentTimeMillis()
@@ -346,7 +346,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 * call sleep(10000)

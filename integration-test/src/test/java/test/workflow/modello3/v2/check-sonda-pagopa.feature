@@ -7,8 +7,6 @@ Background:
 
 * configure followRedirects = false
 
-* def versionePagamento = 2
-
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 
 * def faultBean = 

@@ -4,7 +4,6 @@ Background:
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
-* def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 
 # idPagamentoAnonimo_INCORSO_DOM1_SEGRETERIA
 # idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
@@ -196,17 +195,9 @@ Then status 201
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * def ccp = getCurrentTimeMillis()
 
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = "R01"
-And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = "0"
-When method get
-Then assert responseStatus == 200
+* def tipoRicevuta = "R01"
+* def riversamentoCumulativo = "0"
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di attivazione
 

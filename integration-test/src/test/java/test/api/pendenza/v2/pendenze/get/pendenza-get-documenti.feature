@@ -7,7 +7,6 @@ Background:
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Scenario: Lettura di un avviso pdf per un documento con rate
@@ -64,12 +63,6 @@ And headers basicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-
-Given url pagamentoBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers basicAutenticationHeader
-When method get
-Then status 200
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

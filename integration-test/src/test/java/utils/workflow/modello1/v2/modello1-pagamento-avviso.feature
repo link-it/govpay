@@ -30,21 +30,7 @@ Then status 201
 
 # Attivo il pagamento tramite il simulatore
 
-* def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
-* def versionePagamento = 2
-
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = tipoRicevuta
-And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = riversamentoCumulativo
-And param versione = versionePagamento
-When method get
-Then assert responseStatus == 200
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di terminazione
 

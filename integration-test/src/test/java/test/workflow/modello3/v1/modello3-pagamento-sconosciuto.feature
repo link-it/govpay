@@ -14,7 +14,7 @@ Background:
 Scenario: Verifica pagamento sconosciuto
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.faultBean == 
 """
 	{
@@ -33,7 +33,7 @@ Scenario: Attiva pagamento sconosciuto
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """
 	{

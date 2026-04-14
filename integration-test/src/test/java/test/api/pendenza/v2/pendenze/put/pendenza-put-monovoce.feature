@@ -109,7 +109,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 
 

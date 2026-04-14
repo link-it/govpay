@@ -23,7 +23,7 @@ Scenario: Pagamento eseguito dovuto precaricato senza verifica
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione
@@ -56,13 +56,13 @@ Scenario: Pagamento eseguito dovuto precaricato con verifica
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.esitoVerificaRPT == esitoVerificaRPT
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione
@@ -96,7 +96,7 @@ Scenario: Pagamento eseguito dovuto non precaricato senza verifica
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione
@@ -129,13 +129,13 @@ Scenario: Pagamento eseguito dovuto non precaricato con verifica
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.esitoVerificaRPT == esitoVerificaRPT
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione
@@ -170,13 +170,13 @@ Scenario: Pagamento eseguito dovuto precaricato e decorso con servizio di verifi
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.esitoVerificaRPT == esitoVerificaRPT
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 # Verifico la notifica di attivazione
@@ -222,13 +222,13 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response.esitoVerificaRPT == esitoVerificaRPT
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoAttivaRPT
 
 

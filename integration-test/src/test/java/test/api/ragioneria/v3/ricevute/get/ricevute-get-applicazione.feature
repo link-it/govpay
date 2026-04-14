@@ -16,6 +16,13 @@ Background:
 * def spidHeaders = spidHeadersVerdi
 * def soggettoVersante = soggettoVersanteVerdi
 
+* def tipoRicevuta = "R01"
+* def riversamentoCumulativo = "true"
+
+* configure followRedirects = false
+* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+
 Scenario: Ricerca transazioni BASIC filtrati per data e dominio1
 
 * def applicazione = read('classpath:test/api/backoffice/v1/pendenze/get/msg/applicazione_domini1_star.json')
@@ -35,51 +42,62 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call sleep(1000)
 
 # idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+
 * def tipoRicevuta = "R01"
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
 * def codTipoPendenzaPagamento = codEntrataSegreteria
 
-* def idPendenza = getCurrentTimeMillis()
-* def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
-* set pagamentoPost.pendenze[0].idA2A = idA2A2
-* set pagamentoPost.pendenze[0].idTipoPendenza = codTipoPendenzaPagamento
-* set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: pwdA2A2  } )
-* set pagamentoPost.soggettoVersante = soggettoVersante 
+* set pendenzaPut.idDominio = idDominioPagamento
+* set pendenzaPut.idA2A = idA2A2
+* set pendenzaPut.idTipoPendenza = codTipoPendenzaPagamento
+* set pendenzaPut.voci[0].codEntrata = codEntrataPagamento
 
-Given url pagamentoBaseurl
-And path '/pagamenti'
-And headers basicAutenticationHeader
-And request pagamentoPost
-When method post
-Then status 201
-And match response == { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
-
-* configure followRedirects = false
-* def idSession = response.idSession
-* def idPagamento = response.id
-
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominioPagamento
-And param codice = tipoRicevuta
-And param riversamento = cumulativo
-And headers spidHeaders
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
 When method get
-Then status 302
-And match responseHeaders.Location == '#notnull'
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response == esitoVerifyPayment
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Attivo il pagamento 
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = 'n_a'
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+
+* def dataRptEnd1 = getDateTime()
 
 # Verifico la notifica di terminazione
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* def ccp = 'n_a'
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
+* def ccp =  ccp_numero_avviso
+* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
 
-* def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = idPagamento 
+* def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = ccp 
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione.identificativoMessaggioRichiesta

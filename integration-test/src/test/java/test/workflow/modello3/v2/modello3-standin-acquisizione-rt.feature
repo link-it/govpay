@@ -67,7 +67,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # * def importo = 100.99
 * def tipoRicevuta = "R23"
 * def ibanAccreditoRT = ibanAccredito
-* def versionePagamento = 2
 
 # * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 
@@ -79,7 +78,7 @@ And param ccp = ccp
 And param importo = importo
 And param tipoRicevuta = tipoRicevuta
 And param ibanAccredito = ibanAccreditoRT
-And param versione = versionePagamento
+And param versione = 2
 When method get
 Then assert responseStatus == 200
 * def responseStandIn = response
@@ -221,7 +220,6 @@ Scenario: Pagamento eseguito dovuto precaricato con verifica, RT con importo div
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-* def versionePagamento = 2
 
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
@@ -267,7 +265,7 @@ And param ccp = ccp
 And param importo = importo
 And param tipoRicevuta = tipoRicevuta
 And param ibanAccredito = ibanAccreditoRT
-And param versione = versionePagamento
+And param versione = 2
 And param importoRicevuta = importoRicevuta
 When method get
 Then assert responseStatus == 200

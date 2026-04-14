@@ -11,7 +11,6 @@ Background:
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
-* def versionePagamento = 2
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 

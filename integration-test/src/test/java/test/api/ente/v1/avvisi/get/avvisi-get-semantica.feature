@@ -20,7 +20,7 @@ Scenario: Numero avviso su multivoce
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == {"faultCode":"PAA_SEMANTICA","faultString":"Errore semantico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
 * match response.faultBean.description contains 'Il versamento contiene piu\' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.'
@@ -46,7 +46,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -76,7 +76,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains 'NumeroAvviso'
@@ -105,7 +105,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description == '#("La voce ("+pendenzaPut.voci[0].idVocePendenza+") della pendenza (IdA2A:" + idA2A + ", Id:" + idPendenza + ") ha un importo (" + pendenzaPut.voci[0].importo + ") diverso dalla somma dei singoli importi definiti nella lista delle contabilita\' (" + pendenzaPutImportoOrig + ")")'

@@ -183,9 +183,8 @@ Then status 200
 
 # Attivo il pagamento 
 
-* def versionePagamento = 3
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 * match response.dati.transferList.transfer[0].metadata.mapEntry[0].key == 'CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT'
 * match response.dati.transferList.transfer[0].metadata.mapEntry[0].value == 'capitolo1,,,2020,,,,99'
@@ -257,9 +256,8 @@ Then status 200
 
 # Attivo il pagamento 
 
-* def versionePagamento = 3
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 * match response.dati.transferList.transfer[0].metadata.mapEntry[0].key == 'CAPITOLOBILANCIO'
 * match response.dati.transferList.transfer[0].metadata.mapEntry[0].value == pendenzaPut.voci[0].contabilita.quote[0].capitolo

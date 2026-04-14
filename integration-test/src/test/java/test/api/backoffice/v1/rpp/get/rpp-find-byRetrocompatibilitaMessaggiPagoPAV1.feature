@@ -18,8 +18,6 @@ Background:
 
 Scenario: Filtro su retrocompatibilitaMessaggiPagoPAV1 per una RPT SANP 2.4.0
 
-* def versionePagamento = 2
-
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
