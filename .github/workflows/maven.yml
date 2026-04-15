@@ -2,11 +2,11 @@ name: Java CI with Maven
 
 on:
   push:
-    # branches: [ "main" ]
+    branches: [ "**" ]  # TODO: restringere a [ "main" ]
     tags:
       - '*'
   pull_request:
-    # branches: [ "main" ]
+    branches: [ "main" ]
 
 permissions:
   contents: write
