@@ -95,7 +95,7 @@
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
-		<logger.version>2.25.3</logger.version>
+		<logger.version>2.25.4</logger.version>
 
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.71</swagger-codegen-maven-plugin.version>
@@ -110,8 +110,8 @@
 		<cxf.xjc.runtime.version>4.1.0</cxf.xjc.runtime.version>
 
 		<!-- jackson -->
-		<jackson.version>2.20.0</jackson.version>
-		<jackson-annotations.version>2.20</jackson-annotations.version>
+		<jackson.version>2.21.1</jackson.version>
+		<jackson-annotations.version>2.21</jackson-annotations.version>
 
 		<!-- Jersey -->
 		<jersey.version>3.1.11</jersey.version>
