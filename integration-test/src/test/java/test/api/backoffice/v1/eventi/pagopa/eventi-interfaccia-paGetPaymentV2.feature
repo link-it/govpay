@@ -21,7 +21,7 @@ Scenario: Eventi attiva pendenza annullata
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -111,7 +111,7 @@ Scenario: Evento attiva pendenza scaduta
 * call read('classpath:utils/pa-prepara-avviso-scaduto.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -195,7 +195,7 @@ Scenario: Evento attiva pendenza sconosciuta
 
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -282,7 +282,7 @@ Scenario: Evento attiva pendenza
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 * def importo = pendenzaPut.importo
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 

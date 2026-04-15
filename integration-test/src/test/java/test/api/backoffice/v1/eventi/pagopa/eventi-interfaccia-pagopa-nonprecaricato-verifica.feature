@@ -26,7 +26,7 @@ Scenario: Verifica tutti gli eventi di un Pagamento eseguito dovuto non precaric
 
 * def tipoRicevuta = "R01"
 * def ccp = getCurrentTimeMillis()
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico lo stato della pendenza
 

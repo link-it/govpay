@@ -931,7 +931,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			// controllo che la pendenza non contenga una MBT
 			if(VersamentoUtils.isPendenzaMBT(versamento, configWrapper)) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.", codDominio);
+				throw new NdpException(FaultPa.PAA_SEMANTICA, "La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.", codDominio);
 			}
 			
 			RptBD rptBD = new RptBD(configWrapper);

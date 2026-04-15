@@ -12,6 +12,7 @@ Background:
 
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 * def versionePagamento = '2'
+* def riversamentoCumulativo = karate.get('riversamentoCumulativo') != null ? karate.get('riversamentoCumulativo') : 0
 
 Scenario:
 

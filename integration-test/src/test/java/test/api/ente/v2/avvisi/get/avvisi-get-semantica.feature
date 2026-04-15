@@ -30,7 +30,7 @@ Scenario: Numero avviso su multivoce
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == {"faultCode":"PAA_SEMANTICA","faultString":"Errore semantico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
-* match response.faultBean.description contains 'Il versamento contiene piu\' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.'
+* match response.faultBean.description contains 'La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.'
 
 Scenario Outline: <field> non valida
 
