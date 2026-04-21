@@ -1,0 +1,60 @@
+name: Refresh OWASP Dependency-Check DB
+
+# Aggiorna il DB NVD ogni notte così la pipeline principale
+# trova sempre una cache calda e non scarica mai il DB completo.
+on:
+  schedule:
+    - cron: '0 3 * * *'  # ogni notte alle 03:00 UTC
+  workflow_dispatch:      # avvio manuale (utile al primo setup o dopo una cache eviction)
+
+permissions:
+  actions: write  # necessario per scrivere la cache cross-workflow
+
+jobs:
+  refresh-owasp-db:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Get date for cache key
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Restore existing OWASP DB cache
+        id: owasp-cache
+        uses: actions/cache@v5
+        with:
+          path: .dependency-check/data
+          key: ${{ runner.os }}-owasp-${{ steps.date.outputs.date }}
+          restore-keys: |
+            ${{ runner.os }}-owasp-
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install OWASP Dependency-Check CLI
+        run: |
+          VERSION="12.1.0"
+          curl -sSL "https://github.com/jeremylong/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
+            -o dependency-check.zip
+          unzip -q dependency-check.zip
+          echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
+
+      - name: Update NVD DB only (no scan)
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          dependency-check.sh \
+            --updateonly \
+            --data .dependency-check/data \
+            --nvdApiKey "$NVD_API_KEY"
+
+      - name: Report cache status
+        run: |
+          echo "Cache hit on today's key: ${{ steps.owasp-cache.outputs.cache-hit }}"
+          echo "DB size: $(du -sh .dependency-check/data 2>/dev/null || echo 'n/a')"
