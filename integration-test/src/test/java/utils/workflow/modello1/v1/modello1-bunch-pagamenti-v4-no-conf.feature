@@ -30,6 +30,8 @@ Background:
 
 Scenario: Pagamento ad iniziativa Ente
 
+* def idDominioOriginale = idDominio
+
 # idPagamentoAnonimo0: pagamento come anonimo SEGRETERIA, idDominio
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-avviso-anonimo.feature')
 * def idPagamentoAnonimo0 = idPagamentoAnonimo
@@ -141,6 +143,7 @@ Then status 201
 * def idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE = iuv
 
 # idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO
+* def idDominio = idDominioOriginale
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 * set pendenzaPut.voci[0].ibanAccredito = ibanAccreditoErrato
@@ -159,6 +162,7 @@ Then status 201
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idDominio = idDominio_2
+* set pendenzaPut.idTipoPendenza = codEntrataSiope
 * set pendenzaPut.voci[0].codEntrata = codEntrataSiope
 
 Given url pendenzeBaseurl
@@ -263,6 +267,7 @@ Then status 201
 * call sleep(1000)
 
 # idPagamentoAnonimo2: pagamento come anonimo SEGRETERIA, idDominio
+* def idDominio = idDominioOriginale
 * call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-avviso-anonimo.feature')
 * def idPagamentoAnonimo2 = idPagamentoAnonimo
 

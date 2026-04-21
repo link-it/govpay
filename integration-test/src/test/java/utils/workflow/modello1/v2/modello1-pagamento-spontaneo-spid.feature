@@ -43,8 +43,6 @@ Then status 201
 * def riversamentoCumulativo = cumulativo
 * call read('classpath:utils/psp-paGetPayment.feature')
 
-# Verifico la notifica di terminazione
 
-* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 

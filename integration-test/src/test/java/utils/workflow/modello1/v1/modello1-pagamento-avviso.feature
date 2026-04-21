@@ -32,8 +32,6 @@ Then status 201
 
 * call read('classpath:utils/psp-paGetPayment.feature')
 
-# Verifico la notifica di terminazione
 
-* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 

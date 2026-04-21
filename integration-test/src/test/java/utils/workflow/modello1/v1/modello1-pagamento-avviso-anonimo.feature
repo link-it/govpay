@@ -29,8 +29,4 @@ Then status 201
 
 * def idPagamentoAnonimo = iuv
 
-# Verifico la notifica di terminazione
-
-* call read('classpath:utils/pa-notifica-terminazione.feature')
-
 

@@ -22,6 +22,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: pwdA2A2 } )
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idDominio = idDominioPagamento
+* set pendenzaPut.idTipoPendenza = codEntrataPagamento
 * set pendenzaPut.voci[0].codEntrata = codEntrataPagamento
 * set pendenzaPut.soggettoPagatore = soggettoVersante
 
@@ -43,8 +44,6 @@ Then status 201
 * def riversamentoCumulativo = cumulativo
 * call read('classpath:utils/psp-paGetPayment.feature')
 
-# Verifico la notifica di terminazione
 
-* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 
