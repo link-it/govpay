@@ -75,7 +75,7 @@ Then assert responseStatus == 200 || responseStatus == 201
  urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
- segregationCode : null,
+ segregationCode : '00',
  ragioneSociale : 'Ente Creditore Test',
  idStazione : '11111111113_02',
  idIntermediario : '11111111113' 
@@ -92,30 +92,31 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp_numero_avviso = response.ccp
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di attivazione
 
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 
-# Ripristino il simulatore per utilizzare la seconda stazione
+# Ripristino il simulatore per utilizzare la prima stazione
 
 * def dominioNdpSymPut =
 """
 {
  urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
- auxDigit : '0',
+ auxDigit : '3',
  versione : '1',
- segregationCode : null,
+ segregationCode : '00',
  ragioneSociale : 'Ente Creditore Test',
  idStazione : '11111111113_01',
  idIntermediario : '11111111113' 
@@ -210,30 +211,31 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp_numero_avviso = response.ccp
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di attivazione
 
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 
-# Ripristino il simulatore per utilizzare la seconda stazione
+# Ripristino il simulatore per utilizzare la prima stazione
 
 * def dominioNdpSymPut =
 """
 {
  urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
- auxDigit : '0',
+ auxDigit : '3',
  versione : '1',
- segregationCode : null,
+ segregationCode : '00',
  ragioneSociale : 'Ente Creditore Test',
  idStazione : '11111111113_01',
  idIntermediario : '11111111113' 

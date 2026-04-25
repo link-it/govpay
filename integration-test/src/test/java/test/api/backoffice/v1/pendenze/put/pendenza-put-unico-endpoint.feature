@@ -11,7 +11,7 @@ Background:
 
 * configure followRedirects = false
 
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
+* def stazioneNdpSymPut = read('classpath:test/workflow/modellounico/v1/msg/stazione.json')
 * set stazioneNdpSymPut.urlRT = govpay_api_pagopa_url + '/PagamentiTelematiciCCPservice'
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
@@ -43,17 +43,18 @@ And match response == read('msg/pendenza-get.json')
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di attivazione
  
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifica endpoint RT tramite giornale Eventi.
 

@@ -60,7 +60,7 @@ Scenario: Caricamento pendenze
 * def numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A = numeroAvviso 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A
 
@@ -80,7 +80,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A = idPendenza 
 * def numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A
 
@@ -101,7 +101,7 @@ Scenario: Caricamento pendenze
 * def numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A = numeroAvviso 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A
 
@@ -122,7 +122,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A = idPendenza 
 * def numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A
 
@@ -142,7 +142,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A = idPendenza 
 * def numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 
 
@@ -167,7 +167,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 = idPendenza 
 * def numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2
 
@@ -189,7 +189,7 @@ Scenario: Caricamento pendenze
 * def numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 = numeroAvviso 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2
 
@@ -209,7 +209,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = idPendenza 
 * def numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2
 
@@ -229,7 +229,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 = idPendenza 
 * def numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 
 # idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2
@@ -250,7 +250,7 @@ Scenario: Caricamento pendenze
 * def idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = idPendenza 
 * def numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 
 

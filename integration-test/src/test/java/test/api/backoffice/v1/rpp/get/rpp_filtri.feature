@@ -45,6 +45,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -52,7 +53,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
@@ -62,7 +63,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 
 * def idPendenza = getCurrentTimeMillis()
@@ -95,6 +96,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -102,7 +104,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
@@ -351,6 +353,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -358,7 +361,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Pendenza 2
 
@@ -395,6 +398,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -402,7 +406,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Pendenza 3
 
@@ -437,6 +441,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -444,7 +449,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Pendenza 4
 
@@ -479,6 +484,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -486,7 +492,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd = getDateTime()
 

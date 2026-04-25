@@ -2,7 +2,7 @@ Feature: Dettaglio ricevute
 
 Background:
 
-* callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3.feature')
+* callonce read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3.feature')
 * def applicazioneRequest = read('msg/applicazione_disabilitato.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 

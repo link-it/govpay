@@ -20,7 +20,7 @@ Scenario: Ricerca pendenze operatore filtrato per numero avviso esatto
 
 Given url backofficeBaseurl
 And path '/pendenze'
-And param iuv = numeroAvviso1	
+And param iuv = numeroAvviso1
 And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -58,59 +58,6 @@ And param dataDa = dataInizio
 And param dataA = dataFine
 And param mostraSpontaneiNonPagati = true		
 And param iuv = tail(numeroAvviso,5)
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 0,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[0]'
-}
-"""
-
-Scenario: Ricerca pendenze operatore filtrato per iuv esatto
-
-* def tipoRicevuta = "R00"
-* def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo.feature')
-
-Given url backofficeBaseurl
-And path '/pendenze'
-And param iuv = iuv	
-And param idDominio = idDominio
-And param mostraSpontaneiNonPagati = true	
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-
-
-Scenario: Ricerca pendenze operatore filtrato per iuv parziale
-
-* def tipoRicevuta = "R00"
-* def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo.feature')
-
-Given url backofficeBaseurl
-And path '/pendenze'
-And param iuv = tail(iuv,5)	
-And param idDominio = idDominio	
-And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200

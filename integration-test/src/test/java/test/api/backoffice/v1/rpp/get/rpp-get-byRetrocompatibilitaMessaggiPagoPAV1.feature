@@ -13,8 +13,8 @@ Background:
 * def riversamentoCumulativo = "true"
 
 * configure followRedirects = false
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
-* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 Scenario: Filtro su retrocompatibilitaMessaggiPagoPAV1 per una RPT SANP 2.4.0
 
@@ -66,6 +66,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -73,7 +74,7 @@ Then assert responseStatus == 200 || responseStatus == 201
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
@@ -81,7 +82,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataRptEnd2 = getDateTime()
 
@@ -391,6 +392,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -398,7 +400,7 @@ Then assert responseStatus == 200 || responseStatus == 201
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione_entrata_definita.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione_entrata_definita.json')
 
 # Verifico la notifica di terminazione
 
@@ -406,7 +408,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito_entrata_definita.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito_entrata_definita.json')
 
 * def dataRptEnd2 = getDateTime()
 
@@ -719,15 +721,16 @@ Then assert responseStatus == 200 || responseStatus == 201
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
-* def esitoGetPaymentV2 = read('classpath:test/workflow/modello3/v2/msg/getPaymentV2-bollo-response-ok.json')
+* def esitoGetPaymentV2 = read('classpath:test/workflow/modellounico/v1/msg/getPaymentV2-bollo-response-ok.json')
 * match response.dati == esitoGetPaymentV2
 
 # Verifico la notifica di attivazione
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione_bollo.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione_bollo.json')
 
 # Verifico la notifica di terminazione
 
@@ -735,7 +738,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito_bollo.json')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito_bollo.json')
 
 * def dataRptEnd2 = getDateTime()
 

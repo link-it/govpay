@@ -11,4 +11,5 @@ And path 'notificaAttivazione', idDominio, iuv, ccp
 And retry until responseStatus == 200 
 When method get
 
-* def rptNotificaTerminazione = response.rpt
+* def notificaAttivazione = response
+* def rptNotificaAttivazione = response.rpt

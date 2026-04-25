@@ -2,7 +2,7 @@ Feature: Ricerca pagamenti
 
 Background:
 
-* callonce read('classpath:utils/workflow/modello1/v1/modello1-bunch-pagamenti-v3.feature')
+* callonce read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3.feature')
 
 * def applicazione = read('msg/applicazione_domini1_star.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})

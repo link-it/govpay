@@ -12,7 +12,7 @@ Background:
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale

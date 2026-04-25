@@ -13,8 +13,8 @@ Background:
 * def riversamentoCumulativo = "true"
 
 * configure followRedirects = false
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
-* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 # Configurazione Dominio 4 Il simulatore non invia la ricevuta per i pagamenti di questo EC ma devono essere recuperate
 
@@ -94,6 +94,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * print '[RecuperoRT-V2] Inizio attivazione pagamento (paGetPayment)'
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
 * print '[RecuperoRT-V2] Fine attivazione pagamento'
 # * match response.dati == esitoGetPayment
@@ -104,7 +105,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * print '[RecuperoRT-V2] Fine verifica notifica di attivazione'
-# * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+# * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Il simulatore non manda la ricevuta. Genero FR
 
@@ -314,6 +315,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * print '[RecuperoRT-MU] Inizio attivazione pagamento (paGetPayment)'
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * print '[RecuperoRT-MU] Fine attivazione pagamento'
 # * match response.dati == esitoGetPayment
@@ -324,7 +326,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * print '[RecuperoRT-MU] Fine verifica notifica di attivazione'
-# * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+# * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Il simulatore non manda la ricevuta. Genero FR
 

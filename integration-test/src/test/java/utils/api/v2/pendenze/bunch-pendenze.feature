@@ -60,7 +60,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A
 
@@ -80,7 +80,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A
 
@@ -100,7 +100,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A
 
@@ -120,7 +120,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A
 
@@ -140,7 +140,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 
 
@@ -165,7 +165,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2
 
@@ -185,7 +185,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2
 
@@ -205,7 +205,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 # idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2
 
@@ -225,7 +225,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 
 # idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2
@@ -246,7 +246,7 @@ Scenario: Caricamento pendenze
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = idPendenza 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/workflow/modello3/v2/modello3-solopagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 
 

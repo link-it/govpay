@@ -9,7 +9,7 @@ Background:
 
 * configure followRedirects = false
 
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/api/backoffice/v1/pendenze/get/msg/getPayment-response-ok-multibeneficiario.json')
 
 # configurazione del secondo ente come non intermediato e censimento iban
@@ -111,6 +111,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -206,6 +207,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 

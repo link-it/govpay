@@ -15,7 +15,7 @@ Scenario: Riconciliazione singola IUV non ISO da applicazione
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -37,7 +37,7 @@ Scenario: Idempotenza riconciliazione singola IUV non ISO da applicazione
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -69,7 +69,7 @@ Scenario: Riconciliazione singola IUV ISO da applicazione
 
 * def tipoRicevuta = "R01"
 * def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -91,7 +91,7 @@ Scenario: Idempotenza riconciliazione singola IUV ISO da applicazione
 
 * def tipoRicevuta = "R01"
 * def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -124,7 +124,7 @@ Scenario: Riconciliazione singola IUV non ISO da operatore
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -160,7 +160,7 @@ Scenario: Idempotenza riconciliazione singola IUV non ISO da operatore
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -206,7 +206,7 @@ Scenario: Riconciliazione singola IUV ISO da operatore
 
 * def tipoRicevuta = "R01"
 * def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -242,7 +242,7 @@ Scenario: Idempotenza riconciliazione singola IUV ISO da operatore
 
 * def tipoRicevuta = "R01"
 * def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento-spontaneo.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo

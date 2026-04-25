@@ -42,6 +42,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -136,6 +137,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -175,6 +177,7 @@ Scenario Outline: <field> non valida
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -203,6 +206,7 @@ Scenario Outline: <field> non valida
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -241,6 +245,7 @@ Scenario: Numero voci eccessivo
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -275,6 +280,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -305,6 +311,7 @@ Scenario Outline: <field> non valida
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT

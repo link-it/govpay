@@ -31,7 +31,7 @@ Scenario: Riconciliazione singola IUV non ISO
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call sleep(1000)
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
@@ -56,7 +56,7 @@ Then status 201
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call sleep(1000)
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
@@ -82,11 +82,11 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -116,11 +116,11 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -152,7 +152,7 @@ Then status 201
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento-dominio2.feature')
 * call sleep(1000)
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2
@@ -180,7 +180,7 @@ Then status 201
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento-dominio2.feature')
 * call sleep(1000)
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2
@@ -209,11 +209,11 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento-dominio2.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento-dominio2.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 * call sleep(1000)
@@ -246,11 +246,11 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento-dominio2.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento-dominio2.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 * call sleep(1000)

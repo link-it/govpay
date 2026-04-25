@@ -16,7 +16,7 @@ Scenario: Rendicontazioni
 * def dataInizioFR = getDateTime()
 * call sleep(1000)
 
-* call read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3-no-conf.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3-no-conf.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio

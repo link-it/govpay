@@ -27,6 +27,7 @@ Scenario: Numero avviso su multivoce
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == {"faultCode":"PAA_SEMANTICA","faultString":"Errore semantico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
@@ -57,6 +58,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
@@ -96,6 +98,7 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT

@@ -135,6 +135,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """
@@ -166,6 +167,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 
@@ -197,6 +199,7 @@ Then match response.numeroAvviso == numeroAvviso
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 
@@ -249,6 +252,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """
@@ -280,6 +284,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 
@@ -311,6 +316,7 @@ Then match response.numeroAvviso == numeroAvviso
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 

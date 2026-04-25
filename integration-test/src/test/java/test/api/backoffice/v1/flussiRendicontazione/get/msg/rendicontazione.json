@@ -18,8 +18,7 @@
 	"tipo":"#string",
 	"importo":"#? isImportoConDueDecimali(_)",
 	"data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
-	"allegato": "#ignore"
+	"allegato": "#ignore",
+	"commissioni" : "##number"
   }
 }
-
-

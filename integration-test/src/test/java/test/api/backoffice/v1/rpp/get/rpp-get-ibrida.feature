@@ -13,8 +13,8 @@ Background:
 * def riversamentoCumulativo = "true"
 
 * configure followRedirects = false
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
-* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 # Configurazione Dominio 3
 
@@ -74,6 +74,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 # * match response.dati == esitoGetPayment
 
@@ -81,7 +82,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-# * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+# * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
@@ -89,7 +90,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataRptEnd2 = getDateTime()
 

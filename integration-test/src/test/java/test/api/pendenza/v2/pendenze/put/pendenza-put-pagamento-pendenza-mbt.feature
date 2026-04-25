@@ -7,7 +7,7 @@ Background:
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
-* def esitoPaGetPaymentV2 = read('classpath:test/workflow/modello3/v2/msg/getPaymentV2-response-ok.json')
+* def esitoPaGetPaymentV2 = read('classpath:test/workflow/modellounico/v1/msg/getPaymentV2-response-ok.json')
 
 * def faultBean = 
 """
@@ -65,6 +65,7 @@ Then status 200
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
@@ -99,6 +100,7 @@ Then status 200
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean2
 
@@ -151,6 +153,7 @@ Then status 200
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 
@@ -158,7 +161,7 @@ Then status 200
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
@@ -166,7 +169,7 @@ Then status 200
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 #* def ccp =  ccp_numero_avviso
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifico lo stato della pendenza
 

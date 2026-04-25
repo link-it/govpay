@@ -385,10 +385,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 #### Confiugrazione simulatore
 
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
+* def stazioneNdpSymPut = read('classpath:test/workflow/modellounico/v1/msg/stazione.json')
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
+* def stazioneNdpSymPut = read('classpath:test/workflow/modellounico/v1/msg/stazione.json')
 * def idStazione = '11111111113_02'
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
@@ -402,9 +402,9 @@ And request
 """
 {
   "urlEC": "#(govpay_web_connector_url +'/ecsp/psp')",
-  "auxDigit": 0,
+  "auxDigit": 3,
   "versione": 1,
-  "segregationCode": null,
+  "segregationCode": '00',
   "ragioneSociale": "Ente Creditore Test",
   "idStazione": "11111111113_01",
   "idIntermediario": "11111111113"

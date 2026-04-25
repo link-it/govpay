@@ -9,7 +9,7 @@ Background:
 * def pendenzaResponse = read('msg/pendenza-get_monovoce_contabilita.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non neque vestibulum, porta eros quis, fringilla enim. Nam sit amet justo sagittis, pretium urna et, convallis nisl. Proin fringilla consequat ex quis pharetra. Nam laoreet dignissim leo. Ut pulvinar odio et egestas placerat. Quisque tincidunt egestas orci, feugiat lobortis nisi tempor id. Donec aliquet sed massa at congue. Sed dictum, elit id molestie ornare, nibh augue facilisis ex, in molestie metus enim finibus arcu. Donec non elit dictum, dignissim dui sed, facilisis enim. Suspendisse nec cursus nisi. Ut turpis justo, fermentum vitae odio et, hendrerit sodales tortor. Aliquam varius facilisis nulla vitae hendrerit. In cursus et lacus vel consectetur.'
-* def esitoPaGetPaymentV2 = read('classpath:test/workflow/modello3/v2/msg/getPaymentV2-response-ok.json')
+* def esitoPaGetPaymentV2 = read('classpath:test/workflow/modellounico/v1/msg/getPaymentV2-response-ok.json')
 
 * configure retry = { count: 25, interval: 10000 }
 
@@ -184,6 +184,7 @@ Then status 200
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 * match response.dati.transferList.transfer[0].metadata.mapEntry[0].key == 'CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT'
@@ -257,6 +258,7 @@ Then status 200
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 * match response.dati.transferList.transfer[0].metadata.mapEntry[0].key == 'CAPITOLOBILANCIO'

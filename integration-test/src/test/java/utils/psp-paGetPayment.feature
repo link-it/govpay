@@ -10,9 +10,12 @@ Feature: Attivazione della rpt API SANP 2.4
  
 Background:
 
+* call read('classpath:utils/common-utils.feature')
+
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 * def versionePagamento = '2'
-* def riversamentoCumulativo = karate.get('riversamentoCumulativo') != null ? karate.get('riversamentoCumulativo') : 0
+* def riversamentoCumulativo = typeof riversamentoCumulativo != 'undefined' ? riversamentoCumulativo : 0
+* def idCart = typeof idCart != 'undefined' ? idCart : getCurrentTimeMillis()
 
 Scenario:
 
@@ -26,5 +29,7 @@ And param tipoRicevuta = tipoRicevuta
 And param ibanAccredito = ibanAccredito
 And param riversamentoCumulativo = riversamentoCumulativo
 And param versione = versionePagamento
+And param idCart = idCart
+And param inviaRicevuta = inviaRicevuta
 When method get
 Then assert responseStatus == 200

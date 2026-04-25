@@ -99,8 +99,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def riversamentoCumulativo = "true"
 
 * configure followRedirects = false
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
-* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 Scenario: Pagamento pendenza caricata con invio Promemoria con avviso di pagamento
 
@@ -171,6 +171,7 @@ And match response.items[0].Content.Headers.To[0] == pendenzaPut.soggettoPagator
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
@@ -178,7 +179,7 @@ And match response.items[0].Content.Headers.To[0] == pendenzaPut.soggettoPagator
  
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-#	* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+#	* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
@@ -186,7 +187,7 @@ And match response.items[0].Content.Headers.To[0] == pendenzaPut.soggettoPagator
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-# * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+# * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataRptEnd2 = getDateTime()
 
