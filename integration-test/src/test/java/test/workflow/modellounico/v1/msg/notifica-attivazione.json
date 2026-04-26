@@ -30,7 +30,9 @@
                   "idTransfer":1,
                   "transferAmount":'#? _ == pendenzaPut.voci[0].importo || _ == pendenzaPut.voci[0].importo.toString()',
                   "fiscalCodePA":"#(idDominio)",
+                  "companyName":"#(dominio.ragioneSociale)",
                   "IBAN":"#(ibanAccredito)",
+                  "richiestaMarcaDaBollo":"##null",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
                   "transferCategory":"9/SEGRETERIA",
                   "metadata":"##null"
