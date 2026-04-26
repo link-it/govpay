@@ -2,7 +2,7 @@ Feature: Ricerca pagamenti
 
 Background:
 
-* callonce read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v4.feature')
+* callonce read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v4.feature')
 
 Scenario Outline: Ricerca pendenze applicazione star/star filtrati per data
 

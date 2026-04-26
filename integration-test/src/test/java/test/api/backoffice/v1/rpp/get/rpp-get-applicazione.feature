@@ -2,7 +2,7 @@ Feature: Ricerca transazioni
 
 Background:
 
-* callonce read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3.feature')
+* callonce read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v3.feature')
 
 Scenario: Ricerca transazioni BASIC filtrati per data
 

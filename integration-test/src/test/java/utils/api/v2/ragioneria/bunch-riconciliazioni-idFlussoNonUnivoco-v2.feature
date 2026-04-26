@@ -12,7 +12,7 @@ Scenario: Rendicontazioni
 
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
-* call read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v3.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera'
@@ -23,7 +23,7 @@ Then assert responseStatus == 200
 * def dataInizioFR = getDateTime()
 * call sleep(1000)
 
-* call read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v3.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera'

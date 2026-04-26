@@ -2,7 +2,7 @@ Feature: Dettaglio ricevute
 
 Background:
 
-* callonce read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3.feature')
+* callonce read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v3.feature')
 * def applicazioneRequest = read('msg/applicazione_domini1_segreteria.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 

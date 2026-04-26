@@ -9,4 +9,4 @@ Background:
 
 Scenario: Setup Pagamenti
 
-* call read('classpath:utils/workflow/modellounico/v1/modello1-bunch-pagamenti-v3-no-conf.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v3-no-conf.feature')
