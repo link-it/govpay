@@ -11,13 +11,13 @@ trasmetta una RPT avente precompilati i parametri **identificativoPSP**,
 Per ottenere questo risultato è sufficiente utilizzare le consuete API di Pagamento valorizzando 
 gli omonimi parametri in query string secondo le indicazioni del PSP:
 
-.. code-block:: json
+.. code-block:: text
    :caption: Richiesta pagamento
 
    POST /pagamenti?identificativoPSP=CIPBITMM&identificativoIntermediarioPSP=13212880150&identificativoCanale=13212880150_90&tipoVersamento=CP
    Accept: application/json
-   Content-type: application/json"
-       
+   Content-type: application/json
+
    {
      "pendenze": [
        {

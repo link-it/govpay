@@ -21,6 +21,7 @@ Le modalità di autenticazione supportate dalle API di GovPay sono quelle indica
     spid        codice fiscale o partita iva dell'utenza spid               proprietà dell'utenza SPID propagate in header HTTP                 spid
     session     principal individuato in sede di creazione della sessione   autenticazione tramite sessione precedentemente creata              session
     api-key     valore dell'header                                          API-Id e API-Key forniti tramite header HTTP                        apikey
+    oauth2      subject del token JWT                                       autenticazione tramite token Bearer OAuth2 (JWT)                    oauth2
     public      nessun principal                                            accesso anonimo                                                     public
     ==========  ==========================================================  =================================================================   ===========
 
@@ -28,7 +29,7 @@ Il valore AUTH_METHOD viene utilizzato per costruire la URL di invocazione delle
 
 BASE_URL + /rs/ + AUTH_METHOD
 
-Esempio di URL di invocazione: *https://host-gp/govpay/frontend/api/pagamento/rs/basic/v2/pagamenti*
+Esempio di URL di invocazione: *https://host-gp/govpay-api-pendenze/rs/basic/v2/pendenze*
 
 L'utilizzo delle modalità di autenticazione ssl e ssl-header prevedono che i certificati utilizzati vengano autorizzati nella configurazione di livello trasporto su GovPay.
 La modalità session consente di riusare una sessione di autenticazione attiva, fornendo il relativo identificativo, evitando quindi di effettuare una nuova autenticazione.

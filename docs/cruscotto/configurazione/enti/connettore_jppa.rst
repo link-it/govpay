@@ -57,7 +57,7 @@ La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quoti
 
 
 Tracciato esiti spedizioni versione 1.0
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Per ciascuna notifica di pagamento inviata viene aggiunto un record con l'esito dell'operazione:
 

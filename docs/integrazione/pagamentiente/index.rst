@@ -1,13 +1,10 @@
 .. _integrazione_pagamentiente:
 
-.. NOTE::
-   In questa sezione viene descritto il nuovo processo di pagamento
-   ad iniziativa Ente tramite il Modello Unico introdotto dalle SANP 3.2.
-   Restano disponibili i servizi che realizzano il precedente processo
-   di pagamento (c.d. Modello Uno) benchè deprecato da pagoPA.
-
 Pagamenti ad iniziativa ente
 ============================
+
+In questa sezione viene descritto il processo di pagamento
+ad iniziativa Ente tramite il Modello Unico introdotto dalle SANP 3.2.
 
 Il Soggetto Debitore utilizza il Portale dei
 Pagamenti dell’Ente Creditore per effettuare i pagamenti dovuti.
@@ -72,7 +69,7 @@ Nel caso fossero presenti piu’ tentativi di pagamento il servizio ordina i ris
 
 Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}** per scaricare la lista delle ricevute. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890** e lo iuv sia **10000000000000001**.
 
-.. code-block:: json
+.. code-block:: text
       :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}*
 
       GET https://demo.govcloud.it/govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio=01234567890&iuv=10000000000000001
@@ -113,7 +110,7 @@ Dove:
 
 Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}** per scaricare la ricevuta in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001**, l'idRicevuta sia **100000000000902038186**.
 
-.. code-block:: json
+.. code-block:: text
       :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}*
 
       GET https://demo.govcloud.it/govpay/backend/api/ragioneria/rs/basic/v3/ricevute/01234567890/10000000000000001/100000000000902038186

@@ -13,9 +13,8 @@ E' possibile indicare la lingua secondaria come proprietà della pendenza:
 
 .. code-block:: json
     :caption: Esempio di pagamento Imposta di bollo
-    
+
     {
-      ...
       "proprieta": {
 	    "linguaSecondaria": "de",
 	    "linguaSecondariaCausale": "Zahlungsgegenstand"

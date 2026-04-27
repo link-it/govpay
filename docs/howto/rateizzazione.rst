@@ -25,13 +25,11 @@ Per farlo è sufficiente valorizzare in ciascuna pendenza l'elemento **documento
     :caption: Esempio di pagamento rateale
     
     {
-      ...
       "documento": {
         "identificativo": "IMU-12345",
         "descrizione": "IMU 2020",
         "rata": 2
       }
-      ...
     }
 
 Di seguito le indicazioni sulla valorizzazione dei campi:
@@ -62,15 +60,14 @@ nel caso dei *Pagamenti rateizzati* visti in precedenza, utilizzando la seguente
     :caption: Esempio di pagamento ridotto
     
     {
-      ...
       "documento": {
         "identificativo": "CDS-12345",
         "descrizione": "Sanzione CDS",
         "soglia": {
           "tipo": "ENTRO",
           "giorni": 30
+        }
       }
-      ...
     }
 
 Una volta caricate le posizioni, è possibile acquisire la stampa degli avvisi

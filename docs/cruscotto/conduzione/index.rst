@@ -22,3 +22,4 @@ Le attività supportate per la fase di conduzione comprendono le operazioni di m
         impostazioni/index
         pagamenti/index
         riscossioni/index
+        appendici/index

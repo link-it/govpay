@@ -247,7 +247,7 @@ in formati e modalità compatibili con applicativi terzi. Di seguito i connettor
    ./pendenza_spontaneo
    ./pendenza_email
    ./pendenza_appio
-   ./pendenza_altre
+   ./pendenza_altrefunzioni
    ./connettore_secim
    ./connettore_govpay
    ./connettore_mypivot  

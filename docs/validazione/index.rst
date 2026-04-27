@@ -44,7 +44,7 @@ La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' ne
 La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato, inoltre non viene utilizzata a runtime ma solo per l'esecuzione dell'installer.
 
 CVE-2025-10492
-=============
+==============
 
 file name: jasperreports-6.21.5.jar
 
