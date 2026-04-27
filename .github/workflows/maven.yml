@@ -93,6 +93,27 @@ jobs:
         name: third-party-licenses
         path: third-party-licenses
 
+    - name: SpotBugs Analysis
+      run: mvn spotbugs:spotbugs -Dowasp=none
+
+    - name: Collect SpotBugs reports
+      if: always()
+      run: |
+        mkdir -p target/spotbugs-reports
+        find . -name "spotbugs*.xml" -o -name "spotbugs*.html" | while read f; do
+          module=$(echo "$f" | sed 's|^\./||;s|/target/.*||;s|/|_|g')
+          ext="${f##*.}"
+          cp "$f" "target/spotbugs-reports/${module}.${ext}"
+        done
+
+    - name: Upload SpotBugs reports
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: spotbugs-reports
+        path: target/spotbugs-reports/
+        retention-days: 30
+
     - name: Collect OWASP reports
       if: always()
       run: |
@@ -160,6 +181,13 @@ jobs:
         name: third-party-licenses
         path: reports/third-party-licenses/
 
+    - name: Download SpotBugs reports
+      uses: actions/download-artifact@v7
+      continue-on-error: true
+      with:
+        name: spotbugs-reports
+        path: reports/spotbugs/
+
     - name: Download OSV Scanner SARIF
       uses: actions/download-artifact@v7
       continue-on-error: true
@@ -175,7 +203,7 @@ jobs:
 
     - name: Assemble reports ZIP
       run: |
-        mkdir -p reports/owasp reports/osv reports/third-party-licenses
+        mkdir -p reports/owasp reports/osv reports/spotbugs reports/third-party-licenses
 
         # pipeline info
         echo "Pipeline Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \

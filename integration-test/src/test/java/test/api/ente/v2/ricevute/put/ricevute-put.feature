@@ -463,13 +463,12 @@ And match response.risultati[0].parametriRichiesta.url == ente_api_url + "/v1/ri
 @test-auth-apikey
 Scenario: Verifica tutti gli eventi di un Pagamento eseguito di un dovuto precaricato non scaduto verso API Ente con autenticazione header
 
-* def apiId = 'X-GOVPAY-AUTH'
-* def headerPrincipal = 'govpay'
+* def headerPrincipal = 'X-GOVPAY-AUTH'
 * def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 * set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
 * set applicazione.servizioIntegrazione.url = ente_api_url + '/v1'
-* set applicazione.servizioIntegrazione.auth.apiId = apiId
-* set applicazione.servizioIntegrazione.auth.apiKey = headerPrincipal
+* set applicazione.servizioIntegrazione.auth.apiId = headerPrincipal
+* set applicazione.servizioIntegrazione.auth.apiKey = 'govpay'
 
 
 # "url": '#(ente_api_url + "/v1")',

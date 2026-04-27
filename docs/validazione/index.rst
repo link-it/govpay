@@ -7,9 +7,32 @@ Ogni nuova versione di GovPay viene sottoposta alle seguenti verifiche di sicure
 
 - Static Code Analysis: identifica possibili vulnerabilità all’interno del codice sorgente utilizzando gli strumenti `SpotBugs <https://spotbugs.github.io/>`_ e `Sonarqube <https://www.sonarsource.com/products/sonarqube/>`_;
 - Dynamic Analysis: cerca vulnerabilità del software durante l’effettiva esecuzione del prodotto. L’analisi viene eseguita attraverso l’esecuzione di estese batterie di test realizzate con `Karate <https://github.com/karatelabs/karate>`_;
-- Third Party Dependency Analysis: assicura che tutte le librerie terza parte utilizzate non siano soggette a vulnerabilità di sicurezza note, utilizzando il tool `OWASP Dependency-Check </https://owasp.org/www-project-dependency-check/>`_.
+- Third Party Dependency Analysis: assicura che tutte le librerie terza parte utilizzate non siano soggette a vulnerabilità di sicurezza note, utilizzando il tool `OWASP Dependency-Check </https://owasp.org/www-project-dependency-check/>`_;
+- OSV Analysis: verifica le dipendenze del progetto rispetto al database `OSV <https://osv.dev/>`_ tramite `OSV-Scanner <https://github.com/google/osv-scanner>`_, identificando vulnerabilità note nelle librerie terza parte utilizzate.
 
-Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/job/govpay/>`_.
+Le verifiche sono eseguite automaticamente attraverso due sistemi di Continuous Integration:
+
+Pipeline GitHub Actions
+***********************
+
+La `pipeline GitHub Actions <https://github.com/link-it/govpay/actions>`_ viene eseguita ad ogni push e pull request sul repository ed effettua le seguenti analisi:
+
+- **Build e OWASP Dependency-Check**: compilazione del progetto con analisi delle dipendenze tramite OWASP Dependency-Check, con consultazione dei database NVD e OSS Index;
+- **SpotBugs**: analisi statica del codice sorgente con il plugin `FindSecBugs <https://find-sec-bugs.github.io/>`_ per l'identificazione di vulnerabilità di sicurezza;
+- **OSV Scan**: scansione delle dipendenze rispetto al database OSV tramite `OSV-Scanner <https://github.com/google/osv-scanner>`_;
+- **License Analysis**: verifica delle licenze delle dipendenze terza parte per garantire la compatibilità con la licenza del progetto.
+
+I report prodotti dalle analisi vengono raccolti come artifact della pipeline e, in caso di rilascio (tag), inclusi nello ZIP allegato alla GitHub Release.
+
+Pipeline Jenkins
+****************
+
+Il sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/job/govpay/>`_ esegue le verifiche ad ogni modifica del codice sul branch `master` ed effettua le seguenti analisi:
+
+- **SpotBugs con FindSecBugs**: analisi statica del codice sorgente per l'identificazione di vulnerabilità;
+- **Sonarqube**: analisi approfondita della qualità del codice e delle vulnerabilità;
+- **Dynamic Analysis**: esecuzione delle batterie di test di integrazione realizzate con `Karate <https://github.com/karatelabs/karate>`_;
+- **OWASP Dependency-Check**: analisi delle dipendenze terza parte per vulnerabilità note.
 
 Falsi positivi
 **************
