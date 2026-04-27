@@ -137,6 +137,21 @@ LICENSE_COMPATIBILITY = {
 
     # Oracle Free Use Terms and Conditions (FUTC) - used by Oracle JDBC drivers
     'Oracle Free Use Terms and Conditions (FUTC)': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'Oracle-FUTC'},
+
+    # BSD varianti aggiuntive
+    'Prior BSD License': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'BSD'},
+    'BSD 3-clause License w/nuclear disclaimer': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'BSD-3-Clause'},
+    'BSD License 2.0': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'BSD-2-Clause'},
+
+    # MIT varianti aggiuntive
+    'The MIT License (MIT)': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'MIT'},
+
+    # Public Domain varianti
+    'Public Domain': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'Public-Domain'},
+    'Public domain, Sun Microsoystems': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'Public-Domain'},
+
+    # LGPL varianti aggiuntive
+    'GNU Lesser General Public Licence': {'gplv3_compatible': True, 'enterprise_safe': True, 'category': 'LGPL'},
 }
 
 def normalize_license_name(license_name):
@@ -158,6 +173,8 @@ def infer_license_from_project_knowledge(group_id, artifact_id):
         'xalan:xalan': {'name': 'Apache License, Version 2.0', 'url': 'https://www.apache.org/licenses/LICENSE-2.0', 'note': 'Apache Xalan project'},
         'xalan:serializer': {'name': 'Apache License, Version 2.0', 'url': 'https://www.apache.org/licenses/LICENSE-2.0', 'note': 'Apache Xalan project'},
         'xerces:xercesImpl': {'name': 'Apache License, Version 2.0', 'url': 'https://www.apache.org/licenses/LICENSE-2.0', 'note': 'Apache Xerces project'},
+        'com.sun.xml.security:xml-security-impl': {'name': 'CDDL + GPLv2 with classpath exception', 'url': 'https://glassfish.dev.java.net/public/CDDL+GPL.html', 'note': 'Metro/GlassFish XML Security, dual CDDL+GPL'},
+        'net.sourceforge.barbecue:barbecue': {'name': 'BSD License', 'url': 'https://sourceforge.net/projects/barbecue/', 'note': 'Barbecue barcode library, BSD licensed'},
         'xml-apis:xml-apis': {'name': 'Apache License, Version 2.0', 'url': 'https://www.apache.org/licenses/LICENSE-2.0', 'note': 'Apache XML Commons project'},
     }
 
