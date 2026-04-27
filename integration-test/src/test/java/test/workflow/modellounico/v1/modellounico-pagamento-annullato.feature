@@ -58,7 +58,7 @@ Scenario: Attivazione RPT annullata non precaricato
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 * def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
-
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()

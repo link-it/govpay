@@ -33,6 +33,7 @@ Scenario: Attivazione RPT scaduta precaricata
 * def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
@@ -51,6 +52,7 @@ Scenario: Attivazione RPT scaduta non precaricato
 * def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
@@ -97,6 +99,7 @@ Scenario: Attivazione RPT scaduta non precaricato
 * def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()

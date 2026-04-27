@@ -42,6 +42,7 @@ Scenario: Attiva pagamento sconosciuto
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == 
 """

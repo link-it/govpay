@@ -48,6 +48,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Attivo il pagamento 
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()

@@ -25,6 +25,7 @@ Scenario: Attivazione RPT con importo errato dovuto precaricato
 
 # Attivo il pagamento 
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
@@ -44,6 +45,7 @@ Scenario: Attivazione RPT con importo errato dovuto non precaricato
 
 # Attivo il pagamento 
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()

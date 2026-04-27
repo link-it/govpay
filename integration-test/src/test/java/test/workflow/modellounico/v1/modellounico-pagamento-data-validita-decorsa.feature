@@ -33,7 +33,7 @@ Scenario: Attivazione RPT pendenza precaricata con data validita decorsa
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
-
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
@@ -101,6 +101,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()

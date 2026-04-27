@@ -51,6 +51,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # NON_ESEGUITO_SANP_24("R22")
 
+* def riversamentoCumulativo = 'true'
 * def tipoRicevuta = "R22"
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
