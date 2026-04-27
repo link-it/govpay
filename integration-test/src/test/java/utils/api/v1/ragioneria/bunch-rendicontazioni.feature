@@ -29,7 +29,7 @@ Scenario: Generazione rendicontazioni cumulative
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
+* def cumulativo = 'true'
 * def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
 * call read('classpath:utils/pa-carica-avviso.feature')
 
@@ -51,7 +51,7 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
+* def cumulativo = 'true'
 * def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
 * set pendenzaPut.idUnitaOperativa = idUnitaOperativa
 * call read('classpath:utils/pa-carica-avviso.feature')
@@ -74,7 +74,7 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
+* def cumulativo = 'true'
 * def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
 * set pendenzaPut.idUnitaOperativa = idUnitaOperativa2
 * call read('classpath:utils/pa-carica-avviso.feature')
@@ -97,7 +97,7 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
+* def cumulativo = 'true'
 * def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
 * set pendenzaPut.idDominio = idDominio_2
 * set pendenzaPut.idUnitaOperativa = idUnitaOperativa
@@ -124,7 +124,7 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
+* def cumulativo = 'true'
 * def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
 * set pendenzaPut.idDominio = idDominio_2
 * set pendenzaPut.voci[0].codEntrata = codEntrataSiope
