@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -28,7 +28,7 @@ jobs:
       run: sudo timedatectl set-timezone Europe/Rome
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -65,7 +65,7 @@ jobs:
         OSS_INDEX_PASSWORD: ${{ secrets.OSS_INDEX_PASSWORD }}
 
     - name: Cache OWASP Dependency-Check DB
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .dependency-check/data
         key: ${{ runner.os }}-owasp-${{ github.sha }}
@@ -88,7 +88,7 @@ jobs:
         python3 .github/workflows/scripts/analyze_licenses.py --exceptions .github/workflows/scripts/license-exceptions.json
 
     - name: Archive licenses analysis results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: third-party-licenses
         path: third-party-licenses
@@ -101,7 +101,7 @@ jobs:
 
     - name: Upload OWASP reports
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: owasp-reports
         path: target/reports/
@@ -130,10 +130,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -149,19 +149,19 @@ jobs:
         popd
 
     - name: Download OWASP reports
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       with:
         name: owasp-reports
         path: reports/owasp/
 
     - name: Download third-party-licenses
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       with:
         name: third-party-licenses
         path: reports/third-party-licenses/
 
     - name: Download OSV Scanner SARIF
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       continue-on-error: true
       with:
         name: OSV Scanner SARIF file
