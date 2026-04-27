@@ -1,9 +1,14 @@
 {
   "exceptions": [
     {
-      "groupId": "org.gov4j.govpay",
-      "artifactId": "govpay-common",
-      "reason": "Libreria interna del progetto GovPay, rilasciata sotto GPLv3. Compatibile in quanto anche govpay-fdr-batch e' distribuito sotto GPLv3."
+      "groupId": "it.govpay",
+      "artifactId": "*",
+      "reason": "Moduli interni del progetto GovPay, rilasciati sotto GNU GPLv3."
+    },
+    {
+      "groupId": "org.gov4j.govway",
+      "artifactId": "*",
+      "reason": "Librerie del progetto GovWay (OpenSPCoop2), rilasciate sotto GNU GPLv3. Compatibili con il progetto GovPay anch'esso GPLv3."
     }
   ]
 }
