@@ -64,7 +64,7 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey non autorizzato
 
-* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'apikey'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'apikey'})
 
 Given url ragioneriaBaseurl
 And path '/profilo'

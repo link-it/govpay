@@ -26,10 +26,6 @@ Scenario:
 				return govpay_api_backoffice_url + '/rs/' + param.autenticazione + '/' + param.versione;
 			}
 			
-			if(param.api == 'pagamento') {
-				return govpay_api_pagamento_url + '/rs/' + param.autenticazione + '/' + param.versione;
-			}
-			
 			if(param.api == 'user') {
 				return govpay_api_user_url + '/rs/' + param.autenticazione + '/' + param.versione;
 			}
