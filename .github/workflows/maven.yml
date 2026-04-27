@@ -160,6 +160,13 @@ jobs:
         name: third-party-licenses
         path: reports/third-party-licenses/
 
+    - name: Download OSV Scanner SARIF
+      uses: actions/download-artifact@v4
+      continue-on-error: true
+      with:
+        name: OSV Scanner SARIF file
+        path: reports/osv/
+
     - name: Collect release artifacts
       run: |
         mkdir -p release-artifacts
@@ -168,8 +175,12 @@ jobs:
 
     - name: Assemble reports ZIP
       run: |
+        mkdir -p reports/owasp reports/osv reports/third-party-licenses
+
+        # pipeline info
         echo "Pipeline Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           > reports/${{ github.ref_name }}_actions_run.txt
+
         zip -r release-artifacts/release-reports-${{ github.ref_name }}.zip reports/
         ls -lh release-artifacts/
 
