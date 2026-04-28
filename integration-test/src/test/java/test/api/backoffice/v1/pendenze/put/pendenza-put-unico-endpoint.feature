@@ -41,10 +41,10 @@ And match response == read('msg/pendenza-get.json')
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
  

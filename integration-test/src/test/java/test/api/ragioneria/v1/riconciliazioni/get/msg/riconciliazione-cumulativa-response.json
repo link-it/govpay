@@ -24,6 +24,7 @@
          "tipo":"ENTRATA",
          "importo":"#(importo1)",
          "data":"#notnull",
+         "commissioni":"##number",
          "incasso":{
             "causale":"#(causale)",
             "importo":"#(importo)",
@@ -51,6 +52,7 @@
          "tipo":"ENTRATA",
          "importo":"#(importo2)",
          "data":"#notnull",
+         "commissioni":"##number",
          "incasso":{
             "causale":"#(causale)",
             "importo":"#(importo)",

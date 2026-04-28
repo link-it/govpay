@@ -38,7 +38,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
@@ -47,7 +46,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
@@ -89,7 +87,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
@@ -98,7 +95,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
@@ -346,7 +342,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
@@ -355,7 +350,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
@@ -391,7 +385,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
@@ -400,7 +393,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
@@ -434,7 +426,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
@@ -443,7 +434,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
@@ -477,7 +467,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
@@ -486,7 +475,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  

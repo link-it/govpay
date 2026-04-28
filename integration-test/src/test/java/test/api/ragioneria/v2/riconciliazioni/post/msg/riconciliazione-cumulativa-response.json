@@ -17,6 +17,7 @@
          "tipo":"ENTRATA",
          "importo":"#(importo1)",
          "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "commissioni":"##number",
          "vocePendenza": {
 			"indice":1,
 			"idVocePendenza":"1",
@@ -54,6 +55,7 @@
          "tipo":"ENTRATA",
          "importo":"#(importo2)",
          "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "commissioni":"##number",
          "vocePendenza": {
 			"indice":1,
 			"idVocePendenza":"1",

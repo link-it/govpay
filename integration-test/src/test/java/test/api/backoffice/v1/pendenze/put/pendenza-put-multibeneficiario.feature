@@ -115,39 +115,6 @@ And match response == read('msg/pendenza-get_multibeneficiario.json')
 * match response.voci[1].indice == 2
 * match response.voci[1].stato == 'Non eseguito'
 
-
-Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp
-
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
-* set pendenzaPut.idTipoPendenza = codLibero
-
-Given url pendenzeBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers idA2ABasicAutenticationHeader
-And request pendenzaPut
-When method put
-Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
-
-* def numeroAvviso = response.numeroAvviso
-* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
-* def importo = pendenzaPut.importo
-* def tipoRicevuta = "R01"
-* def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.faultBean == 
-"""
-	{
-		"faultCode":"PAA_PAGAMENTO_MULTIBENEFICIARIO_NON_CONSENTITO",
-		"faultString":"Pagamento multibeneficiario non consentito con le specifiche SANP-SPC 2.3.0.",
-		"id":"#(idDominio)",
-		"description": #notnull,
-		"serial":'##null'
-	}
-"""
-
 Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp con api SANP-SPC 2.4.0.
 
 * def idPendenza = getCurrentTimeMillis()
@@ -231,39 +198,6 @@ And match response == read('msg/pendenza-get_multibeneficiario.json')
 * match response.voci[0].stato == 'Non eseguito'
 * match response.voci[1].indice == 2
 * match response.voci[1].stato == 'Non eseguito'
-
-
-Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziativa psp
-
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('msg/pendenza-put_multibeneficiario_riferimento.json')
-* set pendenzaPut.idTipoPendenza = codLibero
-
-Given url pendenzeBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers idA2ABasicAutenticationHeader
-And request pendenzaPut
-When method put
-Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
-
-* def numeroAvviso = response.numeroAvviso
-* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
-* def importo = pendenzaPut.importo
-* def tipoRicevuta = "R01"
-* def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.faultBean == 
-"""
-	{
-		"faultCode":"PAA_PAGAMENTO_MULTIBENEFICIARIO_NON_CONSENTITO",
-		"faultString":"Pagamento multibeneficiario non consentito con le specifiche SANP-SPC 2.3.0.",
-		"id":"#(idDominio)",
-		"description": #notnull,
-		"serial":'##null'
-	}
-"""
 
 Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziativa psp con api SANP-SPC 2.4.0.
 

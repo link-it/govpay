@@ -6,6 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * def pathServizio = '/riscossioni'
@@ -30,38 +31,32 @@ And request pendenzaPut
 When method put
 Then status 201
 
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
-
-# Attivo il pagamento 
-
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataEnd = getDateTime()
 
-* def iur1 = response.rt.datiPagamento.datiSingoloPagamento[0].identificativoUnivocoRiscossione
-* def iur2 = response.rt.datiPagamento.datiSingoloPagamento[1].identificativoUnivocoRiscossione
+* def iur1 = response.rt.receiptId
+* def iur2 = response.rt.receiptId
 
 # Ho avviato il pagamento. Verifico i filtri.
 

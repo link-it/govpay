@@ -262,11 +262,11 @@ And match response.apiRagioneria == true
 # Disabilita l'applicazione di prova per non inquinare gli altri test
 * def applicazioneDis = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
 * set applicazioneDis.abilitato = false
+* set applicazioneDis.principal = 'PR_MOD_' + idComune
+
 Given url backofficeBaseurl
 And path 'applicazioni', idAppl1
 And headers basicAutenticationHeader
 And request applicazioneDis
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
-
-

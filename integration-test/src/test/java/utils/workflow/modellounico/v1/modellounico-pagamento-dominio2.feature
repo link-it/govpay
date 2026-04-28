@@ -13,7 +13,7 @@ Scenario: Pagamento modello unico per il dominio_2 con controllo notifica di att
 
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
 * set pendenzaPut.idDominio = idDominio_2
 * set pendenzaPut.voci[0].codEntrata = codEntrataSiope
 * call read('classpath:utils/pa-carica-avviso.feature')

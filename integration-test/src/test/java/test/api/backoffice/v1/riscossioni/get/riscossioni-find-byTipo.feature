@@ -6,8 +6,12 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 
 * def pathServizio = '/riscossioni'
+
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 Scenario: Filtro su divisione e direzione
 
@@ -24,33 +28,28 @@ And request pendenzaPut
 When method put
 Then status 201
 
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
-
-# Attivo il pagamento 
-
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Pendenza 2
 
@@ -63,33 +62,28 @@ And request pendenzaPut
 When method put
 Then status 201
 
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
-
-# Attivo il pagamento 
-
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Pendenza 3
 
@@ -102,33 +96,28 @@ And request pendenzaPut
 When method put
 Then status 201
 
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
-
-# Attivo il pagamento 
-
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Pendenza 4
 
@@ -141,34 +130,28 @@ And request pendenzaPut
 When method put
 Then status 201
 
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
-
-# Attivo il pagamento 
-
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
-* call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd1 = getDateTime()
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
-
 
 * def dataEnd = getDateTime()
 
@@ -209,18 +192,22 @@ Then status 200
 And match response == 
 """
 {
-	numRisultati: 4,
+	numRisultati: 8,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[4]'
+	risultati: '#[8]'
 }
 """
 And match response.risultati[0].tipo == 'ENTRATA'
 And match response.risultati[1].tipo == 'ENTRATA'
 And match response.risultati[2].tipo == 'ENTRATA'
 And match response.risultati[3].tipo == 'ENTRATA'
+And match response.risultati[4].tipo == 'ENTRATA'
+And match response.risultati[5].tipo == 'ENTRATA'
+And match response.risultati[6].tipo == 'ENTRATA'
+And match response.risultati[7].tipo == 'ENTRATA'
 
 Given url backofficeBaseurl
 And path pathServizio
@@ -233,22 +220,26 @@ Then status 200
 And match response == 
 """
 {
-	numRisultati: 8,
+	numRisultati: 12,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[8]'
+	risultati: '#[12]'
 }
 """
 And match response.risultati[0].tipo == 'ENTRATA'
-And match response.risultati[1].tipo == 'MBT'
-And match response.risultati[2].tipo == 'ENTRATA'
-And match response.risultati[3].tipo == 'MBT'
+And match response.risultati[1].tipo == 'ENTRATA'
+And match response.risultati[2].tipo == 'MBT'
+And match response.risultati[3].tipo == 'ENTRATA'
 And match response.risultati[4].tipo == 'ENTRATA'
 And match response.risultati[5].tipo == 'MBT'
 And match response.risultati[6].tipo == 'ENTRATA'
-And match response.risultati[7].tipo == 'MBT'
+And match response.risultati[7].tipo == 'ENTRATA'
+And match response.risultati[8].tipo == 'MBT'
+And match response.risultati[9].tipo == 'ENTRATA'
+And match response.risultati[10].tipo == 'ENTRATA'
+And match response.risultati[11].tipo == 'MBT'
 
 Given url backofficeBaseurl
 And path pathServizio
