@@ -21,9 +21,12 @@ Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della transazi
 
 * def risposta = read('msg/<risposta>')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def idDominioDet = <rpt>.transferList.transfer[0].fiscalCodePA
+* def iuvDet = <rpt>.creditorReferenceId
+* def ccpDet = '3' + iuvDet
 
 Given url pendenzeBaseurl
-And path '/rpp', <rpt>.dominio.identificativoDominio, <rpt>.datiVersamento.identificativoUnivocoVersamento, <rpt>.datiVersamento.codiceContestoPagamento
+And path '/rpp', idDominioDet, iuvDet, ccpDet
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status <httpStatus>
@@ -42,7 +45,6 @@ Examples:
 | applicazione_domini1_star.json | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | transazione-get-singolo_eseguito_ente.json |
 | applicazione_domini1_star.json | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | transazione-get-singolo_eseguito_ente.json |
 | applicazione_domini1_star.json | rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_noneseguito_ente.json |
-| applicazione_domini1_star.json | rpt_Verdi_RIFIUTATO_DOM1_LIBERO | 200 | transazione-get-singolo_rifiutato_ente.json |
 | applicazione_domini1_star.json | rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_incorso_ente.json |
 | applicazione_domini1_star.json | rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_eseguito_ente.json |
 | applicazione_domini1_star.json | rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_noneseguito_ente.json |

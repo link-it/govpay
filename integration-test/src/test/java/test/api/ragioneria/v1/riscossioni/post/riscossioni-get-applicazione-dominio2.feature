@@ -16,20 +16,21 @@ And path '/riscossioni', <riscossione>.idDominio, <riscossione>.iuv, <riscossion
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	idDominio:'#(<riscossione>.idDominio)', 
-	iuv:'#(<riscossione>.iuv)', 
-	iur:'#(<riscossione>.iur)', 
-	indice:'#(<riscossione>.indice)', 
+	idDominio:'#(<riscossione>.idDominio)',
+	iuv:'#(<riscossione>.iuv)',
+	iur:'#(<riscossione>.iur)',
+	indice:'#(<riscossione>.indice)',
 	pendenza:'#notnull',
 	vocePendenza:'#notnull',
 	rpp:'#notnull',
-	stato:'RISCOSSA', 
-	tipo:'ENTRATA', 
-	importo:'#(<riscossione>.importo)', 
-	data:'#(<riscossione>.data)'
+	stato:'RISCOSSA',
+	tipo:'ENTRATA',
+	importo:'#(<riscossione>.importo)',
+	data:'#(<riscossione>.data)',
+	commissioni:'##number'
 }
 """
 
