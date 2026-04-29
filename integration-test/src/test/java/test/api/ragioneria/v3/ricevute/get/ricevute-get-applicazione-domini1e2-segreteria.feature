@@ -12,9 +12,12 @@ Background:
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della transazione
 
 * def risposta = read('msg/<risposta>')
+* def idDominioDet = <rpt>.transferList.transfer[0].fiscalCodePA
+* def iuvDet = <rpt>.creditorReferenceId
+* def ccpDet = '3' + iuvDet
 
 Given url ragioneriaBaseurl
-And path '/ricevute', <rpt>.dominio.identificativoDominio, <rpt>.datiVersamento.identificativoUnivocoVersamento, <rpt>.datiVersamento.codiceContestoPagamento
+And path '/ricevute', idDominioDet, iuvDet, ccpDet
 And headers idA2ABasicAutenticationHeader
 And header Accept = 'application/json'
 When method get
@@ -34,7 +37,6 @@ Examples:
 | applicazione_domini1e2_segreteria.json | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | transazione-get-singolo_eseguito_ente.json |
 | applicazione_domini1e2_segreteria.json | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | transazione-get-singolo_eseguito_ente.json |
 | applicazione_domini1e2_segreteria.json | rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_noneseguito_ente.json |
-| applicazione_domini1e2_segreteria.json | rpt_Verdi_RIFIUTATO_DOM1_LIBERO | 404 | errore_notFound.json |
 | applicazione_domini1e2_segreteria.json | rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE | 404 | errore_notFound.json |
 | applicazione_domini1e2_segreteria.json | rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_eseguito_ente.json |
 | applicazione_domini1e2_segreteria.json | rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_noneseguito_ente.json |

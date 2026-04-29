@@ -9,7 +9,7 @@ Background:
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
-* def esitoAttivaRPT = read('classpath:test/workflow/modellounico/v1/msg/attiva-response-ok.json')
+* def esitoAttivaRPT = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 @test1
 Scenario: Aggiornamento pendenza non pagata scaduta tramite API di verifica

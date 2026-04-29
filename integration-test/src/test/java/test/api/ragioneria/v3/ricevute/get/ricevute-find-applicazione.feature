@@ -18,24 +18,24 @@ And param dataA = dataFine
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response.risultati[0].iuv == rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[1].iuv == rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[2].iuv == rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[3].iuv == rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[4].iuv == rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[5].iuv == rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[0].iuv == rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[1].iuv == rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[6].iuv == rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[7].iuv == rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[8].iuv == rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A.datiVersamento.identificativoUnivocoVersamento
-And match response.risultati[9].iuv == rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[2].iuv == rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[3].iuv == rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[4].iuv == rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[5].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[6].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A.datiVersamento.identificativoUnivocoVersamento
-# And match response.risultati[7].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA.datiVersamento.identificativoUnivocoVersamento
+And match response.risultati[0].iuv == rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2.creditorReferenceId
+And match response.risultati[1].iuv == rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A.creditorReferenceId
+And match response.risultati[2].iuv == rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2.creditorReferenceId
+And match response.risultati[3].iuv == rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A.creditorReferenceId
+And match response.risultati[4].iuv == rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE.creditorReferenceId
+And match response.risultati[5].iuv == rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE.creditorReferenceId
+# And match response.risultati[0].iuv == rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA.creditorReferenceId
+# And match response.risultati[1].iuv == rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA.creditorReferenceId
+And match response.risultati[6].iuv == rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE.creditorReferenceId
+And match response.risultati[7].iuv == rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2.creditorReferenceId
+And match response.risultati[8].iuv == rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A.creditorReferenceId
+And match response.risultati[9].iuv == rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE.creditorReferenceId
+# And match response.risultati[2].iuv == rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2.creditorReferenceId
+# And match response.risultati[3].iuv == rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A.creditorReferenceId
+# And match response.risultati[4].iuv == rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA.creditorReferenceId
+# And match response.risultati[5].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2.creditorReferenceId
+# And match response.risultati[6].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A.creditorReferenceId
+# And match response.risultati[7].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA.creditorReferenceId
 And match response == 
 """
 {

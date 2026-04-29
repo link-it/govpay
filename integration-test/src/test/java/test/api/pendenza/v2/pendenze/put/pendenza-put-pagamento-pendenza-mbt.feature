@@ -15,7 +15,7 @@ Background:
 		"faultCode":"PAA_SEMANTICA",
 		"faultString":"Errore semantico.",
 		"id":"#(idDominio)",
-		"description":'#("Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.")',
+		"description":'#("La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.")',
 		"serial":'##null'
 	}
 """
@@ -26,7 +26,7 @@ Background:
 		"faultCode":"PAA_SEMANTICA",
 		"faultString":"Errore semantico.",
 		"id":"#(idDominio)",
-		"description":'#("Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.")',
+		"description":'#("La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.")',
 		"serial":'##null',
 		"originalFaultCode":'##null',
 		"originalFaultString":'##null',
