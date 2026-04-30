@@ -45,21 +45,21 @@ Then status 200
 # And match response.risultati[15].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
 # And match response.risultati[16].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A
 # And match response.risultati[17].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 18,
+	numRisultati: 10,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[18]'
+	risultati: '#[10]'
 }
 """
 
-* def cod_dominio_sel = response.risultati[0].rpt.dominio.identificativoDominio
-* def iuv_sel = response.risultati[0].rpt.datiVersamento.identificativoUnivocoVersamento
-* def ccp_sel = response.risultati[0].rpt.datiVersamento.codiceContestoPagamento
+* def cod_dominio_sel = response.risultati[0].rpt.transferList.transfer[0].fiscalCodePA
+* def iuv_sel = response.risultati[0].rpt.creditorReferenceId
+* def ccp_sel = '3' + iuv_sel
 
 * def applicazione = read('classpath:test/api/backoffice/v1/pendenze/get/msg/applicazione_domini2_segreteria.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})

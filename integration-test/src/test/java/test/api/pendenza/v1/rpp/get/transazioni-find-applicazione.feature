@@ -26,19 +26,19 @@ And param dataA = dataFine
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response.risultati[0].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
-And match response.risultati[1].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
-And match response.risultati[2].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE
-And match response.risultati[3].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Rossi_ESEGUITO_DOM1_SEGRETERIA
-And match response.risultati[4].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_A2A2
-And match response.risultati[5].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_INCORSO_DOM2_ENTRATASIOPE
-And match response.risultati[6].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
-And match response.risultati[7].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
-And match response.risultati[8].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE
-And match response.risultati[9].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
-And match response.risultati[10].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A
-And match response.risultati[11].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA
-And match response.risultati[12].rpt.identificativoMessaggioRichiesta == idMessaggioRichiesta_Anonimo_INCORSO_DOM1_SEGRETERIA
+And match response.risultati[0].rpt.creditorReferenceId == idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
+And match response.risultati[1].rpt.creditorReferenceId == idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
+And match response.risultati[2].rpt.creditorReferenceId == idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE
+And match response.risultati[3].rpt.creditorReferenceId == idMessaggioRichiesta_Rossi_ESEGUITO_DOM1_SEGRETERIA
+And match response.risultati[4].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_A2A2
+And match response.risultati[5].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_INCORSO_DOM2_ENTRATASIOPE
+And match response.risultati[6].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
+And match response.risultati[7].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
+And match response.risultati[8].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE
+And match response.risultati[9].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
+And match response.risultati[10].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A
+And match response.risultati[11].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA
+And match response.risultati[12].rpt.creditorReferenceId == idMessaggioRichiesta_Anonimo_INCORSO_DOM1_SEGRETERIA
 And match response ==
 """
 {

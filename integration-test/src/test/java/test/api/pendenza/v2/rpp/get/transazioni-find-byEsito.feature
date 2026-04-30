@@ -59,8 +59,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
@@ -68,10 +68,10 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
-* def ccp =  ccp_numero_avviso
+* def ccp = ccp_numero_avviso
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataRtEnd2 = getDateTime()

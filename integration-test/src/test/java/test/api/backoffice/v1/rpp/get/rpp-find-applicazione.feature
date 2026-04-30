@@ -45,15 +45,15 @@ Then status 200
 # And match response.risultati[15].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
 # And match response.risultati[16].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A
 # And match response.risultati[17].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 18,
+	numRisultati: 10,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[18]'
+	risultati: '#[10]'
 }
 """
 
@@ -98,15 +98,15 @@ Then status 200
 # And match response.risultati[5].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
 # And match response.risultati[6].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A
 # And match response.risultati[7].rpt.creditorReferenceId == idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 8,
+	numRisultati: 4,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[8]'
+	risultati: '#[4]'
 }
 """
 

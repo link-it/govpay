@@ -85,6 +85,7 @@ Then assert responseStatus == 200
 
 * def numeroAvviso = numeroAvviso1
 * def iuv = iuv1
+* def ccp = ccp1
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def dataRtEnd1 = getDateTime()
@@ -103,6 +104,7 @@ Then assert responseStatus == 200
 
 * def numeroAvviso = numeroAvviso2
 * def iuv = iuv2
+* def ccp = ccp2
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def dataRtEnd2 = getDateTime()

@@ -175,15 +175,15 @@ And param divisione = 'div1'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 4,
+	numRisultati: 6,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[4]'
+	risultati: '#[6]'
 }
 """
 
@@ -195,15 +195,15 @@ And param divisione = 'div2'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 
@@ -229,41 +229,41 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/riscossioni'
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param direzione = 'dir1'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 
 Given url backofficeBaseurl
 And path '/riscossioni'
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param direzione = 'dir2'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 4,
+	numRisultati: 6,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[4]'
+	risultati: '#[6]'
 }
 """
 
@@ -296,15 +296,15 @@ And param direzione = 'dir1'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 

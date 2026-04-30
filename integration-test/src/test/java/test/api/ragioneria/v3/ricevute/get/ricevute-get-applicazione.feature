@@ -57,8 +57,19 @@ Then assert responseStatus == 200 || responseStatus == 201
 * set pendenzaPut.idTipoPendenza = codTipoPendenzaPagamento
 * set pendenzaPut.voci[0].codEntrata = codEntrataPagamento
 
+* def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: pwdA2A2 } )
+
 Given url backofficeBaseurl
-And path '/pendenze', idA2A, idPendenza
+And path '/pendenze', idA2A2, idPendenza
+And headers idA2A2BasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def responsePut = response
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A2, idPendenza
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -69,6 +80,10 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci == '#[1]'
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
+
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def importo = pendenzaPut.importo
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response == esitoVerifyPayment
@@ -83,8 +98,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
- 
-* def ccp = 'n_a'
+
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
@@ -92,16 +107,16 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
-* def ccp =  ccp_numero_avviso
+* def ccp = ccp_numero_avviso
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = ccp 
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = notificaTerminazione
-* def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione.identificativoMessaggioRichiesta
+* def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione.creditorReferenceId
 
 * call sleep(1000)
 * def dataFine = getDateTime()
@@ -117,7 +132,7 @@ And param dataA = dataFine
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.risultati[0].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2.datiVersamento.identificativoUnivocoVersamento
+And match response.risultati[0].iuv == rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2.creditorReferenceId
 And match response == 
 """
 {
