@@ -9,42 +9,47 @@ Background:
 
 * def stazioneNdpSymPut = read('classpath:test/workflow/modellounico/v1/msg/stazione.json')
 
-* def faultBean = 
-"""
-	{
-		"faultCode":"PAA_PAGAMENTO_SCONOSCIUTO",
-		"faultString":"Pagamento in attesa risulta sconosciuto all’Ente Creditore.",
-		"id":"#(idDominio)"
-	}
-"""
-
 Scenario: Verifica sonda pagoPA
 
+# Il numeroAvviso '000000000000000000' e' il pattern della sonda pagoPA (Stand-In check).
+# GovPay deve riconoscerlo e rispondere con PAA_PAGAMENTO_SCONOSCIUTO senza prima
+# verificare il dominio (fix Issue #848).
+# Effettuiamo la chiamata SOAP direttamente a GovPay per bypassare il simulatore pagoPA
+# che farebbe un proprio check del dominio prima di inoltrare la richiesta.
+
 * def numeroAvviso = '000000000000000000'
-* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
-* def importo = 0
 
-# Configurazione dell'applicazione
+* def pagoPABaseurl = getGovPayApiBaseUrl({api: 'pagopa'})
+* def pagopaBasicAutenticationHeader = getBasicAuthenticationHeader( { username: 'ndpsym', password: 'password' } )
 
-* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
-* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
-* set applicazione.servizioIntegrazione.versioneApi = 'REST v1'
+* def paVerifyPaymentNoticeReq =
+"""
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <ns6:paVerifyPaymentNoticeReq xmlns:ns6="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd">
+            <idPA>#(idDominio)</idPA>
+            <idBrokerPA>#(idIntermediario)</idBrokerPA>
+            <idStation>#(idStazione)</idStation>
+            <qrCode>
+                <fiscalCode>#(idDominio)</fiscalCode>
+                <noticeNumber>#(numeroAvviso)</noticeNumber>
+            </qrCode>
+        </ns6:paVerifyPaymentNoticeReq>
+    </soap:Body>
+</soap:Envelope>
+"""
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
-
-Given url backofficeBaseurl
-And path 'applicazioni', idA2A 
-And headers basicAutenticationHeader
-And request applicazione
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-
-* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
-
-# Verifico il pagamento
-
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response.faultBean == faultBean
+# Verifico il pagamento sonda chiamando direttamente GovPay
+Given url pagoPABaseurl
+And path '/PagamentiTelematiciCCPservice'
+And headers pagopaBasicAutenticationHeader
+And headers {'Content-Type' : 'application/xml'}
+And request paVerifyPaymentNoticeReq
+When method post
+Then status 200
+And match response contains 'PAA_PAGAMENTO_SCONOSCIUTO'
+And match response contains 'Pagamento in attesa risulta sconosciuto'
 
 
 Scenario: Verifica sonda pagoPA con dominio non intermediato
