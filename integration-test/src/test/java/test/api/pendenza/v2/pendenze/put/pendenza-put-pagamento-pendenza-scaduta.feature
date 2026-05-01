@@ -60,8 +60,8 @@ Then status 200
 And match response == pendenzaGet
 And match response.importo == 200.99
 And match response.voci[0].importo == 200.99
-And match response.rpp[0].rpt.datiVersamento.importoTotaleDaVersare == '200.99'
-And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].importoSingoloVersamento == '200.99'
+And match response.rpp[0].rpt.paymentAmount == '200.99'
+And match response.rpp[0].rpt.transferList.transfer[0].transferAmount == '200.99'
 
 @test2
 Scenario: Aggiornamento pendenza non pagata scaduta non presente nelle API di verifica
@@ -104,8 +104,8 @@ Then status 200
 And match response == pendenzaGet
 And match response.importo == 100.99
 And match response.voci[0].importo == 100.99
-And match response.rpp[0].rpt.datiVersamento.importoTotaleDaVersare == '100.99'
-And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].importoSingoloVersamento == '100.99'
+And match response.rpp[0].rpt.paymentAmount == '100.99'
+And match response.rpp[0].rpt.transferList.transfer[0].transferAmount == '100.99'
 
 
 @test3
@@ -156,8 +156,8 @@ Then status 200
 And match response == pendenzaGet
 And match response.importo == 200.99
 And match response.voci[0].importo == 200.99
-And match response.rpp[0].rpt.datiVersamento.importoTotaleDaVersare == '200.99'
-And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].importoSingoloVersamento == '200.99'
+And match response.rpp[0].rpt.paymentAmount == '200.99'
+And match response.rpp[0].rpt.transferList.transfer[0].transferAmount == '200.99'
 
 
 

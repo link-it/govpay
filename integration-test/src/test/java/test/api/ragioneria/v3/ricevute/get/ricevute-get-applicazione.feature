@@ -53,7 +53,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def codTipoPendenzaPagamento = codEntrataSegreteria
 
 * set pendenzaPut.idDominio = idDominioPagamento
-* set pendenzaPut.idA2A = idA2A2
 * set pendenzaPut.idTipoPendenza = codTipoPendenzaPagamento
 * set pendenzaPut.voci[0].codEntrata = codEntrataPagamento
 
