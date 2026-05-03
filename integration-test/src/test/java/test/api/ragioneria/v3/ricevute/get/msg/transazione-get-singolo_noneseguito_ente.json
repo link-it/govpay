@@ -35,94 +35,102 @@
 	"data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
 	"dataPagamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
 	"rpt": {
-		"creditorReferenceId": "#notnull",
-		"paymentAmount": "#notnull",
-		"dueDate": "#ignore",
-		"retentionDate": "##null",
-		"lastPayment": true,
-		"description": "#notnull",
-		"companyName": "#notnull",
-		"officeName": "##null",
-		"debtor": {
-			"uniqueIdentifier": {
-				"entityUniqueIdentifierType": "#notnull",
-				"entityUniqueIdentifierValue": "#notnull"
+		"tipo": "#notnull",
+		"xml": "#notnull",
+		"json": {
+			"creditorReferenceId": "#notnull",
+			"paymentAmount": "#notnull",
+			"dueDate": "#ignore",
+			"retentionDate": "##null",
+			"lastPayment": true,
+			"description": "#notnull",
+			"companyName": "#notnull",
+			"officeName": "##null",
+			"debtor": {
+				"uniqueIdentifier": {
+					"entityUniqueIdentifierType": "#notnull",
+					"entityUniqueIdentifierValue": "#notnull"
+				},
+				"fullName": "#notnull",
+				"streetName": "##null",
+				"civicNumber": "##null",
+				"postalCode": "##null",
+				"city": "##null",
+				"stateProvinceRegion": "##null",
+				"country": "##null",
+				"e-mail": "##null"
 			},
-			"fullName": "#notnull",
-			"streetName": "##null",
-			"civicNumber": "##null",
-			"postalCode": "##null",
-			"city": "##null",
-			"stateProvinceRegion": "##null",
-			"country": "##null",
-			"e-mail": "##null"
-		},
-		"transferList": {
-			"transfer": [
-				{
-					"idTransfer": "#number",
-					"transferAmount": "#notnull",
-					"fiscalCodePA": "#notnull",
-					"IBAN": "#notnull",
-					"remittanceInformation": "#notnull",
-					"transferCategory": "#notnull",
-					"metadata": "##null"
-				}
-			]
-		},
-		"metadata": "##null"
+			"transferList": {
+				"transfer": [
+					{
+						"idTransfer": "#number",
+						"transferAmount": "#notnull",
+						"fiscalCodePA": "#notnull",
+						"IBAN": "#notnull",
+						"remittanceInformation": "#notnull",
+						"transferCategory": "#notnull",
+						"metadata": "##null"
+					}
+				]
+			},
+			"metadata": "##null"
+		}
 	},
 	"rt": {
-		"receiptId": "#notnull",
-		"noticeNumber": "#notnull",
-		"fiscalCode": "#notnull",
-		"outcome": "KO",
-		"creditorReferenceId": "#notnull",
-		"paymentAmount": "#notnull",
-		"description": "#notnull",
-		"companyName": "#notnull",
-		"officeName": "##null",
-		"debtor": {
-			"uniqueIdentifier": {
-				"entityUniqueIdentifierType": "#notnull",
-				"entityUniqueIdentifierValue": "#notnull"
+		"tipo": "#notnull",
+		"xml": "#notnull",
+		"json": {
+			"receiptId": "#notnull",
+			"noticeNumber": "#notnull",
+			"fiscalCode": "#notnull",
+			"outcome": "KO",
+			"creditorReferenceId": "#notnull",
+			"paymentAmount": "#notnull",
+			"description": "#notnull",
+			"companyName": "#notnull",
+			"officeName": "##null",
+			"debtor": {
+				"uniqueIdentifier": {
+					"entityUniqueIdentifierType": "#notnull",
+					"entityUniqueIdentifierValue": "#notnull"
+				},
+				"fullName": "#notnull",
+				"streetName": "##null",
+				"civicNumber": "##null",
+				"postalCode": "##null",
+				"city": "##null",
+				"stateProvinceRegion": "##null",
+				"country": "##null",
+				"e-mail": "##null"
 			},
-			"fullName": "#notnull",
-			"streetName": "##null",
-			"civicNumber": "##null",
-			"postalCode": "##null",
-			"city": "##null",
-			"stateProvinceRegion": "##null",
-			"country": "##null",
-			"e-mail": "##null"
-		},
-		"transferList": {
-			"transfer": [
-				{
-					"idTransfer": "#number",
-					"transferAmount": "#notnull",
-					"fiscalCodePA": "#notnull",
-					"IBAN": "#notnull",
-					"remittanceInformation": "#notnull",
-					"transferCategory": "#notnull",
-					"metadata": "##null"
-				}
-			]
-		},
-		"idPSP": "#notnull",
-		"pspFiscalCode": "#notnull",
-		"pspPartitaIVA": "##null",
-		"PSPCompanyName": "#notnull",
-		"idChannel": "#notnull",
-		"channelDescription": "#notnull",
-		"payer": "##null",
-		"paymentMethod": "##string",
-		"fee": "#notnull",
-		"paymentDateTime": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
-		"applicationDate": "#ignore",
-		"transferDate": "#notnull",
-		"standIn": "##null",
-		"metadata": "##null"
+			"transferList": {
+				"transfer": [
+					{
+						"idTransfer": "#number",
+						"transferAmount": "#notnull",
+						"fiscalCodePA": "#notnull",
+						"IBAN": "#notnull",
+						"remittanceInformation": "#notnull",
+						"transferCategory": "#notnull",
+						"metadata": "##null"
+					}
+				]
+			},
+			"idPSP": "#notnull",
+			"pspFiscalCode": "#notnull",
+			"pspPartitaIVA": "##null",
+			"PSPCompanyName": "#notnull",
+			"idChannel": "#notnull",
+			"channelDescription": "#notnull",
+			"payer": "##null",
+			"paymentMethod": "##string",
+			"fee": "#notnull",
+			"paymentDateTime": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+			"applicationDate": "#ignore",
+			"transferDate": "#notnull",
+			"standIn": "##null",
+			"metadata": "##null"
+		}
 	},
    	"modello" : "#notnull"
 }

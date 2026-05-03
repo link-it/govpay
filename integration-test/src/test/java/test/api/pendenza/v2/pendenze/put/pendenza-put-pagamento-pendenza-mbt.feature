@@ -58,7 +58,7 @@ When method get
 Then status 200
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
@@ -93,7 +93,7 @@ When method get
 Then status 200
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
@@ -146,7 +146,7 @@ When method get
 Then status 200
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
@@ -159,13 +159,13 @@ Then status 200
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 #* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 #* def ccp =  ccp_numero_avviso

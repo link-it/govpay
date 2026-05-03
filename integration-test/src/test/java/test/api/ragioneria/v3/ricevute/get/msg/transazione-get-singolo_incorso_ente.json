@@ -32,42 +32,46 @@
 		"voci":"#[]"
 	},
 	"rpt": {
-		"creditorReferenceId": "#notnull",
-		"paymentAmount": "#notnull",
-		"dueDate": "#ignore",
-		"retentionDate": "##null",
-		"lastPayment": true,
-		"description": "#notnull",
-		"companyName": "#notnull",
-		"officeName": "##null",
-		"debtor": {
-			"uniqueIdentifier": {
-				"entityUniqueIdentifierType": "#notnull",
-				"entityUniqueIdentifierValue": "#notnull"
+		"tipo": "#notnull",
+		"xml": "#notnull",
+		"json": {
+			"creditorReferenceId": "#notnull",
+			"paymentAmount": "#notnull",
+			"dueDate": "#ignore",
+			"retentionDate": "##null",
+			"lastPayment": true,
+			"description": "#notnull",
+			"companyName": "#notnull",
+			"officeName": "##null",
+			"debtor": {
+				"uniqueIdentifier": {
+					"entityUniqueIdentifierType": "#notnull",
+					"entityUniqueIdentifierValue": "#notnull"
+				},
+				"fullName": "#notnull",
+				"streetName": "##null",
+				"civicNumber": "##null",
+				"postalCode": "##null",
+				"city": "##null",
+				"stateProvinceRegion": "##null",
+				"country": "##null",
+				"e-mail": "##null"
 			},
-			"fullName": "#notnull",
-			"streetName": "##null",
-			"civicNumber": "##null",
-			"postalCode": "##null",
-			"city": "##null",
-			"stateProvinceRegion": "##null",
-			"country": "##null",
-			"e-mail": "##null"
-		},
-		"transferList": {
-			"transfer": [
-				{
-					"idTransfer": "#number",
-					"transferAmount": "#notnull",
-					"fiscalCodePA": "#notnull",
-					"IBAN": "#notnull",
-					"remittanceInformation": "#notnull",
-					"transferCategory": "#notnull",
-					"metadata": "##null"
-				}
-			]
-		},
-		"metadata": "##null"
+			"transferList": {
+				"transfer": [
+					{
+						"idTransfer": "#number",
+						"transferAmount": "#notnull",
+						"fiscalCodePA": "#notnull",
+						"IBAN": "#notnull",
+						"remittanceInformation": "#notnull",
+						"transferCategory": "#notnull",
+						"metadata": "##null"
+					}
+				]
+			},
+			"metadata": "##null"
+		}
 	},
    	"modello" : "#notnull"
 }

@@ -117,7 +117,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/api/backoffice/v1/pendenze/get/msg/notifica-attivazione-multibeneficiario.json')
 
@@ -125,7 +125,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * call sleep(10000)
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
@@ -213,7 +213,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/api/backoffice/v1/pendenze/get/msg/notifica-attivazione-multibeneficiario.json')
 
@@ -221,7 +221,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * call sleep(10000)
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso

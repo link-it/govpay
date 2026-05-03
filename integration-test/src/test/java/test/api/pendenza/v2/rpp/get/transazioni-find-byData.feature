@@ -29,7 +29,7 @@ Then status 201
 
 * def numeroAvviso1 = response.numeroAvviso
 * def iuv1 = getIuvFromNumeroAvviso(numeroAvviso1)
-* def ccp1 = getCurrentTimeMillis()
+* def ccp1 = numeroAvviso1
 * def importo1 = pendenzaPut.importo
 * def dataRptEnd1 = getDateTime()
 
@@ -45,7 +45,7 @@ Then status 201
 
 * def numeroAvviso2 = response.numeroAvviso
 * def iuv2 = getIuvFromNumeroAvviso(numeroAvviso2)
-* def ccp2 = getCurrentTimeMillis()
+* def ccp2 = numeroAvviso2
 * def importo2 = pendenzaPut.importo
 * def dataRptEnd2 = getDateTime()
 

@@ -11,6 +11,7 @@ Background:
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
+* def inviaRicevuta = 'false'
 
 * configure followRedirects = false
 * def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
@@ -57,10 +58,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idDominio = idDominio_4
+* def versionePagamento = 3
 
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * print '[RecuperoRT-V2] Inizio caricamento avviso, idPendenza:', idPendenza
 * call read('classpath:utils/pa-carica-avviso.feature')
@@ -68,6 +70,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * def importo = pendenzaPut.importo
+* def ccp = numeroAvviso
 * print '[RecuperoRT-V2] Fine caricamento avviso, numeroAvviso:', numeroAvviso, 'iuv:', iuv
 
 Given url backofficeBaseurl
@@ -85,16 +88,12 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * print '[RecuperoRT-V2] Inizio verifica pagamento (paVerifyPaymentNotice)'
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-# * match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
 * print '[RecuperoRT-V2] Fine verifica pagamento, ccp:', ccp
 
 # Attivo il pagamento
 
 * print '[RecuperoRT-V2] Inizio attivazione pagamento (paGetPayment)'
-* def tipoRicevuta = "R01"
-* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
 * print '[RecuperoRT-V2] Fine attivazione pagamento'
 # * match response.dati == esitoGetPayment
@@ -102,7 +101,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Verifico la notifica di attivazione
 
 * print '[RecuperoRT-V2] Inizio verifica notifica di attivazione'
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * print '[RecuperoRT-V2] Fine verifica notifica di attivazione'
 # * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
@@ -281,7 +280,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * print '[RecuperoRT-MU] Inizio caricamento avviso, idPendenza:', idPendenza
 * call read('classpath:utils/pa-carica-avviso.feature')
@@ -289,6 +288,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * def importo = pendenzaPut.importo
+* def ccp = numeroAvviso
 * print '[RecuperoRT-MU] Fine caricamento avviso, numeroAvviso:', numeroAvviso, 'iuv:', iuv
 
 Given url backofficeBaseurl
@@ -307,15 +307,12 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * print '[RecuperoRT-MU] Inizio verifica pagamento (paVerifyPaymentNotice)'
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 # * match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
 * print '[RecuperoRT-MU] Fine verifica pagamento, ccp:', ccp
 
 # Attivo il pagamento
 
 * print '[RecuperoRT-MU] Inizio attivazione pagamento (paGetPayment)'
-* def tipoRicevuta = "R01"
-* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
 * call read('classpath:utils/psp-paGetPayment.feature')
 * print '[RecuperoRT-MU] Fine attivazione pagamento'
 # * match response.dati == esitoGetPayment
@@ -323,7 +320,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Verifico la notifica di attivazione
 
 * print '[RecuperoRT-MU] Inizio verifica notifica di attivazione'
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * print '[RecuperoRT-MU] Fine verifica notifica di attivazione'
 # * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')

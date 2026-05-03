@@ -496,7 +496,7 @@ Scenario: Evento verifica pendenza applicazione risposta con errori di sintassi
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenza.idA2A = idA2A

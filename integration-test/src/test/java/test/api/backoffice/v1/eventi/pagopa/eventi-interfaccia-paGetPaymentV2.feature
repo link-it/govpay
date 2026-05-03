@@ -13,8 +13,8 @@ Scenario: Eventi attiva pendenza annullata
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-* def ccp = getCurrentTimeMillis()
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def ccp = numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * set pendenzaPut.stato = 'ANNULLATA'
 * set pendenzaPut.descrizioneStato = 'Test annullamento'
@@ -103,9 +103,9 @@ Scenario: Evento attiva pendenza scaduta
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-* def ccp = getCurrentTimeMillis()
-
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def ccp = numeroAvviso
+
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * set pendenzaPut.stato = 'SCADUTA'
 * set pendenzaPut.descrizioneStato = 'Test scadenza'
@@ -193,7 +193,7 @@ Scenario: Evento attiva pendenza sconosciuta
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def importo = pendenzaPut.importo
@@ -279,8 +279,8 @@ Scenario: Evento attiva pendenza
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
-* def ccp = getCurrentTimeMillis()
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def ccp = numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * call read('classpath:utils/pa-prepara-avviso.feature')
 

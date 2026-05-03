@@ -100,7 +100,9 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+* def attivazioneExpected = read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+* set attivazioneExpected.idA2A = idA2A2
+* match response == attivazioneExpected
 
 * def dataRptEnd1 = getDateTime()
 
@@ -110,9 +112,11 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp = ccp_numero_avviso
-* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
+* def terminazioneExpected = read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
+* set terminazioneExpected.idA2A = idA2A2
+* match response == terminazioneExpected
 
-* def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = ccp 
+* def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = ccp
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione.creditorReferenceId

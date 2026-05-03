@@ -177,7 +177,7 @@ Then status 200
 * match response.stato == 'NON_ESEGUITA'
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
@@ -251,7 +251,7 @@ Then status 200
 * match response.stato == 'NON_ESEGUITA'
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 

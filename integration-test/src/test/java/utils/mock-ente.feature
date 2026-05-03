@@ -147,7 +147,7 @@ Scenario: pathMatches(pagamentiPath+'/v1/ricevute/{idDominio}/{iuv}/{idRicevuta}
 Scenario: pathMatches(pagamentiPath+'/v2/pagamenti/{idDominio}/{iuv}') && methodIs('post')
   * def idDominio = pathParams.idDominio
   * def iuv = pathParams.iuv
-  * def ccp = 'n_a'
+  * def ccp = '3' + pathParams.iuv
   * def repo = request.rt == null ? notificheAttivazione : notificheTerminazione
   * def repoByIdSession = request.rt == null ? notificheAttivazioneByIdSession : notificheTerminazioneByIdSession
   * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201

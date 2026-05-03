@@ -40,7 +40,7 @@ And match response == pendenzaGet
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
@@ -86,7 +86,7 @@ And match response == pendenzaGet
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 
 # Attivo il pagamento 
@@ -137,7 +137,7 @@ And match response == pendenzaGet
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 

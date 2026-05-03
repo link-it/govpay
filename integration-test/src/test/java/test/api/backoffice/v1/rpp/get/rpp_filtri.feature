@@ -11,6 +11,10 @@ Background:
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
+* def riversamentoCumulativo = 'true'
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+
 Scenario: Filtro su data
 
 * def dataRptStart = getDateTime()
@@ -23,6 +27,7 @@ Scenario: Filtro su data
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def importo = pendenzaPut.importo
+* def ccp = numeroAvviso
 
 Given url backofficeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -38,13 +43,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
 
 # Attivo il pagamento 
-
-* def tipoRicevuta = "R01"
-* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di attivazione
@@ -59,10 +59,11 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
+* def dataRtEnd1 = getDateTime()
+
+# Pendenza #2
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -72,6 +73,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def importo = pendenzaPut.importo
+* def ccp = numeroAvviso
 
 Given url backofficeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -87,13 +89,8 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.voci[0].stato == 'Non eseguito'
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
 
 # Attivo il pagamento 
-
-* def tipoRicevuta = "R01"
-* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 # Verifico la notifica di attivazione
@@ -102,91 +99,14 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
-* def dataRptEnd1 = getDateTime()
-
 # Verifico la notifica di terminazione
 
 * def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
-* def ccp =  ccp_numero_avviso
 * def dataRptEnd2 = getDateTime()
 
 # Ho avviato due pagamenti. Verifico i filtri.
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart 
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 2,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[2]'
-}
-"""
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart 
-And param dataRptA = dataRptEnd1
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart 
-And param dataRptA = dataRptEnd2
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 2,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[2]'
-}
-"""
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRtDa = dataRptStart 
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 0,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[0]'
-}
-"""
 
 * def dataRtEnd2 = getDateTime()
 

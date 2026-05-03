@@ -25,7 +25,7 @@ Scenario: Verifica tutti gli eventi di un Pagamento eseguito dovuto non precaric
 # Attivo il pagamento
 
 * def tipoRicevuta = "R01"
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPaymentV2.feature')
 

@@ -24,7 +24,7 @@ Scenario: Riconciliazione pagamento rendicontato senza rpt
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 

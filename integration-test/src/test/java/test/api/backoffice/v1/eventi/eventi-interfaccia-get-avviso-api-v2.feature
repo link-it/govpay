@@ -601,7 +601,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.soggettoPagatore.indirizzo = '' 

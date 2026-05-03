@@ -95,9 +95,9 @@ And match response ==
 	risultati: '#[1]'
 }
 """
-And match response.risultati[0].pendenza contains '#(""+idPendenza1)'
+And match response.risultati[0].pendenza.idPendenza == ""+idPendenza1
 And match response.risultati[0].rt == '#notnull'
-And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '0'
+And match response.risultati[0].rt.outcome == 'OK'
 
 
 Scenario: Controllo di sintassi sul valore del filtro per esito
