@@ -58,6 +58,7 @@ Scenario: Pagamento ad iniziativa Ente
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * def rpt_Anonimo_INCORSO_DOM1_SEGRETERIA = rptNotificaAttivazione
 * def idMessaggioRichiesta_Anonimo_INCORSO_DOM1_SEGRETERIA = rptNotificaAttivazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Anonimo_INCORSO_DOM1_SEGRETERIA:', idMessaggioRichiesta_Anonimo_INCORSO_DOM1_SEGRETERIA
 
 # idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
 * def tipoRicevuta = "R01"
@@ -71,6 +72,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM1_SEGRETERIA = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA:', idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA
 
 
 # idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A
@@ -85,6 +87,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A:', idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A
 
 
 # idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
@@ -99,6 +102,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2:', idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2
 
 # idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA
 # * def tipoRicevuta = "R02"
@@ -152,6 +156,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM2_ENTRATASIOPE = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE:', idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE
 
 # idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
 * def tipoRicevuta = "R01"
@@ -166,6 +171,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A:', idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
 
 # idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
 * def tipoRicevuta = "R01"
@@ -180,6 +186,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione
 * def notificaTerminazione_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = notificaTerminazione
 * def idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2:', idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
 
 # idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE
 # * def tipoRicevuta = "R02"
@@ -216,6 +223,8 @@ Scenario: Pagamento ad iniziativa Ente
 * call read('classpath:utils/psp-paGetPayment.feature')
 
 * def idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO = idCart
+* def idMessaggioRichiesta_Verdi_RIFIUTATO_DOM1_LIBERO = iuv
+* print 'idMessaggioRichiesta_Verdi_RIFIUTATO_DOM1_LIBERO:', idMessaggioRichiesta_Verdi_RIFIUTATO_DOM1_LIBERO
 
 Given url pendenzeBaseurl
 And path '/rpp', idDominio, iuv , ccp
@@ -256,6 +265,7 @@ Then status 404
 
 * def rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE = rptNotificaAttivazione
 * def idMessaggioRichiesta_Verdi_INCORSO_DOM2_ENTRATASIOPE = rptNotificaAttivazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_INCORSO_DOM2_ENTRATASIOPE:', idMessaggioRichiesta_Verdi_INCORSO_DOM2_ENTRATASIOPE
 
 # idPagamentoVerdi_A2A2
 
@@ -281,6 +291,7 @@ Then status 404
 * def idPagamentoVerdi_A2A2 = idCart
 * def rpt_Verdi_A2A2 = rptNotificaAttivazione
 * def idMessaggioRichiesta_Verdi_A2A2 = rptNotificaAttivazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Verdi_A2A2:', idMessaggioRichiesta_Verdi_A2A2
 
 # idPagamentoRossi_ESEGUITO_DOM1_SEGRETERIA
 * def idDominio = idDominio_1
@@ -295,6 +306,7 @@ Then status 404
 * def rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione
 * def notificaTerminazione_Rossi_ESEGUITO_DOM1_SEGRETERIA = notificaTerminazione
 * def idMessaggioRichiesta_Rossi_ESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Rossi_ESEGUITO_DOM1_SEGRETERIA:', idMessaggioRichiesta_Rossi_ESEGUITO_DOM1_SEGRETERIA
 
 
 # idPagamentoRossi_NONESEGUITO_DOM1_SEGRETERIA
@@ -323,6 +335,7 @@ Then status 404
 * def rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione
 * def notificaTerminazione_Rossi_ESEGUITO_DOM2_ENTRATASIOPE = notificaTerminazione
 * def idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE:', idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE
 
 # idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE
 # * def tipoRicevuta = "R02"
@@ -351,6 +364,7 @@ Then status 404
 * def rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione
 * def notificaTerminazione_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = notificaTerminazione
 * def idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A:', idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A
 
 # idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
 * def tipoRicevuta = "R01"
@@ -365,6 +379,7 @@ Then status 404
 * def rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione
 * def notificaTerminazione_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = notificaTerminazione
 * def idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione.creditorReferenceId
+* print 'idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2:', idMessaggioRichiesta_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2
 
 # idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A
 # * def tipoRicevuta = "R02"

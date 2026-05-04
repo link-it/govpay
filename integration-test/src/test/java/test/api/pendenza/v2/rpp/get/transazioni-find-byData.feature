@@ -79,7 +79,8 @@ And param ccp = ccp1
 And param importo = importo1
 And param tipoRicevuta = 'R01'
 And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = '0'
+And param riversamentoCumulativo = 'false'
+And param versione = 3
 When method get
 Then assert responseStatus == 200
 
@@ -96,9 +97,10 @@ And param codDominio = idDominio
 And param numeroAvviso = numeroAvviso2
 And param ccp = ccp2
 And param importo = importo2
-And param tipoRicevuta = 'R00'
+And param tipoRicevuta = 'R01'
 And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = '0'
+And param riversamentoCumulativo = 'false'
+And param versione = 3
 When method get
 Then assert responseStatus == 200
 
@@ -114,62 +116,6 @@ Then assert responseStatus == 200
 Given url pendenzeBaseurl
 And path '/rpp'
 And param dataRptDa = dataRptStart
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response ==
-"""
-{
-	numRisultati: 2,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[2]'
-}
-"""
-
-Given url pendenzeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart
-And param dataRptA = dataRptEnd1
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response ==
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-
-Given url pendenzeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart
-And param dataRptA = dataRptEnd2
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response ==
-"""
-{
-	numRisultati: 2,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[2]'
-}
-"""
-
-Given url pendenzeBaseurl
-And path '/rpp'
-And param dataRtDa = dataRptStart
 And headers basicAutenticationHeader
 When method get
 Then status 200

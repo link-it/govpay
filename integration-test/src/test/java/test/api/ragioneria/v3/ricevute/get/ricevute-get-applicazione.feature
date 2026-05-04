@@ -114,6 +114,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def ccp = ccp_numero_avviso
 * def terminazioneExpected = read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 * set terminazioneExpected.idA2A = idA2A2
+* set terminazioneExpected.riscossioni[0].pendenza = '/pendenze/'+idA2A2+'/'+ terminazioneExpected.idPendenza
 * match response == terminazioneExpected
 
 * def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = ccp

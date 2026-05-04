@@ -93,11 +93,11 @@ Then status 200
 
 # Verifico la notifica di attivazione
 
-* def ccp = numeroAvviso
+* def ccp = '3' + iuv
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
-* def ccp = numeroAvviso
+* def ccp = '3' + iuv
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
@@ -125,11 +125,11 @@ Then status 200
 
 # Verifico la notifica di attivazione
 
-* def ccp = numeroAvviso
+* def ccp = '3' + iuv
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
-* def ccp = numeroAvviso
+* def ccp = '3' + iuv
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
