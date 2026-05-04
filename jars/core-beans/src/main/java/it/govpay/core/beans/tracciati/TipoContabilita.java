@@ -32,14 +32,23 @@ public enum TipoContabilita {
   
   
   CAPITOLO("CAPITOLO"),
-  
-  
+
+
   SPECIALE("SPECIALE"),
-  
-  
+
+
   SIOPE("SIOPE"),
-  
-  
+
+
+  SRTP_ESCLUSA_RAVV_OPEROSO("SRTP_ESCLUSA_RAVV_OPEROSO"),
+
+
+  SRTP_ESCLUSA_ALTRO_OPERATORE("SRTP_ESCLUSA_ALTRO_OPERATORE"),
+
+
+  SRTP_ESCLUSA("SRTP_ESCLUSA"),
+
+
   ALTRO("ALTRO");
   
   

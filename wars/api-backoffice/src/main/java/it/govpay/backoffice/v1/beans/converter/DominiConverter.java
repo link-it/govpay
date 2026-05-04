@@ -117,6 +117,15 @@ public class DominiConverter {
 			case SPECIALE:
 				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.SPECIALE);
 				break;
+			case SRTP_ESCLUSA_RAVV_OPEROSO:
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.SRTP_ESCLUSA_RAVV_OPEROSO);
+				break;
+			case SRTP_ESCLUSA_ALTRO_OPERATORE:
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.SRTP_ESCLUSA_ALTRO_OPERATORE);
+				break;
+			case SRTP_ESCLUSA:
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.SRTP_ESCLUSA);
+				break;
 			}
 		}
 
@@ -547,6 +556,15 @@ public class DominiConverter {
 				break;
 			case SPECIALE:
 				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
+				break;
+			case SRTP_ESCLUSA_RAVV_OPEROSO:
+				rsModel.tipoContabilita(TipoContabilita.SRTP_ESCLUSA_RAVV_OPEROSO);
+				break;
+			case SRTP_ESCLUSA_ALTRO_OPERATORE:
+				rsModel.tipoContabilita(TipoContabilita.SRTP_ESCLUSA_ALTRO_OPERATORE);
+				break;
+			case SRTP_ESCLUSA:
+				rsModel.tipoContabilita(TipoContabilita.SRTP_ESCLUSA);
 				break;
 			}
 		}

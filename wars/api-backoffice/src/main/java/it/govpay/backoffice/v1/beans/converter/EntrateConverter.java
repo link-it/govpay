@@ -60,6 +60,15 @@ public class EntrateConverter {
 			case SIOPE:
 				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SIOPE);
 				break;
+			case SRTP_ESCLUSA_RAVV_OPEROSO:
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SRTP_ESCLUSA_RAVV_OPEROSO);
+				break;
+			case SRTP_ESCLUSA_ALTRO_OPERATORE:
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SRTP_ESCLUSA_ALTRO_OPERATORE);
+				break;
+			case SRTP_ESCLUSA:
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SRTP_ESCLUSA);
+				break;
 			case SPECIALE:
 			default:
 				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SPECIALE);
@@ -93,6 +102,15 @@ public class EntrateConverter {
 				break;
 			case SPECIALE:
 				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
+				break;
+			case SRTP_ESCLUSA_RAVV_OPEROSO:
+				rsModel.tipoContabilita(TipoContabilita.SRTP_ESCLUSA_RAVV_OPEROSO);
+				break;
+			case SRTP_ESCLUSA_ALTRO_OPERATORE:
+				rsModel.tipoContabilita(TipoContabilita.SRTP_ESCLUSA_ALTRO_OPERATORE);
+				break;
+			case SRTP_ESCLUSA:
+				rsModel.tipoContabilita(TipoContabilita.SRTP_ESCLUSA);
 				break;
 			}
 		}

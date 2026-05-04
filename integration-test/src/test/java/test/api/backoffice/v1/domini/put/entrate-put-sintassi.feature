@@ -35,6 +35,7 @@ Then status 400
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | tipoContabilita | tipoContabilita | 'XXXX' | 'tipoContabilita' |
+| tipoContabilita | tipoContabilita | 'SRTP-ESCLUSA-RAVV-OPEROSO' | 'tipoContabilita' |
 | codiceContabilita | codiceContabilita | '' | 'codiceContabilita' | 
 | codiceContabilita | codiceContabilita | 'XX' | 'codiceContabilita' |
 | codiceContabilita | codiceContabilita | 'XX X' | 'codiceContabilita' |

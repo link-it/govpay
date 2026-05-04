@@ -1,3 +1,15 @@
+2026-05-04  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice, GovPayApiPendenze, GovPayApiRagioneria, GovPayClientApiEnte, GovPayCore, GovPayCoreBeans, GovPayORMBeans] Issue #856
+	Aggiunta funzionalità
+	Aggiunti i nuovi valori di tipoContabilita per il supporto al servizio SEPA Request To Pay (SRTP):
+	SRTP_ESCLUSA_RAVV_OPEROSO (codifica tassonomica 6), SRTP_ESCLUSA_ALTRO_OPERATORE (codifica 7), SRTP_ESCLUSA (codifica 8).
+	I nuovi prefissi consentono all'EC di escludere una posizione debitoria dalla veicolazione SRTP secondo le regole pagoPA.
+	Aggiornati gli enum TipoContabilita in tutti i moduli (model, core-beans, tracciati, client-api-ente, api-backoffice v1, api-pendenze v1/v2, api-ragioneria v1).
+	Aggiornati i converter EntrateConverter e DominiConverter per la gestione dei nuovi valori.
+	Aggiornate le specifiche OpenAPI (govpay-api-backoffice-v1.yaml, govpay-api-pendenze-v1.yaml, govpay-api-pendenze-v2.yaml, govpay-api-ragioneria-v1.yaml, govpay-api-ec-v1.yaml).
+	Aggiunti integration test Karate di caricamento e validazione sintattica per backoffice v1 e pendenze v1/v2, con verifica end-to-end del transferCategory in RPT/RT a seguito di un pagamento.
+
 2026-03-26  Giuliano Pintori <pintori@link.it>
 
 	* Rilascio versione 3.9.1

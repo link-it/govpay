@@ -166,7 +166,7 @@ public class ValidatoreUtils {
 	
 	public static void validaTipoContabilita(ValidatorFactory vf, String nomeCampo, Enum<?> enumValue) throws ValidationException {
 		vf.getValidator(nomeCampo, enumValue).notNull();
-		
+
 		try {
 			TipoContabilita.valueOf(enumValue.toString());
 		} catch(IllegalArgumentException e) {
