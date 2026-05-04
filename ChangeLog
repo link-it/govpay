@@ -1,4 +1,4 @@
-2026-05-04  Giuliano Pintori <pintori@link.it>
+2026-05-05  Giuliano Pintori <pintori@link.it>
 
 	* [GovPayApiBackoffice, GovPayApiPendenze, GovPayApiRagioneria, GovPayClientApiEnte, GovPayCore, GovPayCoreBeans, GovPayORMBeans] Issue #856
 	Aggiunta funzionalità
@@ -8,7 +8,13 @@
 	Aggiornati gli enum TipoContabilita in tutti i moduli (model, core-beans, tracciati, client-api-ente, api-backoffice v1, api-pendenze v1/v2, api-ragioneria v1).
 	Aggiornati i converter EntrateConverter e DominiConverter per la gestione dei nuovi valori.
 	Aggiornate le specifiche OpenAPI (govpay-api-backoffice-v1.yaml, govpay-api-pendenze-v1.yaml, govpay-api-pendenze-v2.yaml, govpay-api-ragioneria-v1.yaml, govpay-api-ec-v1.yaml).
-	Aggiunti integration test Karate di caricamento e validazione sintattica per backoffice v1 e pendenze v1/v2, con verifica end-to-end del transferCategory in RPT/RT a seguito di un pagamento.
+	Aggiunti integration test Karate di caricamento e validazione sintattica per backoffice v1 e pendenze v1/v2, ed estesi i test esistenti su entrate ed entrate-dominio del backoffice.
+	Aggiunto scenario end-to-end con verifica del transferCategory (prefisso 6/7/8) in RPT/RT a seguito di un pagamento.
+
+	* [GovPayConsole] Issue #856
+	Aggiunta funzionalità
+	Aggiunti i nuovi valori di tipoContabilita SRTP_ESCLUSA_RAVV_OPEROSO, SRTP_ESCLUSA_ALTRO_OPERATORE, SRTP_ESCLUSA nelle mappe TIPI_CONTABILITA e TIPI_CONTABILITA_NUMERICHE di util.service.ts.
+	I nuovi valori sono ora selezionabili nelle form di censimento entrata ed entrata di dominio, e visualizzati con il prefisso tassonomico corretto (6/, 7/, 8/) nelle viste di pendenze e voci.
 
 2026-03-26  Giuliano Pintori <pintori@link.it>
 
