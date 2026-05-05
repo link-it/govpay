@@ -38,7 +38,7 @@ Then status 200
 
 Examples:
 | tipoContabilita |
-| CAPITOLO |
+| ENTRATA |
 | SPECIALE |
 | SIOPE |
 | SRTP_ESCLUSA_RAVV_OPEROSO |

@@ -10,9 +10,12 @@ Background:
 
 # configurazione del secondo ente come non intermediato e censimento iban
 
+* def idDominio_NI = '12345678912'
+* def ragioneSocialeDominio_NI = 'Ente Creditore Test  N.I.'
+
 * def dominioNonIntermediato = read('classpath:configurazione/v1/msg/dominio.json')
 
-* set dominioNonIntermediato.ragioneSociale = ragioneSocialeDominio_2 + ' N.I.'
+* set dominioNonIntermediato.ragioneSociale = ragioneSocialeDominio_NI
 * set dominioNonIntermediato.intermediato = false
 * set dominioNonIntermediato.gln = null
 * set dominioNonIntermediato.cbill = null
@@ -23,7 +26,7 @@ Background:
 * set dominioNonIntermediato.autStampaPosteItaliane = null
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2 
+And path 'domini', idDominio_NI 
 And headers basicAutenticationHeader
 And request dominioNonIntermediato
 When method put
@@ -35,14 +38,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ibanAccreditoEnteNonIntermediatoPostaleDescrizione = 'IBAN Accredito N.I. Postale'
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediato
+And path 'domini', idDominio_NI, 'contiAccredito', ibanAccreditoEnteNonIntermediato
 And headers basicAutenticationHeader
 And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
+And path 'domini', idDominio_NI, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
 And headers basicAutenticationHeader
 And request {postale:true,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoPostaleDescrizione)'}
 When method put
@@ -80,7 +83,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'entrate', codEntrataTefa
+And path 'domini', idDominio_NI, 'entrate', codEntrataTefa
 And headers basicAutenticationHeader
 And request entrataTefaDominio
 When method put
