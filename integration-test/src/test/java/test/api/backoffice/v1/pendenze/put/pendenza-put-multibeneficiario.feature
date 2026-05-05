@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
-* def idPendenza = getCurrentTimeMillis()
+
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
@@ -90,6 +90,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Scenario: Caricamento pendenza multibeneficiario 
 
+* def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
 * set pendenzaPut.idTipoPendenza = codLibero
 
@@ -169,11 +170,9 @@ Then match response.numeroAvviso == numeroAvviso
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
-
-
-
 Scenario: Caricamento pendenza multibeneficiario definita
 
+* def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario_riferimento.json')
 * set pendenzaPut.idTipoPendenza = codLibero
 

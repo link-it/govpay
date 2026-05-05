@@ -2,7 +2,7 @@ Feature: Accesso ai flussi di rendicontazione per idFlusso e dataOraFlusso
 
 Background:
 
-* callonce read('classpath:utils/api/v3/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 
 * callonce sleep(10000)
 

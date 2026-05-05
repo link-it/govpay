@@ -16,6 +16,12 @@
 	Aggiunti i nuovi valori di tipoContabilita SRTP_ESCLUSA_RAVV_OPEROSO, SRTP_ESCLUSA_ALTRO_OPERATORE, SRTP_ESCLUSA nelle mappe TIPI_CONTABILITA e TIPI_CONTABILITA_NUMERICHE di util.service.ts.
 	I nuovi valori sono ora selezionabili nelle form di censimento entrata ed entrata di dominio, e visualizzati con il prefisso tassonomico corretto (6/, 7/, 8/) nelle viste di pendenze e voci.
 
+	* [Testsuite]
+	Pulizia e consolidamento bunch riconciliazioni
+	Rimossi i file orfani utils/api/v2/ragioneria/bunch-riconciliazioni-v3.feature e utils/api/v3/ragioneria/bunch-riconciliazioni-v3.feature (mai referenziati).
+	Consolidate le tre copie identiche di bunch-riconciliazioni-v2.feature in un'unica versione canonica sotto utils/api/v1/ragioneria/, aggiornando i 26 caller di v2 e v3 al nuovo path.
+	Risolto bug in NumeroAvvisoBuilder.successivo(): aggiunto contatore AtomicLong tie-breaker per evitare collisioni di numero avviso/IUV tra chiamate effettuate nello stesso millisecondo, eliminando una causa di flakiness della testsuite (errori 022403 "IUV identifica piu' di un pagamento").
+
 2026-03-26  Giuliano Pintori <pintori@link.it>
 
 	* Rilascio versione 3.9.1

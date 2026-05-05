@@ -1,4 +1,4 @@
-Feature: Ricerca riscossioni filtrate per tipo
+Feature: Ricerca riscossioni filtrate per IUR
 
 Background:
 
@@ -13,11 +13,13 @@ Background:
 
 * def pathServizio = '/riscossioni'
 
-Scenario: Filtro su divisione e direzione
+Scenario: Filtro per IUR
 
 * def dataStart = getDateTime()
-* def idPendenza = getCurrentTimeMillis()
 
+# Pendenza 1
+
+* def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
 
 Given url pendenzeBaseurl
@@ -28,21 +30,92 @@ When method put
 Then status 201
 
 * def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * def ccp = numeroAvviso
-* def importo = pendenzaPut.importo
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
 
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = 'R01'
-And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = '0'
-When method get
-Then assert responseStatus == 200
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
+
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+* def iur1 = response.rt.receiptId
+
+# Pendenza 2
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
+
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+# Pendenza 3
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
+
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+# Pendenza 4
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
@@ -57,79 +130,22 @@ When method put
 Then status 201
 
 * def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 * def ccp = numeroAvviso
-* def importo = pendenzaPut.importo
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
 
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = 'R01'
-And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = '0'
-When method get
-Then assert responseStatus == 200
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
-* call read('classpath:utils/pa-notifica-terminazione.feature')
+# Verifico la notifica di attivazione
 
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
+* call read('classpath:utils/pa-notifica-attivazione.feature')
 
-Given url pendenzeBaseurl
-And path 'pendenze', idA2A, idPendenza
-And headers basicAutenticationHeader
-And request pendenzaPut
-When method put
-Then status 201
-
-* def numeroAvviso = response.numeroAvviso
-* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
-* def ccp = numeroAvviso
-* def importo = pendenzaPut.importo
-
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = 'R01'
-And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = '0'
-When method get
-Then assert responseStatus == 200
-
-* call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_bollo.json')
-
-Given url pendenzeBaseurl
-And path 'pendenze', idA2A, idPendenza
-And headers basicAutenticationHeader
-And request pendenzaPut
-When method put
-Then status 201
-
-* def numeroAvviso = response.numeroAvviso
-* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
-* def ccp = numeroAvviso
-* def importo = pendenzaPut.importo
-
-Given url ndpsym_psp_url
-And path 'attiva'
-And param codDominio = idDominio
-And param numeroAvviso = numeroAvviso
-And param ccp = ccp
-And param importo = importo
-And param tipoRicevuta = 'R01'
-And param ibanAccredito = ibanAccredito
-And param riversamentoCumulativo = '0'
-When method get
-Then assert responseStatus == 200
+# Verifico la notifica di terminazione
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
@@ -137,7 +153,7 @@ Then assert responseStatus == 200
 
 * def dataEnd = getDateTime()
 
-* def iur1 = response.rt.datiPagamento.datiSingoloPagamento[0].identificativoUnivocoRiscossione
+* def iur4 = response.rt.receiptId
 
 # Ho avviato due pagamenti. Verifico i filtri.
 
@@ -152,16 +168,15 @@ Then status 200
 And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 1,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[1]'
 }
 """
 And match response.risultati[0].iur == iur1
-And match response.risultati[1].iur == iur1
 
 Given url ragioneriaBaseurl
 And path pathServizio
