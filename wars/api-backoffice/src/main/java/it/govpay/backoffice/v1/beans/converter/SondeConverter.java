@@ -205,7 +205,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_RICONCILIAZIONI_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_RECUPERO_RT.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRT()) {
+			if(GovpayConfig.getInstance().isBatchOn()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());

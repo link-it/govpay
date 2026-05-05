@@ -126,8 +126,6 @@ public class Operazioni{
 	private static boolean eseguiElaborazioneRiconciliazioni;
 	private static boolean eseguiElaborazioneChiusuraRptScadute;
 
-	private static boolean eseguiRecuperoRT;
-
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
 	}
@@ -236,18 +234,6 @@ public class Operazioni{
 		return eseguiElaborazioneChiusuraRptScadute;
 	}
 
-	public static synchronized void setEseguiRecuperoRT() {
-		eseguiRecuperoRT = true;
-	}
-
-	public static synchronized void resetEseguiRecuperoRT() {
-		eseguiRecuperoRT = false;
-	}
-
-	public static synchronized boolean getEseguiRecuperoRT() {
-		return eseguiRecuperoRT;
-	}
-
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		log.info("Eseguo Batch Acquisizione rendicontazioni");
@@ -267,28 +253,6 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, RND);
-		}
-	}
-
-	public static String recuperoRt(IContext ctx){
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		log.info("Eseguo Batch Recupero RT");
-		try {
-			if(BatchManager.startEsecuzione(configWrapper, BATCH_RECUPERO_RT)) {
-				String recuperoRT = new Ricevute().recuperoRT();
-				aggiornaSondaOK(configWrapper, BATCH_RECUPERO_RT);
-				log.info("Recupero RT completato {}.", recuperoRT);
-				return recuperoRT;
-			} else {
-				log.info("Eseguo Batch Recupero RT: operazione in corso su altro nodo. Richiesta interrotta.");
-				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
-			}
-		} catch (ServiceException | IOException e) {
-			log.error("Recupero RT fallito", e);
-			aggiornaSondaKO(configWrapper, BATCH_RECUPERO_RT, e);
-			return "Recupero RT fallito#" + e;
-		} finally {
-			BatchManager.stopEsecuzione(configWrapper, BATCH_RECUPERO_RT);
 		}
 	}
 

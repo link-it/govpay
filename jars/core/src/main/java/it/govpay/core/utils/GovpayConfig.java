@@ -81,7 +81,6 @@ public class GovpayConfig {
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
-	private int dimensionePoolThreadRecuperoRT;
 	private int numeroNotifichePerThread;
 	private String ksLocation;
 	private String ksPassword;
@@ -194,16 +193,12 @@ public class GovpayConfig {
 	private boolean batchSpedizioneNotifiche;
 	private boolean batchSpedizioneNotificheAppIO;
 	private boolean batchSpedizionePromemoria;
-	private boolean batchRecuperoRT;
 
 	private boolean batchAcquisizioneRendicontazioniEsterno;
-	private boolean batchRecuperoRTEsterno;
 
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 
 	private boolean controlloPasswordBackwardCompatibilityMD5;
-
-	private Integer numeroGiorniRendicontazioniSenzaPagamento;
 
 	private Properties risorseCustomBaseURLProperties;
 
@@ -252,7 +247,6 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
-		this.dimensionePoolThreadRecuperoRT = 10;
 		this.numeroNotifichePerThread = 2;
 		this.log4j2Config = null;
 		this.ksAlias = null;
@@ -343,12 +337,8 @@ public class GovpayConfig {
 		this.batchSpedizioneNotifiche = false;
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
-		this.batchRecuperoRT = false;
 
 		this.batchAcquisizioneRendicontazioniEsterno = false;
-		this.batchRecuperoRTEsterno = false;
-
-		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 
 		this.controlloPasswordBackwardCompatibilityMD5 = false;
 
@@ -459,7 +449,6 @@ public class GovpayConfig {
 			this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento", this.props, false, 10);
 			this.dimensionePoolThreadCaricamentoTracciati = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati", this.props, false, 10);
 			this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, 10);
-			this.dimensionePoolThreadRecuperoRT = getIntegerProperty(log, "it.govpay.thread.pool.recuperoRT", this.props, false, 10);
 			this.numeroNotifichePerThread = getIntegerProperty(log, "it.govpay.batch.notifiche.perThread", this.props, false, 2);
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
@@ -775,17 +764,9 @@ public class GovpayConfig {
 			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
 				this.batchSpedizionePromemoria = true;
 
-			String batchRecuperoRTString = getProperty("it.govpay.batch.recuperoRT.enabled", this.props, false, log);
-			if(batchRecuperoRTString != null && Boolean.valueOf(batchRecuperoRTString))
-				this.batchRecuperoRT = true;
-
 			String batchAcquisizioneRendicontazioniModalitaString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.modalita", this.props, false, log);
 			if(batchAcquisizioneRendicontazioniModalitaString != null && batchAcquisizioneRendicontazioniModalitaString.equalsIgnoreCase("esterno"))
 				this.batchAcquisizioneRendicontazioniEsterno = true;
-
-			String batchRecuperoRTModalitaString = getProperty("it.govpay.batch.recuperoRT.modalita", this.props, false, log);
-			if(batchRecuperoRTModalitaString != null && batchRecuperoRTModalitaString.equalsIgnoreCase("esterno"))
-				this.batchRecuperoRTEsterno = true;
 
 			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
 			if(StringUtils.isNotEmpty(keywordsS)) {
@@ -798,8 +779,6 @@ public class GovpayConfig {
 			String controlloPasswordBackwardCompatibilityMD5String = getProperty("it.govpay.autenticazione.controlloPassword.backwardCompatibilityMD5.enabled", this.props, false, log);
 			if(controlloPasswordBackwardCompatibilityMD5String != null && Boolean.valueOf(controlloPasswordBackwardCompatibilityMD5String))
 				this.controlloPasswordBackwardCompatibilityMD5 = true;
-
-			this.numeroGiorniRendicontazioniSenzaPagamento = getIntegerProperty(log, "it.govpay.batch.recuperoRT.limiteTemporaleRecupero", this.props, false, 15);
 
 			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
 			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
@@ -1183,10 +1162,6 @@ public class GovpayConfig {
 		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
-	public int getDimensionePoolThreadRecuperoRT() {
-		return dimensionePoolThreadRecuperoRT;
-	}
-
 	public int getNumeroNotifichePerThread() {
 		return numeroNotifichePerThread;
 	}
@@ -1515,24 +1490,12 @@ public class GovpayConfig {
 		return batchSpedizionePromemoria;
 	}
 
-	public boolean isBatchRecuperoRT() {
-		return batchRecuperoRT;
-	}
-
 	public boolean isBatchAcquisizioneRendicontazioniEsterno() {
 		return batchAcquisizioneRendicontazioniEsterno;
 	}
 
-	public boolean isBatchRecuperoRTEsterno() {
-		return batchRecuperoRTEsterno;
-	}
-
 	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
-	}
-
-	public Integer getNumeroGiorniRendicontazioniSenzaPagamento() {
-		return numeroGiorniRendicontazioniSenzaPagamento;
 	}
 
 	public boolean isControlloPasswordBackwardCompatibilityMD5() {
