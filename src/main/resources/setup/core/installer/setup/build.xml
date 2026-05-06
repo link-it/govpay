@@ -121,7 +121,7 @@
        }
 
        def rtUrl = properties['antinstaller_batch_recupero_rt_url']
-       project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl)
+       project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl ?: '')
 
        def batchIban = properties['antinstaller_batch_iban']
        if (batchIban) {
