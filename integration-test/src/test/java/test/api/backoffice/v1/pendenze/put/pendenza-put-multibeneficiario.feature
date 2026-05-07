@@ -32,9 +32,9 @@ And request dominioNonIntermediato
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* def ibanAccreditoEnteNonIntermediato = 'IT08L1234512345123456789012'
+* def ibanAccreditoEnteNonIntermediato = 'IT08L1234512345123456789022'
 * def ibanAccreditoEnteNonIntermediatoDescrizione = 'IBAN Accredito N.I.'
-* def ibanAccreditoEnteNonIntermediatoPostale = 'IT08L0760112345123456789012'
+* def ibanAccreditoEnteNonIntermediatoPostale = 'IT08L0760112345123456789022'
 * def ibanAccreditoEnteNonIntermediatoPostaleDescrizione = 'IBAN Accredito N.I. Postale'
 
 Given url backofficeBaseurl

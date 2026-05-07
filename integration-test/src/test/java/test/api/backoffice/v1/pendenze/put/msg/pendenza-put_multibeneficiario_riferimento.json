@@ -24,7 +24,7 @@
 			"importo": 10,
 			"descrizione": '#("Pagamento TEFA n." + idPendenza)',
 			"codEntrata": "TEFA",
-			"idDominio": '#(idDominio_2)'
+			"idDominio": '#(idDominio_5)'
 		}
 	]
 }

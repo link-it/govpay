@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_dominio5.feature')
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
@@ -40,8 +41,8 @@ Scenario: Caricamento pendenza multibeneficiariovoce definita con numero avviso
 * def pendenzaPut = read('msg/pendenza-put_multivoce.json')
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * set pendenzaPut.numeroAvviso = numeroAvviso
-* set pendenzaPut.voci[1].idDominio = idDominio_2
-* set pendenzaPut.voci[1].ibanAccredito = ibanAccredito_2
+* set pendenzaPut.voci[1].idDominio = idDominio_5
+* set pendenzaPut.voci[1].ibanAccredito = ibanAccredito_5
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
