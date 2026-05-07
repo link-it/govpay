@@ -96,6 +96,7 @@ Scenario: Caricamento pendenza multibeneficiario
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
 * set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.voci[1].idDominio = idDominio_NI
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -124,6 +125,7 @@ Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp co
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
 * set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.voci[1].idDominio = idDominio_NI
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -149,6 +151,7 @@ Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp co
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * set pendenzaPut.numeroAvviso = numeroAvviso
 * set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.voci[1].idDominio = idDominio_NI
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -178,6 +181,7 @@ Scenario: Caricamento pendenza multibeneficiario definita
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario_riferimento.json')
 * set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.voci[1].idDominio = idDominio_NI
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -206,6 +210,7 @@ Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziati
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario_riferimento.json')
 * set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.voci[1].idDominio = idDominio_NI
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -231,6 +236,7 @@ Scenario: Caricamento pendenza multibeneficiario definita e pagamento a iniziati
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * set pendenzaPut.numeroAvviso = numeroAvviso
 * set pendenzaPut.idTipoPendenza = codLibero
+* set pendenzaPut.voci[1].idDominio = idDominio_NI
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
