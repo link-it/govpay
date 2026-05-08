@@ -3,7 +3,7 @@ Feature: Configurazione
 Background:
 
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* def idDominio_5 = '12345678904'
+* def idDominio_5 = '12345678905'
 * def ragioneSocialeDominio_5 = 'Ente Creditore Test 5'
 * def ibanAccredito_5 = 'IT04L1234512345123456789015'
 * def ibanAccredito_5Descrizione = 'IBAN Accredito 5'
