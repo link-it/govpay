@@ -7,10 +7,10 @@ Background:
 
 Scenario: Acquisizione del profilo autenticato basic
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path '/profilo'
 And headers basicAutenticationHeader
 When method get
@@ -56,9 +56,9 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'apikey'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'apikey'})
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path '/profilo'
 And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A

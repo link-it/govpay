@@ -79,10 +79,6 @@ public class ModelFactory {
 	
 	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
 	
-	public static PagamentoPortaleVersamentoModel PAGAMENTO_PORTALE_VERSAMENTO = new PagamentoPortaleVersamentoModel();
-	
-	public static PagamentoPortaleModel PAGAMENTO_PORTALE = new PagamentoPortaleModel();
-	
 	public static PagamentoModel PAGAMENTO = new PagamentoModel();
 	
 	public static NotificaModel NOTIFICA = new NotificaModel();
@@ -112,8 +108,6 @@ public class ModelFactory {
 	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();
 	
 	public static VistaRiscossioniModel VISTA_RISCOSSIONI = new VistaRiscossioniModel();
-	
-	public static VistaPagamentoPortaleModel VISTA_PAGAMENTO_PORTALE = new VistaPagamentoPortaleModel();
 	
 	public static VistaPagamentoModel VISTA_PAGAMENTO = new VistaPagamentoModel();
 	

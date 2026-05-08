@@ -1,7 +1,0 @@
-{
-  ragioneSociale: 'Mario Rossi',
-  domini: ['#(idDominio)','#(idDominio_2)'],
-  tipiPendenza: ['#(codEntrataSegreteria)'],
-  acl: [ { servizio: 'Pagamenti', autorizzazioni: [ 'R' ] } ],
-  abilitato: true
-}

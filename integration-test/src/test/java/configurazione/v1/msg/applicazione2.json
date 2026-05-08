@@ -3,7 +3,7 @@
 	"password" : '#(pwdA2A2)',
 	"codificaAvvisi": {
 		"codificaIuv": "65",
-		"regExpIuv": "65[0-9]*",
+		"regExpIuv": "0065[0-9]*",
 		"generazioneIuvInterna": false
 	},
 	"domini": [

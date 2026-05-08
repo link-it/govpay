@@ -36,7 +36,6 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="VistaRptVersamento"&gt;
  * 		&lt;sequence&gt;
- * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codCarrello" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
@@ -142,7 +141,6 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VistaRptVersamento",
   propOrder = {
-  	"idPagamentoPortale",
   	"codCarrello",
   	"iuv",
   	"ccp",
@@ -242,14 +240,6 @@ import java.io.Serializable;
 public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBeanWithId implements Serializable , Cloneable {
   public VistaRptVersamento() {
     super();
-  }
-
-  public IdPagamentoPortale getIdPagamentoPortale() {
-    return this.idPagamentoPortale;
-  }
-
-  public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
-    this.idPagamentoPortale = idPagamentoPortale;
   }
 
   public java.lang.String getCodCarrello() {
@@ -1017,9 +1007,6 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBeanWith
 	  return it.govpay.orm.VistaRptVersamento.modelStaticInstance;
   }
 
-
-  @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
-  protected IdPagamentoPortale idPagamentoPortale;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCarrello",required=false,nillable=false)

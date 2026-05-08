@@ -21,16 +21,17 @@ Scenario: Numero avviso su multivoce
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == {"faultCode":"PAA_SEMANTICA","faultString":"Errore semantico.","id":"12345678901","description":"#notnull","serial": "#ignore"}
-* match response.faultBean.description contains 'Il versamento contiene piu\' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.'
+* match response.faultBean.description contains 'La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.'
 
 Scenario Outline: <field> non valida
 
@@ -38,7 +39,7 @@ Scenario Outline: <field> non valida
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 10.00
 
 * set pendenzaPut.idA2A = idA2A
@@ -57,7 +58,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -78,7 +80,7 @@ Scenario: Caricamento pendenza con contabilita errore validazione importi
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.idA2A = idA2A
@@ -96,7 +98,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description == '#("La voce ("+pendenzaPut.voci[0].idVocePendenza+") della pendenza (IdA2A:" + idA2A + ", Id:" + idPendenza + ") ha un importo (" + pendenzaPut.voci[0].importo + ") diverso dalla somma dei singoli importi definiti nella lista delle contabilita\' (" + pendenzaPutImportoOrig + ")")'

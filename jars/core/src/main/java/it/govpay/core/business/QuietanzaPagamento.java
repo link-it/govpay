@@ -42,7 +42,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.RptBuilder;
+import it.govpay.core.utils.RptUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.VersioneRPT;
@@ -121,7 +121,7 @@ public class QuietanzaPagamento {
 
 		VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
 
-		String descrizione = RptBuilder.buildCausaleSingoloVersamento(pagamento.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT());
+		String descrizione = RptUtils.buildCausaleSingoloVersamento(pagamento.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT());
 		
 		voce.setDescrizione(descrizione);
 		voce.setIdRiscossione(rendicontazione.getIur());

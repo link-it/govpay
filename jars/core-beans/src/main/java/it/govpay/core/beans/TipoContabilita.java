@@ -25,6 +25,9 @@ public enum TipoContabilita {
     CAPITOLO,
     SPECIALE,
     SIOPE,
+    SRTP_ESCLUSA_RAVV_OPEROSO,
+    SRTP_ESCLUSA_ALTRO_OPERATORE,
+    SRTP_ESCLUSA,
     ALTRO;
 
     public String value() {

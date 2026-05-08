@@ -50,7 +50,6 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"VersamentoIncasso",VersamentoIncasso.class));
-		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
@@ -117,7 +116,6 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"VersamentoIncasso",VersamentoIncasso.class));
-		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
@@ -188,8 +186,6 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	public it.govpay.orm.model.IdUoModel ID_UO = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
-	 
-	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
 	 
 	public IField IMPORTO_TOTALE = null;
 	 

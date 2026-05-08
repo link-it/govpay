@@ -68,11 +68,7 @@ I servizi sono esposti utilizzando nuove BaseUrl, di seguito il mapping con le v
 +---------------------------------+-------------------------------------------------+
 | /govpay/frontend/api/pagopa     | /govpay-api-pagopa                              |
 +---------------------------------+-------------------------------------------------+
-| /govpay/frontend/api/pagamento  | /govpay-api-pagamento                           |
-+---------------------------------+-------------------------------------------------+
 | /govpay/frontend/api/user       | /govpay-api-user                                |
-+---------------------------------+-------------------------------------------------+
-| /govpay/frontend/web/connector  | /govpay-web-connector                           |
 +---------------------------------+-------------------------------------------------+
 | /govpay/backend/api/pendenze    | /govpay-api-pendenze                            |
 +---------------------------------+-------------------------------------------------+

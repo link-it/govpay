@@ -23,7 +23,6 @@ una delle voci della pendenza dell'elemento **voci**:
     :caption: Esempio di pagamento Imposta di bollo
     
     {
-      ...
       "voci":
       [
          {
@@ -35,7 +34,6 @@ una delle voci della pendenza dell'elemento **voci**:
          "provinciaResidenza": "RO"
          }
       ]
-      ...
     }
 
 Di seguito alcune informazioni aggiuntive per la valorizzazione dei campi:

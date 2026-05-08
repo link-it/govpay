@@ -1,13 +1,13 @@
 <jboss-deployment-structure>
-	<!-- Make sub deployments isolated by default, so they cannot see each others 
+	<!-- Make sub deployments isolated by default, so they cannot see each others
 		classes without a Class-Path entry -->
 	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
-	<!-- This corresponds to the top level deployment. For a war this is the 
+	<!-- This corresponds to the top level deployment. For a war this is the
 		war's module, for an ear -->
-	<!-- This is the top level ear module, which contains all the classes in 
+	<!-- This is the top level ear module, which contains all the classes in
 		the EAR's lib folder -->
 	<deployment>
-		${it.govpay.orm.driverdependency}	
+		${it.govpay.orm.driverdependency}
 		<exclude-subsystems>
 			<subsystem name="jaxrs" />
 			<subsystem name="webservices" />
@@ -29,22 +29,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</exclusions>
 	</sub-deployment>
-	<sub-deployment
-		name="web-connector-${project.version}.war">
-		<exclusions>
-			<module name="org.apache.cxf" />
-			<module name="org.jboss.resteasy.resteasy-jackson2-provider" />
-		</exclusions>
-	</sub-deployment>
 	<sub-deployment name="api-user-${project.version}.war">
-		<exclusions>
-			<module name="org.apache.cxf" />
-			<module name="org.springframework.spring" />
-			<module name="org.jboss.resteasy.resteasy-jackson2-provider" />
-		</exclusions>
-	</sub-deployment>
-	<sub-deployment
-		name="api-pagamento-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.cxf" />
 			<module name="org.springframework.spring" />

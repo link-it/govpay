@@ -99,7 +99,7 @@ public class MessaggiPagoPAUtils {
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.N_A); // Informazione non presente nella V2 ma campo obbligatorio nella V1
 		// ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante)) Versante??
 		ctRpt.setSoggettoPagatore(toCtSoggettoPagatore(data.getDebtor()));
-		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
+		ctRpt.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, uo));
 
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(DateUtils.toLocalDate(rpt.getDataMsgRichiesta()));
@@ -165,7 +165,7 @@ public class MessaggiPagoPAUtils {
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.N_A); // Informazione non presente nella V2 ma campo obbligatorio nella V1
 		// ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante)) Versante??
 		ctRpt.setSoggettoPagatore(toCtSoggettoPagatore(data.getDebtor()));
-		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
+		ctRpt.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, uo));
 
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(DateUtils.toLocalDate(rpt.getDataMsgRichiesta()));
@@ -274,7 +274,7 @@ public class MessaggiPagoPAUtils {
 		ctDominio.setIdentificativoDominio(receipt.getFiscalCode());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRt.setDominio(ctDominio);
-		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
+		ctRt.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, uo));
 		ctRt.setIdentificativoMessaggioRicevuta(receipt.getReceiptId());
 		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
 		CtIdentificativoUnivoco ctIdentificativoUnivocoIstitutoAttestante = new CtIdentificativoUnivoco();
@@ -337,7 +337,7 @@ public class MessaggiPagoPAUtils {
 		ctDominio.setIdentificativoDominio(receipt.getFiscalCode());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRt.setDominio(ctDominio);
-		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
+		ctRt.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, uo));
 		ctRt.setIdentificativoMessaggioRicevuta(receipt.getReceiptId());
 
 		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
@@ -368,14 +368,14 @@ public class MessaggiPagoPAUtils {
 		idUnivocoDebitore.setCodiceIdentificativoUnivoco(cFiscale);
 		idUnivocoDebitore.setTipoIdentificativoUnivoco((ctEntityUniqueIdentifier.getEntityUniqueIdentifierType().compareTo(StEntityUniqueIdentifierType.F) == 0) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
 		soggettoDebitore.setAnagraficaPagatore(debitore.getFullName());
-		soggettoDebitore.setCapPagatore(RptBuilder.getNotEmpty(debitore.getPostalCode()));
-		soggettoDebitore.setCivicoPagatore(RptBuilder.getNotEmpty(debitore.getCivicNumber()));
-		soggettoDebitore.setEMailPagatore(RptBuilder.getNotEmpty(debitore.getEMail()));
+		soggettoDebitore.setCapPagatore(RptUtils.getNotEmpty(debitore.getPostalCode()));
+		soggettoDebitore.setCivicoPagatore(RptUtils.getNotEmpty(debitore.getCivicNumber()));
+		soggettoDebitore.setEMailPagatore(RptUtils.getNotEmpty(debitore.getEMail()));
 		soggettoDebitore.setIdentificativoUnivocoPagatore(idUnivocoDebitore);
-		soggettoDebitore.setIndirizzoPagatore(RptBuilder.getNotEmpty(debitore.getStreetName()));
-		soggettoDebitore.setLocalitaPagatore(RptBuilder.getNotEmpty(debitore.getCity()));
-		soggettoDebitore.setNazionePagatore(RptBuilder.getNotEmpty(debitore.getCountry()));
-		soggettoDebitore.setProvinciaPagatore(RptBuilder.getNotEmpty(debitore.getStateProvinceRegion()));
+		soggettoDebitore.setIndirizzoPagatore(RptUtils.getNotEmpty(debitore.getStreetName()));
+		soggettoDebitore.setLocalitaPagatore(RptUtils.getNotEmpty(debitore.getCity()));
+		soggettoDebitore.setNazionePagatore(RptUtils.getNotEmpty(debitore.getCountry()));
+		soggettoDebitore.setProvinciaPagatore(RptUtils.getNotEmpty(debitore.getStateProvinceRegion()));
 		return soggettoDebitore;
 	}
 

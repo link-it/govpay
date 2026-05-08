@@ -1,8 +1,9 @@
 Feature: Verifica della rpt API SANP 2.4
 
-Background: 
+Background:
 
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
+* def versionePagamento = '2'
 
 Scenario: 
 

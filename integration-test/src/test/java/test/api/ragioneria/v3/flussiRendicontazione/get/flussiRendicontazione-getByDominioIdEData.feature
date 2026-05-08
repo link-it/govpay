@@ -41,50 +41,53 @@ And match response ==
 """ 
 
 * def findResponse = response
-* def idDominio = findResponse.risultati[0].dominio.idDominio
-* def idFlusso = findResponse.risultati[0].idFlusso
-* def dataFlusso = findResponse.risultati[0].dataFlusso
+* def flussoDom1 = findResponse.risultati[0].dominio.idDominio == '12345678901' ? findResponse.risultati[0] : findResponse.risultati[1]
+* def flussoDom2 = findResponse.risultati[0].dominio.idDominio == '12345678902' ? findResponse.risultati[0] : findResponse.risultati[1]
+
+* def idDominio = flussoDom1.dominio.idDominio
+* def idFlusso = flussoDom1.idFlusso
+* def dataFlusso = flussoDom1.dataFlusso
 
 Given url ragioneriaBaseurl
-And path 'flussiRendicontazione', idDominio, idFlusso, dataFlusso 
+And path 'flussiRendicontazione', idDominio, idFlusso, dataFlusso
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response.idFlusso == idFlusso 
-And match response.dataFlusso == dataFlusso
-And match response.rendicontazioni == '#[6]'
-
-Given url ragioneriaBaseurl
-And path 'flussiRendicontazione', idDominio, idFlusso 
-And headers idA2ABasicAutenticationHeader
-When method get
-Then status 200
-And match response.idFlusso == idFlusso 
-And match response.dataFlusso == dataFlusso
-And match response.rendicontazioni == '#[6]'
-
-
-* def idDominio = findResponse.risultati[1].dominio.idDominio
-* def idFlusso = findResponse.risultati[1].idFlusso
-* def dataFlusso = findResponse.risultati[1].dataFlusso
-
-Given url ragioneriaBaseurl
-And path 'flussiRendicontazione', idDominio, idFlusso, dataFlusso 
-And headers idA2ABasicAutenticationHeader
-When method get
-Then status 200
-And match response.idFlusso == idFlusso 
+And match response.idFlusso == idFlusso
 And match response.dataFlusso == dataFlusso
 And match response.rendicontazioni == '#[4]'
 
 Given url ragioneriaBaseurl
-And path 'flussiRendicontazione', idDominio, idFlusso 
+And path 'flussiRendicontazione', idDominio, idFlusso
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response.idFlusso == idFlusso 
+And match response.idFlusso == idFlusso
 And match response.dataFlusso == dataFlusso
 And match response.rendicontazioni == '#[4]'
+
+
+* def idDominio = flussoDom2.dominio.idDominio
+* def idFlusso = flussoDom2.idFlusso
+* def dataFlusso = flussoDom2.dataFlusso
+
+Given url ragioneriaBaseurl
+And path 'flussiRendicontazione', idDominio, idFlusso, dataFlusso
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.idFlusso == idFlusso
+And match response.dataFlusso == dataFlusso
+And match response.rendicontazioni == '#[6]'
+
+Given url ragioneriaBaseurl
+And path 'flussiRendicontazione', idDominio, idFlusso
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.idFlusso == idFlusso
+And match response.dataFlusso == dataFlusso
+And match response.rendicontazioni == '#[6]'
 
 Scenario: Test per bug conteggio risultati backoffice
 

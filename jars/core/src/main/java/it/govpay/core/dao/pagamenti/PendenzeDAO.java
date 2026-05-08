@@ -46,19 +46,15 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Dominio;
-//import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.VersamentiIncassiBD;
@@ -108,7 +104,6 @@ import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
-import it.govpay.orm.PagamentoPortaleVersamento;
 import it.govpay.orm.RPT;
 
 public class PendenzeDAO extends BaseDAO{
@@ -178,7 +173,6 @@ public class PendenzeDAO extends BaseDAO{
 				}
 			}
 			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
-			filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 			filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 			filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
 			filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
@@ -271,7 +265,6 @@ public class PendenzeDAO extends BaseDAO{
 			}
 		}
 		filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
-		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
 		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
@@ -375,7 +368,6 @@ public class PendenzeDAO extends BaseDAO{
 				}
 			}
 			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
-			filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 			filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 			filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
 			filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
@@ -470,22 +462,6 @@ public class PendenzeDAO extends BaseDAO{
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				populateSingoloVersamento(versamentiBD, configWrapper, singoloVersamento, versamento);
-			}
-
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(versamentiBD);
-			pagamentiPortaleBD.setAtomica(false);
-			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
-			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamento.getId());
-			List<Long> idPagamentiPortale = new ArrayList<>();
-
-			if(allPagPortVers != null && !allPagPortVers.isEmpty()) {
-				for (PagamentoPortaleVersamento pagamentoPortaleVersamento : allPagPortVers) {
-					idPagamentiPortale.add(pagamentoPortaleVersamento.getIdPagamentoPortale().getId());
-				}
-
-				newFilter.setIdPagamentiPortale(idPagamentiPortale);
-				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(newFilter);
-				response.setPagamenti(findAll);
 			}
 
 			RptBD rptBD = new RptBD(versamentiBD);
@@ -618,22 +594,6 @@ public class PendenzeDAO extends BaseDAO{
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				populateSingoloVersamento(versamentiBD, configWrapper, singoloVersamento, versamento);
-			}
-
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(versamentiBD);
-			pagamentiPortaleBD.setAtomica(false);
-			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
-			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamento.getId());
-			List<Long> idPagamentiPortale = new ArrayList<>();
-
-			if(allPagPortVers != null && !allPagPortVers.isEmpty()) {
-				for (PagamentoPortaleVersamento pagamentoPortaleVersamento : allPagPortVers) {
-					idPagamentiPortale.add(pagamentoPortaleVersamento.getIdPagamentoPortale().getId());
-				}
-
-				newFilter.setIdPagamentiPortale(idPagamentiPortale);
-				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(newFilter);
-				response.setPagamenti(findAll);
 			}
 
 			RptBD rptBD = new RptBD(versamentiBD);

@@ -37,8 +37,8 @@
                },
                {
                   "idTransfer":2,
-                  "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()",
-                  "fiscalCodePA":"#(idDominio_2)",
+                  "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[1].importo.toString()",
+                  "fiscalCodePA":"#(idDominio_5)",
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
                   "transferCategory":"9/CodiceContabilita",
@@ -86,7 +86,7 @@
                {
                   "idTransfer":2,
                   "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()",
-                  "fiscalCodePA":"#(idDominio_2)",
+                  "fiscalCodePA":"#(idDominio_5)",
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
                   "transferCategory":"9/CodiceContabilita",
@@ -126,7 +126,7 @@
 	      "allegato":null
 	   },
 	   {
-	      "idDominio":"#(idDominio_2)",
+	      "idDominio":"#(idDominio_5)",
 	      "iuv":"#(iuv)",
 	      "iur":"#notnull",
 	      "indice":2,

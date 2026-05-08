@@ -81,6 +81,7 @@ Examples:
 | operatore_nonAuth.json | idflusso_dom1_1 | 403 | errore_auth.json |
 | operatore_nonAuth.json | idflusso_dom2_1 | 403 | errore_auth.json |
 
+@pagamento-norpt
 Scenario: Lettura di un flusso contenente un pagamento senza RPT
 
 * def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
@@ -99,13 +100,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def riversamentoCumulativo = "true"
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
+* def idCart = getCurrentTimeMillis()
 
 Given url ndpsym_psp_url 
 And path 'attiva' 
@@ -116,6 +118,9 @@ And param importo = importo
 And param tipoRicevuta = tipoRicevuta
 And param ibanAccredito = ibanAccredito
 And param riversamentoCumulativo = riversamentoCumulativo
+And param idCart = idCart
+And param inviaRicevuta = true
+And param versione = 3
 When method get
 Then assert responseStatus == 200
 

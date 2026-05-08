@@ -149,7 +149,7 @@ Nella schermata "Servizi Backoffice" si devono inserire i riferimenti alle BaseU
 -  **Base path API Backoffice**: BaseURL delle API-Backoffice
 
 File di configurazione Console Backoffice
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Nella schermata "File di configurazione Console Backoffice" si deve inserire il riferimento al file di configurazione utilizzato dal cruscotto.
 

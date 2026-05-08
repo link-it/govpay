@@ -249,8 +249,12 @@ public class PendenzeConverter {
 		} else { // Definisce i dettagli di incasso della singola entrata.
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
-			if(singoloVersamento.getTipoContabilita() != null)
-				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
+			if(singoloVersamento.getTipoContabilita() != null) {
+				// alias legacy v1: il modello commons usa CAPITOLO, l'API v1 espone ENTRATA
+				String tipoContabilitaName = singoloVersamento.getTipoContabilita().name();
+				if ("CAPITOLO".equals(tipoContabilitaName)) tipoContabilitaName = "ENTRATA";
+				rsModel.setTipoContabilita(TipoContabilita.valueOf(tipoContabilitaName));
+			}
 		}
 
 
@@ -372,7 +376,10 @@ public class PendenzeConverter {
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
-					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					// alias legacy v1: l'API v1 espone ENTRATA, il modello commons usa CAPITOLO
+					String tipoContabilitaName = vocePendenza.getTipoContabilita().name();
+					if ("ENTRATA".equals(tipoContabilitaName)) tipoContabilitaName = "CAPITOLO";
+					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(tipoContabilitaName));
 					sv.setTributo(tributo);
 				}
 

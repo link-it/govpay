@@ -8,10 +8,10 @@ Background:
 
 Scenario:  Acquisizione del logo EC
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
-Given url pagamentiBaseurl
+Given url ragioneriaBaseurl
 And path '/domini', idDominio, 'logo'
 And headers basicAutenticationHeader
 When method get

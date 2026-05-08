@@ -37,7 +37,6 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
@@ -80,7 +79,6 @@ public class InviaNotificaThread implements Runnable {
 	private Giornale giornale = null;
 	private String rptKey = null;
 	private List<Pagamento> pagamenti  = null;
-	private PagamentoPortale pagamentoPortale = null;
 
 	public InviaNotificaThread(Notifica notifica, IContext ctx) throws ServiceException, IOException {
 		// Verifico che tutti i campi siano valorizzati
@@ -96,7 +94,6 @@ public class InviaNotificaThread implements Runnable {
 		
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 		this.rptKey = this.notifica.getRptKey();
-		this.pagamentoPortale = this.rpt.getPagamentoPortale() != null ? this.rpt.getPagamentoPortale() : this.rpt.getPagamentoPortale(configWrapper);;
 	}
 
 	@Override
@@ -157,8 +154,6 @@ public class InviaNotificaThread implements Runnable {
 			eventoCtx.setCcp(this.rpt.getCcp());
 			eventoCtx.setIdA2A(this.applicazione.getCodApplicazione());
 			eventoCtx.setIdPendenza(this.versamento.getCodVersamentoEnte());
-			if(this.pagamentoPortale != null)
-				eventoCtx.setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
 			client = new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale, eventoCtx);
 			

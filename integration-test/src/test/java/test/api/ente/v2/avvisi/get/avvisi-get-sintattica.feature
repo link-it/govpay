@@ -30,7 +30,7 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.idA2A = idA2A
@@ -50,7 +50,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -127,7 +128,7 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.idA2A = idA2A
@@ -147,7 +148,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -180,13 +182,14 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -208,13 +211,14 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -246,13 +250,14 @@ Scenario: Numero voci eccessivo
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains 'voci'
@@ -269,7 +274,7 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.idA2A = idA2A
@@ -289,7 +294,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -314,7 +320,7 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.idA2A = idA2A
@@ -332,7 +338,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
@@ -363,7 +370,7 @@ Scenario Outline: <field> non valida
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.idA2A = idA2A
@@ -380,7 +387,8 @@ When method post
 Then status 200
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>

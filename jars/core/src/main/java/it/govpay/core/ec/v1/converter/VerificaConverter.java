@@ -151,7 +151,10 @@ public class VerificaConverter {
 					it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo();
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					// alias legacy v1: l'API v1 espone ENTRATA, il modello commons usa CAPITOLO
+					String tipoContabilitaName = vocePendenza.getTipoContabilita().name();
+					if ("ENTRATA".equals(tipoContabilitaName)) tipoContabilitaName = "CAPITOLO";
+					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(tipoContabilitaName));
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
 					sv.setTributo(tributo);
 				}

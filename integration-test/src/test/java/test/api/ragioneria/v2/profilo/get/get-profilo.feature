@@ -8,10 +8,10 @@ Background:
 
 Scenario: Acquisizione del profilo autenticato basic
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
-Given url pagamentiBaseurl
+Given url ragioneriaBaseurl
 And path '/profilo'
 And headers basicAutenticationHeader
 When method get
@@ -36,9 +36,9 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'apikey'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'apikey'})
 
-Given url pagamentiBaseurl
+Given url ragioneriaBaseurl
 And path '/profilo'
 And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A
@@ -64,9 +64,9 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey non autorizzato
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'apikey'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'apikey'})
 
-Given url pagamentiBaseurl
+Given url ragioneriaBaseurl
 And path '/profilo'
 And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A2

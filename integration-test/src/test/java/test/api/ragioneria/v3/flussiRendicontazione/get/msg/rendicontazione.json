@@ -19,6 +19,7 @@
 	"tipo":"#string",
 	"importo":"#? isImportoConDueDecimali(_)",
 	"data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+	"commissioni":"##number",
 	"vocePendenza": {
 		"dominio" : "##object",
 		"idVocePendenza":"#string",

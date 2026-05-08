@@ -163,7 +163,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(VistaRptVersamento.model())));
-			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getFieldConverter().toTable(VistaRptVersamento.model())));
 			fields.add(new CustomField("vrs_id_tipo_versamento_dominio", Long.class, "vrs_id_tipo_versamento_dominio", this.getFieldConverter().toTable(VistaRptVersamento.model())));
 			fields.add(new CustomField("vrs_id_tipo_versamento", Long.class, "vrs_id_tipo_versamento", this.getFieldConverter().toTable(VistaRptVersamento.model())));
 			fields.add(new CustomField("vrs_id_dominio", Long.class, "vrs_id_dominio", this.getFieldConverter().toTable(VistaRptVersamento.model())));
@@ -261,7 +260,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				Long idPagamentoPortale = this.getNullableValueFromMap("id_pagamento_portale", map);
 
 				VistaRptVersamento vistaRptVersamento = (VistaRptVersamento)this.getVistaRptVersamentoFetch().fetch(jdbcProperties.getDatabase(), VistaRptVersamento.model(), map);
 
@@ -314,12 +312,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					vistaRptVersamento.setVrsIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
-				}
-
-				if(idPagamentoPortale != null && idPagamentoPortale > 0){
-					it.govpay.orm.IdPagamentoPortale id_rpt_idPagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
-					id_rpt_idPagamentoPortale.setId(idPagamentoPortale);
-					vistaRptVersamento.setIdPagamentoPortale(id_rpt_idPagamentoPortale);
 				}
 
 				if(idDocumento != null && idDocumento > 0) {
@@ -616,14 +608,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdPagamentoPortale()!=null &&
-				imgSaved.getIdPagamentoPortale()!=null){
-			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
-			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null &&
-					imgSaved.getIdPagamentoPortale().getIdApplicazione()!=null){
-				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
-			}
-		}
 		if(obj.getVrsIdTipoVersamentoDominio()!=null &&
 				imgSaved.getVrsIdTipoVersamentoDominio()!=null){
 			obj.getVrsIdTipoVersamentoDominio().setId(imgSaved.getVrsIdTipoVersamentoDominio().getId());
@@ -719,27 +703,12 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 
 		String tableRpt = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model());
-		String tablePagamentiPortale = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE);
 		String tableApplicazioni = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_APPLICAZIONE);
 		String tableTipiVersamento = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO);
 		String tableTipiVersamentoDominio = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO);
 		String tableDomini = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_DOMINIO);
 		String tableUO = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_UO);
 		String tableDocumenti = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO);
-
-		if(expression.inUseModel(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE,false)){
-			sqlQueryObject.addWhereCondition(tableRpt+".id_pagamento_portale="+tablePagamentiPortale+".id");
-		}
-
-		if(expression.inUseModel(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE,false)){
-			if(!expression.inUseModel(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE,false)){
-				sqlQueryObject.addFromTable(tablePagamentiPortale);
-				sqlQueryObject.addWhereCondition(tableRpt+".id_pagamento_portale="+tablePagamentiPortale+".id");
-			}
-
-			String tableApplicazioni2 = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tablePagamentiPortale+".id_applicazione="+tableApplicazioni2+".id");
-		}
 
 		if(expression.inUseModel(VistaRptVersamento.model().VRS_ID_APPLICAZIONE,false)){
 			sqlQueryObject.addWhereCondition(tableRpt+".vrs_id_applicazione="+tableApplicazioni+".id");
@@ -815,18 +784,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 		mapTableToPKColumn.put(converter.toTable(VistaRptVersamento.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VistaRptVersamento.model()))
-			));
-
-		// VistaRptVersamento.model().ID_PAGAMENTO_PORTALE
-		mapTableToPKColumn.put(converter.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE))
-			));
-
-		// VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
 			));
 
 		// VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO

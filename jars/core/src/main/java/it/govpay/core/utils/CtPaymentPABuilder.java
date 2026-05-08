@@ -197,8 +197,8 @@ public class CtPaymentPABuilder {
 		ctRpt.setLastPayment(true); 
 
 		if(versamento.getCausaleVersamento() != null) {
-			if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
-				ctRpt.setDescription(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
+			if(versamento.getCausaleVersamento() instanceof CausaleSemplice causaleSemplice) {
+				ctRpt.setDescription(causaleSemplice.getCausale());
 			}
 		} else {
 			ctRpt.setDescription(" ");
@@ -307,7 +307,7 @@ public class CtPaymentPABuilder {
 				}
 			}
 
-			transferEl.setRemittanceInformation(RptBuilder.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
+			transferEl.setRemittanceInformation(RptUtils.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
@@ -362,7 +362,7 @@ public class CtPaymentPABuilder {
 		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
 		String contabilitaString = singoloVersamento.getContabilita();
 
-		if(contabilitaString != null && contabilitaString.length() > 0) {
+		if(contabilitaString != null && !contabilitaString.isEmpty()) {
 			it.govpay.model.Contabilita dto = ConverterUtils.parse(singoloVersamento.getContabilita(), it.govpay.model.Contabilita.class);
 
 			List<QuotaContabilita> quote = dto.getQuote();
@@ -447,10 +447,9 @@ public class CtPaymentPABuilder {
 					Object proprietaCustomObj = quotaContabilita.getProprietaCustom();
 
 					if(proprietaCustomObj != null) {
-						if(proprietaCustomObj instanceof String) {
-							String proprietaCustom = (String) proprietaCustomObj;
+						if(proprietaCustomObj instanceof String proprietaCustom) {
 
-							if(proprietaCustom != null && proprietaCustom.length() > 0) {
+							if(proprietaCustom != null && !proprietaCustom.isEmpty()) {
 								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 
 								for (String key : parse.keySet()) {

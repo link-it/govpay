@@ -93,13 +93,7 @@ public class OperazioniDAO extends BaseDAO{
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneRiconciliazioni();
 				esitoOperazione = "Elaborazione Riconciliazioni schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RECUPERO_RT)){
-				// Se la modalita' e' esterna attiva il batch esterno, altrimenti usa il batch interno
-				if(it.govpay.core.utils.GovpayConfig.getInstance().isBatchRecuperoRTEsterno()) {
-					esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchRecuperoRt(ctx, leggiOperazioneDTO.isForzaEsecuzione());
-				} else {
-					it.govpay.core.business.Operazioni.setEseguiRecuperoRT();
-					esitoOperazione = "Recupero RT schedulato";
-				}
+				esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchRecuperoRt(ctx, leggiOperazioneDTO.isForzaEsecuzione());
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(INVIA_POSIZIONI_DEBITORIE_ACA)){
 				esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchAca(ctx, leggiOperazioneDTO.isForzaEsecuzione());
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(INVIA_NOTIFICHE_MAGGIOLI)){

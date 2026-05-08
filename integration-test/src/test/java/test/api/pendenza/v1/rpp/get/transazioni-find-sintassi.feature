@@ -6,7 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def nomeAPI = '/rpp'
 
@@ -14,7 +14,7 @@ Scenario: Validazione sintattica filtri per data
 
 # No filtri
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And headers basicAutenticationHeader
 When method get
@@ -33,7 +33,7 @@ And match response ==
 
 # Filtro DataDa formato Date
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataDa = '2020-01-01'
 And headers basicAutenticationHeader
@@ -53,7 +53,7 @@ And match response ==
 
 # Filtro DataA formato Date
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataA = '2020-01-01'
 And headers basicAutenticationHeader
@@ -73,7 +73,7 @@ And match response ==
 
 # Filtro DataDa formato DateTime
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataDa = '2020-01-01T00:00:00.000'
 And headers basicAutenticationHeader
@@ -93,7 +93,7 @@ And match response ==
 
 # Filtro DataA formato DateTime
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataA = '2020-01-01T23:59:59.999'
 And headers basicAutenticationHeader
@@ -113,7 +113,7 @@ And match response ==
 
 # Filtro DataDa formato DateTime
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataDa = '2020-01-01T25:00:00.000'
 And headers basicAutenticationHeader
@@ -133,7 +133,7 @@ And match response ==
 
 # Filtro DataA formato DateTime
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataA = '2020-01-01T25:59:59.999'
 And headers basicAutenticationHeader
@@ -156,7 +156,7 @@ And match response ==
 * def dataDaNonValida = '2020-01-01TTT:00:00.000'
 * def dataDaParamName = 'dataDa'
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataDa = dataDaNonValida
 And headers basicAutenticationHeader
@@ -171,7 +171,7 @@ Then status 400
 * def dataANonValida = '2020-01-01TTT:59:59.999'
 * def dataAParamName = 'dataA'
 
-Given url pagamentiBaseurl
+Given url pendenzeBaseurl
 And path nomeAPI
 And param dataA = dataANonValida
 And headers basicAutenticationHeader

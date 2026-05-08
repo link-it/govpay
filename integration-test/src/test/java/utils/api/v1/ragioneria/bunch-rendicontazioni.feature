@@ -29,9 +29,18 @@ Scenario: Generazione rendicontazioni cumulative
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento.feature')
+* def cumulativo = 'true'
+* def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
+* call read('classpath:utils/pa-carica-avviso.feature')
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = cumulativo
+* def idDominioPendenza = idDominio
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio
@@ -42,10 +51,19 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* set pagamentoPost.pendenze[0].idUnitaOperativa = idUnitaOperativa
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento.feature')
+* def cumulativo = 'true'
+* def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
+* set pendenzaPut.idUnitaOperativa = idUnitaOperativa
+* call read('classpath:utils/pa-carica-avviso.feature')
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = cumulativo
+* def idDominioPendenza = idDominio
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio
@@ -56,10 +74,19 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* set pagamentoPost.pendenze[0].idUnitaOperativa = idUnitaOperativa2
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento.feature')
+* def cumulativo = 'true'
+* def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
+* set pendenzaPut.idUnitaOperativa = idUnitaOperativa2
+* call read('classpath:utils/pa-carica-avviso.feature')
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = cumulativo
+* def idDominioPendenza = idDominio
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio
@@ -70,12 +97,22 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* set pagamentoPost.pendenze[0].idDominio = idDominio_2
-* set pagamentoPost.pendenze[0].idUnitaOperativa = idUnitaOperativa
-* set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataSiope
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento.feature')
+* def cumulativo = 'true'
+* def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
+* set pendenzaPut.idDominio = idDominio_2
+* set pendenzaPut.idUnitaOperativa = idUnitaOperativa
+* set pendenzaPut.voci[0].codEntrata = codEntrataSiope
+* call read('classpath:utils/pa-carica-avviso.feature')
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = cumulativo
+* def idDominioPendenza = idDominio_2
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
+
 * def idPendenzaUO2 = idPendenza
 
 Given url ndpsym_rendicontazioni_url 
@@ -87,11 +124,20 @@ Then assert responseStatus == 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def tipoRicevuta = 'R01'
-* def cumulativo = '1'
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
-* set pagamentoPost.pendenze[0].idDominio = idDominio_2
-* set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataSiope
-* call read('classpath:utils/workflow/modello1/v1/modello1-pagamento.feature')
+* def cumulativo = 'true'
+* def pendenzaPut = read('classpath:utils/workflow/modellounico/v1/msg/pendenza-put_monovoce_entratariferita.json')
+* set pendenzaPut.idDominio = idDominio_2
+* set pendenzaPut.voci[0].codEntrata = codEntrataSiope
+* call read('classpath:utils/pa-carica-avviso.feature')
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = cumulativo
+* def idDominioPendenza = idDominio_2
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-solopagamento.feature')
 
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2

@@ -19,11 +19,11 @@ Scenario: Riconciliazione cumulativa
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -63,11 +63,11 @@ Scenario: Idempotenza riconciliazione cumulativa
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -118,11 +118,11 @@ Scenario: Riconciliazione cumulativa con IDFlusso
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -164,11 +164,11 @@ Scenario: Riconciliazione cumulativa effettuata prima dell'acquisizione dei flus
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 

@@ -1,17 +1,15 @@
 package utils.java;
 
-import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class NumeroAvvisoBuilder {
-	
-	public static synchronized long successivo() {
-		
-		String s = String.valueOf(new Date().getTime());
-		
-		if(s.length() > 10)
-			return Long.parseLong( s.substring(s.length() - 10) ) ;
-		else 
-			return Long.parseLong( s );
+
+	private static final AtomicLong COUNTER = new AtomicLong();
+
+	public static long successivo() {
+		long ms = System.currentTimeMillis() % 10_000_000L;
+		long seq = COUNTER.incrementAndGet() % 1000L;
+		return ms * 1000L + seq;
 	}
 	
 	public static String newNumeroAvviso(String idStazione, String auxDigit, Integer segregationCode, String prefix) throws Exception {
@@ -20,7 +18,7 @@ public class NumeroAvvisoBuilder {
 	
 	public static String getNumeroAvviso(String idStazione, String auxDigit, Integer segregationCode, String prefix, long reference) throws Exception {
 		
-		if(prefix.length() > 0) Integer.parseInt(prefix);
+		if(!prefix.isEmpty()) Integer.parseInt(prefix);
 		
 		String applicationCodeS = idStazione.substring(12);
 		

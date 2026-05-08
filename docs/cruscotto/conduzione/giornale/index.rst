@@ -60,7 +60,7 @@ Il dettaglio di un evento assiema i seguenti gruppi di informazioni relativi all
 * Gli eventuali dati relativi a PagoPa connessi all'evento (presenti solo per alcune tipologie di eventi)
 
 Messaggi richiesta e risposta
-----------------
+-----------------------------
 
 I messaggi di richiesta e risposta vengono registrati se previsto dalla configurazione di sistema, i dettagli dei messaggi vengono mostrati nelle seguenti sezioni.
 

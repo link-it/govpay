@@ -120,12 +120,6 @@ public class RptBD extends BasicBD {
 			PagamentiBD pagamentiBD = new PagamentiBD(this);
 			pagamentiBD.setAtomica(false);
 			rpt.setPagamenti(pagamentiBD.getPagamenti(rpt.getId(), deep));
-			
-			if(rpt.getIdPagamentoPortale() != null) {
-				PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
-				pagamentiPortaleBD.setAtomica(false);
-				rpt.setPagamentoPortale(pagamentiPortaleBD.getPagamento(rpt.getIdPagamentoPortale()));
-			}
 		}
 	}
 

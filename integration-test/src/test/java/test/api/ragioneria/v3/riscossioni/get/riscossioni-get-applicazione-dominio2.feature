@@ -2,7 +2,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 
 Background:
 
-* callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 
 * def applicazioneRequest = read('msg/applicazione_dominio2.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
@@ -16,18 +16,19 @@ And path '/riscossioni', <riscossione>.idDominio, <riscossione>.iuv, <riscossion
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	dominio:'#notnull', 
-	iuv:'#(<riscossione>.iuv)', 
-	iur:'#(<riscossione>.iur)', 
-	indice:'#(<riscossione>.indice)', 
+	dominio:'#notnull',
+	iuv:'#(<riscossione>.iuv)',
+	iur:'#(<riscossione>.iur)',
+	indice:'#(<riscossione>.indice)',
 	vocePendenza:'#notnull',
-	stato:'RISCOSSA', 
-	tipo:'ENTRATA', 
-	importo:'#(<riscossione>.importo)', 
-	data:'#(<riscossione>.data)'
+	stato:'RISCOSSA',
+	tipo:'ENTRATA',
+	importo:'#(<riscossione>.importo)',
+	data:'#(<riscossione>.data)',
+	commissioni:'##number'
 }
 """
 And match response.dominio.idDominio == '#(<riscossione>.idDominio)'

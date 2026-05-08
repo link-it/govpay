@@ -50,3 +50,4 @@ ALTER TABLE intermediari ADD cod_connettore_backoffice_ec VARCHAR2(35);
 ALTER TABLE rendicontazioni ADD notifica_inviata NUMBER;
 UPDATE rendicontazioni SET notifica_inviata = 0;
 ALTER TABLE rendicontazioni MODIFY notifica_inviata NOT NULL;
+

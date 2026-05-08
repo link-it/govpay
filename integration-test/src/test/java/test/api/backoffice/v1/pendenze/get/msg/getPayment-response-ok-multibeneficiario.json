@@ -34,8 +34,8 @@
 			    	},
 			    	{
 			    		"idTransfer" : 2,
-					    "transferAmount" : '#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()',
-					    "fiscalCodePA" : "#(idDominio_2)",
+					    "transferAmount" : '#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[1].importo.toString()',
+					    "fiscalCodePA" : "#(idDominio_5)",
 					    "IBAN" : "#string",
 					    "remittanceInformation" : "#string",
 					    "transferCategory" : "#string"

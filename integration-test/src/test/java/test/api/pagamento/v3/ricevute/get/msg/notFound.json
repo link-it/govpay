@@ -1,6 +1,0 @@
-{ 
-	categoria: 'OPERAZIONE', 
-	codice: '#notnull', 
-	descrizione: 'Risorsa non trovata', 
-	dettaglio: '#notnull' 
-}

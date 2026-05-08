@@ -15,7 +15,7 @@ Scenario: Riconciliazione singola da applicazione non autorizzata per il dominio
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -62,11 +62,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -116,7 +116,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -163,7 +163,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -215,11 +215,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 
@@ -275,11 +275,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "true"
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv1 = iuv
 * def importo1 = importo
 
-* call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call read('classpath:utils/workflow/modellounico/v1/modellounico-pagamento.feature')
 * def iuv2 = iuv
 * def importo2 = importo
 

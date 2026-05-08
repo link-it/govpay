@@ -164,6 +164,27 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+# Disabilita le applicazioni di prova per non inquinare gli altri test
+* def applicazioneDis = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazioneDis.abilitato = false
+* set applicazioneDis.principal = idAppl1
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazioneDis
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* def applicazioneDis = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazioneDis.abilitato = false
+* set applicazioneDis.principal = idAppl2
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl2
+And headers basicAutenticationHeader
+And request applicazioneDis
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 
 Scenario Outline: Configurazione di un'applicazione da parte di un'operatore che non ha i diritti su tutti i <field>.
 
@@ -238,4 +259,14 @@ And match response.apiPagamenti == true
 And match response.apiPendenze == true
 And match response.apiRagioneria == true
 
+# Disabilita l'applicazione di prova per non inquinare gli altri test
+* def applicazioneDis = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazioneDis.abilitato = false
+* set applicazioneDis.principal = 'PR_MOD_' + idComune
 
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazioneDis
+When method put
+Then assert responseStatus == 200 || responseStatus == 201

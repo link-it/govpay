@@ -20,12 +20,9 @@
 package it.govpay.backoffice.v1.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.RppIndex;
-import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
@@ -45,16 +42,7 @@ public class RptConverter {
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setBloccante(rpt.isBloccante());
-
-		if(rpt.getPagamentoPortale() != null) {
-			if(rpt.getPagamentoPortale().getTipo() == 1) {
-				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.ENTE);
-			} else if(rpt.getPagamentoPortale().getTipo() == 3) {
-				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
-			}
-		} else {
-			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.MODELLO_UNICO);
-		}
+		rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.MODELLO_UNICO);
 
 		return rsModel;
 	}
@@ -68,18 +56,7 @@ public class RptConverter {
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setBloccante(rpt.isBloccante());
-
-		if(rpt.getIdPagamentoPortale() != null) {
-			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-			PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
-			if(pagamentoPortale.getTipo() == 1) {
-				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.ENTE);
-			} else if(pagamentoPortale.getTipo() == 3) {
-				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
-			}
-		} else {
-			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.MODELLO_UNICO);
-		}
+		rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.MODELLO_UNICO);
 
 		return rsModel;
 	}

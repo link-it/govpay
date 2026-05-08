@@ -1,7 +1,0 @@
-{
-  ragioneSociale: 'Mario Rossi',
-  domini: ['*'],
-  tipiPendenza: ['*'],
-  acl: [ { servizio: 'Pagamenti', autorizzazioni: [ 'R' ] } ],
-  abilitato: true
-}

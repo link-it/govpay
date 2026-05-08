@@ -69,7 +69,6 @@
    	<b:bean id="notifiche" class="it.govpay.backoffice.v1.Notifiche"/>
    	<b:bean id="operatori" class="it.govpay.backoffice.v1.Operatori"/>
    	<b:bean id="operazioni" class="it.govpay.backoffice.v1.Operazioni"/>
-   	<b:bean id="pagamenti" class="it.govpay.backoffice.v1.Pagamenti"/>
    	<b:bean id="pendenze" class="it.govpay.backoffice.v1.Pendenze"/>
    	<b:bean id="profilo" class="it.govpay.backoffice.v1.Profilo"/>
     <b:bean id="promemoria" class="it.govpay.backoffice.v1.Promemoria"/>
@@ -107,7 +106,6 @@
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
 			   	<ref bean="notifiche" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -155,7 +153,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -203,7 +200,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -250,7 +246,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -298,7 +293,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -346,7 +340,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -394,7 +387,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -442,7 +434,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -512,7 +503,6 @@
 			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
@@ -561,7 +551,6 @@
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
 			   	<ref bean="notifiche" />
-			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />

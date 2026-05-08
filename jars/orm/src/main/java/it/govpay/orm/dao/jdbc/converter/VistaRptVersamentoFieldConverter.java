@@ -69,34 +69,6 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_sessione";
-			}else{
-				return "id_sessione";
-			}
-		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".src_versante_identificativo";
-			}else{
-				return "src_versante_identificativo";
-			}
-		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_richiesta";
-			}else{
-				return "data_richiesta";
-			}
-		}
 		if(field.equals(VistaRptVersamento.model().COD_CARRELLO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_carrello";
@@ -775,18 +747,6 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			return this.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
-			return this.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
-			return this.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
 		if(field.equals(VistaRptVersamento.model().COD_CARRELLO)){
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
@@ -1087,12 +1047,6 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		
 		if(model.equals(VistaRptVersamento.model())){
 			return "v_rpt_versamenti";
-		}
-		if(model.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE)){
-			return "pagamenti_portale";
-		}
-		if(model.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
-			return "applicazioni";
 		}
 		if(model.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO)){
 			return "tipi_vers_domini";

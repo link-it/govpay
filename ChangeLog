@@ -1,3 +1,27 @@
+2026-05-05  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayApiBackoffice, GovPayApiPendenze, GovPayApiRagioneria, GovPayClientApiEnte, GovPayCore, GovPayCoreBeans, GovPayORMBeans] Issue #856
+	Aggiunta funzionalità
+	Aggiunti i nuovi valori di tipoContabilita per il supporto al servizio SEPA Request To Pay (SRTP):
+	SRTP_ESCLUSA_RAVV_OPEROSO (codifica tassonomica 6), SRTP_ESCLUSA_ALTRO_OPERATORE (codifica 7), SRTP_ESCLUSA (codifica 8).
+	I nuovi prefissi consentono all'EC di escludere una posizione debitoria dalla veicolazione SRTP secondo le regole pagoPA.
+	Aggiornati gli enum TipoContabilita in tutti i moduli (model, core-beans, tracciati, client-api-ente, api-backoffice v1, api-pendenze v1/v2, api-ragioneria v1).
+	Aggiornati i converter EntrateConverter e DominiConverter per la gestione dei nuovi valori.
+	Aggiornate le specifiche OpenAPI (govpay-api-backoffice-v1.yaml, govpay-api-pendenze-v1.yaml, govpay-api-pendenze-v2.yaml, govpay-api-ragioneria-v1.yaml, govpay-api-ec-v1.yaml).
+	Aggiunti integration test Karate di caricamento e validazione sintattica per backoffice v1 e pendenze v1/v2, ed estesi i test esistenti su entrate ed entrate-dominio del backoffice.
+	Aggiunto scenario end-to-end con verifica del transferCategory (prefisso 6/7/8) in RPT/RT a seguito di un pagamento.
+
+	* [GovPayConsole] Issue #856
+	Aggiunta funzionalità
+	Aggiunti i nuovi valori di tipoContabilita SRTP_ESCLUSA_RAVV_OPEROSO, SRTP_ESCLUSA_ALTRO_OPERATORE, SRTP_ESCLUSA nelle mappe TIPI_CONTABILITA e TIPI_CONTABILITA_NUMERICHE di util.service.ts.
+	I nuovi valori sono ora selezionabili nelle form di censimento entrata ed entrata di dominio, e visualizzati con il prefisso tassonomico corretto (6/, 7/, 8/) nelle viste di pendenze e voci.
+
+	* [Testsuite]
+	Pulizia e consolidamento bunch riconciliazioni
+	Rimossi i file orfani utils/api/v2/ragioneria/bunch-riconciliazioni-v3.feature e utils/api/v3/ragioneria/bunch-riconciliazioni-v3.feature (mai referenziati).
+	Consolidate le tre copie identiche di bunch-riconciliazioni-v2.feature in un'unica versione canonica sotto utils/api/v1/ragioneria/, aggiornando i 26 caller di v2 e v3 al nuovo path.
+	Risolto bug in NumeroAvvisoBuilder.successivo(): aggiunto contatore AtomicLong tie-breaker per evitare collisioni di numero avviso/IUV tra chiamate effettuate nello stesso millisecondo, eliminando una causa di flakiness della testsuite (errori 022403 "IUV identifica piu' di un pagamento").
+
 2026-03-26  Giuliano Pintori <pintori@link.it>
 
 	* Rilascio versione 3.9.1
@@ -132,6 +156,25 @@
 	Eliminato WS Jppa-PDP e servizio di spedizione notifiche SOAP.
 	Rimosso modulo jppapdp-beans e relativi riferimenti.
 	Aggiornati EventoContext, GovpayConfig, Operazioni, TipoDestinatario e ThreadExecutorManager.
+
+2026-01-30  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayORM, GovPayCore, GovPayApiPagamento, GovPayConsole, Database]
+	Aggiunta funzionalità #836
+	Rimosso il supporto al Modello 1 pagoPA (nodoInviaCarrelloRPT) e alle API-Pagamento.
+	Rimosse tabelle pagamenti_portale e pag_port_versamenti.
+	Rimossa vista v_pagamenti_portale.
+	Rimossi model PagamentoPortale, PagamentoPortaleVersamento e VistaPagamentoPortale.
+	Eliminate API-Pagamento e WebConnector non piu' necessarie.
+	Rimossa possibilita' di abilitare la sezione pagamenti nel cruscotto.
+	Eliminati riferimenti alla primitiva nodoInviaCarrelloRPT.
+	Aggiornati script di creazione db e aggiunte patch 3.9.
+	Rivisti test di integrazione.
+
+	* [GovPayCore]
+	Aggiunta funzionalità #841
+	Aggiunta possibilita' di configurare il numero di notifiche da assegnare ad ogni thread di spedizione.
+	Nuova proprieta': it.govpay.batch.notifiche.perThread
 
 2026-01-27  Giuliano Pintori <pintori@link.it>
 

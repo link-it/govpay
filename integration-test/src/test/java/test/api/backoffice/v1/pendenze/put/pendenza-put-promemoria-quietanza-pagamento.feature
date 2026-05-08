@@ -77,7 +77,7 @@ And match response == read('msg/pendenza-get.json')
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 
@@ -222,7 +222,7 @@ And match response == read('msg/pendenza-get.json')
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 

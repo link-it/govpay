@@ -120,15 +120,8 @@
           project.setUserProperty('it.govpay.batch.fdr.endpoint.url','')
        }
 
-       def batchRecuperoRt = properties['antinstaller_batch_recupero_rt']
-       if (batchRecuperoRt) {
-          def rtUrl = properties['antinstaller_batch_recupero_rt_url']
-          project.setUserProperty('it.govpay.batch.recuperoRT.modalita','esterno')
-          project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl)
-       } else {
-          project.setUserProperty('it.govpay.batch.recuperoRT.modalita','interno')
-          project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url','')
-       }
+       def rtUrl = properties['antinstaller_batch_recupero_rt_url']
+       project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl ?: '')
 
        def batchIban = properties['antinstaller_batch_iban']
        if (batchIban) {

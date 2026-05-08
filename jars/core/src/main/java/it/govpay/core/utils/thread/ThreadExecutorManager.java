@@ -36,7 +36,6 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorCaricamentoTracciatiStampeAvvisi;
 	private static ExecutorService executorCaricamentoTracciati;
 	private static ExecutorService executorSpedizioneTracciatiNotificaPagamenti;
-	private static ExecutorService executorRecuperaRT;
 	private static boolean initialized = false;
 
 	private static synchronized void init() {
@@ -64,10 +63,6 @@ public class ThreadExecutorManager {
 			int threadSpedizioneTracciatiNotificaPagamentiPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione tracciati notifica pagamenti [NumThread: {}]", threadSpedizioneTracciatiNotificaPagamentiPoolSize);
 			executorSpedizioneTracciatiNotificaPagamenti = Executors.newFixedThreadPool(threadSpedizioneTracciatiNotificaPagamentiPoolSize);
-
-			int threadRecuperoRT = GovpayConfig.getInstance().getDimensionePoolThreadRecuperoRT();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di recupero RT [NumThread: {}]", threadRecuperoRT);
-			executorRecuperaRT = Executors.newFixedThreadPool(threadRecuperoRT);
 		}
 		initialized = true;
 	}
@@ -108,11 +103,6 @@ public class ThreadExecutorManager {
 		while (!executorSpedizioneTracciatiNotificaPagamenti.isTerminated()) {
 			Thread.sleep(500);
 		}
-
-		executorRecuperaRT.shutdown();
-		while (!executorRecuperaRT.isTerminated()) {
-			Thread.sleep(500);
-		}
 	}
 
 	public static ExecutorService getClientPoolExecutorNotifica() {
@@ -137,9 +127,5 @@ public class ThreadExecutorManager {
 	
 	public static ExecutorService getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti() {
 		return executorSpedizioneTracciatiNotificaPagamenti;
-	}
-
-	public static ExecutorService getExecutorRecuperaRT() {
-		return executorRecuperaRT;
 	}
 }

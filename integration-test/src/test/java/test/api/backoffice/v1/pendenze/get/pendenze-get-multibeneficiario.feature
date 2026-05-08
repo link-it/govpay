@@ -2,23 +2,22 @@ Feature: Lettura di pendenze multibeneficiario
 
 Background:
 
-* call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:utils/common-utils.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_dominio5.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 * configure followRedirects = false
 
-* def versionePagamento = 2
-
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/api/backoffice/v1/pendenze/get/msg/getPayment-response-ok-multibeneficiario.json')
 
 # configurazione del secondo ente come non intermediato e censimento iban
 
 * def dominioNonIntermediato = read('classpath:configurazione/v1/msg/dominio.json')
 
-* set dominioNonIntermediato.ragioneSociale = ragioneSocialeDominio_2 + ' N.I.'
+* set dominioNonIntermediato.ragioneSociale = ragioneSocialeDominio_5 + ' N.I.'
 * set dominioNonIntermediato.intermediato = false
 * set dominioNonIntermediato.gln = null
 * set dominioNonIntermediato.cbill = null
@@ -29,26 +28,26 @@ Background:
 * set dominioNonIntermediato.autStampaPosteItaliane = null
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2 
+And path 'domini', idDominio_5 
 And headers basicAutenticationHeader
 And request dominioNonIntermediato
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* def ibanAccreditoEnteNonIntermediato = 'IT08L1234512345123456789012'
+* def ibanAccreditoEnteNonIntermediato = 'IT08L1234512345123456789015'
 * def ibanAccreditoEnteNonIntermediatoDescrizione = 'IBAN Accredito N.I.'
-* def ibanAccreditoEnteNonIntermediatoPostale = 'IT08L0760112345123456789012'
+* def ibanAccreditoEnteNonIntermediatoPostale = 'IT08L0760112345123456789015'
 * def ibanAccreditoEnteNonIntermediatoPostaleDescrizione = 'IBAN Accredito N.I. Postale'
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediato
+And path 'domini', idDominio_5, 'contiAccredito', ibanAccreditoEnteNonIntermediato
 And headers basicAutenticationHeader
 And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
+And path 'domini', idDominio_5, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
 And headers basicAutenticationHeader
 And request {postale:true,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoPostaleDescrizione)'}
 When method put
@@ -113,12 +112,13 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/api/backoffice/v1/pendenze/get/msg/notifica-attivazione-multibeneficiario.json')
 
@@ -126,7 +126,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * call sleep(10000)
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
@@ -152,14 +152,14 @@ Scenario: Caricamento pendenza multibeneficiario di due enti che condividono l'I
 * def ibanAccreditoEnteNonIntermediatoPostaleDescrizione = ibanAccreditoPostaleDescrizione
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediato
+And path 'domini', idDominio_5, 'contiAccredito', ibanAccreditoEnteNonIntermediato
 And headers basicAutenticationHeader
 And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
+And path 'domini', idDominio_5, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
 And headers basicAutenticationHeader
 And request {postale:true,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoPostaleDescrizione)'}
 When method put
@@ -208,12 +208,13 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/api/backoffice/v1/pendenze/get/msg/notifica-attivazione-multibeneficiario.json')
 
@@ -221,7 +222,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * call sleep(10000)
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso

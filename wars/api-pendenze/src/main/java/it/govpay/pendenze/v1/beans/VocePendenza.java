@@ -482,7 +482,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			vi.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito, true);
 			vi.validaIdIbanAccredito("ibanAppoggio", this.ibanAppoggio);
 
-			ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.tipoContabilita);
+			ValidatoreUtils.validaTipoContabilitaV1(vf, "tipoContabilita", this.tipoContabilita);
 			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {

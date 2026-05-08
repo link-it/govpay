@@ -2,7 +2,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 
 Background:
 
-* callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 * def applicazioneRequest = read('msg/applicazione_star.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
