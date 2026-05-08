@@ -375,14 +375,6 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>api-gestione</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>pagopa-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
