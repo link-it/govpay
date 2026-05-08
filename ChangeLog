@@ -1,3 +1,28 @@
+2026-05-08  Giuliano Pintori <pintori@link.it>
+
+	* Rilascio versione 3.9.2
+
+	* [GovPayCore, GovPayApiBackoffice] Issue #836
+	Rimozione funzionalità
+	Eliminata la procedura interna di Recupero RT: il batch di recupero ricevute pendenti e' ora esclusivamente esterno.
+	Eliminate le classi RecuperoRT, RecuperoRTCheck, Ricevute, RecuperaRTThread, RecuperaRTNodoClient.
+	Rimossi gli scheduler Spring (batchRecuperoRTCheck, batchRecuperoRT) da applicationContext-timers.xml.
+	Rimosse property obsolete (it.govpay.batch.recuperoRT.enabled, it.govpay.batch.recuperoRT.modalita, it.govpay.batch.recuperoRT.limiteTemporaleRecupero, it.govpay.thread.pool.recuperoRT) dai filter properties e dal govpay.properties EAR.
+	Rimossi flag eseguiRecuperoRT/setEseguiRecuperoRT/getEseguiRecuperoRT da Operazioni.java; rimossa logica avviaRecuperoRT da Rendicontazioni.
+	Semplificato OperazioniDAO.recuperoRT (sempre esterno) e SondeConverter (sonda condizionata da batchOn).
+	Mantenuto Intermediario.connettorePddRecuperoRT (utilizzato dal batch esterno via DB GovPay).
+
+	* [Installer] Issue #836
+	Aggiornata configurazione installer per il batch Recupero RT: rimosso il checkbox "Batch Recupero RT" (sempre attivo in modalita' esterna), la pagina di configurazione URL e' ora sempre mostrata e obbligatoria con validazione regex http(s).
+	Allineato template_wildfly.filter.properties con template.filter.properties per la sezione recuperoRT.
+	Aggiunto fallback null-safe nello script Groovy di build.xml per evitare NPE in modalita' headless quando l'URL non e' specificato.
+
+	* [GovPayApiPendenze v1, GovPayClientApiEnte v1, GovPayCore] Issue #836
+	Risolto Bug
+	Risolto bug latente di v1 sul valore tipoContabilita "ENTRATA": il valore esposto dall'OpenAPI v1 non veniva piu' accettato a runtime perche' il modello commons usa "CAPITOLO".
+	Aggiunto nuovo metodo ValidatoreUtils.validaTipoContabilitaV1 per gestire l'alias legacy ENTRATA<->CAPITOLO senza impattare gli altri API.
+	Aggiunte traduzioni nei converter v1 (PendenzeConverter request/response e VerificaConverter request) per mantenere la simmetria del contratto API.
+
 2026-05-05  Giuliano Pintori <pintori@link.it>
 
 	* [GovPayApiBackoffice, GovPayApiPendenze, GovPayApiRagioneria, GovPayClientApiEnte, GovPayCore, GovPayCoreBeans, GovPayORMBeans] Issue #856
