@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "**" ]  # TODO: restringere a [ "main" ]
+    branches: [ "**" ]
     tags:
       - '*'
   pull_request:

@@ -29,6 +29,7 @@ import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -272,12 +273,13 @@ public class TracciatiNotificaPagamenti {
 					}
 
 					if(dataRtA.getTime() < now.getTime()) {
+						String nowLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now);
 						switch (this.tipoTracciato) {
 						case MYPIVOT, SECIM, GOVPAY:
-							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRTA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRTA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, nowLog);
 							break;
 						case HYPERSIC_APK:
-							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRendicontazioniA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRendicontazioniA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, nowLog);
 							break;
 						}
 						dataRtA = now;
@@ -1033,116 +1035,81 @@ public class TracciatiNotificaPagamenti {
 	}
 
 	private List<List<String>> creaLineaCsvFrGovPay(Fr fr, BasicBD bd) throws JAXBException, SAXException, ServiceException {
+		byte[] xml = FrUtils.getXml(fr, bd);
+		if (xml != null) {
+			return creaLineeCsvDaFlussoXml(xml, fr.getCodDominio());
+		}
+		List<List<String>> linee = new ArrayList<>();
+		linee.add(creaLineaCsvSenzaFlussoXml(fr));
+		return linee;
+	}
+
+	private List<List<String>> creaLineeCsvDaFlussoXml(byte[] xml, String idDominio) throws JAXBException, SAXException {
 		List<List<String>> linee = new ArrayList<>();
 
-		byte[] xml = FrUtils.getXml(fr, bd);
-		
-		if(xml != null) {
-			FlussoRiversamento flussoRiversamento = JaxbUtils.toFR(xml);
-			CtIstitutoMittente istitutoMittente = flussoRiversamento.getIstitutoMittente();
-			CtIstitutoRicevente istitutoRicevente = flussoRiversamento.getIstitutoRicevente();
-			String identificativoFlusso = flussoRiversamento.getIdentificativoFlusso();
-			Date dataOraFlusso = DateUtils.toJavaDate(flussoRiversamento.getDataOraFlusso());
-			String identificativoUnivocoRegolamento = flussoRiversamento.getIdentificativoUnivocoRegolamento();
-			BigDecimal importoTotalePagamenti = flussoRiversamento.getImportoTotalePagamenti();
-			BigDecimal numeroTotalePagamenti = flussoRiversamento.getNumeroTotalePagamenti();
-			Date dataRegolamento = DateUtils.toJavaDate(flussoRiversamento.getDataRegolamento());
-			String codiceBicBancaDiRiversamento = flussoRiversamento.getCodiceBicBancaDiRiversamento();
-			String idDominio = fr.getCodDominio();
-	
-			List<CtDatiSingoliPagamenti> datiSingoliPagamentis = flussoRiversamento.getDatiSingoliPagamentis();
-	
-			for (CtDatiSingoliPagamenti ctDatiSingoliPagamenti : datiSingoliPagamentis) {
-				List<String> linea = new ArrayList<>();
-	
-				String codiceEsitoSingoloPagamento = ctDatiSingoliPagamenti.getCodiceEsitoSingoloPagamento();
-				Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(ctDatiSingoliPagamenti.getDataEsitoSingoloPagamento());
-				String identificativoUnivocoRiscossione = ctDatiSingoliPagamenti.getIdentificativoUnivocoRiscossione();
-				String identificativoUnivocoVersamento = ctDatiSingoliPagamenti.getIdentificativoUnivocoVersamento();
-				Integer indiceDatiSingoloPagamento = ctDatiSingoliPagamenti.getIndiceDatiSingoloPagamento();
-				BigDecimal singoloImportoPagato = ctDatiSingoliPagamenti.getSingoloImportoPagato();
-	
-				// identificativoFlusso: fr.identificativoFlusso
-				linea.add(identificativoFlusso);
-				// dataOraFlusso: fr.dataOraFlusso
-				linea.add(SimpleDateFormatUtils.newSimpleDateFormat().format(dataOraFlusso));
-				// identificativoDominio: fr.coddominio
-				linea.add(idDominio);
-				// identificativoUnivocoRegolamento: fr.identificativoUnivocoRegolamento
-				linea.add(identificativoUnivocoRegolamento);
-				// dataRegolamento: fr.dataRegolamento
-				linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRegolamento));
-				// codiceBicBancaDiRiversamento: fr.codiceBicBancaDiRiversamento
-				linea.add(codiceBicBancaDiRiversamento);
-				// numeroTotalePagamenti: fr.numeroTotalePagamenti
-				linea.add(numeroTotalePagamenti.intValue()+"");
-				// importoTotalePagamenti: fr.importoTotalePagamenti
-				linea.add(TracciatiNotificaPagamentiUtils.printImporto(importoTotalePagamenti, false));
-				// identificativoUnivocoVersamento: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoVersamento
-				linea.add(identificativoUnivocoVersamento);
-				// identificativoUnivocoRiscossione: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoRiscossione
-				linea.add(identificativoUnivocoRiscossione);
-				// indiceDatiSingoloPagamento: fr.ctDatiSingoliPagamenti[i].indiceDatiSingoloPagamento
-				linea.add(indiceDatiSingoloPagamento != null ? indiceDatiSingoloPagamento.intValue() + "" : "");
-				// singoloImportoPagato: fr.ctDatiSingoliPagamenti[i].singoloImportoPagato
-				linea.add(TracciatiNotificaPagamentiUtils.printImporto(singoloImportoPagato, false));
-				// codiceEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].codiceEsitoSingoloPagamento
-				linea.add(codiceEsitoSingoloPagamento);
-				// dataEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].dataEsitoSingoloPagamento
-				linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataEsitoSingoloPagamento));
-				// denominazioneMittente fr.istitutoMittente.denominazioneMittente
-				linea.add(istitutoMittente.getDenominazioneMittente());
-				// identificativoMittente fr.istitutoMittente.identificativoUnivocoMittente.codiceIdentificativoUnivoco
-				linea.add(istitutoMittente.getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco());
-				// denominazioneRicevente fr.istitutoRicevente.denominazioneRicevente
-				linea.add(istitutoRicevente.getDenominazioneRicevente());
-				// identificativoRicevente fr.istitutoRicevente.identificativoUnivocoRicevente.codiceIdentificativoUnivoco
-				linea.add(istitutoRicevente.getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco());
-	
-				linee.add(linea);
-			}
-		} else {
+		FlussoRiversamento flussoRiversamento = JaxbUtils.toFR(xml);
+		CtIstitutoMittente istitutoMittente = flussoRiversamento.getIstitutoMittente();
+		CtIstitutoRicevente istitutoRicevente = flussoRiversamento.getIstitutoRicevente();
+		String identificativoFlusso = flussoRiversamento.getIdentificativoFlusso();
+		Date dataOraFlusso = DateUtils.toJavaDate(flussoRiversamento.getDataOraFlusso());
+		String identificativoUnivocoRegolamento = flussoRiversamento.getIdentificativoUnivocoRegolamento();
+		BigDecimal importoTotalePagamenti = flussoRiversamento.getImportoTotalePagamenti();
+		BigDecimal numeroTotalePagamenti = flussoRiversamento.getNumeroTotalePagamenti();
+		Date dataRegolamento = DateUtils.toJavaDate(flussoRiversamento.getDataRegolamento());
+		String codiceBicBancaDiRiversamento = flussoRiversamento.getCodiceBicBancaDiRiversamento();
+
+		for (CtDatiSingoliPagamenti pagamento : flussoRiversamento.getDatiSingoliPagamentis()) {
+			Integer indiceDatiSingoloPagamento = pagamento.getIndiceDatiSingoloPagamento();
+			Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(pagamento.getDataEsitoSingoloPagamento());
+
 			List<String> linea = new ArrayList<>();
-			// identificativoFlusso: fr.identificativoFlusso
-			linea.add(fr.getCodFlusso());
-			// dataOraFlusso: fr.dataOraFlusso
-			linea.add(fr.getDataFlusso() != null ? SimpleDateFormatUtils.newSimpleDateFormat().format(fr.getDataFlusso()) : "");
-			// identificativoDominio: fr.coddominio
-			linea.add(fr.getCodDominio() != null ? fr.getCodDominio() : "");
-			// identificativoUnivocoRegolamento: fr.identificativoUnivocoRegolamento
-			linea.add(fr.getIur() != null ? fr.getIur() : "");
-			// dataRegolamento: fr.dataRegolamento
-			linea.add(fr.getDataRegolamento() != null ?  SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(fr.getDataRegolamento()) : "");
-			// codiceBicBancaDiRiversamento: fr.codiceBicBancaDiRiversamento
-			linea.add(fr.getCodBicRiversamento() != null ? fr.getCodBicRiversamento() : "");
-			// numeroTotalePagamenti: fr.numeroTotalePagamenti
-			linea.add(fr.getNumeroPagamenti()+"");
-			// importoTotalePagamenti: fr.importoTotalePagamenti
-			linea.add(fr.getImportoTotalePagamenti() != null ? TracciatiNotificaPagamentiUtils.printImporto(fr.getImportoTotalePagamenti(), false) : "");
-			// identificativoUnivocoVersamento: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoVersamento
-			linea.add("");
-			// identificativoUnivocoRiscossione: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoRiscossione
-			linea.add("");
-			// indiceDatiSingoloPagamento: fr.ctDatiSingoliPagamenti[i].indiceDatiSingoloPagamento
-			linea.add("");
-			// singoloImportoPagato: fr.ctDatiSingoliPagamenti[i].singoloImportoPagato
-			linea.add("");
-			// codiceEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].codiceEsitoSingoloPagamento
-			linea.add("");
-			// dataEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].dataEsitoSingoloPagamento
-			linea.add("");
-			// denominazioneMittente fr.istitutoMittente.denominazioneMittente
-			linea.add(fr.getRagioneSocialePsp() != null ? fr.getRagioneSocialePsp() : "");
-			// identificativoMittente fr.istitutoMittente.identificativoUnivocoMittente.codiceIdentificativoUnivoco
-			linea.add(fr.getCodPsp() != null ? fr.getCodPsp() : "");
-			// denominazioneRicevente fr.istitutoRicevente.denominazioneRicevente
-			linea.add(fr.getRagioneSocialeDominio() != null ? fr.getRagioneSocialeDominio() : "");
-			// identificativoRicevente fr.istitutoRicevente.identificativoUnivocoRicevente.codiceIdentificativoUnivoco
-			linea.add(fr.getCodDominio() != null ? fr.getCodDominio() : "");
+			linea.add(identificativoFlusso);
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormat().format(dataOraFlusso));
+			linea.add(idDominio);
+			linea.add(identificativoUnivocoRegolamento);
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRegolamento));
+			linea.add(codiceBicBancaDiRiversamento);
+			linea.add(numeroTotalePagamenti.intValue() + "");
+			linea.add(TracciatiNotificaPagamentiUtils.printImporto(importoTotalePagamenti, false));
+			linea.add(pagamento.getIdentificativoUnivocoVersamento());
+			linea.add(pagamento.getIdentificativoUnivocoRiscossione());
+			linea.add(indiceDatiSingoloPagamento != null ? indiceDatiSingoloPagamento.intValue() + "" : "");
+			linea.add(TracciatiNotificaPagamentiUtils.printImporto(pagamento.getSingoloImportoPagato(), false));
+			linea.add(pagamento.getCodiceEsitoSingoloPagamento());
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataEsitoSingoloPagamento));
+			linea.add(istitutoMittente.getDenominazioneMittente());
+			linea.add(istitutoMittente.getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco());
+			linea.add(istitutoRicevente.getDenominazioneRicevente());
+			linea.add(istitutoRicevente.getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco());
 
 			linee.add(linea);
 		}
 		return linee;
+	}
+
+	private List<String> creaLineaCsvSenzaFlussoXml(Fr fr) {
+		List<String> linea = new ArrayList<>();
+		linea.add(StringUtils.defaultString(fr.getCodFlusso()));
+		linea.add(formatData(fr.getDataFlusso(), SimpleDateFormatUtils.newSimpleDateFormat()));
+		linea.add(StringUtils.defaultString(fr.getCodDominio()));
+		linea.add(StringUtils.defaultString(fr.getIur()));
+		linea.add(formatData(fr.getDataRegolamento(), SimpleDateFormatUtils.newSimpleDateFormatSoloData()));
+		linea.add(StringUtils.defaultString(fr.getCodBicRiversamento()));
+		linea.add(fr.getNumeroPagamenti() + "");
+		linea.add(fr.getImportoTotalePagamenti() != null ? TracciatiNotificaPagamentiUtils.printImporto(fr.getImportoTotalePagamenti(), false) : "");
+		// 6 campi non disponibili senza il flusso XML (dettaglio singoli pagamenti)
+		for (int i = 0; i < 6; i++) {
+			linea.add("");
+		}
+		linea.add(StringUtils.defaultString(fr.getRagioneSocialePsp()));
+		linea.add(StringUtils.defaultString(fr.getCodPsp()));
+		linea.add(StringUtils.defaultString(fr.getRagioneSocialeDominio()));
+		linea.add(StringUtils.defaultString(fr.getCodDominio()));
+		return linea;
+	}
+
+	private static String formatData(Date data, SimpleDateFormat formatter) {
+		return data != null ? formatter.format(data) : "";
 	}
 
 	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
