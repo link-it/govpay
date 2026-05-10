@@ -334,7 +334,6 @@ public class RptFilter extends AbstractFilter {
 			RPTFieldConverter converter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			RPTModel model = it.govpay.orm.RPT.model();
 			
-			boolean addTabellaPagamentiPortale = false;
 			boolean addTabellaVersamenti = false;
 			boolean addTabellaUO = false;
 			boolean addTabellaTipoVersamento = false;

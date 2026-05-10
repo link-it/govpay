@@ -44,7 +44,6 @@ import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;

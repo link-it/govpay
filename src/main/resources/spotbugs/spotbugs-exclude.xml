@@ -76,13 +76,10 @@
         5. Autenticazione Tomcat (2 occorrenze)
            - TomcatApplicationAuthenticationProvider
 
-        6. Serializzazione ORM (1 occorrenza)
-           - AbstractSerializer
-
-        7. Client API AppIO (3 occorrenze)
+        6. Client API AppIO (3 occorrenze)
            - ApiClient
 
-        8. Logger e reload configurazione (2 occorrenze)
+        7. Logger e reload configurazione (2 occorrenze)
            - Log4JUtils, BasicClientCORE
 
         Totale: 39 occorrenze, tutte verificate come sicure perché i path sono
@@ -113,9 +110,6 @@
 
             <!-- Autenticazione -->
             <Class name="org.openspcoop2.utils.service.authentication.provider.TomcatApplicationAuthenticationProvider"/>
-
-            <!-- Serializzazione ORM -->
-            <Class name="it.govpay.orm.utils.serializer.AbstractSerializer"/>
 
             <!-- Client AppIO -->
             <Class name="it.govpay.core.utils.appio.impl.ApiClient"/>
