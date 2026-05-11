@@ -7,7 +7,7 @@ Background:
 
 Scenario: Lettura info senza autenticazione (endpoint permitAll)
 
-* def backofficePublicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'public'})
+* def backofficePublicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficePublicBaseurl
 And path '/info'
