@@ -46,3 +46,25 @@ When method get
 # Then status 200
 # And match response.idOperazione == 'inviaPosizioniDebitorieAca'
 # And match response.stato == '0'
+
+
+Scenario: Esecuzione di un'operazione non esistente restituisce 404
+
+* def idOperazioneInesistente = 'operazioneInesistente_' + getCurrentTimeMillis()
+
+Given url backofficeBaseurl
+And path 'operazioni', idOperazioneInesistente
+And headers basicAutenticationHeader
+When method get
+Then status 404
+And match response ==
+"""
+{
+	categoria: 'OPERAZIONE',
+	codice: '404000',
+	descrizione: 'Risorsa non trovata',
+	dettaglio: '#notnull'
+}
+"""
+And match response.dettaglio contains idOperazioneInesistente
+And match response.dettaglio contains 'sconosciuta'

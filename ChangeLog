@@ -1,3 +1,23 @@
+2026-05-11  Giuliano Pintori <pintori@link.it>
+
+	* [Testsuite]
+	Corretti test backoffice intermediari basati su nomi di campi non corrispondenti al bean di risposta.
+	intermediari-get.feature: rinominato response.codIntermediario in response.idIntermediario (allineato al bean Intermediario).
+	intermediari-stazioni-get.feature: rimossa asserzione su response.idIntermediario non presente nel bean Stazione.
+	intermediari-stazioni-find.feature: sostituita asserzione response.risultati[0].idIntermediario con check su idStazione (StazioneIndex non espone idIntermediario); rifattorizzato lo Scenario Outline di validazione sintattica adottando il pattern '* def x = <value>' per evitare il doppio quoting che causava javascript evaluation failed sul valore ' *&'.
+
+	* [GovPayORM] Pulizia codice
+	Eliminati gli element XSD VistaEventiPagamento e VistaEventiRpt (alias di Evento) dai due govpay.xsd e i 20 file Java generati corrispondenti sotto it.govpay.orm.dao (I/IDB/JDBC service + search + Impl, FieldConverter, Fetch).
+	Aggiornati IServiceManager, JDBCServiceManager, JDBCLimitedServiceManager e gov_pay.dao.jdbc.properties rimuovendo getter e registrazioni di IVistaEventiPagamentoService/Search e IVistaEventiRptService/Search.
+
+	* [GovPayORM] Pulizia codice
+	Eliminato il modello ORM VersamentoIncasso e la vista DB versamenti_incassi, non piu' utilizzati.
+	Rimossi 11 file Java (~6.200 righe) sotto it.govpay.orm e it.govpay.bd.viste: VersamentoIncasso, VersamentoIncassoModel, IVersamentoIncassoServiceSearch, IDBVersamentoIncassoServiceSearch, JDBCVersamentoIncassoServiceSearch, JDBCVersamentoIncassoServiceSearchImpl, VersamentoIncassoFieldConverter, VersamentoIncassoFetch, VersamentiIncassiBD, VersamentoIncassoFilter, VersamentoIncassoConverter.
+	Aggiornati IServiceManager, JDBCServiceManager, JDBCLimitedServiceManager, BasicBD e gov_pay.dao.jdbc.properties rimuovendo getter, field, init e registrazione di IVersamentoIncassoServiceSearch.
+	Rimosso il complexType VersamentoIncasso dai due schemi govpay.xsd.
+	Rimossa la CREATE VIEW versamenti_incassi dai 5 baseline gov_pay.sql (postgresql, oracle, mysql, hsql, sqlserver) e la relativa DROP VIEW dai 5 drop.sql.
+	Aggiunto DROP VIEW versamenti_incassi nei patch 3.9.2.sql di tutti i dialetti per gli ambienti gia' installati.
+
 2026-05-10  Giuliano Pintori <pintori@link.it>
 
 	* [GovPayCore, GovPayCoreBeans, GovPayORM, GovPayORMBeans, GovPayApiCommons, GovPayApiBackoffice, GovPayApiPendenze, GovPayApiRagioneria, GovPayClientApiEnte] Pulizia codice

@@ -1,6 +1,7 @@
 -- 3.9.2
 -- 10/04/2025 Elimiazione della tabella pagamenti_portale
 
+DROP VIEW versamenti_incassi;
 DROP VIEW v_pagamenti_portale;
 DROP VIEW v_eventi_vers;
 DROP VIEW v_eventi_vers_pagamenti;

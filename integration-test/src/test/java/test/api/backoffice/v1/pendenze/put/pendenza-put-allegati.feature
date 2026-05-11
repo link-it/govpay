@@ -181,3 +181,21 @@ Examples:
 | allegati.descrizione | pendenzaPut.allegati[0].descrizione | loremIpsum | 'descrizione' |
 | allegati.contenuto | pendenzaPut.allegati[0].contenuto | null | 'contenuto' |
 
+
+Scenario: Lettura di un allegato non esistente
+
+Given url backofficeBaseurl
+And path 'allegati', '999999999'
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 404
+And match response ==
+"""
+{
+	categoria: 'OPERAZIONE',
+	codice: '404000',
+	descrizione: 'Risorsa non trovata',
+	dettaglio: '#notnull'
+}
+"""
+

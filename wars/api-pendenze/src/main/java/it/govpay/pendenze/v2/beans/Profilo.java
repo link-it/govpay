@@ -46,7 +46,7 @@ public class Profilo extends JSONSerializable {
   private List<TipoPendenza> tipiPendenza = new ArrayList<>();
 
   @JsonProperty("acl")
-  private List<Acl> acl = new ArrayList<>();
+  private List<Object> acl = new ArrayList<>();
 
   @JsonProperty("anagrafica")
   private Soggetto anagrafica = null;
@@ -104,16 +104,16 @@ public class Profilo extends JSONSerializable {
 
   /**
    **/
-  public Profilo acl(List<Acl> acl) {
+  public Profilo acl(List<Object> acl) {
     this.acl = acl;
     return this;
   }
 
   @JsonProperty("acl")
-  public List<Acl> getAcl() {
+  public List<Object> getAcl() {
     return acl;
   }
-  public void setAcl(List<Acl> acl) {
+  public void setAcl(List<Object> acl) {
     this.acl = acl;
   }
 

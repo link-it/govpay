@@ -110,7 +110,6 @@ import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
-import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
@@ -156,7 +155,6 @@ public class BasicBD {
 	private ITracciatoService tracciatoService;
 	private IOperazioneService operazioneService;
 	private IAuditService auditService;
-	private IVersamentoIncassoServiceSearch versamentoIncassoServiceSearch;
 	private IVistaRiscossioniServiceSearch vistaRiscossioniServiceSearch;
 	private IStampaService stampaService;
 	private IConfigurazioneService configurazioneService;
@@ -267,7 +265,6 @@ public class BasicBD {
 				this.tracciatoService = serviceManager.getTracciatoService();
 				this.operazioneService = serviceManager.getOperazioneService();
 				this.auditService = serviceManager.getAuditService();
-				this.versamentoIncassoServiceSearch = serviceManager.getVersamentoIncassoServiceSearch();
 				this.vistaRiscossioniServiceSearch = serviceManager.getVistaRiscossioniServiceSearch();
 				this.stampaService = serviceManager.getStampaService();
 				this.configurazioneService = serviceManager.getConfigurazioneService();
@@ -634,14 +631,7 @@ public class BasicBD {
 		return this.stampaService;
 	}
 	
-	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() {
-		if(this.father != null) {
-			return this.father.getVersamentoIncassoServiceSearch();
-		}
-		return this.versamentoIncassoServiceSearch;
-	}
-	
-	public IVistaRiscossioniServiceSearch getVistaRiscossioniServiceSearch() {
+public IVistaRiscossioniServiceSearch getVistaRiscossioniServiceSearch() {
 		if(this.father != null) {
 			return this.father.getVistaRiscossioniServiceSearch();
 		}

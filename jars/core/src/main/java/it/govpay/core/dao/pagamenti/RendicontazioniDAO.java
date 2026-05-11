@@ -22,8 +22,6 @@ package it.govpay.core.dao.pagamenti;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.ws.rs.core.MediaType;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -41,68 +39,17 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaFrDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import jakarta.ws.rs.core.MediaType;
 
 public class RendicontazioniDAO extends BaseDAO{
 
 	public RendicontazioniDAO() {
 		super();
-	}
-
-	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException, NotFoundException {
-		FrBD rendicontazioniBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-
-		try {
-			rendicontazioniBD = new FrBD(configWrapper);
-			FrFilter filter = rendicontazioniBD.newFilter();
-
-			filter.setOffset(listaRendicontazioniDTO.getOffset());
-			filter.setLimit(listaRendicontazioniDTO.getLimit());
-			if(listaRendicontazioniDTO.getIdDominio() != null) {
-				filter.setCodDominioFiltro(listaRendicontazioniDTO.getIdDominio());
-			}
-			filter.setCodDominio(listaRendicontazioniDTO.getCodDomini());
-			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
-			filter.setDatainizio(listaRendicontazioniDTO.getDataDa());
-			filter.setDataFine(listaRendicontazioniDTO.getDataA());
-			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
-			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
-			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
-			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
-			filter.setStato(listaRendicontazioniDTO.getStato());
-			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
-			filter.setObsoleto(listaRendicontazioniDTO.getObsoleto());
-			filter.setIuv(listaRendicontazioniDTO.getIuv());
-			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
-
-			Long count = null;
-
-			if(listaRendicontazioniDTO.isEseguiCount()) {
-				 count = rendicontazioniBD.count(filter);
-			}
-
-			List<LeggiFrDTOResponse> resList = new ArrayList<>();
-			if(listaRendicontazioniDTO.isEseguiFindAll()) {
-				List<Fr> findAll = rendicontazioniBD.findAllNoXml(filter);
-
-				for (Fr fr : findAll) {
-					LeggiFrDTOResponse elem = new LeggiFrDTOResponse();
-					fr.getDominio(configWrapper);
-					elem.setFr(fr);
-					resList.add(elem);
-				}
-			}
-
-			return new ListaFrDTOResponse(count, resList);
-		}finally {
-			rendicontazioniBD.closeConnection();
-		}
 	}
 
 	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, UnprocessableEntityException {

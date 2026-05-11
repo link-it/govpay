@@ -25,8 +25,6 @@ package it.govpay.ragioneria.v2.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.ragioneria.v2.beans.Profilo;
@@ -39,12 +37,12 @@ import it.govpay.ragioneria.v2.beans.Profilo;
  */
 public class ProfiloConverter {
 
+	private ProfiloConverter() {}
 	/**
 	 * @param user
 	 * @return
-	 * @throws ServiceException
 	 */
-	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
+	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) {
 		Profilo profilo = new Profilo();
 
 		profilo.setNome(leggiProfilo.getNome());

@@ -130,3 +130,24 @@ Examples:
 | documento.soglia | documento.soglia.tipo | 'RIDOTTO' | 'giorni' |
 | documento.soglia | documento.soglia.tipo | 'SCONTATO' | 'giorni' |
 
+
+Scenario: Lettura di avvisi per un documento non esistente
+
+* def numeroDocumentoInesistente = getCurrentTimeMillis() + '_NON_ESISTENTE'
+
+Given url pendenzeBaseurl
+And path '/documenti', idA2A, idDominio, numeroDocumentoInesistente, 'avvisi'
+And headers idA2ABasicAutenticationHeader
+And header Accept = 'application/pdf'
+When method get
+Then status 404
+And match response ==
+"""
+{
+	categoria: 'OPERAZIONE',
+	codice: '404000',
+	descrizione: 'Risorsa non trovata',
+	dettaglio: '#notnull'
+}
+"""
+

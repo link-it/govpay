@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.ws.rs.core.MultivaluedMap;
-
 import org.apache.commons.lang3.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -57,8 +55,6 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.bd.viste.VersamentiIncassiBD;
-import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -78,7 +74,6 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaPendenzeSmartOrderDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
@@ -105,6 +100,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.RPT;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 public class PendenzeDAO extends BaseDAO{
 
@@ -314,111 +310,6 @@ public class PendenzeDAO extends BaseDAO{
 		} 
 
 		return new ListaPendenzeDTOResponse(count, resList);
-	}
-
-	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO) throws ServiceException, ValidationException {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-
-		VersamentiIncassiBD versamentiBD = null;
-		try {
-			versamentiBD = new VersamentiIncassiBD(configWrapper);
-			VersamentoIncassoFilter filter = versamentiBD.newFilter();
-
-			filter.setIdDomini(listaPendenzaDTO.getIdDomini());
-			filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
-			filter.setEseguiCountConLimit(listaPendenzaDTO.isEseguiCountConLimit());
-
-			if(listaPendenzaDTO.getUnitaOperative() != null) {
-				filter.setIdUo(listaPendenzaDTO.getUnitaOperative());
-			}
-
-			filter.setOffset(listaPendenzaDTO.getOffset());
-			filter.setLimit(listaPendenzaDTO.getLimit());
-			filter.setDataInizio(listaPendenzaDTO.getDataDa());
-			filter.setDataFine(listaPendenzaDTO.getDataA());
-			if(listaPendenzaDTO.getStato()!=null) {
-				try {
-					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
-
-					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
-					break;
-					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
-					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
-					break;
-					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
-						filter.setAbilitaFiltroNonScaduto(true);
-					}
-					break;
-					case SCADUTA: {
-						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
-						filter.setAbilitaFiltroScaduto(true);
-					}
-					break;
-					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
-					break;
-					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
-					break;
-					}
-					filter.setStatoVersamento(statoVersamento);
-				} catch(Exception e) {
-					return new ListaPendenzeDTOResponse(0L, new ArrayList<>());
-				}
-			}
-			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
-			filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
-			filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
-			filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
-			filter.setAbilitaFiltroCittadino(listaPendenzaDTO.isAbilitaFiltroCittadino());
-			filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
-			if(listaPendenzaDTO.getCfCittadino() != null) {
-				filter.setCfCittadino(listaPendenzaDTO.getCfCittadino()); 
-				filter.setAbilitaFiltroCittadino(true);
-			}
-			filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
-			filter.setCodTipiVersamento(listaPendenzaDTO.getCodTipiVersamento());
-			filter.setDivisione(listaPendenzaDTO.getDivisione());
-			filter.setDirezione(listaPendenzaDTO.getDirezione());
-			if(listaPendenzaDTO.getIuv() != null) {
-				if(listaPendenzaDTO.getIuv().length() == 18) {
-					filter.setIuv(IuvUtils.toIuv(listaPendenzaDTO.getIuv()));
-				} else {
-					filter.setIuv(listaPendenzaDTO.getIuv());
-				}
-			} 
-			filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
-
-			Long count = null;
-
-			if(listaPendenzaDTO.isEseguiCount()) {
-				count = versamentiBD.count(filter);
-			}
-
-			List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
-			if(listaPendenzaDTO.isEseguiFindAll()) {
-				List<Versamento> findAll = versamentiBD.findAll(filter);
-
-				for (Versamento versamento : findAll) {
-					LeggiPendenzaDTOResponse elem = new LeggiPendenzaDTOResponse();
-					elem.setVersamento(versamento);
-					elem.setApplicazione(versamento.getApplicazione(configWrapper));
-					elem.setDominio(versamento.getDominio(configWrapper));
-					elem.setUnitaOperativa(versamento.getUo(configWrapper));
-					versamento.getTipoVersamentoDominio(configWrapper);
-					versamento.getTipoVersamento(configWrapper);
-					elem.setLstSingoliVersamenti(null);
-
-					resList.add(elem);
-				}
-			} 
-
-			return new ListaPendenzeDTOResponse(count, resList);
-		}finally {
-			if(versamentiBD != null)
-				versamentiBD.closeConnection();
-		}
 	}
 
 	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException, PendenzaNonTrovataException {

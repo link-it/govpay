@@ -59,7 +59,6 @@
 -- DROP INDEX idx_vrs_id_pendenza ON versamenti ;
 -- DROP INDEX idx_domini_scarica_fr ON domini ;
 DROP VIEW v_vrs_non_rnd;
-DROP VIEW versamenti_incassi;
 DROP VIEW v_eventi_vers;
 DROP VIEW v_eventi_vers_base;
 DROP VIEW v_eventi_vers_pagamenti;       

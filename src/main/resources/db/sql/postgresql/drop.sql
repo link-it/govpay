@@ -1,6 +1,5 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 DROP VIEW v_vrs_non_rnd;
-DROP VIEW versamenti_incassi;
 DROP VIEW v_eventi_vers;
 DROP VIEW v_eventi_vers_pagamenti;       
 DROP VIEW v_eventi_vers_rendicontazioni; 

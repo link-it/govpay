@@ -37,6 +37,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import gov.telematici.pagamenti.ws.ccp.EsitoAttivaRPT;
+import gov.telematici.pagamenti.ws.ccp.EsitoPaaInviaRT;
 import gov.telematici.pagamenti.ws.ccp.EsitoVerificaRPT;
 import gov.telematici.pagamenti.ws.ccp.FaultBean;
 import gov.telematici.pagamenti.ws.ccp.PaaAttivaRPT;
@@ -117,8 +118,6 @@ import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
-import it.govpay.web.ws.converter.PaaInviaRTConverter;
-import it.govpay.web.ws.converter.PaaInviaRTRispostaConverter;
 import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
@@ -1616,7 +1615,51 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaaInviaRTRisposta paaInviaRT(PaaInviaRT bodyrichiesta, IntestazionePPT header) {
-		return PaaInviaRTRispostaConverter.toPaaInviaRTRisposta_CCP(PagamentiTelematiciRTImpl.paaInviaRTImpl(PaaInviaRTConverter.toPaaInviaRT_RT(bodyrichiesta), header, log));
+		String codDominio = header.getIdentificativoDominio();
+		String codIntermediario = header.getIdentificativoIntermediarioPA();
+		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
+		String iuv = header.getIdentificativoUnivocoVersamento();
+		String ccp = header.getCodiceContestoPagamento();
+		
+		IContext ctx = ContextThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAAATTIVARPT.toString());
+		appContext.getEventoCtx().setCodDominio(codDominio);
+		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(ccp);
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_COD_DOMINIO, codDominio));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_CCP, ccp));
+		appContext.getRequest().addGenericProperty(new Property(MessaggioDiagnosticoCostanti.PROPERTY_IUV, iuv));
+		
+		DatiPagoPA datiPagoPA = new DatiPagoPA();
+		datiPagoPA.setCodStazione(codStazione);
+		datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
+		datiPagoPA.setCodDominio(codDominio);
+		datiPagoPA.setErogatore(codIntermediario);
+		datiPagoPA.setCodIntermediario(codIntermediario);
+		appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
+		
+		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
+		
+		try {
+			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
+		} catch (Exception e) {
+			this.buildRisposta(e, codDominio, response);
+			EsitoPaaInviaRT paaAttivaRPTRisposta = response.getPaaInviaRTRisposta();
+			String faultDescription = paaAttivaRPTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaAttivaRPTRisposta.getFault().getDescription(); 
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaAttivaRPTRisposta.getFault().getFaultCode(), paaAttivaRPTRisposta.getFault().getFaultString(), faultDescription);
+			appContext.getEventoCtx().setSottotipoEsito(paaAttivaRPTRisposta.getFault().getFaultCode());
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
+		} finally {
+			EsitoPaaInviaRT paaAttivaRPTRisposta = response.getPaaInviaRTRisposta();
+			GpContext.setResult(appContext.getTransaction(), paaAttivaRPTRisposta.getFault() == null ? null : paaAttivaRPTRisposta.getFault().getFaultCode());
+		}
+		
+		return response;
 	}
 	
 	public static void logFault(Logger log, NdpException e, String operation) {

@@ -202,7 +202,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   private List<Rpp> rpp = new ArrayList<>();
 
   @JsonProperty("pagamenti")
-  private List<Pagamento> pagamenti = new ArrayList<>();
+  private List<Object> pagamenti = new ArrayList<>();
 
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -861,16 +861,16 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   /**
    **/
-  public Pendenza pagamenti(List<Pagamento> pagamenti) {
+  public Pendenza pagamenti(List<Object> pagamenti) {
     this.pagamenti = pagamenti;
     return this;
   }
 
   @JsonProperty("pagamenti")
-  public List<Pagamento> getPagamenti() {
+  public List<Object> getPagamenti() {
     return this.pagamenti;
   }
-  public void setPagamenti(List<Pagamento> pagamenti) {
+  public void setPagamenti(List<Object> pagamenti) {
     this.pagamenti = pagamenti;
   }
 

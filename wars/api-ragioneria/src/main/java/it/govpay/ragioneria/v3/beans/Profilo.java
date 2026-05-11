@@ -46,10 +46,10 @@ public class Profilo   {
  /**
    * tipologie di pendenza su cui e' abilitato ad operare
   **/
-  private List<TipoPendenza> tipiPendenza = new ArrayList<>();
+  private List<Object> tipiPendenza = new ArrayList<>();
 
   @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
-  private List<Acl> acl = new ArrayList<>();
+  private List<Object> acl = new ArrayList<>();
 
   @Schema(description = "")
   private Soggetto anagrafica = null;
@@ -105,20 +105,20 @@ public class Profilo   {
   **/
   @JsonProperty("tipiPendenza")
   @NotNull
-  public List<TipoPendenza> getTipiPendenza() {
+  public List<Object> getTipiPendenza() {
     return tipiPendenza;
   }
 
-  public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
+  public void setTipiPendenza(List<Object> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
   }
 
-  public Profilo tipiPendenza(List<TipoPendenza> tipiPendenza) {
+  public Profilo tipiPendenza(List<Object> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
     return this;
   }
 
-  public Profilo addTipiPendenzaItem(TipoPendenza tipiPendenzaItem) {
+  public Profilo addTipiPendenzaItem(Object tipiPendenzaItem) {
     this.tipiPendenza.add(tipiPendenzaItem);
     return this;
   }
@@ -129,20 +129,20 @@ public class Profilo   {
   **/
   @JsonProperty("acl")
   @NotNull
-  public List<Acl> getAcl() {
+  public List<Object> getAcl() {
     return acl;
   }
 
-  public void setAcl(List<Acl> acl) {
+  public void setAcl(List<Object> acl) {
     this.acl = acl;
   }
 
-  public Profilo acl(List<Acl> acl) {
+  public Profilo acl(List<Object> acl) {
     this.acl = acl;
     return this;
   }
 
-  public Profilo addAclItem(Acl aclItem) {
+  public Profilo addAclItem(Object aclItem) {
     this.acl.add(aclItem);
     return this;
   }
