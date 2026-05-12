@@ -142,7 +142,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		
 		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
 		
-		PagamentiTelematiciRTImpl.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, OPERAZIONE_NON_IMPLEMENTATA), response, log);
+		PagamentiTelematiciRTImpl.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, OPERAZIONE_NON_IMPLEMENTATA, codDominio), response, log);
 
 		appContext.getEventoCtx().setSottotipoEsito(FaultPa.PAA_SYSTEM_ERROR.name());
 		appContext.getEventoCtx().setDescrizioneEsito(OPERAZIONE_NON_IMPLEMENTATA);

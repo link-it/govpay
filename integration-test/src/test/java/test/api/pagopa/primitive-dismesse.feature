@@ -28,7 +28,7 @@ And request soapRequest
 When method post
 Then status 200
 And match response /Envelope/Body//paaVerificaRPTRisposta/fault/faultCode == 'PAA_SYSTEM_ERROR'
-And match response /Envelope/Body//paaVerificaRPTRisposta/fault/faultString contains 'Operazione non disponibile'
+And match response /Envelope/Body//paaVerificaRPTRisposta/fault/description contains 'Operazione non disponibile'
 
 
 Scenario: paaAttivaRPT (SANP 2.3 - dismessa) restituisce SOAP fault PAA_SYSTEM_ERROR
@@ -43,7 +43,7 @@ And request soapRequest
 When method post
 Then status 200
 And match response /Envelope/Body//paaAttivaRPTRisposta/fault/faultCode == 'PAA_SYSTEM_ERROR'
-And match response /Envelope/Body//paaAttivaRPTRisposta/fault/faultString contains 'Operazione non disponibile'
+And match response /Envelope/Body//paaAttivaRPTRisposta/fault/description contains 'Operazione non disponibile'
 
 
 Scenario: paaInviaRT (SANP 2.3 - dismessa) sul servizio PagamentiTelematiciCCPservice restituisce SOAP fault PAA_SYSTEM_ERROR
@@ -58,7 +58,7 @@ And request soapRequest
 When method post
 Then status 200
 And match response /Envelope/Body//paaInviaRTRisposta/fault/faultCode == 'PAA_SYSTEM_ERROR'
-And match response /Envelope/Body//paaInviaRTRisposta/fault/faultString contains 'Operazione non disponibile'
+And match response /Envelope/Body//paaInviaRTRisposta/fault/description contains 'Operazione non disponibile'
 
 
 Scenario: paaInviaRT (SANP 2.3 - dismessa) sul servizio PagamentiTelematiciRTservice restituisce SOAP fault PAA_SYSTEM_ERROR

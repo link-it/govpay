@@ -83,7 +83,6 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
-import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.exceptions.GovPayException;
@@ -197,22 +196,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 		
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
-		
-		try {
-			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
-		} catch (Exception e) {
-			this.buildRisposta(e, codDominio, response);
-			EsitoAttivaRPT paaAttivaRPTRisposta = response.getPaaAttivaRPTRisposta();
-			String faultDescription = paaAttivaRPTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaAttivaRPTRisposta.getFault().getDescription(); 
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaAttivaRPTRisposta.getFault().getFaultCode(), paaAttivaRPTRisposta.getFault().getFaultString(), faultDescription);
-			appContext.getEventoCtx().setSottotipoEsito(paaAttivaRPTRisposta.getFault().getFaultCode());
-			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
-			appContext.getEventoCtx().setEsito(Esito.FAIL);
-		} finally {
-			EsitoAttivaRPT paaAttivaRPTRisposta = response.getPaaAttivaRPTRisposta();
-			GpContext.setResult(appContext.getTransaction(), paaAttivaRPTRisposta.getFault() == null ? null : paaAttivaRPTRisposta.getFault().getFaultCode());
-		}
-		
+
+		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		EsitoAttivaRPT paaAttivaRPTRisposta = response.getPaaAttivaRPTRisposta();
+		String faultDescription = paaAttivaRPTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaAttivaRPTRisposta.getFault().getDescription();
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaAttivaRPTRisposta.getFault().getFaultCode(), paaAttivaRPTRisposta.getFault().getFaultString(), faultDescription);
+		appContext.getEventoCtx().setSottotipoEsito(paaAttivaRPTRisposta.getFault().getFaultCode());
+		appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+		appContext.getEventoCtx().setEsito(Esito.FAIL);
+		GpContext.setResult(appContext.getTransaction(), paaAttivaRPTRisposta.getFault() == null ? null : paaAttivaRPTRisposta.getFault().getFaultCode());
+
 		return response;
 	}
 
@@ -248,25 +241,19 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 		
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
-		
-		try {
-			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
-		} catch (Exception e) {
-			this.buildRisposta(e, codDominio, response);
-			EsitoVerificaRPT paaEsitoVerificaRPT = response.getPaaVerificaRPTRisposta();
-			String faultDescription = paaEsitoVerificaRPT.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaEsitoVerificaRPT.getFault().getDescription(); 
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, paaEsitoVerificaRPT.getFault().getFaultCode(), paaEsitoVerificaRPT.getFault().getFaultString(), faultDescription);
-			appContext.getEventoCtx().setSottotipoEsito(paaEsitoVerificaRPT.getFault().getFaultCode());
-			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
-			appContext.getEventoCtx().setEsito(Esito.FAIL);
-		} finally {
-			EsitoVerificaRPT paaEsitoVerificaRPT = response.getPaaVerificaRPTRisposta();
-			GpContext.setResult(appContext.getTransaction(), paaEsitoVerificaRPT.getFault() == null ? null : paaEsitoVerificaRPT.getFault().getFaultCode());
-		}
-		
+
+		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		EsitoVerificaRPT paaEsitoVerificaRPT = response.getPaaVerificaRPTRisposta();
+		String faultDescription = paaEsitoVerificaRPT.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaEsitoVerificaRPT.getFault().getDescription();
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, paaEsitoVerificaRPT.getFault().getFaultCode(), paaEsitoVerificaRPT.getFault().getFaultString(), faultDescription);
+		appContext.getEventoCtx().setSottotipoEsito(paaEsitoVerificaRPT.getFault().getFaultCode());
+		appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+		appContext.getEventoCtx().setEsito(Esito.FAIL);
+		GpContext.setResult(appContext.getTransaction(), paaEsitoVerificaRPT.getFault() == null ? null : paaEsitoVerificaRPT.getFault().getFaultCode());
+
 		return response;
 	}
-	
+
 	@Override
 	public PaSendRTRes paSendRT(PaSendRTReq requestBody) {
 		
@@ -1035,6 +1022,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		return this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), codDominio, e), risposta);
 	}
 
+	private <T> T buildRispostaOperazioneNonDisponibile(String description, String codDominio, T risposta) {
+		return this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, description, codDominio), risposta);
+	}
+
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaaAttivaRPTRisposta r) {
 			logFault(PagamentiTelematiciCCPImpl.log, e, "Attiva RPT");
@@ -1060,6 +1051,19 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			fault.setDescription(e.getDescrizione());
 			esito.setFault(fault);
 			r.setPaaVerificaRPTRisposta(esito);
+		}
+
+		if(risposta instanceof PaaInviaRTRisposta r) {
+			logFault(PagamentiTelematiciCCPImpl.log, e, "Invia RT");
+			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
+			esito.setEsito("KO");
+			FaultBean fault = new FaultBean();
+			fault.setId(e.getCodDominio());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
+			fault.setDescription(e.getDescrizione());
+			esito.setFault(fault);
+			r.setPaaInviaRTRisposta(esito);
 		}
 		
 		if(risposta instanceof PaVerifyPaymentNoticeRes r) {
@@ -1594,20 +1598,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PADEMANDPAYMENTNOTICE.toString());
 		
 		PaDemandPaymentNoticeResponse response = new PaDemandPaymentNoticeResponse();
-		
-		try {
-			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
-		} catch (Exception e) {
-			this.buildRisposta(e, codDominio, response);
-			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
-			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
-			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
-			appContext.getEventoCtx().setEsito(Esito.FAIL);
-		} finally {
-			GpContext.setResult(appContext.getTransaction(), response.getFault() == null ? null : response.getFault().getFaultCode());
-		}
-		
+
+		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription();
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
+		appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
+		appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+		appContext.getEventoCtx().setEsito(Esito.FAIL);
+		GpContext.setResult(appContext.getTransaction(), response.getFault() == null ? null : response.getFault().getFaultCode());
+
 		return response;
 	}
 
@@ -1643,21 +1642,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 		
 		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
-		
-		try {
-			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
-		} catch (Exception e) {
-			this.buildRisposta(e, codDominio, response);
-			EsitoPaaInviaRT paaAttivaRPTRisposta = response.getPaaInviaRTRisposta();
-			String faultDescription = paaAttivaRPTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaAttivaRPTRisposta.getFault().getDescription(); 
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaAttivaRPTRisposta.getFault().getFaultCode(), paaAttivaRPTRisposta.getFault().getFaultString(), faultDescription);
-			appContext.getEventoCtx().setSottotipoEsito(paaAttivaRPTRisposta.getFault().getFaultCode());
-			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
-			appContext.getEventoCtx().setEsito(Esito.FAIL);
-		} finally {
-			EsitoPaaInviaRT paaAttivaRPTRisposta = response.getPaaInviaRTRisposta();
-			GpContext.setResult(appContext.getTransaction(), paaAttivaRPTRisposta.getFault() == null ? null : paaAttivaRPTRisposta.getFault().getFaultCode());
-		}
+
+		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		EsitoPaaInviaRT paaInviaRTRisposta = response.getPaaInviaRTRisposta();
+		String faultDescription = paaInviaRTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaInviaRTRisposta.getFault().getDescription();
+		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaInviaRTRisposta.getFault().getFaultCode(), paaInviaRTRisposta.getFault().getFaultString(), faultDescription);
+		appContext.getEventoCtx().setSottotipoEsito(paaInviaRTRisposta.getFault().getFaultCode());
+		appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+		appContext.getEventoCtx().setEsito(Esito.FAIL);
+		GpContext.setResult(appContext.getTransaction(), paaInviaRTRisposta.getFault() == null ? null : paaInviaRTRisposta.getFault().getFaultCode());
 		
 		return response;
 	}
