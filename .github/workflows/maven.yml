@@ -131,7 +131,7 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    uses: "google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.5"
+    uses: "google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@c51854704019a247608d928f370c98740469d4b5" # v2.3.5
     with:
       fail-on-vuln: false
       scan-args: |-
@@ -214,7 +214,7 @@ jobs:
         ls -lh release-artifacts/
 
     - name: Create GitHub release
-      uses: softprops/action-gh-release@v2.2.1
+      uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2.2.1
       with:
         files: |
           release-artifacts/*

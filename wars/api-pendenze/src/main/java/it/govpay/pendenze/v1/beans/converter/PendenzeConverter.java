@@ -53,6 +53,8 @@ import it.govpay.pendenze.v1.beans.TipoContabilita;
 import it.govpay.pendenze.v1.beans.VocePendenza;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -128,7 +130,7 @@ public class PendenzeConverter {
 		rsModel.setVoci(v);
 
 		List<RppIndex> rpps = new ArrayList<>();
-		if(rpts != null && rpts.size() > 0) {
+		if(rpts != null && !rpts.isEmpty()) {
 			for (Rpt rpt : rpts) {
 				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper)));
 			}
@@ -306,7 +308,7 @@ public class PendenzeConverter {
 	}
 
 
-	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, IOException {
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -321,7 +323,6 @@ public class PendenzeConverter {
 		versamento.setCodVersamentoEnte(idPendenza);
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
@@ -346,7 +347,7 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException, IOException {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws IOException {
 		if (voci == null || voci.isEmpty()) {
 			return;
 		}
@@ -355,7 +356,7 @@ public class PendenzeConverter {
 		}
 	}
 
-	private static it.govpay.core.beans.commons.Versamento.SingoloVersamento toSingoloVersamento(VocePendenza vocePendenza) throws ServiceException, IOException {
+	private static it.govpay.core.beans.commons.Versamento.SingoloVersamento toSingoloVersamento(VocePendenza vocePendenza) throws IOException {
 		it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 		sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 		if (vocePendenza.getDatiAllegati() != null) {

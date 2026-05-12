@@ -131,6 +131,7 @@ wsdlLocation="/wsdl/PaPerNodoPagamentoPsp.wsdl")
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
+	private static final String OPERAZIONE_NON_DISPONIBILE = "Operazione non disponibile.";
 	private static final String PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT_V2 = "non previsto per paGetPaymentV2";
 	private static final String PARAMETRO_NON_PREVISTO_PER_PA_GET_PAYMENT = "non previsto per paGetPayment";
 	private static final String PARAMETRO_NON_PREVISTO_PER_PA_VERIFY_PAYMENT_NOTICE = "non previsto per paVerifyPaymentNotice";
@@ -197,7 +198,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
 
-		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		this.buildRispostaOperazioneNonDisponibile(OPERAZIONE_NON_DISPONIBILE, codDominio, response);
 		EsitoAttivaRPT paaAttivaRPTRisposta = response.getPaaAttivaRPTRisposta();
 		String faultDescription = paaAttivaRPTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaAttivaRPTRisposta.getFault().getDescription();
 		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaAttivaRPTRisposta.getFault().getFaultCode(), paaAttivaRPTRisposta.getFault().getFaultString(), faultDescription);
@@ -242,7 +243,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
 
-		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		this.buildRispostaOperazioneNonDisponibile(OPERAZIONE_NON_DISPONIBILE, codDominio, response);
 		EsitoVerificaRPT paaEsitoVerificaRPT = response.getPaaVerificaRPTRisposta();
 		String faultDescription = paaEsitoVerificaRPT.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaEsitoVerificaRPT.getFault().getDescription();
 		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_KO, paaEsitoVerificaRPT.getFault().getFaultCode(), paaEsitoVerificaRPT.getFault().getFaultString(), faultDescription);
@@ -1599,7 +1600,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		PaDemandPaymentNoticeResponse response = new PaDemandPaymentNoticeResponse();
 
-		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		this.buildRispostaOperazioneNonDisponibile(OPERAZIONE_NON_DISPONIBILE, codDominio, response);
 		String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription();
 		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 		appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
@@ -1643,7 +1644,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
 
-		this.buildRispostaOperazioneNonDisponibile("Operazione non disponibile.", codDominio, response);
+		this.buildRispostaOperazioneNonDisponibile(OPERAZIONE_NON_DISPONIBILE, codDominio, response);
 		EsitoPaaInviaRT paaInviaRTRisposta = response.getPaaInviaRTRisposta();
 		String faultDescription = paaInviaRTRisposta.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : paaInviaRTRisposta.getFault().getDescription();
 		MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_ATTIVA_KO, paaInviaRTRisposta.getFault().getFaultCode(), paaInviaRTRisposta.getFault().getFaultString(), faultDescription);
