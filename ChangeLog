@@ -1,5 +1,7 @@
 2026-05-13  Giuliano Pintori <pintori@link.it>
 
+	* Aggiornata versione software e data di rilascio in publiccode.yml: softwareVersion 3.9.1 -> 3.9.2, releaseDate 2026-05-15.
+
 	* [Build] Generazione SBOM CycloneDX nella pipeline CI
 	Aggiunto in .github/workflows/maven.yml un nuovo job sbom che esegue cyclonedx-maven-plugin 2.9.1 (makeAggregateBom, schema 1.6) e produce bom.cdx.json + bom.cdx.xml aggregati sull'intero reactor multi-modulo.
 	Il job gira su ogni push e PR in parallelo a build e osv_scan (stesso pattern di osv_scan, nessun filtro per branch); puo' essere disabilitato impostando la variabile DISABLE_SBOM_JOB=true.
