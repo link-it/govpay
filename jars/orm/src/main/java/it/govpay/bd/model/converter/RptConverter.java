@@ -31,7 +31,6 @@ import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.exception.CodificaInesistenteException;
-import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
@@ -84,9 +83,6 @@ public class RptConverter {
 			dto.setStatoConservazione(it.govpay.model.Rpt.StatoConservazione.valueOf(vo.getStatoConservazione()));
 		
 		dto.setDescrizioneStatoConservazione(vo.getDescrizioneStatoCons());
-		
-		if(vo.getIdPagamentoPortale() != null)
-			dto.setIdPagamentoPortale(vo.getIdPagamentoPortale().getId());
 
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
@@ -143,13 +139,6 @@ public class RptConverter {
 			vo.setStatoConservazione(dto.getStatoConservazione().name());
 		
 		vo.setDescrizioneStatoCons(dto.getDescrizioneStatoConservazione());
-		
-		if(dto.getIdPagamentoPortale() != null) {
-			IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
-			idPagamentoPortale.setId(dto.getIdPagamentoPortale());
-			vo.setIdPagamentoPortale(idPagamentoPortale );
-		}
-		
 
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setCodIntermediarioPsp(dto.getCodIntermediarioPsp());

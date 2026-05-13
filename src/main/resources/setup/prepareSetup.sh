@@ -10,11 +10,11 @@ fi
 
 VERSION=$(mvn -f ../../../../pom.xml -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 echo "Creazione installer GovPay v.${VERSION}"
-# Non e' piu' possibile eseguire la compilazione da qua poiche' 
+# Non e' piu' possibile eseguire la compilazione da qua poiche'
 # il plugin di maven per la generazione dei bean da xsd non risolve
 # correttamente i path relativi.
 
-# mvn -f ../../../../pom.xml -Denv=installer_template clean package 
+# mvn -f ../../../../pom.xml -Denv=installer_template clean package
 
 # Directory
 COPYING_FILE=../../../../COPYING
@@ -23,12 +23,10 @@ DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
 GOVPAY=../../../../ear/target/govpay.ear
 GOVPAY_BO=../../../../wars/api-backoffice/target/govpay-api-backoffice.war
-GOVPAY_PAG=../../../../wars/api-pagamento/target/govpay-api-pagamento.war
 GOVPAY_PP=../../../../wars/api-pagopa/target/govpay-api-pagopa.war
 GOVPAY_PEN=../../../../wars/api-pendenze/target/govpay-api-pendenze.war
 GOVPAY_RAG=../../../../wars/api-ragioneria/target/govpay-api-ragioneria.war
 GOVPAY_USR=../../../../wars/api-user/target/govpay-api-user.war
-GOVPAY_WC=../../../../wars/web-connector/target/govpay-web-connector.war
 GOVPAY_CONSOLE=../../../../wars/web-console/target/govpay-console.war
 THIRD_PARTY_LICENSES=../../../../third-party-licenses
 
@@ -90,7 +88,7 @@ if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"
         exit 6
-fi 
+fi
 cp ${COPYING_FILE} core.template/
 cp ${COPYING_FILE} core.template/doc/
 
@@ -116,7 +114,7 @@ if [ "$AS" = "ear" ]; then
 
 elif [ "$AS" = "tomcat" ]; then
     # Se AS è 'tomcat', verifica e copia tutti i war
-    WAR_FILES=("${GOVPAY_BO}" "${GOVPAY_PAG}" "${GOVPAY_PP}" "${GOVPAY_PEN}" "${GOVPAY_RAG}" "${GOVPAY_USR}" "${GOVPAY_WC}" "${GOVPAY_CONSOLE}")
+    WAR_FILES=("${GOVPAY_BO}" "${GOVPAY_PP}" "${GOVPAY_PEN}" "${GOVPAY_RAG}" "${GOVPAY_USR}" "${GOVPAY_CONSOLE}")
 
     for WAR_FILE in "${WAR_FILES[@]}"; do
         if [ ! -e "${WAR_FILE}" ]; then
@@ -134,7 +132,7 @@ echo "Prepare archivi [completed]"
 
 echo "Creazione archivio compresso ..."
 rm -rf target
-mkdir target 
+mkdir target
 mv core.template govpay-installer-${VERSION}
 tar czf target/govpay-installer-${VERSION}.tgz govpay-installer-${VERSION}/
 mv govpay-installer-${VERSION}/ target/

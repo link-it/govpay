@@ -20,11 +20,11 @@ Scenario: Riconciliazione pagamento rendicontato senza rpt
 * def riversamentoCumulativo = "true"
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 

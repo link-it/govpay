@@ -57,6 +57,8 @@ public class EventiUtils {
 			return giornale.getApiPendenze();
 		case API_BACKEND_IO:
 			return giornale.getApiBackendIO();
+		case API_MAGGIOLI_JPPA:
+			return giornale.getApiMaggioliJPPA();
 		case API_USER, API_WC:
 			return null;
 		case API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK:
@@ -156,8 +158,7 @@ public class EventiUtils {
 	public static boolean isOperazioneScrittura(String operazione) {
 		return EventoContext.Azione.NODOCHIEDICOPIART.toString().equals(operazione) 
 				|| EventoContext.Azione.NODOCHIEDISTATORPT.toString().equals(operazione) 
-				|| EventoContext.Azione.NODOINVIARPT.toString().equals(operazione) 
-				|| EventoContext.Azione.NODOINVIACARRELLORPT.toString().equals(operazione) 
+				|| EventoContext.Azione.NODOINVIARPT.toString().equals(operazione)
 				|| EventoContext.Azione.NODOINVIARICHIESTASTORNO.toString().equals(operazione) 
 				|| EventoContext.Azione.NODOINVIARISPOSTAREVOCA.toString().equals(operazione) 
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT.equals(operazione)

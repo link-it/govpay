@@ -43,3 +43,4 @@ ALTER TABLE intermediari ADD COLUMN cod_connettore_backoffice_ec VARCHAR(35);
 ALTER TABLE rendicontazioni ADD COLUMN notifica_inviata BOOLEAN;
 UPDATE rendicontazioni SET notifica_inviata = FALSE;
 ALTER TABLE rendicontazioni ALTER COLUMN notifica_inviata SET NOT NULL;
+

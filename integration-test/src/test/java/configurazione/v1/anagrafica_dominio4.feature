@@ -120,9 +120,9 @@ And request
 """
 {
   "urlEC": "#(govpay_web_connector_url +'/ecsp/psp')",
-  "auxDigit": 0,
+  "auxDigit": 3,
   "versione": 1,
-  "segregationCode": null,
+  "segregationCode": '00',
   "ragioneSociale": "Ente Creditore Test 4",
   "idStazione": "11111111113_01",
   "idIntermediario": "11111111113"

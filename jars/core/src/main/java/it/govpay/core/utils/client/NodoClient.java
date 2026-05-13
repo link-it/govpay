@@ -31,14 +31,8 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPTRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
-import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
-import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
@@ -47,8 +41,6 @@ import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.logger.MessaggioDiagnosticoCostanti;
 import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Rpt;
-import it.govpay.model.Stazione;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 import jakarta.xml.bind.JAXBElement;
@@ -122,29 +114,6 @@ public class NodoClient extends BasicClientCORE {
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 
-	}
-
-	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws ClientException {
-		IntestazionePPT intestazione = new IntestazionePPT();
-		intestazione.setCodiceContestoPagamento(rpt.getCcp());
-		intestazione.setIdentificativoDominio(rpt.getCodDominio());
-		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
-		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
-		intestazione.setIdentificativoUnivocoVersamento(rpt.getIuv());
-
-		byte [] body = this.getBody(true,objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
-		Risposta response = send(EventoContext.Azione.NODOINVIARPT.toString(), body);
-		return (NodoInviaRPTRisposta) response;
-	}
-
-	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws ClientException {
-		IntestazioneCarrelloPPT intestazione = new IntestazioneCarrelloPPT();
-		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
-		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
-		intestazione.setIdentificativoCarrello(codCarrello);
-		byte [] body = this.getBody(true, objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
-		Risposta response = this.send(EventoContext.Azione.NODOINVIACARRELLORPT.toString(), body);
-		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
 	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione) throws ClientException {

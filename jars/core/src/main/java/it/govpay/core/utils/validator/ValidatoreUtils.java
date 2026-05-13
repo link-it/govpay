@@ -166,14 +166,31 @@ public class ValidatoreUtils {
 	
 	public static void validaTipoContabilita(ValidatorFactory vf, String nomeCampo, Enum<?> enumValue) throws ValidationException {
 		vf.getValidator(nomeCampo, enumValue).notNull();
-		
+
 		try {
 			TipoContabilita.valueOf(enumValue.toString());
 		} catch(IllegalArgumentException e) {
 			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + enumValue + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 	}
-	
+
+	/**
+	 * Validazione di tipoContabilita per le sole API v1 (Pendenze e Ente),
+	 * dove il valore "ENTRATA" e' un alias legacy per "CAPITOLO" del modello commons.
+	 */
+	public static void validaTipoContabilitaV1(ValidatorFactory vf, String nomeCampo, Enum<?> enumValue) throws ValidationException {
+		vf.getValidator(nomeCampo, enumValue).notNull();
+
+		String name = enumValue.toString();
+		if ("ENTRATA".equalsIgnoreCase(name)) name = "CAPITOLO";
+
+		try {
+			TipoContabilita.valueOf(name);
+		} catch(IllegalArgumentException e) {
+			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + enumValue + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+		}
+	}
+
 	public static void validaCodiceTassonomicoPagoPA(ValidatorFactory vf, String nomeCampo, String codiceTassonomicoPagoPA) throws ValidationException {
 		// validazione del pattern
 		validaField(vf, nomeCampo, codiceTassonomicoPagoPA, CostantiValidazione.PATTERN_CODICE_TASSONOMICO_PAGOPA, 5, 255, true);

@@ -6,106 +6,162 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 Scenario: Filtro su divisione e direzione
 
 * def dataStart = getDateTime()
-* def idPendenza = getCurrentTimeMillis()
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].divisione = 'div1'
-* set pagamentoPost.pendenze[0].direzione = 'dir1'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
-Then status 201
-
-* def idSession = response.idSession
-
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
-When method get
-
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+# Pendenza 1
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].divisione = 'div2'
-* set pagamentoPost.pendenze[0].direzione = 'dir2'
+* def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
+* set pendenzaPut.divisione = 'div1'
+* set pendenzaPut.direzione = 'dir1'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
-When method get
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+* def dataRptEnd1 = getDateTime()
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+# Pendenza 2
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].divisione = 'div1'
+* def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
+* set pendenzaPut.divisione = 'div2'
+* set pendenzaPut.direzione = 'dir2'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
-When method get
+# Attivo il pagamento 
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
+
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+* def dataRptEnd1 = getDateTime()
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+# Pendenza 3
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].direzione = 'dir2'
+* def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
+* set pendenzaPut.divisione = 'div1'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
 Then status 201
 
-* def idSession = response.idSession
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
-When method get
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+* def dataRptEnd1 = getDateTime()
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+# Pendenza 4
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
+* set pendenzaPut.direzione = 'dir2'
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+* def importo = pendenzaPut.importo
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* def ccp = numeroAvviso
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* def riversamentoCumulativo = 'true'
+* def idSession = idCart
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
+
+# Verifico la notifica di attivazione
+
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+
+* def dataRptEnd1 = getDateTime()
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def dataEnd = getDateTime()
 
@@ -119,15 +175,15 @@ And param divisione = 'div1'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 4,
+	numRisultati: 6,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[4]'
+	risultati: '#[6]'
 }
 """
 
@@ -139,15 +195,15 @@ And param divisione = 'div2'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 
@@ -173,41 +229,41 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/riscossioni'
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param direzione = 'dir1'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 
 Given url backofficeBaseurl
 And path '/riscossioni'
-And param dataDa = dataStart 
+And param dataDa = dataStart
 And param dataA = dataEnd
 And param direzione = 'dir2'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 4,
+	numRisultati: 6,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[4]'
+	risultati: '#[6]'
 }
 """
 
@@ -240,15 +296,15 @@ And param direzione = 'dir1'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
-And match response == 
+And match response ==
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 

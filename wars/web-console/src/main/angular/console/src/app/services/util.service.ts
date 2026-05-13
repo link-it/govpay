@@ -48,8 +48,8 @@ export class UtilService {
   // Config.js
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
-  // Config.js
-  public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
+  // Disabilitato - rimossa tabella pagamenti_portale
+  public static GESTIONE_PAGAMENTI: any = { ENABLED: false };
   public static GESTIONE_RISCOSSIONI: any = GovPayConfig.GESTIONE_RISCOSSIONI;
   public static GESTIONE_MANUTENZIONE: any = GovPayConfig.MANUTENZIONE;
 
@@ -257,6 +257,9 @@ export class UtilService {
     CAPITOLO: '0',
     SPECIALE: '1',
     SIOPE: '2',
+    SRTP_ESCLUSA_RAVV_OPEROSO: '6',
+    SRTP_ESCLUSA_ALTRO_OPERATORE: '7',
+    SRTP_ESCLUSA: '8',
     ALTRO: '9'
   };
 
@@ -381,6 +384,9 @@ export class UtilService {
     CAPITOLO: 'Capitolo',
     SPECIALE: 'Speciale',
     SIOPE: 'Siope',
+    SRTP_ESCLUSA_RAVV_OPEROSO: 'SRTP esclusa - Ravvedimento operoso',
+    SRTP_ESCLUSA_ALTRO_OPERATORE: 'SRTP esclusa - Altro operatore',
+    SRTP_ESCLUSA: 'SRTP esclusa',
     ALTRO: 'Altro'
   };
 

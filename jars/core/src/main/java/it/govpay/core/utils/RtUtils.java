@@ -280,25 +280,11 @@ public class RtUtils extends NdpValidationUtils {
 				}
 			}
 			
-			boolean isCarrello = RtUtils.isCarrelloRpt(rpt);
-			
 			// Faccio adesso la select for update, altrimenti in caso di 
 			// ricezione di due RT afferenti allo stesso carrello di pagamento
 			// vado in deadlock tra la getRpt precedente e la findAll seguente
 			
 			rptBD.enableSelectForUpdate();
-			
-			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
-			
-			if(isCarrello) {
-				@SuppressWarnings("unused")
-				List<Rpt> rptsCarrello = null; 
-				if(idPagamentoPortale != null) {
-					RptFilter filter = rptBD.newFilter();
-					filter.setIdPagamentoPortale(idPagamentoPortale);
-					rptsCarrello = rptBD.findAll(filter);
-				}
-			}
 			
 			// Rifaccio la getRpt adesso che ho il lock per avere lo stato aggiornato
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
@@ -590,7 +576,7 @@ public class RtUtils extends NdpValidationUtils {
 			
 			boolean updateAnomalo = impostaNuovoStatoVersamento(rpt, versamento, irregolare, irregolarita);	
 			
-			schedulazionePromemoriaENotificaAppIO(rptBD, configWrapper, rpt, idPagamentoPortale, versamento, versamentiBD, iuvPagamento,
+			schedulazionePromemoriaENotificaAppIO(rptBD, configWrapper, rpt, versamento, versamentiBD, iuvPagamento,
 					totalePagato, dataPagamento, updateAnomalo);
 			
 			Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, configWrapper);
@@ -635,15 +621,6 @@ public class RtUtils extends NdpValidationUtils {
 			}
 		}
 	}
-
-	public static boolean isCarrelloRpt(Rpt rpt) {
-		boolean isCarrello = false;
-		// e' un pagamento modello 1 con carrello se la versione e' SANP_230
-		if(rpt != null && (rpt.getVersione().equals(VersioneRPT.SANP_230) && rpt.getModelloPagamento().equals(it.govpay.model.Rpt.modelloPagamentoWISP20))){
-			isCarrello = true;
-		}
-		return isCarrello;
-	}
 	
 	public static Pagamento creaNuovoPagamento(String iuv, String receiptId, IContext ctx, BDConfigWrapper configWrapper,
 			Date dataPagamento, Rpt rpt, BigDecimal transferAmount, int idTransfer, SingoloVersamento singoloVersamento, BigDecimal commissioniApplicatePSP) throws ServiceException {
@@ -683,7 +660,7 @@ public class RtUtils extends NdpValidationUtils {
 		return pagamento;
 	}
 	
-	public static void schedulazionePromemoriaENotificaAppIO(RptBD rptBD, BDConfigWrapper configWrapper, Rpt rpt, Long idPagamentoPortale,
+	public static void schedulazionePromemoriaENotificaAppIO(RptBD rptBD, BDConfigWrapper configWrapper, Rpt rpt, 
 			Versamento versamento, VersamentiBD versamentiBD, String iuvPagamento, BigDecimal totalePagato,
 			Date dataPagamento, boolean updateAnomalo) throws ServiceException, NotificaException {
 		switch (versamento.getStatoVersamento()) {
@@ -728,11 +705,6 @@ public class RtUtils extends NdpValidationUtils {
 		default:
 			// do nothing
 			break;
-		}
-		
-		// Aggiornamento dello stato del pagamento portale associato all'RPT
-		if(idPagamentoPortale != null) {
-			PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 		}
 	}
 

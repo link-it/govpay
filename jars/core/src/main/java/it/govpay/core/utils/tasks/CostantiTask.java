@@ -51,7 +51,4 @@ public class CostantiTask {
 	
 	public static final String CHIUSURA_RPT_SCADUTE = "ChiusuraRptScadute";
 	public static final String CHIUSURA_RPT_SCADUTE_CHECK = "ChiusuraRptScaduteCheck";
-	
-	public static final String RECUPERO_RT = "RecuperoRT";
-	public static final String RECUPERO_RT_CHECK = "RecuperoRTCheck";
 }

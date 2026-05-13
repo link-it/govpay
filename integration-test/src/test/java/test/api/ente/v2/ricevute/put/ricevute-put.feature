@@ -23,8 +23,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Scenario: Verifica tutti gli eventi di un Pagamento eseguito dovuto non precaricato con verifica
 
-* def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-* def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -36,15 +36,16 @@ Scenario: Verifica tutti gli eventi di un Pagamento eseguito dovuto non precaric
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
-* match response.esitoVerificaRPT == esitoVerificaRPT
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response.esitoVerifica == esitoVerifyPayment.esitoVerifica
 * def ccp = response.ccp
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == esitoAttivaRPT
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
 
 # Verifico la notifica di terminazione
 
@@ -70,7 +71,6 @@ And path '/eventi'
 And param idDominio = idDominio
 And param iuv = iuv
 And param componente = 'API_ENTE'
-# And param tipoEvento = 'nodoInviaRPT'
 And param messaggi = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -98,7 +98,7 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"idPagamento": "#notnull",
+	"idPagamento": "##null",
 	"componente": "API_ENTE",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
@@ -185,20 +185,21 @@ Scenario: Verifica tutti gli eventi di un Pagamento eseguito di un dovuto non pr
 
 * def importo = pendenzaPut.importo
 
-* def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-* def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
-* match response.esitoVerificaRPT == esitoVerificaRPT
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response.esitoVerifica == esitoVerifyPayment.esitoVerifica
 * def ccp = response.ccp
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == esitoAttivaRPT
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
 
 # Verifico la notifica di terminazione
 
@@ -224,7 +225,6 @@ And path '/eventi'
 And param idDominio = idDominio
 And param iuv = iuv
 And param componente = 'API_ENTE'
-# And param tipoEvento = 'nodoInviaRPT'
 And param messaggi = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -252,7 +252,7 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"idPagamento": "#notnull",
+	"idPagamento": "##null",
 	"componente": "API_ENTE",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
@@ -361,20 +361,21 @@ Then status 201
 
 * def importo = pendenzaPut.importo
 
-* def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-* def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
-* match response.esitoVerificaRPT == esitoVerificaRPT
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response.esitoVerifica == esitoVerifyPayment.esitoVerifica
 * def ccp = response.ccp
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == esitoAttivaRPT
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
 
 # Verifico la notifica di terminazione
 
@@ -400,7 +401,6 @@ And path '/eventi'
 And param idDominio = idDominio
 And param iuv = iuv
 And param componente = 'API_ENTE'
-# And param tipoEvento = 'nodoInviaRPT'
 And param messaggi = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -428,7 +428,7 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"idPagamento": "#notnull",
+	"idPagamento": "##null",
 	"componente": "API_ENTE",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
@@ -497,20 +497,21 @@ Then status 201
 
 * def importo = pendenzaPut.importo
 
-* def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-* def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
-* match response.esitoVerificaRPT == esitoVerificaRPT
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response.esitoVerifica == esitoVerifyPayment.esitoVerifica
 * def ccp = response.ccp
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == esitoAttivaRPT
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
 
 # Verifico la notifica di terminazione
 
@@ -536,7 +537,6 @@ And path '/eventi'
 And param idDominio = idDominio
 And param iuv = iuv
 And param componente = 'API_ENTE'
-# And param tipoEvento = 'nodoInviaRPT'
 And param messaggi = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -564,7 +564,7 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"idPagamento": "#notnull",
+	"idPagamento": "##null",
 	"componente": "API_ENTE",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
@@ -632,20 +632,21 @@ Then status 201
 
 * def importo = pendenzaPut.importo
 
-* def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-* def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
-* match response.esitoVerificaRPT == esitoVerificaRPT
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* match response.esitoVerifica == esitoVerifyPayment.esitoVerifica
 * def ccp = response.ccp
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == esitoAttivaRPT
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == esitoGetPayment
 
 # Verifico la notifica di terminazione
 
@@ -671,7 +672,6 @@ And path '/eventi'
 And param idDominio = idDominio
 And param iuv = iuv
 And param componente = 'API_ENTE'
-# And param tipoEvento = 'nodoInviaRPT'
 And param messaggi = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -699,7 +699,7 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"idPagamento": "#notnull",
+	"idPagamento": "##null",
 	"componente": "API_ENTE",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",

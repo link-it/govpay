@@ -106,10 +106,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 * def numeroAvviso = responsePut.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 
 
 

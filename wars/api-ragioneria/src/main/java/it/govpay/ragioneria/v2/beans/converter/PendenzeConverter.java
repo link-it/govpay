@@ -41,6 +41,8 @@ import it.govpay.ragioneria.v2.beans.TassonomiaAvviso;
 import it.govpay.ragioneria.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -106,7 +108,7 @@ public class PendenzeConverter {
 	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) {
 		List<AllegatoPendenza> rsModel = null;
 
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 
 			for (Allegato allegato : allegati) {

@@ -1,0 +1,64 @@
+{
+	"creditorReferenceId" : "#string",
+    "paymentAmount" : '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
+    "dueDate" : "#ignore",
+    "retentionDate" : "#ignore",
+    "lastPayment" : true,
+    "description" : "#string",
+    "companyName" : "#(dominio.ragioneSociale)",
+    "officeName" : "#ignore",
+    "debtor" : {
+    		"uniqueIdentifier" : {
+    				"entityUniqueIdentifierType" : "#string",
+    				"entityUniqueIdentifierValue" : "#string"
+    			},
+		    "fullName" : "#string",
+		    "streetName" : "#ignore",
+		    "civicNumber" : "#ignore",
+		    "postalCode" : "#ignore",
+		    "city" : "#ignore",
+		    "stateProvinceRegion" : "#ignore",
+		    "country" : "#ignore",
+		    "eMail" : "#ignore"
+    	},
+    "transferList" : {
+	    	"transfer" :
+			    [
+			    	{
+			    		"idTransfer" : 1,
+					    "transferAmount" : "#number",
+					    "fiscalCodePA" : "#(idDominio)",
+					    "companyName" : "#string",
+					    "IBAN" : "#string",
+					    "remittanceInformation" : "#string",
+					    "transferCategory" : "#string",
+    					"metadata" : "#ignore"
+			    	},
+			    	{
+			    		"idTransfer" : 2,
+					    "transferAmount" : "#number",
+					    "fiscalCodePA" : "#(idDominio)",
+					    "companyName" : "#string",
+					    "IBAN" : "#string",
+					    "remittanceInformation" : "#string",
+					    "transferCategory" : "#string",
+    					"metadata" : "#ignore"
+			    	},
+			    	{
+			    		"idTransfer" : 3,
+					    "transferAmount" : "#number",
+					    "fiscalCodePA" : "#(idDominio)",
+					    "companyName" : "#string",
+					    "remittanceInformation" : "#string",
+					    "transferCategory" : "#string",
+    					"metadata" : "#ignore",
+    					"richiestaMarcaDaBollo" : {
+    						"provinciaResidenza" : "#string",
+    						"tipoBollo" : "#string",
+    						"hashDocumento" : "#notnull"
+    					}
+			    	}
+			    ]
+	     },
+    "metadata" : "#ignore"
+}

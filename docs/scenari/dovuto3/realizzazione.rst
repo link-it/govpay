@@ -31,7 +31,7 @@ Distinguiamo:
 
 Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per caricare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata regitrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
 	PUT https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
@@ -60,9 +60,9 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 		]
 	}
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Risposta *PUT /pendenze/{idA2A}/{id_pendenza}*
-	
+
 	HTTP 200 OK
 	{
 		"idDominio":"01234567890",
@@ -90,7 +90,7 @@ GovPay interroga il gestionale dell'ente, per verificare gli estremi della pende
 
 	- numeroAvviso: 001110000000000164
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Verifica Pendenza con *GET /avvisi/{idDominio}/{numeroAvviso}*
 
 	GET /avvisi/01234567890/001110000000000164
@@ -132,7 +132,7 @@ Notifica del Pagamento
 
 Superata la fase di verifica, il PSP perfeziona la riscossione degli importi dovuti e completa il processo di pagamento. GovPay gestisce il colloquio previsto con la piattaforma pagoPA e notifica l’esito delle operazioni al Gestionale Pendenze tramite l’operazione **POST /pagamenti/{idDominio}/{iuv}**.
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Notifica del Pagamento con *POST /pagamenti/{idDominio}/{iuv}*
 
 	POST /pagamenti/01234567890/000000000000141

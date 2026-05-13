@@ -58,6 +58,7 @@
          "tipo":"ENTRATA",
          "importo":"#(importo1)",
          "data":"#notnull",
+         "commissioni":"##number",
          "incasso":"#string",
          "allegato":"#ignore"
       },
@@ -81,6 +82,7 @@
          "tipo":"ENTRATA",
          "importo":"#(importo2)",
          "data":"#notnull",
+         "commissioni":"##number",
          "incasso":"#string",
          "allegato":"#ignore"
       }

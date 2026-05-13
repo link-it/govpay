@@ -20,6 +20,7 @@
          "tipo":"#notnull",
          "importo":"#notnull",
          "data":"#notnull",
+         "commissioni":"##number",
          "allegato":"#ignore",
          "incasso":"#notnull"
       },
@@ -35,6 +36,7 @@
          "tipo":"#notnull",
          "importo":"#notnull",
          "data":"#notnull",
+         "commissioni":"##number",
          "allegato":"#ignore",
          "incasso":"#notnull"
       }      

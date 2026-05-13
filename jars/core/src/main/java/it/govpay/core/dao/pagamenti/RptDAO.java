@@ -108,9 +108,6 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 			
 			response.setRpt(rpt);
-			if(rpt.getPagamentoPortale() != null) {
-				rpt.getPagamentoPortale().getApplicazione(configWrapper);
-			}
 			Versamento versamento = rpt.getVersamento();
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(configWrapper)); 
@@ -147,9 +144,6 @@ public class RptDAO extends BaseDAO{
 			
 			rptBD = new RptBD(configWrapper);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp(), true);
-			if(rpt.getPagamentoPortale() != null) {
-				rpt.getPagamentoPortale().getApplicazione(configWrapper);
-			}
 			Versamento versamento = rpt.getVersamento();
 			versamento.getTipoVersamentoDominio(configWrapper);
 			
@@ -200,12 +194,9 @@ public class RptDAO extends BaseDAO{
 			filter.setCodDominio(listaRptDTO.getIdDominio());
 			filter.setIdDomini(listaRptDTO.getCodDomini());
 
-			filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
 			filter.setIdPendenza(listaRptDTO.getIdPendenza());
 			filter.setCodApplicazione(listaRptDTO.getIdA2A());
 			filter.setFilterSortList(listaRptDTO.getFieldSortList());
-			filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
-			filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
 			filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
 			
 			filter.setDataRtDa(listaRptDTO.getDataRtDa());
@@ -254,12 +245,9 @@ public class RptDAO extends BaseDAO{
 		filter.setIdDomini(listaRptDTO.getCodDomini());
 		filter.setIdTipiVersamento(listaRptDTO.getIdTipiVersamento());
 
-		filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
 		filter.setIdPendenza(listaRptDTO.getIdPendenza());
 		filter.setCodApplicazione(listaRptDTO.getIdA2A());
 		filter.setFilterSortList(listaRptDTO.getFieldSortList());
-		filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
-		filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
 		filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
 		
 		filter.setDataRtDa(listaRptDTO.getDataRtDa());
@@ -273,8 +261,6 @@ public class RptDAO extends BaseDAO{
 		filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
 		filter.setEseguiCountConLimit(listaRptDTO.isEseguiCountConLimit());
 		filter.setRicevute(listaRptDTO.isRicevute());
-		filter.setDataPagamentoDa(listaRptDTO.getDataPagamentoDa());
-		filter.setDataPagamentoA(listaRptDTO.getDataPagamentoA());
 		
 		Long count = null;
 		
@@ -363,8 +349,6 @@ public class RptDAO extends BaseDAO{
 					
 					appContext.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
-					if(rpt.getPagamentoPortale() != null)
-						appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
 					
 					try {
 						// decodifica del base64 contenuto nel value della patch
@@ -417,9 +401,6 @@ public class RptDAO extends BaseDAO{
 			// ricarico l'RPT
 			rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 
-			if(rpt.getPagamentoPortale() != null) {
-				rpt.getPagamentoPortale().getApplicazione(configWrapper);
-			}
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento());
 			response.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper)); 
@@ -574,9 +555,6 @@ public class RptDAO extends BaseDAO{
 			}
 
 			// valorizzo la response
-			if(rpt.getPagamentoPortale() != null) {
-				rpt.getPagamentoPortale().getApplicazione(configWrapper);
-			}
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento());
 			response.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper)); 

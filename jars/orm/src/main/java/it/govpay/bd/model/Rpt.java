@@ -28,7 +28,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
-import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.model.Intermediario;
 
@@ -41,7 +40,6 @@ public class Rpt extends it.govpay.model.Rpt{
 	private transient Versamento versamento;
 	private transient Dominio dominio;
 	private transient List<Pagamento> pagamenti;
-	private transient PagamentoPortale pagamentoPortale;
 	
 	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.versamento == null && this.getIdVersamento() > 0) {
@@ -109,26 +107,6 @@ public class Rpt extends it.govpay.model.Rpt{
 			return this.getDominio(configWrapper).getStazione().getIntermediario(configWrapper);
 		
 		return null;
-	}
-
-	public PagamentoPortale getPagamentoPortale()  {
-		return this.pagamentoPortale;
-	}
-	
-	public PagamentoPortale getPagamentoPortale(BDConfigWrapper configWrapper) throws ServiceException  {
-		if(this.pagamentoPortale == null && this.getIdPagamentoPortale() != null) {
-			PagamentiPortaleBD versamentiBD = new PagamentiPortaleBD(configWrapper);
-			try {
-				this.pagamentoPortale = versamentiBD.getPagamento(this.getIdPagamentoPortale());
-			} catch (NotFoundException e) {
-				// donothing
-			}
-		}
-		return this.pagamentoPortale;
-	}
-	
-	public void setPagamentoPortale(PagamentoPortale pagamentoPortale) {
-		this.pagamentoPortale = pagamentoPortale;
 	}
 
 	public String getRptKey() {

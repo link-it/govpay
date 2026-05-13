@@ -97,7 +97,7 @@ public class VocePendenzaValidator implements IValidable{
 				vi.validaIdIbanAccredito("ibanAccredito", this.vocePendenza.getIbanAccredito(), true);
 				vi.validaIdIbanAccredito("ibanAppoggio", this.vocePendenza.getIbanAppoggio());
 
-				ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.vocePendenza.getTipoContabilita());
+				ValidatoreUtils.validaTipoContabilitaV1(vf, "tipoContabilita", this.vocePendenza.getTipoContabilita());
 				ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.vocePendenza.getCodiceContabilita());
 
 				try {

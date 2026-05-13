@@ -1,0 +1,24 @@
+{
+  "exceptions": [
+    {
+      "groupId": "it.govpay",
+      "artifactId": "*",
+      "reason": "Moduli interni del progetto GovPay, rilasciati sotto GNU GPLv3."
+    },
+    {
+      "groupId": "org.gov4j.govway",
+      "artifactId": "*",
+      "reason": "Librerie del progetto GovWay (OpenSPCoop2), rilasciate sotto GNU GPLv3. Compatibili con il progetto GovPay anch'esso GPLv3."
+    },
+    {
+      "groupId": "javax.ws.rs",
+      "artifactId": "jsr311-api",
+      "reason": "API JAX-RS 1.1 sotto licenza CDDL. Dipendenza con scope provided, non distribuita nel prodotto finale. Usata solo a compile-time per le annotazioni REST."
+    },
+    {
+      "groupId": "wsdl4j",
+      "artifactId": "wsdl4j",
+      "reason": "Parser WSDL sotto licenza CPL 1.0. Dipendenza transitiva obbligatoria di Apache CXF per il supporto SOAP/WSDL nell'integrazione con pagoPA. Libreria standard de facto per il parsing WSDL in Java."
+    }
+  ]
+}

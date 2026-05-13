@@ -79,9 +79,6 @@ public class RptConverter {
 			dto.setStatoConservazione(it.govpay.model.Rpt.StatoConservazione.valueOf(vo.getStatoConservazione()));
 		
 		dto.setDescrizioneStatoConservazione(vo.getDescrizioneStatoCons());
-		
-		if(vo.getIdPagamentoPortale() != null)
-			dto.setIdPagamentoPortale(vo.getIdPagamentoPortale().getId());
 
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());

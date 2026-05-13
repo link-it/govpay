@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.9.1</version>
+	<version>3.9.2</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -56,13 +56,10 @@
 				<javaVersion>21</javaVersion>
 				<!-- Nomi dei war -->
 				<api-backoffice-tomcat-war-name>govpay-api-backoffice</api-backoffice-tomcat-war-name>
-				<api-jppapdp-tomcat-war-name>govpay-api-jppapdp</api-jppapdp-tomcat-war-name>
-				<api-pagamento-tomcat-war-name>govpay-api-pagamento</api-pagamento-tomcat-war-name>
 				<api-pagopa-tomcat-war-name>govpay-api-pagopa</api-pagopa-tomcat-war-name>
 				<api-pendenze-tomcat-war-name>govpay-api-pendenze</api-pendenze-tomcat-war-name>
 				<api-ragioneria-tomcat-war-name>govpay-api-ragioneria</api-ragioneria-tomcat-war-name>
 				<api-user-tomcat-war-name>govpay-api-user</api-user-tomcat-war-name>
-				<web-connector-tomcat-war-name>govpay-web-connector</web-connector-tomcat-war-name>
 				<web-console-tomcat-war-name>govpay-console</web-console-tomcat-war-name>
 
 				<!-- versioni jar -->
@@ -90,6 +87,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
+		<it.govpay.log.name>govpay</it.govpay.log.name>
 		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
 
 		<!-- op2 -->
@@ -97,7 +95,7 @@
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
-		<logger.version>2.25.3</logger.version>
+		<logger.version>2.25.4</logger.version>
 
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.71</swagger-codegen-maven-plugin.version>
@@ -112,8 +110,8 @@
 		<cxf.xjc.runtime.version>4.1.0</cxf.xjc.runtime.version>
 
 		<!-- jackson -->
-		<jackson.version>2.20.0</jackson.version>
-		<jackson-annotations.version>2.20</jackson-annotations.version>
+		<jackson.version>2.21.1</jackson.version>
+		<jackson-annotations.version>2.21</jackson-annotations.version>
 
 		<!-- Jersey -->
 		<jersey.version>3.1.11</jersey.version>
@@ -277,11 +275,11 @@
 
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
-		<owasp.plugin.version>12.1.9</owasp.plugin.version>
-		<owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
+		<owasp.plugin.version>12.2.0</owasp.plugin.version>
+		<owasp.plugin.autoUpdate>false</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnCVSS>11</owasp.plugin.failBuildOnCVSS>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
-
+		<owasp.ossindex.analyzer.enabled>false</owasp.ossindex.analyzer.enabled> <!-- Abilita/disabilita l'analisi delle vulnerabilità tramite OSS Index, se disabilitata viene usato il database CVE di NIST -->
 	</properties>
 
 	<dependencyManagement>
@@ -361,14 +359,6 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>web-connector</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>client-api-ente</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
@@ -377,23 +367,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>api-pagamento</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>api-pendenze</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>api-gestione</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -1756,6 +1730,8 @@
 							<nvdMaxRetryCount>3</nvdMaxRetryCount> <!-- 3 max tentativi visto il timeout alto -->
 							<!-- Disabilitato per evitare problemi SSL con GitHub -->
 							<!-- <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled> -->
+							<!-- Configurazione per disabilitare l'analizzatore OSS Index se non necessario -->
+							<ossindexAnalyzerEnabled>${owasp.ossindex.analyzer.enabled}</ossindexAnalyzerEnabled>
 						</configuration>
 						<goals>
 							<goal>aggregate</goal>

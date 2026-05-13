@@ -662,58 +662,6 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:PagamentoPortaleVersamento type:PagamentoPortaleVersamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IPagamentoPortaleVersamentoServiceSearch getPagamentoPortaleVersamentoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortaleVersamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IPagamentoPortaleVersamentoService getPagamentoPortaleVersamentoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:PagamentoPortale type:PagamentoPortale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IPagamentoPortaleServiceSearch getPagamentoPortaleServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.PagamentoPortale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IPagamentoPortaleService getPagamentoPortaleService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:Pagamento type:Pagamento
 	 =====================================================================================================================
 	*/
@@ -1031,27 +979,10 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IStampaService getStampaService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VersamentoIncasso type:VersamentoIncasso
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	
-	
-	
+
+
+
+
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:VistaRiscossioni type:VistaRiscossioni
@@ -1093,80 +1024,10 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IVistaEventiVersamentoService getVistaEventiVersamentoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VistaEventiPagamento type:Evento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaEventiPagamentoServiceSearch getVistaEventiPagamentoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaEventiPagamentoService getVistaEventiPagamentoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VistaEventiRpt type:Evento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaEventiRptServiceSearch getVistaEventiRptServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaEventiRptService getVistaEventiRptService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VistaPagamentoPortale type:VistaPagamentoPortale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamentoPortale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamentoPortale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaPagamentoPortaleServiceSearch getVistaPagamentoPortaleServiceSearch() throws ServiceException,NotImplementedException;
-	
-	
-	
-	
-	/*
+
+
+
+/*
 	 =====================================================================================================================
 	 Services relating to the object with name:VistaPagamento type:VistaPagamento
 	 =====================================================================================================================

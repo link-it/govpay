@@ -81,7 +81,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
-	private int dimensionePoolThreadRecuperoRT;
+	private int numeroNotifichePerThread;
 	private String ksLocation;
 	private String ksPassword;
 	private String ksAlias;
@@ -98,14 +98,8 @@ public class GovpayConfig {
 	private long timeoutBatch;
 
 	private boolean batchCaricamentoTracciati;
-	private boolean timeoutPendentiModello3;
-	private Integer timeoutPendentiModello3Mins;
-	private boolean timeoutPendentiModello1;
-	private Integer timeoutPendentiModello1Mins;
 
 	private Integer timeoutPendentiModello3SANP24Mins;
-
-	private Integer timeoutInvioRPTModello3Millis;
 
 	private Properties[] props;
 
@@ -199,16 +193,12 @@ public class GovpayConfig {
 	private boolean batchSpedizioneNotifiche;
 	private boolean batchSpedizioneNotificheAppIO;
 	private boolean batchSpedizionePromemoria;
-	private boolean batchRecuperoRT;
 
 	private boolean batchAcquisizioneRendicontazioniEsterno;
-	private boolean batchRecuperoRTEsterno;
 
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 
 	private boolean controlloPasswordBackwardCompatibilityMD5;
-
-	private Integer numeroGiorniRendicontazioniSenzaPagamento;
 
 	private Properties risorseCustomBaseURLProperties;
 
@@ -257,7 +247,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
-		this.dimensionePoolThreadRecuperoRT = 10;
+		this.numeroNotifichePerThread = 2;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -272,12 +262,7 @@ public class GovpayConfig {
 		this.batchOn=true;
 		this.pddAuthEnable = true;
 		this.batchCaricamentoTracciati = false;
-		this.timeoutPendentiModello3 = false;
-		this.timeoutPendentiModello3Mins = null;
-		this.timeoutPendentiModello1 = false;
-		this.timeoutPendentiModello1Mins = null;
 		this.timeoutPendentiModello3SANP24Mins = 30;
-		this.timeoutInvioRPTModello3Millis = 100;
 
 		this.appName = null;
 		this.ambienteDeploy = null;
@@ -352,12 +337,8 @@ public class GovpayConfig {
 		this.batchSpedizioneNotifiche = false;
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
-		this.batchRecuperoRT = false;
 
 		this.batchAcquisizioneRendicontazioniEsterno = false;
-		this.batchRecuperoRTEsterno = false;
-
-		this.numeroGiorniRendicontazioniSenzaPagamento = 15;
 
 		this.controlloPasswordBackwardCompatibilityMD5 = false;
 
@@ -468,7 +449,7 @@ public class GovpayConfig {
 			this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento", this.props, false, 10);
 			this.dimensionePoolThreadCaricamentoTracciati = getIntegerProperty(log, "it.govpay.thread.pool.caricamentoTracciati", this.props, false, 10);
 			this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = getIntegerProperty(log, "it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, 10);
-			this.dimensionePoolThreadRecuperoRT = getIntegerProperty(log, "it.govpay.thread.pool.recuperoRT", this.props, false, 10);
+			this.numeroNotifichePerThread = getIntegerProperty(log, "it.govpay.batch.notifiche.perThread", this.props, false, 2);
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
 			if(mLogClassString != null && !mLogClassString.isEmpty())
@@ -559,26 +540,6 @@ public class GovpayConfig {
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
-
-			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
-			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
-				try{
-					this.timeoutPendentiModello3Mins = Integer.parseInt(timeoutPendentiString);
-					this.timeoutPendentiModello3 = true;
-				} catch(NumberFormatException nfe) {
-					log.warn("La proprieta \"it.govpay.modello3.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
-				}
-			}
-
-			String timeoutPendentiModello1String = getProperty("it.govpay.modello1.timeoutPagamento", props, false, log);
-			if(timeoutPendentiModello1String != null && !timeoutPendentiModello1String.equalsIgnoreCase("false")) {
-				try{
-					this.timeoutPendentiModello1Mins = Integer.parseInt(timeoutPendentiModello1String);
-					this.timeoutPendentiModello1 = true;
-				} catch(NumberFormatException nfe) {
-					log.warn("La proprieta \"it.govpay.modello1.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
-				}
-			}
 
 			String timeoutPendentiModello3SANP24String = getProperty("it.govpay.modello3.sanp24.timeoutPagamento", props, false, log);
 			if(timeoutPendentiModello3SANP24String != null) {
@@ -728,20 +689,6 @@ public class GovpayConfig {
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
 				this.aggiornamentoValiditaMandatorio = true;
 
-			String timeoutInvioRPTModello3MillisString = getProperty("it.govpay.modello3.timeoutInvioRPT", this.props, false, log);
-			try{
-				this.timeoutInvioRPTModello3Millis = Integer.parseInt(timeoutInvioRPTModello3MillisString);
-
-				if(this.timeoutInvioRPTModello3Millis < 0 || this.timeoutInvioRPTModello3Millis > 1000) {
-					log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" trovata con valore non valido [{}], viene impostata con valore di default 100 ms", this.timeoutInvioRPTModello3Millis);
-					this.timeoutInvioRPTModello3Millis = 100;
-				}
-
-			} catch(NullPointerException | NumberFormatException t) {
-				log.info("Proprieta \"it.govpay.modello3.timeoutInvioRPT\" impostata con valore di default 100 ms");
-				this.timeoutInvioRPTModello3Millis = 100;
-			}
-
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
 
 			this.checkoutBaseURL = getProperty("it.govpay.checkout.baseUrl", this.props, true, log);
@@ -817,17 +764,9 @@ public class GovpayConfig {
 			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
 				this.batchSpedizionePromemoria = true;
 
-			String batchRecuperoRTString = getProperty("it.govpay.batch.recuperoRT.enabled", this.props, false, log);
-			if(batchRecuperoRTString != null && Boolean.valueOf(batchRecuperoRTString))
-				this.batchRecuperoRT = true;
-
 			String batchAcquisizioneRendicontazioniModalitaString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.modalita", this.props, false, log);
 			if(batchAcquisizioneRendicontazioniModalitaString != null && batchAcquisizioneRendicontazioniModalitaString.equalsIgnoreCase("esterno"))
 				this.batchAcquisizioneRendicontazioniEsterno = true;
-
-			String batchRecuperoRTModalitaString = getProperty("it.govpay.batch.recuperoRT.modalita", this.props, false, log);
-			if(batchRecuperoRTModalitaString != null && batchRecuperoRTModalitaString.equalsIgnoreCase("esterno"))
-				this.batchRecuperoRTEsterno = true;
 
 			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
 			if(StringUtils.isNotEmpty(keywordsS)) {
@@ -840,8 +779,6 @@ public class GovpayConfig {
 			String controlloPasswordBackwardCompatibilityMD5String = getProperty("it.govpay.autenticazione.controlloPassword.backwardCompatibilityMD5.enabled", this.props, false, log);
 			if(controlloPasswordBackwardCompatibilityMD5String != null && Boolean.valueOf(controlloPasswordBackwardCompatibilityMD5String))
 				this.controlloPasswordBackwardCompatibilityMD5 = true;
-
-			this.numeroGiorniRendicontazioniSenzaPagamento = getIntegerProperty(log, "it.govpay.batch.recuperoRT.limiteTemporaleRecupero", this.props, false, 15);
 
 			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
 			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
@@ -1225,8 +1162,8 @@ public class GovpayConfig {
 		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
-	public int getDimensionePoolThreadRecuperoRT() {
-		return dimensionePoolThreadRecuperoRT;
+	public int getNumeroNotifichePerThread() {
+		return numeroNotifichePerThread;
 	}
 
 	public String getKsLocation() {
@@ -1299,22 +1236,6 @@ public class GovpayConfig {
 
 	public boolean isBatchCaricamentoTracciati() {
 		return batchCaricamentoTracciati;
-	}
-
-	public boolean isTimeoutPendentiModello3() {
-		return timeoutPendentiModello3;
-	}
-
-	public Integer getTimeoutPendentiModello3Mins() {
-		return timeoutPendentiModello3Mins;
-	}
-
-	public boolean isTimeoutPendentiModello1() {
-		return timeoutPendentiModello1;
-	}
-
-	public Integer getTimeoutPendentiModello1Mins() {
-		return timeoutPendentiModello1Mins;
 	}
 
 	public Integer getTimeoutPendentiModello3SANP24Mins() {
@@ -1497,10 +1418,6 @@ public class GovpayConfig {
 		return connectionRequestTimeoutAppIO;
 	}
 
-	public Integer getTimeoutInvioRPTModello3Millis() {
-		return timeoutInvioRPTModello3Millis;
-	}
-
 	public String getCheckoutBaseURL() {
 		return checkoutBaseURL;
 	}
@@ -1573,24 +1490,12 @@ public class GovpayConfig {
 		return batchSpedizionePromemoria;
 	}
 
-	public boolean isBatchRecuperoRT() {
-		return batchRecuperoRT;
-	}
-
 	public boolean isBatchAcquisizioneRendicontazioniEsterno() {
 		return batchAcquisizioneRendicontazioniEsterno;
 	}
 
-	public boolean isBatchRecuperoRTEsterno() {
-		return batchRecuperoRTEsterno;
-	}
-
 	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
-	}
-
-	public Integer getNumeroGiorniRendicontazioniSenzaPagamento() {
-		return numeroGiorniRendicontazioniSenzaPagamento;
 	}
 
 	public boolean isControlloPasswordBackwardCompatibilityMD5() {

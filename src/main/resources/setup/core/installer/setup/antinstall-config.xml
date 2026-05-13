@@ -145,7 +145,6 @@
 		<comment displayText="" />
 		<checkbox property="antinstaller_batch_aca" displayText="Batch ACA" defaultValue="false" />
 		<checkbox property="antinstaller_batch_fdr" displayText="Batch FdR" defaultValue="false" />
-		<checkbox property="antinstaller_batch_recupero_rt" displayText="Batch Recupero RT" defaultValue="false" />
 		<checkbox property="antinstaller_batch_iban" displayText="Batch Verifica IBAN" defaultValue="false" />
 		<checkbox property="antinstaller_batch_notifica" displayText="Batch Notifica Rendicontazioni" defaultValue="false" />
 	</page>
@@ -160,9 +159,9 @@
 		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
 	</page>
 
-	<page name="batchRecuperoRtConfig" type="input" displayText="Configurazione Batch Recupero RT" ifProperty="${antinstaller_batch_recupero_rt}=true">
-		<validated defaultValue="http://localhost:10006/api/batch" property="antinstaller_batch_recupero_rt_url" displayText="Base URL" regex=".+" />
-		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
+	<page name="batchRecuperoRtConfig" type="input" displayText="Configurazione Batch Recupero RT">
+		<validated defaultValue="http://localhost:10006/api/batch" property="antinstaller_batch_recupero_rt_url" displayText="Base URL" regex="^https?://.+$" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch Recupero RT esterno (campo obbligatorio)." />
 	</page>
 
 	<page name="batchIbanConfig" type="input" displayText="Configurazione Batch IBAN" ifProperty="${antinstaller_batch_iban}=true">

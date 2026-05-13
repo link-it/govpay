@@ -7,7 +7,7 @@ Background:
 * callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
-* def esitoPaGetPaymentV2 = read('classpath:test/workflow/modello3/v2/msg/getPaymentV2-response-ok.json')
+* def esitoPaGetPaymentV2 = read('classpath:test/workflow/modellounico/v1/msg/getPaymentV2-response-ok.json')
 
 * def faultBean = 
 """
@@ -15,7 +15,7 @@ Background:
 		"faultCode":"PAA_SEMANTICA",
 		"faultString":"Errore semantico.",
 		"id":"#(idDominio)",
-		"description":'#("Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.")',
+		"description":'#("La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.")',
 		"serial":'##null'
 	}
 """
@@ -26,7 +26,7 @@ Background:
 		"faultCode":"PAA_SEMANTICA",
 		"faultString":"Errore semantico.",
 		"id":"#(idDominio)",
-		"description":'#("Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.")',
+		"description":'#("La pendenza contiene una marca da bollo telematica, non ammessa per pagamenti con la primitiva paGetPayment.")',
 		"serial":'##null',
 		"originalFaultCode":'##null',
 		"originalFaultString":'##null',
@@ -58,14 +58,15 @@ When method get
 Then status 200
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean
 
 @test2
@@ -92,14 +93,14 @@ When method get
 Then status 200
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 # Attivo il pagamento 
 
-* def versionePagamento = 2
 * def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.faultBean == faultBean2
 
@@ -145,30 +146,30 @@ When method get
 Then status 200
 
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 # Attivo il pagamento 
 
-* def versionePagamento = 3
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 * match response.dati == esitoPaGetPaymentV2
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 #* def ccp =  ccp_numero_avviso
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifico lo stato della pendenza
 

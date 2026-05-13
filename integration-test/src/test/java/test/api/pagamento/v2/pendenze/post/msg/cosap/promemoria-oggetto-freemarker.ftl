@@ -1,1 +1,0 @@
-Promemoria pagamento: ${versamento.getCausaleVersamento().getSimple()}

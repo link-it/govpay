@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_dominio5.feature')
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
@@ -12,7 +14,7 @@ Background:
 
 * def dominioNonIntermediato = read('classpath:configurazione/v1/msg/dominio.json')
 
-* set dominioNonIntermediato.ragioneSociale = ragioneSocialeDominio_2 + ' N.I.'
+* set dominioNonIntermediato.ragioneSociale = ragioneSocialeDominio_5 + ' N.I.'
 * set dominioNonIntermediato.intermediato = false
 * set dominioNonIntermediato.gln = null
 * set dominioNonIntermediato.cbill = null
@@ -23,26 +25,26 @@ Background:
 * set dominioNonIntermediato.autStampaPosteItaliane = null
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2 
+And path 'domini', idDominio_5 
 And headers basicAutenticationHeader
 And request dominioNonIntermediato
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* def ibanAccreditoEnteNonIntermediato = 'IT08L1234512345123456789012'
+* def ibanAccreditoEnteNonIntermediato = 'IT08L1234512345123456789015'
 * def ibanAccreditoEnteNonIntermediatoDescrizione = 'IBAN Accredito N.I.'
-* def ibanAccreditoEnteNonIntermediatoPostale = 'IT08L0760112345123456789012'
+* def ibanAccreditoEnteNonIntermediatoPostale = 'IT08L0760112345123456789015'
 * def ibanAccreditoEnteNonIntermediatoPostaleDescrizione = 'IBAN Accredito N.I. Postale'
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediato
+And path 'domini', idDominio_5, 'contiAccredito', ibanAccreditoEnteNonIntermediato
 And headers basicAutenticationHeader
 And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
+And path 'domini', idDominio_5, 'contiAccredito', ibanAccreditoEnteNonIntermediatoPostale
 And headers basicAutenticationHeader
 And request {postale:true,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoEnteNonIntermediatoPostaleDescrizione)'}
 When method put
@@ -80,7 +82,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio_2, 'entrate', codEntrataTefa
+And path 'domini', idDominio_5, 'entrate', codEntrataTefa
 And headers basicAutenticationHeader
 And request entrataTefaDominio
 When method put
@@ -99,8 +101,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def riversamentoCumulativo = "true"
 
 * configure followRedirects = false
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
-* def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
+* def esitoGetPayment = read('classpath:test/workflow/modellounico/v1/msg/getPayment-response-ok.json')
 
 Scenario: Riconciliazione pendenza tari tefa
 
@@ -120,8 +122,6 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
-
-* def versionePagamento = 3
 
 * def dataRptStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -166,22 +166,23 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 # * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
  
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-#	* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+#	* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-# * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+# * match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataRptEnd2 = getDateTime()
 

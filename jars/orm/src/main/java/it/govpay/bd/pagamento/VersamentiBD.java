@@ -24,11 +24,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.Function;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -60,7 +57,6 @@ import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.pagamento.filters.AllegatoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.model.Operazione;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -849,40 +845,6 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-
-	public List<CountPerDominio> countGroupByIdDominio(VersamentoFilter filter) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-			
-			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField cf = new CustomField(CF_ID_DOMINIO, Long.class, CF_ID_DOMINIO, converter.toTable(it.govpay.orm.Versamento.model()));
-			FunctionField field = new FunctionField(cf, Function.COUNT, "cnt");
-			List<CountPerDominio> countPerDominioLst = new ArrayList<>();
-			IExpression expression = filter.toExpression();
-			expression.addGroupBy(cf);
-			try {
-				List<Map<String,Object>> groupBy = this.getVersamentoService().groupBy(expression, field);
-				for(Map<String,Object> cnt: groupBy) {
-					CountPerDominio countPerDominio = new CountPerDominio();
-					countPerDominio.setCount((Long) cnt.get("cnt")); 
-					countPerDominio.setIdDominio((Long) cnt.get(CF_ID_DOMINIO)); 
-					countPerDominioLst.add(countPerDominio);
-				}
-			}catch(NotFoundException e) {
-				//donothing
-			}
-			
-			return countPerDominioLst;
-		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();

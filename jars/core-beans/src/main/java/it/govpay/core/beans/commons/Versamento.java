@@ -390,6 +390,9 @@ public class Versamento {
     	    CAPITOLO("0"),
     	    SPECIALE("1"),
     	    SIOPE("2"),
+    	    SRTP_ESCLUSA_RAVV_OPEROSO("6"),
+    	    SRTP_ESCLUSA_ALTRO_OPERATORE("7"),
+    	    SRTP_ESCLUSA("8"),
     	    ALTRO("9");
     	    
     		private String codifica;

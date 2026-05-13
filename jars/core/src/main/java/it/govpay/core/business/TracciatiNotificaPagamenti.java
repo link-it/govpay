@@ -29,6 +29,7 @@ import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +64,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtIstitutoMittente;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtIstitutoRicevente;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -84,6 +86,7 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.DateUtils;
+import it.govpay.core.utils.FrUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -143,8 +146,9 @@ public class TracciatiNotificaPagamenti {
 			ultimoTracciatoCreatoPerTipo = tracciatiNotificaPagamentiBD.getUltimoTracciatoCreatoPerTipo(codDominio, this.tipoTracciato.toString(), connettore);
 
 			if(ultimoTracciatoCreatoPerTipo != null) {
+				String dataRtAFinestraLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(ultimoTracciatoCreatoPerTipo.getDataRtA());
 				log.debug("Elaborazione Tracciato {} per il Dominio [{}], dataA dell'ultimo tracciato [{}] calcolo nuova finestra temporale di [{}] ore.", this.tipoTracciato, codDominio,
-						SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(ultimoTracciatoCreatoPerTipo.getDataRtA()),numeroOreIntervallo);
+						dataRtAFinestraLog, numeroOreIntervallo);
 
 				Calendar c = Calendar.getInstance();
 				c.setTime(ultimoTracciatoCreatoPerTipo.getDataRtA());
@@ -158,16 +162,19 @@ public class TracciatiNotificaPagamenti {
 				Date dataRtA = c2.getTime();
 
 
+				String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+				String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
+				
 				switch (this.tipoTracciato) {
 				case MYPIVOT:
 				case SECIM:
 				case GOVPAY:
 					log.info("Elaborazione Tracciato {} per il Dominio [{}], nuovo intervallo ricerca RT: Da [{}] a [{}]", this.tipoTracciato, codDominio,
-							SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa),SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+							dataRtDaLog,dataRtALog);
 					break;
 				case HYPERSIC_APK:
 					log.info("Elaborazione Tracciato {} per il Dominio [{}], nuovo intervallo ricerca rendicontazioni: Da [{}] a [{}]", this.tipoTracciato, codDominio,
-							SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+							dataRtDaLog, dataRtALog);
 					break;
 				}
 
@@ -181,8 +188,9 @@ public class TracciatiNotificaPagamenti {
 
 				// se l'estremo dell'intervallo di ricerca e' nel futuro allora non devo eseguire l'elaborazione
 				if(dataRtA.getTime() > now.getTime()) {
+					String dataNowLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now);
 					log.info("Elaborazione Tracciato {} per il Dominio [{}], dataA [{}] successiva a NOW  [{}], non devo generare il tracciato", this.tipoTracciato, codDominio,
-							SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA),SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+							dataRtALog,dataNowLog);
 					return;
 				}
 
@@ -252,26 +260,26 @@ public class TracciatiNotificaPagamenti {
 					c3.add(Calendar.MILLISECOND, -1);
 					Date now = c3.getTime();
 
+					String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+					String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
+					
 					switch (this.tipoTracciato) {
-					case MYPIVOT:
-					case SECIM:
-					case GOVPAY:
-						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca RT: Da [{}] a [{}]", this.tipoTracciato, codDominio,SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+					case MYPIVOT, SECIM, GOVPAY:
+						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca RT: Da [{}] a [{}]", this.tipoTracciato, codDominio,dataRtDaLog, dataRtALog);
 						break;
 					case HYPERSIC_APK:
-						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca rendicontazioni: Da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+						log.debug("Elaborazione Tracciato {} per il Dominio [{}], intervallo ricerca rendicontazioni: Da [{}] a [{}]", this.tipoTracciato, codDominio, dataRtDaLog, dataRtALog);
 						break;
 					}
 
 					if(dataRtA.getTime() < now.getTime()) {
+						String nowLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now);
 						switch (this.tipoTracciato) {
-						case MYPIVOT:
-						case SECIM:
-						case GOVPAY:
-							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRTA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+						case MYPIVOT, SECIM, GOVPAY:
+							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRTA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, nowLog);
 							break;
 						case HYPERSIC_APK:
-							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRendicontazioniA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now));
+							log.debug("Elaborazione Tracciato {} per il Dominio [{}], DataRendicontazioniA [{}] precedente a NOW  [{}], modifico con la dataOra corrente.", this.tipoTracciato, codDominio, dataRtALog, nowLog);
 							break;
 						}
 						dataRtA = now;
@@ -299,14 +307,14 @@ public class TracciatiNotificaPagamenti {
 					dataRtA = c2.getTime();
 				}
 
+				String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+				String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
 				switch (this.tipoTracciato) {
-				case MYPIVOT:
-				case SECIM:
-				case GOVPAY:
-					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le RT comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+				case MYPIVOT, SECIM, GOVPAY:
+					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le RT comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, dataRtDaLog, dataRtALog);
 					break;
 				case HYPERSIC_APK:
-					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le rendicontazioni comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
+					log.info("Elaborazione Tracciato {} per il Dominio [{}], verranno utilizzate le rendicontazioni comprese tra le seguenti date: Da [{}] a [{}]", this.tipoTracciato, codDominio, dataRtDaLog, dataRtALog);
 					break;
 				}
 
@@ -418,7 +426,7 @@ public class TracciatiNotificaPagamenti {
 								}
 
 							} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-								log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+								LogUtils.logError(log, "Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 								throw new ServiceException(e);
 							}
 
@@ -445,9 +453,7 @@ public class TracciatiNotificaPagamenti {
 								throw new ServiceException(e);
 							}
 							break;
-						case DB2:
-						case DEFAULT:
-						case DERBY:
+						case DB2, DEFAULT, DERBY:
 						default:
 							throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 						}
@@ -490,9 +496,7 @@ public class TracciatiNotificaPagamenti {
 							case POSTGRESQL:
 								tracciatiNotificaPagamentiBD.updateFineElaborazioneCsvOid(tracciato,oid);
 								break;
-							case DB2:
-							case DEFAULT:
-							case DERBY:
+							case DB2, DEFAULT, DERBY:
 							default:
 								throw new ServiceException(MessageFormat.format(ERROR_MSG_TIPO_DATABASE_0_NON_GESTITO, tipoDatabase));
 							}
@@ -536,9 +540,7 @@ public class TracciatiNotificaPagamenti {
 		long progressivo = tracciatiNotificaPagamentiBD.generaProgressivoTracciato(dominio, this.tipoTracciato.toString(), "Tracciato_");
 		tracciato.setDataCreazione(new Date());
 		switch (this.tipoTracciato) {
-		case MYPIVOT:
-		case SECIM:
-		case GOVPAY:
+		case MYPIVOT, SECIM, GOVPAY:
 			tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
 			break;
 		case HYPERSIC_APK:
@@ -556,9 +558,7 @@ public class TracciatiNotificaPagamenti {
 		long entriesDaInserireNelTracciato = 0;
 
 		switch (this.tipoTracciato) {
-		case GOVPAY:
-		case MYPIVOT:
-		case SECIM:
+		case GOVPAY, MYPIVOT, SECIM:
 			log.debug("Elaborazione Tracciato {} per il Dominio [{}], verranno ricercate RT da inserire in un nuovo tracciato da [{}] a [{}]", this.tipoTracciato, codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA));
 			entriesDaInserireNelTracciato = rptBD.countRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
 			log.trace("Elaborazione Tracciato {} per il Dominio [{}], trovate [{}] RT da inserire in un nuovo tracciato", this.tipoTracciato, codDominio, entriesDaInserireNelTracciato);
@@ -819,8 +819,11 @@ public class TracciatiNotificaPagamenti {
 
 		log.info("Creazione file di sintesi flussi in corso...");
 
+		String dataRtDaLog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa);
+		String dataRtALog = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA);
+		
 		log.info("Ricerco i flussi per il Dominio [{}], che hanno data acquisizione compresa tra le seguenti date: Da [{}] a [{}], in stato ACCETTATA, per i tipi pendenza [{}]",
-				codDominio, SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa), SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA),((listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) ? StringUtils.join(listaTipiPendenza, ", ") : "tutti"));
+				codDominio, dataRtDaLog, dataRtALog,((listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) ? StringUtils.join(listaTipiPendenza, ", ") : "tutti"));
 
 		ZipEntry frOutputEntry = new ZipEntry(GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(frOutputEntry);
@@ -843,7 +846,7 @@ public class TracciatiNotificaPagamenti {
 			if(!frList.isEmpty()) {
 				for (Fr fr : frList) {
 
-					List<List<String>> linee = this.creaLineaCsvFrGovPay(fr, configWrapper);
+					List<List<String>> linee = this.creaLineaCsvFrGovPay(fr, frBD);
 					for (List<String> linea : linee) {
 						String [] lineaArray  = linea.toArray(new String[linea.size()]);
 						zos.write(csvUtils.toCsv(lineaArray).getBytes());
@@ -879,12 +882,19 @@ public class TracciatiNotificaPagamenti {
 					Date dataFlusso = fr.getDataFlusso();
 					String dataFlussoS = SimpleDateFormatUtils.newSimpleDateFormat().format(dataFlusso);
 
-					ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryFlussoRendicontazione(idFlusso, dataFlussoS));
+					ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryFlussoRendicontazione(idFlusso, dataFlussoS, fr.getRevisione()));
 					zos.putNextEntry(rtEntry);
 
-					byte[] b = fr.getXml();
+					byte[] b = FrUtils.getXml(fr, frBD);
 
-					zos.write(b);
+					if(b != null) {
+						zos.write(b);
+					} else {
+						MessageFormat mf = new MessageFormat("Il flusso di rendicontazione con id [{0}] non ha un file xml associato, verra' inserito nel tracciato un file vuoto");
+						String messaggio = mf.format(idFlusso);
+						log.warn(messaggio);
+						zos.write(messaggio.getBytes());
+					}
 
 					// chiusa entry
 					zos.flush();
@@ -1024,10 +1034,20 @@ public class TracciatiNotificaPagamenti {
 
 	}
 
-	private List<List<String>> creaLineaCsvFrGovPay(Fr fr, BDConfigWrapper configWrapper) throws JAXBException, SAXException {
+	private List<List<String>> creaLineaCsvFrGovPay(Fr fr, BasicBD bd) throws JAXBException, SAXException, ServiceException {
+		byte[] xml = FrUtils.getXml(fr, bd);
+		if (xml != null) {
+			return creaLineeCsvDaFlussoXml(xml, fr.getCodDominio());
+		}
+		List<List<String>> linee = new ArrayList<>();
+		linee.add(creaLineaCsvSenzaFlussoXml(fr));
+		return linee;
+	}
+
+	private List<List<String>> creaLineeCsvDaFlussoXml(byte[] xml, String idDominio) throws JAXBException, SAXException {
 		List<List<String>> linee = new ArrayList<>();
 
-		FlussoRiversamento flussoRiversamento = JaxbUtils.toFR(fr.getXml());
+		FlussoRiversamento flussoRiversamento = JaxbUtils.toFR(xml);
 		CtIstitutoMittente istitutoMittente = flussoRiversamento.getIstitutoMittente();
 		CtIstitutoRicevente istitutoRicevente = flussoRiversamento.getIstitutoRicevente();
 		String identificativoFlusso = flussoRiversamento.getIdentificativoFlusso();
@@ -1037,60 +1057,59 @@ public class TracciatiNotificaPagamenti {
 		BigDecimal numeroTotalePagamenti = flussoRiversamento.getNumeroTotalePagamenti();
 		Date dataRegolamento = DateUtils.toJavaDate(flussoRiversamento.getDataRegolamento());
 		String codiceBicBancaDiRiversamento = flussoRiversamento.getCodiceBicBancaDiRiversamento();
-		String idDominio = fr.getCodDominio();
 
-		List<CtDatiSingoliPagamenti> datiSingoliPagamentis = flussoRiversamento.getDatiSingoliPagamentis();
+		for (CtDatiSingoliPagamenti pagamento : flussoRiversamento.getDatiSingoliPagamentis()) {
+			Integer indiceDatiSingoloPagamento = pagamento.getIndiceDatiSingoloPagamento();
+			Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(pagamento.getDataEsitoSingoloPagamento());
 
-		for (CtDatiSingoliPagamenti ctDatiSingoliPagamenti : datiSingoliPagamentis) {
 			List<String> linea = new ArrayList<>();
-
-			String codiceEsitoSingoloPagamento = ctDatiSingoliPagamenti.getCodiceEsitoSingoloPagamento();
-			Date dataEsitoSingoloPagamento = DateUtils.toJavaDate(ctDatiSingoliPagamenti.getDataEsitoSingoloPagamento());
-			String identificativoUnivocoRiscossione = ctDatiSingoliPagamenti.getIdentificativoUnivocoRiscossione();
-			String identificativoUnivocoVersamento = ctDatiSingoliPagamenti.getIdentificativoUnivocoVersamento();
-			Integer indiceDatiSingoloPagamento = ctDatiSingoliPagamenti.getIndiceDatiSingoloPagamento();
-			BigDecimal singoloImportoPagato = ctDatiSingoliPagamenti.getSingoloImportoPagato();
-
-			// identificativoFlusso: fr.identificativoFlusso
 			linea.add(identificativoFlusso);
-			// dataOraFlusso: fr.dataOraFlusso
 			linea.add(SimpleDateFormatUtils.newSimpleDateFormat().format(dataOraFlusso));
-			// identificativoDominio: fr.coddominio
 			linea.add(idDominio);
-			// identificativoUnivocoRegolamento: fr.identificativoUnivocoRegolamento
 			linea.add(identificativoUnivocoRegolamento);
-			// dataRegolamento: fr.dataRegolamento
 			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRegolamento));
-			// codiceBicBancaDiRiversamento: fr.codiceBicBancaDiRiversamento
 			linea.add(codiceBicBancaDiRiversamento);
-			// numeroTotalePagamenti: fr.numeroTotalePagamenti
-			linea.add(numeroTotalePagamenti.intValue()+"");
-			// importoTotalePagamenti: fr.importoTotalePagamenti
+			linea.add(numeroTotalePagamenti.intValue() + "");
 			linea.add(TracciatiNotificaPagamentiUtils.printImporto(importoTotalePagamenti, false));
-			// identificativoUnivocoVersamento: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoVersamento
-			linea.add(identificativoUnivocoVersamento);
-			// identificativoUnivocoRiscossione: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoRiscossione
-			linea.add(identificativoUnivocoRiscossione);
-			// indiceDatiSingoloPagamento: fr.ctDatiSingoliPagamenti[i].indiceDatiSingoloPagamento
+			linea.add(pagamento.getIdentificativoUnivocoVersamento());
+			linea.add(pagamento.getIdentificativoUnivocoRiscossione());
 			linea.add(indiceDatiSingoloPagamento != null ? indiceDatiSingoloPagamento.intValue() + "" : "");
-			// singoloImportoPagato: fr.ctDatiSingoliPagamenti[i].singoloImportoPagato
-			linea.add(TracciatiNotificaPagamentiUtils.printImporto(singoloImportoPagato, false));
-			// codiceEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].codiceEsitoSingoloPagamento
-			linea.add(codiceEsitoSingoloPagamento);
-			// dataEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].dataEsitoSingoloPagamento
+			linea.add(TracciatiNotificaPagamentiUtils.printImporto(pagamento.getSingoloImportoPagato(), false));
+			linea.add(pagamento.getCodiceEsitoSingoloPagamento());
 			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataEsitoSingoloPagamento));
-			// denominazioneMittente fr.istitutoMittente.denominazioneMittente
 			linea.add(istitutoMittente.getDenominazioneMittente());
-			// identificativoMittente fr.istitutoMittente.identificativoUnivocoMittente.codiceIdentificativoUnivoco
 			linea.add(istitutoMittente.getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco());
-			// denominazioneRicevente fr.istitutoRicevente.denominazioneRicevente
 			linea.add(istitutoRicevente.getDenominazioneRicevente());
-			// identificativoRicevente fr.istitutoRicevente.identificativoUnivocoRicevente.codiceIdentificativoUnivoco
 			linea.add(istitutoRicevente.getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco());
 
 			linee.add(linea);
 		}
 		return linee;
+	}
+
+	private List<String> creaLineaCsvSenzaFlussoXml(Fr fr) {
+		List<String> linea = new ArrayList<>();
+		linea.add(StringUtils.defaultString(fr.getCodFlusso()));
+		linea.add(formatData(fr.getDataFlusso(), SimpleDateFormatUtils.newSimpleDateFormat()));
+		linea.add(StringUtils.defaultString(fr.getCodDominio()));
+		linea.add(StringUtils.defaultString(fr.getIur()));
+		linea.add(formatData(fr.getDataRegolamento(), SimpleDateFormatUtils.newSimpleDateFormatSoloData()));
+		linea.add(StringUtils.defaultString(fr.getCodBicRiversamento()));
+		linea.add(fr.getNumeroPagamenti() + "");
+		linea.add(fr.getImportoTotalePagamenti() != null ? TracciatiNotificaPagamentiUtils.printImporto(fr.getImportoTotalePagamenti(), false) : "");
+		// 6 campi non disponibili senza il flusso XML (dettaglio singoli pagamenti)
+		for (int i = 0; i < 6; i++) {
+			linea.add("");
+		}
+		linea.add(StringUtils.defaultString(fr.getRagioneSocialePsp()));
+		linea.add(StringUtils.defaultString(fr.getCodPsp()));
+		linea.add(StringUtils.defaultString(fr.getRagioneSocialeDominio()));
+		linea.add(StringUtils.defaultString(fr.getCodDominio()));
+		return linea;
+	}
+
+	private static String formatData(Date data, SimpleDateFormat formatter) {
+		return data != null ? formatter.format(data) : "";
 	}
 
 	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
@@ -1229,8 +1248,7 @@ public class TracciatiNotificaPagamenti {
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
 
 			if(proprietaCustomObj != null) {
-				if(proprietaCustomObj instanceof String) {
-					String proprietaCustom = (String) proprietaCustomObj;
+				if(proprietaCustomObj instanceof String proprietaCustom) {
 					if(StringUtils.isNotEmpty(proprietaCustom)) {
 						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
 						// leggo proprieta

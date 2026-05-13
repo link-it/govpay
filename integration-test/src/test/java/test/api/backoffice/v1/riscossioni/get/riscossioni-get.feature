@@ -37,6 +37,7 @@ And match response ==
 	tipo:'ENTRATA', 
 	importo:'#(<riscossione>.importo)', 
 	data:'#(<riscossione>.data)',
+	commissioni: '##number',
 	allegato: '#ignore'
 }
 """
@@ -184,6 +185,7 @@ And match response ==
 	tipo:'ENTRATA', 
 	importo:'#(<riscossione>.importo)', 
 	data:'#(<riscossione>.data)',
+	commissioni: '##number',
 	allegato: '#ignore'
 }
 """

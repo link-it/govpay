@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.9.1</version>
+		<version>3.9.2</version>
 	</parent>
 
 	<artifactId>api-ragioneria</artifactId>
@@ -16,6 +16,7 @@
 
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
+		<it.govpay.log.name>govpay-api-ragioneria</it.govpay.log.name>
 	</properties>
 
 	<dependencies>

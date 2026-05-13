@@ -31,7 +31,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * set pendenzaPut.descrizioneStato = descrizioneStato
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -120,7 +120,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * set pendenzaPut.stato = 'SCADUTA'
 * set pendenzaPut.descrizioneStato = descrizioneStato
 * call read('classpath:utils/pa-prepara-avviso-scaduto.feature')
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -204,7 +204,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -290,7 +290,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -356,6 +356,7 @@ And match response.risultati[0] ==
 @debug
 Scenario: Evento verifica pendenza applicazione non disponibile
 
+* configure readTimeout = 120000
 * def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 * set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
 * set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
@@ -389,9 +390,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+Given url ndpsym_url + '/psp/rs/psp' 
+And path 'verifica' 
+And param codDominio = idDominio
+And param numeroAvviso = numeroAvviso
+And param versione = '2'
+When method get
 
-* call sleep(200)
+* call sleep(120200)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -421,7 +427,7 @@ And match response.risultati[0] ==
 	"iuv":"#(iuv)",
 	"ccp":"##null",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "##null",
+	"idPendenza": "##string",
 	"componente": "API_ENTE",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
@@ -488,7 +494,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 
@@ -595,7 +601,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenzaPut.soggettoPagatore.indirizzo = '' 
@@ -614,7 +620,7 @@ And request pendenzaVerificataV2
 When method post
 Then status 200
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 
 * call sleep(200)
 

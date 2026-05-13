@@ -48,8 +48,6 @@ import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -472,14 +470,14 @@ public class Versamento  {
 		}
 	}
 
-	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref) throws ServiceException, GovPayException, UtilsException, EcException {
+	public it.govpay.bd.model.Versamento chiediVersamentoRifAvviso(String codDominio, String numeroAvviso) throws ServiceException, GovPayException, UtilsException, EcException {
 		// conversione numeroAvviso in iuv
-		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
-		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), iuv, TipologiaTipoVersamento.DOVUTO);	
+		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(numeroAvviso);
+		return this.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);	
 	}
 
-	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoPendenza ref) throws ServiceException, GovPayException, UtilsException, EcException {
-		return this.chiediVersamento(ref.getIdA2A(), ref.getIdPendenza(), null, null, null, null, TipologiaTipoVersamento.DOVUTO);
+	public it.govpay.bd.model.Versamento chiediVersamento(String codApplicazione, String codVersamentoEnte) throws ServiceException, GovPayException, UtilsException, EcException {
+		return this.chiediVersamento(codApplicazione, codVersamentoEnte, null, null, null, null, TipologiaTipoVersamento.DOVUTO);
 	}
 
 	public it.govpay.bd.model.Versamento chiediVersamento(it.govpay.core.beans.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 

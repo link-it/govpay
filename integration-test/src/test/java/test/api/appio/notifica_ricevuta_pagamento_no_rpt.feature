@@ -245,7 +245,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = pendenzaPut.importo
 * def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
 

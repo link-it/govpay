@@ -1,7 +1,7 @@
 .. _govpay_caricamentimassivi:
 
 Caricamenti Massivi
-=================
+===================
 
 La sezione *Caricamenti Massivi* è dedicata all'immissione massiva delle pendenze nel sistema
 tramite tracciato.
@@ -59,3 +59,8 @@ comprende le seguenti informazioni:
 
 È possibile scaricare un file compresso in formato *zip* contentente il tracciato originale, il
 tracciato di esito generato dall’elaborazione e gli avvisi di pagamento per le pendenze caricate.
+
+.. toctree::
+   :hidden:
+
+   formatoCSV

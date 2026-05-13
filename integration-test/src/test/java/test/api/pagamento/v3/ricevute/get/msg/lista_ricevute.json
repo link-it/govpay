@@ -1,8 +1,0 @@
-{
-	numRisultati: "#notnull",
-	numPagine: 1,
-	risultatiPerPagina: "#notnull",
-	pagina: '##null',
-	prossimiRisultati: '##null',
-	risultati: '#notnull'
-}

@@ -33,10 +33,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
@@ -68,10 +65,6 @@ public class Pagamento   {
 			
 			rptBD.setAtomica(false);
 			
-			PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
-			
-			ppbd.setAtomica(false);
-
 			for (String codDominio : codDomini) {
 				int offset = 0;
 				int limit = 100;
@@ -80,31 +73,7 @@ public class Pagamento   {
 				do {
 					if(!rtList.isEmpty()) {
 						for (Rpt rpt : rtList) {
-							try {
-								rptBD.setAutoCommit(false);
-
-								rpt.setStato(StatoRpt.RPT_SCADUTA);
-								rpt.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
-								PagamentoPortale oldPagamentoPortale = rpt.getPagamentoPortale();
-								if(oldPagamentoPortale != null) {
-									oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
-									oldPagamentoPortale.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
-								}
-								rptBD.updateRpt(rpt);
-								if(oldPagamentoPortale != null) {
-									ppbd.updatePagamento(oldPagamentoPortale, false, true);
-								}
-								
-								rptBD.commit();
-								log.info("RPT [idDominio:{}][iuv:{}][ccp:{}] annullata con successo.", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-								
-							}catch(ServiceException e) {
-								rptBD.rollback();
-								LogUtils.logError(log, MessageFormat.format("Errore durante l''annullamento della RPT [idDominio:{0}][iuv:{1}][ccp:{2}]: {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e .getMessage()), e);
-								throw e;
-							}finally {
-								rptBD.setAutoCommit(false);
-							}
+							aggiornaStatoRpt(rptBD, rpt);
 						}
 						log.trace("Completato annullamento [{}] RT.", rtList.size());
 					}
@@ -118,24 +87,47 @@ public class Pagamento   {
 			LogUtils.logWarn(log, "Fallito aggiornamento pendenti", e);
 			throw new GovPayException(EsitoOperazione.INTERNAL, e);
 		} finally {
-			if(rptBD != null) {
-				// ripristino autocommit
-				try {
-					if(!rptBD.isAutoCommit() ) {
-						rptBD.setAutoCommit(true);
-					}
-				} catch (ServiceException e) {
-					// donothing
-				}
-				
-				rptBD.closeConnection();
-			}
+			chiusuraConnession(rptBD);
 		}
 
 		if(response.isEmpty()) {
 			return "Chiusura RPT Scadute#Nessuna RPT pendente.";
 		} else {
 			return StringUtils.join(response,"|");
+		}
+	}
+
+	private void chiusuraConnession(RptBD rptBD) {
+		if(rptBD != null) {
+			// ripristino autocommit
+			try {
+				if(!rptBD.isAutoCommit() ) {
+					rptBD.setAutoCommit(true);
+				}
+			} catch (ServiceException e) {
+				// donothing
+			}
+			
+			rptBD.closeConnection();
+		}
+	}
+
+	private void aggiornaStatoRpt(RptBD rptBD, Rpt rpt) throws ServiceException {
+		try {
+			rptBD.setAutoCommit(false);
+
+			rpt.setStato(StatoRpt.RPT_SCADUTA);
+			rpt.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3SANP24Mins()));
+			rptBD.updateRpt(rpt);
+			rptBD.commit();
+			log.info("RPT [idDominio:{}][iuv:{}][ccp:{}] annullata con successo.", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
+			
+		}catch(ServiceException e) {
+			rptBD.rollback();
+			LogUtils.logError(log, MessageFormat.format("Errore durante l''annullamento della RPT [idDominio:{0}][iuv:{1}][ccp:{2}]: {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e .getMessage()), e);
+			throw e;
+		}finally {
+			rptBD.setAutoCommit(false);
 		}
 	}
 }

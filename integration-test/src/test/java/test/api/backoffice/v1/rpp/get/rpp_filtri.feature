@@ -8,142 +8,105 @@ Background:
 * call read('classpath:utils/nodo-svuota-coda-rpt.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+
+* def riversamentoCumulativo = 'true'
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
 
 Scenario: Filtro su data
 
 * def dataRptStart = getDateTime()
 
 * def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-When method post
-Then status 201
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+* def ccp = numeroAvviso
 
-* def responseRpt1 = response 
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+
 * def dataRptEnd1 = getDateTime()
 
-* def idPendenza = getCurrentTimeMillis()
+# Verifico la notifica di terminazione
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-When method post
-Then status 201
-
-* def responseRpt2 = response 
-* def dataRptEnd2 = getDateTime()
-
-# Ho avviato due pagamenti. Verifico i filtri.
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart 
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 2,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[2]'
-}
-"""
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart 
-And param dataRptA = dataRptEnd1
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRptDa = dataRptStart 
-And param dataRptA = dataRptEnd2
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 2,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[2]'
-}
-"""
-
-Given url backofficeBaseurl
-And path '/rpp'
-And param dataRtDa = dataRptStart 
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response == 
-"""
-{
-	numRisultati: 0,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[0]'
-}
-"""
-
-# Fine verifiche. Completo i pagamenti
-
- 
-* def idSession = responseRpt1.idSession
-
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R01'
-And param riversamento = '0'
-When method get
-
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 * def dataRtEnd1 = getDateTime()
 
-* def idSession = responseRpt2.idSession
+# Pendenza #2
 
-Given url ndpsym_url + '/psp'
-And path '/eseguiPagamento'
-And param idSession = idSession
-And param idDominio = idDominio
-And param codice = 'R00'
-And param riversamento = '0'
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+* def ccp = numeroAvviso
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
 When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+
+# Attivo il pagamento 
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+
+# Verifico la notifica di terminazione
+
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+* def dataRptEnd2 = getDateTime()
+
+# Ho avviato due pagamenti. Verifico i filtri.
 
 * def dataRtEnd2 = getDateTime()
 
@@ -269,56 +232,175 @@ And match response ==
 
 Scenario: Filtro su divisione e direzione
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-
-
 * def dataRptStart = getDateTime()
-* def idPendenza = getCurrentTimeMillis()
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].divisione = 'div1'
-* set pagamentoPost.pendenze[0].direzione = 'dir1'
-
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
-Then status 201
+# Pendenza 1
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].divisione = 'div2'
-* set pagamentoPost.pendenze[0].direzione = 'dir2'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
-Then status 201
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.divisione = 'div1'
+* set pendenzaPut.direzione = 'dir1'
+
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Attivo il pagamento 
+
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+
+# Pendenza 2
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].divisione = 'div1'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
-Then status 201
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.divisione = 'div2'
+* set pendenzaPut.direzione = 'dir2'
+
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Attivo il pagamento 
+
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+
+# Pendenza 3
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].direzione = 'dir2'
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.divisione = 'div1'
 
-Given url pagamentiBaseurl
-And headers basicAutenticationHeader
-And path '/pagamenti'
-And request pagamentoPost
-When method post
-Then status 201
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Attivo il pagamento 
+
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
+
+# Pendenza 4
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.direzione = 'dir2'
+
+* call read('classpath:utils/pa-carica-avviso.feature')
+* def responsePut = response
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def importo = pendenzaPut.importo
+
+Given url backofficeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Attivo il pagamento 
+
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+# Verifico la notifica di attivazione
+ 
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
 * def dataRptEnd = getDateTime()
 

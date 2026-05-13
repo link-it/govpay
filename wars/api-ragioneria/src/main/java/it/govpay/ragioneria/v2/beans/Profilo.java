@@ -43,10 +43,10 @@ public class Profilo extends JSONSerializable {
   private List<Dominio> domini = new ArrayList<>();
 
   @JsonProperty("tipiPendenza")
-  private List<TipoPendenza> tipiPendenza = new ArrayList<>();
+  private List<Object> tipiPendenza = new ArrayList<>();
 
   @JsonProperty("acl")
-  private List<Acl> acl = new ArrayList<>();
+  private List<Object> acl = new ArrayList<>();
 
   @JsonProperty("anagrafica")
   private Soggetto anagrafica = null;
@@ -89,31 +89,31 @@ public class Profilo extends JSONSerializable {
   /**
    * tipologie di pendenza su cui e' abilitato ad operare
    **/
-  public Profilo tipiPendenza(List<TipoPendenza> tipiPendenza) {
+  public Profilo tipiPendenza(List<Object> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
     return this;
   }
 
   @JsonProperty("tipiPendenza")
-  public List<TipoPendenza> getTipiPendenza() {
+  public List<Object> getTipiPendenza() {
     return tipiPendenza;
   }
-  public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
+  public void setTipiPendenza(List<Object> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
   }
 
   /**
    **/
-  public Profilo acl(List<Acl> acl) {
+  public Profilo acl(List<Object> acl) {
     this.acl = acl;
     return this;
   }
 
   @JsonProperty("acl")
-  public List<Acl> getAcl() {
+  public List<Object> getAcl() {
     return acl;
   }
-  public void setAcl(List<Acl> acl) {
+  public void setAcl(List<Object> acl) {
     this.acl = acl;
   }
 

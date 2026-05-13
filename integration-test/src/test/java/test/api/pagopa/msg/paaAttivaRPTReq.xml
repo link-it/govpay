@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+		xmlns:ppt="http://ws.pagamenti.telematici.gov/"
+		xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead">
+	<soap:Header>
+		<ppthead:intestazionePPT>
+			<identificativoIntermediarioPA>#(idIntermediario)</identificativoIntermediarioPA>
+			<identificativoStazioneIntermediarioPA>#(idStazione)</identificativoStazioneIntermediarioPA>
+			<identificativoDominio>#(idDominio)</identificativoDominio>
+			<identificativoUnivocoVersamento>#(iuv)</identificativoUnivocoVersamento>
+			<codiceContestoPagamento>#(numeroAvviso)</codiceContestoPagamento>
+		</ppthead:intestazionePPT>
+	</soap:Header>
+	<soap:Body>
+		<ppt:paaAttivaRPT>
+			<identificativoPSP>GovPAYPsp1</identificativoPSP>
+			<datiPagamentoPSP>
+				<importoSingoloVersamento>100.99</importoSingoloVersamento>
+			</datiPagamentoPSP>
+		</ppt:paaAttivaRPT>
+	</soap:Body>
+</soap:Envelope>

@@ -411,9 +411,6 @@ public class Rendicontazioni {
 						MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO);
 						appContext.getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
 
-						// decide se avviare il recupero RT per i pagamenti rendicontati
-						boolean avviaRecuperoRT = false;
-
 						Fr fr = new Fr();
 						fr.setObsoleto(false);
 						fr.setCodBicRiversamento(flussoRendicontazione.getCodiceBicBancaDiRiversamento());
@@ -607,8 +604,6 @@ public class Rendicontazioni {
 										}
 									}
 
-									// c'e' almeno una pendenza pagata nel flusso che non ha la RT associata 
-									avviaRecuperoRT = true;
 								} else {
 									LogUtils.logInfo(log, "Non e' stata trovata nessuna pendenza corrispondente alla rendicontazione [Dominio:{} Iuv:{} Iur:{} Indice:{}]: {}.", codDominio, iuv, iur, indiceDati, erroreVerifica);
 								}
@@ -764,12 +759,6 @@ public class Rendicontazioni {
 							} else {
 								LogUtils.logInfo(log, "Flusso di rendicontazione acquisito con anomalie.");
 								MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RENDICONTAZIONI_ACQUISIZIONE_FLUSSO_OK_ANOMALIA);
-							}
-
-							// lancia il recupero delle ricevute.
-							if(avviaRecuperoRT) {
-								LogUtils.logInfo(log, "Sono state acquisite delle rendicontazioni per pendenze a cui manca la ricevuta, avvio recupero RT.");
-								Operazioni.setEseguiRecuperoRT();
 							}
 
 						}catch (ServiceException e) {

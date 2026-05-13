@@ -35,7 +35,6 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
@@ -73,12 +72,6 @@ public class RicevuteConverter {
 		if(rpt.getEsitoPagamento() != null)
 			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
 		
-		if(rpt.getIdPagamentoPortale() != null) {
-			PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
-			rsModel.setIdPagamento(pagamentoPortale.getIdSessione());
-			rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
-		}
-		
 		rsModel.setPendenza(PendenzePagateConverter.toRsModel(rpt));
 		
 		rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
@@ -88,16 +81,14 @@ public class RicevuteConverter {
 		try {
 			ricevutaRpt.setXml(rpt.getXmlRpt());
 			switch (rpt.getVersione()) {
-			case SANP_240:
-			case RPTV1_RTV2:
+			case SANP_240, RPTV1_RTV2:
 				PaGetPaymentRes paGetPaymentResRPT = JaxbUtils.toPaGetPaymentResRPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
 				
 				rsModel.setImporto(paGetPaymentResRPT.getData().getPaymentAmount());
 				break;
-			case SANP_230:
-			case RPTSANP230_RTV2:
+			case SANP_230, RPTSANP230_RTV2:
 				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTRICHIESTAPAGAMENTOTELEMATICO);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -106,8 +97,7 @@ public class RicevuteConverter {
 				
 				rsModel.setImporto(ctRpt.getDatiVersamento().getImportoTotaleDaVersare());
 				break;
-			case SANP_321_V2:
-			case RPTV2_RTV1:
+			case SANP_321_V2, RPTV2_RTV1:
 				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2ResponseRPT(rpt.getXmlRpt(), false);
 				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
 				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
@@ -127,8 +117,7 @@ public class RicevuteConverter {
 
 			try {
 				switch (rpt.getVersione()) {
-				case SANP_240:
-				case RPTV2_RTV1:
+				case SANP_240, RPTV2_RTV1:
 					PaSendRTReq paSendRTReqRT = JaxbUtils.toPaSendRTReqRT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
@@ -142,9 +131,7 @@ public class RicevuteConverter {
 					
 					rsModel.setVersante(PendenzeConverter.toSoggettoRsModel(ctRt.getSoggettoVersante()));
 					break;
-				case SANP_321_V2:
-				case RPTV1_RTV2:
-				case RPTSANP230_RTV2:
+				case SANP_321_V2, RPTV1_RTV2, RPTSANP230_RTV2:
 					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2RequestRT(rpt.getXmlRt(), false);
 					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
 					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
@@ -158,13 +145,7 @@ public class RicevuteConverter {
 
 		}
 		
-		if(rpt.getPagamentoPortale() != null) {
-			if(rpt.getPagamentoPortale().getTipo() == 1) {
-				rsModel.setModello(ModelloPagamento.ENTE);	
-			} else if(rpt.getPagamentoPortale().getTipo() == 3) {
-				rsModel.setModello(ModelloPagamento.PSP);
-			}
-		}
+		rsModel.setModello(ModelloPagamento.PSP);
 
 		return rsModel;
 	}

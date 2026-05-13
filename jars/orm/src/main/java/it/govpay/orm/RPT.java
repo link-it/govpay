@@ -37,7 +37,6 @@ import java.io.Serializable;
  * &lt;complexType name="RPT"&gt;
  * 		&lt;sequence&gt;
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/&gt;
- * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codCarrello" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/&gt;
@@ -88,7 +87,6 @@ import java.io.Serializable;
 @XmlType(name = "RPT",
   propOrder = {
   	"idVersamento",
-  	"idPagamentoPortale",
   	"codCarrello",
   	"iuv",
   	"ccp",
@@ -140,14 +138,6 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBeanWithId implements S
 
   public void setIdVersamento(IdVersamento idVersamento) {
     this.idVersamento = idVersamento;
-  }
-
-  public IdPagamentoPortale getIdPagamentoPortale() {
-    return this.idPagamentoPortale;
-  }
-
-  public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
-    this.idPagamentoPortale = idPagamentoPortale;
   }
 
   public java.lang.String getCodCarrello() {
@@ -458,9 +448,6 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBeanWithId implements S
 
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
-
-  @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
-  protected IdPagamentoPortale idPagamentoPortale;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCarrello",required=false,nillable=false)

@@ -1,6 +1,6 @@
-Feature: caricamento dovuto segreteria
+Feature: Caricamento pendenza generico
 
-Scenario: Pagamento ad iniziativa PSP
+Scenario: Caricamento di una pendenza
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBasicBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})

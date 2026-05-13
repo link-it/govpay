@@ -27,7 +27,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
 import it.govpay.core.exceptions.IOException;
@@ -80,12 +79,6 @@ public class RicevuteConverter {
 		rsModel.setIuv(rpt.getIuv());
 		if(rpt.getEsitoPagamento() != null)
 			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
-
-		if(rpt.getIdPagamentoPortale() != null) {
-			PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
-			rsModel.setIdPagamento(pagamentoPortale.getIdSessione());
-			rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
-		}
 
 		rsModel.setPendenza(PendenzeConverter.toPendenzaPagataRsModel(rpt));
 
@@ -140,13 +133,7 @@ public class RicevuteConverter {
 			rsModel.setRt(ricevutaRt);
 		}
 
-		if(rpt.getPagamentoPortale() != null) {
-			if(rpt.getPagamentoPortale().getTipo() == 1) {
-				rsModel.setModello(ModelloPagamento.ENTE);
-			} else if(rpt.getPagamentoPortale().getTipo() == 3) {
-				rsModel.setModello(ModelloPagamento.PSP);
-			}
-		}
+		rsModel.setModello(ModelloPagamento.PSP);
 
 		return rsModel;
 	}

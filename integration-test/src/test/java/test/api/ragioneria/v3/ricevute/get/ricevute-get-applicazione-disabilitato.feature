@@ -2,7 +2,7 @@ Feature: Dettaglio ricevute
 
 Background:
 
-* callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3.feature')
+* callonce read('classpath:utils/workflow/modellounico/v1/modellounico-bunch-pagamenti-v3.feature')
 * def applicazioneRequest = read('msg/applicazione_disabilitato.json')
 * callonce read('classpath:utils/api/v1/backoffice/applicazione-put.feature')
 
@@ -12,9 +12,12 @@ Background:
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della transazione
 
 * def risposta = read('msg/<risposta>')
+* def idDominioDet = <rpt>.transferList.transfer[0].fiscalCodePA
+* def iuvDet = <rpt>.creditorReferenceId
+* def ccpDet = '3' + iuvDet
 
 Given url ragioneriaBaseurl
-And path '/ricevute', <rpt>.dominio.identificativoDominio, <rpt>.datiVersamento.identificativoUnivocoVersamento, <rpt>.datiVersamento.codiceContestoPagamento
+And path '/ricevute', idDominioDet, iuvDet, ccpDet
 And headers idA2ABasicAutenticationHeader
 And header Accept = 'application/json'
 When method get
@@ -34,7 +37,6 @@ Examples:
 | applicazione_disabilitato.json | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 403 | errore_auth.json |
 | applicazione_disabilitato.json | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 | errore_auth.json |
 | applicazione_disabilitato.json | rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 403 | errore_auth.json |
-| applicazione_disabilitato.json | rpt_Verdi_RIFIUTATO_DOM1_LIBERO | 403 | errore_auth.json |
 | applicazione_disabilitato.json | rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE | 403 | errore_auth.json |
 | applicazione_disabilitato.json | rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 403 | errore_auth.json |
 | applicazione_disabilitato.json | rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 403 | errore_auth.json |

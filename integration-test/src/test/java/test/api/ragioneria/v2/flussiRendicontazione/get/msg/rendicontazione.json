@@ -18,6 +18,7 @@
 	"tipo":"#string",
 	"importo":"#? isImportoConDueDecimali(_)",
 	"data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+	"commissioni":"##number",
 	"vocePendenza": {
 		"indice":"##number",
 		"idVocePendenza":"#string",

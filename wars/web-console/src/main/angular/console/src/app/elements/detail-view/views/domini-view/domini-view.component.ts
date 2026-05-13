@@ -286,7 +286,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     const _connettori: any[] = [];
 
     // MyPivot
-    if (json.servizioMyPivot && json.servizioMyPivot.abilitato) {
+    if (json.servizioMyPivot) {
       const p = new Parameters();
       p.id = this._CONNETTORE_MY_PIVOT;
       p.jsonP = json.servizioMyPivot;
@@ -294,7 +294,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _connettori.push(p);
     }
     // SECIM
-    if (json.servizioSecim && json.servizioSecim.abilitato) {
+    if (json.servizioSecim) {
       const p = new Parameters();
       p.id = this._CONNETTORE_SECIM;
       p.jsonP = json.servizioSecim;
@@ -302,7 +302,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _connettori.push(p);
     }
     // GOVPAY
-    if (json.servizioGovPay && json.servizioGovPay.abilitato) {
+    if (json.servizioGovPay) {
       const p = new Parameters();
       p.id = this._CONNETTORE_GOVPAY;
       p.jsonP = json.servizioGovPay;
@@ -310,7 +310,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _connettori.push(p);
     }
     // HyperSicAPKappa
-    if (json.servizioHyperSicAPKappa && json.servizioHyperSicAPKappa.abilitato) {
+    if (json.servizioHyperSicAPKappa) {
       const p = new Parameters();
       p.id = this._CONNETTORE_HYPERSIC;
       p.jsonP = json.servizioHyperSicAPKappa;
@@ -318,7 +318,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _connettori.push(p);
     }
     // Maggioli
-    if (json.servizioMaggioliJPPA && json.servizioMaggioliJPPA.abilitato) {
+    if (json.servizioMaggioliJPPA) {
       const p = new Parameters();
       p.id = this._CONNETTORE_MAGGIOLI;
       p.jsonP = json.servizioMaggioliJPPA;

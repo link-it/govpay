@@ -53,6 +53,8 @@ import it.govpay.pendenze.v1.beans.TipoContabilita;
 import it.govpay.pendenze.v1.beans.VocePendenza;
 
 public class PendenzeConverter {
+	
+	private PendenzeConverter() {}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -128,7 +130,7 @@ public class PendenzeConverter {
 		rsModel.setVoci(v);
 
 		List<RppIndex> rpps = new ArrayList<>();
-		if(rpts != null && rpts.size() > 0) {
+		if(rpts != null && !rpts.isEmpty()) {
 			for (Rpt rpt : rpts) {
 				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper)));
 			}
@@ -249,8 +251,12 @@ public class PendenzeConverter {
 		} else { // Definisce i dettagli di incasso della singola entrata.
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
-			if(singoloVersamento.getTipoContabilita() != null)
-				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
+			if(singoloVersamento.getTipoContabilita() != null) {
+				// alias legacy v1: il modello commons usa CAPITOLO, l'API v1 espone ENTRATA
+				String tipoContabilitaName = singoloVersamento.getTipoContabilita().name();
+				if ("CAPITOLO".equals(tipoContabilitaName)) tipoContabilitaName = "ENTRATA";
+				rsModel.setTipoContabilita(TipoContabilita.valueOf(tipoContabilitaName));
+			}
 		}
 
 
@@ -302,7 +308,7 @@ public class PendenzeConverter {
 	}
 
 
-	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, IOException {
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -317,7 +323,6 @@ public class PendenzeConverter {
 		versamento.setCodVersamentoEnte(idPendenza);
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
@@ -342,43 +347,53 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException, IOException {
-
-		if(voci != null && voci.size() > 0) {
-			for (VocePendenza vocePendenza : voci) {
-				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
-
-				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
-				sv.setDescrizione(vocePendenza.getDescrizione());
-				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
-				sv.setImporto(vocePendenza.getImporto());
-
-				// Definisce i dati di un bollo telematico
-				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
-					it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico();
-					bollo.setHash(vocePendenza.getHashDocumento());
-					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
-					bollo.setTipo(vocePendenza.getTipoBollo());
-					sv.setBolloTelematico(bollo);
-				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-					sv.setCodTributo(vocePendenza.getCodEntrata());
-
-				} else { // Definisce i dettagli di incasso della singola entrata.
-					it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo();
-					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
-					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
-					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
-					sv.setTributo(tributo);
-				}
-
-				versamento.getSingoloVersamento().add(sv);
-			}
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws IOException {
+		if (voci == null || voci.isEmpty()) {
+			return;
 		}
+		for (VocePendenza vocePendenza : voci) {
+			versamento.getSingoloVersamento().add(toSingoloVersamento(vocePendenza));
+		}
+	}
+
+	private static it.govpay.core.beans.commons.Versamento.SingoloVersamento toSingoloVersamento(VocePendenza vocePendenza) throws IOException {
+		it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
+		sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
+		if (vocePendenza.getDatiAllegati() != null) {
+			sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
+		}
+		sv.setDescrizione(vocePendenza.getDescrizione());
+		sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
+		sv.setImporto(vocePendenza.getImporto());
+		valorizzaDettaglioVocePendenza(sv, vocePendenza);
+		return sv;
+	}
+
+	private static void valorizzaDettaglioVocePendenza(it.govpay.core.beans.commons.Versamento.SingoloVersamento sv, VocePendenza vocePendenza) {
+		// Definisce i dati di un bollo telematico
+		if (vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
+			it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico();
+			bollo.setHash(vocePendenza.getHashDocumento());
+			bollo.setProvincia(vocePendenza.getProvinciaResidenza());
+			bollo.setTipo(vocePendenza.getTipoBollo());
+			sv.setBolloTelematico(bollo);
+			return;
+		}
+		// Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+		if (vocePendenza.getCodEntrata() != null) {
+			sv.setCodTributo(vocePendenza.getCodEntrata());
+			return;
+		}
+		// Definisce i dettagli di incasso della singola entrata.
+		it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo();
+		tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
+		tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
+		tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
+		// alias legacy v1: l'API v1 espone ENTRATA, il modello commons usa CAPITOLO
+		String tipoContabilitaName = vocePendenza.getTipoContabilita().name();
+		if ("ENTRATA".equals(tipoContabilitaName)) tipoContabilitaName = "CAPITOLO";
+		tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(tipoContabilitaName));
+		sv.setTributo(tributo);
 	}
 
 	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {

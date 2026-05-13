@@ -82,15 +82,13 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-
-* def versionePagamento = 3
+* call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_monovoce_definito.json')
 * set pendenzaPut.voci[0].metadata = metadataCustom
 
-* call read('classpath:utils/v2/pa-carica-avviso.feature')
+* call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def importo = pendenzaPut.importo
@@ -102,19 +100,20 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp_numero_avviso = response.ccp
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-paGetPayment.feature')
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPaymentV2.feature')
 
 # Verifico la notifica di attivazione
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-attivazione.json')
 
-* def ccp = 'n_a'
+* def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-#* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+#* match response == read('classpath:test/workflow/modellounico/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifica endpoint RT tramite giornale Eventi.
 

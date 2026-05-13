@@ -49,6 +49,9 @@ Examples:
 | tipoContabilita | 'CAPITOLO' |
 | tipoContabilita | 'SPECIALE' |
 | tipoContabilita | 'SIOPE' |
+| tipoContabilita | 'SRTP_ESCLUSA_RAVV_OPEROSO' |
+| tipoContabilita | 'SRTP_ESCLUSA_ALTRO_OPERATORE' |
+| tipoContabilita | 'SRTP_ESCLUSA' |
 | tipoContabilita | 'ALTRO' |
 | codiceContabilita | 'AAAAA' |
 

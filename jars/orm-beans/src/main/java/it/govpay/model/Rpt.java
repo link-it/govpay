@@ -235,7 +235,6 @@ public class Rpt extends BasicModel{
 	private StatoConservazione statoConservazione;
 	private Date dataConservazione;
 	private String descrizioneStatoConservazione;
-	private Long idPagamentoPortale;
 	
 	private TipoIdentificativoAttestante tipoIdentificativoAttestante;
 	private String identificativoAttestante;
@@ -433,12 +432,6 @@ public class Rpt extends BasicModel{
 	}
 	public void setDescrizioneStatoConservazione(String descrizioneStatoConservazione) {
 		this.descrizioneStatoConservazione = descrizioneStatoConservazione;
-	}
-	public Long getIdPagamentoPortale() {
-		return this.idPagamentoPortale;
-	}
-	public void setIdPagamentoPortale(Long idPagamentoPortale) {
-		this.idPagamentoPortale = idPagamentoPortale;
 	}
 	public String getCodCanale() {
 		return this.codCanale;

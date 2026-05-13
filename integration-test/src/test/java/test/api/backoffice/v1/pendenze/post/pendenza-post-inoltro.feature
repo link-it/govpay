@@ -44,7 +44,7 @@ Scenario: Pendenza da form inoltrata all'applicazione
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 
 
 * set pendenza.idA2A = idA2A
@@ -84,7 +84,7 @@ Scenario: Pendenza da form inoltrata all'applicazione con indicazione dell'UO
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 
 * set pendenza.idA2A = idA2A
 * set pendenza.idPendenza = idPendenza
@@ -127,7 +127,7 @@ Scenario Outline: Pendenza da form inoltrata all'applicazione con <field> non va
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 * set pendenza.idA2A = idA2A
@@ -244,7 +244,7 @@ Scenario: Pendenza da form inoltrata all'applicazione con risposta contenente un
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 #* def importo = 100.99
 
 * set pendenza.idA2A = idA2A
@@ -391,7 +391,7 @@ Scenario: Pendenza da form inoltrata all'applicazione risposta pendenza scaduta
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 #* def importo = 100.99
 
 * set pendenza.idA2A = idA2A
@@ -453,7 +453,7 @@ Scenario: Pendenza da form inoltrata all'applicazione risposta pendenza annullat
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 #* def importo = 100.99
 
 * set pendenza.idA2A = idA2A
@@ -515,7 +515,7 @@ Scenario: Numero avviso su multivoce
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 100.99
 
 Given url ente_api_url
@@ -562,7 +562,7 @@ Scenario Outline: <field> non valida
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
+* def ccp = numeroAvviso
 * def importo = 10.00
 * set pendenza.idA2A = idA2A
 * set pendenza.idPendenza = idPendenza

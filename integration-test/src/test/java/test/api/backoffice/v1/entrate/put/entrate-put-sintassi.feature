@@ -36,6 +36,7 @@ Examples:
 | descrizione | descrizione | loremIpsum | 'descrizione' | 
 | tipoContabilita | tipoContabilita | null | 'tipoContabilita' |
 | tipoContabilita | tipoContabilita | 'XXXX' | 'tipoContabilita' |
+| tipoContabilita | tipoContabilita | 'SRTP-ESCLUSA-RAVV-OPEROSO' | 'tipoContabilita' |
 | codiceContabilita | codiceContabilita | '' | 'codiceContabilita' |
 | codiceContabilita | codiceContabilita | null | 'codiceContabilita' |
 | codiceContabilita | codiceContabilita | 'XX' | 'codiceContabilita' |
