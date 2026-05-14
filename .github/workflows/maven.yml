@@ -211,7 +211,7 @@ jobs:
     - name: Generate Tomcat installer
       run: |
         pushd src/main/resources/setup/
-        sh prepareSetup.sh tomcat
+        bash prepareSetup.sh tomcat
         popd
 
     - name: Download OWASP reports
