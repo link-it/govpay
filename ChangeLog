@@ -1,6 +1,25 @@
-2026-05-14  Giuliano Pintori <pintori@link.it>
+2026-05-21  Giuliano Pintori <pintori@link.it>
 
-	* [Build] Fix step Generate Tomcat installer nella pipeline CI
+	* Avanzamento versione a 3.9.2.p1.
+
+2026-05-21  Giuliano Pintori <pintori@link.it>
+
+	* [GovPayCore] 
+	Issue #866 Risolto bug raw_esito azzerato durante la fase IN_STAMPA
+	Quando il task ElaborazioneTracciatiPendenze[Check] riprendeva un tracciato gia' in IN_STAMPA (es. dopo errore in stampa, multi-nodo, sovrapposizione tra Check 5s ed il task principale 30min), la chiamata a updateFineElaborazione azzerava la colonna raw_esito sul DB.
+	Causa: il filtro di findAll in Operazioni.elaborazioneTracciatiPendenze (Operazioni.java:674) non includeva RAW_ESITO, quindi al secondo passaggio tracciato.rawEsito era null in memoria; saltato il blocco IN_CARICAMENTO (perche' stepElaborazione era gia' CARICAMENTO_OK/KO), si arrivava comunque a updateFineElaborazione che riscriveva incondizionatamente RAW_ESITO con null.
+	Fix principale: aggiunto filter.setIncludiRawEsito(true) in Operazioni.elaborazioneTracciatiPendenze cosi' che al secondo passaggio l'oggetto in memoria contenga gia' l'esito persistito.
+	Fix difensivo: in TracciatiBD.updateFineElaborazione i campi FILE_NAME_ESITO e RAW_ESITO non vengono piu' scritti se null, evitando regressioni per qualunque altro chiamante che dimenticasse di precaricare i campi.
+
+	* [Testsuite]
+	Aggiunti i check responseBytes != null && responseBytes.length > 0 dopo ogni GET /pendenze/tracciati/{id}/esito (48 occorrenze su 7 feature) per intercettare il caso "esito vuoto" che il test base ignorava.
+	Aggiunta feature di regressione tracciati-csv-post-avvisi-300-regression-rawesito.feature che riproduce il secondo passaggio via SQL (UPDATE tracciati SET stato='IN_STAMPA', stepElaborazione='CARICAMENTO_OK') e verifica che raw_esito resti popolato.
+	Aggiunto utils/java/DbUtils.java (wrapper su Spring JdbcTemplate) per eseguire query SQL dai test Karate, pattern mutuato dalla testsuite govway.
+	Aggiunte dipendenze test spring-jdbc e postgresql al integration-test/pom.xml.
+	Aggiunto blocco govpayDbConfig in karate-config.js, parametrizzabile via -Dgovpay.db.url/username/password/driverClassName.
+
+	* [Build] 
+	Fix step Generate Tomcat installer nella pipeline CI
 	In .github/workflows/maven.yml lo step "Generate Tomcat installer" invocava prepareSetup.sh con sh, ma il runner Ubuntu usa dash per /bin/sh: la sintassi array bash usata dallo script (WAR_FILES=("a" "b") con "${WAR_FILES[@]}") faceva fallire la pipeline con "Syntax error: ( unexpected". Invocato esplicitamente con bash per rispettare il shebang dello script.
 
 2026-05-13  Giuliano Pintori <pintori@link.it>
