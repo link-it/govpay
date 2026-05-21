@@ -45,6 +45,12 @@ function() {
 			govpay_api_user_url : 'http://localhost:8080/govpay-api-user',
 			smtpsym_url: 'http://localhost:8025/api',
 			govpay_operazioni_baseurl: 'http://localhost:8080/govpay-api-backoffice/rs/basic/v1/operazioni',
+			govpayDbConfig: {
+				username: karate.properties['govpay.db.username'] || 'govpay',
+				password: karate.properties['govpay.db.password'] || 'govpay',
+				url: karate.properties['govpay.db.url'] || 'jdbc:postgresql://localhost:5432/govpay',
+				driverClassName: karate.properties['govpay.db.driverClassName'] || 'org.postgresql.Driver'
+			},
 	};
 
 	if (env == 'wildfly') {

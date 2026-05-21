@@ -308,8 +308,13 @@ public class TracciatiBD extends BasicBD {
 
 			List<UpdateField> listaUpdateFields = new ArrayList<>();
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().FILE_NAME_ESITO, tracciato.getFileNameEsito()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().RAW_ESITO, tracciato.getRawEsito()));
+			// FILE_NAME_ESITO e RAW_ESITO vengono scritti solo se valorizzati: nelle riprese di un tracciato gia' in IN_STAMPA il chiamante puo' non aver ricaricato questi campi dal DB, e una scrittura con null azzererebbe l'esito gia' salvato.
+			if (tracciato.getFileNameEsito() != null) {
+				listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().FILE_NAME_ESITO, tracciato.getFileNameEsito()));
+			}
+			if (tracciato.getRawEsito() != null) {
+				listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().RAW_ESITO, tracciato.getRawEsito()));
+			}
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato().name()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));

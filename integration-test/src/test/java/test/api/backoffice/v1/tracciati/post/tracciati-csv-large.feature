@@ -98,4 +98,5 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 And assert responseTime < 10000
