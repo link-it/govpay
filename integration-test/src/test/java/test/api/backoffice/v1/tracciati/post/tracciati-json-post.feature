@@ -43,6 +43,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 Scenario: Tracciato senza operazioni
@@ -83,6 +84,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 Scenario: Tracciato errore semantico
 
@@ -122,6 +124,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 Scenario: Tracciato errore sintassi
 
@@ -202,6 +205,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 * def tracciatoDel = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-annullamenti.json')
 
@@ -235,6 +239,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 # verifico stato pendenze
 

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>it.govpay</groupId>
 		<artifactId>bom</artifactId>
-		<version>3.9.2</version>
+		<version>3.9.2.p1</version>
 		<relativePath>../</relativePath>
 	</parent>
 	<properties>

@@ -104,6 +104,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test2
 Scenario: Caricamento di un tracciato in formato CSV con duplicati
@@ -185,6 +186,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test3
 Scenario: Caricamento di un tracciato in formato CSV con linee vuote
@@ -266,6 +268,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test4
 Scenario: Caricamento di un tracciato in formato CSV vuoto
@@ -405,6 +408,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test6
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di sintassi
@@ -486,6 +490,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test7
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di validazione
@@ -569,6 +574,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test8
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze
@@ -659,6 +665,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test9
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze di cui una con errori di sintassi
@@ -750,6 +757,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test10
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della richiesta corrotto
@@ -828,6 +836,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test11
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della risposta corrotto
@@ -897,6 +906,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 Then match response contains '#("inserita con esito \'ESEGUITO_OK\': scrittura dell\'esito sul file csv conclusa con con errore.")' 
 
 Given url backofficeBaseurl
@@ -916,6 +926,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test12
 Scenario: Caricamento di un tracciato in formato CSV con header Content-Type errato 
@@ -1043,6 +1054,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test14
 Scenario: Caricamento di un tracciato in formato CSV valido versione 2
@@ -1126,6 +1138,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test15
 Scenario: Caricamento di un tracciato in formato CSV valido versione 2 due volte consecutive 
@@ -1209,6 +1222,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 # ripeto il caricamento
 
@@ -1268,6 +1282,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test16
 Scenario: Caricamento di un tracciato in formato CSV valido con pagamenti con soglia temporale
@@ -1351,6 +1366,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test17
 Scenario: Caricamento di un tracciato in formato CSV valido e cancellazione
@@ -1432,6 +1448,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 * def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-annullamento-del.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
@@ -1481,6 +1498,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test18
@@ -1570,6 +1588,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 @test19
 Scenario: Caricamento di un tracciato in formato CSV valido con pagamenti con soglia temporale
@@ -1653,6 +1672,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test20
@@ -1737,6 +1757,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test21
@@ -1821,6 +1842,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test22
@@ -1907,6 +1929,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test23
@@ -1993,6 +2016,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test24
@@ -2079,6 +2103,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test25
@@ -2163,6 +2188,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 @test26
@@ -2249,6 +2275,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 
 
@@ -2334,5 +2361,6 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+And assert responseBytes != null && responseBytes.length > 0
 
 

@@ -61,6 +61,20 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Spring JDBC + driver PostgreSQL per esecuzione query SQL da Karate via DbUtils -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.4</version>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 

@@ -672,6 +672,7 @@ public class Operazioni{
 				filter.setStati(Arrays.asList(STATO_ELABORAZIONE.ELABORAZIONE, STATO_ELABORAZIONE.IN_STAMPA));
 				filter.setLimit(25);
 				filter.setIncludiRawRichiesta(true);
+				filter.setIncludiRawEsito(true);
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 				Tracciati tracciatiBusiness = new Tracciati();
 
