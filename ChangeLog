@@ -33,6 +33,15 @@
 	- owasp dependency-check plugin: 12.2.0 -> 12.2.2
 	Scartati: angus-mail 2.1.0-M1, jakarta.mail/activation/servlet -M*, groovy 2.6.0-alpha-4, slf4j 2.1.0-alpha1, jaxb 3.1.0-M1, rhino 1.9.1 (major jump).
 
+	* [Build] Cache OWASP Dependency-Check versionata in base al plugin (allineamento con govpay-bom).
+	Aggiunto in .github/workflows/maven.yml e .github/workflows/refresh-owasp-db.yml lo step di lettura dinamica di owasp.plugin.version dal pom (mvn help:evaluate). La chiave di cache passa da:
+	  ${{ runner.os }}-owasp-${{ github.sha }}    (invalidata ad ogni commit)
+	a:
+	  ${{ runner.os }}-owasp-v<plugin-version>-<date>
+	Beneficio: la cache vive un'intera giornata e viene invalidata automaticamente al bump del plugin (lo schema del DB cambia tra release), evitando schema-mismatch del DB embedded.
+	In maven.yml aggiunto NOUPDATE_FLAG=-DautoUpdate=false quando la cache giornaliera e' calda, per evitare un nuovo download del DB NVD.
+	In refresh-owasp-db.yml allineato lo scarico della CLI dependency-check alla versione del plugin (era hardcoded 12.1.0) e aggiornato il repo di download da jeremylong/DependencyCheck a dependency-check/DependencyCheck.
+
 2026-05-21  Giuliano Pintori <pintori@link.it>
 
 	* Avanzamento versione a 3.9.2.p1.

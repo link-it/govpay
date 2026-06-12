@@ -18,6 +18,21 @@ jobs:
       actions: write
 
     steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Read OWASP plugin version from pom.xml
+        id: owasp
+        run: |
+          VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=owasp.plugin.version)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "OWASP Dependency-Check version: $VERSION"
+
       - name: Get date for cache key
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
@@ -27,21 +42,17 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .dependency-check/data
-          key: ${{ runner.os }}-owasp-${{ steps.date.outputs.date }}
+          # La chiave include la versione del plugin: bump del plugin -> cache invalidata
+          # (lo schema del DB cambia tra release maggiori/minori).
+          key: ${{ runner.os }}-owasp-v${{ steps.owasp.outputs.version }}-${{ steps.date.outputs.date }}
           restore-keys: |
-            ${{ runner.os }}-owasp-
-
-      - name: Set up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "21"
+            ${{ runner.os }}-owasp-v${{ steps.owasp.outputs.version }}-
 
       - name: Install OWASP Dependency-Check CLI
         run: |
-          VERSION="12.1.0"
+          VERSION="${{ steps.owasp.outputs.version }}"
           curl --tlsv1.2 --proto '=https' --proto-redir '=https' -sSfL \
-            "https://github.com/jeremylong/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
+            "https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
             -o dependency-check.zip
           unzip -q dependency-check.zip
           echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
