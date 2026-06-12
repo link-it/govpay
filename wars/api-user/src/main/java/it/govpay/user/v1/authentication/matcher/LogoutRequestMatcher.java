@@ -27,24 +27,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.security.web.util.matcher.RequestVariablesExtractor;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /***
  *
- * Request matcher per poter utilizzare url parametriche per il logout
- * based on {@link AntPathRequestMatcher}
- *
+ * Request matcher per poter utilizzare url parametriche per il logout.
  *
  * @author pintori
  *
  */
-@SuppressWarnings("deprecation")
-public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
+public class LogoutRequestMatcher implements RequestMatcher {
 
 	private static final Log logger = LogFactory.getLog(LogoutRequestMatcher.class);
 	public static final String MATCH_ALL = "/**";
@@ -157,7 +152,6 @@ public class LogoutRequestMatcher implements RequestMatcher, RequestVariablesExt
 		return this.matcher.matches(url);
 	}
 
-	@Override
 	public Map<String, String> extractUriTemplateVariables(HttpServletRequest request) {
 		if (this.matcher == null || !matches(request)) {
 			return Collections.emptyMap();

@@ -95,51 +95,51 @@
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
-		<logger.version>2.25.4</logger.version>
+		<logger.version>2.26.0</logger.version>
 
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.71</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.81</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.6.16</swagger.version>
-		<swagger.v3.version>2.2.36</swagger.v3.version>
-		<swagger.parser.v3.version>2.1.32</swagger.parser.v3.version>
-		<snakeyaml.version>2.5</snakeyaml.version>
-		<guava.version>33.4.8-jre</guava.version>
+		<swagger.v3.version>2.2.51</swagger.v3.version>
+		<swagger.parser.v3.version>2.1.44</swagger.parser.v3.version>
+		<snakeyaml.version>2.6</snakeyaml.version>
+		<guava.version>33.6.0-jre</guava.version>
 
 		<!-- cxf -->
-		<cxf.version>4.1.3</cxf.version>
-		<cxf.xjc.runtime.version>4.1.0</cxf.xjc.runtime.version>
+		<cxf.version>4.2.2</cxf.version>
+		<cxf.xjc.runtime.version>4.2.0</cxf.xjc.runtime.version>
 
 		<!-- jackson -->
-		<jackson.version>2.21.1</jackson.version>
-		<jackson-annotations.version>2.21</jackson-annotations.version>
+		<jackson.version>2.22.0</jackson.version>
+		<jackson-annotations.version>2.22</jackson-annotations.version>
 
 		<!-- Jersey -->
-		<jersey.version>3.1.11</jersey.version>
+		<jersey.version>3.1.12</jersey.version>
 
 		<!-- Spring -->
-		<spring.version>6.2.17</spring.version>
+		<spring.version>7.0.8</spring.version>
 
 		<!-- Spring Security -->
-		<spring.security.version>6.5.9</spring.security.version>
+		<spring.security.version>7.1.0</spring.security.version>
 
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>3.3.3</spring.ldap.version>
+		<spring.ldap.version>4.1.0</spring.ldap.version>
 
 		<!-- nimbus-jose-jwt version -->
-		<nimbus-jose-jwt.version>10.4.2</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>
 
 		<!-- joda time -->
 		<joda-time.version>2.14.0</joda-time.version>
 
 		<!-- Commons -->
 		<commons-jcs-core.version>3.2.1</commons-jcs-core.version>
-		<commons.csv.version>1.14.0</commons.csv.version>
-		<commons.codec.version>1.19.0</commons.codec.version>
-		<commons.io.version>2.20.0</commons.io.version>
-		<commons.text.version>1.14.0</commons.text.version>
-		<commons.lang3.version>3.18.0</commons.lang3.version>
-		<commons.pool2.version>2.12.1</commons.pool2.version>
-		<commons.net.version>3.12.0</commons.net.version>
+		<commons.csv.version>1.14.1</commons.csv.version>
+		<commons.codec.version>1.22.0</commons.codec.version>
+		<commons.io.version>2.22.0</commons.io.version>
+		<commons.text.version>1.15.0</commons.text.version>
+		<commons.lang3.version>3.20.0</commons.lang3.version>
+		<commons.pool2.version>2.13.1</commons.pool2.version>
+		<commons.net.version>3.13.0</commons.net.version>
 		<commons.email.version>1.6.0</commons.email.version>
 		<com.sun.mail.version>1.6.8</com.sun.mail.version><!-- CVE-2025-7962 -->
 		<commons.beanutils.version>1.11.0</commons.beanutils.version>
@@ -151,7 +151,7 @@
 		<freemarker.version>2.3.34</freemarker.version>
 
 		<!-- http client -->
-		<httpclient.version>5.5</httpclient.version>
+		<httpclient.version>5.6.1</httpclient.version>
 
 		<!-- concurrent -->
 		<concurrent.version>1.3.4</concurrent.version>
@@ -163,7 +163,7 @@
 		<fge_json-schema-validator.version>2.2.14</fge_json-schema-validator.version>
 
 		<!-- networknt_json-schema-validator -->
-		<networknt_json-schema-validator.version>1.5.6</networknt_json-schema-validator.version>
+		<networknt_json-schema-validator.version>1.5.9</networknt_json-schema-validator.version>
 
 		<!-- rhino (transitive dependency from json-schema-core) -->
 		<rhino.version>1.7.15.1</rhino.version>
@@ -184,17 +184,17 @@
 		<jakarta.servlet.api3.version>6.1.0</jakarta.servlet.api3.version>
 
 		<!-- JaxWS-API -->
-		<jakarta-api-version>4.0.2</jakarta-api-version>
+		<jakarta-api-version>4.0.3</jakarta-api-version>
 
 		<!-- XML SOAP API -->
 		<jakarta-soap-api-version>3.0.2</jakarta-soap-api-version>
-		<jakarta-saaj-impl-version>3.0.4</jakarta-saaj-impl-version>
+		<jakarta-saaj-impl-version>3.0.6</jakarta-saaj-impl-version>
 
 		<!-- webjars- swagger ui api -->
-		<webjars-swaggerui.version>5.20.1</webjars-swaggerui.version>
+		<webjars-swaggerui.version>5.32.6</webjars-swaggerui.version>
 
 		<!-- Json Path -->
-		<json-path.version>2.9.0</json-path.version>
+		<json-path.version>2.10.0</json-path.version>
 		<json-smart.version>2.6.0</json-smart.version>
 		<accessors-smart.version>2.6.0</accessors-smart.version>
 
@@ -207,13 +207,13 @@
         <migbase64.version>2.2</migbase64.version>
 
         <!-- Postgres driver -->
-        <postgresql.driver.version>42.7.7</postgresql.driver.version>
+        <postgresql.driver.version>42.7.11</postgresql.driver.version>
 
         <!-- Stampe -->
         <!-- xalan -->
         <xalan.version>2.7.3</xalan.version>
         <!-- Jaxen -->
-        <jaxen.version>2.0.0</jaxen.version>
+        <jaxen.version>2.0.6</jaxen.version>
         <!-- barbecue -->
         <barbecue.version>1.5-beta1</barbecue.version>
         <!-- Groovy -->
@@ -223,7 +223,7 @@
         <!-- xmlgraphics-batik-bridge -->
         <batik-bridge.version>1.19</batik-bridge.version>
         <!-- com.google.zxing.javase -->
-        <com.google.zxing.javase.version>3.5.3</com.google.zxing.javase.version>
+        <com.google.zxing.javase.version>3.5.4</com.google.zxing.javase.version>
         <!-- dynamicreports-core -->
         <dynamicreports-core.version>6.20.1</dynamicreports-core.version>
         <!-- jasperreports -->
@@ -231,7 +231,7 @@
         <!-- barcode4j -->
         <barcode4j.version>2.1</barcode4j.version>
         <!-- ant version -->
-        <ant.version>1.10.15</ant.version>
+        <ant.version>1.10.17</ant.version>
 
 		<jaxb.api.version>3.0.1</jaxb.api.version>
 		<jaxb.core.version>3.0.2</jaxb.core.version>
@@ -247,7 +247,7 @@
         <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
 
         <!-- javassist -->
-        <javassist.version>3.30.2-GA</javassist.version>
+        <javassist.version>3.31.0-GA</javassist.version>
 
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
         <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
@@ -275,7 +275,7 @@
 
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->
-		<owasp.plugin.version>12.2.0</owasp.plugin.version>
+		<owasp.plugin.version>12.2.2</owasp.plugin.version>
 		<owasp.plugin.autoUpdate>false</owasp.plugin.autoUpdate> <!-- Impostare a false quando ci sono problemi su repository NIST -->
 		<owasp.plugin.failBuildOnCVSS>11</owasp.plugin.failBuildOnCVSS>
 		<owasp.ossindex.prevents429.sleep>5</owasp.ossindex.prevents429.sleep> <!-- https://github.com/sonatype/ossindex-maven/issues/17 -->
@@ -1257,12 +1257,6 @@
             <dependency>
             	<groupId>org.springframework</groupId>
                 <artifactId>spring-expression</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
-            	<groupId>org.springframework</groupId>
-                <artifactId>spring-jcl</artifactId>
                 <version>${spring.version}</version>
             </dependency>
 
