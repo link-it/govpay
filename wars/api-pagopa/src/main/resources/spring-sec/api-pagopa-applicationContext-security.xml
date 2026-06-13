@@ -11,11 +11,7 @@
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util.xsd">
         
-        <global-method-security
-                secured-annotations="enabled">
-        </global-method-security>
-        
-        <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
 		</b:bean>
 		
