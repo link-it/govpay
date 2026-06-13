@@ -8,7 +8,9 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security.xsd">
         
-<b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<method-security secured-enabled="true" pre-post-enabled="false"/>
+
+        <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
 		</b:bean>
         
