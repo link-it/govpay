@@ -145,10 +145,8 @@ public class GovpayLdapOidcOauth2Details extends DefaultOidcUser implements Ldap
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<? extends GrantedAuthority> authorities2 = (this.ldapUserDetailsImpl.getAuthorities() != null)
-				? Collections.unmodifiableSet(new LinkedHashSet<>(this.ldapUserDetailsImpl.getAuthorities()))
-				: Collections.unmodifiableSet(new LinkedHashSet<>(AuthorityUtils.NO_AUTHORITIES)); 
-				this.ldapUserDetailsImpl.getAuthorities();
+		Collection<? extends GrantedAuthority> authorities2 = Collections.unmodifiableSet(
+				new LinkedHashSet<>(this.ldapUserDetailsImpl.getAuthorities()));
 		
 		Set<GrantedAuthority> authoritiesTmp = new LinkedHashSet<>(AuthorityUtils.NO_AUTHORITIES);
 				
