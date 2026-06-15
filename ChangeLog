@@ -1,3 +1,23 @@
+2026-06-15  Giuliano Pintori <pintori@link.it>
+
+	* Rilascio versione 3.9.3.
+
+2026-06-14  Giuliano Pintori <pintori@link.it>
+
+	* [Sonar] Dominio/DominioIndex (backoffice v1): rinominato il getter ScaricaFr in getScaricaFr (sonar:Consistency / Blocker) per evitare il clash con il fluent setter scaricaFr ed allineare la naming convention a quella della classe sorella DominioPost. Nessun chiamante usava il getter "errato"; Jackson serializza/deserializza tramite l'annotation @JsonProperty("scaricaFr") gia' presente, quindi il payload JSON resta invariato.
+
+	* [Sonar] GovpayLdapOauth2Details/GovpayLdapOidcOauth2Details (java:S2583): rimossa condizione sempre vera (ldapUserDetailsImpl.getAuthorities() != null - per contratto Spring Security non torna mai null) ed eliminata chiamata orfana senza assegnamento sulla stessa espressione.
+
+2026-06-13  Giuliano Pintori <pintori@link.it>
+
+	* Issue #869 Fix deploy su Tomcat 11 dopo migrazione Spring Security 7.
+	I 5 WAR fallivano lo startup con NoClassDefFoundError: org/springframework/security/access/annotation/SecuredAnnotationSecurityMetadataSource. Causa: l'elemento XML <global-method-security secured-annotations="enabled"> presente nei 5 file spring-sec/*-applicationContext-security.xml era deprecato dalla 5.6 e rimosso in Spring Security 7. Sostituito in tutti i 5 file con l'equivalente "letterale" del nuovo namespace: <method-security secured-enabled="true" pre-post-enabled="false"/> (mantiene lo stesso comportamento del vecchio default: solo @Secured attivo, @PreAuthorize/@PostAuthorize disabilitate; nel codebase non e' presente alcuna annotation di method security, quindi a runtime invariato).
+
+	* Issue #869 Fix script di health-check Jenkins per default-deny di Spring Security 7.
+	jenkins.checkgp.sh probava la URL root /govpay-api-backoffice/ che ora restituisce 403 (in Spring Security 7 il default e' deny-all anche per richieste fuori dai filter chain pattern, mentre in 6.x transitavano senza filtri). Cambiato l'endpoint di sonda a /rs/basic/v1/info, gia' dichiarato permitAll nella security XML ed esposto come liveness endpoint del progetto (stesso usato dal Docker HEALTHCHECK).
+
+	* [Build] Impostata <owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> nel pom (era false). Il bump del plugin dependency-check 12.2.0 -> 12.2.2 cambia lo schema del DB embedded; con autoUpdate=false il plugin non riesce a migrarlo e fallisce con "Old database schema identified". Il default piu' sicuro e' true; in caso di problemi temporanei sul repository NIST si puo' sempre override puntuale via CLI con -Dowasp.plugin.autoUpdate=false.
+
 2026-06-12  Giuliano Pintori <pintori@link.it>
 
 	* Avanzamento versione a 3.9.3-SNAPSHOT.
