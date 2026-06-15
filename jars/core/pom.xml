@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.9.2.p1</version>
+		<version>3.9.3</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -230,10 +230,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-expression</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jcl</artifactId>
 		</dependency>
 
 		<!-- Spring Security -->

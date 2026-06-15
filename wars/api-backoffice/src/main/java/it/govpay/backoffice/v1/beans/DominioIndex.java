@@ -635,7 +635,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("scaricaFr")
-  public Boolean ScaricaFr() {
+  public Boolean getScaricaFr() {
     return scaricaFr;
   }
   public void setScaricaFr(Boolean scaricaFr) {

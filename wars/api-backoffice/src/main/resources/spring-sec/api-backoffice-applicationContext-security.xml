@@ -15,10 +15,8 @@
  		http://www.springframework.org/schema/util/spring-util.xsd">
           
 
-        <global-method-security
-                secured-annotations="enabled">
-        </global-method-security>
-        
+<method-security secured-enabled="true" pre-post-enabled="false"/>
+
         <b:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     		<b:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
 		</b:bean>

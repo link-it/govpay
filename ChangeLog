@@ -1,3 +1,67 @@
+2026-06-15  Giuliano Pintori <pintori@link.it>
+
+	* Rilascio versione 3.9.3.
+
+2026-06-14  Giuliano Pintori <pintori@link.it>
+
+	* [Sonar] Dominio/DominioIndex (backoffice v1): rinominato il getter ScaricaFr in getScaricaFr (sonar:Consistency / Blocker) per evitare il clash con il fluent setter scaricaFr ed allineare la naming convention a quella della classe sorella DominioPost. Nessun chiamante usava il getter "errato"; Jackson serializza/deserializza tramite l'annotation @JsonProperty("scaricaFr") gia' presente, quindi il payload JSON resta invariato.
+
+	* [Sonar] GovpayLdapOauth2Details/GovpayLdapOidcOauth2Details (java:S2583): rimossa condizione sempre vera (ldapUserDetailsImpl.getAuthorities() != null - per contratto Spring Security non torna mai null) ed eliminata chiamata orfana senza assegnamento sulla stessa espressione.
+
+2026-06-13  Giuliano Pintori <pintori@link.it>
+
+	* Issue #869 Fix deploy su Tomcat 11 dopo migrazione Spring Security 7.
+	I 5 WAR fallivano lo startup con NoClassDefFoundError: org/springframework/security/access/annotation/SecuredAnnotationSecurityMetadataSource. Causa: l'elemento XML <global-method-security secured-annotations="enabled"> presente nei 5 file spring-sec/*-applicationContext-security.xml era deprecato dalla 5.6 e rimosso in Spring Security 7. Sostituito in tutti i 5 file con l'equivalente "letterale" del nuovo namespace: <method-security secured-enabled="true" pre-post-enabled="false"/> (mantiene lo stesso comportamento del vecchio default: solo @Secured attivo, @PreAuthorize/@PostAuthorize disabilitate; nel codebase non e' presente alcuna annotation di method security, quindi a runtime invariato).
+
+	* Issue #869 Fix script di health-check Jenkins per default-deny di Spring Security 7.
+	jenkins.checkgp.sh probava la URL root /govpay-api-backoffice/ che ora restituisce 403 (in Spring Security 7 il default e' deny-all anche per richieste fuori dai filter chain pattern, mentre in 6.x transitavano senza filtri). Cambiato l'endpoint di sonda a /rs/basic/v1/info, gia' dichiarato permitAll nella security XML ed esposto come liveness endpoint del progetto (stesso usato dal Docker HEALTHCHECK).
+
+	* [Build] Impostata <owasp.plugin.autoUpdate>true</owasp.plugin.autoUpdate> nel pom (era false). Il bump del plugin dependency-check 12.2.0 -> 12.2.2 cambia lo schema del DB embedded; con autoUpdate=false il plugin non riesce a migrarlo e fallisce con "Old database schema identified". Il default piu' sicuro e' true; in caso di problemi temporanei sul repository NIST si puo' sempre override puntuale via CLI con -Dowasp.plugin.autoUpdate=false.
+
+2026-06-12  Giuliano Pintori <pintori@link.it>
+
+	* Avanzamento versione a 3.9.3-SNAPSHOT.
+
+	* Issue #869 Migrazione a Spring Framework 7.x.
+	Aggiornate le dipendenze Spring del reactor principale alla baseline allineata con govpay-bom:
+	- spring.version: 6.2.17 -> 7.0.8
+	- spring.security.version: 6.5.9 -> 7.1.0
+	- spring.ldap.version: 3.3.3 -> 4.1.0
+	- cxf.version: 4.1.3 -> 4.2.2 (baseline Jakarta EE 11 + JDK 17, nessuna modifica al codice)
+	- cxf.xjc.runtime.version: 4.1.0 -> 4.2.0 (allineamento con CXF 4.2.2)
+	Rimossa la dipendenza spring-jcl (eliminata in Spring 7; il bridging commons-logging e' gia' fornito da log4j-jcl). Rimossa dichiarazione in pom.xml e jars/core/pom.xml.
+	[wars/api-user] LogoutRequestMatcher: rimossa l'implementazione dell'interfaccia RequestVariablesExtractor (eliminata in Spring Security 7) e l'import di AntPathRequestMatcher dalla Javadoc. Il metodo extractUriTemplateVariables resta esposto come metodo pubblico per gli eventuali chiamanti diretti.
+	Jackson e' rimasto a 2.x (l'upgrade a 3.x verra' tracciato separatamente per via dell'impatto a cascata su CXF/Swagger/Jersey/OpenSPCoop2).
+	Gli XML di Spring Security (5 file spring-sec/*-applicationContext-security.xml) usano schemi senza versione: nessuna modifica strutturale necessaria.
+
+	* Aggiornamento minor/patch delle dipendenze al massimo stabile (esclusi milestone/alpha/major):
+	- jackson: 2.21.1 -> 2.22.0 (+ annotations 2.21 -> 2.22)
+	- jersey: 3.1.11 -> 3.1.12
+	- httpclient5: 5.5 -> 5.6.1
+	- nimbus-jose-jwt: 10.4.2 -> 10.9.1
+	- log4j (logger.version): 2.25.4 -> 2.26.0
+	- swagger v3: 2.2.36 -> 2.2.51; swagger parser v3: 2.1.32 -> 2.1.44; swagger codegen plugin: 3.0.71 -> 3.0.81
+	- webjars-swaggerui: 5.20.1 -> 5.32.6
+	- snakeyaml: 2.5 -> 2.6
+	- guava: 33.4.8-jre -> 33.6.0-jre
+	- javassist: 3.30.2-GA -> 3.31.0-GA
+	- postgresql driver: 42.7.7 -> 42.7.11
+	- commons-csv 1.14.0 -> 1.14.1, commons-codec 1.19.0 -> 1.22.0, commons-io 2.20.0 -> 2.22.0, commons-text 1.14.0 -> 1.15.0, commons-lang3 3.18.0 -> 3.20.0, commons-pool2 2.12.1 -> 2.13.1, commons-net 3.12.0 -> 3.13.0
+	- ant: 1.10.15 -> 1.10.17, jaxen: 2.0.0 -> 2.0.6, zxing javase: 3.5.3 -> 3.5.4
+	- jakarta-api (xml.ws): 4.0.2 -> 4.0.3, jakarta-saaj-impl: 3.0.4 -> 3.0.6
+	- json-path: 2.9.0 -> 2.10.0, networknt json-schema-validator: 1.5.6 -> 1.5.9
+	- owasp dependency-check plugin: 12.2.0 -> 12.2.2
+	Scartati: angus-mail 2.1.0-M1, jakarta.mail/activation/servlet -M*, groovy 2.6.0-alpha-4, slf4j 2.1.0-alpha1, jaxb 3.1.0-M1, rhino 1.9.1 (major jump).
+
+	* [Build] Cache OWASP Dependency-Check versionata in base al plugin (allineamento con govpay-bom).
+	Aggiunto in .github/workflows/maven.yml e .github/workflows/refresh-owasp-db.yml lo step di lettura dinamica di owasp.plugin.version dal pom (mvn help:evaluate). La chiave di cache passa da:
+	  ${{ runner.os }}-owasp-${{ github.sha }}    (invalidata ad ogni commit)
+	a:
+	  ${{ runner.os }}-owasp-v<plugin-version>-<date>
+	Beneficio: la cache vive un'intera giornata e viene invalidata automaticamente al bump del plugin (lo schema del DB cambia tra release), evitando schema-mismatch del DB embedded.
+	In maven.yml aggiunto NOUPDATE_FLAG=-DautoUpdate=false quando la cache giornaliera e' calda, per evitare un nuovo download del DB NVD.
+	In refresh-owasp-db.yml allineato lo scarico della CLI dependency-check alla versione del plugin (era hardcoded 12.1.0) e aggiornato il repo di download da jeremylong/DependencyCheck a dependency-check/DependencyCheck.
+
 2026-05-21  Giuliano Pintori <pintori@link.it>
 
 	* Avanzamento versione a 3.9.2.p1.

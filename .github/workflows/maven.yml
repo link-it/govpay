@@ -61,20 +61,36 @@ jobs:
       env:
         OSS_INDEX_PASSWORD: ${{ secrets.OSS_INDEX_PASSWORD }}
 
+    - name: Read OWASP plugin version from pom.xml
+      id: owasp
+      run: |
+        VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=owasp.plugin.version)"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "OWASP Dependency-Check version: $VERSION"
+
+    - name: Get date for cache key
+      id: date
+      run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
     - name: Cache OWASP Dependency-Check DB
+      id: owasp-cache
       uses: actions/cache@v5
       with:
         path: .dependency-check/data
-        key: ${{ runner.os }}-owasp-${{ github.sha }}
+        # Chiave: versione plugin (bump -> cache invalidata per schema diverso)
+        # + data (allineamento con il refresh giornaliero del DB NVD).
+        key: ${{ runner.os }}-owasp-v${{ steps.owasp.outputs.version }}-${{ steps.date.outputs.date }}
         restore-keys: |
-          ${{ runner.os }}-owasp-
+          ${{ runner.os }}-owasp-v${{ steps.owasp.outputs.version }}-
 
     - name: Build with Maven
-      run: mvn clean install -Denv=installer_template -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD -DdataDirectory=.dependency-check/data -Dowasp.format=ALL -Dowasp.output.dir=./dependency-check-report
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         OSS_INDEX_USER: ${{ vars.OSS_INDEX_USER }}
         OSS_INDEX_PASSWORD: ${{ secrets.OSS_INDEX_PASSWORD }}
+        # Se la cache è esatta (stessa giornata) skippa l'update NVD
+        NOUPDATE_FLAG: ${{ steps.owasp-cache.outputs.cache-hit == 'true' && '-DautoUpdate=false' || '' }}
+      run: mvn clean install -Denv=installer_template -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD -DdataDirectory=.dependency-check/data -Dowasp.format=ALL -Dowasp.output.dir=./dependency-check-report $NOUPDATE_FLAG
 
     - name: License Analysis
       run: |
