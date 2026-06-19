@@ -7,6 +7,11 @@ DROP VIEW v_eventi_vers;
 DROP VIEW v_eventi_vers_pagamenti;
 DROP VIEW v_rpt_versamenti;
 
+-- L'indice idx_rpt_fk_prt era stato creato in 3.1.2 per supportare la FK fk_rpt_id_pagamento_portale
+-- (FK gia' droppata in 3.1.2). Va eliminato esplicitamente prima del DROP COLUMN per evitare
+-- che venga "trascinato" durante l'operazione.
+DROP INDEX IF EXISTS idx_rpt_fk_prt;
+
 ALTER TABLE rpt DROP COLUMN id_pagamento_portale;
 
 DROP TABLE pag_port_versamenti;
