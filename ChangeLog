@@ -75,7 +75,7 @@
 
 2026-05-21  Giuliano Pintori <pintori@link.it>
 
-	* [GovPayCore] 
+	* [GovPayCore]
 	Issue #866 Risolto bug raw_esito azzerato durante la fase IN_STAMPA
 	Quando il task ElaborazioneTracciatiPendenze[Check] riprendeva un tracciato gia' in IN_STAMPA (es. dopo errore in stampa, multi-nodo, sovrapposizione tra Check 5s ed il task principale 30min), la chiamata a updateFineElaborazione azzerava la colonna raw_esito sul DB.
 	Causa: il filtro di findAll in Operazioni.elaborazioneTracciatiPendenze (Operazioni.java:674) non includeva RAW_ESITO, quindi al secondo passaggio tracciato.rawEsito era null in memoria; saltato il blocco IN_CARICAMENTO (perche' stepElaborazione era gia' CARICAMENTO_OK/KO), si arrivava comunque a updateFineElaborazione che riscriveva incondizionatamente RAW_ESITO con null.
@@ -89,7 +89,7 @@
 	Aggiunte dipendenze test spring-jdbc e postgresql al integration-test/pom.xml.
 	Aggiunto blocco govpayDbConfig in karate-config.js, parametrizzabile via -Dgovpay.db.url/username/password/driverClassName.
 
-	* [Build] 
+	* [Build]
 	Fix step Generate Tomcat installer nella pipeline CI
 	In .github/workflows/maven.yml lo step "Generate Tomcat installer" invocava prepareSetup.sh con sh, ma il runner Ubuntu usa dash per /bin/sh: la sintassi array bash usata dallo script (WAR_FILES=("a" "b") con "${WAR_FILES[@]}") faceva fallire la pipeline con "Syntax error: ( unexpected". Invocato esplicitamente con bash per rispettare il shebang dello script.
 

@@ -17,6 +17,13 @@ GO
 DROP VIEW v_rpt_versamenti;
 GO
 
+-- L'indice idx_rpt_fk_prt era stato creato in 3.1.2 per supportare la FK fk_rpt_id_pagamento_portale
+-- (FK gia' droppata in 3.1.2). Va eliminato esplicitamente prima del DROP COLUMN per evitare
+-- che venga "trascinato" durante l'operazione.
+-- Richiede SQL Server 2016+ per la sintassi IF EXISTS sugli indici.
+DROP INDEX IF EXISTS idx_rpt_fk_prt ON rpt;
+GO
+
 ALTER TABLE rpt DROP COLUMN id_pagamento_portale;
 GO
 

@@ -87,7 +87,8 @@ jobs:
       - name: Install OWASP Dependency-Check CLI
         run: |
           VERSION="${{ steps.owasp.outputs.version }}"
-          curl -sSL "https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
+          curl --tlsv1.2 --proto '=https' --proto-redir '=https' -sSfL \
+            "https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
             -o dependency-check.zip
           unzip -q dependency-check.zip
           echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
