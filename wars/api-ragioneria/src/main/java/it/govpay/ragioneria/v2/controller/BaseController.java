@@ -117,13 +117,7 @@ public abstract class BaseController {
 	}
 
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
-		String baseUri = uriInfo.getBaseUri().toString();
-		String requestUri = uriInfo.getRequestUri().toString();
-		int idxOfBaseUri = requestUri.indexOf(baseUri);
-
-		String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-
-		return new URI(servicePathwithParameters);
+		return UriBuilderUtils.extractServicePath(uriInfo);
 	}
 
 	public URI getServicePathWithoutParameters(UriInfo uriInfo) throws URISyntaxException {

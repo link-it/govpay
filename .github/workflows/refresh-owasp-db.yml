@@ -1,18 +1,38 @@
 name: Refresh OWASP Dependency-Check DB
 
-# Aggiorna il DB NVD ogni notte così la pipeline principale
-# trova sempre una cache calda e non scarica mai il DB completo.
 on:
   schedule:
-    - cron: '0 3 * * *'  # ogni notte alle 03:00 UTC
-  workflow_dispatch:      # avvio manuale (utile al primo setup o dopo una cache eviction)
+    - cron: '0 3 * * *'
+  workflow_dispatch:
 
 permissions:
-  actions: write  # necessario per scrivere la cache cross-workflow
+  actions: write
+
+# ────────────────────────────────────────────────────────────
+#  PANNELLO DI TUNING — modifica qui, non dentro gli step
+# ────────────────────────────────────────────────────────────
+env:
+  # Ritentativi per ogni richiesta all'API NVD prima di arrendersi.
+  # Alzato a 30: assorbe i 503/524 intermittenti tipici della ripresa NVD.
+  NVD_MAX_RETRY_COUNT: "30"
+
+  # Pausa (ms) tra una richiesta NVD e la successiva.
+  # Più alto = più gentile con NVD (meno 524), ma job più lento.
+  # Metti "0" per disattivare la pausa e usare il default della CLI.
+  NVD_API_DELAY: "4000"
+
+  # Timeout (secondi) del solo colpo di preflight (curl -m).
+  # Copre anche il caso 524/hang: oltre questo, preflight = fallito.
+  NVD_PREFLIGHT_TIMEOUT: "30"
+# ────────────────────────────────────────────────────────────
 
 jobs:
   refresh-owasp-db:
     runs-on: ubuntu-latest
+
+    # Tetto massimo di durata del job (minuti). Il default di GitHub è 360.
+    timeout-minutes: 360
+
     permissions:
       contents: read
       actions: write
@@ -42,17 +62,32 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .dependency-check/data
-          # La chiave include la versione del plugin: bump del plugin -> cache invalidata
-          # (lo schema del DB cambia tra release maggiori/minori).
           key: ${{ runner.os }}-owasp-v${{ steps.owasp.outputs.version }}-${{ steps.date.outputs.date }}
           restore-keys: |
             ${{ runner.os }}-owasp-v${{ steps.owasp.outputs.version }}-
 
+      - name: Check NVD API availability
+        id: nvd_check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          echo "Verifico disponibilità endpoint NVD (con API key)..."
+          HTTP_CODE="$(curl -s -o /dev/null -w '%{http_code}' -m "${NVD_PREFLIGHT_TIMEOUT}" \
+            -H "apiKey: ${NVD_API_KEY}" \
+            'https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=1' \
+            || echo '000')"
+          echo "NVD ha risposto: HTTP $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "NVD disponibile, procedo con l'update."
+          else
+            echo "::error::NVD non disponibile (HTTP $HTTP_CODE) - update non eseguito, la cache esistente resta valida."
+            exit 1
+          fi
+
       - name: Install OWASP Dependency-Check CLI
         run: |
           VERSION="${{ steps.owasp.outputs.version }}"
-          curl --tlsv1.2 --proto '=https' --proto-redir '=https' -sSfL \
-            "https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
+          curl -sSL "https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip" \
             -o dependency-check.zip
           unzip -q dependency-check.zip
           echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
@@ -61,12 +96,16 @@ jobs:
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
+          echo "Tuning: retry=${NVD_MAX_RETRY_COUNT}, delay=${NVD_API_DELAY}ms"
           dependency-check.sh \
             --updateonly \
             --data .dependency-check/data \
-            --nvdApiKey "$NVD_API_KEY"
+            --nvdApiKey "$NVD_API_KEY" \
+            --nvdMaxRetryCount "$NVD_MAX_RETRY_COUNT" \
+            --nvdApiDelay "$NVD_API_DELAY"
 
       - name: Report cache status
+        if: always()
         run: |
           echo "Cache hit on today's key: ${{ steps.owasp-cache.outputs.cache-hit }}"
           echo "DB size: $(du -sh .dependency-check/data 2>/dev/null || echo 'n/a')"
