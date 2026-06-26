@@ -1,6 +1,9 @@
-2026-06-25  Giuliano Pintori <pintori@link.it>
+2026-06-26  Giuliano Pintori <pintori@link.it>
 
-        * Avanzamento versione 3.9.4-SNAPSHOT.
+        * Avanzamento versione 3.9.3.p1.
+
+        * Issue #872 Fix calcolo URL HATEOAS di paginazione con Tomcat RewriteValve dietro reverse proxy.
+        Il campo prossimiRisultati restituito dalle API REST risultava malformato (es. ".../v1/rpp..." diventava ".../v11/rpp...") nelle installazioni con reverse proxy Apache che inoltra a Tomcat configurato con RewriteValve. Il metodo getServicePath(UriInfo), duplicato in 7 controller (BaseController di api-backoffice/v1, api-ragioneria/v1-v2-v3, api-user/v1, api-pendenze/v1-v2) e in UriBuilderUtils.getServicePathConURIAssoluta, conteneva un substring((idxOfBaseUri + baseUri.length()) - 1) che presupponeva baseUri terminante con "/"; sotto RewriteValve la condizione non e' garantita e in piu' indexOf(baseUri) puo' tornare -1 perche' la requestUri usa il path pubblico mentre la baseUri usa il context-path interno del WAR. La logica e' stata estratta nell'utility unica UriBuilderUtils.extractServicePath(UriInfo) (rimosso il -1, aggiunto fallback su getRawPath()/getRawQuery() per il caso indexOf=-1, normalizzazione "/" iniziale) e tutti gli 8 punti di uso ora delegano alla utility.
 
 2026-06-15  Giuliano Pintori <pintori@link.it>
 
