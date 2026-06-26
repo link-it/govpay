@@ -275,18 +275,47 @@ public class UriBuilderUtils {
 		}
 
 		if(customURI != null) {
-			String baseUri = uriInfo.getBaseUri().toString();
-			String requestUri = uriInfo.getRequestUri().toString();
-			int idxOfBaseUri = requestUri.indexOf(baseUri);
-
-			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-
-			String uriCompleta = customURI.toString() + servicePathwithParameters;
+			URI servicePath = extractServicePath(uriInfo);
+			String uriCompleta = customURI.toString() + servicePath.toString();
 			log.debug("URI completa {}", uriCompleta);
 
 			return new URI(uriCompleta);
 		}
 
 		return uriInfo.getRequestUri();
+	}
+
+	/**
+	 * Estrae il service path (path interno al WAR + query string) dal {@link UriInfo} corrente.
+	 *
+	 * Robusta rispetto al caso di Tomcat con RewriteValve dietro reverse proxy, in cui la
+	 * {@code requestUri} usa il path pubblico mentre la {@code baseUri} usa il context-path
+	 * interno del WAR: in quel caso si ricade sull'estrazione tramite raw path e raw query.
+	 *
+	 * Il risultato e' sempre normalizzato in modo da iniziare con "/".
+	 */
+	public static URI extractServicePath(UriInfo uriInfo) throws URISyntaxException {
+		String baseUri = uriInfo.getBaseUri().toString();
+		String requestUri = uriInfo.getRequestUri().toString();
+		int idxOfBaseUri = requestUri.indexOf(baseUri);
+
+		String servicePathwithParameters;
+		if (idxOfBaseUri >= 0) {
+			servicePathwithParameters = requestUri.substring(idxOfBaseUri + baseUri.length());
+		} else {
+			String basePath = uriInfo.getBaseUri().getRawPath();
+			String reqPath = uriInfo.getRequestUri().getRawPath();
+			int i = reqPath.indexOf(basePath);
+			servicePathwithParameters = (i >= 0) ? reqPath.substring(i + basePath.length()) : reqPath;
+			String rawQuery = uriInfo.getRequestUri().getRawQuery();
+			if (rawQuery != null) {
+				servicePathwithParameters += "?" + rawQuery;
+			}
+		}
+		if (!servicePathwithParameters.startsWith("/")) {
+			servicePathwithParameters = "/" + servicePathwithParameters;
+		}
+
+		return new URI(servicePathwithParameters);
 	}
 }

@@ -55,6 +55,7 @@ import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.LogUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -128,13 +129,7 @@ public abstract class BaseController {
 	}
 
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
-		String baseUri = uriInfo.getBaseUri().toString();
-		String requestUri = uriInfo.getRequestUri().toString();
-		int idxOfBaseUri = requestUri.indexOf(baseUri);
-
-		String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-
-		return new URI(servicePathwithParameters);
+		return UriBuilderUtils.extractServicePath(uriInfo);
 	}
 
 	public URI getServicePathWithoutParameters(UriInfo uriInfo) throws URISyntaxException {

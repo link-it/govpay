@@ -1,3 +1,10 @@
+2026-06-26  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p1.
+
+        * Issue #872 Fix calcolo URL HATEOAS di paginazione con Tomcat RewriteValve dietro reverse proxy.
+        Il campo prossimiRisultati restituito dalle API REST risultava malformato (es. ".../v1/rpp..." diventava ".../v11/rpp...") nelle installazioni con reverse proxy Apache che inoltra a Tomcat configurato con RewriteValve. Il metodo getServicePath(UriInfo), duplicato in 7 controller (BaseController di api-backoffice/v1, api-ragioneria/v1-v2-v3, api-user/v1, api-pendenze/v1-v2) e in UriBuilderUtils.getServicePathConURIAssoluta, conteneva un substring((idxOfBaseUri + baseUri.length()) - 1) che presupponeva baseUri terminante con "/"; sotto RewriteValve la condizione non e' garantita e in piu' indexOf(baseUri) puo' tornare -1 perche' la requestUri usa il path pubblico mentre la baseUri usa il context-path interno del WAR. La logica e' stata estratta nell'utility unica UriBuilderUtils.extractServicePath(UriInfo) (rimosso il -1, aggiunto fallback su getRawPath()/getRawQuery() per il caso indexOf=-1, normalizzazione "/" iniziale) e tutti gli 8 punti di uso ora delegano alla utility.
+
 2026-06-15  Giuliano Pintori <pintori@link.it>
 
 	* Rilascio versione 3.9.3.
@@ -68,7 +75,7 @@
 
 2026-05-21  Giuliano Pintori <pintori@link.it>
 
-	* [GovPayCore] 
+	* [GovPayCore]
 	Issue #866 Risolto bug raw_esito azzerato durante la fase IN_STAMPA
 	Quando il task ElaborazioneTracciatiPendenze[Check] riprendeva un tracciato gia' in IN_STAMPA (es. dopo errore in stampa, multi-nodo, sovrapposizione tra Check 5s ed il task principale 30min), la chiamata a updateFineElaborazione azzerava la colonna raw_esito sul DB.
 	Causa: il filtro di findAll in Operazioni.elaborazioneTracciatiPendenze (Operazioni.java:674) non includeva RAW_ESITO, quindi al secondo passaggio tracciato.rawEsito era null in memoria; saltato il blocco IN_CARICAMENTO (perche' stepElaborazione era gia' CARICAMENTO_OK/KO), si arrivava comunque a updateFineElaborazione che riscriveva incondizionatamente RAW_ESITO con null.
@@ -82,7 +89,7 @@
 	Aggiunte dipendenze test spring-jdbc e postgresql al integration-test/pom.xml.
 	Aggiunto blocco govpayDbConfig in karate-config.js, parametrizzabile via -Dgovpay.db.url/username/password/driverClassName.
 
-	* [Build] 
+	* [Build]
 	Fix step Generate Tomcat installer nella pipeline CI
 	In .github/workflows/maven.yml lo step "Generate Tomcat installer" invocava prepareSetup.sh con sh, ma il runner Ubuntu usa dash per /bin/sh: la sintassi array bash usata dallo script (WAR_FILES=("a" "b") con "${WAR_FILES[@]}") faceva fallire la pipeline con "Syntax error: ( unexpected". Invocato esplicitamente con bash per rispettare il shebang dello script.
 

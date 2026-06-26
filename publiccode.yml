@@ -192,10 +192,10 @@ maintenance:
 name: GovPay
 platforms:
   - web
-releaseDate: '2026-06-19'
+releaseDate: '2026-06-30'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: 3.9.3
+softwareVersion: 3.9.3.p1
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche
