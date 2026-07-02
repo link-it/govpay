@@ -140,3 +140,31 @@ CREATE VIEW v_eventi_vers AS
         UNION SELECT * FROM v_eventi_vers_rendicontazioni
         UNION SELECT * FROM v_eventi_vers_riconciliazioni
 	UNION SELECT * FROM v_eventi_vers_tracciati;
+
+-- 3.9.3.p2
+
+-- 02/07/2026 Allineamento della proprieta' ABILITATO dei connettori di integrazione
+-- delle applicazioni al valore di utenze.abilitato dell'applicazione associata.
+-- Fix per: connettore d'integrazione dell'Applicazione persistito sempre con valore 'false'.
+
+UPDATE connettori
+   SET valore = 'true'
+ WHERE cod_proprieta = 'ABILITATO'
+   AND cod_connettore IN (
+     SELECT a.cod_connettore_integrazione
+       FROM applicazioni a
+       JOIN utenze u ON u.id = a.id_utenza
+      WHERE u.abilitato = TRUE
+        AND a.cod_connettore_integrazione IS NOT NULL
+   );
+
+UPDATE connettori
+   SET valore = 'false'
+ WHERE cod_proprieta = 'ABILITATO'
+   AND cod_connettore IN (
+     SELECT a.cod_connettore_integrazione
+       FROM applicazioni a
+       JOIN utenze u ON u.id = a.id_utenza
+      WHERE u.abilitato = FALSE
+        AND a.cod_connettore_integrazione IS NOT NULL
+   );
