@@ -1,3 +1,11 @@
+2026-07-02  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p2.
+
+        * Issue #874 Fix persistenza del flag "abilitato" del connettore d'integrazione dell'Applicazione.
+        Il connettore d'integrazione delle Applicazioni (identificato in DB come <CODAPP>_INTEGRAZIONE) veniva sempre persistito con la proprieta' EAV ABILITATO='false' indipendentemente dallo stato dell'applicazione. Causa: ConnettoriConverter.getConnettore(Connector), a differenza dei siblings ConnettorePagopa*Converter che cablano setAbilitato(true), non impostava mai il flag; poiche' Connettore.abilitato ha default Java false, l'UPDATE su connettori scriveva sempre 'false'. Il bug e' silenzioso a runtime (nessun consumatore controlla isAbilitato() sul connettore integrazione, solo la presenza), ma potenziale trap per futuri check e fonte di confusione nelle query di verifica. Fix: in wars/api-backoffice ApplicazioniConverter.getPutApplicazioneDTO, il connettoreIntegrazione neocreato ora eredita setAbilitato(applicazionePost.getAbilitato()) - stesso valore usato per utenza.setAbilitato() alla riga 62 - allineando il connettore allo stato dell'applicazione.
+        Backfill installazioni esistenti: appesa in coda ai file db/sql/<dialetto>/patch/3.9.2.sql (postgresql, oracle, mysql, sqlserver, hsql) una UPDATE che ricalcola la proprieta' ABILITATO del connettore integrazione a partire da utenze.abilitato dell'applicazione associata. Idempotente; non tocca connettori diversi da quelli d'integrazione (JOIN via applicazioni.cod_connettore_integrazione).
+
 2026-06-26  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p1.
