@@ -160,3 +160,34 @@ CREATE VIEW v_eventi_vers AS (
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          );
+
+-- 3.9.3.p2
+
+-- 02/07/2026 Allineamento della proprieta' ABILITATO dei connettori di integrazione
+-- delle applicazioni al valore di utenze.abilitato dell'applicazione associata.
+-- Fix per: connettore d'integrazione dell'Applicazione persistito sempre con valore 'false'.
+-- Nota: su Oracle utenze.abilitato e' NUMBER (1 = abilitato, 0 = disabilitato).
+
+UPDATE connettori c
+   SET c.valore = 'true'
+ WHERE c.cod_proprieta = 'ABILITATO'
+   AND EXISTS (
+     SELECT 1
+       FROM applicazioni a
+       JOIN utenze u ON u.id = a.id_utenza
+      WHERE a.cod_connettore_integrazione = c.cod_connettore
+        AND u.abilitato = 1
+   );
+
+UPDATE connettori c
+   SET c.valore = 'false'
+ WHERE c.cod_proprieta = 'ABILITATO'
+   AND EXISTS (
+     SELECT 1
+       FROM applicazioni a
+       JOIN utenze u ON u.id = a.id_utenza
+      WHERE a.cod_connettore_integrazione = c.cod_connettore
+        AND u.abilitato = 0
+   );
+
+COMMIT;

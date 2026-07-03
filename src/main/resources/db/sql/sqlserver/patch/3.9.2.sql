@@ -159,3 +159,28 @@ CREATE VIEW v_eventi_vers AS (
 	UNION SELECT * FROM v_eventi_vers_tracciati
 );
 GO
+
+-- 3.9.3.p2
+
+-- 02/07/2026 Allineamento della proprieta' ABILITATO dei connettori di integrazione
+-- delle applicazioni al valore di utenze.abilitato dell'applicazione associata.
+-- Fix per: connettore d'integrazione dell'Applicazione persistito sempre con valore 'false'.
+-- Nota: su SQL Server utenze.abilitato e' BIT (1 = abilitato, 0 = disabilitato).
+
+UPDATE c
+   SET c.valore = 'true'
+  FROM connettori c
+  JOIN applicazioni a ON a.cod_connettore_integrazione = c.cod_connettore
+  JOIN utenze u ON u.id = a.id_utenza
+ WHERE c.cod_proprieta = 'ABILITATO'
+   AND u.abilitato = 1;
+GO
+
+UPDATE c
+   SET c.valore = 'false'
+  FROM connettori c
+  JOIN applicazioni a ON a.cod_connettore_integrazione = c.cod_connettore
+  JOIN utenze u ON u.id = a.id_utenza
+ WHERE c.cod_proprieta = 'ABILITATO'
+   AND u.abilitato = 0;
+GO

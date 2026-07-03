@@ -47,6 +47,7 @@ import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Connettore;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
@@ -183,8 +184,13 @@ public class ApplicazioniConverter {
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 
-		if(applicazionePost.getServizioIntegrazione() != null)
-			applicazione.setConnettoreIntegrazione(ConnettoriConverter.getConnettore(applicazionePost.getServizioIntegrazione()));
+		if(applicazionePost.getServizioIntegrazione() != null) {
+			Connettore connettoreIntegrazione = ConnettoriConverter.getConnettore(applicazionePost.getServizioIntegrazione());
+			// L'abilitazione del connettore d'integrazione segue quella dell'applicazione:
+			// applicazione abilitata -> connettore abilitato; applicazione disabilitata -> connettore disabilitato.
+			connettoreIntegrazione.setAbilitato(applicazionePost.getAbilitato());
+			applicazione.setConnettoreIntegrazione(connettoreIntegrazione);
+		}
 
 		applicazioneDTO.setApplicazione(applicazione);
 		applicazioneDTO.setIdApplicazione(idA2A);
