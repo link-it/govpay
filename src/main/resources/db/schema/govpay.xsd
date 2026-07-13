@@ -120,6 +120,12 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="String45">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:simpleType name="String36">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="36"/>
@@ -666,7 +672,6 @@
 			<xsd:element name="codConnettoreGPD" type="String35" minOccurs="0"/>
 			<xsd:element name="codConnettoreFR" type="String35" minOccurs="0"/>
 			<xsd:element name="codConnettoreBackofficeEC" type="String35" minOccurs="0"/>
-			<xsd:element name="codConnettoreFtp" type="String35" minOccurs="0"/>
 			<xsd:element name="denominazione" type="xsd:string"/>
 			<xsd:element name="principal" type="String4000"/>
 			<xsd:element name="principalOriginale" type="String4000"/>
@@ -912,6 +917,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ipRichiedente" type="String45" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

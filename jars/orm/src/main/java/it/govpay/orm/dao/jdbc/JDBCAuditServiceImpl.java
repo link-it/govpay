@@ -91,6 +91,7 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getAuditFieldConverter().toColumn(Audit.model().ID_OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getAuditFieldConverter().toColumn(Audit.model().TIPO_OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getAuditFieldConverter().toColumn(Audit.model().OGGETTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getAuditFieldConverter().toColumn(Audit.model().IP_RICHIEDENTE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 
 		// Insert audit
@@ -100,6 +101,7 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(audit.getIdOggetto(),Audit.model().ID_OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(audit.getTipoOggetto(),Audit.model().TIPO_OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(audit.getOggetto(),Audit.model().OGGETTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(audit.getIpRichiedente(),Audit.model().IP_RICHIEDENTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
 		);
 		audit.setId(id);
@@ -170,6 +172,8 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 		lstObjects_audit.add(new JDBCObject(audit.getTipoOggetto(), Audit.model().TIPO_OGGETTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getAuditFieldConverter().toColumn(Audit.model().OGGETTO,false), "?");
 		lstObjects_audit.add(new JDBCObject(audit.getOggetto(), Audit.model().OGGETTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getAuditFieldConverter().toColumn(Audit.model().IP_RICHIEDENTE,false), "?");
+		lstObjects_audit.add(new JDBCObject(audit.getIpRichiedente(), Audit.model().IP_RICHIEDENTE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
 		}

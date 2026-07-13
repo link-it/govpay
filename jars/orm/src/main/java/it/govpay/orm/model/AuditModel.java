@@ -48,9 +48,10 @@ public class AuditModel extends AbstractModel<Audit> {
 		this.ID_OGGETTO = new Field("idOggetto",long.class,"Audit",Audit.class);
 		this.TIPO_OGGETTO = new Field("tipoOggetto",java.lang.String.class,"Audit",Audit.class);
 		this.OGGETTO = new Field("oggetto",java.lang.String.class,"Audit",Audit.class);
-	
+		this.IP_RICHIEDENTE = new Field("ipRichiedente",java.lang.String.class,"Audit",Audit.class);
+
 	}
-	
+
 	public AuditModel(IField father){
 	
 		super(father);
@@ -60,7 +61,8 @@ public class AuditModel extends AbstractModel<Audit> {
 		this.ID_OGGETTO = new ComplexField(father,"idOggetto",long.class,"Audit",Audit.class);
 		this.TIPO_OGGETTO = new ComplexField(father,"tipoOggetto",java.lang.String.class,"Audit",Audit.class);
 		this.OGGETTO = new ComplexField(father,"oggetto",java.lang.String.class,"Audit",Audit.class);
-	
+		this.IP_RICHIEDENTE = new ComplexField(father,"ipRichiedente",java.lang.String.class,"Audit",Audit.class);
+
 	}
 	
 	
@@ -72,9 +74,12 @@ public class AuditModel extends AbstractModel<Audit> {
 	public IField ID_OGGETTO = null;
 	 
 	public IField TIPO_OGGETTO = null;
-	 
+
 	public IField OGGETTO = null;
-	 
+
+	public IField IP_RICHIEDENTE = null;
+
+
 
 	@Override
 	public Class<Audit> getModeledClass(){

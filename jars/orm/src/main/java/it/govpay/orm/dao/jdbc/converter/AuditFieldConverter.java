@@ -104,6 +104,13 @@ public class AuditFieldConverter extends AbstractSQLFieldConverter {
 				return "oggetto";
 			}
 		}
+		if(field.equals(Audit.model().IP_RICHIEDENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ip_richiedente";
+			}else{
+				return "ip_richiedente";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -130,6 +137,9 @@ public class AuditFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Audit.model(), returnAlias);
 		}
 		if(field.equals(Audit.model().OGGETTO)){
+			return this.toTable(Audit.model(), returnAlias);
+		}
+		if(field.equals(Audit.model().IP_RICHIEDENTE)){
 			return this.toTable(Audit.model(), returnAlias);
 		}
 

@@ -64,9 +64,11 @@ public class AuditFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_oggetto", Audit.model().TIPO_OGGETTO.getFieldType()));
 				setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "oggetto", Audit.model().OGGETTO.getFieldType()));
+				setParameter(object, "setIpRichiedente", Audit.model().IP_RICHIEDENTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ip_richiedente", Audit.model().IP_RICHIEDENTE.getFieldType()));
 				return object;
 			}
-			
+
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
 			}	
@@ -94,6 +96,8 @@ public class AuditFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoOggetto"));
 				setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"oggetto"));
+				setParameter(object, "setIpRichiedente", Audit.model().IP_RICHIEDENTE.getFieldType(),
+					this.getObjectFromMap(map,"ipRichiedente"));
 				return object;
 			}
 			

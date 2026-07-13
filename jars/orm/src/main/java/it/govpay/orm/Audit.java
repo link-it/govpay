@@ -41,6 +41,7 @@ import java.io.Serializable;
  * 			&lt;element name="idOggetto" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="tipoOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="oggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="ipRichiedente" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -59,7 +60,8 @@ import java.io.Serializable;
   	"idOperatore",
   	"idOggetto",
   	"tipoOggetto",
-  	"oggetto"
+  	"oggetto",
+  	"ipRichiedente"
   }
 )
 
@@ -110,6 +112,14 @@ public class Audit extends org.openspcoop2.utils.beans.BaseBeanWithId implements
     this.oggetto = oggetto;
   }
 
+  public java.lang.String getIpRichiedente() {
+    return this.ipRichiedente;
+  }
+
+  public void setIpRichiedente(java.lang.String ipRichiedente) {
+    this.ipRichiedente = ipRichiedente;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.AuditModel modelStaticInstance = null;
@@ -145,5 +155,9 @@ public class Audit extends org.openspcoop2.utils.beans.BaseBeanWithId implements
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="oggetto",required=true,nillable=false)
   protected java.lang.String oggetto;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ipRichiedente",required=false,nillable=false)
+  protected java.lang.String ipRichiedente;
 
 }

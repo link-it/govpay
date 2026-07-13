@@ -42,7 +42,6 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreACA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreGPD" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreFR" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -68,7 +67,6 @@ import java.io.Serializable;
   	"codConnettoreGPD",
   	"codConnettoreFR",
   	"codConnettoreBackofficeEC",
-  	"codConnettoreFtp",
   	"denominazione",
   	"principal",
   	"principalOriginale",
@@ -137,14 +135,6 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
 
   public void setCodConnettoreBackofficeEC(java.lang.String codConnettoreBackofficeEC) {
     this.codConnettoreBackofficeEC = codConnettoreBackofficeEC;
-  }
-
-  public java.lang.String getCodConnettoreFtp() {
-    return this.codConnettoreFtp;
-  }
-
-  public void setCodConnettoreFtp(java.lang.String codConnettoreFtp) {
-    this.codConnettoreFtp = codConnettoreFtp;
   }
 
   public java.lang.String getDenominazione() {
@@ -226,10 +216,6 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBeanWithId im
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreBackofficeEC",required=false,nillable=false)
   protected java.lang.String codConnettoreBackofficeEC;
-
-  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codConnettoreFtp",required=false,nillable=false)
-  protected java.lang.String codConnettoreFtp;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="denominazione",required=true,nillable=false)

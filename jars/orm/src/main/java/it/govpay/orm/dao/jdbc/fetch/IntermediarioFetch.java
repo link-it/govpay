@@ -70,8 +70,6 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_fr", Intermediario.model().COD_CONNETTORE_FR.getFieldType()));
 				setParameter(object, "setCodConnettoreBackofficeEC", Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_backoffice_ec", Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType()));
-				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_connettore_ftp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "denominazione", Intermediario.model().DENOMINAZIONE.getFieldType()));
 				setParameter(object, "setPrincipal", Intermediario.model().PRINCIPAL.getFieldType(),
@@ -116,8 +114,6 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettoreFR"));
 				setParameter(object, "setCodConnettoreBackofficeEC", Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreBackofficeEC"));
-				setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
-					this.getObjectFromMap(map,"codConnettoreFtp"));
 				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"denominazione"));
 				setParameter(object, "setPrincipal", Intermediario.model().PRINCIPAL.getFieldType(),

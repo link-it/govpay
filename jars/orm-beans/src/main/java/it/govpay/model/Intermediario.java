@@ -37,7 +37,6 @@ public class Intermediario extends BasicModel{
     private Connettore connettorePddGPD;
     private Connettore connettorePddFR;
     private Connettore connettorePddBackofficeEC;
-    private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
 
     private String principal;
@@ -97,7 +96,6 @@ public class Intermediario extends BasicModel{
 				equals(this.connettorePddGPD, intermediario.getConnettorePddGPD()) &&
 				equals(this.connettorePddFR, intermediario.getConnettorePddFR()) &&
 				equals(this.connettorePddBackofficeEC, intermediario.getConnettorePddBackofficeEC()) &&
-				equals(this.connettoreSftp, intermediario.getConnettoreSftp()) &&
 				equals(this.principal, intermediario.getPrincipal()) &&
 				equals(this.principalOriginale, intermediario.getPrincipalOriginale()) &&
 				this.abilitato == intermediario.isAbilitato();
@@ -106,14 +104,6 @@ public class Intermediario extends BasicModel{
 	@Override
 	public int hashCode() {
 		return super.hashCode();
-	}
-
-	public ConnettoreSftp getConnettoreSftp() {
-		return this.connettoreSftp;
-	}
-
-	public void setConnettoreSftp(ConnettoreSftp connettoreSftp) {
-		this.connettoreSftp = connettoreSftp;
 	}
 
 	public String getPrincipal() {

@@ -118,13 +118,6 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_backoffice_ec";
 			}
 		}
-		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_connettore_ftp";
-			}else{
-				return "cod_connettore_ftp";
-			}
-		}
 		if(field.equals(Intermediario.model().DENOMINAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".denominazione";
@@ -185,9 +178,6 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().COD_CONNETTORE_BACKOFFICE_EC)){
-			return this.toTable(Intermediario.model(), returnAlias);
-		}
-		if(field.equals(Intermediario.model().COD_CONNETTORE_FTP)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().DENOMINAZIONE)){

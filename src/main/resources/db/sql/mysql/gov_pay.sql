@@ -28,7 +28,6 @@ CREATE TABLE intermediari
 	cod_connettore_gpd VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio gpd pagopa',
 	cod_connettore_fr VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio acquisizione-fr pagopa',
 	cod_connettore_backoffice_ec VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso il servizio backoffice-ec pagopa',
-	cod_connettore_ftp VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore ftp verso pagopa',
 	denominazione VARCHAR(255) NOT NULL COMMENT 'Nome dell\'intermediario',
 	principal VARCHAR(756) NOT NULL COMMENT 'Principal in forma canonica con cui si autentica l\'intermediario a govpay',
 	principal_originale VARCHAR(756) NOT NULL COMMENT 'Principal con cui si autentica l\'intermediario a govpay',
@@ -1129,6 +1128,7 @@ CREATE TABLE gp_audit
 	id_oggetto BIGINT NOT NULL COMMENT 'Identificativo dell\'elemento modificato',
 	tipo_oggetto VARCHAR(255) NOT NULL COMMENT 'Tipo dell\'elemento modificato',
 	oggetto LONGTEXT NOT NULL COMMENT 'Serializzazione dell\'elemento modificato',
+	ip_richiedente VARCHAR(45) COMMENT 'Indirizzo IP del richiedente della modifica',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_operatore BIGINT NOT NULL COMMENT 'Riferimento all\utente che ha richiesto la modifica',

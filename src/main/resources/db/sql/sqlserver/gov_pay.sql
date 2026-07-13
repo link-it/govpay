@@ -27,7 +27,6 @@ CREATE TABLE intermediari
 	cod_connettore_gpd VARCHAR(35),
 	cod_connettore_fr VARCHAR(35),
 	cod_connettore_backoffice_ec VARCHAR(35),
-	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	principal VARCHAR(4000) NOT NULL,
 	principal_originale VARCHAR(4000) NOT NULL,
@@ -1141,6 +1140,7 @@ CREATE TABLE gp_audit
 	id_oggetto BIGINT NOT NULL,
 	tipo_oggetto VARCHAR(255) NOT NULL,
 	oggetto VARCHAR(max) NOT NULL,
+	ip_richiedente VARCHAR(45),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_operatore BIGINT NOT NULL,

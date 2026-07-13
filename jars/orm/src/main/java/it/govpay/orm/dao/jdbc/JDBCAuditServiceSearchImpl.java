@@ -113,6 +113,7 @@ public class JDBCAuditServiceSearchImpl implements IJDBCServiceSearchWithoutId<A
     		fields.add(Audit.model().ID_OGGETTO);
     		fields.add(Audit.model().TIPO_OGGETTO);
     		fields.add(Audit.model().OGGETTO);
+    		fields.add(Audit.model().IP_RICHIEDENTE);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

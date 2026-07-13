@@ -39,10 +39,8 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
-import it.govpay.bd.model.converter.ConnettoreSftpConverter;
 import it.govpay.bd.model.converter.IntermediarioConverter;
 import it.govpay.model.Connettore;
-import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdIntermediario;
@@ -182,14 +180,6 @@ public class IntermediariBD extends BasicBD {
 			Connettore connettorePddBackofficeEC = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePddBackofficeEC(connettorePddBackofficeEC);
 		}
-		if(intermediarioVO.getCodConnettoreFtp() != null) {
-			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
-			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFtp());
-
-			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
-			ConnettoreSftp connettoreSftp = ConnettoreSftpConverter.toDTO(connettori);
-			intermediario.setConnettoreSftp(connettoreSftp);
-		}
 		return intermediario;
 
 	}
@@ -263,12 +253,6 @@ public class IntermediariBD extends BasicBD {
 				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddBackofficeEC().getIdConnettore());
 			}
 
-			if(intermediario.getConnettoreSftp() != null) {
-
-				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
-				this.insertConnettore(voConnettoreLst, intermediario.getConnettoreSftp().getIdConnettore());
-			}
-
 			this.emitAudit(intermediario);
 		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
@@ -330,12 +314,6 @@ public class IntermediariBD extends BasicBD {
 
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePddBackofficeEC());
 				this.insertConnettore(voConnettoreLst, intermediario.getConnettorePddBackofficeEC().getIdConnettore());
-			}
-
-			if(intermediario.getConnettoreSftp() != null) {
-
-				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
-				this.insertConnettore(voConnettoreLst, intermediario.getConnettoreSftp().getIdConnettore());
 			}
 
 			this.emitAudit(intermediario);

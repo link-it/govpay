@@ -30,7 +30,6 @@ import it.govpay.core.exceptions.IOException;
 "denominazione",
 "principalPagoPa",
 "servizioPagoPa",
-"servizioFtp",
 "servizioPagoPaRecuperoRT",
 "servizioPagoPaACA",
 "servizioPagoPaGPD",
@@ -50,9 +49,6 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("servizioPagoPa")
   private ConnettorePagopa servizioPagoPa = null;
-
-  @JsonProperty("servizioFtp")
-  private ServizioFtp servizioFtp = null;
 
   @JsonProperty("servizioPagoPaRecuperoRT")
   private ConnettorePagopaRecuperoRT servizioPagoPaRecuperoRT = null;
@@ -123,21 +119,6 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
   }
   public void setServizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
-  }
-
-  /**
-   **/
-  public Intermediario servizioFtp(ServizioFtp servizioFtp) {
-    this.servizioFtp = servizioFtp;
-    return this;
-  }
-
-  @JsonProperty("servizioFtp")
-  public ServizioFtp getServizioFtp() {
-    return this.servizioFtp;
-  }
-  public void setServizioFtp(ServizioFtp servizioFtp) {
-    this.servizioFtp = servizioFtp;
   }
 
   /**
@@ -274,7 +255,6 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
     return Objects.equals(this.denominazione, intermediario.denominazione) &&
         Objects.equals(this.principalPagoPa, intermediario.principalPagoPa) &&
         Objects.equals(this.servizioPagoPa, intermediario.servizioPagoPa) &&
-        Objects.equals(this.servizioFtp, intermediario.servizioFtp) &&
         Objects.equals(servizioPagoPaRecuperoRT, intermediario.servizioPagoPaRecuperoRT) &&
         Objects.equals(servizioPagoPaACA, intermediario.servizioPagoPaACA) &&
         Objects.equals(servizioPagoPaGPD, intermediario.servizioPagoPaGPD) &&
@@ -287,7 +267,7 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, servizioPagoPaRecuperoRT, servizioPagoPaACA, servizioPagoPaGPD, servizioPagoPaFR, servizioPagoPaBackofficeEC, abilitato, idIntermediario, stazioni);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioPagoPaRecuperoRT, servizioPagoPaACA, servizioPagoPaGPD, servizioPagoPaFR, servizioPagoPaBackofficeEC, abilitato, idIntermediario, stazioni);
   }
 
   public static Intermediario parse(String json) throws IOException {
@@ -307,7 +287,6 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
     sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
     sb.append("    principalPagoPa: ").append(this.toIndentedString(this.principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");
-    sb.append("    servizioFtp: ").append(this.toIndentedString(this.servizioFtp)).append("\n");
     sb.append("    servizioPagoPaRecuperoRT: ").append(toIndentedString(servizioPagoPaRecuperoRT)).append("\n");
     sb.append("    servizioPagoPaACA: ").append(toIndentedString(servizioPagoPaACA)).append("\n");
     sb.append("    servizioPagoPaGPD: ").append(toIndentedString(servizioPagoPaGPD)).append("\n");

@@ -65,9 +65,6 @@ public class IntermediarioConverter {
 			dto.getConnettorePdd().setIdConnettore(dto.getCodIntermediario());
 		}
 
-		if(dto.getConnettoreSftp()!=null)
-			vo.setCodConnettoreFtp(dto.getConnettoreSftp().getIdConnettore());
-
 		try {
 			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.SUBJECT));
 		} catch (UtilsException e) {

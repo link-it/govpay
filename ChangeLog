@@ -1,3 +1,14 @@
+2026-07-13  Giuliano Pintori <pintori@link.it>
+
+        * [DB] Rimozione del connettore FTP dall'intermediario e aggiunta di ip_richiedente sull'audit.
+        Modifiche di schema (fonte: src/main/resources/db/schema/govpay.xsd e copia in jars/orm/src/main/java/schemi/govpay.xsd): dal complexType Intermediario eliminato l'element codConnettoreFtp; al complexType Audit aggiunto l'element ipRichiedente di tipo String45 (nuovo simpleType). Aggiornati i file gov_pay.sql di tutti i dialetti supportati (postgresql, oracle, mysql, sqlserver, hsql, mysql/gov_pay_v3_mise_prod.sql) rimuovendo la colonna intermediari.cod_connettore_ftp e aggiungendo gp_audit.ip_richiedente (VARCHAR(45)).
+        Patch di migrazione 3.10.0.sql create per i 5 dialetti principali: DELETE FROM connettori WHERE cod_connettore IN (SELECT cod_connettore_ftp FROM intermediari WHERE cod_connettore_ftp IS NOT NULL); DROP COLUMN intermediari.cod_connettore_ftp (con guard IF EXISTS / blocco PL/SQL su Oracle idempotente per ORA-00904, guard COL_LENGTH su SQL Server); ALTER TABLE gp_audit ADD ip_richiedente VARCHAR(45).
+        Allineamento del codice Java (auto-gen + business + REST):
+        - ORM auto-gen: rimosso codConnettoreFtp/COD_CONNETTORE_FTP da it.govpay.orm.Intermediario, IntermediarioModel, JDBCIntermediarioServiceImpl, JDBCIntermediarioServiceSearchImpl, IntermediarioFieldConverter, IntermediarioFetch; aggiunto ipRichiedente/IP_RICHIEDENTE su Audit, AuditModel, JDBCAuditServiceImpl, JDBCAuditServiceSearchImpl, AuditFieldConverter, AuditFetch.
+        - Business layer: rimosso field connettoreSftp da it.govpay.model.Intermediario (con equals e getter/setter); eliminati it.govpay.model.ConnettoreSftp e it.govpay.bd.model.converter.ConnettoreSftpConverter; rimossa la persistenza del connettore FTP da it.govpay.bd.anagrafica.IntermediariBD e it.govpay.bd.model.converter.IntermediarioConverter (con import morti).
+        - API REST backoffice v1: rimosso il campo servizioFtp dai bean Intermediario e IntermediarioPost (JsonPropertyOrder, field, getter/setter, equals, hashCode, toString, validazione); eliminati i bean ServizioFtp e ConnettoreFtp, il converter it.govpay.backoffice.v1.beans.converter.ConnettoreSftpConverter e le relative chiamate in IntermediariConverter; rimossi lo schema servizioFtp e connettoreFtp da wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml.
+        Breaking change API: le richieste POST /intermediari con campo servizioFtp non sono piu' accettate e le risposte GET non lo restituiscono. La feature "connettore FTP dell'intermediario" e' rimossa a tutti gli effetti (persistenza + contratto).
+
 2026-07-11  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.10.0-SNAPSHOT.

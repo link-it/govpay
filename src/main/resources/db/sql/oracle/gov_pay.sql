@@ -44,7 +44,6 @@ CREATE TABLE intermediari
 	cod_connettore_gpd VARCHAR2(35 CHAR),
 	cod_connettore_fr VARCHAR2(35 CHAR),
 	cod_connettore_backoffice_ec VARCHAR2(35 CHAR),
-	cod_connettore_ftp VARCHAR2(35 CHAR),
 	denominazione VARCHAR2(255 CHAR) NOT NULL,
 	principal VARCHAR2(4000 CHAR) NOT NULL,
 	principal_originale VARCHAR2(4000 CHAR) NOT NULL,
@@ -1588,6 +1587,7 @@ CREATE TABLE gp_audit
 	id_oggetto NUMBER NOT NULL,
 	tipo_oggetto VARCHAR2(255 CHAR) NOT NULL,
 	oggetto CLOB NOT NULL,
+	ip_richiedente VARCHAR2(45 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_operatore NUMBER NOT NULL,

@@ -64,10 +64,6 @@ public class IntermediariConverter {
 		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
 
-		if(intermediarioPost.getServizioFtp()!=null) {
-			intermediario.setConnettoreSftp(ConnettoreSftpConverter.getConnettore(intermediarioPost.getServizioFtp(), idIntermediario));
-		}
-
 		intermediario.setPrincipal(intermediarioPost.getPrincipalPagoPa());
 		intermediario.setPrincipalOriginale(intermediarioPost.getPrincipalPagoPa());
 
@@ -104,10 +100,6 @@ public class IntermediariConverter {
 
 		if(i.getConnettorePddBackofficeEC()!=null) {
 			rsModel.setServizioPagoPaBackofficeEC(ConnettorePagopaBackofficeECConverter.toRsModel(i.getConnettorePddBackofficeEC()));
-		}
-
-		if(i.getConnettoreSftp()!=null) {
-			rsModel.setServizioFtp(ConnettoreSftpConverter.toRsModel(i.getConnettoreSftp()));
 		}
 
 		return rsModel;
