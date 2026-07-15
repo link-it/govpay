@@ -1,5 +1,5 @@
 echo "Colleziono tutte le vulnerabilita' trovate..."
-export JAVA_HOME=/usr/lib/jvm/java-25-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 echo "Branch corrente: $CURRENT_BRANCH"
 CURRENT_COMMIT=$(git rev-parse HEAD)

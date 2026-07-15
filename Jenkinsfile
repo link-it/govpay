@@ -8,7 +8,7 @@ pipeline {
     // Rileva il branch Git corrente
     GIT_BRANCH_NAME = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
     // Rileva la versione del progetto dal pom.xml
-    PROJECT_VERSION = sh(script: 'JAVA_HOME=/usr/lib/jvm/java-25-openjdk /opt/apache-maven-3.6.3/bin/mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
+    PROJECT_VERSION = sh(script: 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
 
     JACOCO_EXEC    = "/tmp/jacoco.exec"
     JACOCO_XML     = "target/jacoco.xml"
@@ -46,7 +46,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh 'JAVA_HOME=/usr/lib/jvm/java-25-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -D"it.govpay.batch.cacheCheck.cron=${CACHE_CHECK_CRON}" -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn install spotbugs:spotbugs -Denv=installer_template -D"it.govpay.batch.cacheCheck.cron=${CACHE_CHECK_CRON}" -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -103,12 +103,12 @@ pipeline {
 	                | sed "s#^#--sourcefiles #" \
 	                | xargs)
 
-          JAVA_HOME=/usr/lib/jvm/java-25-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV}
+          JAVA_HOME=/usr/lib/jvm/java-21-openjdk java -jar $JACOCO_CLI report ${JACOCO_EXEC} \$classArgs \$srcArgs --xml ${JACOCO_XML} --html ${JACOCO_HTML} --csv ${JACOCO_CSV}
            """
 	    sh """
 	    	XML_REPORT=\$(pwd)/${JACOCO_XML}
 
-	    	JAVA_HOME=/usr/lib/jvm/java-25-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
+	    	JAVA_HOME=/usr/lib/jvm/java-21-openjdk /opt/apache-maven-3.6.3/bin/mvn sonar:sonar \\
 	    	-Dsonar.projectKey=link-it_govpay -Dsonar.organization=link-it -Dsonar.token=$SONAR_CLOUD_TOKEN \\
 	    	-Dsonar.java.source=21 -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=\${XML_REPORT} \\
 	    	-Dsonar.nodejs.executable=/opt/nodejs/22.14.0/bin/node \\
