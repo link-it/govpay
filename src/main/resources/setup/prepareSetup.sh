@@ -26,7 +26,6 @@ GOVPAY_BO=../../../../wars/api-backoffice/target/govpay-api-backoffice.war
 GOVPAY_PP=../../../../wars/api-pagopa/target/govpay-api-pagopa.war
 GOVPAY_PEN=../../../../wars/api-pendenze/target/govpay-api-pendenze.war
 GOVPAY_RAG=../../../../wars/api-ragioneria/target/govpay-api-ragioneria.war
-GOVPAY_USR=../../../../wars/api-user/target/govpay-api-user.war
 GOVPAY_CONSOLE=../../../../wars/web-console/target/govpay-console.war
 THIRD_PARTY_LICENSES=../../../../third-party-licenses
 
@@ -114,7 +113,7 @@ if [ "$AS" = "ear" ]; then
 
 elif [ "$AS" = "tomcat" ]; then
     # Se AS è 'tomcat', verifica e copia tutti i war
-    WAR_FILES=("${GOVPAY_BO}" "${GOVPAY_PP}" "${GOVPAY_PEN}" "${GOVPAY_RAG}" "${GOVPAY_USR}" "${GOVPAY_CONSOLE}")
+    WAR_FILES=("${GOVPAY_BO}" "${GOVPAY_PP}" "${GOVPAY_PEN}" "${GOVPAY_RAG}" "${GOVPAY_CONSOLE}")
 
     for WAR_FILE in "${WAR_FILES[@]}"; do
         if [ ! -e "${WAR_FILE}" ]; then

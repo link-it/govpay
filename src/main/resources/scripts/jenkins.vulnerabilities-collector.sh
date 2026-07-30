@@ -32,7 +32,6 @@ sudo su -c "cp wars/api-backoffice/target/site/spotbugs.html ${DIR_VERSIONE_GOVP
 sudo su -c "cp wars/api-pagopa/target/site/spotbugs.html ${DIR_VERSIONE_GOVPAY_VERIFICATA}/static_analysis/spotbugs_report_api-pagopa.html"
 sudo su -c "cp wars/api-pendenze/target/site/spotbugs.html ${DIR_VERSIONE_GOVPAY_VERIFICATA}/static_analysis/spotbugs_report_api-pendenze.html"
 sudo su -c "cp wars/api-ragioneria/target/site/spotbugs.html ${DIR_VERSIONE_GOVPAY_VERIFICATA}/static_analysis/spotbugs_report_api-ragioneria.html"
-sudo su -c "cp wars/api-user/target/site/spotbugs.html ${DIR_VERSIONE_GOVPAY_VERIFICATA}/static_analysis/spotbugs_report_api-user.html"
 sudo su -c "cp wars/web-console/target/site/spotbugs.html ${DIR_VERSIONE_GOVPAY_VERIFICATA}/static_analysis/spotbugs_report_web-console.html"
 
 echo "Copia risultati dependency-check..."

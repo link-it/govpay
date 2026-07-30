@@ -1,3 +1,18 @@
+2026-07-30  Giuliano Pintori <pintori@link.it>
+
+        * Rimozione del WAR api-user.
+        Eliminato l'intero modulo wars/api-user (28 file: pom.xml, web.xml, spring XML, controller Java, YAML OpenAPI, assets swagger, Eclipse settings). Il WAR esponeva le API utente v1 (frontend/api/user su Wildfly, /govpay-api-user su Tomcat) e non e' piu' necessario nel perimetro 3.10.
+        Modifiche di configurazione conseguenti:
+        - pom.xml (root): rimossa property api-user-tomcat-war-name e la dependency it.govpay:api-user in dependencyManagement.
+        - wars/pom.xml: rimosso <module>api-user</module> dal reactor.
+        - ear/pom.xml: rimosse le 4 sezioni relative in maven-ear-plugin (webModule Tomcat e Wildfly) e nelle <dependency> (jar+war).
+        - ear/.settings/org.eclipse.wst.common.component: rimosso il dependent-module Eclipse.
+        - src/main/resources/setup/prepareSetup.sh: eliminata la variabile GOVPAY_USR e la voce corrispondente dell'array WAR_FILES.
+        - src/main/resources/scripts/jenkins.vulnerabilities-collector.sh: rimossa la copia del report spotbugs api-user.
+        - integration-test/src/test/java/karate-config.js: eliminate le 4 variabili (govpay_api_user_context, _url, override wildfly) non piu' utili; rimosso il branch if(param.api == 'user') { ... } in utils/common-utils.feature (nessun feature test la usava).
+        Breaking change deploy: le installazioni upgrade a 3.10 devono rimuovere gli endpoint della vecchia base URL /govpay-api-user (Tomcat) o /govpay/frontend/api/user (Wildfly).
+        Verifica build: mvn compile del reactor default e mvn validate -P govpay-ear entrambi verdi.
+
 2026-07-13  Giuliano Pintori <pintori@link.it>
 
         * [DB] Rimozione del connettore FTP dall'intermediario e aggiunta di ip_richiedente sull'audit.

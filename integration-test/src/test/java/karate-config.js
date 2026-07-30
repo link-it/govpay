@@ -36,13 +36,11 @@ function() {
 			govpay_api_ragioneria_context : '/govpay-api-ragioneria',
 			govpay_api_pagopa_context : '/govpay-api-pagopa',
 			govpay_api_jppapdp_context : '/govpay-api-jppapdp',
-			govpay_api_user_context : '/govpay-api-user',
 			govpay_api_backoffice_url : 'http://localhost:8080/govpay-api-backoffice',
 			govpay_api_pendenze_url : 'http://localhost:8080/govpay-api-pendenze',
 			govpay_api_ragioneria_url : 'http://localhost:8080/govpay-api-ragioneria',
 			govpay_api_pagopa_url : 'http://localhost:8080/govpay-api-pagopa',
 			govpay_api_jppapdp_url : 'http://localhost:8080/govpay-api-jppapdp',
-			govpay_api_user_url : 'http://localhost:8080/govpay-api-user',
 			smtpsym_url: 'http://localhost:8025/api',
 			govpay_operazioni_baseurl: 'http://localhost:8080/govpay-api-backoffice/rs/basic/v1/operazioni',
 			govpayDbConfig: {
@@ -61,13 +59,11 @@ function() {
 		config.govpay_api_ragioneria_context = '/govpay/backend/api/ragioneria';
 		config.govpay_api_pagopa_context = '/govpay/frontend/api/pagopa';
 		config.govpay_api_jppapdp_context = '/govpay/backend/api/jppapdp';
-		config.govpay_api_user_context = '/govpay/frontend/api/user';
 		config.govpay_api_backoffice_url = 'http://localhost:8080/govpay/backend/api/backoffice';
 		config.govpay_api_pendenze_url = 'http://localhost:8080/govpay/backend/api/pendenze';
 		config.govpay_api_ragioneria_url = 'http://localhost:8080/govpay/backend/api/ragioneria';
 		config.govpay_api_pagopa_url = 'http://localhost:8080/govpay/frontend/api/pagopa';
 		config.govpay_api_jppapdp_url = 'http://localhost:8080/govpay/backend/api/jppapdp';
-		config.govpay_api_user_url = 'http://localhost:8080/govpay/frontend/api/user';
 		config.govpay_operazioni_baseurl = 'http://localhost:8080/govpay/backend/api/backoffice/rs/basic/v1/operazioni';
 	}
 

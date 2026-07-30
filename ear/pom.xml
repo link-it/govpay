@@ -33,11 +33,6 @@
                                         <modules>
                                                 <webModule>
                                                         <groupId>it.govpay</groupId>
-                                                        <artifactId>api-user</artifactId>
-                                                        <contextRoot>/${war-base-name}/frontend/api/user</contextRoot>
-                                                </webModule>
-                                                <webModule>
-                                                        <groupId>it.govpay</groupId>
                                                         <artifactId>api-pagopa</artifactId>
                                                         <contextRoot>/${war-base-name}/frontend/api/pagopa</contextRoot>
                                                 </webModule>
@@ -126,18 +121,6 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>api-user</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>api-user</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>it.govpay</groupId>
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
@@ -188,11 +171,6 @@
                                                 <filter>${basedir}/${filter-file}</filter>
                                         </filters>
                                         <modules>
-                                                <webModule>
-                                                        <groupId>it.govpay</groupId>
-                                                        <artifactId>api-user</artifactId>
-                                                        <contextRoot>/${war-base-name}/frontend/api/user</contextRoot>
-                                                </webModule>
                                                 <webModule>
                                                         <groupId>it.govpay</groupId>
                                                         <artifactId>api-pagopa</artifactId>

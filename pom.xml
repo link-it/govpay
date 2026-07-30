@@ -59,7 +59,6 @@
 				<api-pagopa-tomcat-war-name>govpay-api-pagopa</api-pagopa-tomcat-war-name>
 				<api-pendenze-tomcat-war-name>govpay-api-pendenze</api-pendenze-tomcat-war-name>
 				<api-ragioneria-tomcat-war-name>govpay-api-ragioneria</api-ragioneria-tomcat-war-name>
-				<api-user-tomcat-war-name>govpay-api-user</api-user-tomcat-war-name>
 				<web-console-tomcat-war-name>govpay-console</web-console-tomcat-war-name>
 
 				<!-- versioni jar -->
@@ -413,14 +412,6 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>web-console</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>api-user</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
