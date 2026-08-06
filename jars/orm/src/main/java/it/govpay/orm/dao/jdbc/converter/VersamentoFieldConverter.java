@@ -566,6 +566,27 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_ultima_comunicazione_aca";
 			}
 		}
+		if(field.equals(Versamento.model().SEND_ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_abilitato";
+			}else{
+				return "send_abilitato";
+			}
+		}
+		if(field.equals(Versamento.model().SEND_IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_importo_totale";
+			}else{
+				return "send_importo_totale";
+			}
+		}
+		if(field.equals(Versamento.model().SEND_DATA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_data_aggiornamento";
+			}else{
+				return "send_data_aggiornamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -790,6 +811,15 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().SEND_ABILITATO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().SEND_IMPORTO_TOTALE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().SEND_DATA_AGGIORNAMENTO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

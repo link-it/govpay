@@ -189,7 +189,11 @@ public class Versamento extends BasicModel {
 	
 	private Date dataUltimaModificaAca;
 	private Date dataUltimaComunicazioneAca;
-	
+
+	private boolean sendAbilitato;
+	private BigDecimal sendImportoTotale;
+	private Date sendDataAggiornamento;
+
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -794,5 +798,23 @@ public class Versamento extends BasicModel {
 	}
 	public void setDataUltimaComunicazioneAca(Date dataUltimaComunicazioneAca) {
 		this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
+	}
+	public boolean isSendAbilitato() {
+		return sendAbilitato;
+	}
+	public void setSendAbilitato(boolean sendAbilitato) {
+		this.sendAbilitato = sendAbilitato;
+	}
+	public BigDecimal getSendImportoTotale() {
+		return sendImportoTotale;
+	}
+	public void setSendImportoTotale(BigDecimal sendImportoTotale) {
+		this.sendImportoTotale = sendImportoTotale;
+	}
+	public Date getSendDataAggiornamento() {
+		return sendDataAggiornamento;
+	}
+	public void setSendDataAggiornamento(Date sendDataAggiornamento) {
+		this.sendDataAggiornamento = sendDataAggiornamento;
 	}
 }

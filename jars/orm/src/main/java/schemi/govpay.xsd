@@ -506,6 +506,7 @@
 			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreHyperSicAPK" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreMaggioliJPPA" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codConnettoreSend" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 			<xsd:element name="tassonomiaPagoPA" type="String35" minOccurs="0"/>
 			<xsd:element name="scaricaFr" type="xsd:boolean"/>
@@ -1978,6 +1979,10 @@
 			
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
+
+			<xsd:element name="sendAbilitato" type="xsd:boolean"/>
+			<xsd:element name="sendImportoTotale" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="sendDataAggiornamento" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

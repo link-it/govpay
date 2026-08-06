@@ -101,6 +101,9 @@ import java.io.Serializable;
  * 			&lt;element name="proprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataUltimaModificaAca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataUltimaComunicazioneAca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendAbilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendImportoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendDataAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -179,7 +182,10 @@ import java.io.Serializable;
   	"idOperazione",
   	"proprieta",
   	"dataUltimaModificaAca",
-  	"dataUltimaComunicazioneAca"
+  	"dataUltimaComunicazioneAca",
+  	"sendAbilitato",
+  	"sendImportoTotale",
+  	"sendDataAggiornamento"
   }
 )
 
@@ -722,6 +728,34 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
     this.dataUltimaComunicazioneAca = dataUltimaComunicazioneAca;
   }
 
+  public boolean isSendAbilitato() {
+    return this.sendAbilitato;
+  }
+
+  public boolean getSendAbilitato() {
+    return this.sendAbilitato;
+  }
+
+  public void setSendAbilitato(boolean sendAbilitato) {
+    this.sendAbilitato = sendAbilitato;
+  }
+
+  public java.lang.Double getSendImportoTotale() {
+    return this.sendImportoTotale;
+  }
+
+  public void setSendImportoTotale(java.lang.Double sendImportoTotale) {
+    this.sendImportoTotale = sendImportoTotale;
+  }
+
+  public java.util.Date getSendDataAggiornamento() {
+    return this.sendDataAggiornamento;
+  }
+
+  public void setSendDataAggiornamento(java.util.Date sendDataAggiornamento) {
+    this.sendDataAggiornamento = sendDataAggiornamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.VersamentoModel modelStaticInstance = null;
@@ -1000,5 +1034,18 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
   @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataUltimaComunicazioneAca",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataUltimaComunicazioneAca;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="sendAbilitato",required=true,nillable=false)
+  protected boolean sendAbilitato;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="sendImportoTotale",required=false,nillable=false)
+  protected java.lang.Double sendImportoTotale;
+
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="sendDataAggiornamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date sendDataAggiornamento;
 
 }

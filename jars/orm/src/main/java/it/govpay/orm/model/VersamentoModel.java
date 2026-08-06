@@ -108,7 +108,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_MODIFICA_ACA = new Field("dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new Field("dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
-	
+		this.SEND_ABILITATO = new Field("sendAbilitato",boolean.class,"Versamento",Versamento.class);
+		this.SEND_IMPORTO_TOTALE = new Field("sendImportoTotale",java.lang.Double.class,"Versamento",Versamento.class);
+		this.SEND_DATA_AGGIORNAMENTO = new Field("sendDataAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
+
 	}
 	
 	public VersamentoModel(IField father){
@@ -180,7 +183,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_MODIFICA_ACA = new ComplexField(father,"dataUltimaModificaAca",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ULTIMA_COMUNICAZIONE_ACA = new ComplexField(father,"dataUltimaComunicazioneAca",java.util.Date.class,"Versamento",Versamento.class);
-	
+		this.SEND_ABILITATO = new ComplexField(father,"sendAbilitato",boolean.class,"Versamento",Versamento.class);
+		this.SEND_IMPORTO_TOTALE = new ComplexField(father,"sendImportoTotale",java.lang.Double.class,"Versamento",Versamento.class);
+		this.SEND_DATA_AGGIORNAMENTO = new ComplexField(father,"sendDataAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
+
 	}
 	
 	
@@ -314,7 +320,13 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DATA_ULTIMA_MODIFICA_ACA = null;
 	 
 	public IField DATA_ULTIMA_COMUNICAZIONE_ACA = null;
-	 
+
+	public IField SEND_ABILITATO = null;
+
+	public IField SEND_IMPORTO_TOTALE = null;
+
+	public IField SEND_DATA_AGGIORNAMENTO = null;
+
 
 	@Override
 	public Class<Versamento> getModeledClass(){

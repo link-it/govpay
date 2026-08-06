@@ -172,7 +172,12 @@ public class VersamentoConverter {
 		
 		dto.setDataUltimaModificaAca(vo.getDataUltimaModificaAca());
 		dto.setDataUltimaComunicazioneAca(vo.getDataUltimaComunicazioneAca());
-		
+
+		dto.setSendAbilitato(vo.isSendAbilitato());
+		if(vo.getSendImportoTotale() != null)
+			dto.setSendImportoTotale(BigDecimal.valueOf(vo.getSendImportoTotale()));
+		dto.setSendDataAggiornamento(vo.getSendDataAggiornamento());
+
 		return dto;
 	}
 
@@ -306,6 +311,11 @@ public class VersamentoConverter {
 		
 		vo.setDataUltimaModificaAca(dto.getDataUltimaModificaAca());
 		vo.setDataUltimaComunicazioneAca(dto.getDataUltimaComunicazioneAca());
+
+		vo.setSendAbilitato(dto.isSendAbilitato());
+		if(dto.getSendImportoTotale() != null)
+			vo.setSendImportoTotale(dto.getSendImportoTotale().doubleValue());
+		vo.setSendDataAggiornamento(dto.getSendDataAggiornamento());
 
 		return vo;
 	}

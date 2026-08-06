@@ -231,6 +231,9 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().PROPRIETA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_ULTIMA_MODIFICA_ACA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_ABILITATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_IMPORTO_TOTALE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_DATA_AGGIORNAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
@@ -299,6 +302,9 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getProprieta(),Versamento.model().PROPRIETA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataUltimaModificaAca(),Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataUltimaComunicazioneAca(),Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendAbilitato(),Versamento.model().SEND_ABILITATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendImportoTotale(),Versamento.model().SEND_IMPORTO_TOTALE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendDataAggiornamento(),Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
@@ -575,6 +581,12 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		lstObjects_versamento.add(new JDBCObject(versamento.getDataUltimaModificaAca(), Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getDataUltimaComunicazioneAca(), Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_ABILITATO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getSendAbilitato(), Versamento.model().SEND_ABILITATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_IMPORTO_TOTALE,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getSendImportoTotale(), Versamento.model().SEND_IMPORTO_TOTALE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_DATA_AGGIORNAMENTO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getSendDataAggiornamento(), Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
 		}

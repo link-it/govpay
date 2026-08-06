@@ -172,6 +172,12 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_ultima_modifica_aca", Versamento.model().DATA_ULTIMA_MODIFICA_ACA.getFieldType()));
 				setParameter(object, "setDataUltimaComunicazioneAca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ultima_comunicazione_aca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType()));
+				setParameter(object, "setSendAbilitato", Versamento.model().SEND_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_abilitato", Versamento.model().SEND_ABILITATO.getFieldType()));
+				setParameter(object, "setSendImportoTotale", Versamento.model().SEND_IMPORTO_TOTALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_importo_totale", Versamento.model().SEND_IMPORTO_TOTALE.getFieldType()));
+				setParameter(object, "setSendDataAggiornamento", Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_data_aggiornamento", Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType()));
 				return object;
 			}
 			
@@ -310,6 +316,12 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataUltimaModificaAca"));
 				setParameter(object, "setDataUltimaComunicazioneAca", Versamento.model().DATA_ULTIMA_COMUNICAZIONE_ACA.getFieldType(),
 					this.getObjectFromMap(map,"dataUltimaComunicazioneAca"));
+				setParameter(object, "setSendAbilitato", Versamento.model().SEND_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"sendAbilitato"));
+				setParameter(object, "setSendImportoTotale", Versamento.model().SEND_IMPORTO_TOTALE.getFieldType(),
+					this.getObjectFromMap(map,"sendImportoTotale"));
+				setParameter(object, "setSendDataAggiornamento", Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"sendDataAggiornamento"));
 				return object;
 			}
 			
