@@ -19,6 +19,30 @@
  */
 package it.govpay.core.utils.client.beans;
 
-public enum TipoDestinatario {
-	APPLICAZIONE, INTERMEDIARIO, APP_IO, GOVPAY, CHECKOUT_PAGOPA, BATCH_FDR, BATCH_ACA, BATCH_RECUPERO_RT, BATCH_IBAN, BATCH_NOTIFICA, BATCH_MAGGIOLI, SEND;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.beans.JSONSerializable;
+
+/**
+ * Risposta del servizio SEND NotificationPriceV23 (GET /delivery/v2.3/price/{paTaxId}/{noticeCode}).
+ * L'importo e' espresso in eurocent, coerentemente con la chiave di metadata NOTIFICATION_FEE
+ * documentata su https://developer.pagopa.it/pago-pa/guides/metadata/spese-di-notifica-send
+ */
+public class NotificationPriceResponse extends JSONSerializable {
+
+	@JsonProperty("amount")
+	private Long amount;
+
+	public Long getAmount() {
+		return this.amount;
+	}
+
+	public void setAmount(Long amount) {
+		this.amount = amount;
+	}
+
+	@Override
+	public String getJsonIdFilter() {
+		return "notificationPriceResponse";
+	}
 }
