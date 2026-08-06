@@ -24,6 +24,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
+import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdStazione;
@@ -32,9 +33,10 @@ public class DominioConverter {
 
 	private DominioConverter() {}
 	
-	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
-			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, 
-			ConnettoreNotificaPagamenti connettoreHyperSicAPKappa, ConnettoreNotificaPagamenti connettoreMaggioliJPPA) throws ServiceException {
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot,
+			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay,
+			ConnettoreNotificaPagamenti connettoreHyperSicAPKappa, ConnettoreNotificaPagamenti connettoreMaggioliJPPA,
+			Connettore connettoreSend) throws ServiceException {
 		
 		
 		IdStazione idStazione = vo.getIdStazione(); 
@@ -58,6 +60,7 @@ public class DominioConverter {
 		dto.setConnettoreGovPay(connettoreGovPay);
 		dto.setConnettoreHyperSicAPKappa(connettoreHyperSicAPKappa);
 		dto.setConnettoreMaggioliJPPA(connettoreMaggioliJPPA);
+		dto.setConnettoreSend(connettoreSend);
 		dto.setIntermediato(vo.isIntermediato());
 		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
 		dto.setScaricaFr(vo.isScaricaFr());
@@ -113,6 +116,11 @@ public class DominioConverter {
 		// Il connettore MaggioliJPPA è gestito nella tabella jppa_config, non in domini
 		if(dto.getConnettoreMaggioliJPPA()!= null) {
 			dto.getConnettoreMaggioliJPPA().setIdConnettore(DominiBD.getIDConnettoreMaggioliJPPA(dto.getCodDominio()));
+		}
+
+		if(dto.getConnettoreSend()!= null) {
+			dto.getConnettoreSend().setIdConnettore(DominiBD.getIDConnettoreSend(dto.getCodDominio()));
+			vo.setCodConnettoreSend(dto.getConnettoreSend().getIdConnettore());
 		}
 
 		vo.setIntermediato(dto.isIntermediato());

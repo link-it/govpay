@@ -40,8 +40,10 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.bd.model.converter.ConnettoreNotificaPagamentiConverter;
 import it.govpay.bd.model.converter.DominioConverter;
+import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdDominio;
@@ -89,6 +91,10 @@ public class DominiBD extends BasicBD {
 		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.MAGGIOLI_JPPA.toString();
 	}
 
+	public static String getIDConnettoreSend(String codDominio) {
+		return codDominio + Dominio.CONNETTORE_SEND_SUFFIX;
+	}
+
 	/**
 	 * Recupera il Dominio tramite il codDominio
 	 * 
@@ -108,7 +114,8 @@ public class DominiBD extends BasicBD {
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 			return DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
-					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
+					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO),
+					this.getConnettoreSend(dominioVO));
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -211,6 +218,21 @@ public class DominiBD extends BasicBD {
 		}
 	}
 
+	private Connettore getConnettoreSend(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+		try {
+			Connettore connettoreSend = null;
+
+			if(dominioVO.getCodConnettoreSend()!= null) {
+				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
+				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreSend());
+				connettoreSend = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expIntegrazione));
+			}
+			return connettoreSend;
+		} catch (ExpressionNotImplementedException | ExpressionException | NotImplementedException | CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		}
+	}
+
 	/**
 	 * Recupera il Dominio tramite id
 	 * 
@@ -234,7 +256,8 @@ public class DominiBD extends BasicBD {
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 			return DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
-					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
+					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO),
+					this.getConnettoreSend(dominioVO));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -313,7 +336,19 @@ public class DominiBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
+			if(dominio.getConnettoreSend() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreConverter.toVOList(dominio.getConnettoreSend());
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreSend().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+
 			// Elimina eventuale record esistente da jppa_config
 			IExpression expJppaConfigDelete = this.getJppaConfigService().newExpression();
 			expJppaConfigDelete.equals(it.govpay.orm.JppaConfig.model().ID_DOMINIO.COD_DOMINIO, dominio.getCodDominio());
@@ -458,7 +493,23 @@ public class DominiBD extends BasicBD {
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreHyperSicAPKappa(dominio.getCodDominio()));
 				this.getConnettoreService().deleteAll(expDelete);
 			}
-			
+
+			if(dominio.getConnettoreSend() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreConverter.toVOList(dominio.getConnettoreSend());
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreSend().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			} else {
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreSend(dominio.getCodDominio()));
+				this.getConnettoreService().deleteAll(expDelete);
+			}
+
 			// Elimina sempre il vecchio record da jppa_config
 			IExpression expJppaConfigDelete = this.getJppaConfigService().newExpression();
 			expJppaConfigDelete.equals(it.govpay.orm.JppaConfig.model().ID_DOMINIO.COD_DOMINIO, dominio.getCodDominio());
