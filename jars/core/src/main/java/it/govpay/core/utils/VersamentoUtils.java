@@ -1230,7 +1230,19 @@ public class VersamentoUtils {
 		// #728 Lo iuv si deve generare sempre se non viene passato un numero avviso come input.
 		return versamento.getNumeroAvviso() == null;
 	}
-	
+
+	/**
+	 * Restituisce l'importo totale del versamento maggiorato dell'eventuale quota di spese
+	 * di notifica SEND, mantenuta internamente separata in versamenti.send_importo_totale.
+	 */
+	public static BigDecimal getImportoTotaleConSend(Versamento versamento) {
+		BigDecimal importoTotale = versamento.getImportoTotale();
+		if(versamento.getSendImportoTotale() != null) {
+			return importoTotale.add(versamento.getSendImportoTotale());
+		}
+		return importoTotale;
+	}
+
 	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
 		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
 			// sv con tributo definito

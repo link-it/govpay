@@ -19,6 +19,7 @@
  */
 package it.govpay.web.ws;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -667,14 +668,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
 			StAmountOption stAmountOption = StAmountOption.EQ;
 			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
-			ctPaymentOptionDescriptionPA.setAmount(versamento.getImportoTotale());
+			BigDecimal importoTotaleConSend = VersamentoUtils.getImportoTotaleConSend(versamento);
+			ctPaymentOptionDescriptionPA.setAmount(importoTotaleConSend);
 			ctPaymentOptionDescriptionPA.setDetailDescription(versamento.getCausaleVersamento().getSimple());
 			ctPaymentOptionDescriptionPA.setDueDate(DateUtils.toLocalDate(versamento.getDataValidita()));
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
 			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
 
 			response.setPaymentList(paymentList);
-			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
+			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_RICEZIONE_VERIFICA_OK, importoTotaleConSend.toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : MSG_NESSUNA_CAUSALE);
 			appContext.getEventoCtx().setEsito(Esito.OK);
 			log.debug(MSG_LOG_VERIFICA_RPT_COMPLETATA_CON_SUCCESSO);
 		} catch (NdpException e) {

@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -98,6 +99,11 @@ public class CtPaymentPABuilder {
 	public static final String CONTABILITA_QUOTA_CATEGORIA_BILANCIO_KEY = "CATEGORIABILANCIO";
 	public static final String CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY = "TIPOLOGIABILANCIO";
 	public static final String CONTABILITA_QUOTA_ENTRY_KEY = "CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT";
+
+	// Integrazione a SEND: chiave di metadata con cui viene comunicata al Nodo dei Pagamenti
+	// la quota di spese di notifica SEND inclusa nel primo transfer, espressa in eurocent.
+	// Rif. https://developer.pagopa.it/pago-pa/guides/metadata/spese-di-notifica-send
+	public static final String NOTIFICATION_FEE_METADATA_KEY = "NOTIFICATION_FEE";
 
 	public Rpt buildCtPaymentPA (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
 
@@ -188,7 +194,7 @@ public class CtPaymentPABuilder {
 		// pertanto ignoro l'importo comunicato e rispondo sempre con il dovuto.
 		// https://github.com/pagopa/pagopa-api/issues/194
 
-		ctRpt.setPaymentAmount(versamento.getImportoTotale());
+		ctRpt.setPaymentAmount(VersamentoUtils.getImportoTotaleConSend(versamento));
 		ctRpt.setDueDate(DateUtils.toLocalDate(calcolaDueDate(versamento)));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
@@ -251,7 +257,11 @@ public class CtPaymentPABuilder {
 			 */
 
 			transferEl.setIdTransfer(i);
-			transferEl.setTransferAmount(singoloVersamento.getImportoSingoloVersamento());
+			BigDecimal transferAmount = singoloVersamento.getImportoSingoloVersamento();
+			if(i == 1 && versamento.getSendImportoTotale() != null) {
+				transferAmount = transferAmount.add(versamento.getSendImportoTotale());
+			}
+			transferEl.setTransferAmount(transferAmount);
 
 
 			// Imposto IBAN e codice fiscale ente proprietario dell'iban
@@ -310,6 +320,15 @@ public class CtPaymentPABuilder {
 			transferEl.setRemittanceInformation(RptUtils.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
+
+			if(i == 1 && versamento.getSendImportoTotale() != null) {
+				CtMetadata metadata = new CtMetadata();
+				CtMapEntry notificationFeeEntry = new CtMapEntry();
+				notificationFeeEntry.setKey(NOTIFICATION_FEE_METADATA_KEY);
+				notificationFeeEntry.setValue(versamento.getSendImportoTotale().movePointRight(2).toBigInteger().toString());
+				metadata.getMapEntry().add(notificationFeeEntry);
+				transferEl.setMetadata(metadata);
+			}
 
 			transferList.getTransfer().add(transferEl );
 			i++;
