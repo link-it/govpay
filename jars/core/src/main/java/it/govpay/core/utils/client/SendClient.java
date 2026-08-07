@@ -68,7 +68,7 @@ public class SendClient extends BasicClientCORE {
 		try {
 			String jsonResponse = new String(this.getJson(path, headerProperties, NOTIFICATION_PRICE_OPERATION_ID));
 			NotificationPriceResponse response = ConverterUtils.parse(jsonResponse, NotificationPriceResponse.class);
-			return response.getAmount();
+			return response.getTotalPrice();
 		} catch (IOException e) {
 			log.warn("Errore durante la deserializzazione della risposta del servizio SEND: " + e.getMessage(), e);
 			throw new ClientException("Errore nella deserializzazione della risposta del servizio SEND: " + e.getMessage(), e);
