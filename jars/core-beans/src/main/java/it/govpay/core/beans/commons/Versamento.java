@@ -123,6 +123,18 @@ public class Versamento {
 		this.aggiornabile = aggiornabile;
 	}
 
+	public Boolean getSendAbilitato() {
+		return this.sendAbilitato;
+	}
+
+	public Boolean isSendAbilitato() {
+		return this.sendAbilitato;
+	}
+
+	public void setSendAbilitato(Boolean sendAbilitato) {
+		this.sendAbilitato = sendAbilitato;
+	}
+
 	public Integer getAnnoTributario() {
 		return this.annoTributario;
 	}
@@ -363,6 +375,7 @@ public class Versamento {
     private Date dataValidita;
     private Date dataCaricamento;
     private Boolean aggiornabile;
+    private Boolean sendAbilitato;
     private Integer annoTributario;
     private String bundlekey;
     private String causale;

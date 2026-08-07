@@ -55,6 +55,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dataNotificaAvviso",
 "dataPromemoriaScadenza",
 "proprieta",
+"sendAbilitato",
 "voci",
 "allegati",
 })
@@ -122,6 +123,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
+
+  @JsonProperty("sendAbilitato")
+  private Boolean sendAbilitato = false;
 
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -460,6 +464,22 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
+   * Indica se per questa pendenza e' prevista l'attualizzazione dell'importo con le spese di notifica SEND
+   **/
+  public NuovaPendenza sendAbilitato(Boolean sendAbilitato) {
+    this.sendAbilitato = sendAbilitato;
+    return this;
+  }
+
+  @JsonProperty("sendAbilitato")
+  public Boolean getSendAbilitato() {
+    return sendAbilitato;
+  }
+  public void setSendAbilitato(Boolean sendAbilitato) {
+    this.sendAbilitato = sendAbilitato;
+  }
+
+  /**
    **/
   public NuovaPendenza voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
@@ -518,13 +538,14 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(dataNotificaAvviso, nuovaPendenza.dataNotificaAvviso) &&
         Objects.equals(dataPromemoriaScadenza, nuovaPendenza.dataPromemoriaScadenza) &&
         Objects.equals(proprieta, nuovaPendenza.proprieta) &&
+        Objects.equals(sendAbilitato, nuovaPendenza.sendAbilitato) &&
         Objects.equals(voci, nuovaPendenza.voci) &&
         Objects.equals(allegati, nuovaPendenza.allegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, voci, allegati);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, sendAbilitato, voci, allegati);
   }
 
   public static NuovaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -561,6 +582,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
+    sb.append("    sendAbilitato: ").append(toIndentedString(sendAbilitato)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
