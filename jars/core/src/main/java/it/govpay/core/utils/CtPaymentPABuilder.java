@@ -231,6 +231,10 @@ public class CtPaymentPABuilder {
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		int i=1;
+		// Issue Integrazione a SEND: la quota di spese di notifica va imputata al primo transfer di cui
+		// l'ente (quello associato al connettore SEND) e' effettivamente creditore, non necessariamente
+		// al primo transfer in assoluto (che in una pendenza multi-beneficiario puo' appartenere ad altro ente).
+		boolean quotaSendAssegnata = false;
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			CtTransferPA transferEl = new CtTransferPA();
 
@@ -257,9 +261,15 @@ public class CtPaymentPABuilder {
 			 */
 
 			transferEl.setIdTransfer(i);
+
+			boolean transferDelloStessoEnteDellaPendenza = singoloVersamento.getDominio(configWrapper) == null
+					|| singoloVersamento.getDominio(configWrapper).getCodDominio().equals(dominio.getCodDominio());
+			boolean applicaQuotaSend = !quotaSendAssegnata && transferDelloStessoEnteDellaPendenza && versamento.getSendImportoTotale() != null;
+
 			BigDecimal transferAmount = singoloVersamento.getImportoSingoloVersamento();
-			if(i == 1 && versamento.getSendImportoTotale() != null) {
+			if(applicaQuotaSend) {
 				transferAmount = transferAmount.add(versamento.getSendImportoTotale());
+				quotaSendAssegnata = true;
 			}
 			transferEl.setTransferAmount(transferAmount);
 
@@ -321,7 +331,7 @@ public class CtPaymentPABuilder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			if(i == 1 && versamento.getSendImportoTotale() != null) {
+			if(applicaQuotaSend) {
 				CtMetadata metadata = new CtMetadata();
 				CtMapEntry notificationFeeEntry = new CtMapEntry();
 				notificationFeeEntry.setKey(NOTIFICATION_FEE_METADATA_KEY);

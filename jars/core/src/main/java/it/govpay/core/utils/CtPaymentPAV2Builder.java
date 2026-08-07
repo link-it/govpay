@@ -187,6 +187,10 @@ public class CtPaymentPAV2Builder {
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		int i=1;
+		// Issue Integrazione a SEND: la quota di spese di notifica va imputata al primo transfer di cui
+		// l'ente (quello associato al connettore SEND) e' effettivamente creditore, non necessariamente
+		// al primo transfer in assoluto (che in una pendenza multi-beneficiario puo' appartenere ad altro ente).
+		boolean quotaSendAssegnata = false;
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			CtTransferPAV2 transferEl = new CtTransferPAV2();
 
@@ -213,9 +217,15 @@ public class CtPaymentPAV2Builder {
 			 */
 
 			transferEl.setIdTransfer(i);
+
+			boolean transferDelloStessoEnteDellaPendenza = singoloVersamento.getDominio(configWrapper) == null
+					|| singoloVersamento.getDominio(configWrapper).getCodDominio().equals(dominio.getCodDominio());
+			boolean applicaQuotaSend = !quotaSendAssegnata && transferDelloStessoEnteDellaPendenza && versamento.getSendImportoTotale() != null;
+
 			BigDecimal transferAmount = singoloVersamento.getImportoSingoloVersamento();
-			if(i == 1 && versamento.getSendImportoTotale() != null) {
+			if(applicaQuotaSend) {
 				transferAmount = transferAmount.add(versamento.getSendImportoTotale());
+				quotaSendAssegnata = true;
 			}
 			transferEl.setTransferAmount(transferAmount);
 
@@ -301,7 +311,7 @@ public class CtPaymentPAV2Builder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			impostaMetadata(versamento, i == 1, singoloVersamento, transferEl);
+			impostaMetadata(versamento, applicaQuotaSend, singoloVersamento, transferEl);
 
 			transferList.getTransfer().add(transferEl );
 			i++;
@@ -319,7 +329,7 @@ public class CtPaymentPAV2Builder {
 		return rpt;
 	}
 
-	private void impostaMetadata(Versamento versamento, boolean primoTransfer, SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
+	private void impostaMetadata(Versamento versamento, boolean applicaQuotaSend, SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
 		CtMetadata metadata;
 
 		// se la pendenza ha dei metadati definiti vengono impostati nell'apposito campo
@@ -336,9 +346,9 @@ public class CtPaymentPAV2Builder {
 			metadata = CtPaymentPABuilder.impostaValoriContabilita(singoloVersamento);
 		}
 
-		// Integrazione a SEND: sul primo transfer viene comunicata al Nodo dei Pagamenti
-		// la quota di spese di notifica SEND inclusa nell'importo, espressa in eurocent.
-		if(primoTransfer && versamento.getSendImportoTotale() != null) {
+		// Integrazione a SEND: sul transfer dell'ente creditore della pendenza viene comunicata
+		// al Nodo dei Pagamenti la quota di spese di notifica SEND inclusa nell'importo, espressa in eurocent.
+		if(applicaQuotaSend) {
 			if(metadata == null) {
 				metadata = new CtMetadata();
 			}

@@ -1,6 +1,6 @@
 -- 3.9.4
 
--- 06/08/2026 Issue #721 Integrazione a SEND: attualizzazione dell'importo della pendenza
+-- 06/08/2026 Integrazione a SEND: attualizzazione dell'importo della pendenza
 -- con le spese di notifica sostenute tramite SEND.
 
 ALTER TABLE versamenti ADD send_abilitato NUMBER DEFAULT 0 NOT NULL;
