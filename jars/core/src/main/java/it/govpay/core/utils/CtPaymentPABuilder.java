@@ -344,6 +344,10 @@ public class CtPaymentPABuilder {
 			i++;
 		}
 
+		if(versamento.getSendImportoTotale() != null && !quotaSendAssegnata) {
+			throw new ServiceException("Impossibile attribuire la quota di spese di notifica SEND: nessun transfer della pendenza [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + "] risulta di competenza dell'ente creditore.");
+		}
+
 		byte[] rptXml;
 		paGetPaymentRes.setOutcome(StOutcome.OK);
 		paGetPaymentRes.setData(ctRpt);
