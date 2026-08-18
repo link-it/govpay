@@ -727,7 +727,30 @@ public class VersamentiBD extends BasicBD {
 			}
 		}
 	}
-	
+
+	public void updateVersamentoInformazioniSend(long idVersamento, BigDecimal sendImportoTotale, Date sendDataAggiornamento) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().SEND_IMPORTO_TOTALE, sendImportoTotale != null ? sendImportoTotale.doubleValue() : null));
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().SEND_DATA_AGGIORNAMENTO, sendDataAggiornamento));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException | NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
 	public void updateVersamentoIuvNav(Long idVersamento, boolean updateIuv, String iuvVersamento, boolean updateNav, String numerAvviso) throws ServiceException {
 		try {
 			if(this.isAtomica()) {

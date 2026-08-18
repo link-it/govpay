@@ -172,6 +172,9 @@ public class GovpayConfig {
 	private Integer readTimeoutAppIO;
 	private Integer connectionRequestTimeoutAppIO;
 
+	// intervallo minimo, in millisecondi, tra due interrogazioni consecutive al servizio SEND per lo stesso versamento
+	private Integer retentionSend;
+
 	private String templateQuietanzaPagamento;
 
 	private String checkoutBaseURL;
@@ -313,6 +316,7 @@ public class GovpayConfig {
 		this.readTimeoutAppIO = 180000;
 		this.connectionTimeoutAppIO = 10000;
 		this.connectionRequestTimeoutAppIO = 180000;
+		this.retentionSend = 900000;
 
 		this.aggiornamentoValiditaMandatorio = false;
 
@@ -684,6 +688,8 @@ public class GovpayConfig {
 			this.connectionTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionTimeout", this.props, false, 10000);
 			this.readTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.readTimeout", this.props, false, 180000);
 			this.connectionRequestTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionRequestTimeout", this.props, false, 10000);
+
+			this.retentionSend = getIntegerProperty(log, "it.govpay.client.send.retention", this.props, false, 900000);
 
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
@@ -1416,6 +1422,10 @@ public class GovpayConfig {
 
 	public Integer getConnectionRequestTimeoutAppIO() {
 		return connectionRequestTimeoutAppIO;
+	}
+
+	public Integer getRetentionSend() {
+		return retentionSend;
 	}
 
 	public String getCheckoutBaseURL() {

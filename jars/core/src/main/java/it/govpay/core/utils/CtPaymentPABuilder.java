@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -98,6 +99,11 @@ public class CtPaymentPABuilder {
 	public static final String CONTABILITA_QUOTA_CATEGORIA_BILANCIO_KEY = "CATEGORIABILANCIO";
 	public static final String CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY = "TIPOLOGIABILANCIO";
 	public static final String CONTABILITA_QUOTA_ENTRY_KEY = "CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT";
+
+	// Integrazione a SEND: chiave di metadata con cui viene comunicata al Nodo dei Pagamenti
+	// la quota di spese di notifica SEND inclusa nel primo transfer, espressa in eurocent.
+	// Rif. https://developer.pagopa.it/pago-pa/guides/metadata/spese-di-notifica-send
+	public static final String NOTIFICATION_FEE_METADATA_KEY = "NOTIFICATION_FEE";
 
 	public Rpt buildCtPaymentPA (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
 
@@ -188,7 +194,7 @@ public class CtPaymentPABuilder {
 		// pertanto ignoro l'importo comunicato e rispondo sempre con il dovuto.
 		// https://github.com/pagopa/pagopa-api/issues/194
 
-		ctRpt.setPaymentAmount(versamento.getImportoTotale());
+		ctRpt.setPaymentAmount(VersamentoUtils.getImportoTotaleConSend(versamento));
 		ctRpt.setDueDate(DateUtils.toLocalDate(calcolaDueDate(versamento)));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
@@ -225,6 +231,10 @@ public class CtPaymentPABuilder {
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		int i=1;
+		// Issue Integrazione a SEND: la quota di spese di notifica va imputata al primo transfer di cui
+		// l'ente (quello associato al connettore SEND) e' effettivamente creditore, non necessariamente
+		// al primo transfer in assoluto (che in una pendenza multi-beneficiario puo' appartenere ad altro ente).
+		boolean quotaSendAssegnata = false;
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			CtTransferPA transferEl = new CtTransferPA();
 
@@ -251,7 +261,17 @@ public class CtPaymentPABuilder {
 			 */
 
 			transferEl.setIdTransfer(i);
-			transferEl.setTransferAmount(singoloVersamento.getImportoSingoloVersamento());
+
+			boolean transferDelloStessoEnteDellaPendenza = singoloVersamento.getDominio(configWrapper) == null
+					|| singoloVersamento.getDominio(configWrapper).getCodDominio().equals(dominio.getCodDominio());
+			boolean applicaQuotaSend = !quotaSendAssegnata && transferDelloStessoEnteDellaPendenza && versamento.getSendImportoTotale() != null;
+
+			BigDecimal transferAmount = singoloVersamento.getImportoSingoloVersamento();
+			if(applicaQuotaSend) {
+				transferAmount = transferAmount.add(versamento.getSendImportoTotale());
+				quotaSendAssegnata = true;
+			}
+			transferEl.setTransferAmount(transferAmount);
 
 
 			// Imposto IBAN e codice fiscale ente proprietario dell'iban
@@ -311,8 +331,21 @@ public class CtPaymentPABuilder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
+			if(applicaQuotaSend) {
+				CtMetadata metadata = new CtMetadata();
+				CtMapEntry notificationFeeEntry = new CtMapEntry();
+				notificationFeeEntry.setKey(NOTIFICATION_FEE_METADATA_KEY);
+				notificationFeeEntry.setValue(versamento.getSendImportoTotale().movePointRight(2).toBigInteger().toString());
+				metadata.getMapEntry().add(notificationFeeEntry);
+				transferEl.setMetadata(metadata);
+			}
+
 			transferList.getTransfer().add(transferEl );
 			i++;
+		}
+
+		if(versamento.getSendImportoTotale() != null && !quotaSendAssegnata) {
+			throw new ServiceException("Impossibile attribuire la quota di spese di notifica SEND: nessun transfer della pendenza [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + "] risulta di competenza dell'ente creditore.");
 		}
 
 		byte[] rptXml;

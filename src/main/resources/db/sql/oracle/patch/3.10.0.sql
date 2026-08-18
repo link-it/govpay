@@ -22,4 +22,12 @@ END;
 -- Tracciamento dell'IP del richiedente sull'audit trail.
 ALTER TABLE gp_audit ADD (ip_richiedente VARCHAR2(45 CHAR));
 
+-- Integrazione a SEND: attualizzazione dell'importo della pendenza
+-- con le spese di notifica sostenute tramite SEND.
+ALTER TABLE versamenti ADD send_abilitato NUMBER DEFAULT 0 NOT NULL;
+ALTER TABLE versamenti ADD send_importo_totale BINARY_DOUBLE;
+ALTER TABLE versamenti ADD send_data_aggiornamento TIMESTAMP;
+
+ALTER TABLE domini ADD cod_connettore_send VARCHAR2(255 CHAR);
+
 COMMIT;

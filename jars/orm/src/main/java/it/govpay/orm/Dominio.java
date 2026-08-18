@@ -52,6 +52,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreSecim" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codConnettoreGovPay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codConnettoreSend" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="tassonomiaPagoPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="scaricaFr" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
@@ -85,6 +86,7 @@ import java.io.Serializable;
   	"codConnettoreSecim",
   	"codConnettoreGovPay",
   	"codConnettoreHyperSicAPK",
+  	"codConnettoreSend",
   	"intermediato",
   	"tassonomiaPagoPA",
   	"scaricaFr"
@@ -236,6 +238,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implemen
     this.codConnettoreHyperSicAPK = codConnettoreHyperSicAPK;
   }
 
+  public java.lang.String getCodConnettoreSend() {
+    return this.codConnettoreSend;
+  }
+
+  public void setCodConnettoreSend(java.lang.String codConnettoreSend) {
+    this.codConnettoreSend = codConnettoreSend;
+  }
+
   public boolean isIntermediato() {
     return this.intermediato;
   }
@@ -353,6 +363,10 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implemen
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreHyperSicAPK",required=false,nillable=false)
   protected java.lang.String codConnettoreHyperSicAPK;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreSend",required=false,nillable=false)
+  protected java.lang.String codConnettoreSend;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="intermediato",required=true,nillable=false)

@@ -5201,6 +5201,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
         servizioMaggioliJPPA:
           $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'
+        servizioSend:
+          $ref: '#/components/schemas/connettoreSend'
         intermediato:
           type: boolean
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
@@ -7947,6 +7949,25 @@ components:
           type: string
           description: Dati di integrazione al servizio GPD (Gestione Posizioni Debitorie) di PagoPA
           example: https://api.platform.pagopa.it/gpd/api/v1
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
+        abilitaGDE:
+          type: boolean
+          description: Indica se abilitare l'invio degli eventi al Giornale Degli Eventi (GDE)
+          example: false
+    connettoreSend:
+      type: object
+      required:
+        - url
+        - abilitaGDE
+      properties:
+        url:
+          type: string
+          description: Dati di integrazione al servizio SEND per l'attualizzazione dell'importo con le spese di notifica
+          example: https://api.platform.pagopa.it/send/api/v1
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
         subscriptionKey:

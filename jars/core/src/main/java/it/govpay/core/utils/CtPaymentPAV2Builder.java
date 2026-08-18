@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -149,7 +150,7 @@ public class CtPaymentPAV2Builder {
 		// pertanto ignoro l'importo comunicato e rispondo sempre con il dovuto.
 		// https://github.com/pagopa/pagopa-api/issues/194
 
-		ctRpt.setPaymentAmount(versamento.getImportoTotale());
+		ctRpt.setPaymentAmount(VersamentoUtils.getImportoTotaleConSend(versamento));
 		ctRpt.setDueDate(DateUtils.toLocalDate(CtPaymentPABuilder.calcolaDueDate(versamento)));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
@@ -186,6 +187,10 @@ public class CtPaymentPAV2Builder {
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		int i=1;
+		// Issue Integrazione a SEND: la quota di spese di notifica va imputata al primo transfer di cui
+		// l'ente (quello associato al connettore SEND) e' effettivamente creditore, non necessariamente
+		// al primo transfer in assoluto (che in una pendenza multi-beneficiario puo' appartenere ad altro ente).
+		boolean quotaSendAssegnata = false;
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			CtTransferPAV2 transferEl = new CtTransferPAV2();
 
@@ -212,7 +217,17 @@ public class CtPaymentPAV2Builder {
 			 */
 
 			transferEl.setIdTransfer(i);
-			transferEl.setTransferAmount(singoloVersamento.getImportoSingoloVersamento());
+
+			boolean transferDelloStessoEnteDellaPendenza = singoloVersamento.getDominio(configWrapper) == null
+					|| singoloVersamento.getDominio(configWrapper).getCodDominio().equals(dominio.getCodDominio());
+			boolean applicaQuotaSend = !quotaSendAssegnata && transferDelloStessoEnteDellaPendenza && versamento.getSendImportoTotale() != null;
+
+			BigDecimal transferAmount = singoloVersamento.getImportoSingoloVersamento();
+			if(applicaQuotaSend) {
+				transferAmount = transferAmount.add(versamento.getSendImportoTotale());
+				quotaSendAssegnata = true;
+			}
+			transferEl.setTransferAmount(transferAmount);
 
 
 			// Imposto IBAN e codice fiscale ente proprietario dell'iban
@@ -296,10 +311,14 @@ public class CtPaymentPAV2Builder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			impostaMetadata(singoloVersamento, transferEl);
+			impostaMetadata(versamento, applicaQuotaSend, singoloVersamento, transferEl);
 
 			transferList.getTransfer().add(transferEl );
 			i++;
+		}
+
+		if(versamento.getSendImportoTotale() != null && !quotaSendAssegnata) {
+			throw new ServiceException("Impossibile attribuire la quota di spese di notifica SEND: nessun transfer della pendenza [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + "] risulta di competenza dell'ente creditore.");
 		}
 
 		byte[] rptXml;
@@ -314,21 +333,35 @@ public class CtPaymentPAV2Builder {
 		return rpt;
 	}
 
-	private void impostaMetadata(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
+	private void impostaMetadata(Versamento versamento, boolean applicaQuotaSend, SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
+		CtMetadata metadata;
+
 		// se la pendenza ha dei metadati definiti vengono impostati nell'apposito campo
 		if(singoloVersamento.getMetadataPagoPA() != null && singoloVersamento.getMetadataPagoPA().getMapEntries() != null && !singoloVersamento.getMetadataPagoPA().getMapEntries().isEmpty()) {
-			CtMetadata metadata = new CtMetadata();
-			
+			metadata = new CtMetadata();
+
 			for (MapEntry mapEntry : singoloVersamento.getMetadataPagoPA().getMapEntries()) {
 				CtMapEntry ctMapEntry = new CtMapEntry();
 				ctMapEntry.setKey(mapEntry.getKey());
 				ctMapEntry.setValue(mapEntry.getValue());
 				metadata.getMapEntry().add(ctMapEntry );
 			}
-			
-			transferEl.setMetadata(metadata);				
 		} else {
-			transferEl.setMetadata(CtPaymentPABuilder.impostaValoriContabilita(singoloVersamento));	
+			metadata = CtPaymentPABuilder.impostaValoriContabilita(singoloVersamento);
 		}
+
+		// Integrazione a SEND: sul transfer dell'ente creditore della pendenza viene comunicata
+		// al Nodo dei Pagamenti la quota di spese di notifica SEND inclusa nell'importo, espressa in eurocent.
+		if(applicaQuotaSend) {
+			if(metadata == null) {
+				metadata = new CtMetadata();
+			}
+			CtMapEntry notificationFeeEntry = new CtMapEntry();
+			notificationFeeEntry.setKey(CtPaymentPABuilder.NOTIFICATION_FEE_METADATA_KEY);
+			notificationFeeEntry.setValue(versamento.getSendImportoTotale().movePointRight(2).toBigInteger().toString());
+			metadata.getMapEntry().add(notificationFeeEntry);
+		}
+
+		transferEl.setMetadata(metadata);
 	}
 }

@@ -242,6 +242,9 @@ public class DominiConverter {
 		if(dominioPost.getServizioMaggioliJPPA() != null)
 			dominio.setConnettoreMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.getConnettoreDTO(dominioPost.getServizioMaggioliJPPA(), user, Tipo.MAGGIOLI_JPPA));
 
+		if(dominioPost.getServizioSend() != null)
+			dominio.setConnettoreSend(ConnettoreSendConverter.getConnettore(dominioPost.getServizioSend(), idDominio));
+
 		if(dominioPost.getIntermediato() != null ) {
 			dominio.setIntermediato(dominioPost.getIntermediato().booleanValue());
 		} else {
@@ -460,6 +463,9 @@ public class DominiConverter {
 
 		if(dominio.getConnettoreMaggioliJPPA()!=null)
 			rsModel.setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.toRsModel(dominio.getConnettoreMaggioliJPPA())); // OK
+
+		if(dominio.getConnettoreSend()!=null)
+			rsModel.setServizioSend(ConnettoreSendConverter.toRsModel(dominio.getConnettoreSend()));
 
 		if(dominio.getTassonomiaPagoPA() != null) {
 			rsModel.setTassonomiaPagoPA(TassonomiaPagoPADominio.fromValue(dominio.getTassonomiaPagoPA()));

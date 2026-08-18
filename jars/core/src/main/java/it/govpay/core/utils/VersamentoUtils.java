@@ -62,6 +62,7 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
@@ -82,6 +83,7 @@ import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.IVerificaClient;
+import it.govpay.core.utils.client.SendClient;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
@@ -91,6 +93,7 @@ import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Anagrafica.TIPO;
+import it.govpay.model.Connettore;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -441,6 +444,10 @@ public class VersamentoUtils {
 			boolean generaIuv = VersamentoUtils.generaIUV(versamento);
 			versamento.setTipo(tipo);
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null, true, false);
+
+			if(versamento.isSendAbilitato()) {
+				aggiornaImportoSend(versamento, eventoCtx, log);
+			}
 		} catch (ClientInitializeException e) {
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERIFICA_FAIL_KEY, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
 			eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
@@ -458,8 +465,47 @@ public class VersamentoUtils {
 		return versamento;
 	}
 
+	/**
+	 * Interroga il servizio SEND per attualizzare l'importo della pendenza con le spese di notifica,
+	 * se non gia' fatto di recente (retention configurabile con la proprieta' it.govpay.client.send.retention).
+	 * In caso di connettore non configurato o di errore nell'interrogazione del servizio, il comportamento
+	 * e' regolato dalla proprieta' di installazione 'aggiornamentoValiditaMandatorio': se mandatorio l'errore
+	 * viene rilanciato, altrimenti viene loggato un warning e si prosegue con l'importo originale della pendenza.
+	 */
+	private static void aggiornaImportoSend(Versamento versamento, EventoContext eventoCtx, Logger log) throws GovPayException {
+		Date now = new Date();
+		if(versamento.getSendDataAggiornamento() != null) {
+			long retention = GovpayConfig.getInstance().getRetentionSend();
+			if((now.getTime() - versamento.getSendDataAggiornamento().getTime()) < retention) {
+				LogUtils.logDebug(log, "Importo SEND per il versamento [{}] aggiornato di recente, nessuna nuova interrogazione necessaria.", versamento.getCodVersamentoEnte());
+				return;
+			}
+		}
 
-	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, Logger log) 
+		try {
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+			Dominio dominio = versamento.getDominio(configWrapper);
+			Connettore connettoreSend = dominio.getConnettoreSend();
+			if(connettoreSend == null || !connettoreSend.isAbilitato()) {
+				throw new ClientInitializeException("Connettore SEND non configurato o non abilitato per il dominio " + dominio.getCodDominio());
+			}
+
+			SendClient sendClient = new SendClient(dominio, connettoreSend, eventoCtx);
+			Long importoEurocent = sendClient.recuperaImportoNotifica(dominio.getCodDominio(), versamento.getNumeroAvviso());
+			BigDecimal importoEuro = importoEurocent != null ? BigDecimal.valueOf(importoEurocent).movePointLeft(2) : null;
+
+			versamento.setSendImportoTotale(importoEuro);
+			versamento.setSendDataAggiornamento(now);
+			new VersamentiBD(configWrapper).updateVersamentoInformazioniSend(versamento.getId(), importoEuro, now);
+		} catch (ClientInitializeException | ClientException | ServiceException e) {
+			if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
+				throw new GovPayException(e);
+			}
+			log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si prosegue con l'importo originale della pendenza. Errore: {}", versamento.getCodVersamentoEnte(), e.getMessage(), e);
+		}
+	}
+
+	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, Logger log)
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, VersamentoNonValidoException, IOException, ClientInitializeException {
 
 		IContext ctx = ContextThreadLocal.get();
@@ -628,6 +674,7 @@ public class VersamentoUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
+		model.setSendAbilitato(versamento.isSendAbilitato() != null && versamento.isSendAbilitato());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
 
 		CausaleSemplice causale = model.new CausaleSemplice();
@@ -1183,7 +1230,19 @@ public class VersamentoUtils {
 		// #728 Lo iuv si deve generare sempre se non viene passato un numero avviso come input.
 		return versamento.getNumeroAvviso() == null;
 	}
-	
+
+	/**
+	 * Restituisce l'importo totale del versamento maggiorato dell'eventuale quota di spese
+	 * di notifica SEND, mantenuta internamente separata in versamenti.send_importo_totale.
+	 */
+	public static BigDecimal getImportoTotaleConSend(Versamento versamento) {
+		BigDecimal importoTotale = versamento.getImportoTotale();
+		if(versamento.getSendImportoTotale() != null) {
+			return importoTotale.add(versamento.getSendImportoTotale());
+		}
+		return importoTotale;
+	}
+
 	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
 		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
 			// sv con tributo definito

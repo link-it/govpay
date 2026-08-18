@@ -25,7 +25,9 @@ import java.math.BigInteger;
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
-	public static final String EC = "EC"; 
+	public static final String EC = "EC";
+
+	public static final String CONNETTORE_SEND_SUFFIX = "_SEND";
 
 	private Long id; 
 	private Long idStazione; 
@@ -46,6 +48,7 @@ public class Dominio extends BasicModel {
 	private ConnettoreNotificaPagamenti connettoreGovPay;
 	private ConnettoreNotificaPagamenti connettoreHyperSicAPKappa;
 	private ConnettoreNotificaPagamenti connettoreMaggioliJPPA;
+	private Connettore connettoreSend;
 
 	private boolean intermediato;
 	
@@ -196,6 +199,14 @@ public class Dominio extends BasicModel {
 
 	public void setConnettoreMaggioliJPPA(ConnettoreNotificaPagamenti connettoreMaggioliJPPA) {
 		this.connettoreMaggioliJPPA = connettoreMaggioliJPPA;
+	}
+
+	public Connettore getConnettoreSend() {
+		return connettoreSend;
+	}
+
+	public void setConnettoreSend(Connettore connettoreSend) {
+		this.connettoreSend = connettoreSend;
 	}
 
 	public boolean isIntermediato() {

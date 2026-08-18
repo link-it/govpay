@@ -237,6 +237,18 @@ public abstract class BasicClientCORE {
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
+	protected BasicClientCORE(Dominio dominio, TipoConnettore tipoConnettore,  TipoDestinatario tipoDestinatario, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, eventoCtx, tipoDestinatario);
+		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
+		mittente = "GovPay";
+		destinatario = "Servizio" + tipoDestinatario.toString();
+		integrationCtx = new IntegrationContext();
+		integrationCtx.setApplicazione(null);
+		integrationCtx.setIntermediario(null);
+		integrationCtx.setTipoConnettore(tipoConnettore);
+		integrationCtx.setTipoDestinatario(tipoDestinatario);
+	}
+
 	private BasicClientCORE(String bundleKey, Connettore connettore, EventoContext eventoCtx, TipoDestinatario tipoDestinatario) throws ClientInitializeException {
 		impostaTimeoutConnessione(tipoDestinatario);
 
@@ -371,7 +383,7 @@ public abstract class BasicClientCORE {
 
 	private void impostaTimeoutConnessione(TipoDestinatario tipoDestinatario) {
 		switch (tipoDestinatario) {
-		case INTERMEDIARIO, CHECKOUT_PAGOPA:
+		case INTERMEDIARIO, CHECKOUT_PAGOPA, SEND:
 			this.readTimeout = GovpayConfig.getInstance().getReadTimeoutPagoPA();
 			this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeoutPagoPA();
 			this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeoutPagoPA();

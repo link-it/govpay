@@ -195,6 +195,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR2(255 CHAR),
 	cod_connettore_gov_pay VARCHAR2(255 CHAR),
 	cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR),
+	cod_connettore_send VARCHAR2(255 CHAR),
 	intermediato NUMBER NOT NULL,
 	tassonomia_pago_pa VARCHAR2(35 CHAR),
 	scarica_fr NUMBER NOT NULL,
@@ -863,6 +864,9 @@ CREATE TABLE versamenti
 	proprieta CLOB,
 	data_ultima_modifica_aca TIMESTAMP,
 	data_ultima_comunicazione_aca TIMESTAMP,
+	send_abilitato NUMBER NOT NULL,
+	send_importo_totale BINARY_DOUBLE,
+	send_data_aggiornamento TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,

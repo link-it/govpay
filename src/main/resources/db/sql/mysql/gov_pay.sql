@@ -131,6 +131,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
 	cod_connettore_gov_pay VARCHAR(255) COMMENT 'Identificativo connettore govpay',
 	cod_connettore_hyper_sic_apk VARCHAR(255) COMMENT 'Identificativo connettore hypersic_apk',
+	cod_connettore_send VARCHAR(255) COMMENT 'Identificativo connettore SEND',
 	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	tassonomia_pago_pa VARCHAR(35) COMMENT 'Tassonomia PagoPA ente creditore',
 	scarica_fr BOOLEAN NOT NULL COMMENT 'Indica se scaricare i flussi di rendicontazione',
@@ -612,6 +613,9 @@ CREATE TABLE versamenti
 	proprieta LONGTEXT,
 	data_ultima_modifica_aca DATETIME COMMENT 'Data ultima modifica dati da inviare ad ACA',
 	data_ultima_comunicazione_aca DATETIME COMMENT 'Data ultima comunicazione con ACA conclusa con successo',
+	send_abilitato BOOLEAN NOT NULL COMMENT 'Indica se la pendenza e\' abilitata all\'attualizzazione dell\'importo tramite SEND',
+	send_importo_totale DOUBLE COMMENT 'Importo della pendenza attualizzato con le spese di notifica SEND',
+	send_data_aggiornamento DATETIME COMMENT 'Data di attualizzazione dell\'importo tramite SEND',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
