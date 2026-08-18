@@ -130,6 +130,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
 	cod_connettore_hyper_sic_apk VARCHAR(255),
+	cod_connettore_send VARCHAR(255),
 	intermediato BIT NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
 	scarica_fr BIT NOT NULL,
@@ -608,6 +609,9 @@ CREATE TABLE versamenti
 	proprieta VARCHAR(max),
 	data_ultima_modifica_aca DATETIME2,
 	data_ultima_comunicazione_aca DATETIME2,
+	send_abilitato BIT NOT NULL,
+	send_importo_totale DECIMAL(15,2),
+	send_data_aggiornamento DATETIME2,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
