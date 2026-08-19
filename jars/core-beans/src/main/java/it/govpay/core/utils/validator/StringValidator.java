@@ -93,7 +93,7 @@ public class StringValidator {
 		if(this.fieldValue != null) {
 			try {
 				new URI(this.fieldValue).toURL();
-			} catch (MalformedURLException | URISyntaxException e) {
+			} catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {
 				throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_CONTIENE_UNA_URL_VALIDA, this.fieldName));
 			}
 		}
