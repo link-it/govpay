@@ -1,0 +1,36 @@
+{
+	"idTipoPendenza" : 'LIBERO',
+	"idDominio": '#(idDominio)',
+	"causale": '#("Pagamento TARI/TEFA n." + idPendenza)',
+	"soggettoPagatore": {
+		"tipo": "F",
+		"identificativo": "RSSMRA30A01H501I",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it",
+		"cellulare": "+39 000-0000000"
+	},
+	"dataValidita": "2000-01-01",
+	"dataScadenza": "2999-12-31",
+	"tassonomiaAvviso": "Servizi erogati dal comune",
+	"sendAbilitato": true,
+	"importo": 110.99,
+	"voci": [
+		{
+			"idVocePendenza": "1",
+			"importo": 100.99,
+			"descrizione": '#("Pagamento TARI n." + idPendenza)',
+			"ibanAccredito": "#(ibanAccredito)",
+			"tipoContabilita": "ALTRO",
+			"codiceContabilita": "TEST"
+		},
+		{
+			"idVocePendenza": "2",
+			"importo": 10,
+			"descrizione": '#("Pagamento TEFA n." + idPendenza)',
+			"ibanAccredito": "#(ibanAccredito_5)",
+			"tipoContabilita": "ALTRO",
+			"codiceContabilita": "TEST",
+			"idDominio": '#(idDominio_5)'
+		}
+	]
+}
