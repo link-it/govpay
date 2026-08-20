@@ -13,7 +13,6 @@ popd () {
 BACKOFFICE=basic,ssl
 PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
-USER=
 PAGOPA=ssl
 APIDEFAULT=none
 GOVPAY_SRC_DIR="ear/target/"
@@ -36,11 +35,6 @@ case $key in
     ;;
     -rag|--ragioneria)
     RAGIONERIA="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -usr|--user)
-    USER="$2"
     shift # past argument
     shift # past value
     ;;
@@ -70,7 +64,6 @@ case $key in
     echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,basic,ssl,hdrcert,public,session,ldap,apikey,oauth2). Default: basic,ssl"
     echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl,hdrcert,ldap,apikey,oauth2). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl,hdrcert,ldap,apikey,oauth2). Default: basic,basic-gp,ssl,hdrcert"
-    echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
     echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,ssl,hdrcert,header,ldap,apikey,oauth2). Default: ssl"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
     exit 2;
@@ -111,8 +104,6 @@ RAGIONERIA_BASIC_LDAP=false
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 [[ $RAGIONERIA == *"apikey"* ]] && RAGIONERIA_API_KEY=true || RAGIONERIA_API_KEY=false
 [[ $RAGIONERIA == *"oauth2"* ]] && RAGIONERIA_OAUTH2=true || RAGIONERIA_OAUTH2=false
-
-[[ $USER == *"spid"* ]] && UTENTE_SPID=true || UTENTE_SPID=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 [[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
@@ -397,22 +388,6 @@ then
   echo "API-Ragioneria abilitazione default SSL completata.";
 fi
 
-zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-rm -rf $APP_CONTEXT_BASE_DIR
-
-
-# API-Utente
-
-API_PREFIX="api-user-"
-unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-
-if $UTENTE_SPID
-then
-  echo "API-Utente abilitazione autenticazione SPID...";
-  sed -i -e "s#SPID_START#SPID_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-  sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-  echo "API-Utente abilitazione autenticazione SPID completata.";
-fi
 zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 rm -rf $APP_CONTEXT_BASE_DIR
 

@@ -13,7 +13,6 @@ popd () {
 BACKOFFICE=basic,ssl
 PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
-USER=
 PAGOPA=ssl
 JPPAPDP=ssl
 APIDEFAULT=none
@@ -38,11 +37,6 @@ case $key in
     ;;
     -rag|--ragioneria)
     RAGIONERIA="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -usr|--user)
-    USER="$2"
     shift # past argument
     shift # past value
     ;;
@@ -77,7 +71,6 @@ case $key in
     echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,basic,ssl,hdrcert,public,session,ldap,apikey,oauth2). Default: basic,ssl"
     echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl,hdrcert,ldap,apikey,oauth2). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl,hdrcert,ldap,apikey,oauth2). Default: basic,basic-gp,ssl,hdrcert"
-    echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
     echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,ssl,hdrcert,header,ldap,apikey,oauth2). Default: ssl"
     echo "   -jppa <args> : autenticazione da abilitare sulle api di jppapdp (basic,ssl,hdrcert,ldap,apikey,oauth2). Default: ssl"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
@@ -119,8 +112,6 @@ RAGIONERIA_BASIC_LDAP=false
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 [[ $RAGIONERIA == *"apikey"* ]] && RAGIONERIA_API_KEY=true || RAGIONERIA_API_KEY=false
 [[ $RAGIONERIA == *"oauth2"* ]] && RAGIONERIA_OAUTH2=true || RAGIONERIA_OAUTH2=false
-
-[[ $USER == *"spid"* ]] && UTENTE_SPID=true || UTENTE_SPID=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 [[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
@@ -429,32 +420,6 @@ then
   echo "API-Ragioneria abilitazione default SSL completata.";
 fi
 
-zip -qr $GOVPAY_WAR_PREFIX$CURRENT_WAR$WAR_SUFFIX $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-rm -rf $APP_CONTEXT_BASE_DIR
-
-# copio il war aggiornato nella posizione originale
-popd
-cp $GOVPAY_WORK_DIR/$GOVPAY_WAR_PREFIX$CURRENT_WAR$WAR_SUFFIX $GOVPAY_SRC_DIR$GOVPAY_WARS_DIR$API_TARGET_DIR$GOVPAY_WAR_PREFIX$CURRENT_WAR$WAR_SUFFIX
-
-
-# API-Utente
-
-API_TARGET_DIR="api-user"$TARGET_DIR
-CURRENT_WAR="user"
-
-cp $GOVPAY_SRC_DIR$GOVPAY_WARS_DIR$API_TARGET_DIR$GOVPAY_WAR_PREFIX$CURRENT_WAR$WAR_SUFFIX $GOVPAY_WORK_DIR
-pushd $GOVPAY_WORK_DIR
-
-API_PREFIX="api-user-"
-unzip -q $GOVPAY_WAR_PREFIX$CURRENT_WAR$WAR_SUFFIX $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-
-if $UTENTE_SPID
-then
-  echo "API-Utente abilitazione autenticazione SPID...";
-  sed -i -e "s#SPID_START#SPID_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-  sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
-  echo "API-Utente abilitazione autenticazione SPID completata.";
-fi
 zip -qr $GOVPAY_WAR_PREFIX$CURRENT_WAR$WAR_SUFFIX $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 rm -rf $APP_CONTEXT_BASE_DIR
 
