@@ -112,7 +112,33 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 
+Scenario: Caricamento pendenza monovoce con bollo
 
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_monovoce_bollo.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def responsePut = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0] contains pendenzaPut.voci[0]
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
 
 
 

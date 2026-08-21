@@ -12,12 +12,18 @@ Background:
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
-* def esitoVerifyPayment = read('classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json')
-* def esitoGetPayment = read('classpath:test/api/backoffice/v1/pendenze/get/msg/getPayment-response-ok-multibeneficiario.json')
+# NB: le fixture che confrontano gli importi contengono placeholder su sendFeeEurocent e
+# pendenzaPut, e vanno lette al punto d'uso: una read() nel Background congelerebbe il valore
+# risolto al primo match, portandolo nello scenario successivo.
+* def pathEsitoVerifyPayment = 'classpath:test/workflow/modellounico/v1/msg/verifyPayment-response-ok.json'
+* def pathEsitoGetPayment = 'classpath:test/workflow/send/v1/msg/getPayment-response-ok-multibeneficiario.json'
 
 # Configurazione del connettore SEND sul dominio principale della pendenza
 
-* set dominio.servizioSend = { url: ndpsym_url + '/rs/delivery/v2.3', auth: { headerName: 'x-api-key', headerValue: 'test-api-key' }, abilitaGDE: false }
+# NB: SendClient accoda '/delivery/v2.3/price/{paTaxId}/{noticeCode}' alla url del connettore,
+# quindi qui va configurata solo la base. abilitaGDE=true perche' il test rilegge la risposta
+# SEND dagli eventi.
+* set dominio.servizioSend = { "url": '#(ndpsym_url + "/pagopa/rs")', "auth": { "headerName": "x-api-key", "headerValue": "test-api-key" }, "abilitaGDE": true }
 
 Given url backofficeBaseurl
 And path 'domini', idDominio
@@ -57,6 +63,8 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+* remove pendenzaPut.sendAbilitato
+* call read('classpath:utils/pa-prepara-avviso.feature')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -69,10 +77,19 @@ And match response.voci == '#[2]'
 And match response.voci[0].importo == pendenzaPut.voci[0].importo
 And match response.voci[1].importo == pendenzaPut.voci[1].importo
 
-# Recupero dal giornale eventi interno la risposta del servizio SEND interrogato al caricamento
-# della pendenza, per calcolare gli importi attesi comprensivi delle spese di notifica.
-# Ci si attende una sola interrogazione: la riacquisizione forzata dalla data di validita'
-# decorsa non deve rieseguire la chiamata SEND (retention non ancora scaduta).
+# Verifico il pagamento (la pendenza ha dataValidita decorsa: la verifica forza una
+# riacquisizione della pendenza dal gestionale dell'ente prima di generare la RPT).
+# E' in questo momento, e non al caricamento, che GovPay interroga SEND: l'attualizzazione
+# avviene in VersamentoUtils.acquisisciVersamento, non nel PUT della pendenza.
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def rispostaVerifica = response
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Recupero dal giornale eventi interno la risposta del servizio SEND, per calcolare gli
+# importi attesi comprensivi delle spese di notifica. Ci si attende una sola interrogazione,
+# quella innescata dalla riacquisizione.
 
 * call read('classpath:utils/send-recupera-fee.feature')
 * match numEventiSend == 1
@@ -80,26 +97,21 @@ And match response.voci[1].importo == pendenzaPut.voci[1].importo
 
 # Aggiorno gli importi attesi (solo sulla voce dell'ente proprietario della pendenza,
 # idDominio_5 non deve essere impattato dalla commissione SEND) da qui in poi utilizzati
-# dalle fixture per verificare la ricevuta.
+# dalle fixture per verificare la ricevuta. Va fatto prima di validare la risposta della
+# verifica, che confronta gli importi con pendenzaPut.
 
 * set pendenzaPut.importo = addEuro(pendenzaPut.importo, sendFeeEuro)
 * set pendenzaPut.voci[0].importo = addEuro(pendenzaPut.voci[0].importo, sendFeeEuro)
 * def importo = pendenzaPut.importo
 
-# Verifico il pagamento (la pendenza ha dataValidita decorsa: la verifica forza una
-# riacquisizione della pendenza dal gestionale dell'ente prima di generare la RPT)
-
-* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
-* match response == esitoVerifyPayment
-* def ccp = response.ccp
-* def ccp_numero_avviso = response.ccp
+* match rispostaVerifica == read(pathEsitoVerifyPayment)
 
 # Attivo il pagamento
 
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* match response.dati == read(pathEsitoGetPayment)
 
 # Verifico la notifica di attivazione: gli importi devono essere comprensivi della
 # commissione SEND sulla sola voce dell'ente proprietario della pendenza
@@ -146,42 +158,37 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)
 
-# Commissione SEND calcolata al caricamento (una sola interrogazione)
+* remove pendenzaPut.sendAbilitato
+# Caricamento pendenza nel servizio ENTE
+* call read('classpath:utils/pa-prepara-avviso.feature')
 
-* call read('classpath:utils/send-recupera-fee.feature')
-* match numEventiSend == 1
+# Azzero la cache dei prezzi del simulatore (non tocca RPT/rendicontazioni) per partire da
+# uno stato noto: al caricamento della pendenza SEND non e' stato interrogato.
 
-# Forzo il superamento della retention SEND e azzero la cache del simulatore (solo la
-# cache dei prezzi, non tocca RPT/rendicontazioni), cosi' la riacquisizione della pendenza
-# innescata dalla dataValidita decorsa reinterroghera' davvero SEND restituendo un
-# importo diverso da quello calcolato al caricamento.
-
-* call sleep(3000)
-
-Given url ndpsym_url + '/rs/delivery/v2.3'
+Given url ndpsym_url + '/pagopa/rs/delivery/v2.3'
 And path 'reset'
 When method get
 Then assert responseStatus == 200
 
-# Verifico il pagamento: la riacquisizione della pendenza (dataValidita decorsa, retention
-# scaduta) reinterroga SEND prima di generare la RPT
+# Verifico il pagamento: la riacquisizione della pendenza (dataValidita decorsa) interroga
+# SEND prima di generare la RPT
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * def rispostaVerifica = response
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
-# Recupero la commissione SEND attualizzata: deve essere una nuova interrogazione (non il
-# valore cachato al caricamento), calcolo gli importi attesi ripartendo sempre dai valori
-# originali della pendenza (mai sommando sopra un importo gia' attualizzato in precedenza)
+# Recupero la commissione SEND attualizzata: e' la prima e unica interrogazione. Calcolo gli
+# importi attesi ripartendo sempre dai valori originali della pendenza (mai sommando sopra un
+# importo gia' attualizzato in precedenza)
 
 * call read('classpath:utils/send-recupera-fee.feature')
-* match numEventiSend == 2
+* match numEventiSend == 1
 * set pendenzaPut.importo = addEuro(pendenzaPutBase.importo, sendFeeEuro)
 * set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
 * def importo = pendenzaPut.importo
 
-* match rispostaVerifica == esitoVerifyPayment
+* match rispostaVerifica == read(pathEsitoVerifyPayment)
 
 # Attivo il pagamento con esito NON eseguito (NON_ESEGUITO_SANP_24, "R22")
 
@@ -190,7 +197,7 @@ Then assert responseStatus == 200
 * def inviaRicevuta = 'true'
 * def idCart = getCurrentTimeMillis()
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* match response.dati == read(pathEsitoGetPayment)
 
 # Verifico la notifica di attivazione: gli importi devono gia' riflettere la commissione
 # SEND attualizzata, anche se il pagamento non e' andato a buon fine
@@ -214,9 +221,11 @@ Then assert responseStatus == 200
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
-# Recupero di nuovo la commissione SEND: la riacquisizione avviene ancora (dataValidita
-# resta decorsa), ma restando entro la retention si attende il riutilizzo del valore gia'
-# attualizzato al tentativo precedente, senza una terza interrogazione a SEND
+# Recupero di nuovo la commissione SEND: la riacquisizione avviene ancora (dataValidita resta
+# decorsa). Se il tempo trascorso dal tentativo precedente e' entro la retention configurata
+# (it.govpay.client.send.retention) viene riutilizzato il valore gia' attualizzato, altrimenti
+# c'e' una nuova interrogazione: non si asserisce il numero, gli importi attesi vengono in
+# entrambi i casi ricalcolati dai valori originali della pendenza.
 
 * call read('classpath:utils/send-recupera-fee.feature')
 * print 'Numero di interrogazioni SEND dopo il secondo tentativo di pagamento:', numEventiSend
@@ -224,12 +233,12 @@ Then assert responseStatus == 200
 * set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
 * def importo = pendenzaPut.importo
 
-* match rispostaVerificaRetry == esitoVerifyPayment
+* match rispostaVerificaRetry == read(pathEsitoVerifyPayment)
 
 * def tipoRicevuta = "R01"
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
-* match response.dati == esitoGetPayment
+* match response.dati == read(pathEsitoGetPayment)
 
 * def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')

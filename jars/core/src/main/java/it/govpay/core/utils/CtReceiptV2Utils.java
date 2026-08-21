@@ -455,15 +455,16 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 				}
 
 				// Se ho solo aggiornato un pagamento che gia' c'era, non devo fare altro.
-				// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
+				// Il controllo di corrispondenza degli importi non serve piu' poiche' con send potrebbe esserci stata una maggiorazione della prima voce.
+				// Se lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
 
 				dataPagamento = pagamento.getDataPagamento();
 				totalePagato = totalePagato.add(pagamento.getImportoPagato());
 
 				if(insert) {
-					if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
+					if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
 						singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
-					else {
+					} else {
 						List<String> anomalie = new ArrayList<>();
 
 						if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.ESEGUITO)) {
@@ -472,11 +473,6 @@ public class CtReceiptV2Utils  extends NdpValidationUtils {
 							log.warn(irregolarita);
 						}
 
-						if(singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) != 0) {
-							irregolarita = "L'importo pagato non corrisponde all'importo dovuto.";
-							anomalie.add(irregolarita);
-							log.warn(irregolarita);
-						}
 						if(recupero)
 							MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_PAGAMENTO_RECUPERO_RT_ACQUISIZIONE_PAGAMENTO_ANOMALO, receiptId, StringUtils.join(anomalie,"\n"));
 						else 

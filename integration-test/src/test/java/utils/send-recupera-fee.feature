@@ -17,9 +17,10 @@ When method get
 Then status 200
 And assert response.risultati.length > 0
 
+# il servizio /eventi ordina per id DESC (EventiDAO.getDefaultFilterSortWrapperDesc), quindi il
+# primo risultato e' l'interrogazione SEND piu' recente
 * def numEventiSend = response.risultati.length
-* def eventiSendOrdinati = response.risultati.sort((a, b) => a.dataEvento.localeCompare(b.dataEvento))
-* def ultimoEventoSend = eventiSendOrdinati[eventiSendOrdinati.length - 1]
+* def ultimoEventoSend = response.risultati[0]
 * match ultimoEventoSend.esito == 'OK'
 
 * json payloadRispostaSend = decodeBase64(ultimoEventoSend.parametriRisposta.payload)

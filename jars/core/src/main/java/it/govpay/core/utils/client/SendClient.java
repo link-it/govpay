@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.LogUtils;
 import it.govpay.core.utils.client.beans.NotificationPriceResponse;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
@@ -43,13 +45,14 @@ public class SendClient extends BasicClientCORE {
 	private static final String APPLICATION_JSON = "application/json";
 	private static final String HEADER_ACCEPT = "Accept";
 	private static final String NOTIFICATION_PRICE_OPERATION_PATH = "/delivery/v2.3/price/{0}/{1}";
-	private static final String NOTIFICATION_PRICE_OPERATION_ID = "notificationPriceV23";
+	private static final String NOTIFICATION_PRICE_OPERATION_ID = EventoContext.APIPAGOPA_TIPOEVENTO_SEND_NOTIFICATION_PRICE;
 
 	private static Logger log = LoggerWrapperFactory.getLogger(SendClient.class);
 
-	public SendClient(Dominio dominio, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException {
+	public SendClient(Dominio dominio, Connettore connettore, EventoContext eventoCtx) throws ClientInitializeException, IOException, ServiceException {
 		super(dominio, TipoConnettore.SEND, TipoDestinatario.SEND, connettore, eventoCtx);
 		this.operationID = NOTIFICATION_PRICE_OPERATION_ID;
+		this.setGiornale(new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale());
 	}
 
 	/**
@@ -70,7 +73,7 @@ public class SendClient extends BasicClientCORE {
 			NotificationPriceResponse response = ConverterUtils.parse(jsonResponse, NotificationPriceResponse.class);
 			return response.getTotalPrice();
 		} catch (IOException e) {
-			log.warn("Errore durante la deserializzazione della risposta del servizio SEND: " + e.getMessage(), e);
+			LogUtils.logError(log, "Errore durante la deserializzazione della risposta del servizio SEND: " + e.getMessage(), e);
 			throw new ClientException("Errore nella deserializzazione della risposta del servizio SEND: " + e.getMessage(), e);
 		}
 	}

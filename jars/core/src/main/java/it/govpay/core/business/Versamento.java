@@ -368,6 +368,12 @@ public class Versamento  {
 		versamento.setDataUltimaComunicazioneAca(versamentoLetto.getDataUltimaComunicazioneAca());
 		versamento.setDataUltimaModificaAca(versamentoLetto.getDataUltimaModificaAca());
 		
+		// gestione send
+		versamento.setSendAbilitato(versamentoLetto.isSendAbilitato());
+		// l'importo attualizzato e la data dell'ultima interrogazione sono gestiti da GovPay e non dall'ente:
+		// vanno preservati perche' su di essi si basa il controllo della retention in VersamentoUtils.aggiornaImportoSend
+		versamento.setSendImportoTotale(versamentoLetto.getSendImportoTotale());
+		versamento.setSendDataAggiornamento(versamentoLetto.getSendDataAggiornamento());
 	}
 
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException {

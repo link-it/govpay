@@ -53,6 +53,8 @@ public class EventoContext implements Serializable {
 	public static final String APIPAGOPA_TIPOEVENTO_GPD_PUBLISHPOSITION = "publishPosition";
 	public static final String APIPAGOPA_TIPOEVENTO_GPD_INVALIDATEPOSITION = "invalidatePosition";
 	public static final String APIPAGOPA_TIPOEVENTO_GPD_HEALTHCHECK = "healthCheck";
+	
+	public static final String APIPAGOPA_TIPOEVENTO_SEND_NOTIFICATION_PRICE = "notificationPriceV23";
 
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";

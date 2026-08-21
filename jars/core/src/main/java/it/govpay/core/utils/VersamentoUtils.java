@@ -446,7 +446,7 @@ public class VersamentoUtils {
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null, true, false);
 
 			if(versamento.isSendAbilitato()) {
-				aggiornaImportoSend(versamento, eventoCtx, log);
+				aggiornaImportoSend(versamento, log);
 			}
 		} catch (ClientInitializeException e) {
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERIFICA_FAIL_KEY, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
@@ -472,7 +472,9 @@ public class VersamentoUtils {
 	 * e' regolato dalla proprieta' di installazione 'aggiornamentoValiditaMandatorio': se mandatorio l'errore
 	 * viene rilanciato, altrimenti viene loggato un warning e si prosegue con l'importo originale della pendenza.
 	 */
-	private static void aggiornaImportoSend(Versamento versamento, EventoContext eventoCtx, Logger log) throws GovPayException {
+	private static void aggiornaImportoSend(Versamento versamento, Logger log) throws ServiceException, GovPayException, IOException {
+		IContext ctx = ContextThreadLocal.get();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		Date now = new Date();
 		if(versamento.getSendDataAggiornamento() != null) {
 			long retention = GovpayConfig.getInstance().getRetentionSend();
@@ -481,10 +483,15 @@ public class VersamentoUtils {
 				return;
 			}
 		}
-
+		
+		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
+		eventoCtx.setIuv(versamento.getIuvVersamento());
+		eventoCtx.setIdPendenza(versamento.getCodVersamentoEnte());
 		try {
-			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			Dominio dominio = versamento.getDominio(configWrapper);
+			eventoCtx.setCodDominio(dominio.getCodDominio());
+			eventoCtx.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			
 			Connettore connettoreSend = dominio.getConnettoreSend();
 			if(connettoreSend == null || !connettoreSend.isAbilitato()) {
 				throw new ClientInitializeException("Connettore SEND non configurato o non abilitato per il dominio " + dominio.getCodDominio());
@@ -492,16 +499,36 @@ public class VersamentoUtils {
 
 			SendClient sendClient = new SendClient(dominio, connettoreSend, eventoCtx);
 			Long importoEurocent = sendClient.recuperaImportoNotifica(dominio.getCodDominio(), versamento.getNumeroAvviso());
+			eventoCtx.setEsito(Esito.OK);
 			BigDecimal importoEuro = importoEurocent != null ? BigDecimal.valueOf(importoEurocent).movePointLeft(2) : null;
 
 			versamento.setSendImportoTotale(importoEuro);
 			versamento.setSendDataAggiornamento(now);
 			new VersamentiBD(configWrapper).updateVersamentoInformazioniSend(versamento.getId(), importoEuro, now);
-		} catch (ClientInitializeException | ClientException | ServiceException e) {
+		} catch (ClientException e) {
+			eventoCtx.setSottotipoEsito(e.getResponseCode() + "");
+			eventoCtx.setEsito(Esito.KO);
+			eventoCtx.setDescrizioneEsito(e.getMessage());
+			eventoCtx.setException(e);
 			if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
 				throw new GovPayException(e);
 			}
 			log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si prosegue con l'importo originale della pendenza. Errore: {}", versamento.getCodVersamentoEnte(), e.getMessage(), e);
+		} catch (ClientInitializeException | ServiceException e) {
+			eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+			eventoCtx.setEsito(Esito.KO);
+			eventoCtx.setDescrizioneEsito(e.getMessage());
+			eventoCtx.setException(e);
+			if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
+				throw new GovPayException(e);
+			}
+			log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si prosegue con l'importo originale della pendenza. Errore: {}", versamento.getCodVersamentoEnte(), e.getMessage(), e);
+		} finally {
+			if(eventoCtx.isRegistraEvento()) {
+				// log evento
+				EventiBD eventiBD = new EventiBD(configWrapper);
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
+			}
 		}
 	}
 
