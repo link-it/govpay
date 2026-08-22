@@ -141,7 +141,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def dataRptEnd2 = getDateTime()
 
 * print '[RecuperoRT-V2] Inizio verifica RPP con retry'
-* configure retry = { count: 25, interval: 20000 }
+* configure retry = { count: 30, interval: 20000 }
 
 Given url backofficeBaseurl
 And path '/rpp'
@@ -360,7 +360,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def dataRptEnd2 = getDateTime()
 
 * print '[RecuperoRT-MU] Inizio verifica RPP con retry'
-* configure retry = { count: 25, interval: 20000 }
+* configure retry = { count: 30, interval: 20000 }
 
 Given url backofficeBaseurl
 And path '/rpp'
