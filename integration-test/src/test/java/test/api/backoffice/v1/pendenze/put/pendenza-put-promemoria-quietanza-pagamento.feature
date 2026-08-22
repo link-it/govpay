@@ -36,6 +36,12 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def tipoRicevuta = "R00"
 * def riversamentoCumulativo = "true"
 
+* callonce read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
+
+# reset rendicontazioni sul simulatore
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
 Scenario: Pendenza caricata con invio Notifica di quietanza di pagamento
 
 Given url backofficeBaseurl

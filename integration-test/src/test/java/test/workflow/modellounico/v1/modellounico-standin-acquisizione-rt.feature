@@ -290,7 +290,7 @@ Then assert responseStatus == 200
 # Verifico lo stato della pendenza
 
 * call read('classpath:utils/api/v1/backoffice/pendenza-get-dettaglio.feature')
-* match response.stato == 'ANOMALA'
+* match response.stato == 'ESEGUITA'
 * match response.dataPagamento == '#regex \\d\\d\\d\\d-\\d\\d-\\d\\d'
 # * match response.voci[0].stato == 'Eseguito'
 * match response.rpp == '#[1]'
