@@ -3,7 +3,7 @@
    "idPendenza":"#(idPendenza + '')",
    "rpt":{
          "creditorReferenceId":"#(iuv)",
-         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "paymentAmount":"#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()",
          "dueDate":"#ignore",
          "retentionDate":null,
          "lastPayment": true,

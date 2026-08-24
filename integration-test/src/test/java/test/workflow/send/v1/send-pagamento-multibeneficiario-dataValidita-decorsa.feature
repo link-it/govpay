@@ -93,6 +93,7 @@ And match response.voci[1].importo == pendenzaPut.voci[1].importo
 
 * call read('classpath:utils/send-recupera-fee.feature')
 * match numEventiSend == 1
+* def sendFeeEurocentVerifica = sendFeeEurocent
 * def addEuro = function(a,b){ return Number((a+b).toFixed(2)) }
 
 # Aggiorno gli importi attesi (solo sulla voce dell'ente proprietario della pendenza,
@@ -112,6 +113,18 @@ And match response.voci[1].importo == pendenzaPut.voci[1].importo
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == read(pathEsitoGetPayment)
+
+# Anche l'attivazione innesca una riacquisizione della pendenza (la dataValidita resta
+# decorsa), ma SEND non deve essere reinterrogato: il valore calcolato in fase di verifica e'
+# entro la finestra di retention (it.govpay.client.send.retention, default 900000 ms, molto
+# piu' ampia dei pochi secondi che separano verifica e attivazione).
+# NB: il controllo sul numero di eventi e' necessario perche' il simulatore memoizza il prezzo
+# per avviso (Send.java, cache su paTaxId|noticeCode): una seconda interrogazione restituirebbe
+# la stessa fee e non sarebbe rilevabile dal confronto degli importi.
+
+* call read('classpath:utils/send-recupera-fee.feature')
+* match numEventiSend == 1
+* match sendFeeEurocent == sendFeeEurocentVerifica
 
 # Verifico la notifica di attivazione: gli importi devono essere comprensivi della
 # commissione SEND sulla sola voce dell'ente proprietario della pendenza
@@ -184,6 +197,7 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/send-recupera-fee.feature')
 * match numEventiSend == 1
+* def sendFeeEurocentPrimoTentativo = sendFeeEurocent
 * set pendenzaPut.importo = addEuro(pendenzaPutBase.importo, sendFeeEuro)
 * set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
 * def importo = pendenzaPut.importo
@@ -221,14 +235,14 @@ Then assert responseStatus == 200
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
-# Recupero di nuovo la commissione SEND: la riacquisizione avviene ancora (dataValidita resta
-# decorsa). Se il tempo trascorso dal tentativo precedente e' entro la retention configurata
-# (it.govpay.client.send.retention) viene riutilizzato il valore gia' attualizzato, altrimenti
-# c'e' una nuova interrogazione: non si asserisce il numero, gli importi attesi vengono in
-# entrambi i casi ricalcolati dai valori originali della pendenza.
+# Recupero di nuovo la commissione SEND. A questo punto la pendenza e' stata riacquisita tre
+# volte (verifica e attivazione del primo tentativo, verifica del secondo) perche' la
+# dataValidita resta decorsa, ma restando entro la finestra di retention si deve riutilizzare
+# il valore attualizzato alla prima interrogazione, senza ulteriori chiamate a SEND.
 
 * call read('classpath:utils/send-recupera-fee.feature')
-* print 'Numero di interrogazioni SEND dopo il secondo tentativo di pagamento:', numEventiSend
+* match numEventiSend == 1
+* match sendFeeEurocent == sendFeeEurocentPrimoTentativo
 * set pendenzaPut.importo = addEuro(pendenzaPutBase.importo, sendFeeEuro)
 * set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
 * def importo = pendenzaPut.importo
@@ -239,6 +253,13 @@ Then assert responseStatus == 200
 * def inviaRicevuta = 'true'
 * call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == read(pathEsitoGetPayment)
+
+# Ultima riacquisizione (attivazione del secondo tentativo): la finestra di retention non e'
+# ancora scaduta, quindi il totale delle interrogazioni a SEND per questa pendenza resta uno
+
+* call read('classpath:utils/send-recupera-fee.feature')
+* match numEventiSend == 1
+* match sendFeeEurocent == sendFeeEurocentPrimoTentativo
 
 * def ccp = numeroAvviso
 * call read('classpath:utils/pa-notifica-attivazione.feature')
@@ -266,3 +287,144 @@ Then assert responseStatus == 200
 * match response.rpp[0].rt == '#notpresent'
 * match response.rpp[1].stato == 'RT_ACCETTATA_PA'
 * match response.rpp[1].rt == '#notnull'
+
+Scenario: Scadenza della retention SEND tra due tentativi di pagamento, con riattualizzazione della commissione
+
+# Variante dello scenario precedente che verifica il caso opposto: attendendo oltre la finestra
+# di retention, la riacquisizione innescata dal secondo tentativo deve reinterrogare SEND e
+# aggiornare l'importo con la nuova commissione.
+#
+# PREREQUISITO DI AMBIENTE: richiede it.govpay.client.send.retention inferiore ai 5000 ms di
+# attesa impostati sotto (nell'ambiente di test e' valorizzata a 2000). Con il valore di default
+# (900000 ms, 15 minuti) la finestra non scade e lo scenario fallisce sul conteggio degli eventi.
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/workflow/send/v1/msg/pendenza-put_multibeneficiario_send.json')
+* def pendenzaPutBase = read('classpath:test/workflow/send/v1/msg/pendenza-put_multibeneficiario_send.json')
+* def addEuro = function(a,b){ return Number((a+b).toFixed(2)) }
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)
+
+* remove pendenzaPut.sendAbilitato
+# Caricamento pendenza nel servizio ENTE
+* call read('classpath:utils/pa-prepara-avviso.feature')
+
+# Azzero la cache dei prezzi del simulatore per partire da uno stato noto
+
+Given url ndpsym_url + '/pagopa/rs/delivery/v2.3'
+And path 'reset'
+When method get
+Then assert responseStatus == 200
+
+# Primo tentativo: la verifica innesca la riacquisizione e la prima interrogazione a SEND
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def rispostaVerifica = response
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+* call read('classpath:utils/send-recupera-fee.feature')
+* match numEventiSend == 1
+* def sendFeeEurocentPrimoTentativo = sendFeeEurocent
+* set pendenzaPut.importo = addEuro(pendenzaPutBase.importo, sendFeeEuro)
+* set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
+* def importo = pendenzaPut.importo
+
+* match rispostaVerifica == read(pathEsitoVerifyPayment)
+
+# Attivo il pagamento con esito NON eseguito (NON_ESEGUITO_SANP_24, "R22")
+
+* def riversamentoCumulativo = 'true'
+* def tipoRicevuta = "R22"
+* def inviaRicevuta = 'true'
+* def idCart = getCurrentTimeMillis()
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == read(pathEsitoGetPayment)
+
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/send/v1/msg/notifica-attivazione-multibeneficiario-send.json')
+
+* call read('classpath:utils/api/v1/backoffice/pendenza-get-dettaglio.feature')
+* match response.stato == 'NON_ESEGUITA'
+* match response.rpp[0].stato == 'RPT_ACCETTATA_NODO'
+
+# Attendo la scadenza della finestra di retention e azzero la cache dei prezzi del simulatore,
+# che memoizza la risposta per avviso (Send.java, cache su paTaxId|noticeCode): senza il reset
+# la nuova interrogazione restituirebbe la stessa commissione e il riaggiornamento dell'importo
+# non sarebbe osservabile.
+
+* call sleep(5000)
+
+Given url ndpsym_url + '/pagopa/rs/delivery/v2.3'
+And path 'reset'
+When method get
+Then assert responseStatus == 200
+
+# Ritento il pagamento: la riacquisizione trova la retention scaduta e reinterroga SEND
+
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
+* def rispostaVerificaRetry = response
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
+
+# Interrogazione supplementare avvenuta: due eventi e commissione diversa dalla precedente.
+# Gli importi attesi vengono ricalcolati dai valori originali della pendenza con la nuova quota.
+
+* call read('classpath:utils/send-recupera-fee.feature')
+* match numEventiSend == 2
+* assert sendFeeEurocent != sendFeeEurocentPrimoTentativo
+* set pendenzaPut.importo = addEuro(pendenzaPutBase.importo, sendFeeEuro)
+* set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
+* def importo = pendenzaPut.importo
+
+* match rispostaVerificaRetry == read(pathEsitoVerifyPayment)
+
+* def tipoRicevuta = "R01"
+* def inviaRicevuta = 'true'
+* call read('classpath:utils/psp-paGetPayment.feature')
+* match response.dati == read(pathEsitoGetPayment)
+
+# L'attivazione del secondo tentativo rientra nella nuova finestra di retention: nessuna terza
+# interrogazione, la commissione resta quella appena riattualizzata
+
+* call read('classpath:utils/send-recupera-fee.feature')
+* match numEventiSend == 2
+* def sendFeeEurocentSecondoTentativo = sendFeeEurocent
+
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-attivazione.feature')
+* match response == read('classpath:test/workflow/send/v1/msg/notifica-attivazione-multibeneficiario-send.json')
+
+# Verifico la notifica di terminazione (ricevuta), con gli importi della nuova commissione
+
+* call sleep(10000)
+
+* def ccp = numeroAvviso
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+* def ccp = ccp_numero_avviso
+* match response == read('classpath:test/workflow/send/v1/msg/notifica-terminazione-eseguito-multibeneficiario-send.json')
+
+# Stato finale: la prima RPT annullata portava la commissione originale, la seconda quella
+# riattualizzata dopo la scadenza della retention
+
+* call read('classpath:utils/api/v1/backoffice/pendenza-get-dettaglio.feature')
+* match response.stato == 'ESEGUITA'
+* match response.dataPagamento == '#regex \\d\\d\\d\\d-\\d\\d-\\d\\d'
+* match response.voci[0].stato == 'Eseguito'
+* match response.rpp == '#[2]'
+* match response.rpp[0].stato == 'RPT_ANNULLATA'
+* match response.rpp[0].rt == '#notpresent'
+* match response.rpp[1].stato == 'RT_ACCETTATA_PA'
+* match response.rpp[1].rt == '#notnull'
+* assert sendFeeEurocentSecondoTentativo != sendFeeEurocentPrimoTentativo

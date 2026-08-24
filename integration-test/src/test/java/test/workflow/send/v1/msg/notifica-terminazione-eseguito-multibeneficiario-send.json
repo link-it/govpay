@@ -3,7 +3,7 @@
    "idPendenza":"#(idPendenza + '')",
    "rpt":{
          "creditorReferenceId":"#(iuv)",
-         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "paymentAmount":"#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()",
          "dueDate":"#ignore",
          "retentionDate":null,
          "lastPayment": true,
@@ -58,7 +58,7 @@
          "fiscalCode":"#(idDominio)",
          "outcome":"OK",
          "creditorReferenceId":"#(iuv)",
-         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "paymentAmount":"#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()",
          "description":"#notnull",
          "companyName":"#(dominio.ragioneSociale)",
          "officeName":null,
