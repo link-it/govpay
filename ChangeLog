@@ -1,3 +1,18 @@
+2026-08-25  Giuliano Pintori <pintori@link.it>
+
+        * Aggiornamento librerie per la risoluzione di 22 CVE.
+        Scansione OWASP dependency-check sul reactor completo (202 artefatti analizzati) con database NVD aggiornato: rilevate 22 CVE distinte, di cui 6 CRITICAL e 13 HIGH, su 8 artefatti. Aggiornate 5 property nel pom radice, con l'indicazione delle CVE risolte in commento sulla riga, come gia' fatto per com.sun.mail:
+        - cxf.version 4.2.2 -> 4.2.3: chiude 12 CVE (CVE-2026-54225, CVE-2026-57817, CVE-2026-57818, CVE-2026-57819, CVE-2026-61466, CVE-2026-63687, CVE-2026-64958, CVE-2026-65432, CVE-2026-65583, CVE-2026-66909, CVE-2026-68079, CVE-2026-68481).
+        - httpclient.version 5.6.1 -> 5.6.4: chiude CVE-2026-71290 (verifica errata dell'hostname TLS, CVSS 9.1) e CVE-2026-64607.
+        - logger.version (log4j) 2.26.0 -> 2.26.1: chiude CVE-2026-49844.
+        - jackson.version 2.22.0 -> 2.22.2: chiude CVE-2026-54515. La property jackson-annotations.version resta a 2.22: su Maven Central non esistono patch in quella linea.
+        - postgresql.driver.version 42.7.11 -> 42.7.13: chiude CVE-2026-54291.
+        Due dipendenze transitive si allineano senza intervento, come verificato sui pom padre e confermato dal dependency:tree: neethi 3.2.2 -> 3.2.3 perche' cxf-parent 4.2.3 pinna cxf.neethi.version=3.2.3 (chiude CVE-2026-66142, CVE-2026-66143, CVE-2026-66144), e httpcore5 5.4 -> 5.4.3 perche' httpclient5-parent 5.6.4 pinna httpcore.version=5.4.3 (chiude CVE-2026-54399, CVE-2026-54428). Non e' stato necessario aggiungere entry in dependencyManagement.
+        Nota sull'esposizione reale: delle CVE CXF con CVSS 9.8/9.1 la maggior parte riguarda componenti non utilizzati da GovPay, ovvero il trasporto JMS (cxf-transports-jms non e' fra le dipendenze) e i componenti authorization server e OIDC relying party. CXF OAuth2 e' usato solo lato client per il grant client_credentials dei connettori in uscita (it.govpay.core.utils.client.oauth2.Oauth2ClientCredentialsManager), mentre l'OAuth2 in ingresso passa da Spring Security (NimbusJwtDecoder piu' i validatori custom in jars/api-commons). Restano applicabili le CVE sul processing dei messaggi JAX-RS/JAX-WS (CVE-2026-54225 attachment-max-size, CVE-2026-57819 maxFormParameters, CVE-2026-64958 DoS, CVE-2026-65432 lettura WSDL) e, con impatto sulle chiamate in uscita verso pagoPA, SEND, gestionali ente e ACA, la CVE-2026-71290 di httpclient5.
+        Nota di metodo: versions:display-property-updates riporta solo l'ultima versione pubblicata anche quando e' una pre-release, e in due casi mascherava la patch stabile che contiene il fix (proponeva httpclient 5.7-alpha1 al posto di 5.6.4 e log4j 3.0.0-beta1 al posto di 2.26.1). Le versioni target sono state ricavate dalle descrizioni delle CVE e verificate su Maven Central.
+        Verifica: mvn clean install verde su 19 moduli; nuova scansione OWASP su 203 artefatti con 0 CVE residue.
+        Segnalazione a parte: owasp.plugin.failBuildOnCVSS e' impostata a 11, sopra il massimo teorico di 10, quindi la pipeline non si interrompe mai per vulnerabilita' delle dipendenze e le 6 CRITICAL sopra non avrebbero prodotto alcun segnale in build.
+
 2026-07-30  Giuliano Pintori <pintori@link.it>
 
         * Rimozione del WAR api-user.

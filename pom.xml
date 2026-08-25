@@ -94,7 +94,7 @@
 
 		<!-- log -->
 		<slf4j.version>2.0.17</slf4j.version>
-		<logger.version>2.26.0</logger.version>
+		<logger.version>2.26.1</logger.version><!-- CVE-2026-49844 -->
 
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.81</swagger-codegen-maven-plugin.version>
@@ -105,11 +105,11 @@
 		<guava.version>33.6.0-jre</guava.version>
 
 		<!-- cxf -->
-		<cxf.version>4.2.2</cxf.version>
+		<cxf.version>4.2.3</cxf.version><!-- CVE-2026-54225, CVE-2026-57817, CVE-2026-57818, CVE-2026-57819, CVE-2026-61466, CVE-2026-63687, CVE-2026-64958, CVE-2026-65432, CVE-2026-65583, CVE-2026-66909, CVE-2026-68079, CVE-2026-68481. Allinea anche neethi a 3.2.3: CVE-2026-66142, CVE-2026-66143, CVE-2026-66144 -->
 		<cxf.xjc.runtime.version>4.2.0</cxf.xjc.runtime.version>
 
 		<!-- jackson -->
-		<jackson.version>2.22.0</jackson.version>
+		<jackson.version>2.22.2</jackson.version><!-- CVE-2026-54515 -->
 		<jackson-annotations.version>2.22</jackson-annotations.version>
 
 		<!-- Jersey -->
@@ -150,7 +150,7 @@
 		<freemarker.version>2.3.34</freemarker.version>
 
 		<!-- http client -->
-		<httpclient.version>5.6.1</httpclient.version>
+		<httpclient.version>5.6.4</httpclient.version><!-- CVE-2026-71290 (verifica hostname TLS), CVE-2026-64607. Allinea anche httpcore5 a 5.4.3: CVE-2026-54399, CVE-2026-54428 -->
 
 		<!-- concurrent -->
 		<concurrent.version>1.3.4</concurrent.version>
@@ -206,7 +206,7 @@
         <migbase64.version>2.2</migbase64.version>
 
         <!-- Postgres driver -->
-        <postgresql.driver.version>42.7.11</postgresql.driver.version>
+        <postgresql.driver.version>42.7.13</postgresql.driver.version><!-- CVE-2026-54291 -->
 
         <!-- Stampe -->
         <!-- xalan -->
