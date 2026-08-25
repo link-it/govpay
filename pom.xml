@@ -116,13 +116,15 @@
 		<jersey.version>3.1.12</jersey.version>
 
 		<!-- Spring -->
-		<spring.version>7.0.8</spring.version>
+		<!-- NB: le tre versioni Spring vanno aggiornate come blocco: spring-security 7.1.1 e
+		     spring-ldap 4.1.1 sono allineate a spring-framework 7.0.9 -->
+		<spring.version>7.0.9</spring.version>
 
 		<!-- Spring Security -->
-		<spring.security.version>7.1.0</spring.security.version>
+		<spring.security.version>7.1.1</spring.security.version>
 
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>4.1.0</spring.ldap.version>
+		<spring.ldap.version>4.1.1</spring.ldap.version>
 
 		<!-- nimbus-jose-jwt version -->
 		<nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>

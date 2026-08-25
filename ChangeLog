@@ -13,6 +13,13 @@
         Verifica: mvn clean install verde su 19 moduli; nuova scansione OWASP su 203 artefatti con 0 CVE residue.
         Segnalazione a parte: owasp.plugin.failBuildOnCVSS e' impostata a 11, sopra il massimo teorico di 10, quindi la pipeline non si interrompe mai per vulnerabilita' delle dipendenze e le 6 CRITICAL sopra non avrebbero prodotto alcun segnale in build.
 
+        * Aggiornamento del blocco Spring alle patch stabili correnti.
+        Aggiornate spring.version 7.0.8 -> 7.0.9, spring.security.version 7.1.0 -> 7.1.1 e spring.ldap.version 4.1.0 -> 4.1.1. Non sono aggiornamenti di sicurezza: la scansione OWASP non rileva CVE ne' su spring-core 7.0.8 ne' su spring-security-core 7.1.0 ne' su spring-security-ldap 7.1.0; si tratta di allineamento alle patch di manutenzione.
+        Le tre property vanno mosse come blocco unico e non singolarmente, perche' ogni release di Spring Security e Spring LDAP dichiara una precisa versione di Spring Framework: spring-security-core 7.1.0 dipende da spring-core 7.0.8 (coerente con la configurazione precedente), mentre spring-security-core 7.1.1 e spring-ldap-core 4.1.1 dipendono entrambe da spring-core 7.0.9. Aggiornare solo Spring Security lasciando il Framework a 7.0.8 farebbe vincere la dichiarazione del pom radice su quella attesa da Security. Il vincolo e' stato annotato in commento sopra la property spring.version.
+        Scartate le versioni proposte da versions:display-property-updates per queste property, 7.1.0-M1 per il Framework e 7.2.0-M1 per Security, in quanto milestone e non release; le patch stabili 7.0.9 e 7.1.1 sono state individuate elencando le versioni pubblicate su Maven Central.
+        Verifica: mvn clean install verde su 19 moduli, con versioni risolte confermate dal dependency:tree (spring-core 7.0.9, spring-security-core 7.1.1, spring-ldap-core 4.1.1). Verificato inoltre che nessun modulo del reactor sovrascriva le versioni Spring: sono tutte centralizzate nel pom radice.
+        Da collaudare a runtime prima del rilascio, poiche' la sola compilazione non e' sufficiente: i 12 modi di autenticazione configurati nei 4 file spring-sec dei WAR e i validatori JWT di jars/api-commons, dato che 127 classi del progetto importano org.springframework.security.
+
 2026-07-30  Giuliano Pintori <pintori@link.it>
 
         * Rimozione del WAR api-user.
