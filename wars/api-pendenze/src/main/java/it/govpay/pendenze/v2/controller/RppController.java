@@ -391,6 +391,11 @@ public class RppController extends BaseController {
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotAuthorizedException {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 
+		// senza informazioni di autenticazione non e' possibile verificare le autorizzazioni
+		if(details == null) {
+			throw AuthorizationManager.toNotAuthorizedException(user);
+		}
+
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 

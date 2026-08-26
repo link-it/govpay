@@ -62,7 +62,11 @@ public class AclConverter {
 		acl.setListaDiritti(lst);
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio()));
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
-		acl.setUtenza(authenticationDetails.getUtenza());
+		// senza informazioni di autenticazione l'utenza resta non valorizzata: l'assenza dei
+		// permessi viene rilevata dal controllo di autorizzazione a valle
+		if(authenticationDetails != null) {
+			acl.setUtenza(authenticationDetails.getUtenza());
+		}
 		return acl;
 	}
 
@@ -99,7 +103,11 @@ public class AclConverter {
 		acl.setListaDiritti(lst);
 		acl.setServizio(apiServizio);
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
-		acl.setUtenza(authenticationDetails.getUtenza());
+		// senza informazioni di autenticazione l'utenza resta non valorizzata: l'assenza dei
+		// permessi viene rilevata dal controllo di autorizzazione a valle
+		if(authenticationDetails != null) {
+			acl.setUtenza(authenticationDetails.getUtenza());
+		}
 		return acl;
 	}
 

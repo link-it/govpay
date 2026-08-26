@@ -46,8 +46,12 @@ public class IncassiConverter {
 		dto.setImporto(incassoPost.getImporto());
 		dto.setCodDominio(idDominio);
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
-		dto.setApplicazione(authenticationDetails.getApplicazione());
-		dto.setOperatore(authenticationDetails.getOperatore());
+		// senza informazioni di autenticazione applicazione e operatore restano non valorizzati:
+		// l'assenza dei permessi viene rilevata dal controllo di autorizzazione a valle
+		if(authenticationDetails != null) {
+			dto.setApplicazione(authenticationDetails.getApplicazione());
+			dto.setOperatore(authenticationDetails.getOperatore());
+		}
 		dto.setSct(incassoPost.getSct());
 		dto.setIuv(incassoPost.getIuv());
 		dto.setIdFlusso(incassoPost.getIdFlusso());
