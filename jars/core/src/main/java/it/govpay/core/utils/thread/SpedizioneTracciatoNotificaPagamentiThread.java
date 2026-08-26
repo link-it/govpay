@@ -658,7 +658,15 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		it.govpay.model.configurazione.MailServer mailserver = null;
 
 		try {
-			mailserver = AnagraficaManager.getConfigurazione(configWrapper).getBatchSpedizioneEmail().getMailserver();
+			// AnagraficaManager legge la configurazione senza applicare i valori di default
+			// (a differenza di it.govpay.core.business.Configurazione.getConfigurazione),
+			// quindi la sezione del batch di spedizione email puo' essere assente
+			it.govpay.model.configurazione.MailBatch batchSpedizioneEmail = AnagraficaManager.getConfigurazione(configWrapper).getBatchSpedizioneEmail();
+			if(batchSpedizioneEmail == null) {
+				throw new ServiceException("Configurazione mailserver mancante");
+			}
+
+			mailserver = batchSpedizioneEmail.getMailserver();
 		} catch (NotFoundException nfe) {
 			throw new ServiceException("Configurazione mailserver mancante");
 		}

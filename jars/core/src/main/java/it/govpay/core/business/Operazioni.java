@@ -378,7 +378,9 @@ public class Operazioni{
 		log.info("Eseguo Batch Spedizione notifiche AppIO");
 		try {
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
-			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
+			AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
+			// in assenza di configurazione il batch viene considerato disabilitato
+			if(batchSpedizioneAppIO == null || !batchSpedizioneAppIO.isAbilitato()) {
 				log.info("Batch Spedizione notifiche AppIO: spedizione notifiche AppIO disabilitata");
 				return "Spedizione notifiche AppIO disabilitata.";
 			}
@@ -716,7 +718,9 @@ public class Operazioni{
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
-			if(!batchSpedizioneEmail.isAbilitato()) {
+			// getConfigurazione applica i valori di default, quindi la sezione e' normalmente
+			// valorizzata; in assenza di configurazione il batch viene considerato disabilitato
+			if(batchSpedizioneEmail == null || !batchSpedizioneEmail.isAbilitato()) {
 				log.info("Batch Spedizione Promemoria terminato: spedizione promemoria Email disabilitata.");
 				return "Spedizione promemoria disabilitata.";
 			}
@@ -767,7 +771,11 @@ public class Operazioni{
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 			AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
 
-			if(!batchSpedizioneEmail.isAbilitato() && !batchSpedizioneAppIO.isAbilitato()) {
+			// in assenza di configurazione il relativo canale viene considerato disabilitato
+			boolean spedizioneEmailAbilitata = batchSpedizioneEmail != null && batchSpedizioneEmail.isAbilitato();
+			boolean spedizioneAppIOAbilitata = batchSpedizioneAppIO != null && batchSpedizioneAppIO.isAbilitato();
+
+			if(!spedizioneEmailAbilitata && !spedizioneAppIOAbilitata) {
 				log.info("Batch Gestione Promemoria terminato: spedizione promemoria Email e AppIO disabilitata.");
 				return "Spedizione promemoria Email e AppIO disabilitata.";
 			}

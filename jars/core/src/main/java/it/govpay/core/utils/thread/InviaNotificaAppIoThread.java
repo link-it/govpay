@@ -384,7 +384,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private void aggiornaNotificaAnnullata(NotificheAppIoBD notificheBD, String message) {
 		// Il client non e' stato creato non devo salvare info evento solo effettuare lo scheduling di un nuovo invio
 		try {
-			long tentativi = this.notifica.getTentativiSpedizione() + 1;
+			long tentativi = (this.notifica.getTentativiSpedizione() != null ? this.notifica.getTentativiSpedizione() : 0L) + 1;
 			
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -404,7 +404,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	
 	private void aggiornaNotificaDaSpedire(NotificheAppIoBD notificheBD, String message) {
 		try {
-			long tentativi = this.notifica.getTentativiSpedizione() + 1;
+			long tentativi = (this.notifica.getTentativiSpedizione() != null ? this.notifica.getTentativiSpedizione() : 0L) + 1;
 			
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));

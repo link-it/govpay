@@ -125,9 +125,9 @@ public class Promemoria {
 		try {
 			it.govpay.bd.model.Configurazione configurazione = configurazioneBD.getConfigurazione();
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
-			MailServer mailserver = batchSpedizioneEmail.getMailserver();
-			
-			if(mailserver == null) { // si sta provando ad 
+			MailServer mailserver = batchSpedizioneEmail != null ? batchSpedizioneEmail.getMailserver() : null;
+
+			if(mailserver == null) { // si sta provando ad
 				throw new ServiceException("MailServer non configurato!");
 			}
 			
@@ -871,7 +871,9 @@ public class Promemoria {
 		} else {
 			LogUtils.logError(log, errore, e);
 			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-			long tentativi = promemoria.getTentativiSpedizione() + 1;
+			// il contatore e' nullable (colonna tentativi_spedizione senza NOT NULL e campo del
+			// modello non inizializzato): il primo tentativo fallito porta il contatore a 1
+			long tentativi = (promemoria.getTentativiSpedizione() != null ? promemoria.getTentativiSpedizione() : 0L) + 1;
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
 			Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));

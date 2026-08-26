@@ -224,6 +224,13 @@ public class OperatoriBD extends BasicBD {
 
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException {
 		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
+
+		// l'operatore deve essere sempre associato a una utenza: se il riferimento manca il dato
+		// non e' utilizzabile
+		if(operatoreVO.getIdUtenza() == null) {
+			throw new NotFoundException("Nessuna utenza associata all'operatore [" + operatoreVO.getNome() + "]");
+		}
+
 		operatore.setUtenza(new UtenzeBD(this).getUtenza(operatoreVO.getIdUtenza().getId()));
 		return operatore;
 	}

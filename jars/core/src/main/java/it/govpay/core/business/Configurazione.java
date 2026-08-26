@@ -118,6 +118,13 @@ public class Configurazione {
 			configurazione.setGiornale(configurazioneDefault.getGiornale());
 		}
 
+		// il giornale della configurazione di default e' sempre valorizzato (getGiornaleDefault
+		// restituisce una nuova istanza), ma se anche il fallback fosse nullo non ci sarebbe
+		// nulla da validare
+		if(configurazione.getGiornale() == null) {
+			return;
+		}
+
 		if(configurazione.getGiornale().getApiBackendIO() == null) {
 			configurazione.getGiornale().setApiBackendIO(configurazioneDefault.getGiornale().getApiBackendIO());
 		}
