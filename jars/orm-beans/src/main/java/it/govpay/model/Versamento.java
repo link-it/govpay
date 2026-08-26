@@ -681,13 +681,25 @@ public class Versamento extends BasicModel {
 		this.idTipoVersamento = idTipoVersamento;
 	}
 
+	/**
+	 * Confronto numerico fra due importi: BigDecimal.equals considera anche la scala, quindi
+	 * 100.00 e 100.0 risulterebbero diversi pur rappresentando lo stesso importo.
+	 * Mantiene la tolleranza ai null di Objects.equals.
+	 */
+	private static boolean sameImporto(BigDecimal importo, BigDecimal altroImporto) {
+		if(importo == null || altroImporto == null)
+			return importo == altroImporto;
+
+		return importo.compareTo(altroImporto) == 0;
+	}
+
 	public boolean checkEsecuzioneUpdate(Versamento oldVersamento) {
-		
-		boolean equals = 
-				Objects.equals(this.getDataScadenza(), oldVersamento.getDataScadenza()) && 
-				Objects.equals(this.getDataValidita(), oldVersamento.getDataValidita()) && 
-				Objects.equals(this.getStatoVersamento(), oldVersamento.getStatoVersamento()) && 
-				Objects.equals(this.getImportoTotale(), oldVersamento.getImportoTotale()) && 
+
+		boolean equals =
+				Objects.equals(this.getDataScadenza(), oldVersamento.getDataScadenza()) &&
+				Objects.equals(this.getDataValidita(), oldVersamento.getDataValidita()) &&
+				Objects.equals(this.getStatoVersamento(), oldVersamento.getStatoVersamento()) &&
+				sameImporto(this.getImportoTotale(), oldVersamento.getImportoTotale()) &&
 				Objects.equals(this.getNumeroAvviso(), oldVersamento.getNumeroAvviso()) && 
 				Objects.equals(this.getCausaleVersamento(), oldVersamento.getCausaleVersamento());
 		

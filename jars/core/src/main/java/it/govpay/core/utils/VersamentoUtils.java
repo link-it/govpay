@@ -1351,7 +1351,9 @@ public class VersamentoUtils {
 	 */
 	public static boolean comunicaAggiornamentoPendenzaAllArchivioCentralizzato(Versamento versamento, Versamento versamentoLetto) {
 		
-			boolean importoModificato = !versamento.getImportoTotale().equals(versamentoLetto.getImportoTotale());
+			// confronto numerico e non con equals, che su BigDecimal considera anche la scala
+			// e segnalerebbe come modificato un importo invariato scritto con scala diversa
+			boolean importoModificato = versamento.getImportoTotale().compareTo(versamentoLetto.getImportoTotale()) != 0;
 			
 			boolean pendenzaAnnullataORipristinata = 
 					(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) 
