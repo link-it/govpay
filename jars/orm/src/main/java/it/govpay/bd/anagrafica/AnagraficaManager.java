@@ -646,7 +646,15 @@ public class AnagraficaManager {
 	public static Operatore getOperatore(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE;
-			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			OperatoriBDCacheWrapper operatoriBDWrapper = getOperatoriBDWrapper(configWrapper.isUseCache());
+
+			// i wrapper sono valorizzati alla costruzione dell'istanza di AnagraficaManager:
+			// se il manager non e' stato inizializzato non e' possibile leggere l'operatore
+			if(operatoriBDWrapper == null) {
+				throw new ServiceException("AnagraficaManager non inizializzato");
+			}
+
+			Object operatore = operatoriBDWrapper.getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException notFoundException) {

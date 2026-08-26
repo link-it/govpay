@@ -64,6 +64,13 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 		this.logConfigurazione();
 		String headerValue = request.getHeader(this.getPrincipalHeaderName());
 		log.debug("Letto Principal: [{}]", headerValue);
+
+		// header non presente: nessun principal da autenticare, come in HeaderPreAuthFilter.
+		// senza questo controllo il valore nullo arriverebbe alla decodifica del certificato
+		if(headerValue == null) {
+			return null;
+		}
+
 		return decodePrincipal(headerValue);
 	}
 

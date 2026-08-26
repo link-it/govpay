@@ -138,7 +138,7 @@ public class Notifica {
 				for(it.govpay.bd.model.Notifica notifica: notifichePerChiave) {
 					Date prossima = new GregorianCalendar(9999,1,1).getTime();
 					TipoNotifica tipoNotifica = notifica.getTipo();
-					long tentativi = notifica.getTentativiSpedizione() + 1;
+					long tentativi = (notifica.getTentativiSpedizione() != null ? notifica.getTentativiSpedizione() : 0L) + 1;
 					
 					switch (tipoNotifica) {
 					case ATTIVAZIONE:
@@ -161,7 +161,7 @@ public class Notifica {
 		// annullo eventuali notifiche di terminazione/fallimento lette
 		for(it.govpay.bd.model.Notifica notifica: notificheDaAnnullare) {
 			Date prossima = new GregorianCalendar(9999,1,1).getTime();
-			long tentativi = notifica.getTentativiSpedizione() + 1;
+			long tentativi = (notifica.getTentativiSpedizione() != null ? notifica.getTentativiSpedizione() : 0L) + 1;
 			notificheBD.updateAnnullata(notifica.getId(), MessageFormat.format("Notifica RPT[{0}] di tipo [{1}] non verra'' spedita verso l''applicazione, spedizione annullata", notifica.getRptKey(), notifica.getTipo()), tentativi, prossima);
 		}
 		

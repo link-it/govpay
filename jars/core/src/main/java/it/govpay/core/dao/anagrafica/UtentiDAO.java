@@ -85,15 +85,23 @@ public class UtentiDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+
+			// getAuthenticationDetails restituisce null se il principal non e' di un tipo
+			// riconosciuto: senza utenza non e' possibile costruire il profilo
+			if(userDetails == null || userDetails.getUtenza() == null) {
+				throw new ServiceException("Impossibile leggere il profilo dell'utenza: informazioni di autenticazione non disponibili");
+			}
+
+			Utenza utenza = userDetails.getUtenza();
 			response.setNome(userDetails.getIdentificativo());
-			response.setUtente(userDetails.getUtenza());
-			if(userDetails.getUtenza().isAutorizzazioneDominiStar()) {
+			response.setUtente(utenza);
+			if(utenza.isAutorizzazioneDominiStar()) {
 				DominiBD dominiBD = new DominiBD(configWrapper);
 				DominioFilter newFilter = dominiBD.newFilter();
 				List<Dominio> findAll = dominiBD.findAll(newFilter);
 				response.setDomini(findAll );
 			} else {
-				List<it.govpay.bd.model.IdUnitaOperativa> dominiUo = userDetails.getUtenza().getDominiUo(configWrapper);
+				List<it.govpay.bd.model.IdUnitaOperativa> dominiUo = utenza.getDominiUo(configWrapper);
 				List<Dominio> domini = new ArrayList<>();
 				try {
 					domini = convertIdUnitaOperativeToDomini(configWrapper, dominiUo);
@@ -103,12 +111,12 @@ public class UtentiDAO extends BaseDAO{
 
 				response.setDomini(domini);
 			}
-			if(userDetails.getUtenza().isAutorizzazioneTipiVersamentoStar()) {
+			if(utenza.isAutorizzazioneTipiVersamentoStar()) {
 				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(configWrapper);
 				TipoVersamentoFilter newFilter = tipiVersamentoBD.newFilter();
 				response.setTipiVersamento(tipiVersamentoBD.findAll(newFilter));
 			} else {
-				response.setTipiVersamento(userDetails.getUtenza().getTipiVersamento(configWrapper));
+				response.setTipiVersamento(utenza.getTipiVersamento(configWrapper));
 			}
 
 		} finally {
@@ -123,6 +131,13 @@ public class UtentiDAO extends BaseDAO{
 		try {
 			Authentication authentication = patchDTO.getUser();
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+
+			// getAuthenticationDetails restituisce null se il principal non e' di un tipo
+			// riconosciuto: senza utenza non c'e' un profilo da aggiornare
+			if(userDetails == null || userDetails.getUtenza() == null) {
+				throw new OperatoreNonTrovatoException("Non esiste un operatore associato all'utenza autenticata.");
+			}
+
 			Utenza utenza = userDetails.getUtenza();
 			for(PatchOp op: patchDTO.getOp()) {
 				UtenzaPatchUtils.patchProfiloOperatore(op, utenza, configWrapper);

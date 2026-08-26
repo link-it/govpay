@@ -140,7 +140,7 @@ public class InviaNotificaThread implements Runnable {
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_NOTIFICA_ANNULLATA);
 				LogUtils.logInfo(log, "Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(configWrapper);
-				long tentativi = this.notifica.getTentativiSpedizione() + 1;
+				long tentativi = (this.notifica.getTentativiSpedizione() != null ? this.notifica.getTentativiSpedizione() : 0L) + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
 				notificheBD.updateAnnullata(this.notifica.getId(), "Connettore Notifica non configurato, notifica annullata.", tentativi, prossima);
 				return;
@@ -210,7 +210,7 @@ public class InviaNotificaThread implements Runnable {
 				eventoCtx.setException(e);
 			}			
 			try {
-				long tentativi = this.notifica.getTentativiSpedizione() + 1;
+				long tentativi = (this.notifica.getTentativiSpedizione() != null ? this.notifica.getTentativiSpedizione() : 0L) + 1;
 				NotificheBD notificheBD = new NotificheBD(configWrapper);
 				
 				Date today = new Date();
