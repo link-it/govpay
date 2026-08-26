@@ -104,7 +104,8 @@ public class SondeConverter {
 			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizioneNotificheAppIO()) {
 
 
-				if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
+				// in assenza di configurazione il batch viene considerato disabilitato
+				if(configurazione.getBatchSpedizioneAppIo() == null || !configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
 					// batch disabilitato nella configurazione
 					rsModel.setStato(StatoSonda.ERROR);
 					rsModel.setDescrizioneStato(Costanti.NTFY_APP_IO_DISABILITATO_IMPOSTAZIONI);
