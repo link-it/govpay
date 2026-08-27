@@ -56,26 +56,51 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 
 	@Override
 	protected String getPrincipalHeaderName() {
-		return GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_NOME_HEADER);
+		Properties autenticazioneSSLHeaderProperties = GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties();
+
+		// senza configurazione non e' definito il nome dell'header da cui leggere il certificato
+		if(autenticazioneSSLHeaderProperties == null) {
+			return null;
+		}
+
+		return autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_NOME_HEADER);
 	}
 
 	@Override
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
 		this.logConfigurazione();
-		String headerValue = request.getHeader(this.getPrincipalHeaderName());
-		log.debug("Letto Principal: [{}]", headerValue);
+		String principalHeaderName = this.getPrincipalHeaderName();
+
+		// nome dell'header non configurato: non c'e' alcun principal da leggere
+		if(principalHeaderName == null) {
+			log.debug("Nome dell'header del principal non configurato");
+			return null;
+		}
+
+		String headerValue = request.getHeader(principalHeaderName);
 
 		// header non presente: nessun principal da autenticare, come in HeaderPreAuthFilter.
 		// senza questo controllo il valore nullo arriverebbe alla decodifica del certificato
 		if(headerValue == null) {
+			log.debug("Principal non presente nell'header [{}]", principalHeaderName);
 			return null;
 		}
+
+		log.debug("Letto Principal: [{}]", headerValue);
 
 		return decodePrincipal(headerValue);
 	}
 
 	private String decodePrincipal(String headerValue) {
 		Properties autenticazioneSSLHeaderProperties = GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties();
+
+		// il metodo e' raggiungibile solo se getPrincipalHeaderName ha restituito un valore, quindi
+		// con configurazione presente; la guardia rende esplicita l'invariante
+		if(autenticazioneSSLHeaderProperties == null) {
+			log.error("Configurazione dell'autenticazione SSL via header non presente: impossibile decodificare il certificato");
+			return null;
+		}
+
 		boolean urlDecode = this.getPropertyBooleanValue(autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_URL_DECODE));
 		boolean base64Decode = this.getPropertyBooleanValue(autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_BASE64_DECODE));
 		boolean replaceEnabled = this.getPropertyBooleanValue(autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_REPLACE_ENABLED));
@@ -158,6 +183,11 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 
 	private void logConfigurazione() {
 		Properties autenticazioneSSLHeaderProperties = GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties();
+
+		if(autenticazioneSSLHeaderProperties == null) {
+			LogUtils.logDebug(log, "Configurazione dell'autenticazione SSL via header non presente");
+			return;
+		}
 
 		StringBuilder sb = new StringBuilder();
 
