@@ -870,7 +870,7 @@ public class Promemoria {
 			log.debug("Salvataggio stato 'fallito' completato con successo");
 		} else {
 			LogUtils.logError(log, errore, e);
-			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
+			LogUtils.logDebug(log, "La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
 			// il contatore e' nullable (colonna tentativi_spedizione senza NOT NULL e campo del
 			// modello non inizializzato): il primo tentativo fallito porta il contatore a 1
 			long tentativi = (promemoria.getTentativiSpedizione() != null ? promemoria.getTentativiSpedizione() : 0L) + 1;
