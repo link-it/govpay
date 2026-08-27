@@ -81,21 +81,26 @@ public class DateValidator {
 	}
 	
 	public DateValidator inside(TemporalAmount temporalAmount) throws ValidationException {
-		if(this.fieldValue != null && (this.fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || this.fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
+		// data odierna letta una volta sola: due invocazioni distinte di now() potrebbero cadere
+		// a cavallo della mezzanotte e produrre estremi incoerenti
+		LocalDate oggi = LocalDate.now(ZoneId.systemDefault());
+		if(this.fieldValue != null && (this.fieldValue.isAfter(oggi.plus(temporalAmount)) || this.fieldValue.isBefore(oggi.minus(temporalAmount)))) {
 			throw new ValidationException(MessageFormat.format(CostantiValidazione.DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_ENTRO_1, this.fieldName, temporalAmount));
 		}
 		return this;
 	}
 	
 	public DateValidator insideDays(long days) throws ValidationException {
-		if(this.fieldValue != null && (this.fieldValue.isAfter(LocalDate.now().plusDays(days)) || this.fieldValue.isBefore(LocalDate.now().minusDays(days)))) {
+		LocalDate oggi = LocalDate.now(ZoneId.systemDefault());
+		if(this.fieldValue != null && (this.fieldValue.isAfter(oggi.plusDays(days)) || this.fieldValue.isBefore(oggi.minusDays(days)))) {
 			throw new ValidationException(MessageFormat.format(CostantiValidazione.DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_ENTRO_1_GIORNI, this.fieldName, days));
 		}
 		return this;
 	}
 	
 	public DateValidator outside(TemporalAmount temporalAmount) throws ValidationException {
-		if(this.fieldValue != null && !(this.fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || this.fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
+		LocalDate oggi = LocalDate.now(ZoneId.systemDefault());
+		if(this.fieldValue != null && !(this.fieldValue.isAfter(oggi.plus(temporalAmount)) || this.fieldValue.isBefore(oggi.minus(temporalAmount)))) {
 			throw new ValidationException(MessageFormat.format(CostantiValidazione.DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_OLTRE_1, this.fieldName, temporalAmount));
 		}
 		return this;

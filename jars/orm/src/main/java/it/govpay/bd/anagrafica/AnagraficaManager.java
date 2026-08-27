@@ -1035,6 +1035,7 @@ public class AnagraficaManager {
 	}
 	
 	public static Date generaNuovaDataReset() {
-		return Date.from(LocalDateTime.now().plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant());
+		ZoneId zoneId = ZoneId.systemDefault();
+		return Date.from(LocalDateTime.now(zoneId).plusMinutes(5).atZone(zoneId).toInstant());
 	}
 }
