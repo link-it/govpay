@@ -63,6 +63,7 @@ import it.govpay.core.utils.logger.MessaggioDiagnosticoUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
+import it.govpay.model.Connettore;
 import it.govpay.model.Versionabile.Versione;
 
 public class VerificaClient extends BasicClientCORE implements IVerificaClient {
@@ -99,7 +100,17 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 
 	public VerificaClient(Applicazione applicazione, EventoContext eventoCtx) throws ClientInitializeException, ServiceException, IOException {
 		super(applicazione, TipoConnettore.VERIFICA, eventoCtx);
-		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
+
+		Connettore connettoreIntegrazione = applicazione.getConnettoreIntegrazione();
+
+		// il costruttore della superclasse lancia ClientInitializeException quando il connettore
+		// non e' configurato, quindi a questo punto non puo' essere nullo: la guardia rende
+		// esplicita la precondizione senza dipendere da un effetto collaterale di super()
+		if(connettoreIntegrazione == null) {
+			throw new ClientInitializeException("Connettore di integrazione non configurato per l'applicazione " + applicazione.getCodApplicazione());
+		}
+
+		this.versione = connettoreIntegrazione.getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
 		this.setGiornale(new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale());
 		this.operazioneVerifica = GovpayConfig.getInstance().getOperazioneVerifica();

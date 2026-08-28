@@ -50,6 +50,7 @@ import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.exception.ClientInitializeException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.model.Connettore;
 import it.govpay.model.Notifica;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.model.configurazione.Giornale;
@@ -73,7 +74,17 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 
 	public NotificaClient(Applicazione applicazione, Rpt rpt, Versamento versamento, List<Pagamento> pagamenti, String operationID, Giornale giornale, EventoContext eventoCtx) throws ClientInitializeException, ServiceException {
 		super(applicazione, TipoConnettore.NOTIFICA, eventoCtx);
-		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
+
+		Connettore connettoreIntegrazione = applicazione.getConnettoreIntegrazione();
+
+		// il costruttore della superclasse lancia ClientInitializeException quando il connettore
+		// non e' configurato, quindi a questo punto non puo' essere nullo: la guardia rende
+		// esplicita la precondizione senza dipendere da un effetto collaterale di super()
+		if(connettoreIntegrazione == null) {
+			throw new ClientInitializeException("Connettore di integrazione non configurato per l'applicazione " + applicazione.getCodApplicazione());
+		}
+
+		this.versione = connettoreIntegrazione.getVersione();
 		this.operationID = operationID;
 		this.applicazione = applicazione;
 		this.rpt = rpt;
