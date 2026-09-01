@@ -5,6 +5,7 @@ export class Voce {
 
   public static ABILITA: string = 'Abilita';
   public static ABILITA_CONFIGURAZIONE_SSL: string = 'Abilita configurazione SSL';
+  public static ABILITA_GDE: string = 'Abilita giornale degli eventi';
   public static ABILITA_PROTOCOLLO_TLS: string = 'Abilita protocollo TLS';
   public static ABILITA_VERIFICATORE_HOSTNAME: string = 'Abilita verificatore hostname';
   public static ABILITATO: string = 'Abilitato';

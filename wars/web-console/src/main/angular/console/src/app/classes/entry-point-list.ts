@@ -65,6 +65,7 @@ import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-v
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
 import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
 import { ConnettoreMaggioliComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-maggioli/connettore-maggioli.component';
+import { ConnettoreSendComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-send/connettore-send.component';
 import { RicevutaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ricevuta-view/ricevuta-view.component';
 
 export class EntryPointList {
@@ -131,6 +132,7 @@ export class EntryPointList {
     ConnettoreGovpayComponent,
     ConnettoreHypersicComponent,
     ConnettoreMaggioliComponent,
+    ConnettoreSendComponent,
     RicevutaViewComponent
   ];
 
@@ -299,6 +301,9 @@ export class EntryPointList {
         break;
       case UtilService.CONNETTORE_MAGGIOLI:
         _type = ConnettoreMaggioliComponent;
+        break;
+      case UtilService.CONNETTORE_SEND:
+        _type = ConnettoreSendComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -494,6 +499,9 @@ export class EntryPointList {
         break;
       case 'ConnettoreMaggioliComponent':
         _name = UtilService.CONNETTORE_MAGGIOLI;
+        break;
+      case 'ConnettoreSendComponent':
+        _name = UtilService.CONNETTORE_SEND;
         break;
       //Material Lib
       case 'InputViewComponent':

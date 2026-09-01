@@ -592,6 +592,7 @@ export class UtilService {
   public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
   public static CONNETTORE_HYPERSIC: string = 'connettore_hypersic';
   public static CONNETTORE_MAGGIOLI: string = 'connettore_maggioli';
+  public static CONNETTORE_SEND: string = 'connettore_send';
   public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
   public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static CONNETTORE_MODALITA_REST: string = 'REST';
@@ -661,7 +662,8 @@ export class UtilService {
     { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
     { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY },
     { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC },
-    { label: 'Maggioli JPPA', value: UtilService.CONNETTORE_MAGGIOLI }
+    { label: 'Maggioli JPPA', value: UtilService.CONNETTORE_MAGGIOLI },
+    { label: 'SEND', value: UtilService.CONNETTORE_SEND }
   ];
 
   public static MODALITA_MYPIVOT: SimpleListItem[] = [

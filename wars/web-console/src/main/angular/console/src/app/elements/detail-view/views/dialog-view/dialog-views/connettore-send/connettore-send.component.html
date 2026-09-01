@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-12">
+    <mat-card class="shadow no-border-radius mb-4">
+      <div class="row">
+        <p class="col-12 matcard-title pt-2 mb-3 color-gray regular-18">Servizio SEND</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_Voce.URL" formControlName="url_ctrl" autocomplete="off" required>
+          <mat-hint>Endpoint del servizio SEND per l'attualizzazione dell'importo con le spese di notifica</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_Voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKey_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <!-- SSL Config -->
+          <link-ssl-config #sslConfigSend [fGroup]="fGroup.get('sslAuthSend')" [json]="json?.auth" [required]="true"></link-ssl-config>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 mb-3" [formGroup]="fGroup">
+          <mat-slide-toggle color="accent" formControlName="abilitaGDE_ctrl">
+            {{ _Voce.ABILITA_GDE }}
+          </mat-slide-toggle>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
