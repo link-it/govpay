@@ -53,3 +53,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# docker: artefatti di build delle immagini
+/docker/buildcontext
+/docker/compose

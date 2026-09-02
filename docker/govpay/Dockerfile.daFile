@@ -1,0 +1,55 @@
+# GovPay installer
+FROM alpine:latest AS installer
+LABEL org.opencontainers.image.authors="manca@link.it"
+LABEL org.opencontainers.image.description="Immagine utilizzata per la preparazione del software govpay"
+ARG govpay_fullversion
+ARG govpay_home=/etc/govpay
+ARG govpay_log=/var/log/govpay
+ARG govpay_appserver=tomcat11
+
+
+# sanity check
+RUN [ -z "${govpay_fullversion}" ] && { echo 'Versione del software non indicata. Eseguire il build col parametro --build-arg govpay_fullversion=<VERSIONE>'; exit 1; };\ 
+apk update; \
+apk add --no-cache curl openjdk21-jdk unzip zip bash gcc musl-dev; \
+rm -rf /var/cache/apk/*; 
+
+# environment
+ENV LANG=it_IT.UTF-8 \
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk \
+GOVPAY_HOME=${govpay_home} \
+GOVPAY_HOME_HTTPS=${govpay_home}_https \
+GOVPAY_LOGDIR=${govpay_log} \
+GOVPAY_FULLVERSION=${govpay_fullversion} 
+
+
+COPY commons/ant.install.properties.template /var/tmp/
+ADD govpay-installer-${GOVPAY_FULLVERSION}.tgz /opt
+
+
+ARG govpay_database_vendor=hsql
+RUN set -eux; \
+cd /opt/govpay-installer-${GOVPAY_FULLVERSION}; \
+sed -i -r -e 's/<installer (.*)/<installer ui=\"text-auto\" loadDefaults=\"true\" \1/' \
+  -e "s%#GOVPAY_FULLVERSION#%${GOVPAY_FULLVERSION}%" \
+  -e "s%#GOVPAY_HOME#%${GOVPAY_HOME}%" \
+  -e "s%#GOVPAY_APPSERVER#%${govpay_appserver}%" \
+  -e "s%#GOVPAY_LOGDIR#%${GOVPAY_LOGDIR}%" \
+  -e "s%#GOVPAY_DATABASE_TIPO#%${govpay_database_vendor}%" \
+installer/setup/antinstall-config.xml  /var/tmp/ant.install.properties.template; \
+mv /var/tmp/ant.install.properties.template ant.install.properties ; \
+./install.sh text-auto; \
+mv dist/sql/ dist/${govpay_database_vendor} && mkdir dist/sql/ && mv dist/${govpay_database_vendor} dist/sql/ 
+
+ARG runtime_custom_archives=commons/ant.install.properties.template
+COPY ${runtime_custom_archives}* /var/tmp/runtime
+RUN [ -d /var/tmp/runtime ] && cp /var/tmp/runtime/* /opt/govpay-installer-${GOVPAY_FULLVERSION}/dist/archivi || echo "Personalizzazioni runtime non presenti"
+
+
+COPY commons/change_dir_perms.c /opt
+RUN cd /opt; \
+gcc -o change_dir_perms change_dir_perms.c
+
+COPY commons/TomcatConfigCli.java* /opt
+RUN [ -e "/opt/TomcatConfigCli.java"  ] && javac /opt/TomcatConfigCli.java 
+
