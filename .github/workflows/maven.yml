@@ -92,6 +92,24 @@ jobs:
         NOUPDATE_FLAG: ${{ steps.owasp-cache.outputs.cache-hit == 'true' && '-DautoUpdate=false' || '' }}
       run: mvn clean install -Denv=installer_template -DnvdApiKey=$NVD_API_KEY -DossIndexUsername=$OSS_INDEX_USER -DossIndexPassword=$OSS_INDEX_PASSWORD -DdataDirectory=.dependency-check/data -Dowasp.format=ALL -Dowasp.output.dir=./dependency-check-report $NOUPDATE_FLAG
 
+    # L'installer serve ai job che costruiscono le immagini docker. Viene
+    # prodotto e caricato solo quando quei job gireranno davvero: e' un archivio
+    # da centinaia di MB e non ha senso pagarlo su ogni branch di lavoro.
+    - name: Generate Tomcat installer
+      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' || endsWith(github.ref, '.x')
+      run: |
+        pushd src/main/resources/setup/
+        bash prepareSetup.sh tomcat
+        popd
+
+    - name: Upload installer
+      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' || endsWith(github.ref, '.x')
+      uses: actions/upload-artifact@v7
+      with:
+        name: govpay-installer
+        path: src/main/resources/setup/target/*.tgz
+        retention-days: 5
+
     - name: License Analysis
       run: |
         set -euo pipefail
@@ -287,3 +305,103 @@ jobs:
           release-artifacts/*
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  # ── Immagine docker di sviluppo (push su master e sulle linee x.y.x) ──
+  # Un push ordinario, anche su master, produce un'immagine di sviluppo: solo un
+  # tag produce le immagini stabili. Le due destinazioni sono repository distinti,
+  # quindi i tag non possono collidere.
+  docker_dev:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/') && (github.ref == 'refs/heads/master' || endsWith(github.ref, '.x'))
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Download installer
+      uses: actions/download-artifact@v7
+      with:
+        name: govpay-installer
+        path: installer/
+
+    - name: Read version from installer
+      id: ver
+      run: |
+        set -euo pipefail
+        TGZ="$(ls installer/govpay-installer-*.tgz)"
+        VER="$(basename "${TGZ}" .tgz)"; VER="${VER#govpay-installer-}"
+        echo "version=${VER}" >> "$GITHUB_OUTPUT"
+        echo "installer=${TGZ}" >> "$GITHUB_OUTPUT"
+        echo "Versione: ${VER}"
+
+    - name: Docker Hub login
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Build and push dev image
+      run: |
+        ./docker/build-images.sh \
+          --version "${{ steps.ver.outputs.version }}" \
+          --installer "${{ steps.ver.outputs.installer }}" \
+          --set dev \
+          --image-base "${{ vars.DOCKER_IMAGE_BASE_DEV || 'linkitaly/govpay-dev' }}" \
+          --push
+
+    - name: Docker Hub logout
+      if: always()
+      run: docker logout
+
+  # ── Immagini docker stabili (solo tag) ────────────────────────────────
+  # Una immagine per esecutore: cinque immagini finali piu' i rispettivi stage
+  # installer non stanno nel disco di un solo runner GitHub, e in parallelo il
+  # tempo di un rilascio resta quello di una singola immagine.
+  docker_release:
+    runs-on: ubuntu-latest
+    needs: [ release ]
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        db: [ postgresql, oracle, mariadb, mysql, hsql ]
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Download installer
+      uses: actions/download-artifact@v7
+      with:
+        name: govpay-installer
+        path: installer/
+
+    - name: Read version from installer
+      id: ver
+      run: |
+        set -euo pipefail
+        TGZ="$(ls installer/govpay-installer-*.tgz)"
+        VER="$(basename "${TGZ}" .tgz)"; VER="${VER#govpay-installer-}"
+        echo "version=${VER}" >> "$GITHUB_OUTPUT"
+        echo "installer=${TGZ}" >> "$GITHUB_OUTPUT"
+        echo "Versione: ${VER}"
+
+    - name: Docker Hub login
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
+
+    # Il tag :latest e' derivato dall'immagine senza database, quindi lo aggiunge
+    # soltanto la voce hsql della matrice.
+    - name: Build and push release image
+      run: |
+        ./docker/build-images.sh \
+          --version "${{ steps.ver.outputs.version }}" \
+          --installer "${{ steps.ver.outputs.installer }}" \
+          --set release \
+          --only "${{ matrix.db }}" \
+          --image-base "${{ vars.DOCKER_IMAGE_BASE || 'linkitaly/govpay' }}" \
+          ${{ matrix.db == 'hsql' && '--latest' || '' }} \
+          --push
+
+    - name: Docker Hub logout
+      if: always()
+      run: docker logout

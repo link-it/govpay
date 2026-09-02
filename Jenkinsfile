@@ -20,52 +20,16 @@ pipeline {
 
     // Cron expression per il check di reset della cache anagrafica (default: ogni 10 secondi per la testsuite)
     CACHE_CHECK_CRON = "0/10 * * * * ?"
-
-    // Immagini docker: repository di destinazione e credenziali del registry.
-    // Le immagini di sviluppo e quelle di release vanno in due repository
-    // distinti, cosi' i cataloghi restano separati e i tag non collidono.
-    // DOCKERHUB_CREDENTIALS_ID deve corrispondere all'id delle credenziali
-    // "Username with password" configurate in Jenkins per Docker Hub.
-    DOCKER_IMAGE_BASE        = "linkitaly/govpay"
-    DOCKER_IMAGE_BASE_DEV    = "linkitaly/govpay-dev"
-    DOCKERHUB_CREDENTIALS_ID = "dockerhub"
-    // Sull'agent il demone docker richiede sudo, come negli stage install e test
-    DOCKER_BIN = "sudo docker"
   }
   stages {
     stage('info') {
       steps {
         script {
-          // Branch di riferimento, solo informativo: git rev-parse restituisce
-          // "HEAD" quando il checkout e' detached, quindi si preferiscono
-          // BRANCH_NAME (multibranch) e GIT_BRANCH (git plugin), che sopravvivono.
-          if (env.BRANCH_NAME) {
-            env.GOVPAY_BRANCH = env.BRANCH_NAME
-          } else if (env.GIT_BRANCH) {
-            env.GOVPAY_BRANCH = env.GIT_BRANCH.startsWith('origin/') ? env.GIT_BRANCH.substring('origin/'.length()) : env.GIT_BRANCH
-          } else {
-            env.GOVPAY_BRANCH = env.GIT_BRANCH_NAME
-          }
-
-          // Insieme di immagini da pubblicare. E' una release solo se il commit in
-          // costruzione porta un tag git uguale alla versione del pom: ogni altro
-          // build, compreso un push su master, e' uno sviluppo. Non si guarda il
-          // nome del branch perche' con il checkout detached non e' affidabile, e
-          // non basta la versione del pom perche' master ne porta una fissa anche
-          // fra due release, quindi ogni push la ripubblicherebbe.
-          // NOTA: richiede che il job scarichi i tag dal remoto.
-          env.GOVPAY_RELEASE_TAG = sh(script: "git tag --points-at HEAD | grep -Fx '${env.PROJECT_VERSION}' || true", returnStdout: true).trim()
-          env.GOVPAY_DOCKER_SET = env.GOVPAY_RELEASE_TAG ? 'release' : 'dev'
-          env.GOVPAY_INSTALLER = "src/main/resources/setup/target/govpay-installer-${env.PROJECT_VERSION}.tgz"
-
           echo "================================"
           echo "Pipeline Build Information"
           echo "================================"
           echo "Git Branch: ${env.GIT_BRANCH_NAME}"
-          echo "Branch: ${env.GOVPAY_BRANCH}"
           echo "Project Version: ${env.PROJECT_VERSION}"
-          echo "Tag di release su HEAD: ${env.GOVPAY_RELEASE_TAG ?: 'nessuno'}"
-          echo "Immagini docker: ${env.GOVPAY_DOCKER_SET}"
           echo "Build Number: ${env.BUILD_NUMBER}"
           echo "Job Name: ${env.JOB_NAME}"
           echo "Workspace: ${env.WORKSPACE}"
@@ -123,51 +87,6 @@ pipeline {
             sh 'tar -cvf ./integration-test/target/surefire-reports.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
             sh 'gzip ./integration-test/target/surefire-reports.tar'
             archiveArtifacts 'integration-test/target/surefire-reports.tar.gz'
-        }
-      }
-    }
-    // Immagini docker. Gli stage sono posizionati dopo 'test' e prima dell'analisi
-    // Sonar: una testsuite rossa deve impedire la pubblicazione, un quality gate
-    // rosso no, altrimenti ogni oscillazione del gate blocca le immagini di sviluppo.
-    // Le immagini sono costruite dall'installer prodotto dallo stage 'build'.
-    stage('docker-dev') {
-      when {
-        expression { env.GOVPAY_DOCKER_SET == 'dev' }
-      }
-      steps {
-        withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_TOKEN')]) {
-          sh '''
-            set -e
-            echo "$DOCKERHUB_TOKEN" | $DOCKER_BIN login -u "$DOCKERHUB_USER" --password-stdin
-            trap "$DOCKER_BIN logout" EXIT
-            ./docker/build-images.sh \
-              --version "${PROJECT_VERSION}" \
-              --installer "${GOVPAY_INSTALLER}" \
-              --set dev \
-              --image-base "${DOCKER_IMAGE_BASE_DEV}" \
-              --push
-          '''
-        }
-      }
-    }
-    stage('docker') {
-      when {
-        expression { env.GOVPAY_DOCKER_SET == 'release' }
-      }
-      steps {
-        withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_TOKEN')]) {
-          sh '''
-            set -e
-            echo "$DOCKERHUB_TOKEN" | $DOCKER_BIN login -u "$DOCKERHUB_USER" --password-stdin
-            trap "$DOCKER_BIN logout" EXIT
-            ./docker/build-images.sh \
-              --version "${PROJECT_VERSION}" \
-              --installer "${GOVPAY_INSTALLER}" \
-              --set release \
-              --image-base "${DOCKER_IMAGE_BASE}" \
-              --latest \
-              --push
-          '''
         }
       }
     }

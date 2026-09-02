@@ -44,42 +44,48 @@ e' indicato.
 
 ## Uso nella pipeline
 
-Gli stage sono `docker-dev` e `docker` nel `Jenkinsfile` alla radice del progetto,
-posizionati dopo `test` e prima dell'analisi Sonar: una testsuite rossa impedisce
-la pubblicazione, un quality gate rosso no.
+I job sono `docker_dev` e `docker_release` in
+`.github/workflows/maven.yml`, la pipeline GitHub Actions. Il `Jenkinsfile` non
+costruisce immagini: la sua testsuite di integrazione resta il gate sulla
+qualita' del prodotto, la pubblicazione delle immagini vive su GitHub accanto
+alla creazione della release.
 
-Il discriminante e' il **tag git sul commit in costruzione**:
+Il discriminante e' il **riferimento git in costruzione**:
 
-- se `HEAD` porta un tag uguale alla versione del pom -> gira `docker`, che
-  pubblica le cinque immagini in `linkitaly/govpay` e aggiorna `:latest`. E' la
-  release.
-- in ogni altro caso -> gira `docker-dev`, che pubblica l'immagine postgres in
-  `linkitaly/govpay-dev`. Vale sia per un push su `3.10.x`, sia per un push su
-  `master`: anche su `master` un commit ordinario produce un'immagine di
-  sviluppo, non una stabile.
+| Evento | Job | Risultato |
+|---|---|---|
+| push su `master` o su un branch `*.x` | `docker_dev` | immagine postgres in `linkitaly/govpay-dev` |
+| push di un tag | `docker_release` | cinque immagini in `linkitaly/govpay` e `:latest` |
+| push su un altro branch, pull request | nessuno | niente immagini |
 
-```
-git tag --points-at HEAD | grep -Fx "${PROJECT_VERSION}"
-```
+Un push ordinario, anche su `master`, produce quindi un'immagine di **sviluppo**:
+solo un tag produce le immagini stabili. E' il motivo per cui le due destinazioni
+sono repository distinti.
 
-Due criteri piu' semplici sono stati scartati. Il **nome del branch** non e'
-affidabile: il job non e' multibranch e il checkout e' detached, quindi
-`git rev-parse --abbrev-ref HEAD` restituisce `HEAD`, e una condizione
-"branch == master" non sarebbe mai vera. La **sola versione del pom** non
-distingue la release dal resto: `master` porta una versione fissa anche fra due
-release, quindi ogni push vi ripubblicherebbe i tag stabili, sovrascrivendo con
-contenuti diversi (Tomcat o pacchetti di base piu' recenti) tag che dovrebbero
-essere immutabili.
+`docker_release` usa una **matrice con un database per esecutore**. Cinque
+immagini finali piu' i rispettivi stage installer non stanno nel disco di un solo
+runner GitHub, che ne ha una quindicina di GB liberi contro i circa cinque per
+immagine; in parallelo, inoltre, il tempo di un rilascio resta quello di una
+singola immagine. Il tag `:latest` e' derivato dall'immagine senza database,
+quindi lo aggiunge soltanto la voce `hsql` della matrice.
 
-Perche' funzioni, il job deve scaricare i tag dal remoto. Lo stage scelto e il
-tag trovato sono scritti nel log dello stage `info`.
+L'installer non viene ricostruito dai job docker: e' l'artefatto `govpay-installer`
+prodotto dal job `build`, che esegue `prepareSetup.sh tomcat` e lo carica solo
+quando i job docker gireranno davvero, per non pagare centinaia di MB di
+artefatto su ogni branch di lavoro. La versione e' ricavata dal nome
+dell'archivio, che e' la fonte autorevole per entrambe le cose e permette ai job
+docker di non installare ne' Java ne' Maven.
 
-L'installer usato e' quello prodotto dallo stage `build`
-(`src/main/resources/setup/target/govpay-installer-<versione>.tgz`): le immagini
-contengono esattamente i binari che la testsuite ha appena verificato.
+Il login al registry e' fatto dai job, non dallo script, e richiede due
+impostazioni sul repository GitHub:
 
-Il login al registry e' fatto dalla pipeline con le credenziali Jenkins
-identificate da `DOCKERHUB_CREDENTIALS_ID`, non dallo script.
+| Nome | Tipo | Contenuto |
+|---|---|---|
+| `DOCKERHUB_USERNAME` | variabile | utente Docker Hub |
+| `DOCKERHUB_TOKEN` | segreto | token di accesso con permesso di scrittura |
+
+Opzionalmente `DOCKER_IMAGE_BASE` e `DOCKER_IMAGE_BASE_DEV` come variabili, per
+spostare i repository di destinazione senza modificare il workflow.
 
 ## Uso manuale
 
@@ -128,9 +134,10 @@ con un percorso relativo a quella.
 - Il blocco finale di `build_image.sh` genera un `compose/docker-compose.yaml` di
   esempio che richiede il driver JDBC copiato a mano. E' comodo in locale ed
   innocuo in pipeline, dove il file non viene usato.
-- Le immagini restano sull'agent dopo il build. Con cinque immagini per release
-  vale la pena tenere d'occhio lo spazio disco; la pipeline non fa pulizia
-  automatica per non rimuovere immagini di altri job.
+- Ogni immagine richiede circa 5 GB fra stage installer e immagine finale. Sui
+  runner GitHub il problema e' risolto dalla matrice, un database per esecutore
+  effimero. In locale la pulizia e' a carico di chi lancia il build: gli script
+  non rimuovono nulla, per non cancellare immagini estranee.
 
 ## Rapporto con govpay-docker
 
