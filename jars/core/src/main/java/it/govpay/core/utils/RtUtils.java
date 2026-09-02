@@ -264,7 +264,7 @@ public class RtUtils extends NdpValidationUtils {
 			
 			Rpt rpt = null;
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, ccp, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+				rpt = rptBD.getRpt(codDominio, iuv, ccp, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv e pagamenti
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
@@ -286,7 +286,7 @@ public class RtUtils extends NdpValidationUtils {
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
 			
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, ccp, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+				rpt = rptBD.getRpt(codDominio, iuv, ccp, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv e pagamenti
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
