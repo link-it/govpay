@@ -1,0 +1,15 @@
+# immagine sorgente da utilizzare per il patch
+ARG target_image
+
+
+FROM ${target_image} AS target_image_full
+LABEL org.opencontainers.image.authors="manca@link.it"
+LABEL org.opencontainers.image.description="Immagine utilizzata per il deploy dei nodi"
+USER root
+RUN yum -y install zip unzip patch dos2unix \
+&& yum clean all \
+&& rm -rf /var/cache/yum
+ADD commons/apply-patch.sh /usr/bin/
+ADD PATCH /opt/PATCH
+RUN apply-patch.sh 
+USER wildfly
