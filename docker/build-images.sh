@@ -34,6 +34,7 @@ VERSION=
 INSTALLER=
 IMAGE_SET=
 IMAGE_BASE=
+ONLY=
 PUSH=false
 LATEST=false
 DRYRUN=false
@@ -56,6 +57,10 @@ Opzioni:
                      dall'insieme: <prefisso>/govpay-dev per dev,
                      <prefisso>/govpay per release, con prefisso preso da
                      REGISTRY_PREFIX (default: linkitaly)
+  --only <db>        Costruisce solo l'immagine per il database indicato, fra
+                     quelli previsti dall'insieme. hsql indica quella senza db.
+                     Serve a distribuire un insieme su piu' esecutori, uno per
+                     immagine, dove il disco di un solo esecutore non basta
   --push             Pubblica le immagini prodotte. Il login al registry deve
                      essere gia' stato eseguito dal chiamante
   --latest           Aggiunge il tag :latest all'immagine senza db (solo release)
@@ -74,6 +79,7 @@ while [[ $# -gt 0 ]]; do
     --installer)  INSTALLER="${2:-}"; shift 2 ;;
     --set)        IMAGE_SET="${2:-}"; shift 2 ;;
     --image-base) IMAGE_BASE="${2:-}"; shift 2 ;;
+    --only)       ONLY="${2:-}"; shift 2 ;;
     --push)       PUSH=true; shift ;;
     --latest)     LATEST=true; shift ;;
     --dry-run)    DRYRUN=true; shift ;;
@@ -97,6 +103,25 @@ case "${IMAGE_SET}" in
            IMAGE_BASE="${IMAGE_BASE:-${REGISTRY_PREFIX:-linkitaly}/govpay}" ;;
   *)       echo "Errore: --set deve valere dev oppure release (valore: '${IMAGE_SET}')." >&2; exit 1 ;;
 esac
+
+# --only restringe l'insieme a una sola immagine. hsql indica quella senza
+# database, che internamente e' rappresentata dalla stringa vuota.
+if [[ -n "${ONLY}" ]]; then
+  RICHIESTO="${ONLY}"
+  [[ "${ONLY}" == hsql ]] && RICHIESTO=''
+  TROVATO=false
+  for db in "${DBS[@]}"; do
+    [[ "${db}" == "${RICHIESTO}" ]] && TROVATO=true
+  done
+  if [[ "${TROVATO}" != true ]]; then
+    ELENCO=
+    for db in "${DBS[@]}"; do ELENCO="${ELENCO} ${db:-hsql}"; done
+    echo "Errore: --only ${ONLY} non fa parte dell'insieme ${IMAGE_SET}." >&2
+    echo "        database previsti:${ELENCO}" >&2
+    exit 1
+  fi
+  DBS=("${RICHIESTO}")
+fi
 
 if [[ ! -f "${INSTALLER}" ]]; then
   echo "Errore: installer non trovato: ${INSTALLER}" >&2
