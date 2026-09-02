@@ -6634,6 +6634,20 @@ components:
               format: date-time
               description: Data ultima comunicazione verso il servizio ACA
               example: '2018-12-31 12:00:00Z'
+            sendAbilitato:
+              type: boolean
+              description: Indica se per questa pendenza e' prevista l'attualizzazione dell'importo con le spese di notifica SEND
+              example: false
+            sendImportoTotale:
+              type: number
+              format: double
+              description: Importo complessivo delle spese di notifica acquisite da SEND e sommate all'importo della pendenza
+              example: 2.00
+            sendDataAggiornamento:
+              type: string
+              format: date-time
+              description: Data dell'ultima acquisizione delle spese di notifica da SEND
+              example: '2018-12-31 12:00:00Z'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6727,6 +6741,20 @@ components:
               type: string
               format: date-time
               description: Data ultima comunicazione verso il servizio ACA
+              example: '2018-12-31 12:00:00Z'
+            sendAbilitato:
+              type: boolean
+              description: Indica se per questa pendenza e' prevista l'attualizzazione dell'importo con le spese di notifica SEND
+              example: false
+            sendImportoTotale:
+              type: number
+              format: double
+              description: Importo complessivo delle spese di notifica acquisite da SEND e sommate all'importo della pendenza
+              example: 2.00
+            sendDataAggiornamento:
+              type: string
+              format: date-time
+              description: Data dell'ultima acquisizione delle spese di notifica da SEND
               example: '2018-12-31 12:00:00Z'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object

@@ -67,6 +67,9 @@ import it.govpay.core.exceptions.IOException;
 "UUID",
 "dataUltimaModificaAca",
 "dataUltimaComunicazioneAca",
+"sendAbilitato",
+"sendImportoTotale",
+"sendDataAggiornamento",
 "rpp",
 "pagamenti",
 })
@@ -184,6 +187,16 @@ public class PendenzaIndex extends JSONSerializable {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataUltimaComunicazioneAca")
   private Date dataUltimaComunicazioneAca = null;
+
+  @JsonProperty("sendAbilitato")
+  private Boolean sendAbilitato = null;
+
+  @JsonProperty("sendImportoTotale")
+  private BigDecimal sendImportoTotale = null;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("sendDataAggiornamento")
+  private Date sendDataAggiornamento = null;
 
   @JsonProperty("rpp")
   private String rpp = null;
@@ -786,6 +799,54 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * Indica se per questa pendenza e' prevista l'attualizzazione dell'importo con le spese di notifica SEND
+   **/
+  public PendenzaIndex sendAbilitato(Boolean sendAbilitato) {
+    this.sendAbilitato = sendAbilitato;
+    return this;
+  }
+
+  @JsonProperty("sendAbilitato")
+  public Boolean isSendAbilitato() {
+    return sendAbilitato;
+  }
+  public void setSendAbilitato(Boolean sendAbilitato) {
+    this.sendAbilitato = sendAbilitato;
+  }
+
+  /**
+   * Importo complessivo delle spese di notifica acquisite da SEND e sommate all'importo della pendenza
+   **/
+  public PendenzaIndex sendImportoTotale(BigDecimal sendImportoTotale) {
+    this.sendImportoTotale = sendImportoTotale;
+    return this;
+  }
+
+  @JsonProperty("sendImportoTotale")
+  public BigDecimal getSendImportoTotale() {
+    return sendImportoTotale;
+  }
+  public void setSendImportoTotale(BigDecimal sendImportoTotale) {
+    this.sendImportoTotale = sendImportoTotale;
+  }
+
+  /**
+   * Data dell'ultima acquisizione delle spese di notifica da SEND
+   **/
+  public PendenzaIndex sendDataAggiornamento(Date sendDataAggiornamento) {
+    this.sendDataAggiornamento = sendDataAggiornamento;
+    return this;
+  }
+
+  @JsonProperty("sendDataAggiornamento")
+  public Date getSendDataAggiornamento() {
+    return sendDataAggiornamento;
+  }
+  public void setSendDataAggiornamento(Date sendDataAggiornamento) {
+    this.sendDataAggiornamento = sendDataAggiornamento;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -863,13 +924,16 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(UUID, pendenzaIndex.UUID) &&
         Objects.equals(dataUltimaModificaAca, pendenzaIndex.dataUltimaModificaAca) &&
         Objects.equals(dataUltimaComunicazioneAca, pendenzaIndex.dataUltimaComunicazioneAca) &&
+        Objects.equals(sendAbilitato, pendenzaIndex.sendAbilitato) &&
+        Objects.equals(sendImportoTotale, pendenzaIndex.sendImportoTotale) &&
+        Objects.equals(sendDataAggiornamento, pendenzaIndex.sendDataAggiornamento) &&
         Objects.equals(rpp, pendenzaIndex.rpp) &&
         Objects.equals(pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, dataUltimaModificaAca, dataUltimaComunicazioneAca, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, dataUltimaModificaAca, dataUltimaComunicazioneAca, sendAbilitato, sendImportoTotale, sendDataAggiornamento, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws IOException {
@@ -923,6 +987,9 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("    dataUltimaModificaAca: ").append(toIndentedString(dataUltimaModificaAca)).append("\n");
     sb.append("    dataUltimaComunicazioneAca: ").append(toIndentedString(dataUltimaComunicazioneAca)).append("\n");
+    sb.append("    sendAbilitato: ").append(toIndentedString(sendAbilitato)).append("\n");
+    sb.append("    sendImportoTotale: ").append(toIndentedString(sendImportoTotale)).append("\n");
+    sb.append("    sendDataAggiornamento: ").append(toIndentedString(sendDataAggiornamento)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");

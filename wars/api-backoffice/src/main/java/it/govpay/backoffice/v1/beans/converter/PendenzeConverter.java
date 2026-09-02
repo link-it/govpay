@@ -197,6 +197,10 @@ public class PendenzeConverter {
 		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
 		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
 
+		rsModel.setSendAbilitato(versamento.isSendAbilitato());
+		rsModel.setSendImportoTotale(versamento.getSendImportoTotale());
+		rsModel.setSendDataAggiornamento(versamento.getSendDataAggiornamento());
+
 		return rsModel;
 	}
 
@@ -296,6 +300,10 @@ public class PendenzeConverter {
 
 		rsModel.setDataUltimaComunicazioneAca(versamento.getDataUltimaComunicazioneAca());
 		rsModel.setDataUltimaModificaAca(versamento.getDataUltimaModificaAca());
+
+		rsModel.setSendAbilitato(versamento.isSendAbilitato());
+		rsModel.setSendImportoTotale(versamento.getSendImportoTotale());
+		rsModel.setSendDataAggiornamento(versamento.getSendDataAggiornamento());
 
 		return rsModel;
 	}
