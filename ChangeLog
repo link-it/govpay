@@ -1,3 +1,10 @@
+2026-09-03  Giuliano Pintori <pintori@link.it>
+
+        * Aggiunto alla pipeline il caricamento dell'SBOM su Dependency-Track.
+        Il nuovo job dependency-track-upload del workflow maven.yml scarica l'artifact prodotto dal job sbom gia' esistente e carica sbom/cyclonedx/bom.cdx.json sotto il progetto GovPay-Legacy del server interno, tramite il nuovo script script/sbom/upload-sbom-parent-required.sh.
+        L'upload copre i tag, master e le linee di manutenzione x.y.x (quindi anche 3.10.x), con la stessa condizione gia' usata dal job docker_dev. La versione registrata e' il nome del branch, cosi' master e 3.10.x convivono come versioni distinte dello stesso progetto; sui tag e' il tag ed e' marcata come latest. E' forzabile con FORCE_DTRACK_UPLOAD_JOB e disattivabile con DISABLE_DTRACK_UPLOAD_JOB, che ha la precedenza.
+        L'artifactId dell'aggregatore e' "bom": senza intervento il progetto sarebbe comparso su Dependency-Track con quel nome, quindi DTRACK_PROJECT_NAME lo forza a "govpay". Richiede il secret GOVPAY_DTRACK_API_KEY.
+
 2026-09-02  Giuliano Pintori <pintori@link.it>
 
         * Esposizione in lettura dei dati SEND nelle informazioni della pendenza (api-backoffice v1).
