@@ -218,6 +218,96 @@ jobs:
           path: sbom/
           retention-days: 30
 
+  # ── Upload SBOM su Dependency-Track ──────────────────────────────────
+  # Traduzione del job GitLab dependency-track-upload.
+  # Esecuzione: sui tag, su master e sulle linee di manutenzione x.y.x
+  # (quindi anche 3.10.x), con la stessa condizione usata da docker_dev.
+  # Forzabile con FORCE_DTRACK_UPLOAD_JOB, disattivabile del tutto con
+  # DISABLE_DTRACK_UPLOAD_JOB, che ha la precedenza su tutto il resto.
+  dependency-track-upload:
+    needs: [ sbom ]
+    if: >-
+      vars.DISABLE_DTRACK_UPLOAD_JOB != 'true' &&
+      (github.ref_type == 'tag' ||
+       github.ref == 'refs/heads/master' || endsWith(github.ref, '.x') ||
+       vars.FORCE_DTRACK_UPLOAD_JOB == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # Come su GitLab, il fallimento blocca solo tag, master e linee x.y.x;
+    # le esecuzioni forzate su altri branch sono tolleranti.
+    continue-on-error: ${{ github.ref_type != 'tag' && github.ref != 'refs/heads/master' && !endsWith(github.ref, '.x') }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download SBOM
+        uses: actions/download-artifact@v7
+        with:
+          name: sbom-report
+          path: sbom/
+
+      - name: Verifica prerequisiti
+        env:
+          DTRACK_API_KEY: ${{ secrets.GOVPAY_DTRACK_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DTRACK_API_KEY}" ]; then
+            echo "ERRORE: secret GOVPAY_DTRACK_API_KEY non configurato."
+            exit 1
+          fi
+          if [ ! -f script/sbom/upload-sbom-parent-required.sh ]; then
+            echo "ERRORE: script script/sbom/upload-sbom-parent-required.sh non presente nel repository."
+            exit 1
+          fi
+          if [ ! -f "sbom/cyclonedx/bom.cdx.json" ]; then
+            echo "ERRORE: SBOM non trovato in sbom/cyclonedx/bom.cdx.json"
+            ls -R sbom/ || true
+            exit 1
+          fi
+          echo "SBOM: $(wc -c < sbom/cyclonedx/bom.cdx.json) byte"
+
+      # Su tag la versione e' il tag ed e' marcata latest; su master e sulle
+      # linee x.y.x la versione e' il nome del branch, cosi' master e 3.10.x
+      # convivono come versioni distinte dello stesso progetto.
+      - name: Determina versione Dependency-Track
+        id: dtrack
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          set -euo pipefail
+          if [ "$REF_TYPE" = "tag" ]; then
+            VERSION="$REF_NAME"; LATEST="true"
+          else
+            case "$REF_NAME" in
+              master|*.x) VERSION="$REF_NAME"; LATEST="false" ;;
+              *)          VERSION="dev";       LATEST="false" ;;
+            esac
+          fi
+          echo "Versione Dependency-Track: $VERSION (latest=$LATEST)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+
+      # L'artifactId dell'aggregatore e' "bom": senza override il progetto
+      # comparirebbe su Dependency-Track con quel nome. DTRACK_PROJECT_NAME
+      # lo forza a "govpay".
+      - name: Upload SBOM su Dependency-Track
+        env:
+          DTRACK_API_KEY: ${{ secrets.GOVPAY_DTRACK_API_KEY }}
+          WORKSPACE: ${{ github.workspace }}
+          DTRACK_PROJECT_NAME: govpay
+          DTRACK_VERSION: ${{ steps.dtrack.outputs.version }}
+          DTRACK_LATEST: ${{ steps.dtrack.outputs.latest }}
+        run: |
+          set -euo pipefail
+          chmod +x script/sbom/upload-sbom-parent-required.sh
+          ./script/sbom/upload-sbom-parent-required.sh \
+            "${DTRACK_API_KEY}" \
+            "${WORKSPACE}/sbom/cyclonedx/bom.cdx.json" \
+            "GovPay-Legacy"
+
   # ── GitHub Release (solo tag) ────────────────────────────────────────
   release:
     runs-on: ubuntu-latest
