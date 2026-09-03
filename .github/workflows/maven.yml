@@ -207,7 +207,8 @@ jobs:
             -DoutputFormat=all \
             -DschemaVersion=${SBOM_CYCLONEDX_SCHEMA_VERSION} \
             -DskipNotDeployed=false \
-            -DincludeTestScope=false
+            -DincludeTestScope=false \
+            -DprojectType=application
           ls -la sbom/cyclonedx/
 
       - name: Upload SBOM artifact
