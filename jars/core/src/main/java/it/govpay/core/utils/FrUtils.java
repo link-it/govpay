@@ -20,6 +20,7 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import jakarta.xml.bind.JAXBException;
@@ -134,7 +135,7 @@ public class FrUtils {
 
 		// Totali
 		flussoRiversamento.setNumeroTotalePagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
-		flussoRiversamento.setImportoTotalePagamenti(fr.getImportoTotalePagamenti());
+		flussoRiversamento.setImportoTotalePagamenti(toImporto(fr.getImportoTotalePagamenti()));
 
 		// Dati singoli pagamenti
 		if(rendicontazioni != null && !rendicontazioni.isEmpty()) {
@@ -148,8 +149,12 @@ public class FrUtils {
 					datiSingoliPagamenti.setIndiceDatiSingoloPagamento(rendicontazione.getIndiceDati().intValue());
 				}
 
-				datiSingoliPagamenti.setSingoloImportoPagato(rendicontazione.getImporto());
-				datiSingoliPagamenti.setCodiceEsitoSingoloPagamento(String.valueOf(rendicontazione.getEsito().getCodifica()));
+				datiSingoliPagamenti.setSingoloImportoPagato(toImporto(rendicontazione.getImporto()));
+
+				if(rendicontazione.getEsito() != null) {
+					datiSingoliPagamenti.setCodiceEsitoSingoloPagamento(String.valueOf(rendicontazione.getEsito().getCodifica()));
+				}
+
 				datiSingoliPagamenti.setDataEsitoSingoloPagamento(DateUtils.toLocalDate(rendicontazione.getData()));
 
 				flussoRiversamento.getDatiSingoliPagamentis().add(datiSingoliPagamenti);
@@ -158,5 +163,15 @@ public class FrUtils {
 
 		// Marshalling dell'oggetto JAXB in byte array
 		return JaxbUtils.toByte(flussoRiversamento);
+	}
+
+	/**
+	 * Normalizza un importo a due cifre decimali, come previsto dallo schema del flusso di riversamento.
+	 *
+	 * @param importo importo da normalizzare
+	 * @return importo con scala 2, null se l'importo non e' valorizzato
+	 */
+	private static BigDecimal toImporto(BigDecimal importo) {
+		return importo != null ? importo.setScale(2, RoundingMode.HALF_UP) : null;
 	}
 }
