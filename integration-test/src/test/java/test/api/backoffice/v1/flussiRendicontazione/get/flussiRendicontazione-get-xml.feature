@@ -1,10 +1,10 @@
 Feature: Lettura in formato XML del dettaglio di un flusso di rendicontazione
 
 # Copre la GET del dettaglio del flusso con Accept: application/xml (Issue #881).
-# I flussi acquisiti tramite il batch FdR esterno non hanno il tracciato originale su fr.xml, che quindi
-# va ricostruito a partire dai dati del flusso e dalle rendicontazioni: il primo scenario copre questo
-# caso, il secondo il caso in cui la colonna sia valorizzata. Lo stato di fr.xml viene forzato dal test,
-# per non dipendere dalla modalita' con cui il flusso e' stato acquisito, e ripristinato alla fine.
+# I flussi vengono acquisiti tramite il batch FdR esterno, che non persiste il tracciato originale: fr.xml
+# e' quindi sempre NULL e l'XML va ricostruito a partire dai dati del flusso e dalle rendicontazioni. Il
+# primo scenario copre questo caso; il secondo scrive il tracciato su fr.xml, per coprire anche il caso in
+# cui la colonna sia valorizzata, e al termine riporta la colonna a NULL.
 
 Background:
 
@@ -45,10 +45,7 @@ And match response.idFlusso == idflusso_dom1_1
 # azzeramento del tracciato originale, come per i flussi acquisiti dal batch FdR esterno
 
 * def idFr = db.readValue("SELECT id FROM fr WHERE cod_flusso = '" + idflusso_dom1_1 + "' AND cod_dominio = '" + idDominioFlusso + "'")
-* def xmlIniziale = db.readValue("SELECT xml FROM fr WHERE id = " + idFr)
-
 * eval db.update("UPDATE fr SET xml = NULL WHERE id = " + idFr)
-* assert db.readValue("SELECT xml FROM fr WHERE id = " + idFr) == null
 
 # il tracciato viene ricostruito a partire dai dati del flusso e dalle rendicontazioni
 
@@ -117,10 +114,6 @@ Then status 200
 And match response.idFlusso == idflusso_dom1_1
 And assert response.rendicontazioni.length == rendicontazioni.length
 
-# ripristino dello stato iniziale del tracciato
-
-* eval if (xmlIniziale != null) db.update("UPDATE fr SET xml = ? WHERE id = ?", xmlIniziale, idFr)
-
 Scenario: Lettura in formato XML del flusso con tracciato originale presente
 
 Given url backofficeBaseurl
@@ -142,12 +135,9 @@ Then status 200
 * def idDominioFlusso = response.idDominio
 
 * def idFr = db.readValue("SELECT id FROM fr WHERE cod_flusso = '" + idflusso_dom1_1 + "' AND cod_dominio = '" + idDominioFlusso + "'")
-* def xmlIniziale = db.readValue("SELECT xml FROM fr WHERE id = " + idFr)
 
 # il tracciato restituito viene persistito su fr.xml, per poter verificare anche il caso in cui il flusso
 # sia stato acquisito con il tracciato originale
-
-* eval db.update("UPDATE fr SET xml = NULL WHERE id = " + idFr)
 
 Given url backofficeBaseurl
 And path 'flussiRendicontazione', idDominioFlusso, idflusso_dom1_1, dataFlusso
@@ -158,7 +148,6 @@ Then status 200
 
 * def tracciato = responseBytes
 * eval db.update("UPDATE fr SET xml = ? WHERE id = ?", tracciato, idFr)
-* assert db.readValue("SELECT xml FROM fr WHERE id = " + idFr) != null
 
 # il tracciato memorizzato viene restituito cosi' com'e', nelle tre forme della risorsa
 
@@ -186,7 +175,6 @@ When method get
 Then status 200
 And assert bytesToString(responseBytes).equals(bytesToString(tracciato))
 
-# ripristino dello stato iniziale del tracciato
+# la colonna viene riportata a NULL, come per tutti i flussi acquisiti dal batch FdR esterno
 
 * eval db.update("UPDATE fr SET xml = NULL WHERE id = " + idFr)
-* eval if (xmlIniziale != null) db.update("UPDATE fr SET xml = ? WHERE id = ?", xmlIniziale, idFr)
