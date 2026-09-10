@@ -21,3 +21,16 @@ ALTER TABLE versamenti ADD COLUMN send_importo_totale DOUBLE;
 ALTER TABLE versamenti ADD COLUMN send_data_aggiornamento DATETIME;
 
 ALTER TABLE domini ADD COLUMN cod_connettore_send VARCHAR(255);
+
+-- Indici a supporto della cursor pagination delle console-api su GET /pendenze
+-- e GET /ricevute: sort fisso (data DESC, id DESC) della query keyset. Senza
+-- questi indici la paginazione degrada a scan sequenziale su tabelle grandi.
+-- Dichiarati qui e non in govpay-console-api: impattano tabelle del core,
+-- quindi per la regola di proprieta' delle patch stanno nel core e nel govpay.xsd.
+-- MySQL non supporta IF NOT EXISTS su CREATE INDEX: l'istruzione fallisce se
+-- l'indice esiste gia'.
+CREATE INDEX idx_versamenti_data_ult_agg_id
+    ON versamenti (data_ora_ultimo_aggiornamento DESC, id DESC);
+
+CREATE INDEX idx_rpt_data_msg_ricevuta_id
+    ON rpt (data_msg_ricevuta DESC, id DESC);

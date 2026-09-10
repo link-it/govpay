@@ -572,6 +572,7 @@
 			<xsd:element name="codConnettoreSecim" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreHyperSicAPK" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codConnettoreSend" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 			<xsd:element name="tassonomiaPagoPA" type="String35" minOccurs="0"/>
 			<xsd:element name="scaricaFr" type="xsd:boolean"/>
@@ -1836,6 +1837,10 @@
 							<linkit:sql-table-index-field name="dataUltimaModificaAca" order="DESC" ignoreTypeCompatibility="true"/>
 							<linkit:sql-table-index-field name="dataUltimaComunicazioneAca" order="DESC" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_versamenti_data_ult_agg_id">
+							<linkit:sql-table-index-field name="dataOraUltimoAggiornamento" order="DESC" ignoreTypeCompatibility="true"/>
+							<linkit:sql-table-index-field name="id" order="DESC"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2034,6 +2039,9 @@
 
 			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="sendAbilitato" type="xsd:boolean"/>
+			<xsd:element name="sendImportoTotale" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="sendDataAggiornamento" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2375,6 +2383,10 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rpt_data_msg_ricevuta">
 							<linkit:sql-table-index-field name="dataMsgRicevuta" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_data_msg_ricevuta_id">
+							<linkit:sql-table-index-field name="dataMsgRicevuta" order="DESC" ignoreTypeCompatibility="true"/>
+							<linkit:sql-table-index-field name="id" order="DESC"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
