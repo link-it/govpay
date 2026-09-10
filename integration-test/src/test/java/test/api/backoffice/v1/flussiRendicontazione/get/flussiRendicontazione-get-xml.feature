@@ -3,8 +3,8 @@ Feature: Lettura in formato XML del dettaglio di un flusso di rendicontazione
 # Copre la GET del dettaglio del flusso con Accept: application/xml (Issue #881).
 # I flussi vengono acquisiti tramite il batch FdR esterno, che non persiste il tracciato originale: fr.xml
 # e' quindi sempre NULL e l'XML va ricostruito a partire dai dati del flusso e dalle rendicontazioni. Il
-# primo scenario copre questo caso; il secondo scrive il tracciato su fr.xml, per coprire anche il caso in
-# cui la colonna sia valorizzata, e al termine riporta la colonna a NULL.
+# primo scenario copre questo caso; il secondo scrive il tracciato su fr.xml, per coprire anche il ramo in
+# cui la colonna e' valorizzata, e al termine la riporta a NULL.
 
 Background:
 
@@ -12,8 +12,6 @@ Background:
 
 * callonce sleep(10000)
 
-* def DbUtils = Java.type('utils.java.DbUtils')
-* def db = new DbUtils(govpayDbConfig)
 * def bytesToString = function(bytes){ return new java.lang.String(bytes, 'UTF-8') }
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
@@ -42,12 +40,7 @@ And match response.idFlusso == idflusso_dom1_1
 * def idDominioFlusso = response.idDominio
 * def rendicontazioni = response.rendicontazioni
 
-# azzeramento del tracciato originale, come per i flussi acquisiti dal batch FdR esterno
-
-* def idFr = db.readValue("SELECT id FROM fr WHERE cod_flusso = '" + idflusso_dom1_1 + "' AND cod_dominio = '" + idDominioFlusso + "'")
-* eval db.update("UPDATE fr SET xml = NULL WHERE id = " + idFr)
-
-# il tracciato viene ricostruito a partire dai dati del flusso e dalle rendicontazioni
+# il tracciato, non presente su fr.xml, viene ricostruito a partire dai dati del flusso e dalle rendicontazioni
 
 Given url backofficeBaseurl
 And path 'flussiRendicontazione', idDominioFlusso, idflusso_dom1_1, dataFlusso
@@ -115,6 +108,9 @@ And match response.idFlusso == idflusso_dom1_1
 And assert response.rendicontazioni.length == rendicontazioni.length
 
 Scenario: Lettura in formato XML del flusso con tracciato originale presente
+
+* def DbUtils = Java.type('utils.java.DbUtils')
+* def db = new DbUtils(govpayDbConfig)
 
 Given url backofficeBaseurl
 And path 'applicazioni', idA2A
