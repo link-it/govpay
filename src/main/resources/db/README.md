@@ -1,0 +1,223 @@
+# Schema e patch SQL: nomi dei dialetti fra i repository
+
+Questo documento registra come si chiamano i dialetti di database nei repository GovPay e
+come vanno messi in corrispondenza. Serve a chi scrive strumenti che raccolgono script SQL da
+piu' repository: la corrispondenza non e' sempre per nome uguale.
+
+Nessun repository va rinominato per allinearsi: i nomi delle directory coincidono con valori
+di configurazione presenti in installazioni gia' distribuite, e cambiarli imporrebbe una
+modifica di configurazione ai deployment esistenti. La differenza si risolve in lettura,
+con la tabella qui sotto.
+
+## Nome canonico
+
+Il nome canonico di ciascun dialetto e' quello usato da questo repository, e coincide con i
+valori accettati da `govpay-docker/build_image.sh` e dall'installer
+(`setup/core/installer/setup/antinstall-config.xml`):
+
+| Canonico     | DBMS                        |
+|--------------|-----------------------------|
+| `postgresql` | PostgreSQL                  |
+| `oracle`     | Oracle                      |
+| `mysql`      | MySQL / MariaDB             |
+| `sqlserver`  | SQL Server                  |
+| `hsql`       | HyperSQL, sviluppo e test   |
+
+`mariadb` non e' un dialetto a se': usa gli script `mysql`. Gli script di inizializzazione dei
+batch applicano questa equivalenza esplicitamente.
+
+## Corrispondenza per repository
+
+Directory dei dialetti effettivamente presenti, sotto la radice SQL indicata.
+
+| Repository               | Radice SQL                    | Dialetti                                                | Note                     |
+|--------------------------|-------------------------------|---------------------------------------------------------|--------------------------|
+| `govpay`                 | `src/main/resources/db/sql`   | postgresql, oracle, mysql, sqlserver, `hsql`            | riferimento              |
+| `govpay-console-api`     | `src/main/resources/db/sql`   | postgresql, oracle, mysql, sqlserver, `hsql`            | allineato                |
+| `govpay-aca-batch`       | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, `hsql`            | allineato                |
+| `govpay-fdr-batch`       | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, **`hsqldb`**      | vedi deroga              |
+| `govpay-iban-batch`      | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, **`hsqldb`**      | vedi deroga              |
+| `govpay-maggioli-jppa`   | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, **`hsqldb`**      | vedi deroga              |
+| `govpay-notify-batch`    | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, **`hsqldb`**      | vedi deroga              |
+| `govpay-rt-batch`        | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, **`hsqldb`**      | vedi deroga              |
+| `govpay-tracciati-batch` | `src/main/resources/sql`      | postgresql, oracle, mysql, sqlserver, **`hsqldb`**      | vedi deroga              |
+
+Due radici SQL diverse: `db/sql` in questo repository e in `govpay-console-api`,
+`sql` nei batch. Anche questa differenza va gestita in lettura.
+
+## Deroga: hsqldb
+
+Sei repository usano `hsqldb` dove il canonico e' `hsql`. La deroga e' mantenuta
+deliberatamente e non va corretta con una rinomina, perche' il nome della directory non e'
+solo un nome: in `docker/commons/init_<modulo>_db.sh` la directory viene scelta con
+
+```sh
+SQL_DIR="${GOVPAY_DB_TYPE}"
+[ "${GOVPAY_DB_TYPE}" == "mariadb" ] && SQL_DIR="mysql"
+```
+
+cioe' la directory **e'** il valore della variabile d'ambiente. Rinominarla richiederebbe di
+cambiare `GOVPAY_DB_TYPE` in tutti i deployment che valgono `hsqldb`, oppure di introdurre un
+alias in sei script: in entrambi i casi si toccherebbe materiale gia' distribuito per una
+differenza che riguarda solo il dialetto di sviluppo e test.
+
+### Regola per gli strumenti
+
+Chi raccoglie script SQL da piu' repository normalizza il nome in lettura:
+
+| Trovato nel repository | Dialetto canonico |
+|------------------------|-------------------|
+| `hsql`                 | `hsql`            |
+| `hsqldb`               | `hsql`            |
+| `mariadb`              | `mysql`           |
+
+La normalizzazione vale solo per la lettura. Nessuno strumento deve riscrivere i nomi nei
+repository di origine.
+
+## Nomi dei file, non allineati
+
+Oltre al dialetto differiscono i nomi dei file con la stessa funzione. Anche questi vanno
+risolti in lettura, non rinominati:
+
+| Funzione                          | Nomi in uso                                  |
+|-----------------------------------|----------------------------------------------|
+| creazione schema del modulo       | `create-db.sql`, `create.sql`                |
+| svuotamento dati                  | `delete.sql`, `delete-db.sql`                |
+| eliminazione schema               | `drop.sql`, `drop-db.sql`                    |
+| tabelle di Spring Batch           | `tabelle_batch-create.sql`                   |
+| eliminazione tabelle Spring Batch | `tabelle_batch-drop.sql`                     |
+| pulizia dati Spring Batch         | `spring-batch-cleanup.sql`                   |
+
+Le prime tre voci non hanno un nome unico fra i repository; le ultime tre si. Un raccoglitore
+deve quindi cercare per funzione con piu' nomi ammessi, non per nome esatto, e non deve
+assumere che i file esistano: la presenza varia per modulo.
+
+| Repository               | creazione                       | svuotamento      | eliminazione   |
+|--------------------------|---------------------------------|------------------|----------------|
+| `govpay-aca-batch`       | `create.sql` e `create-db.sql`  | assente          | assente        |
+| `govpay-fdr-batch`       | `create.sql`                    | `delete.sql`     | `drop.sql`     |
+| `govpay-iban-batch`      | `create-db.sql`                 | `delete.sql`     | `drop.sql`     |
+| `govpay-maggioli-jppa`   | `create-db.sql`                 | `delete-db.sql`  | `drop-db.sql`  |
+| `govpay-rt-batch`        | `create-db.sql`                 | assente          | assente        |
+| `govpay-tracciati-batch` | assente                         | assente          | assente        |
+| `govpay-notify-batch`    | assente                         | assente          | assente        |
+
+`govpay-tracciati-batch` e `govpay-notify-batch` non definiscono struttura propria: portano solo
+le tabelle di Spring Batch. `govpay-aca-batch` contiene entrambi i nomi per la creazione e
+definisce una vista sulle tabelle del core anziche' tabelle proprie.
+
+## Raccolta dello SQL di un rilascio
+
+`collect-release-sql.sh` compone lo SQL di un rilascio in un unico script per
+dialetto, che la pipeline allega alla GitHub Release del core come
+`govpay-sql-<tag>.zip`.
+
+Le versioni dei componenti stanno in `release-components.env`, versionato: va
+aggiornato nello stesso commit che porta la versione del core, cosi' la
+composizione di ogni rilascio resta registrata in git e rivedibile in una pull
+request. Una versione vuota significa "non fa parte di questo rilascio".
+
+### Rilascio o sviluppo
+
+Il valore di ciascun componente puo' essere di tre forme, perche' i casi
+sono diversi:
+
+| Valore | Da dove prende lo SQL | Quando |
+|---|---|---|
+| `<tag>` | asset **`sql.zip`** della GitHub Release | rilascio: l'artefatto pubblicato non cambia piu' |
+| `image:<rif>` | `/opt/sql` dell'**immagine docker** | sviluppo: e' la forma da preferire |
+| `branch:<nome>` | archivio del branch, l'albero sorgente | quando non c'e' ne' rilascio ne' immagine |
+
+In pratica sul branch di sviluppo del core i valori sono `image:<tag>` delle
+immagini dev, e nel commit che prepara il rilascio diventano i tag dei rilasci.
+
+`image:` e' preferibile a `branch:` in sviluppo per due ragioni: lo SQL e'
+quello che accompagna il binario effettivamente in esecuzione, e la versione e'
+esplicita nel tag invece di essere lo stato mutevole di un branch. Un
+riferimento senza `/` viene espanso come `linkitaly/govpay-<nome>-dev:<tag>`,
+la stessa convenzione usata per le immagini dev del core; il prefisso si cambia
+con `DOCKER_DEV_PREFIX` e il percorso interno con `DOCKER_SQL_PATH`.
+
+Uno script che contiene componenti presi da un branch **non e' riproducibile**,
+e lo dichiara nella propria intestazione. Anche la provenienza da immagine e'
+annotata, con il riferimento completo.
+
+Nessuna forma richiede autenticazione verso GitHub: i repository
+`link-it/govpay*` sono pubblici, quindi bastano `curl`, `unzip` e `tar`, e
+`curl` non serve affatto se tutti i componenti arrivano da immagini. `GH_TOKEN`,
+se presente nell'ambiente, alza soltanto il limite di richieste dell'API
+GitHub, che in anonimo e' di 60 all'ora per indirizzo IP.
+
+Non tutte le immagini contengono lo SQL: quella di `console-api` ha `/opt/sql`
+vuota, perche' il suo Dockerfile non lo copia. In quel caso il componente viene
+saltato con una nota, come per un rilascio senza `sql.zip`.
+
+Un riferimento inesistente, tag o branch, e' un **errore**: tipicamente una
+versione sbagliata nel file, e proseguire produrrebbe uno script a cui manca un
+componente senza che si veda. Un rilascio che esiste ma non ha `sql.zip` e'
+invece legittimo: il componente viene saltato, annotandolo nel riepilogo e
+nell'intestazione dello script prodotto.
+
+Ordine di concatenazione, che non e' arbitrario:
+
+1. **il core**, perche' definisce le tabelle su cui gli altri poggiano — per
+   esempio `create-db.sql` di `aca-batch` crea viste su `versamenti`;
+2. **le tabelle di Spring Batch**, una volta sola;
+3. **i componenti**, in ordine alfabetico.
+
+Quattro modalita':
+
+| `--mode` | Sezione core | Usata da |
+|---|---|---|
+| `install` | baseline `gov_pay.sql` | rilascio, installazione da zero |
+| `upgrade` | `patch/<versione>.sql` | rilascio, aggiornamento di un'installazione |
+| `both` | entrambe, in due script | il job `release` della pipeline GitHub |
+| `componenti` | **nessuna** | `jenkins.install.sh`, dove il core lo applica l'installer |
+
+La modalita' `componenti` esiste perche' `prepareSetup.sh` copia
+`src/main/resources/db/sql/*` dentro l'installer: `dist/sql/gov_pay.sql` e' lo
+stesso file che il raccoglitore userebbe come sezione core, e applicarli
+entrambi duplicherebbe lo schema. Lasciando il core all'installer, inoltre, la
+testsuite installa dall'artefatto prodotto e non dai sorgenti.
+
+In `jenkins.install.sh` questa modalita' sostituisce i file che erano copiati a
+mano in `/etc/govpay/docker/<versione>/sql/` — `batch-aca.sql`, `batch-fdr.sql`
+e `tabelle_batch-create.sql` — che stavano fuori da git, su una macchina.
+
+### Le tabelle di Spring Batch non sono tutte uguali
+
+Concatenare ingenuamente le emetterebbe una volta per componente e il secondo
+`CREATE TABLE` farebbe fallire lo script, quindi vengono deduplicate. Il
+confronto e' sul contenuto normalizzato, perche' alcune copie differiscono solo
+per il newline finale e sarebbe rumore.
+
+Le differenze che restano sono reali: `maggioli-jppa` dichiara la sequenza
+`BATCH_JOB_INSTANCE_SEQ` dove gli altri sei hanno `BATCH_JOB_SEQ`, che e' la
+rinomina introdotta da Spring Batch 6. Lo script include la variante di
+**maggioranza** e segnala le altre, sia a schermo sia come commento nello script
+prodotto: dare a un batch lo schema di un'altra versione del framework non puo'
+essere una scelta silenziosa.
+
+### File inclusi ed esclusi
+
+Inclusi: `create-db.sql`, `create.sql` o `console-api-schema.sql` — cercati per
+funzione, perche' i nomi non sono uniformi — e un solo
+`tabelle_batch-create.sql`. Esclusi sempre, perche' in uno
+script di installazione distruggerebbero dati o non c'entrano: `delete*.sql`,
+`drop*.sql`, `tabelle_batch-drop.sql`, `spring-batch-cleanup.sql`,
+`spring-batch-6.0-migration.sql`, `utils.sql`.
+
+La ricerca e' per file e non per directory: in almeno un repository esiste una
+`hsql/` accanto alla `hsqldb/` tracciata, e fissare la directory per nome faceva
+sparire il contenuto vero.
+
+## Copertura per dialetto
+
+La presenza di un dialetto nell'elenco non implica che ogni patch esista per quel dialetto.
+Nel solo `govpay`, le patch tracciate sono 17 per postgresql, oracle e mysql, 10 per sqlserver,
+7 per hsql: i tre dialetti principali sono allineati, il divario e' su sqlserver e hsql.
+Prima di considerare un dialetto supportato per una release va verificato che la patch di quella
+release esista per tutti i dialetti dichiarati.
+
+Il conteggio va fatto su `git ls-files` e non sul contenuto della directory: gli script preparati
+per le consegne ai clienti non sono versionati e falserebbero il conto.

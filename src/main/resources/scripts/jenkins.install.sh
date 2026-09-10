@@ -1,6 +1,10 @@
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
+# Radice del progetto: piu' sotto si entra nella directory dell'installer e non
+# si torna indietro, quindi i percorsi relativi non valgono piu'.
+GOVPAY_ROOT=$(pwd)
+
 
 #####
 ## ESECUZIONE INSTALLER
@@ -46,6 +50,34 @@ TABLESPACE=openspcoop2
 sh install.sh text-auto
 
 #####
+## RACCOLTA SQL DEI COMPONENTI
+#####
+
+# Compone in un unico script lo SQL dei componenti del rilascio, scaricando
+# l'asset sql.zip dalle loro GitHub Release. Sostituisce i file che erano
+# copiati a mano in /etc/govpay/docker/<versione>/sql/ (batch-aca.sql,
+# batch-fdr.sql, tabelle_batch-create.sql): le versioni ora stanno in
+# src/main/resources/db/release-components.env, versionato.
+#
+# Modalita' componenti: il core NON e' incluso, perche' lo applica l'installer
+# qui sotto con dist/sql/gov_pay.sql, che e' il file dell'artefatto in prova.
+# Includerlo anche qui duplicherebbe lo schema.
+#
+# Richiede solo curl e unzip: i repository GovPay sono pubblici e gli asset si
+# scaricano in anonimo, senza gh e senza token. Le tabelle di Spring Batch sono
+# deduplicate dallo script, perche' ripetute in ogni batch.
+
+echo "Composizione dello SQL dei componenti..."
+
+SQL_COMPONENTI_DIR=${GOVPAY_ROOT}/target/release-sql
+bash ${GOVPAY_ROOT}/src/main/resources/db/collect-release-sql.sh \
+  --core "${GOVPAY_VERSION}" \
+  --mode componenti \
+  --dialects postgresql \
+  --out ${SQL_COMPONENTI_DIR}
+SQL_COMPONENTI=${SQL_COMPONENTI_DIR}/govpay-${GOVPAY_VERSION}-componenti-postgresql.sql
+
+#####
 ## SETUP DB
 #####
 
@@ -53,10 +85,8 @@ echo "Creazione del database..."
 sudo -u postgres createdb govpay -O govpay
 psql govpay govpay < dist/sql/gov_pay.sql
 
-echo "Creazione tabelle BATCH"
-psql govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/batch-aca.sql
-psql govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/batch-fdr.sql
-psql govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/tabelle_batch-create.sql
+echo "Creazione tabelle dei componenti e di Spring Batch"
+psql govpay govpay < ${SQL_COMPONENTI}
 
 #####
 ## SETUP API SECURITY SETTINGS

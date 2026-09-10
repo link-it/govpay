@@ -287,6 +287,28 @@ jobs:
         cp src/main/resources/setup/target/*.tgz release-artifacts/
         ls -lh release-artifacts/
 
+    # SQL complessivo del rilascio: lo script scarica l'asset sql.zip dalle
+    # release dei componenti elencati in db/release-components.env e lo
+    # concatena con lo SQL del core, uno script per dialetto. Gli asset si
+    # scaricano in anonimo con curl, perche' i repository sono pubblici: il
+    # token e' passato solo per alzare il limite di richieste dell'API GitHub,
+    # che in anonimo e' di 60 all'ora per indirizzo IP e su un runner condiviso
+    # potrebbe non bastare.
+    - name: Collect release SQL
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        bash src/main/resources/db/collect-release-sql.sh \
+          --core "${{ github.ref_name }}" \
+          --mode both \
+          --out target/release-sql
+
+    - name: Assemble SQL ZIP
+      run: |
+        cd target/release-sql
+        zip -r "${GITHUB_WORKSPACE}/release-artifacts/govpay-sql-${{ github.ref_name }}.zip" .
+        ls -lh "${GITHUB_WORKSPACE}/release-artifacts/govpay-sql-${{ github.ref_name }}.zip"
+
     - name: Assemble reports ZIP
       run: |
         mkdir -p reports/owasp reports/osv reports/spotbugs reports/third-party-licenses reports/sbom
