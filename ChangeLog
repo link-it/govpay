@@ -1,3 +1,11 @@
+2026-09-10  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p3.
+
+        * Issue #881 Fix errore 500 nel download XML del flusso di rendicontazione quando fr.xml e' NULL.
+        La lettura di un flusso con Accept: application/xml restituiva un 500 INTERNO/INTERNAL con dettaglio "XML del flusso di rendicontazione [...] non presente e rendicontazioni non fornite" per tutti i flussi con la colonna fr.xml valorizzata a NULL, condizione ormai ordinaria perche' dalla 3.8.2/3.9 l'acquisizione e' demandata al componente esterno govpay-fdr-batch (issue #846), che alimenta fr e rendicontazioni dalle API FdR REST senza persistere il tracciato XML originale. Il fallback di ricostruzione FrUtils.buildXml introdotto nella 3.9.2 non veniva mai attivato dalle API: RendicontazioniDAO.leggiFlussoRendicontazione, nel ramo Accept: application/xml, caricava solo l'Fr tramite FrBD senza valorizzare mai response.setRendicontazioni (lo faceva unicamente il ramo JSON, che legge dalla vista rendicontazioni), quindi i controller invocavano FrUtils.getXml(fr, null) e la ricostruzione si arrestava sulla NotFoundException. Fix: il ramo XML del DAO ora apre la connessione con RendicontazioniBD (con FrBD agganciato alla stessa connessione) e carica anche le rendicontazioni quando fr.getXml() e' NULL, cosi' che i controller possano ricostruire il tracciato; quando l'XML originale e' presente comportamento e costo restano invariati. Impatta api-backoffice v1 e api-ragioneria v1, v2 e v3, che condividono lo stesso DAO.
+        Corretto contestualmente in FrUtils.buildXml il caso di rendicontazioni.esito nullo, che provocava NPE e un ulteriore 500 opaco. Aggiunti alla testsuite due scenari di integrazione sulla lettura in formato XML del dettaglio del flusso, uno sul flusso acquisito dal batch FdR esterno, con fr.xml NULL (tracciato ricostruito), e uno con il tracciato persistito sulla colonna (restituito cosi' com'e'), entrambi sulle tre forme della risorsa.
+
 2026-07-02  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p2.

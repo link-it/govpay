@@ -149,7 +149,11 @@ public class FrUtils {
 				}
 
 				datiSingoliPagamenti.setSingoloImportoPagato(rendicontazione.getImporto());
-				datiSingoliPagamenti.setCodiceEsitoSingoloPagamento(String.valueOf(rendicontazione.getEsito().getCodifica()));
+
+				if(rendicontazione.getEsito() != null) {
+					datiSingoliPagamenti.setCodiceEsitoSingoloPagamento(String.valueOf(rendicontazione.getEsito().getCodifica()));
+				}
+
 				datiSingoliPagamenti.setDataEsitoSingoloPagamento(DateUtils.toLocalDate(rendicontazione.getData()));
 
 				flussoRiversamento.getDatiSingoliPagamentis().add(datiSingoliPagamenti);
