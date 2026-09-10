@@ -295,6 +295,7 @@ CREATE TABLE utenze_domini
 CREATE TABLE operatori
 (
 	nome VARCHAR(35) NOT NULL,
+	preferenze VARCHAR(max),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_utenza BIGINT NOT NULL,

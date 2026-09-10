@@ -1096,6 +1096,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="nome" type="String35"/>
+			<xsd:element name="preferenze" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

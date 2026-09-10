@@ -49,3 +49,12 @@ IF NOT EXISTS (
     CREATE INDEX idx_rpt_data_msg_ricevuta_id
         ON rpt (data_msg_ricevuta DESC, id DESC);
 GO
+
+-- Issue #881 del cruscotto (govpay-console-api#80): preferenze d'uso dell'operatore,
+-- JSON opaco che interpreta il solo frontend. Dichiarata qui e non in
+-- govpay-console-api perche' operatori e' una tabella del core.
+-- Il tipo e' quello che il generatore usa per un xsd:string senza facet, che
+-- cambia da dialetto a dialetto: TEXT non esiste su oracle e sqlserver.
+IF COL_LENGTH('operatori', 'preferenze') IS NULL
+    ALTER TABLE operatori ADD preferenze VARCHAR(max);
+GO

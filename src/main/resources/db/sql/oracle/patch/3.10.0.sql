@@ -57,4 +57,21 @@ EXCEPTION
 END;
 /
 
+-- Issue #881 del cruscotto (govpay-console-api#80): preferenze d'uso dell'operatore,
+-- JSON opaco che interpreta il solo frontend. Dichiarata qui e non in
+-- govpay-console-api perche' operatori e' una tabella del core.
+-- Il tipo e' quello che il generatore usa per un xsd:string senza facet, che
+-- cambia da dialetto a dialetto: TEXT non esiste su oracle e sqlserver.
+-- Oracle non supporta IF NOT EXISTS su ADD: blocco PL/SQL idempotente che
+-- ignora ORA-01430 (colonna gia' presente).
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE operatori ADD preferenze CLOB';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
+
 COMMIT;

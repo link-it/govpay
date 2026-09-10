@@ -296,6 +296,7 @@ CREATE TABLE utenze_domini
 CREATE TABLE operatori
 (
 	nome VARCHAR(35) NOT NULL COMMENT 'Nome dell\'operatore',
+	preferenze LONGTEXT COMMENT 'Preferenze d\'uso del cruscotto, JSON opaco interpretato dal solo frontend',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza dell\'operatore',

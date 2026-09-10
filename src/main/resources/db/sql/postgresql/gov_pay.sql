@@ -296,6 +296,7 @@ CREATE SEQUENCE seq_operatori start 1 increment 1 maxvalue 9223372036854775807 m
 CREATE TABLE operatori
 (
 	nome VARCHAR(35) NOT NULL,
+	preferenze TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_operatori') NOT NULL,
 	id_utenza BIGINT NOT NULL,
