@@ -8,6 +8,9 @@
         Lo schema risultante, verificato applicando lo script composto a un PostgreSQL reale in uno schema isolato: 48 tabelle e 12 viste, senza errori. Le tabelle proprie dei componenti sono fr_temp (fdr-batch), rt_temp (rt-batch) e jppa_notifiche (maggioli-jppa); iban-batch, notify-batch e tracciati-batch non portano struttura propria e lo script lo annota. Le tabelle di Spring Batch restano sei con sette batch, cioe' la deduplicazione regge.
         Resta esposta la divergenza reale fra i componenti: maggioli-jppa dichiara la variante Spring Batch 6 di tabelle_batch-create.sql, con la sequenza BATCH_JOB_INSTANCE_SEQ al posto di BATCH_JOB_SEQ. Lo script include la variante di maggioranza, cioe' quella degli altri sei batch, e annota l'esclusione sia a schermo sia come commento nello script prodotto. Applicando questo schema, maggioli-jppa troverebbe una sequenza con un nome diverso da quello che si aspetta: non e' un difetto del raccoglitore ma una divergenza fra componenti, che ora e' visibile invece di restare nascosta in sette copie dello stesso file.
 
+        * [Installer] Risolta la segnalazione NVDCVE-2026-78254 su ant-1.10.11.jar.
+        Portato da 3.9.x (commit 2d0d4a7ad). I jar di Ant usati dall'installer (AntInstaller) non sono dipendenze maven ma file versionati sotto src/main/resources/setup/core/installer/lib/antinstaller, quindi l'aggiornamento della property ant.version non li aveva toccati. ant, ant-launcher e ant-apache-regexp passano dalla 1.10.11 alla 1.10.18, la stessa versione gia' usata come dipendenza, e i classpath di install.sh e install.cmd sono stati aggiornati ai nuovi nomi dei file.
+
 2026-09-10  Giuliano Pintori <pintori@link.it>
 
         * [DB] Allineamento della fonte govpay.xsd e strutture del core rientrate dal satellite.
