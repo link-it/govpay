@@ -1,5 +1,7 @@
 2026-09-11  Giuliano Pintori <pintori@link.it>
 
+        * Allineati ai nomi reali dei file i riferimenti a xml-apis_antinstaller-0.8b.jar e ai-icons-eclipse_antinstaller-0.8b.jar nel classpath di install.sh e install.cmd: mancando il trattino prima della versione, le due voci puntavano a file inesistenti e venivano ignorate silenziosamente da java. Il secondo jar contiene le icone (resources/icons/*.png) che ant-installer-0.8b.jar cerca nella procedura guidata, quindi in modalita' swing non venivano caricate.
+
         * Risolta la segnalazione NVDCVE-2026-78254 su ant-1.10.11.jar. I jar di Ant utilizzati dall'installer (AntInstaller) non sono dipendenze maven ma file versionati sotto src/main/resources/setup/core/installer/lib/antinstaller, quindi non erano stati toccati dall'aggiornamento della property ant.version: ant, ant-launcher e ant-apache-regexp sono stati portati dalla 1.10.11 alla 1.10.18, la stessa versione gia' usata come dipendenza, e sono stati aggiornati di conseguenza i classpath di install.sh e install.cmd.
 
 2026-09-10  Giuliano Pintori <pintori@link.it>
