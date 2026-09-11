@@ -1,3 +1,10 @@
+2026-09-11  Giuliano Pintori <pintori@link.it>
+
+        * [Build] Composizione del rilascio: valorizzati tutti e sette i batch.
+        In src/main/resources/db/release-components.env sono ora indicati tutti i batch con la versione della rispettiva immagine dev, nella forma image:<tag>: aca-batch 2.0.1-SNAPSHOT, fdr-batch 2.0.2-SNAPSHOT, iban-batch 2.0.1-SNAPSHOT, maggioli-jppa 2.0.1-SNAPSHOT, notify-batch 2.0.2-SNAPSHOT, rt-batch 2.0.1-SNAPSHOT, tracciati-batch 1.0.0-SNAPSHOT. L'immagine di tracciati-batch non era presente in locale e viene scaricata dal raccoglitore. console-api resta vuota: la sua immagine dev e' anteriore all'aggiunta della COPY dello SQL nel Dockerfile, quindi finche' la pipeline non la rigenera il componente verrebbe saltato.
+        Lo schema risultante, verificato applicando lo script composto a un PostgreSQL reale in uno schema isolato: 48 tabelle e 12 viste, senza errori. Le tabelle proprie dei componenti sono fr_temp (fdr-batch), rt_temp (rt-batch) e jppa_notifiche (maggioli-jppa); iban-batch, notify-batch e tracciati-batch non portano struttura propria e lo script lo annota. Le tabelle di Spring Batch restano sei con sette batch, cioe' la deduplicazione regge.
+        Resta esposta la divergenza reale fra i componenti: maggioli-jppa dichiara la variante Spring Batch 6 di tabelle_batch-create.sql, con la sequenza BATCH_JOB_INSTANCE_SEQ al posto di BATCH_JOB_SEQ. Lo script include la variante di maggioranza, cioe' quella degli altri sei batch, e annota l'esclusione sia a schermo sia come commento nello script prodotto. Applicando questo schema, maggioli-jppa troverebbe una sequenza con un nome diverso da quello che si aspetta: non e' un difetto del raccoglitore ma una divergenza fra componenti, che ora e' visibile invece di restare nascosta in sette copie dello stesso file.
+
 2026-09-10  Giuliano Pintori <pintori@link.it>
 
         * [DB] Allineamento della fonte govpay.xsd e strutture del core rientrate dal satellite.
