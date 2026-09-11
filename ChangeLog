@@ -11,6 +11,9 @@
         * [Installer] Risolta la segnalazione NVDCVE-2026-78254 su ant-1.10.11.jar.
         Portato da 3.9.x (commit 2d0d4a7ad). I jar di Ant usati dall'installer (AntInstaller) non sono dipendenze maven ma file versionati sotto src/main/resources/setup/core/installer/lib/antinstaller, quindi l'aggiornamento della property ant.version non li aveva toccati. ant, ant-launcher e ant-apache-regexp passano dalla 1.10.11 alla 1.10.18, la stessa versione gia' usata come dipendenza, e i classpath di install.sh e install.cmd sono stati aggiornati ai nuovi nomi dei file.
 
+        * [Installer] Allineati ai nomi reali dei file i riferimenti agli archivi di AntInstaller nel classpath dell'installer.
+        Portato da 3.9.x (commit f529cd510). xml-apis_antinstaller-0.8b.jar e ai-icons-eclipse_antinstaller-0.8b.jar erano indicati in install.sh e install.cmd senza il trattino prima della versione, quindi le due voci di classpath puntavano a file inesistenti e venivano ignorate. Il secondo contiene le icone (resources/icons/*.png) usate dalla procedura guidata di ant-installer-0.8b.jar, che in modalita' swing non venivano quindi caricate.
+
 2026-09-10  Giuliano Pintori <pintori@link.it>
 
         * [DB] Allineamento della fonte govpay.xsd e strutture del core rientrate dal satellite.

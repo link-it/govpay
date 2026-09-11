@@ -38,9 +38,9 @@ ANTINSTALLER_LIBRARIES=${LIBRARIES}/antinstaller
 
 # Installer from command line classpath
 CLASSPATH=${LIBRARIES}/shared/xercesImpl-2.12.2.jar
-CLASSPATH=${CLASSPATH}:${ANTINSTALLER_LIBRARIES}/xml-apis_antinstaller0.8b.jar
+CLASSPATH=${CLASSPATH}:${ANTINSTALLER_LIBRARIES}/xml-apis_antinstaller-0.8b.jar
 CLASSPATH=${CLASSPATH}:${ANTINSTALLER_LIBRARIES}/ant-installer-0.8b.jar
-CLASSPATH=${CLASSPATH}:${ANTINSTALLER_LIBRARIES}/ai-icons-eclipse_antinstaller0.8b.jar
+CLASSPATH=${CLASSPATH}:${ANTINSTALLER_LIBRARIES}/ai-icons-eclipse_antinstaller-0.8b.jar
 
 # JGoodies Look And Feel
 CLASSPATH=${CLASSPATH}:${ANTINSTALLER_LIBRARIES}/jgoodies-edited-1.2.2-gov4j-1.jar
