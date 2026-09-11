@@ -54,10 +54,11 @@ And match response /FlussoRiversamento/istitutoRicevente/identificativoUnivocoRi
 
 # un elemento datiSingoliPagamenti per ogni rendicontazione del flusso, con i dati della riscossione
 
-* def numeroDatiSingoliPagamenti = karate.xmlPath(response, 'count(/FlussoRiversamento/datiSingoliPagamenti)')
+* def xmlRicostruito = bytesToString(responseBytes)
+
+* def numeroDatiSingoliPagamenti = xmlRicostruito.split('<datiSingoliPagamenti>').length - 1
 * assert numeroDatiSingoliPagamenti == rendicontazioni.length
 
-* def xmlRicostruito = bytesToString(responseBytes)
 * def rendicontazioneNonPresente =
 """
 function(xml, list) {
@@ -73,11 +74,8 @@ function(xml, list) {
 
 # gli importi devono essere espressi con due cifre decimali, come previsto dal tracciato
 
-* def importoTotale = karate.xmlPath(response, '/FlussoRiversamento/importoTotalePagamenti')
-* match importoTotale == '#regex \\d+\\.\\d\\d'
-
-* def singoloImportoPagato = karate.xmlPath(response, '/FlussoRiversamento/datiSingoliPagamenti[1]/singoloImportoPagato')
-* match singoloImportoPagato == '#regex \\d+\\.\\d\\d'
+* match response /FlussoRiversamento/importoTotalePagamenti == '#regex \\d+\\.\\d\\d'
+* match response /FlussoRiversamento/datiSingoliPagamenti[1]/singoloImportoPagato == '#regex \\d+\\.\\d\\d'
 
 # anche le altre forme della risorsa ricostruiscono il tracciato
 
