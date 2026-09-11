@@ -1,3 +1,7 @@
+2026-09-11  Giuliano Pintori <pintori@link.it>
+
+        * Risolta la segnalazione NVDCVE-2026-78254 su ant-1.10.11.jar. I jar di Ant utilizzati dall'installer (AntInstaller) non sono dipendenze maven ma file versionati sotto src/main/resources/setup/core/installer/lib/antinstaller, quindi non erano stati toccati dall'aggiornamento della property ant.version: ant, ant-launcher e ant-apache-regexp sono stati portati dalla 1.10.11 alla 1.10.18, la stessa versione gia' usata come dipendenza, e sono stati aggiornati di conseguenza i classpath di install.sh e install.cmd.
+
 2026-09-10  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p3.
