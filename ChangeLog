@@ -1,5 +1,8 @@
 2026-09-11  Giuliano Pintori <pintori@link.it>
 
+        * [Build] Invertito l'ordine delle operazioni nello stage cleanup della pipeline Jenkins.
+        Portato da 3.9.x (commit bc20f5687). Il teardown dello stack docker compose viene ora eseguito prima di jenkins.cleanup.sh, che ferma i servizi sull'agent e fa il drop del database: farlo dopo lasciava i container attivi contro un database che stava scomparendo. Lo stage era allo stesso stato di partenza sui due branch, quindi il diff e' identico a quello su 3.9.x.
+
         * [Build] Composizione del rilascio: valorizzati tutti e sette i batch.
         In src/main/resources/db/release-components.env sono ora indicati tutti i batch con la versione della rispettiva immagine dev, nella forma image:<tag>: aca-batch 2.0.1-SNAPSHOT, fdr-batch 2.0.2-SNAPSHOT, iban-batch 2.0.1-SNAPSHOT, maggioli-jppa 2.0.1-SNAPSHOT, notify-batch 2.0.2-SNAPSHOT, rt-batch 2.0.1-SNAPSHOT, tracciati-batch 1.0.0-SNAPSHOT. L'immagine di tracciati-batch non era presente in locale e viene scaricata dal raccoglitore. console-api resta vuota: la sua immagine dev e' anteriore all'aggiunta della COPY dello SQL nel Dockerfile, quindi finche' la pipeline non la rigenera il componente verrebbe saltato.
         Lo schema risultante, verificato applicando lo script composto a un PostgreSQL reale in uno schema isolato: 48 tabelle e 12 viste, senza errori. Le tabelle proprie dei componenti sono fr_temp (fdr-batch), rt_temp (rt-batch) e jppa_notifiche (maggioli-jppa); iban-batch, notify-batch e tracciati-batch non portano struttura propria e lo script lo annota. Le tabelle di Spring Batch restano sei con sette batch, cioe' la deduplicazione regge.

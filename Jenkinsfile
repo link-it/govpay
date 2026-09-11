@@ -39,8 +39,8 @@ pipeline {
     }
     stage('cleanup') {
       steps {
-        sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
         sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose down -v && cd - || true'
+        sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
         sh '/opt/apache-maven-3.6.3/bin/mvn clean'
       }
     }
