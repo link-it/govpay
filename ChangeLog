@@ -1,3 +1,11 @@
+2026-09-13  Giuliano Pintori <pintori@link.it>
+
+        * [Installer] Assegnati nomi distinti alle due pagine "Servizi Backoffice" dell'installer.
+        Portato da 3.9.x (commit 99421e8c4). In antinstall-config.xml le due varianti mutuamente esclusive della pagina, selezionate via ifProperty su ${antinstaller_as} (wildfly28 e non-wildfly28), condividevano lo stesso attributo name="informazioniserviziconsole": essendo il nome la chiave con cui AntInstaller identifica le pagine, le due definizioni collidevano. Rinominate rispettivamente in informazioniserviziconsolewildfly e informazioniserviziconsolestandard; invariati property, defaultValue e condizioni di visibilita'.
+
+        * [Installer] Derivati dal base path delle API-Backoffice i path dei servizi del cruscotto di backoffice.
+        Portato da 3.9.x (commit 99421e8c4). I token GOVPAY_BACKEND_API_FORM_BASE_URL e GOVPAY_BACKEND_API_PUBLIC_BASE_URL applicati da ant/utils.xml leggono le property antinstaller_govpay_backend_api_form_base_url e antinstaller_govpay_backend_api_public_base_url, valorizzate solo in local_env.xml per il build locale e quindi mai impostate dalla procedura guidata, dove l'utente indica il solo antinstaller_govpay_backend_api_base_url. Aggiunto in build.xml un blocco groovy che le calcola per derivazione (<base path API-Backoffice>/rs/form/v1 e <base path API-Backoffice>/public), con fallback ai valori standard /govpay-api-backoffice/rs/form/v1 e /govpay-api-backoffice/public quando la property di origine non e' valorizzata.
+
 2026-09-11  Giuliano Pintori <pintori@link.it>
 
         * [Build] Invertito l'ordine delle operazioni nello stage cleanup della pipeline Jenkins.
