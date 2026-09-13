@@ -6,6 +6,9 @@
         * [Installer] Derivati dal base path delle API-Backoffice i path dei servizi del cruscotto di backoffice.
         Portato da 3.9.x (commit 99421e8c4). I token GOVPAY_BACKEND_API_FORM_BASE_URL e GOVPAY_BACKEND_API_PUBLIC_BASE_URL applicati da ant/utils.xml leggono le property antinstaller_govpay_backend_api_form_base_url e antinstaller_govpay_backend_api_public_base_url, valorizzate solo in local_env.xml per il build locale e quindi mai impostate dalla procedura guidata, dove l'utente indica il solo antinstaller_govpay_backend_api_base_url. Aggiunto in build.xml un blocco groovy che le calcola per derivazione (<base path API-Backoffice>/rs/form/v1 e <base path API-Backoffice>/public), con fallback ai valori standard /govpay-api-backoffice/rs/form/v1 e /govpay-api-backoffice/public quando la property di origine non e' valorizzata.
 
+        * [Installer] Assegnati nomi distinti alle tre pagine "Il Database" dell'installer.
+        Stessa collisione appena corretta sulle pagine "Servizi Backoffice", rimasta sulle tre varianti mutuamente esclusive della pagina "Il Database", tutte dichiarate in antinstall-config.xml con name="informazionidibasexml" e selezionate via ifProperty su ${antinstaller_tipo_database} e ${antinstaller_as}. Rinominate in informazionidibasexmlaltridb (database diversi da postgresql), informazionidibasexmlpostgresqlwildfly (postgresql su wildfly28) e informazionidibasexmlpostgresqlstandard (postgresql sugli altri application server); invariati property, defaultValue, hidden, conditional e condizioni di visibilita'. Il nome non e' referenziato altrove nel repository, ne' da build.xml ne' dai file sotto ant/, quindi la rinomina non ha ricadute.
+
 2026-09-11  Giuliano Pintori <pintori@link.it>
 
         * [Build] Invertito l'ordine delle operazioni nello stage cleanup della pipeline Jenkins.

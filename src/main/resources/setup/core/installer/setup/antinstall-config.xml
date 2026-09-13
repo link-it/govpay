@@ -47,7 +47,7 @@
 		<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN" />
 	</page>
 
-	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}!=postgresql">
+	<page name="informazionidibasexmlaltridb" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}!=postgresql">
 		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
 		<conditional ifProperty="${antinstaller_tipo_database}=mysql">
 			<hidden property="antinstaller_modulo_postgres" value="" />
@@ -84,7 +84,7 @@
 		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
 	</page>
 
-	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}==wildfly28)">
+	<page name="informazionidibasexmlpostgresqlwildfly" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}==wildfly28)">
 		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
 		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
 			<hidden property="porta-db" value="5432" />
@@ -101,7 +101,7 @@
 		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL" />
 	</page>
 
-	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}!=wildfly28)">
+	<page name="informazionidibasexmlpostgresqlstandard" type="input" displayText="Il Database" ifProperty="(${antinstaller_tipo_database}==postgresql) AND (${antinstaller_as}!=wildfly28)">
 		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
 		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
 			<hidden property="porta-db" value="5432" />
