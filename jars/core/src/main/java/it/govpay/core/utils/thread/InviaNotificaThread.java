@@ -86,6 +86,12 @@ public class InviaNotificaThread implements Runnable {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.notifica = notifica;
 		this.rpt = this.notifica.getRpt() != null ? this.notifica.getRpt() : this.notifica.getRpt(configWrapper);
+
+		// Notifica.getRpt restituisce null quando idRpt non e' valorizzato: senza RPT non c'e' nulla da notificare
+		if(this.rpt == null) {
+			throw new ServiceException("RPT della notifica [id: " + this.notifica.getId() + "] non disponibile: spedizione non eseguibile");
+		}
+
 		this.applicazione = this.notifica.getApplicazione(configWrapper);
 		this.versamento = this.rpt.getVersamento();
 		this.dominio = this.versamento.getDominio(configWrapper);

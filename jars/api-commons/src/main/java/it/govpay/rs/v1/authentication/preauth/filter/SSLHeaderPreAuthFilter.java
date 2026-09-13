@@ -73,7 +73,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 
 		// nome dell'header non configurato: non c'e' alcun principal da leggere
 		if(principalHeaderName == null) {
-			log.debug("Nome dell'header del principal non configurato");
+			LogUtils.logDebug(log, "Nome dell'header del principal non configurato");
 			return null;
 		}
 
@@ -82,11 +82,11 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 		// header non presente: nessun principal da autenticare, come in HeaderPreAuthFilter.
 		// senza questo controllo il valore nullo arriverebbe alla decodifica del certificato
 		if(headerValue == null) {
-			log.debug("Principal non presente nell'header [{}]", principalHeaderName);
+			LogUtils.logDebug(log, "Principal non presente nell'header [{}]", principalHeaderName);
 			return null;
 		}
 
-		log.debug("Letto Principal: [{}]", headerValue);
+		LogUtils.logDebug(log, "Letto Principal: [{}]", headerValue);
 
 		return decodePrincipal(headerValue);
 	}
@@ -97,7 +97,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 		// il metodo e' raggiungibile solo se getPrincipalHeaderName ha restituito un valore, quindi
 		// con configurazione presente; la guardia rende esplicita l'invariante
 		if(autenticazioneSSLHeaderProperties == null) {
-			log.error("Configurazione dell'autenticazione SSL via header non presente: impossibile decodificare il certificato");
+			LogUtils.logError(log, "Configurazione dell'autenticazione SSL via header non presente: impossibile decodificare il certificato");
 			return null;
 		}
 
@@ -122,7 +122,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 				headerValue = addPEMDeclaration(headerValue, forceEnrichPEMBeginEnd);
 			}
 
-			log.debug("Replace caratteri completato, nuovo valore principal: [{}]", headerValue);
+			LogUtils.logDebug(log, "Replace caratteri completato, nuovo valore principal: [{}]", headerValue);
 		}
 
 		// reset della configurazione dopo un eventuale replace
@@ -137,7 +137,7 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 			LogUtils.logDebug(log, "Estratto subject : [{}]", subject.toString());
 			return subject.toString();
 		} catch (UtilsException e) {
-			log.error("Errore durante la decodifica del valore contenuto nell'header: " + e.getMessage(), e);
+			LogUtils.logError(log, "Errore durante la decodifica del valore contenuto nell'header: " + e.getMessage(), e);
 		}
 
 		return headerValue;
