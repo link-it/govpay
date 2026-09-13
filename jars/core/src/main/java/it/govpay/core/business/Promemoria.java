@@ -864,10 +864,10 @@ public class Promemoria {
 		Throwable innerException = ExceptionUtils.estraiInnerExceptionDaUtilsException(e);
 		
 		if(innerException != null) {
-			log.info(errore, e);
-			log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
+			LogUtils.logInfoException(log, errore, e);
+			LogUtils.logDebug(log, "La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
 			promemoriaBD.updateFallita(promemoria.getId(), innerException.getMessage());
-			log.debug("Salvataggio stato 'fallito' completato con successo");
+			LogUtils.logDebug(log, "Salvataggio stato 'fallito' completato con successo");
 		} else {
 			LogUtils.logError(log, errore, e);
 			LogUtils.logDebug(log, "La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
@@ -882,7 +882,7 @@ public class Promemoria {
 			if(prossima.after(tomorrow)) prossima = tomorrow;
 
 			promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-			log.debug("La spedizione del promemoria schedulata con successo.");
+			LogUtils.logDebug(log, "La spedizione del promemoria schedulata con successo.");
 		}
 	}
 
@@ -896,13 +896,13 @@ public class Promemoria {
 			else
 				promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
 		} catch (ServiceException e1) {
-			log.debug(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte, e1.getMessage());
+			LogUtils.logDebug(log, ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte, e1.getMessage());
 		}
 	}
 
 	private void gestisciPromemoriaException(it.govpay.bd.model.Promemoria promemoria, PromemoriaBD promemoriaBD, String codApplicazione,
 			String codVersamentoEnte, PromemoriaException e) {
-		log.debug("Errore in gestione promemoria: {}", e.getMessage());
+		LogUtils.logDebug(log, "Errore in gestione promemoria: {}", e.getMessage());
 		try {
 			Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
 			if(innerException != null)
@@ -910,7 +910,7 @@ public class Promemoria {
 			else
 				promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
 		} catch (ServiceException e1) {
-			log.debug(ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte, e1.getMessage());
+			LogUtils.logDebug(log, ERROR_MSG_ERRORE_IN_AGGIORNAMENTO_PROMEMORIA_0_1_FALLITO_2, codApplicazione, codVersamentoEnte, e1.getMessage());
 		}
 	}
 
