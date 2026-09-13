@@ -135,7 +135,14 @@ public class VersamentoUtils {
 		
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<>();
-		for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
+
+		// la lista delle voci e' nullable se non e' stata caricata: in quel caso la somma resta a
+		// zero e l'incongruenza con l'importo totale viene segnalata dal controllo VER_002 sotto
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti() != null
+				? versamento.getSingoliVersamenti()
+				: Collections.emptyList();
+
+		for(SingoloVersamento sv : singoliVersamenti) {
 			if(codSingoliVersamenti.contains(sv.getCodSingoloVersamentoEnte()))
 				throw new GovPayException(EsitoOperazione.VER_001, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), sv.getCodSingoloVersamentoEnte());
 
@@ -1258,7 +1265,9 @@ public class VersamentoUtils {
 	 */
 	public static boolean comunicaAggiornamentoPendenzaAllArchivioCentralizzato(Versamento versamento, Versamento versamentoLetto) {
 		
-			boolean importoModificato = !versamento.getImportoTotale().equals(versamentoLetto.getImportoTotale());
+			// confronto numerico e non con equals, che su BigDecimal considera anche la scala
+			// e segnalerebbe come modificato un importo invariato scritto con scala diversa
+			boolean importoModificato = versamento.getImportoTotale().compareTo(versamentoLetto.getImportoTotale()) != 0;
 			
 			boolean pendenzaAnnullataORipristinata = 
 					(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) 

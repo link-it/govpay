@@ -53,7 +53,28 @@ public class AuthorizationManager {
 
 	public static final String CODICE_FISCALE_CITTADINO = "cf_cittadino";
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";
-	
+
+	private static final String MSG_UTENZA_NON_IDENTIFICATA = "Utenza non autorizzata: impossibile identificare l'utenza";
+
+	/**
+	 * Restituisce l'utenza associata all'autenticazione, oppure null se le informazioni di autenticazione
+	 * non sono disponibili: AutorizzazioneUtils.getAuthenticationDetails restituisce null sia quando
+	 * l'Authentication e' null sia quando il principal non e' di un tipo riconosciuto.
+	 * Gli overload che ricevono direttamente un Utenza trattano il valore null come non autorizzato.
+	 */
+	private static Utenza getUtenza(Authentication authentication) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		return details != null ? details.getUtenza() : null;
+	}
+
+	/**
+	 * Messaggio di utenza non autorizzata, con fallback nel caso in cui non sia possibile risalire
+	 * alle informazioni di autenticazione.
+	 */
+	private static String getMessaggioUtenzaNonAutorizzata(GovpayLdapUserDetails details) {
+		return details != null ? details.getMessaggioUtenzaNonAutorizzata() : MSG_UTENZA_NON_IDENTIFICATA;
+	}
+
 	public static boolean isUtenzaBatch(Authentication authentication) throws NotAuthorizedException { 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		
@@ -119,12 +140,12 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 		
-		if(!details.isAbilitato()) {
+		if(details != null && !details.isAbilitato()) {
 			sb.append(details.getMessaggioUtenzaDisabilitata());
 		} else {
-			sb.append(details.getMessaggioUtenzaNonAutorizzata());
+			sb.append(getMessaggioUtenzaNonAutorizzata(details));
 		}
-		
+
 		if(StringUtils.isNotEmpty(descrizione)) {
 			sb.append(": ").append(descrizione);
 		}
@@ -150,12 +171,12 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
-		if(!details.isAbilitato()) {
+		if(details != null && !details.isAbilitato()) {
 			sb.append(details.getMessaggioUtenzaDisabilitata()).append(".");
 			return new NotAuthorizedException(sb.toString());
 		}
 
-		sb.append(details.getMessaggioUtenzaNonAutorizzata());
+		sb.append(getMessaggioUtenzaNonAutorizzata(details));
 
 		boolean dominioMsg = false;
 		if(StringUtils.isNotEmpty(codDominio)) {
@@ -183,7 +204,7 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessuna Unita' operativa.");
+		sb.append(getMessaggioUtenzaNonAutorizzata(details)).append(" per nessuna Unita' operativa.");
 		return new NotAuthorizedException(sb.toString());
 	}
 
@@ -191,7 +212,7 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessun Dominio.");
+		sb.append(getMessaggioUtenzaNonAutorizzata(details)).append(" per nessun Dominio.");
 		return new NotAuthorizedException(sb.toString());
 	}
 
@@ -199,16 +220,19 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessun Tipo Pendenza.");
+		sb.append(getMessaggioUtenzaNonAutorizzata(details)).append(" per nessun Tipo Pendenza.");
 		return new NotAuthorizedException(sb.toString());
 	}
 	
 	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isAuthorized(details.getUtenza(), tipoUtenza);
+		return isAuthorized(getUtenza(authentication), tipoUtenza);
 	}
 
 	public static boolean isAuthorized(Utenza utenza, List<TIPO_UTENZA> tipoUtenza) {
+
+		// utenza non identificata: non autorizzata
+		if(utenza == null)
+			return false;
 
 		// controllo che l'utenza sia di tipo consentito
 		if(!tipoUtenza.contains(utenza.getTipoUtenza()))
@@ -220,11 +244,14 @@ public class AuthorizationManager {
 	
 
 	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isAuthorized(details.getUtenza(), tipoUtenza, servizi, listaDiritti);
+		return isAuthorized(getUtenza(authentication), tipoUtenza, servizi, listaDiritti);
 	}
 
 	public static boolean isAuthorized(Utenza utenza, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) {
+
+		// utenza non identificata: non autorizzata
+		if(utenza == null)
+			return false;
 
 		// controllo che l'utenza sia di tipo consentito
 		if(!tipoUtenza.contains(utenza.getTipoUtenza()))
@@ -249,8 +276,7 @@ public class AuthorizationManager {
 	}
 
 	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti, String codDominio, String codTipoVersamento) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isAuthorized(details.getUtenza(), tipoUtenza, servizi, listaDiritti,codDominio, codTipoVersamento);
+		return isAuthorized(getUtenza(authentication), tipoUtenza, servizi, listaDiritti,codDominio, codTipoVersamento);
 	}
 
 	public static boolean isAuthorized(Utenza utenza, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti, String codDominio, String codTipoVersamento) {
@@ -271,8 +297,7 @@ public class AuthorizationManager {
 	}
 	
 	public static boolean isTipoVersamentoDominioAuthorized(Authentication authentication, String codDominio, String codTipoVersamento) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isTipoVersamentoDominioAuthorized(details.getUtenza(), codDominio, codTipoVersamento);
+		return isTipoVersamentoDominioAuthorized(getUtenza(authentication), codDominio, codTipoVersamento);
 	}
 
 	public static boolean isTipoVersamentoDominioAuthorized(Utenza utenza, String codDominio, String codTipoVersamento) {
@@ -280,11 +305,14 @@ public class AuthorizationManager {
 	}
 
 	public static boolean isDominioAuthorized(Authentication authentication, String codDominio) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isDominioAuthorized(details.getUtenza(), codDominio);
+		return isDominioAuthorized(getUtenza(authentication), codDominio);
 	}
 
 	public static boolean isDominioAuthorized(Utenza utenza, String codDominio) {
+		// utenza non identificata: non autorizzata
+		if(utenza == null)
+			return false;
+
 		if(utenza.isAutorizzazioneDominiStar() || codDominio == null)
 			return true;
 
@@ -300,11 +328,14 @@ public class AuthorizationManager {
 	}
 
 	public static boolean isTipoVersamentoAuthorized(Authentication authentication, String codTipoVersamento) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isTipoVersamentoAuthorized(details.getUtenza(), codTipoVersamento);
+		return isTipoVersamentoAuthorized(getUtenza(authentication), codTipoVersamento);
 	}
 
 	public static boolean isTipoVersamentoAuthorized(Utenza utenza, String codTipoVersamento) {
+		// utenza non identificata: non autorizzata
+		if(utenza == null)
+			return false;
+
 		if(utenza.isAutorizzazioneTipiVersamentoStar() || codTipoVersamento == null)
 			return true;
 
@@ -320,11 +351,16 @@ public class AuthorizationManager {
 	}
 
 	public static List<Long> getIdTipiVersamentoAutorizzati(Authentication authentication) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getIdTipiVersamentoAutorizzati(details.getUtenza());
+		return getIdTipiVersamentoAutorizzati(getUtenza(authentication));
 	} 
 
 	public static List<Long> getIdTipiVersamentoAutorizzati(Utenza utenza) {
+		// utenza non identificata: nessuna autorizzazione.
+		// NB: deve restituire null e non una lista vuota, che per convenzione indica
+		// l'autorizzazione su tutti gli elementi (star)
+		if(utenza == null)
+			return null;
+
 		if(utenza.isAutorizzazioneTipiVersamentoStar()) {
 			return new ArrayList<>();
 		} else {
@@ -336,11 +372,16 @@ public class AuthorizationManager {
 	} 
 
 	public static List<String> getTipiVersamentoAutorizzati(Authentication authentication) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getTipiVersamentoAutorizzati(details.getUtenza());
+		return getTipiVersamentoAutorizzati(getUtenza(authentication));
 	}
 
 	public static List<String> getTipiVersamentoAutorizzati(Utenza utenza) {
+		// utenza non identificata: nessuna autorizzazione.
+		// NB: deve restituire null e non una lista vuota, che per convenzione indica
+		// l'autorizzazione su tutti gli elementi (star)
+		if(utenza == null)
+			return null;
+
 		if(utenza.isAutorizzazioneTipiVersamentoStar()) {
 			return new ArrayList<>();
 		} else {
@@ -352,11 +393,16 @@ public class AuthorizationManager {
 	}
 
 	public static List<String> getDominiAutorizzati(Authentication authentication) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getDominiAutorizzati(details.getUtenza());
+		return getDominiAutorizzati(getUtenza(authentication));
 	}
 
 	public static List<String> getDominiAutorizzati(Utenza utenza) {
+		// utenza non identificata: nessuna autorizzazione.
+		// NB: deve restituire null e non una lista vuota, che per convenzione indica
+		// l'autorizzazione su tutti gli elementi (star)
+		if(utenza == null)
+			return null;
+
 		if(utenza.isAutorizzazioneDominiStar()) {
 			return new ArrayList<>();
 		} else {
@@ -368,11 +414,16 @@ public class AuthorizationManager {
 	}
 
 	public static List<Long> getIdDominiAutorizzati(Authentication authentication) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getIdDominiAutorizzati(details.getUtenza());
+		return getIdDominiAutorizzati(getUtenza(authentication));
 	}
 
 	public static List<Long> getIdDominiAutorizzati(Utenza utenza) {
+		// utenza non identificata: nessuna autorizzazione.
+		// NB: deve restituire null e non una lista vuota, che per convenzione indica
+		// l'autorizzazione su tutti gli elementi (star)
+		if(utenza == null)
+			return null;
+
 		if(utenza.isAutorizzazioneDominiStar()) {
 			return new ArrayList<>();
 		} else {
@@ -387,8 +438,7 @@ public class AuthorizationManager {
 	/* Autorizzazioni per UO */
 	
 	public static boolean isTipoVersamentoUOAuthorized(Authentication authentication, String codDominio, String codUO, String codTipoVersamento) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isTipoVersamentoUOAuthorized(details.getUtenza(), codDominio, codUO, codTipoVersamento);
+		return isTipoVersamentoUOAuthorized(getUtenza(authentication), codDominio, codUO, codTipoVersamento);
 	}
 
 	public static boolean isTipoVersamentoUOAuthorized(Utenza utenza, String codDominio, String codUO, String codTipoVersamento) {
@@ -396,8 +446,7 @@ public class AuthorizationManager {
 	}
 
 	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti, String codDominio, String codUO, String codTipoVersamento) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isAuthorized(details.getUtenza(), tipoUtenza, servizi, listaDiritti,codDominio, codUO, codTipoVersamento);
+		return isAuthorized(getUtenza(authentication), tipoUtenza, servizi, listaDiritti,codDominio, codUO, codTipoVersamento);
 	}
 
 	public static boolean isAuthorized(Utenza utenza, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti, String codDominio, String codUO, String codTipoVersamento) {
@@ -422,11 +471,14 @@ public class AuthorizationManager {
 	}
 	
 	public static boolean isUOAuthorized(Authentication authentication, String codDominio, String codUO) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isUOAuthorized(details.getUtenza(), codDominio, codUO);
+		return isUOAuthorized(getUtenza(authentication), codDominio, codUO);
 	}
 
 	public static boolean isUOAuthorized(Utenza utenza, String codDominio, String codUO) {
+		// utenza non identificata: non autorizzata
+		if(utenza == null)
+			return false;
+
 		if(utenza.isAutorizzazioneDominiStar() || codDominio == null)
 			return true;
 		
@@ -456,8 +508,7 @@ public class AuthorizationManager {
 	}
 	
 	public static List<IdUnitaOperativa> getUoAutorizzate(Authentication authentication, String codDominio) {
-		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getUoAutorizzate(details.getUtenza(), codDominio);
+		return getUoAutorizzate(getUtenza(authentication), codDominio);
 	}
 
 	public static List<IdUnitaOperativa> getUoAutorizzate(Utenza utenza) {
@@ -465,6 +516,12 @@ public class AuthorizationManager {
 	}
 	
 	public static List<IdUnitaOperativa> getUoAutorizzate(Utenza utenza, String codDominio) {
+		// utenza non identificata: nessuna autorizzazione.
+		// NB: deve restituire null e non una lista vuota, che per convenzione indica
+		// l'autorizzazione su tutti i domini (star)
+		if(utenza == null)
+			return null;
+
 		if(utenza.isAutorizzazioneDominiStar()) {
 			return new ArrayList<>();
 		} else {

@@ -34,7 +34,9 @@ public class Tracciato extends it.govpay.model.Tracciato {
 	private transient Operatore operatore = null;
 	
 	public Operatore getOperatore(BDConfigWrapper configWrapper) throws ServiceException {
-		if(this.operatore == null) {
+		// TracciatiConverter invoca questo metodo con configWrapper nullo per leggere l'operatore
+		// solo se gia' presente in memoria: senza wrapper non e' possibile interrogare la base dati
+		if(this.operatore == null && configWrapper != null) {
 			try {
 				if(this.getIdOperatore()!=null)
 					this.operatore = AnagraficaManager.getOperatore(configWrapper, this.getIdOperatore());

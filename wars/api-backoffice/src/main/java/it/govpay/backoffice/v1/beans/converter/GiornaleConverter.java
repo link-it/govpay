@@ -69,14 +69,16 @@ public class GiornaleConverter {
 
 		if(gdeEvento.getLog() != null) {
 
+			LogEnum logEnum = LogEnum.fromValue(gdeEvento.getLog());
+
 			// valore log non valido
-			if(LogEnum.fromValue(gdeEvento.getLog()) == null) {
+			if(logEnum == null) {
 				throw new ValidationException("log", gdeEvento.getLog(), ArrayUtils.toString(LogEnum.values()));
 			}
 
-			gdeEvento.setLog(LogEnum.fromValue(gdeEvento.getLog()));
+			gdeEvento.setLog(logEnum);
 
-			switch(gdeEvento.getLogEnum()) {
+			switch(logEnum) {
 			case MAI:
 				evento.setLog(it.govpay.model.configurazione.GdeEvento.LogEnum.MAI);
 				break;
@@ -91,14 +93,16 @@ public class GiornaleConverter {
 
 		if(gdeEvento.getDump() != null) {
 
+			DumpEnum dumpEnum = DumpEnum.fromValue(gdeEvento.getDump());
+
 			// valore dumo non valido
-			if(DumpEnum.fromValue(gdeEvento.getDump()) == null) {
+			if(dumpEnum == null) {
 				throw new ValidationException("dump", gdeEvento.getDump(), ArrayUtils.toString(DumpEnum.values()));
 			}
 
-			gdeEvento.setDump(DumpEnum.fromValue(gdeEvento.getDump()));
+			gdeEvento.setDump(dumpEnum);
 
-			switch(gdeEvento.getDumpEnum()) {
+			switch(dumpEnum) {
 			case MAI:
 				evento.setDump(it.govpay.model.configurazione.GdeEvento.DumpEnum.MAI);
 				break;

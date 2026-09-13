@@ -59,22 +59,34 @@ public class RendicontazioniDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		if(leggiRendicontazioniDTO.getAccept().toLowerCase().contains(MediaType.APPLICATION_XML)) {
-			FrBD frBD = null;
+			RendicontazioniBD rendicontazioniBD = null;
 			try {
-				frBD = new FrBD(configWrapper);
+				rendicontazioniBD = new RendicontazioniBD(configWrapper);
 
-				frBD.setupConnection(configWrapper.getTransactionID());
+				rendicontazioniBD.setupConnection(configWrapper.getTransactionID());
 
+				rendicontazioniBD.setAtomica(false);
+
+				FrBD frBD = new FrBD(rendicontazioniBD);
 				frBD.setAtomica(false);
 
 				Fr flussoRendicontazione = frBD.getFr(leggiRendicontazioniDTO.getIdDominio(), leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getDataOraFlusso(), leggiRendicontazioniDTO.getObsoleto());
 				response.setFr(flussoRendicontazione);
 				response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 
+				// se l'xml originale non e' disponibile (flussi acquisiti tramite il batch FdR esterno) carico le rendicontazioni, necessarie per ricostruirlo
+				if(flussoRendicontazione.getXml() == null) {
+					try {
+						response.setRendicontazioni(rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdDominio(), leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getDataOraFlusso(), leggiRendicontazioniDTO.getObsoleto()));
+					} catch (NotFoundException e) {
+						// flusso senza rendicontazioni: l'xml non e' ricostruibile, la gestione dell'errore e' demandata al chiamante
+					}
+				}
+
 			} catch (NotFoundException e) {
 				throw new RendicontazioneNonTrovataException(e.getMessage(), e);
 			} finally {
-				frBD.closeConnection();
+				rendicontazioniBD.closeConnection();
 			}
 		} else {
 			RendicontazioniBD rendicontazioniBD = null;

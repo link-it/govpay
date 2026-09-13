@@ -184,8 +184,18 @@ public class BasicBD {
 	
 	private JDBC_SQLObjectFactory jdbcSqlObjectFactory;
 	
+	/**
+	 * Costruttore di delega, non di copia: l'istanza cosi' creata non possiede uno stato proprio, ma
+	 * inoltra al padre l'apertura della connessione e l'accesso ai service ORM. Connessione, service
+	 * e flag di stato restano quindi volutamente ai valori di default, perche' i relativi accessor
+	 * delegano a father finche' e' valorizzato; vengono invece propagati gli identificativi e il flag
+	 * di cache, i cui accessor non delegano e che alimentano setupConnection e getBdConfigWrapper.
+	 */
 	public BasicBD(BasicBD basicBD) {
 		this.father = basicBD;
+		this.idTransaction = basicBD != null ? basicBD.getIdTransaction() : null;
+		this.idModulo = basicBD != null ? basicBD.getIdModulo() : null;
+		this.useCache = basicBD != null && basicBD.isUseCache();
 	}
 	
 	public BasicBD(String idTransaction) {

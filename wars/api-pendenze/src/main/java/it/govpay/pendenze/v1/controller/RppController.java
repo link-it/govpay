@@ -402,6 +402,12 @@ public class RppController extends BaseController {
 		Versamento versamento = rpt.getVersamento();
 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
+
+		// senza informazioni di autenticazione non e' possibile verificare le autorizzazioni
+		if(details == null) {
+			throw AuthorizationManager.toNotAuthorizedException(user);
+		}
+
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {

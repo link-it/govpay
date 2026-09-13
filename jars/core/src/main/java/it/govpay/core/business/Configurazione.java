@@ -114,36 +114,47 @@ public class Configurazione {
 	}
 
 	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws IOException {
+		Giornale giornaleDefault = configurazioneDefault.getGiornale();
+
 		if(configurazione.getGiornale() == null) {
-			configurazione.setGiornale(configurazioneDefault.getGiornale());
+			configurazione.setGiornale(giornaleDefault);
 		}
 
-		if(configurazione.getGiornale().getApiBackendIO() == null) {
-			configurazione.getGiornale().setApiBackendIO(configurazioneDefault.getGiornale().getApiBackendIO());
+		Giornale giornale = configurazione.getGiornale();
+
+		// il giornale della configurazione di default e' sempre valorizzato (getGiornaleDefault
+		// restituisce una nuova istanza), ma senza giornale, ne' nella configurazione ne' nel
+		// fallback, non c'e' nulla da validare
+		if(giornale == null || giornaleDefault == null) {
+			return;
 		}
 
-		if(configurazione.getGiornale().getApiBackoffice() == null) {
-			configurazione.getGiornale().setApiBackoffice(configurazioneDefault.getGiornale().getApiBackoffice());
+		if(giornale.getApiBackendIO() == null) {
+			giornale.setApiBackendIO(giornaleDefault.getApiBackendIO());
 		}
 
-		if(configurazione.getGiornale().getApiEnte() == null) {
-			configurazione.getGiornale().setApiEnte(configurazioneDefault.getGiornale().getApiEnte());
+		if(giornale.getApiBackoffice() == null) {
+			giornale.setApiBackoffice(giornaleDefault.getApiBackoffice());
 		}
 
-		if(configurazione.getGiornale().getApiPagamento() == null) {
-			configurazione.getGiornale().setApiPagamento(configurazioneDefault.getGiornale().getApiPagamento());
+		if(giornale.getApiEnte() == null) {
+			giornale.setApiEnte(giornaleDefault.getApiEnte());
 		}
 
-		if(configurazione.getGiornale().getApiPagoPA() == null) {
-			configurazione.getGiornale().setApiPagoPA(configurazioneDefault.getGiornale().getApiPagoPA());
+		if(giornale.getApiPagamento() == null) {
+			giornale.setApiPagamento(giornaleDefault.getApiPagamento());
 		}
 
-		if(configurazione.getGiornale().getApiPendenze() == null) {
-			configurazione.getGiornale().setApiPendenze(configurazioneDefault.getGiornale().getApiPendenze());
+		if(giornale.getApiPagoPA() == null) {
+			giornale.setApiPagoPA(giornaleDefault.getApiPagoPA());
 		}
 
-		if(configurazione.getGiornale().getApiRagioneria() == null) {
-			configurazione.getGiornale().setApiRagioneria(configurazioneDefault.getGiornale().getApiRagioneria());
+		if(giornale.getApiPendenze() == null) {
+			giornale.setApiPendenze(giornaleDefault.getApiPendenze());
+		}
+
+		if(giornale.getApiRagioneria() == null) {
+			giornale.setApiRagioneria(giornaleDefault.getApiRagioneria());
 		}
 
 	}

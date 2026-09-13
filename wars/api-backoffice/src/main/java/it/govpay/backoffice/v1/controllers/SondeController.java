@@ -199,6 +199,11 @@ public class SondeController extends BaseController{
 			throws NotFoundException, ServiceException, SondaException {
 		if(sonda == null)
 			throw new NotFoundException(MessageFormat.format(Costanti.SONDA_CON_ID_NON_CONFIGURATA, nome));
+
+		// le proprieta' jdbc sono valorizzate all'apertura della connessione: senza di esse non e'
+		// possibile determinare il tipo di database richiesto da aggiornaStatoSonda
+		if(bd.getJdbcProperties() == null)
+			throw new ServiceException("Connessione alla base dati non inizializzata: impossibile aggiornare lo stato della sonda");
 		if(Costanti.CHECK_NTFY.equals(nome)) {
 			long num = -1;
 			NotificheBD notBD = new NotificheBD(bd);
