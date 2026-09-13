@@ -42,6 +42,12 @@ public class EventiUtils {
 	}
 
 	public static GdeInterfaccia getConfigurazioneComponente(Componente componente, Giornale giornale) {
+		// senza giornale non c'e' configurazione da restituire: i chiamanti gestiscono gia' il ritorno nullo,
+		// che il metodo produce anche per i componenti privi di sezione dedicata
+		if(giornale == null) {
+			return null;
+		}
+
 		switch(componente) {
 		case API_BACKOFFICE:
 			return giornale.getApiBackoffice();

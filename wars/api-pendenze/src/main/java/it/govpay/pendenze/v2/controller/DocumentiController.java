@@ -33,6 +33,8 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO.FormatoDocumento;
@@ -65,7 +67,15 @@ public class DocumentiController extends BaseController {
 		this.logDebug(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName);
 
 		try{
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione());
+			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
+
+			// l'applicazione chiamante e' necessaria sia al giornale eventi che al filtro sui documenti:
+			// senza informazioni di autenticazione la richiesta non e' autorizzabile
+			if(details == null || details.getApplicazione() == null) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
+
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(details.getApplicazione().getCodApplicazione());
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
@@ -75,7 +85,7 @@ public class DocumentiController extends BaseController {
 			validatoreId.validaIdDocumento("numeroDocumento", numeroDocumento);
 
 			GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
-			getAvvisoDTO.setCodApplicazione(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione()); // un'applicazione vede solo i suoi documenti
+			getAvvisoDTO.setCodApplicazione(details.getApplicazione().getCodApplicazione()); // un'applicazione vede solo i suoi documenti
 
 			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
