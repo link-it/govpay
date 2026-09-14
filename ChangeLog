@@ -1,3 +1,10 @@
+2026-09-14  Giuliano Pintori <pintori@link.it>
+
+        * Allineate alla risposta le chiavi attese dal fixture condiviso del dettaglio pendenza.
+        utils/api/v1/backoffice/pendenza-get-dettaglio.feature confronta la risposta con == e un elenco esaustivo di chiavi, in cui ne mancavano quattro che l'API restituisce: tipoPendenza, e i tre campi SEND sendAbilitato, sendImportoTotale e sendDataAggiornamento esposti dal commit 1fecfb632 (issue #721). Il match falliva con "actual value has 1 more key(s) than expected" su qualunque pendenza, perche' tipoPendenza e sendAbilitato sono valorizzati incondizionatamente dal converter: sendAbilitato deriva da un boolean primitivo, quindi non viene mai omesso dalla serializzazione NON_NULL. Il difetto e' emerso eseguendo la testsuite SEND, dove tutti e tre gli scenari fallivano su questo fixture pur avendo l'attualizzazione funzionante, ma riguardava le dieci feature che usano l'helper.
+        Aggiunte le quattro chiavi: tipoPendenza, sendImportoTotale e sendDataAggiornamento con #ignore, perche' possono essere assenti quando sono nulle, e sendAbilitato con #boolean, perche' e' sempre presente. Nessun'altra fixture della testsuite cita i campi SEND.
+        Verifica: eseguite tutte e dieci le feature che usano l'helper, tutte verdi.
+
 2026-09-13  Giuliano Pintori <pintori@link.it>
 
         * [Installer] Assegnati nomi distinti alle due pagine "Servizi Backoffice" dell'installer.
