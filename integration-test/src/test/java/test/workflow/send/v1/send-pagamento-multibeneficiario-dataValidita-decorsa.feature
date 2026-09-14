@@ -80,7 +80,9 @@ And match response.voci[1].importo == pendenzaPut.voci[1].importo
 # Verifico il pagamento (la pendenza ha dataValidita decorsa: la verifica forza una
 # riacquisizione della pendenza dal gestionale dell'ente prima di generare la RPT).
 # E' in questo momento, e non al caricamento, che GovPay interroga SEND: l'attualizzazione
-# avviene in VersamentoUtils.acquisisciVersamento, non nel PUT della pendenza.
+# avviene sul ramo della pendenza non piu' valida (VersamentoUtils.acquisisciVersamento dopo la
+# verifica; aggiornaVersamento quando l'applicazione non ha un connettore di verifica), non nel
+# PUT della pendenza.
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * def rispostaVerifica = response
@@ -183,8 +185,8 @@ And path 'reset'
 When method get
 Then assert responseStatus == 200
 
-# Verifico il pagamento: la riacquisizione della pendenza (dataValidita decorsa) interroga
-# SEND prima di generare la RPT
+# Verifico il pagamento: la pendenza non e' piu' valida (dataValidita decorsa), quindi viene
+# riacquisita dal gestionale e SEND viene interrogato prima di generare la RPT
 
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * def rispostaVerifica = response

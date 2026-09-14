@@ -346,6 +346,13 @@ public class VersamentoUtils {
 						
 						LogUtils.logError(log, MessageFormat.format(DEBUG_MSG_RILEVATA_ECCEZIONE_DURANTE_IL_PROCESSO_DI_AGGIORNAMENTO_DELLA_PENDENZA_LA_PROPRIETA_AGGIORNAMENTO_VALIDITA_MANDATORIO_FALSE_QUINDI_VERRA_UTILIZZATA_LA_PENDENZA_ORIGINALE_ERRORE_0, e.getMessage()),e);
 					} 
+				} else if(versamento.isSendAbilitato()) {
+					// connettore verifica non definito, ma la pendenza e' soggetta ad attualizzazione: le spese
+					// di notifica dipendono dal connettore SEND del dominio e non da quello di verifica
+					// dell'applicazione, quindi vanno recuperate comunque. L'attualizzazione prende qui il posto
+					// della riacquisizione dal gestionale, e per questo precede il controllo sulla mandatorieta'
+					// dell'aggiornamento: la pendenza non resta ferma al dato non aggiornato.
+					aggiornaImportoSend(versamento, log);
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
@@ -452,6 +459,9 @@ public class VersamentoUtils {
 			versamento.setTipo(tipo);
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null, true, false);
 
+			// attualizzazione dopo la verifica: qui la pendenza e' appena stata riacquisita dal gestionale,
+			// quindi le spese vanno ricalcolate sul dato aggiornato. Il ramo simmetrico, per l'applicazione
+			// priva di connettore di verifica, e' in aggiornaVersamento.
 			if(versamento.isSendAbilitato()) {
 				aggiornaImportoSend(versamento, log);
 			}
@@ -475,6 +485,10 @@ public class VersamentoUtils {
 	/**
 	 * Interroga il servizio SEND per attualizzare l'importo della pendenza con le spese di notifica,
 	 * se non gia' fatto di recente (retention configurabile con la proprieta' it.govpay.client.send.retention).
+	 * Sul ramo della pendenza non piu' valida viene invocata dopo la verifica, da acquisisciVersamento, e
+	 * in alternativa ad essa da aggiornaVersamento quando l'applicazione non ha un connettore di verifica
+	 * configurato: l'attualizzazione dipende dal connettore SEND del dominio, non da quello di verifica
+	 * dell'applicazione. La doppia invocazione sui flussi che passano da entrambi e' assorbita dalla retention.
 	 * In caso di connettore non configurato o di errore nell'interrogazione del servizio, il comportamento
 	 * e' regolato dalla proprieta' di installazione 'aggiornamentoValiditaMandatorio': se mandatorio l'errore
 	 * viene rilanciato, altrimenti viene loggato un warning e si prosegue con l'importo originale della pendenza.
@@ -489,6 +503,14 @@ public class VersamentoUtils {
 				LogUtils.logDebug(log, "Importo SEND per il versamento [{}] aggiornato di recente, nessuna nuova interrogazione necessaria.", versamento.getCodVersamentoEnte());
 				return;
 			}
+		}
+
+		// il numero avviso e' il noticeCode con cui si interroga SEND: senza, la richiesta non e' componibile.
+		// Dopo la verifica lo garantisce caricaVersamento, ma sull'aggancio in aggiornaVersamento la pendenza
+		// arriva dalla base dati e puo' non averlo ancora assegnato.
+		if(versamento.getNumeroAvviso() == null) {
+			log.warn("Numero avviso non assegnato per il versamento [{}], attualizzazione dell'importo con le spese di notifica SEND non eseguita.", versamento.getCodVersamentoEnte());
+			return;
 		}
 		
 		EventoContext eventoCtx = new EventoContext(Componente.API_PAGOPA);
