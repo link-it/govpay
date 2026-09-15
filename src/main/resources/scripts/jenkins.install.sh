@@ -70,11 +70,21 @@ sh install.sh text-auto
 echo "Composizione dello SQL dei componenti..."
 
 SQL_COMPONENTI_DIR=${GOVPAY_ROOT}/target/release-sql
+
+# Su questo agent l'utente jenkins non e' nel gruppo docker: tutte le
+# invocazioni del Jenkinsfile passano da sudo. Il raccoglitore legge lo SQL
+# dalle immagini dei componenti, quindi gli va detto con quale comando.
+export DOCKER_BIN="sudo docker"
+
+# L'esito va controllato: senza, un fallimento della composizione non fermerebbe
+# lo script, che proseguirebbe a creare il database e si arenerebbe molto piu'
+# tardi sul file inesistente, con un messaggio che non dice la causa.
 bash ${GOVPAY_ROOT}/src/main/resources/db/collect-release-sql.sh \
   --core "${GOVPAY_VERSION}" \
   --mode componenti \
   --dialects postgresql \
-  --out ${SQL_COMPONENTI_DIR}
+  --out ${SQL_COMPONENTI_DIR} \
+  || { echo "ERRORE: composizione dello SQL dei componenti fallita" >&2; exit 1; }
 SQL_COMPONENTI=${SQL_COMPONENTI_DIR}/govpay-${GOVPAY_VERSION}-componenti-postgresql.sql
 
 #####

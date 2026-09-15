@@ -268,8 +268,20 @@ if [[ "${DOWNLOAD}" == true && ${#IN_RILASCIO[@]} -gt 0 ]]; then
     if [[ "${ver}" == image:* ]]; then
       img="${ver#image:}"
       [[ "${img}" == */* ]] || img="${DOCKER_DEV_PREFIX}/govpay-${nome}-dev:${img}"
-      cid="$(${DOCKER} create "${img}" 2>/dev/null || true)"
-      [[ -n "${cid}" ]] || errore "immagine non disponibile: ${img}"
+      # Gli errori di docker non vanno nascosti: "immagine non disponibile" da
+      # solo non distingue fra docker assente, permessi mancanti sul socket,
+      # rete, limite di richieste del registro e tag inesistente. Sull'agent
+      # Jenkins l'utente non e' nel gruppo docker e serve DOCKER_BIN="sudo docker":
+      # con lo stderr scartato quel caso era indistinguibile dagli altri.
+      if ! ${DOCKER} image inspect "${img}" >/dev/null 2>&1; then
+        nota "${repo}: ${img} non presente in locale, tentativo di pull"
+        if ! docker_msg="$(${DOCKER} pull -q "${img}" 2>&1)"; then
+          errore "pull di ${img} fallito: ${docker_msg}"
+        fi
+      fi
+      if ! cid="$(${DOCKER} create "${img}" 2>&1)"; then
+        errore "creazione del container da ${img} fallita: ${cid}"
+      fi
       ${DOCKER} cp "${cid}:${DOCKER_SQL_PATH}" "${dest}/sql" >/dev/null 2>&1 || true
       ${DOCKER} rm -f "${cid}" >/dev/null 2>&1 || true
       if [[ -z "$(find "${dest}/sql" -name '*.sql' -print -quit 2>/dev/null)" ]]; then
