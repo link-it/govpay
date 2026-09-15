@@ -1,0 +1,266 @@
+# ---------------------------------------------------------------------------
+# GovPay 3.10.0 - ambiente completo in container
+#
+# Tutti i componenti del rilascio: database, core, console di backoffice,
+# microservizi e i sette batch. Le versioni delle immagini sono nel file .env
+# accanto a questo.
+#
+# Prerequisiti, descritti nella pagina di documentazione che allega questo file:
+#   ./initdb/        lo script SQL del rilascio, da eseguire alla creazione del db
+#   ./jdbc-drivers/  il driver JDBC del proprio RDBMS, dove serve
+# ---------------------------------------------------------------------------
+
+name: govpay
+
+x-db-env: &db-env
+  GOVPAY_DB_TYPE: postgresql
+  GOVPAY_DB_SERVER: postgres:5432
+  GOVPAY_DB_NAME: ${GOVPAY_DB_NAME}
+  GOVPAY_DB_USER: ${GOVPAY_DB_USER}
+  GOVPAY_DB_PASSWORD: ${GOVPAY_DB_PASSWORD}
+  GOVPAY_DS_JDBC_LIBS: /opt/jdbc-drivers
+
+x-jdbc-volume: &jdbc-volume
+  ./jdbc-drivers:/opt/jdbc-drivers:ro
+
+x-log-volume: &log-volume
+  govpay-log:/var/log/govpay
+
+# I batch non partono prima che il database sia pronto e che il giornale degli
+# eventi risponda: senza il secondo, gli eventi dei primi cicli andrebbero persi.
+x-batch-depends: &batch-depends
+  postgres:   {condition: service_healthy}
+  govpay-gde: {condition: service_healthy}
+
+x-batch-healthcheck: &batch-healthcheck
+  test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:10001/actuator/health"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 1m
+
+services:
+
+  # -------------------------------------------------------------------------
+  # Database
+  # -------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${GOVPAY_DB_NAME}
+      POSTGRES_USER: ${GOVPAY_DB_USER}
+      POSTGRES_PASSWORD: ${GOVPAY_DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # Gli script qui dentro sono eseguiti una sola volta, alla creazione del
+      # volume. Vedi la documentazione per quale script depositarci.
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${GOVPAY_DB_USER} -d ${GOVPAY_DB_NAME}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    networks: [govpay]
+
+  # -------------------------------------------------------------------------
+  # Core: API di integrazione, colloquio con pagoPA, console legacy
+  # -------------------------------------------------------------------------
+  core:
+    image: linkitaly/govpay:${GOVPAY_VERSION}_${GOVPAY_DB_DIALECT}
+    depends_on:
+      postgres: {condition: service_healthy}
+    ports:
+      - "${CORE_HTTP_PORT}:8080"
+    environment:
+      <<: *db-env
+      GOVPAY_LOG_LEVEL: ${GOVPAY_LOG_LEVEL}
+      GOVPAY_MAIL_SMTP_HOST: ${GOVPAY_MAIL_SMTP_HOST}
+      GOVPAY_MAIL_SMTP_PORT: ${GOVPAY_MAIL_SMTP_PORT}
+      JAVA_OPTS: "-Xms512m -Xmx2g"
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/govpay-api-backoffice/rs/basic/v1/info"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 120s
+    restart: unless-stopped
+    networks: [govpay]
+
+  # -------------------------------------------------------------------------
+  # Console di backoffice e sue API
+  # -------------------------------------------------------------------------
+  console-api:
+    image: linkitaly/govpay-console-api:${CONSOLE_API_VERSION}
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      <<: *db-env
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  console:
+    image: linkitaly/govpay-console:${CONSOLE_VERSION}
+    depends_on:
+      - console-api
+    ports:
+      - "${CONSOLE_HTTP_PORT}:8080"
+    restart: unless-stopped
+    networks: [govpay]
+
+  # -------------------------------------------------------------------------
+  # Microservizi
+  # -------------------------------------------------------------------------
+  govpay-gde:
+    image: linkitaly/govpay-gde-api:${GDE_VERSION}
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      <<: *db-env
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:10002/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-stampe:
+    image: linkitaly/govpay-stampe-api:${STAMPE_VERSION}
+    environment:
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:10003/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    volumes:
+      - *log-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  # -------------------------------------------------------------------------
+  # Batch
+  # -------------------------------------------------------------------------
+  govpay-aca:
+    image: linkitaly/govpay-aca-batch:${BATCH_ACA_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      GOVPAY_ACA_BATCH_USA_CRON: "TRUE"
+      GOVPAY_ACA_BATCH_INTERVALLO_CRON: "10"
+      GOVPAY_ACA_GDE_URL: "http://govpay-gde:10002"
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-fdr:
+    image: linkitaly/govpay-fdr-batch:${BATCH_FDR_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      GOVPAY_FDR_BATCH_USA_CRON: "TRUE"
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-iban:
+    image: linkitaly/govpay-iban-batch:${BATCH_IBAN_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-maggioli-jppa:
+    image: linkitaly/govpay-maggioli-jppa:${BATCH_MAGGIOLI_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-notify:
+    image: linkitaly/govpay-notify-batch:${BATCH_NOTIFY_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      GOVPAY_NOTIFY_BATCH_USA_CRON: "TRUE"
+      GOVPAY_NOTIFY_GDE_URL: "http://govpay-gde:10002"
+      GOVPAY_MAIL_SMTP_HOST: ${GOVPAY_MAIL_SMTP_HOST}
+      GOVPAY_MAIL_SMTP_PORT: ${GOVPAY_MAIL_SMTP_PORT}
+      LOADER_PATH: /opt/jdbc-drivers
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-rt:
+    image: linkitaly/govpay-rt-batch:${BATCH_RT_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      GOVPAY_RT_BATCH_USA_CRON: "TRUE"
+      GOVPAY_URL: "http://core:8080/govpay-api-pagopa/internal/PagamentiTelematiciCCPservice"
+      GOVPAY_AUTH_USERNAME: ${GOVPAY_BATCH_USER}
+      GOVPAY_AUTH_PASSWORD: ${GOVPAY_BATCH_PASSWORD}
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+  govpay-tracciati:
+    image: linkitaly/govpay-tracciati-batch:${BATCH_TRACCIATI_VERSION}
+    depends_on: *batch-depends
+    environment:
+      <<: *db-env
+      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
+    healthcheck: *batch-healthcheck
+    volumes:
+      - *log-volume
+      - *jdbc-volume
+    restart: unless-stopped
+    networks: [govpay]
+
+networks:
+  govpay:
+
+volumes:
+  db-data:
+  govpay-log:

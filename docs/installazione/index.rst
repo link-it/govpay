@@ -22,6 +22,7 @@ effettuare per verificarne la riuscita.
         ambiente/index
         configurazione/index
         dispiegamento/index
+        container/index
         verifica/index
         loadbalancing/index
         monitoraggio/index
