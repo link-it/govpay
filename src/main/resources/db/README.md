@@ -84,13 +84,34 @@ risolti in lettura, non rinominati:
 | creazione schema del modulo       | `create-db.sql`, `create.sql`                |
 | svuotamento dati                  | `delete.sql`, `delete-db.sql`                |
 | eliminazione schema               | `drop.sql`, `drop-db.sql`                    |
-| tabelle di Spring Batch           | `tabelle_batch-create.sql`                   |
-| eliminazione tabelle Spring Batch | `tabelle_batch-drop.sql`                     |
+| schema metadati Spring Batch      | `spring-batch/schema-<vendor>.sql`           |
 | pulizia dati Spring Batch         | `spring-batch-cleanup.sql`                   |
 
-Le prime tre voci non hanno un nome unico fra i repository; le ultime tre si. Un raccoglitore
+Le prime tre voci non hanno un nome unico fra i repository; le ultime due si. Un raccoglitore
 deve quindi cercare per funzione con piu' nomi ammessi, non per nome esatto, e non deve
 assumere che i file esistano: la presenza varia per modulo.
+
+Lo schema dei metadati di Spring Batch non e' piu' mantenuto nei repository dei batch: il
+profilo maven `dist`, definito in `govpay-bom`, lo estrae verbatim da `spring-batch-core` e lo
+deposita in `sql/spring-batch/` dentro `sql.zip`, quindi in `/opt/sql/spring-batch`
+dell'immagine. Due conseguenze per chi legge quello SQL:
+
+- i nomi dei vendor sono quelli di upstream, quindi `schema-hsqldb.sql` e
+  `schema-mariadb.sql`, e non esiste `schema-hsql.sql`: la normalizzazione dei dialetti serve
+  anche qui;
+- accanto agli `schema-<vendor>.sql` arrivano, perche' il profilo estrae `schema-*.sql` e
+  `migration/**` senza distinguere, anche gli `schema-drop-<vendor>.sql` e l'albero
+  `migration/`. Non vanno inclusi in uno script di installazione.
+
+I repository passati al profilo `dist` portano inoltre un `sql/VERSION` con le versioni di
+progetto, `spring-batch` e `govpay-common` con cui lo SQL e' stato prodotto. Con lo schema
+preso da upstream, due componenti hanno lo stesso schema dei metadati se e solo se dichiarano
+la stessa versione della libreria: e' il modo piu' diretto per verificarlo.
+
+Fino a quando tutte le immagini non sono ricostruite restano in circolazione artefatti con la
+forma precedente, `<dialetto>/tabelle_batch-create.sql` accanto a
+`<dialetto>/tabelle_batch-drop.sql`. Un raccoglitore deve accettare entrambe le forme e
+preferire quella upstream.
 
 | Repository               | creazione                       | svuotamento      | eliminazione   |
 |--------------------------|---------------------------------|------------------|----------------|
@@ -102,9 +123,11 @@ assumere che i file esistano: la presenza varia per modulo.
 | `govpay-tracciati-batch` | assente                         | assente          | assente        |
 | `govpay-notify-batch`    | assente                         | assente          | assente        |
 
-`govpay-tracciati-batch` e `govpay-notify-batch` non definiscono struttura propria: portano solo
-le tabelle di Spring Batch. `govpay-aca-batch` contiene entrambi i nomi per la creazione e
-definisce una vista sulle tabelle del core anziche' tabelle proprie.
+`govpay-tracciati-batch` e `govpay-notify-batch` non definiscono struttura propria: la sola
+struttura che portano e' quella dei metadati di Spring Batch, che dal passaggio al profilo
+`dist` non e' piu' nel loro albero sorgente ma viene estratta dalla libreria in fase di
+packaging. `govpay-aca-batch` contiene entrambi i nomi per la creazione e definisce una vista
+sulle tabelle del core anziche' tabelle proprie.
 
 ## Raccolta dello SQL di un rilascio
 
@@ -184,28 +207,51 @@ In `jenkins.install.sh` questa modalita' sostituisce i file che erano copiati a
 mano in `/etc/govpay/docker/<versione>/sql/` — `batch-aca.sql`, `batch-fdr.sql`
 e `tabelle_batch-create.sql` — che stavano fuori da git, su una macchina.
 
-### Le tabelle di Spring Batch non sono tutte uguali
+### Lo schema dei metadati di Spring Batch
 
-Concatenare ingenuamente le emetterebbe una volta per componente e il secondo
-`CREATE TABLE` farebbe fallire lo script, quindi vengono deduplicate. Il
-confronto e' sul contenuto normalizzato, perche' alcune copie differiscono solo
-per il newline finale e sarebbe rumore.
+Concatenarlo ingenuamente lo emetterebbe una volta per componente e il secondo
+`CREATE TABLE` farebbe fallire lo script, quindi viene deduplicato. Il confronto
+e' sul contenuto normalizzato, perche' alcune copie differiscono solo per il
+newline finale e sarebbe rumore.
 
-Le differenze che restano sono reali: `maggioli-jppa` dichiara la sequenza
-`BATCH_JOB_INSTANCE_SEQ` dove gli altri sei hanno `BATCH_JOB_SEQ`, che e' la
-rinomina introdotta da Spring Batch 6. Lo script include la variante di
-**maggioranza** e segnala le altre, sia a schermo sia come commento nello script
-prodotto: dare a un batch lo schema di un'altra versione del framework non puo'
-essere una scelta silenziosa.
+Il raccoglitore lo cerca in due forme, in questo ordine:
+
+1. `sql/spring-batch/schema-<vendor>.sql`, estratto da `spring-batch-core` dal
+   profilo `dist`;
+2. `sql/<dialetto>/tabelle_batch-create.sql`, la copia che i repository
+   mantenevano a mano.
+
+La prima ha la precedenza, perche' e' la sorgente autorevole: un componente che
+avesse entrambe usa quella. La seconda resta supportata finche' sono in
+circolazione immagini anteriori al passaggio.
+
+Con lo schema preso da upstream la deriva fra i componenti non e' piu' possibile
+per costruzione, ma due componenti possono ancora pinnare versioni diverse della
+libreria attraverso `govpay-bom`, e in quel caso gli schemi divergono di nuovo.
+Il raccoglitore lo rileva su due piani: confronta le versioni dichiarate in
+`sql/VERSION`, e confronta il contenuto. Include la variante di **maggioranza** e
+segnala le altre, sia a schermo sia come commento nello script prodotto: dare a
+un batch lo schema di un'altra versione del framework non puo' essere una scelta
+silenziosa. Quando le due varianti hanno **origine** diversa — una upstream e una
+copia locale — il commento lo dice esplicitamente, perche' in quel caso il
+problema non e' il framework ma un'immagine da ricostruire.
+
+Se **nessun** componente fornisce lo schema, il raccoglitore lo segnala a schermo
+e nello script invece di omettere la sezione in silenzio. Il caso tipico e' un
+componente indicato con `branch:<nome>`: da quando lo schema e' prodotto in fase
+di packaging, nell'albero sorgente non c'e' piu', quindi da un branch non si
+ottiene. Per i batch servono `image:<tag>` o il tag di un rilascio.
 
 ### File inclusi ed esclusi
 
 Inclusi: `create-db.sql`, `create.sql` o `console-api-schema.sql` — cercati per
-funzione, perche' i nomi non sono uniformi — e un solo
-`tabelle_batch-create.sql`. Esclusi sempre, perche' in uno
-script di installazione distruggerebbero dati o non c'entrano: `delete*.sql`,
-`drop*.sql`, `tabelle_batch-drop.sql`, `spring-batch-cleanup.sql`,
-`spring-batch-6.0-migration.sql`, `utils.sql`.
+funzione, perche' i nomi non sono uniformi — e un solo schema dei metadati di
+Spring Batch. Esclusi sempre, perche' in uno script di installazione
+distruggerebbero dati o non c'entrano: `delete*.sql`, `drop*.sql`,
+`tabelle_batch-drop.sql`, `spring-batch-cleanup.sql`,
+`spring-batch-6.0-migration.sql`, `utils.sql`, e fra i file che arrivano da
+upstream in `sql/spring-batch` gli `schema-drop-<vendor>.sql` e l'albero
+`migration/**`.
 
 La ricerca e' per file e non per directory: in almeno un repository esiste una
 `hsql/` accanto alla `hsqldb/` tracciata, e fissare la directory per nome faceva

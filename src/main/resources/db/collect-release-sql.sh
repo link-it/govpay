@@ -68,12 +68,32 @@ DIALETTI=(postgresql oracle mysql sqlserver hsql)
 # File di creazione da includere. I nomi non sono uniformi fra i repository,
 # quindi si cerca per funzione e non per nome esatto (vedi README.md).
 FILE_CREAZIONE=(create-db.sql create.sql console-api-schema.sql)
-FILE_SPRING_BATCH="tabelle_batch-create.sql"
+
+# Schema dei metadati Spring Batch. Due forme, perche' i componenti sono passati
+# a prenderlo da spring-batch-core ma le immagini in circolazione possono essere
+# ancora quelle di prima:
+#   upstream  sql/spring-batch/schema-<vendor>.sql, estratto verbatim dal jar dal
+#             profilo maven "dist" e depositato in /opt/sql/spring-batch
+#   legacy    sql/<dialetto>/tabelle_batch-create.sql, la copia che i repository
+#             mantenevano a mano
+# I nomi dei vendor sono quelli di upstream, quindi hsqldb e non hsql: la
+# normalizzazione la fa gia' candidati_dialetto.
+DIR_SPRING_BATCH="spring-batch"
+FILE_SPRING_BATCH_LEGACY="tabelle_batch-create.sql"
+
+# File che registra, nello sql.zip dei componenti passati al profilo "dist", le
+# versioni di progetto, spring-batch e govpay-common a bordo dell'immagine.
+FILE_VERSIONE="VERSION"
 
 # File da NON includere mai in uno script di installazione: distruggono dati o
 # servono ad altro. Elencati per essere segnalati, non ignorati in silenzio.
+# Gli ultimi due arrivano da upstream dentro sql/spring-batch, perche' il profilo
+# "dist" estrae schema-*.sql e migration/** senza distinguere: schema-drop-*.sql
+# cancella le tabelle dei metadati, l'albero migration/ serve a chi aggiorna il
+# framework su un database esistente, non a installarne uno nuovo.
 FILE_ESCLUSI=(delete.sql delete-db.sql drop.sql drop-db.sql tabelle_batch-drop.sql
-              spring-batch-cleanup.sql spring-batch-6.0-migration.sql utils.sql)
+              spring-batch-cleanup.sql spring-batch-6.0-migration.sql utils.sql
+              'schema-drop-<vendor>.sql' 'migration/**')
 
 MODE=install
 OUTDIR=""
@@ -328,6 +348,32 @@ function trova_file() {
   return 1
 }
 
+# Schema dei metadati Spring Batch di un componente per un dialetto: prima la
+# forma upstream, poi la copia legacy, cosi' che un componente che avesse
+# entrambe usi quella autorevole. Non restituisce il percorso sullo standard
+# output ma lo scrive in SB_FILE, insieme all'origine in SB_ORIGINE: chiamarla
+# in una sostituzione di comando ne perderebbe gli effetti, che avvengono in una
+# subshell.
+SB_FILE=""
+SB_ORIGINE=""
+function trova_schema_batch() {
+  local base="$1" dialetto="$2" d
+  SB_FILE=""; SB_ORIGINE=""
+  while read -r d; do
+    if [[ -f "${base}/${DIR_SPRING_BATCH}/schema-${d}.sql" ]]; then
+      SB_FILE="${base}/${DIR_SPRING_BATCH}/schema-${d}.sql"
+      SB_ORIGINE="schema-${d}.sql estratto da spring-batch-core"
+      return 0
+    fi
+  done < <(candidati_dialetto "${dialetto}")
+  if SB_FILE="$(trova_file "${base}" "${dialetto}" "${FILE_SPRING_BATCH_LEGACY}" 2>/dev/null)"; then
+    SB_ORIGINE="${FILE_SPRING_BATCH_LEGACY} mantenuto nel repository"
+    return 0
+  fi
+  SB_FILE=""
+  return 1
+}
+
 function radice_sql() {
   # Due forme possibili. Da un asset sql.zip: i batch zippano
   # src/main/resources/sql, quindi dentro c'e' sql/<dialetto>, e console-api
@@ -339,6 +385,37 @@ function radice_sql() {
   done
   return 1
 }
+
+# ── Versioni degli script a bordo dei componenti ─────────────────────────────
+# I componenti passati al profilo maven "dist" portano in sql/VERSION le versioni
+# di progetto, spring-batch e govpay-common con cui lo SQL e' stato prodotto.
+# Quella di spring-batch e' l'informazione che serve qui: con lo schema preso da
+# upstream, due componenti hanno lo stesso schema dei metadati se e solo se hanno
+# la stessa versione della libreria. Finisce nell'intestazione dello script.
+VERSIONI_SQL=()
+SB_VERSIONI=()
+for e in "${IN_RILASCIO[@]}"; do
+  nome="${e%%:*}"
+  base="$(radice_sql "${WORKDIR}/${nome}" 2>/dev/null)" || continue
+  [[ -f "${base}/${FILE_VERSIONE}" ]] || continue
+  # La riga con la versione del progetto stesso e' gia' nell'elenco dei
+  # componenti, quindi si tiene solo il resto, su una riga sola.
+  riepilogo="$(grep -v '^#' "${base}/${FILE_VERSIONE}" | grep -v '^[[:space:]]*$' \
+                 | grep -v "^govpay-${nome}=" | paste -sd, - | sed 's/,/, /g')"
+  [[ -n "${riepilogo}" ]] && VERSIONI_SQL+=("govpay-${nome}: ${riepilogo}")
+  v="$(sed -n 's/^spring-batch=//p' "${base}/${FILE_VERSIONE}" | head -1)"
+  [[ -n "${v}" ]] && SB_VERSIONI+=("${v}")
+done
+
+# Piu' di una versione di spring-batch fra i componenti significa schemi dei
+# metadati potenzialmente diversi. Va detto prima di comporre, non scoperto
+# dall'eventuale divergenza di contenuto piu' sotto.
+if [[ ${#SB_VERSIONI[@]} -gt 0 ]]; then
+  SB_VERSIONI_UNICHE="$(printf '%s\n' "${SB_VERSIONI[@]}" | sort -u | tr '\n' ' ')"
+  if [[ "$(printf '%s\n' "${SB_VERSIONI[@]}" | sort -u | wc -l)" -gt 1 ]]; then
+    echo "  ATTENZIONE: i componenti dichiarano versioni diverse di spring-batch: ${SB_VERSIONI_UNICHE}" >&2
+  fi
+fi
 
 # ── Composizione ─────────────────────────────────────────────────────────────
 function intestazione() {
@@ -356,6 +433,11 @@ function intestazione() {
     echo "--   govpay (core) ${GOVPAY_CORE_VERSION}"
   fi
   for e in "${IN_RILASCIO[@]}"; do echo "--   govpay-${e%%:*} ${e#*:}"; done
+  if [[ ${#VERSIONI_SQL[@]} -gt 0 ]]; then
+    echo "--"
+    echo "-- Versioni degli script a bordo dei componenti (sql/VERSION):"
+    for v in "${VERSIONI_SQL[@]}"; do echo "--   ${v}"; done
+  fi
   if [[ ${#DA_IMMAGINE[@]} -gt 0 ]]; then
     echo "--"
     echo "-- Componenti il cui SQL e' stato letto dall'immagine docker:"
@@ -423,18 +505,20 @@ function componi() {
   # Viene inclusa la variante di maggioranza e le altre sono segnalate: dare a
   # un batch lo schema di un'altra versione del framework non puo' essere
   # una scelta silenziosa.
-  local -A sb_conta=() sb_file=() sb_chi=()
+  local -A sb_conta=() sb_file=() sb_chi=() sb_origine=()
   local hash f base d
   for e in "${IN_RILASCIO[@]}"; do
     nome="${e%%:*}"
     base="$(radice_sql "${WORKDIR}/${nome}" 2>/dev/null)" || continue
-    f="$(trova_file "${base}" "${dialetto}" "${FILE_SPRING_BATCH}" 2>/dev/null)" || continue
+    trova_schema_batch "${base}" "${dialetto}" || continue
+    f="${SB_FILE}"
     # awk termina sempre la riga in uscita, quindi normalizza anche l'assenza
     # del newline finale, che da sola faceva divergere l'hash di copie identiche.
     hash="$(awk '{ sub(/[[:space:]]+$/, ""); if (length($0)) print }' "${f}" | md5sum | cut -d' ' -f1)"
     sb_conta["${hash}"]=$(( ${sb_conta["${hash}"]:-0} + 1 ))
     sb_file["${hash}"]="${f}"
     sb_chi["${hash}"]="${sb_chi["${hash}"]:-}${sb_chi["${hash}"]:+, }govpay-${nome}"
+    sb_origine["${hash}"]="${SB_ORIGINE}"
   done
 
   if [[ ${#sb_conta[@]} -gt 0 ]]; then
@@ -442,17 +526,44 @@ function componi() {
     for h in "${!sb_conta[@]}"; do
       if (( sb_conta["${h}"] > max )); then max=${sb_conta["${h}"]}; vincente="${h}"; fi
     done
-    { sezione "Tabelle di Spring Batch, condivise (${sb_chi["${vincente}"]})"; cat "${sb_file["${vincente}"]}"; echo; } >> "${out}"
+    { sezione "Tabelle di Spring Batch, condivise — ${sb_origine["${vincente}"]} (${sb_chi["${vincente}"]})"; cat "${sb_file["${vincente}"]}"; echo; } >> "${out}"
     for h in "${!sb_conta[@]}"; do
       [[ "${h}" == "${vincente}" ]] && continue
-      echo "  ATTENZIONE ${dialetto}: ${sb_chi["${h}"]} dichiara un ${FILE_SPRING_BATCH} diverso dalla maggioranza; incluso quello di ${sb_chi["${vincente}"]}" >&2
+      echo "  ATTENZIONE ${dialetto}: ${sb_chi["${h}"]} dichiara uno schema dei metadati Spring Batch diverso dalla maggioranza (${sb_origine["${h}"]}); incluso quello di ${sb_chi["${vincente}"]}" >&2
       {
-        echo "-- ATTENZIONE: ${sb_chi["${h}"]} dichiara un ${FILE_SPRING_BATCH} diverso"
-        echo "-- da quello incluso sopra, e non e' stato aggiunto. Verificare la versione"
-        echo "-- di Spring Batch attesa da quei componenti prima di applicare."
+        echo "-- ATTENZIONE: ${sb_chi["${h}"]} dichiara uno schema dei metadati Spring Batch"
+        echo "-- diverso da quello incluso sopra (${sb_origine["${h}"]}), e non e' stato"
+        echo "-- aggiunto. Verificare la versione di Spring Batch attesa da quei componenti"
+        echo "-- prima di applicare."
+        # Origini diverse significa che il rilascio mescola componenti passati agli
+        # schemi upstream e componenti che portano ancora la copia locale. Non e' una
+        # divergenza fra versioni del framework ma fra artefatti: le immagini
+        # anteriori al passaggio vanno ricostruite.
+        if [[ "${sb_origine["${h}"]}" != "${sb_origine["${vincente}"]}" ]]; then
+          echo "-- Le due varianti hanno origine diversa, quindi il rilascio mescola"
+          echo "-- componenti che prendono lo schema da spring-batch-core e componenti che"
+          echo "-- portano ancora la copia mantenuta a mano: ricostruire le immagini"
+          echo "-- anteriori al passaggio agli schemi upstream."
+        fi
         echo
       } >> "${out}"
     done
+  elif [[ ${#IN_RILASCIO[@]} -gt 0 ]]; then
+    # Prima lo schema stava nell'albero sorgente di ogni batch, quindi si trovava
+    # sempre. Ora lo produce il profilo "dist" in fase di packaging: un componente
+    # preso con branch:<nome> non ce l'ha, perche' nel sorgente non c'e' piu'.
+    # Non emettere la sezione in silenzio sarebbe la trappola peggiore: lo script
+    # sembrerebbe completo e i batch non troverebbero le tabelle dei metadati.
+    echo "  ATTENZIONE ${dialetto}: nessun componente ha fornito lo schema dei metadati Spring Batch; se il rilascio comprende dei batch lo script e' incompleto" >&2
+    {
+      echo "-- ATTENZIONE: nessuno dei componenti di questo rilascio ha fornito lo schema"
+      echo "-- dei metadati Spring Batch per ${dialetto}, quindi qui non c'e'. Se il rilascio"
+      echo "-- comprende dei batch, questo script e' incompleto e loro non partiranno."
+      echo "-- Lo schema e' prodotto dal profilo maven \"dist\" in fase di packaging e non"
+      echo "-- sta piu' nell'albero sorgente: un componente indicato con branch:<nome> non"
+      echo "-- lo porta. Usare image:<tag> o il tag di un rilascio."
+      echo
+    } >> "${out}"
   fi
 
   # Creazione delle strutture proprie dei componenti
