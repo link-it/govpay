@@ -95,6 +95,10 @@ psql -v ON_ERROR_STOP=1 govpay govpay < dist/sql/gov_pay.sql \
 echo "Creazione tabelle dei componenti e di Spring Batch"
 psql -v ON_ERROR_STOP=1 govpay govpay < ${SQL_COMPONENTI} \
   || { echo "ERRORE: applicazione dello SQL dei componenti fallita" >&2; exit 1; }
+  
+echo "Creazione utenza per batch rt"
+psql -v ON_ERROR_STOP=1 govpay govpay < /etc/govpay/docker/${GOVPAY_VERSION}/sql/utenza-batch-rt.sql \
+  || { echo "ERRORE: applicazione dello SQL creazione utenza batch rt fallita" >&2; exit 1; }
 
 #####
 ## SETUP API SECURITY SETTINGS
