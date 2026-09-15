@@ -24,7 +24,7 @@ GOVPAY_LOGDIR=${govpay_log} \
 GOVPAY_FULLVERSION=${govpay_fullversion} \
 HSQLDB_FULLVERSION=2.7.4 \
 POSTGRES_JDBC_VERSION=42.7.5 \
-TOMCAT_VERSION=11.0.25 \
+TOMCAT_VERSION=11.0.26 \
 CATALINA_HOME=/usr/local/tomcat \
 TZ="Europe/Rome"
 
@@ -48,8 +48,12 @@ adduser -S -G tomcat -h ${CATALINA_HOME} -s /bin/false tomcat; \
 curl -kL -sS -q -o /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip https://sourceforge.net/projects/hsqldb/files/hsqldb/hsqldb_2_7/hsqldb-${HSQLDB_FULLVERSION}.zip/download; \
 unzip -q -d /opt /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip hsqldb-${HSQLDB_FULLVERSION}/hsqldb/lib/*; \
 rm -f  /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip; \
-curl -fsSL https://downloads.apache.org/tomcat/tomcat-${TOMCAT_VERSION%%.*}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz  -o apache-tomcat-${TOMCAT_VERSION}.tar.gz; \
-curl -fsSL https://downloads.apache.org/tomcat/tomcat-${TOMCAT_VERSION%%.*}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz.sha512 -o SHA512; \
+for tomcat_base in https://downloads.apache.org/tomcat https://archive.apache.org/dist/tomcat; do \
+  tomcat_url="${tomcat_base}/tomcat-${TOMCAT_VERSION%%.*}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"; \
+  if curl -fsSL "${tomcat_url}" -o apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+     && curl -fsSL "${tomcat_url}.sha512" -o SHA512; then break; fi; \
+done; \
+[ -s apache-tomcat-${TOMCAT_VERSION}.tar.gz ] || { echo "apache-tomcat-${TOMCAT_VERSION}.tar.gz non scaricabile ne' dal mirror ne' dall'archivio" >&2; exit 1; }; \
 sha512sum -c SHA512; \
 tar -xzC /usr/local -f apache-tomcat-${TOMCAT_VERSION}.tar.gz \
 && mv /usr/local/apache-tomcat-${TOMCAT_VERSION}/* ${CATALINA_HOME} \
