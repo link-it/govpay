@@ -83,10 +83,18 @@ SQL_COMPONENTI=${SQL_COMPONENTI_DIR}/govpay-${GOVPAY_VERSION}-componenti-postgre
 
 echo "Creazione del database..."
 sudo -u postgres createdb govpay -O govpay
-psql govpay govpay < dist/sql/gov_pay.sql
+
+# ON_ERROR_STOP e' necessario: senza, psql esce 0 anche dopo un errore, quindi un
+# CREATE TABLE in conflitto o un componente con SQL rotto lascerebbe lo stage verde
+# e il database incompleto, e il guasto emergerebbe piu' tardi nella testsuite su
+# qualcosa di apparentemente scollegato. Lo script non ha set -e, per cui il codice
+# di uscita va controllato qui.
+psql -v ON_ERROR_STOP=1 govpay govpay < dist/sql/gov_pay.sql \
+  || { echo "ERRORE: applicazione dello schema del core fallita" >&2; exit 1; }
 
 echo "Creazione tabelle dei componenti e di Spring Batch"
-psql govpay govpay < ${SQL_COMPONENTI}
+psql -v ON_ERROR_STOP=1 govpay govpay < ${SQL_COMPONENTI} \
+  || { echo "ERRORE: applicazione dello SQL dei componenti fallita" >&2; exit 1; }
 
 #####
 ## SETUP API SECURITY SETTINGS
