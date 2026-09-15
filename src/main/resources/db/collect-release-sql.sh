@@ -196,7 +196,10 @@ OUTDIR="${OUTDIR:-$(cd "${BASEDIR}/../../../.." && pwd)/target/release-sql}"
 
 if [[ -z "${WORKDIR}" ]]; then
   WORKDIR="$(mktemp -d)"
-  trap 'rm -rf "${WORKDIR}"' EXIT
+  # La pulizia non deve decidere l'esito: e' l'ultimo comando eseguito, quindi un
+  # suo fallimento diventerebbe il codice di uscita dello script e farebbe passare
+  # per fallita una composizione riuscita.
+  trap 'rm -rf "${WORKDIR}" 2>/dev/null || true' EXIT
 fi
 mkdir -p "${WORKDIR}"
 
@@ -246,7 +249,7 @@ if [[ "${DOWNLOAD}" == true && ${#IN_RILASCIO[@]} -gt 0 ]]; then
     command -v curl >/dev/null || errore "curl non trovato: serve per scaricare gli asset (oppure --no-download)"
   fi
   command -v unzip >/dev/null || errore "unzip non trovato: serve per estrarre gli asset"
-  command -v tar   >/dev/null || errore "tar non trovato: serve per estrarre gli archivi di branch"
+  command -v tar   >/dev/null || errore "tar non trovato: serve per estrarre gli archivi di branch e lo SQL dalle immagini"
   echo
   echo "-- Scaricamento asset sql.zip"
   for e in "${IN_RILASCIO[@]}"; do
@@ -268,21 +271,33 @@ if [[ "${DOWNLOAD}" == true && ${#IN_RILASCIO[@]} -gt 0 ]]; then
     if [[ "${ver}" == image:* ]]; then
       img="${ver#image:}"
       [[ "${img}" == */* ]] || img="${DOCKER_DEV_PREFIX}/govpay-${nome}-dev:${img}"
+      # Il pull si tenta sempre, non solo quando l'immagine manca: i tag
+      # -SNAPSHOT sono mutabili, e un'immagine gia' presente in locale puo'
+      # essere vecchia. E' esattamente cosi' che nasce una falsa divergenza fra
+      # componenti, con alcuni che sembrano portare ancora la copia legacy dello
+      # schema Spring Batch solo perche' la loro immagine locale e' anteriore.
+      # Se il pull non riesce ma l'immagine c'e', si prosegue con quella e lo si
+      # dice: il raccoglitore deve funzionare anche senza rete.
+      #
       # Gli errori di docker non vanno nascosti: "immagine non disponibile" da
       # solo non distingue fra docker assente, permessi mancanti sul socket,
       # rete, limite di richieste del registro e tag inesistente. Sull'agent
-      # Jenkins l'utente non e' nel gruppo docker e serve DOCKER_BIN="sudo docker":
-      # con lo stderr scartato quel caso era indistinguibile dagli altri.
-      if ! ${DOCKER} image inspect "${img}" >/dev/null 2>&1; then
-        nota "${repo}: ${img} non presente in locale, tentativo di pull"
-        if ! docker_msg="$(${DOCKER} pull -q "${img}" 2>&1)"; then
+      # Jenkins l'utente non e' nel gruppo docker e serve DOCKER_BIN="sudo docker".
+      if ! docker_msg="$(${DOCKER} pull -q "${img}" 2>&1)"; then
+        if ${DOCKER} image inspect "${img}" >/dev/null 2>&1; then
+          nota "${repo}: pull di ${img} fallito, si usa l'immagine presente in locale, che puo' non essere aggiornata"
+        else
           errore "pull di ${img} fallito: ${docker_msg}"
         fi
       fi
       if ! cid="$(${DOCKER} create "${img}" 2>&1)"; then
         errore "creazione del container da ${img} fallita: ${cid}"
       fi
-      ${DOCKER} cp "${cid}:${DOCKER_SQL_PATH}" "${dest}/sql" >/dev/null 2>&1 || true
+      # L'estrazione passa per un flusso tar scompattato da questo utente, e non
+      # per "docker cp <cid>:<path> <dir>": con DOCKER_BIN="sudo docker" quella
+      # forma depositerebbe file di proprieta' di root nella directory di lavoro,
+      # che poi la pulizia non riuscirebbe a rimuovere.
+      ${DOCKER} cp "${cid}:${DOCKER_SQL_PATH}" - 2>/dev/null | tar x -C "${dest}" 2>/dev/null || true
       ${DOCKER} rm -f "${cid}" >/dev/null 2>&1 || true
       if [[ -z "$(find "${dest}/sql" -name '*.sql' -print -quit 2>/dev/null)" ]]; then
         rm -rf "${dest}/sql"
