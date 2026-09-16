@@ -22,6 +22,11 @@
    "anomalo":"#notnull",
    "verificato":"#notnull",
    "UUID":"#notnull",
+   "dataUltimaModificaAca":"#ignore",
+   "dataUltimaComunicazioneAca":"#ignore",
+   "sendAbilitato":"#boolean",
+   "sendImportoTotale":"#ignore",
+   "sendDataAggiornamento":"#ignore",
    "voci": "#[]",
    "rpp":"#[]",
    "pagamenti":"#[]"
