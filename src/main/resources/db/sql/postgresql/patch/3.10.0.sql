@@ -37,3 +37,12 @@ CREATE INDEX IF NOT EXISTS idx_rpt_data_msg_ricevuta_id
 -- Il tipo e' quello che il generatore usa per un xsd:string senza facet, che
 -- cambia da dialetto a dialetto: TEXT non esiste su oracle e sqlserver.
 ALTER TABLE operatori ADD COLUMN preferenze TEXT;
+
+-- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
+-- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro
+-- sequence, mentre il gov_pay.sql rigenerato non le dichiara piu'. Un'installazione
+-- aggiornata se le portava quindi dietro, divergendo da una installata da zero.
+-- I drop sono idempotenti perche' su un'installazione nuova quegli oggetti non
+-- esistono e la patch deve restare applicabile in entrambi i casi.
+DROP SEQUENCE IF EXISTS seq_pagamenti_portale;
+DROP SEQUENCE IF EXISTS seq_pag_port_versamenti;

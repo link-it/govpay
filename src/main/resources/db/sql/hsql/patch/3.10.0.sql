@@ -37,3 +37,17 @@ CREATE INDEX idx_rpt_data_msg_ricevuta_id
 -- Il tipo e' quello che il generatore usa per un xsd:string senza facet, che
 -- cambia da dialetto a dialetto: TEXT non esiste su oracle e sqlserver.
 ALTER TABLE operatori ADD COLUMN preferenze LONGVARCHAR;
+
+-- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
+-- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro
+-- sequence, mentre il gov_pay.sql rigenerato non le dichiara piu'. Un'installazione
+-- aggiornata se le portava quindi dietro, divergendo da una installata da zero.
+-- I drop sono idempotenti perche' su un'installazione nuova quegli oggetti non
+-- esistono e la patch deve restare applicabile in entrambi i casi.
+-- Su questo dialetto la baseline creava anche due tabelle di appoggio per
+-- l'inizializzazione delle sequence, che la 3.9.2 non elimina: gli oggetti
+-- orfani qui sono quattro, non due.
+DROP SEQUENCE IF EXISTS seq_pagamenti_portale;
+DROP SEQUENCE IF EXISTS seq_pag_port_versamenti;
+DROP TABLE IF EXISTS pagamenti_portale_init_seq;
+DROP TABLE IF EXISTS pag_port_versamenti_init_seq;

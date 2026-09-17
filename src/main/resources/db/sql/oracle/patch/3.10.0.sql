@@ -74,4 +74,32 @@ EXCEPTION
 END;
 /
 
+
+-- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
+-- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro
+-- sequence, mentre il gov_pay.sql rigenerato non le dichiara piu'. Un'installazione
+-- aggiornata se le portava quindi dietro, divergendo da una installata da zero.
+-- I drop sono idempotenti perche' su un'installazione nuova quegli oggetti non
+-- esistono e la patch deve restare applicabile in entrambi i casi.
+-- ORA-02289 e' "sequence does not exist".
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_pagamenti_portale';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_pag_port_versamenti';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN
+            RAISE;
+        END IF;
+END;
+/
+
 COMMIT;
