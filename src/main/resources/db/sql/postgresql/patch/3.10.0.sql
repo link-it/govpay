@@ -3,9 +3,20 @@
 -- Rimozione connettore FTP dall'intermediario: eliminazione dei connettori
 -- FTP censiti nella tabella connettori e drop della colonna cod_connettore_ftp
 -- dalla tabella intermediari.
-DELETE FROM connettori WHERE cod_connettore IN (
-    SELECT cod_connettore_ftp FROM intermediari WHERE cod_connettore_ftp IS NOT NULL
-);
+-- La DELETE va eseguita solo se la colonna c'e' ancora: riapplicando la patch a
+-- un'installazione gia' alla 3.10 la colonna e' stata eliminata poco sotto, e la
+-- sottoquery fallirebbe. Lo statement e' dinamico perche' altrimenti il
+-- riferimento alla colonna assente sarebbe un errore di compilazione, che la
+-- guardia non eviterebbe.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns
+                WHERE table_schema = current_schema()
+                  AND table_name = 'intermediari'
+                  AND column_name = 'cod_connettore_ftp') THEN
+        EXECUTE 'DELETE FROM connettori WHERE cod_connettore IN (SELECT cod_connettore_ftp FROM intermediari WHERE cod_connettore_ftp IS NOT NULL)';
+    END IF;
+END $$;
 
 ALTER TABLE intermediari DROP COLUMN IF EXISTS cod_connettore_ftp;
 
