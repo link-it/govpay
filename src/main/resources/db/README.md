@@ -257,6 +257,78 @@ La ricerca e' per file e non per directory: in almeno un repository esiste una
 `hsql/` accanto alla `hsqldb/` tracciata, e fissare la directory per nome faceva
 sparire il contenuto vero.
 
+## Patch di aggiornamento fra due versioni
+
+`build-upgrade-sql.sh` compone in un unico script tutte le patch necessarie a
+portare un'installazione da una versione a un'altra:
+
+```console
+./build-upgrade-sql.sh <tipoDB> <versioneDA> <versioneA> [opzioni]
+./build-upgrade-sql.sh postgresql 3.8.2 3.10.0
+```
+
+Le patch del core sono nominate con la versione a cui **portano**, quindi
+aggiornare da X ad A significa applicare, in ordine di versione, tutte le `v`
+con `X < v <= A`. La versione di partenza e' esclusa: chi e' alla 3.8.2 ha gia'
+applicato `3.8.2.sql`.
+
+L'ordinamento e' per versione e non lessicografico, perche' `3.9 < 3.9.2 <
+3.10.0` e `3.1-rc1 < 3.1.1`: con un ordinamento alfabetico la 3.10.0 finirebbe
+prima della 3.9.
+
+### Cosa include e cosa no
+
+Vengono considerate solo le patch il cui nome e' una versione, nella forma
+`<cifre>[.<cifre>...][-rc<n>]`. Il filtro non e' pedanteria: nella stessa
+directory convivono file che versioni non sono, per esempio
+`oracle/patch/3.8_aca.sql`, che e' la patch di un componente depositata fra
+quelle del core e non e' collocabile in un intervallo di versioni. Questi file
+vengono elencati fra quelli **non inclusi**, a schermo e nell'intestazione dello
+script, invece di essere scartati in silenzio.
+
+Restano fuori anche:
+
+- `patch/clienti/`, specifiche di singole installazioni;
+- le directory di patch cumulative preconfezionate come `patch/3.8.2_to_3.9.2/`,
+  che sono un'alternativa a questo script, non un suo ingrediente.
+
+### Patch dei componenti aggiuntivi
+
+Dopo quelle del core lo script aggiunge le patch dei componenti del rilascio,
+cercate in `<dialetto>/patch/` dentro lo SQL che accompagna ciascun componente.
+Lo SQL e' ottenuto invocando `collect-release-sql.sh`, quindi valgono le stesse
+tre sorgenti e le versioni dichiarate in `release-components.env`: non c'e' una
+seconda implementazione della lettura da immagine o da rilascio.
+
+Un componente senza patch non e' un errore e viene annotato. Alla data di
+scrittura **nessuno degli otto componenti ne ha**: la ricerca e' predisposizione,
+e la convenzione attesa e' la stessa del core, cioe' un file per versione sotto
+`<dialetto>/patch/`.
+
+Se la lettura dello SQL dei componenti non riesce — docker assente, immagine non
+disponibile, rete — lo script **non** si ferma: le patch del core sono l'esito
+essenziale, e il motivo del fallimento e' nel log indicato a schermo. Con
+`--senza-componenti` la ricerca si salta del tutto.
+
+### Ordine di applicazione
+
+1. le patch del **core**, in ordine di versione;
+2. le patch dei **componenti**, in ordine di versione, perche' poggiano su
+   strutture che le prime possono creare o modificare.
+
+L'intestazione dello script elenca le patch incluse nell'ordine in cui vanno
+applicate, e avverte che non vanno riordinate.
+
+### Controlli sugli estremi
+
+Un intervallo vuoto o rovesciato e' quasi sempre un errore di invocazione, e
+proseguire produrrebbe uno script vuoto che sembra valido: lo script si ferma se
+`versioneDA` non precede `versioneA`, e se per `versioneA` non esiste una patch
+nel dialetto indicato, elencando in quel caso le versioni disponibili. Se invece
+e' `versioneDA` a non avere una patch, l'intervallo viene comunque calcolato per
+confronto di versione ma con un avviso, perche' non e' verificabile da qui che
+l'installazione sia davvero a quella versione.
+
 ## Copertura per dialetto
 
 La presenza di un dialetto nell'elenco non implica che ogni patch esista per quel dialetto.
