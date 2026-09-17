@@ -32,15 +32,60 @@ END;
 /
 
 -- Tracciamento dell'IP del richiedente sull'audit trail.
-ALTER TABLE gp_audit ADD (ip_richiedente VARCHAR2(45 CHAR));
+-- Oracle non supporta IF NOT EXISTS su ADD: blocchi PL/SQL idempotenti che
+-- ignorano ORA-01430 (colonna gia' presente), come per operatori.preferenze
+-- piu' sotto.
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE gp_audit ADD (ip_richiedente VARCHAR2(45 CHAR))';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
 
 -- Integrazione a SEND: attualizzazione dell'importo della pendenza
 -- con le spese di notifica sostenute tramite SEND.
-ALTER TABLE versamenti ADD send_abilitato NUMBER DEFAULT 0 NOT NULL;
-ALTER TABLE versamenti ADD send_importo_totale BINARY_DOUBLE;
-ALTER TABLE versamenti ADD send_data_aggiornamento TIMESTAMP;
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE versamenti ADD send_abilitato NUMBER DEFAULT 0 NOT NULL';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
 
-ALTER TABLE domini ADD cod_connettore_send VARCHAR2(255 CHAR);
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE versamenti ADD send_importo_totale BINARY_DOUBLE';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE versamenti ADD send_data_aggiornamento TIMESTAMP';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE domini ADD cod_connettore_send VARCHAR2(255 CHAR)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
 
 -- Indici a supporto della cursor pagination delle console-api su GET /pendenze
 -- e GET /ricevute: sort fisso (data DESC, id DESC) della query keyset. Senza

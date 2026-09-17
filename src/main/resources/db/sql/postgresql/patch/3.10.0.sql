@@ -21,15 +21,15 @@ END $$;
 ALTER TABLE intermediari DROP COLUMN IF EXISTS cod_connettore_ftp;
 
 -- Tracciamento dell'IP del richiedente sull'audit trail.
-ALTER TABLE gp_audit ADD COLUMN ip_richiedente VARCHAR(45);
+ALTER TABLE gp_audit ADD COLUMN IF NOT EXISTS ip_richiedente VARCHAR(45);
 
 -- Integrazione a SEND: attualizzazione dell'importo della pendenza
 -- con le spese di notifica sostenute tramite SEND.
-ALTER TABLE versamenti ADD COLUMN send_abilitato BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE versamenti ADD COLUMN send_importo_totale DOUBLE PRECISION;
-ALTER TABLE versamenti ADD COLUMN send_data_aggiornamento TIMESTAMP;
+ALTER TABLE versamenti ADD COLUMN IF NOT EXISTS send_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE versamenti ADD COLUMN IF NOT EXISTS send_importo_totale DOUBLE PRECISION;
+ALTER TABLE versamenti ADD COLUMN IF NOT EXISTS send_data_aggiornamento TIMESTAMP;
 
-ALTER TABLE domini ADD COLUMN cod_connettore_send VARCHAR(255);
+ALTER TABLE domini ADD COLUMN IF NOT EXISTS cod_connettore_send VARCHAR(255);
 
 -- Indici a supporto della cursor pagination delle console-api su GET /pendenze
 -- e GET /ricevute: sort fisso (data DESC, id DESC) della query keyset. Senza
@@ -47,7 +47,7 @@ CREATE INDEX IF NOT EXISTS idx_rpt_data_msg_ricevuta_id
 -- govpay-console-api perche' operatori e' una tabella del core.
 -- Il tipo e' quello che il generatore usa per un xsd:string senza facet, che
 -- cambia da dialetto a dialetto: TEXT non esiste su oracle e sqlserver.
-ALTER TABLE operatori ADD COLUMN preferenze TEXT;
+ALTER TABLE operatori ADD COLUMN IF NOT EXISTS preferenze TEXT;
 
 -- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
 -- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro

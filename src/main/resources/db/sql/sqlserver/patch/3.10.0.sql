@@ -19,16 +19,21 @@ IF COL_LENGTH('intermediari', 'cod_connettore_ftp') IS NOT NULL
 GO
 
 -- Tracciamento dell'IP del richiedente sull'audit trail.
-ALTER TABLE gp_audit ADD ip_richiedente VARCHAR(45);
+IF COL_LENGTH('gp_audit', 'ip_richiedente') IS NULL
+    ALTER TABLE gp_audit ADD ip_richiedente VARCHAR(45);
 GO
 
 -- Integrazione a SEND: attualizzazione dell'importo della pendenza
 -- con le spese di notifica sostenute tramite SEND.
-ALTER TABLE versamenti ADD send_abilitato BIT NOT NULL DEFAULT 0;
-ALTER TABLE versamenti ADD send_importo_totale DECIMAL(15,2);
-ALTER TABLE versamenti ADD send_data_aggiornamento DATETIME2;
+IF COL_LENGTH('versamenti', 'send_abilitato') IS NULL
+    ALTER TABLE versamenti ADD send_abilitato BIT NOT NULL DEFAULT 0;
+IF COL_LENGTH('versamenti', 'send_importo_totale') IS NULL
+    ALTER TABLE versamenti ADD send_importo_totale DECIMAL(15,2);
+IF COL_LENGTH('versamenti', 'send_data_aggiornamento') IS NULL
+    ALTER TABLE versamenti ADD send_data_aggiornamento DATETIME2;
 
-ALTER TABLE domini ADD cod_connettore_send VARCHAR(255);
+IF COL_LENGTH('domini', 'cod_connettore_send') IS NULL
+    ALTER TABLE domini ADD cod_connettore_send VARCHAR(255);
 GO
 
 -- Indici a supporto della cursor pagination delle console-api su GET /pendenze

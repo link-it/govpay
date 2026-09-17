@@ -3,13 +3,19 @@
 -- Rimozione connettore FTP dall'intermediario: eliminazione dei connettori
 -- FTP censiti nella tabella connettori e drop della colonna cod_connettore_ftp
 -- dalla tabella intermediari.
--- NB: su questo dialetto la DELETE non e' protetta da una guardia, quindi la
--- patch non e' riapplicabile a un'installazione gia' alla 3.10: la colonna
--- viene eliminata poco sotto e la sottoquery fallirebbe. HSQLDB non offre negli
--- script alcuna forma condizionale: IF ... THEN e BEGIN ATOMIC sono ammessi solo
+-- NB: questa patch NON e' riapplicabile su un'installazione gia' alla 3.10, ed
+-- e' l'unico dei cinque dialetti in cui non lo e'. Sugli altri quattro ogni
+-- statement ha una guardia; qui non e' possibile, perche' HSQLDB non offre negli
+-- script alcuna forma condizionale: IF ... THEN e BEGIN ATOMIC valgono solo
 -- dentro una routine, e il corpo di una routine viene compilato al momento della
--- CREATE, quindi fallisce anch'esso sul riferimento alla colonna assente.
--- Verificato su HSQLDB 2.7.2. Sugli altri quattro dialetti la guardia c'e'.
+-- CREATE, quindi fallisce anch'esso sul riferimento a una colonna assente.
+-- Provate tutte e tre le forme su HSQLDB 2.7.2 prima di rinunciare.
+--
+-- In concreto, rieseguendola: la DELETE qui sotto fallisce perche' la colonna
+-- cod_connettore_ftp e' stata eliminata poco piu' avanti, e le ALTER TABLE ADD
+-- COLUMN e le CREATE INDEX fallirebbero perche' gli oggetti esistono gia'. Se
+-- una patch si interrompe a meta' su questo dialetto, il ripristino non e'
+-- rieseguirla ma verificare a mano quali statement sono passati.
 DELETE FROM connettori WHERE cod_connettore IN (
     SELECT cod_connettore_ftp FROM intermediari WHERE cod_connettore_ftp IS NOT NULL
 );
