@@ -139,3 +139,27 @@ SET @gp_sql := IF(
 PREPARE gp_stmt FROM @gp_sql;
 EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
+
+-- Normalizzazione del default di jppa_config.data_ultima_rt.
+-- La 3.9 dichiarava la colonna DATETIME(3) DEFAULT 0, che MariaDB memorizza
+-- come '0000-00-00 00:00:00.000' e MySQL 8 rifiuta in radice: negli altri
+-- quattro dialetti la colonna e' nullable e senza default, e cosi' e' ora anche
+-- qui. Senza questo statement un'installazione aggiornata resterebbe con lo
+-- zero date, divergendo da una installata da zero, e non sarebbe trasferibile
+-- su MySQL 8.
+-- La guardia cerca lo zero date nel default, e non l'assenza di default: per una
+-- colonna nullable senza default MySQL riporta column_default a NULL, MariaDB la
+-- stringa 'NULL', e una guardia su IS NOT NULL scatterebbe a ogni riapplicazione
+-- su MariaDB. Il MODIFY sarebbe ripetibile comunque, ma riscriverebbe la tabella
+-- ogni volta.
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'jppa_config'
+        AND column_name = 'data_ultima_rt'
+        AND column_default LIKE '%0000-00-00%') > 0,
+    'ALTER TABLE jppa_config MODIFY COLUMN data_ultima_rt DATETIME(3) COMMENT ''Data ultima RT notificata correttamente''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;

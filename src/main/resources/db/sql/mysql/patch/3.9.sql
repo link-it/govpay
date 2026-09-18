@@ -4,7 +4,7 @@ CREATE TABLE jppa_config
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del dominio',
 	cod_connettore VARCHAR(255) COMMENT 'Identificativo del connettore',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
-	data_ultima_rt DATETIME(3) DEFAULT 0 COMMENT 'Data ultima RT notificata correttamente',
+	data_ultima_rt DATETIME(3) COMMENT 'Data ultima RT notificata correttamente',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
