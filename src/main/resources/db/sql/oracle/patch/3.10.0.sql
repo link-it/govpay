@@ -159,4 +159,19 @@ EXCEPTION
 END;
 /
 
+-- Allineamento dei default dei tre booleani fra installazione nuova e aggiornata.
+-- Le patch che introducono le colonne non lasciano il default che gov_pay.sql
+-- dichiara: esegui_recupero_rt e notifica_inviata sono aggiunte dalla 3.9 senza
+-- default, mentre la baseline lo imposta con due MODIFY dopo la CREATE TABLE, e
+-- send_abilitato e' aggiunta qui sopra con DEFAULT 0, che serve solo perche' e'
+-- NOT NULL su una tabella popolata e che la baseline non ha. La nullability
+-- invece converge gia', perche' la 3.9 la imposta dopo l'UPDATE di
+-- valorizzazione.
+-- MODIFY ... DEFAULT e' la forma di oracle, la stessa usata in gov_pay.sql, e
+-- DEFAULT NULL e' il modo di togliere un default; nessuna delle tre tocca il
+-- NOT NULL e tutte sono idempotenti.
+ALTER TABLE rendicontazioni MODIFY esegui_recupero_rt DEFAULT 1;
+ALTER TABLE rendicontazioni MODIFY notifica_inviata DEFAULT 0;
+ALTER TABLE versamenti MODIFY send_abilitato DEFAULT NULL;
+
 COMMIT;

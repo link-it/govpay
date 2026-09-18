@@ -20,14 +20,20 @@ DELETE FROM connettori WHERE cod_connettore IN (
     SELECT cod_connettore_ftp FROM intermediari WHERE cod_connettore_ftp IS NOT NULL
 );
 
-ALTER TABLE intermediari DROP COLUMN IF EXISTS cod_connettore_ftp;
+-- IF EXISTS su DROP COLUMN non esiste in HSQLDB, che lo rifiuta con "user lacks
+-- privilege or object not found: IF": la patch si fermava anche qui. Resta il
+-- DROP nudo, coerente con la nota sopra sulla non riapplicabilita' di questo
+-- dialetto; su HSQLDB non c'e' una forma condizionale con cui proteggerlo.
+ALTER TABLE intermediari DROP COLUMN cod_connettore_ftp;
 
 -- Tracciamento dell'IP del richiedente sull'audit trail.
 ALTER TABLE gp_audit ADD COLUMN ip_richiedente VARCHAR(45);
 
 -- Integrazione a SEND: attualizzazione dell'importo della pendenza
 -- con le spese di notifica sostenute tramite SEND.
-ALTER TABLE versamenti ADD COLUMN send_abilitato BOOLEAN NOT NULL DEFAULT FALSE;
+-- HSQLDB vuole DEFAULT prima di NOT NULL: nell'ordine inverso rifiuta con
+-- "unexpected token: DEFAULT" e la patch si fermava qui.
+ALTER TABLE versamenti ADD COLUMN send_abilitato BOOLEAN DEFAULT FALSE NOT NULL;
 ALTER TABLE versamenti ADD COLUMN send_importo_totale DOUBLE;
 ALTER TABLE versamenti ADD COLUMN send_data_aggiornamento TIMESTAMP;
 
@@ -64,3 +70,18 @@ DROP SEQUENCE IF EXISTS seq_pagamenti_portale;
 DROP SEQUENCE IF EXISTS seq_pag_port_versamenti;
 DROP TABLE IF EXISTS pagamenti_portale_init_seq;
 DROP TABLE IF EXISTS pag_port_versamenti_init_seq;
+
+-- Allineamento dei default dei tre booleani fra installazione nuova e aggiornata.
+-- Le patch che introducono le colonne non lasciano il default che gov_pay.sql
+-- dichiara: esegui_recupero_rt e notifica_inviata sono aggiunte dalla 3.9 senza
+-- default, mentre la baseline lo imposta con due ALTER dopo la CREATE TABLE, e
+-- send_abilitato e' aggiunta qui sopra con DEFAULT FALSE, che serve solo perche'
+-- e' NOT NULL su una tabella popolata e che la baseline non ha. La nullability
+-- invece converge gia', perche' la 3.9 la imposta dopo l'UPDATE di
+-- valorizzazione.
+-- I tre statement sono nella forma usata da gov_pay.sql e sono idempotenti di
+-- per se', che su hsql e' l'unica riapplicabilita' disponibile, non avendo il
+-- dialetto alcun costrutto condizionale.
+ALTER TABLE rendicontazioni ALTER COLUMN esegui_recupero_rt SET DEFAULT true;
+ALTER TABLE rendicontazioni ALTER COLUMN notifica_inviata SET DEFAULT false;
+ALTER TABLE versamenti ALTER COLUMN send_abilitato DROP DEFAULT;

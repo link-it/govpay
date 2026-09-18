@@ -67,3 +67,31 @@ GO
 IF COL_LENGTH('operatori', 'preferenze') IS NULL
     ALTER TABLE operatori ADD preferenze VARCHAR(max);
 GO
+
+-- Allineamento dei default dei tre booleani fra installazione nuova e aggiornata.
+-- Le patch che introducono le colonne non lasciano il default che gov_pay.sql
+-- dichiara: esegui_recupero_rt e notifica_inviata sono aggiunte dalla 3.9 senza
+-- default, e send_abilitato e' aggiunta qui sopra con DEFAULT 0, che serve solo
+-- perche' la colonna e' NOT NULL su una tabella popolata e che la baseline non ha.
+-- Su questo dialetto il default e' un constraint con nome generato dal sistema:
+-- per aggiungerlo serve una guardia sull'esistenza, e per toglierlo serve
+-- risalire al nome, che non e' noto a priori.
+IF NOT EXISTS (SELECT 1 FROM sys.default_constraints
+                WHERE parent_object_id = OBJECT_ID('rendicontazioni')
+                  AND parent_column_id = COLUMNPROPERTY(OBJECT_ID('rendicontazioni'), 'esegui_recupero_rt', 'ColumnId'))
+    ALTER TABLE rendicontazioni ADD DEFAULT 'true' FOR esegui_recupero_rt;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.default_constraints
+                WHERE parent_object_id = OBJECT_ID('rendicontazioni')
+                  AND parent_column_id = COLUMNPROPERTY(OBJECT_ID('rendicontazioni'), 'notifica_inviata', 'ColumnId'))
+    ALTER TABLE rendicontazioni ADD DEFAULT 'false' FOR notifica_inviata;
+GO
+
+DECLARE @nome_default SYSNAME;
+SELECT @nome_default = name FROM sys.default_constraints
+ WHERE parent_object_id = OBJECT_ID('versamenti')
+   AND parent_column_id = COLUMNPROPERTY(OBJECT_ID('versamenti'), 'send_abilitato', 'ColumnId');
+IF @nome_default IS NOT NULL
+    EXEC('ALTER TABLE versamenti DROP CONSTRAINT [' + @nome_default + ']');
+GO

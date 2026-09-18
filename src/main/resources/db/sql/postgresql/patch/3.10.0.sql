@@ -57,3 +57,16 @@ ALTER TABLE operatori ADD COLUMN IF NOT EXISTS preferenze TEXT;
 -- esistono e la patch deve restare applicabile in entrambi i casi.
 DROP SEQUENCE IF EXISTS seq_pagamenti_portale;
 DROP SEQUENCE IF EXISTS seq_pag_port_versamenti;
+
+-- Allineamento dei default dei tre booleani fra installazione nuova e aggiornata.
+-- Le patch che introducono le colonne non lasciano il default che gov_pay.sql
+-- dichiara: esegui_recupero_rt e notifica_inviata sono aggiunte dalla 3.9 senza
+-- default, e send_abilitato e' aggiunta qui sopra con DEFAULT false, che serve
+-- solo perche' la colonna e' NOT NULL su una tabella popolata e che la baseline
+-- non ha. La nullability invece converge gia', perche' la 3.9 la imposta dopo
+-- l'UPDATE di valorizzazione.
+-- I tre statement sono idempotenti di per se' e su un'installazione nuova non
+-- cambiano nulla: portano il default al valore che avrebbe comunque.
+ALTER TABLE rendicontazioni ALTER COLUMN esegui_recupero_rt SET DEFAULT true;
+ALTER TABLE rendicontazioni ALTER COLUMN notifica_inviata SET DEFAULT false;
+ALTER TABLE versamenti ALTER COLUMN send_abilitato DROP DEFAULT;
