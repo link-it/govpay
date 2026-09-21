@@ -314,10 +314,48 @@ essenziale, e il motivo del fallimento e' nel log indicato a schermo. Con
 
 1. le patch del **core**, in ordine di versione;
 2. le patch dei **componenti**, in ordine di versione, perche' poggiano su
-   strutture che le prime possono creare o modificare.
+   strutture che le prime possono creare o modificare;
+3. in coda e separata, la migrazione dei metadati di Spring Batch, se richiesta.
 
 L'intestazione dello script elenca le patch incluse nell'ordine in cui vanno
 applicate, e avverte che non vanno riordinate.
+
+### Migrazione dei metadati di Spring Batch
+
+Con `--con-migrazione-batch <versione>` lo script accoda la migrazione dei
+metadati di Spring Batch alla versione indicata del framework, per esempio:
+
+```console
+./build-upgrade-sql.sh postgresql 3.8.2 3.10.0 --con-migrazione-batch 6.0
+```
+
+Non e' inclusa per default, e non lo e' nemmeno con i componenti: va chiesta
+sapendo da quale forma si parte. Gli script sono di **upstream**, estratti da
+`spring-batch-core` dal profilo `dist` e spediti in
+`sql/spring-batch/migration/<versione>/migration-<vendor>.sql` dentro `sql.zip`,
+quindi in `/opt/sql` nelle immagini dei batch; qui non sono duplicati. Sono
+cercati, in ordine: la directory indicata con `--sql-batch`, lo SQL dei
+componenti, `/opt/sql/spring-batch`. Se la versione chiesta non c'e', lo script
+elenca quelle disponibili e i vendor presenti per quella versione.
+
+Trasformano tabelle `BATCH_*` che esistono gia' nella forma anteriore, quindi
+**non sono idempotenti** e su un'installazione che non le ha, o che le ha gia'
+migrate, falliscono. La cosa e' scritta a schermo, nell'intestazione dello script
+e nella sezione che le contiene, che e' l'ultima e resta separata dalle patch
+nostre.
+
+Il nome del vendor e' quello di upstream, dove `hsql` si chiama `hsqldb`. Per il
+dialetto `mysql` viene usato `migration-mysql.sql` **anche su MariaDB**, e non il
+`migration-mariadb.sql` che upstream spedisce: quello usa `RENAME SEQUENCE`, che
+in MariaDB non esiste. Verificato su MariaDB 11.8, dove e' un errore di sintassi,
+mentre `RENAME TABLE` del file mysql rinomina la sequence conservandola come
+sequence.
+
+Alla data di scrittura nessuna installazione GovPay dovrebbe averne bisogno: fino
+alla 2.0.4 di `govpay-common` i metadati non venivano persistiti affatto, perche'
+Spring Boot forniva un `ResourcelessJobRepository`, e il vecchio
+`tabelle_batch-create.sql` non esiste piu' in nessun repository. Le tabelle
+vengono create da zero nella forma della `spring-batch.version` del bom.
 
 ### Controlli sugli estremi
 

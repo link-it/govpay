@@ -31,6 +31,14 @@ WORKDIR=""
 CON_COMPONENTI=true
 DRYRUN=false
 
+# Migrazione dei metadati di Spring Batch: fuori per default, perche' riguarda
+# solo le installazioni che quei metadati li avevano gia' persistiti nella forma
+# di una versione precedente del framework.
+VERSIONE_MIGRAZIONE=""
+SQL_BATCH_DIR="${GOVPAY_SPRING_BATCH_SQL_DIR:-}"
+MIGRAZIONE_FILE=""
+MIGRAZIONE_ORIGINE=""
+
 function usage() {
 cat <<EOHELP
 Usage: $(basename "$0") <tipoDB> <versioneDA> <versioneA> [opzioni]
@@ -46,8 +54,23 @@ Opzioni:
   --work <dir>         Directory di lavoro per lo SQL dei componenti
                        (default: una temporanea, rimossa all'uscita)
   --senza-componenti   Considera solo le patch del core
+  --con-migrazione-batch <v>
+                       Include anche la migrazione dei metadati di Spring Batch
+                       alla versione <v> del framework, per esempio 6.0
+  --sql-batch <dir>    Directory sql/spring-batch da cui prendere la migrazione
+                       [GOVPAY_SPRING_BATCH_SQL_DIR]
   --dry-run            Elenca le patch che includerebbe, senza scrivere
   -h, --help           Mostra questo aiuto
+
+La migrazione dei metadati di Spring Batch NON e' inclusa per default, e non lo
+e' nemmeno con --con-componenti: gli script di upstream trasformano tabelle
+BATCH_* che esistono gia' nella forma di una versione precedente del framework, e
+su un'installazione che non le ha, o le ha gia' nella forma nuova, falliscono.
+Va chiesta esplicitamente, sapendo da quale forma si parte.
+
+Per il dialetto mysql viene usato migration-mysql.sql anche su MariaDB, e non il
+migration-mariadb.sql che upstream spedisce: quello usa RENAME SEQUENCE, che in
+MariaDB non esiste. Verificato su MariaDB 11.8.
 
 Le patch dei componenti aggiuntivi sono cercate in <dialetto>/patch/ dentro lo
 SQL che accompagna ciascun componente del rilascio, letto dalle stesse sorgenti
@@ -76,6 +99,8 @@ while [[ $# -gt 0 ]]; do
     --out)               OUTDIR="${2:-}"; shift 2 ;;
     --work)              WORKDIR="${2:-}"; shift 2 ;;
     --senza-componenti)  CON_COMPONENTI=false; shift ;;
+    --con-migrazione-batch) VERSIONE_MIGRAZIONE="${2:-}"; shift 2 ;;
+    --sql-batch)         SQL_BATCH_DIR="${2:-}"; shift 2 ;;
     --dry-run)           DRYRUN=true; shift ;;
     -h|--help)           usage; exit 0 ;;
     *) errore "opzione sconosciuta: $1" ;;
@@ -172,24 +197,43 @@ if [[ ${#SCARTATE[@]} -gt 0 ]]; then
   for f in "${SCARTATE[@]}"; do nota "${f}"; done
 fi
 
-# ── Patch dei componenti ─────────────────────────────────────────────────────
+# ── SQL dei componenti ───────────────────────────────────────────────────────
 # Lo SQL dei componenti si ottiene dal raccoglitore, che sa leggerlo dalle tre
 # sorgenti (rilascio, immagine, branch) secondo release-components.env: qui
 # serve solo che popoli la directory di lavoro, lo script che compone lo butta.
-COMP_PATCH=()
-COMP_SENZA=()
-if [[ "${CON_COMPONENTI}" == true ]]; then
-  echo
-  echo "-- Patch dei componenti aggiuntivi"
-  if [[ ! -x "${RACCOGLITORE}" && ! -f "${RACCOGLITORE}" ]]; then
-    nota "collect-release-sql.sh non trovato: componenti non considerati"
+# Serve sia per le patch dei componenti sia per la migrazione dei metadati
+# batch, che upstream spedisce dentro lo stesso sql.zip: viene invocato una volta
+# sola, e non viene invocato affatto se non serve a nessuna delle due.
+RACCOLTA_OK=false
+SERVE_RACCOLTA=false
+[[ "${CON_COMPONENTI}" == true ]] && SERVE_RACCOLTA=true
+[[ -n "${VERSIONE_MIGRAZIONE}" && -z "${SQL_BATCH_DIR}" ]] && SERVE_RACCOLTA=true
+
+if [[ "${SERVE_RACCOLTA}" == true ]]; then
+  if [[ ! -f "${RACCOGLITORE}" ]]; then
+    echo
+    nota "collect-release-sql.sh non trovato: SQL dei componenti non disponibile"
   elif ! bash "${RACCOGLITORE}" --core "${VERSIONE_A}" --mode componenti \
          --dialects "${TIPO_DB}" --work "${WORKDIR}" \
          --out "${WORKDIR}/_scarto" >"${WORKDIR}/_raccoglitore.log" 2>&1; then
     # Non fatale: le patch del core restano l'esito essenziale, e il motivo del
     # fallimento (docker assente, immagine non disponibile, rete) e' nel log.
-    nota "lettura dello SQL dei componenti non riuscita, componenti non considerati"
+    echo
+    nota "lettura dello SQL dei componenti non riuscita"
     nota "dettaglio in ${WORKDIR}/_raccoglitore.log"
+  else
+    RACCOLTA_OK=true
+  fi
+fi
+
+# ── Patch dei componenti ─────────────────────────────────────────────────────
+COMP_PATCH=()
+COMP_SENZA=()
+if [[ "${CON_COMPONENTI}" == true ]]; then
+  echo
+  echo "-- Patch dei componenti aggiuntivi"
+  if [[ "${RACCOLTA_OK}" != true ]]; then
+    nota "componenti non considerati"
   else
     while read -r base; do
       nome="$(basename "$(dirname "${base}")")"
@@ -219,6 +263,80 @@ if [[ "${CON_COMPONENTI}" == true ]]; then
 else
   echo
   nota "componenti esclusi da --senza-componenti"
+fi
+
+# ── Migrazione dei metadati di Spring Batch ──────────────────────────────────
+# Gli script sono di upstream, estratti da spring-batch-core dal profilo dist e
+# spediti in sql/spring-batch/migration/<versione>/migration-<vendor>.sql dentro
+# sql.zip, quindi in /opt/sql nelle immagini dei batch. Qui non sono duplicati:
+# si cercano dove arrivano.
+# Il nome del vendor e' quello di upstream, che per hsql e' hsqldb; per mysql
+# upstream distingue mysql da mariadb con due script diversi e incompatibili,
+# perche' su MySQL la sequence e' emulata con una tabella e su MariaDB e' una
+# sequence vera, quindi la scelta del motore non e' ricavabile dal dialetto.
+if [[ -n "${VERSIONE_MIGRAZIONE}" ]]; then
+  echo
+  echo "-- Migrazione dei metadati di Spring Batch alla ${VERSIONE_MIGRAZIONE}"
+
+  # Upstream spedisce due script distinti per mysql e mariadb, ma quello mariadb
+  # usa RENAME SEQUENCE, che in MariaDB non esiste: provato su MariaDB 11.8, dove
+  # e' un errore di sintassi. Il file mysql invece funziona su entrambi i motori,
+  # perche' RENAME TABLE rinomina anche una sequence MariaDB conservandola come
+  # sequence. Per il dialetto mysql si usa quindi sempre migration-mysql.sql.
+  VENDOR_UPSTREAM="${TIPO_DB}"
+  case "${TIPO_DB}" in
+    hsql)  VENDOR_UPSTREAM=hsqldb ;;
+    mysql) nota "su MariaDB si usa lo stesso migration-mysql.sql: il migration-mariadb.sql di upstream usa RENAME SEQUENCE, che MariaDB non ha" ;;
+  esac
+
+  RELATIVO="migration/${VERSIONE_MIGRAZIONE}/migration-${VENDOR_UPSTREAM}.sql"
+  DIR_CERCATE=()
+
+  function cerca_migrazione() {   # $1 directory sql/spring-batch, $2 descrizione
+    DIR_CERCATE+=("$1")
+    if [[ -f "$1/${RELATIVO}" ]]; then
+      MIGRAZIONE_FILE="$1/${RELATIVO}"
+      MIGRAZIONE_ORIGINE="$2"
+      return 0
+    fi
+    return 1
+  }
+
+  if [[ -n "${SQL_BATCH_DIR}" ]]; then
+    cerca_migrazione "${SQL_BATCH_DIR}" "indicata con --sql-batch" || true
+  fi
+  if [[ -z "${MIGRAZIONE_FILE}" && "${RACCOLTA_OK}" == true ]]; then
+    while read -r d; do
+      cerca_migrazione "${d}" "SQL del componente govpay-$(basename "$(dirname "$(dirname "${d}")")")" && break
+    done < <(find "${WORKDIR}" -maxdepth 3 -type d -name 'spring-batch' | sort)
+  fi
+  if [[ -z "${MIGRAZIONE_FILE}" ]]; then
+    cerca_migrazione "/opt/sql/spring-batch" "/opt/sql dell'installazione" || true
+  fi
+
+  if [[ -z "${MIGRAZIONE_FILE}" ]]; then
+    echo >&2
+    echo "Errore: ${RELATIVO} non trovato." >&2
+    if [[ ${#DIR_CERCATE[@]} -gt 0 ]]; then
+      echo "Cercato in:" >&2
+      for d in "${DIR_CERCATE[@]}"; do echo "  ${d}" >&2; done
+      # Elencare le versioni presenti e' piu' utile del solo fallimento: sono
+      # quelle che upstream spedisce nella spring-batch.version di questo bom.
+      disponibili=""
+      for d in "${DIR_CERCATE[@]}"; do
+        [[ -d "${d}/migration" ]] || continue
+        disponibili="${disponibili} $(find "${d}/migration" -maxdepth 1 -mindepth 1 -type d -printf '%f ' 2>/dev/null || true)"
+      done
+      [[ -n "${disponibili// /}" ]] && echo "Versioni disponibili:${disponibili}" >&2
+      vendor_presenti="$(find "${DIR_CERCATE[@]}" -path "*/migration/${VERSIONE_MIGRAZIONE}/*" -name 'migration-*.sql' -printf '%f ' 2>/dev/null || true)"
+      [[ -n "${vendor_presenti// /}" ]] && echo "Per la ${VERSIONE_MIGRAZIONE} ci sono: ${vendor_presenti}" >&2
+    fi
+    echo "Con --sql-batch si indica una directory sql/spring-batch; senza" >&2
+    echo "--con-migrazione-batch la migrazione non viene cercata." >&2
+    exit 1
+  fi
+  nota "${RELATIVO}, da ${MIGRAZIONE_ORIGINE}"
+  nota "ATTENZIONE: da applicare solo se le tabelle BATCH_* sono nella forma anteriore alla ${VERSIONE_MIGRAZIONE}"
 fi
 
 # ── Composizione ─────────────────────────────────────────────────────────────
@@ -251,6 +369,14 @@ mkdir -p "${OUTDIR}"
     echo "-- Patch dei componenti incluse:"
     for e in "${COMP_PATCH[@]}"; do echo "--   govpay-${e%%|*} ${e#*|}" | sed 's/|.*$//'; done
   fi
+  if [[ -n "${MIGRAZIONE_FILE}" ]]; then
+    echo "--"
+    echo "-- Migrazione dei metadati di Spring Batch alla ${VERSIONE_MIGRAZIONE} inclusa in coda:"
+    echo "--   ${RELATIVO}, da ${MIGRAZIONE_ORIGINE}"
+    echo "--   Script di upstream, non nostro: non e' idempotente e va applicato solo a"
+    echo "--   un'installazione le cui tabelle BATCH_* sono nella forma anteriore alla"
+    echo "--   ${VERSIONE_MIGRAZIONE}. Su tabelle gia' migrate, o assenti, fallisce."
+  fi
   if [[ ${#SCARTATE[@]} -gt 0 ]]; then
     echo "--"
     echo "-- Nella directory delle patch del core ci sono file il cui nome non e' una"
@@ -281,9 +407,28 @@ if [[ ${#COMP_PATCH[@]} -gt 0 ]]; then
   done < <(printf '%s\n' "${COMP_PATCH[@]}" | sort -t'|' -k2,2V)
 fi
 
+# La migrazione dei metadati batch va per ultima, e separata: non e' una nostra
+# patch ma uno script di upstream, tocca solo tabelle BATCH_* e ha una condizione
+# di applicabilita' diversa da tutto il resto.
+if [[ -n "${MIGRAZIONE_FILE}" ]]; then
+  {
+    sezione "Spring Batch ${VERSIONE_MIGRAZIONE} — migrazione dei metadati (${VENDOR_UPSTREAM})"
+    echo "-- Da ${RELATIVO}, ${MIGRAZIONE_ORIGINE}."
+    echo "-- Script di upstream, riportato senza modifiche."
+    echo "--"
+    echo "-- Applicare SOLO a un'installazione le cui tabelle BATCH_* sono nella forma"
+    echo "-- anteriore alla ${VERSIONE_MIGRAZIONE}. Su tabelle gia' migrate, o su"
+    echo "-- un'installazione che non ha mai persistito i metadati, fallisce."
+    echo ""
+    cat "${MIGRAZIONE_FILE}"
+    echo
+  } >> "${OUT}"
+fi
+
 echo
 echo "=============================================="
 echo "Script prodotto:"
 echo "  ${OUT}"
 echo "  $(wc -l < "${OUT}") righe, $(( ${#DA_APPLICARE[@]} + ${#COMP_PATCH[@]} )) patch"
-echo "=============================================="
+[[ -n "${MIGRAZIONE_FILE}" ]] && echo "  piu' la migrazione dei metadati batch alla ${VERSIONE_MIGRAZIONE}"
+echo "==============================================" 
