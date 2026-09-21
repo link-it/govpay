@@ -27,3 +27,4 @@ effettuare per verificarne la riuscita.
         loadbalancing/index
         monitoraggio/index
         aggiornamento/index
+        manutenzione/index
