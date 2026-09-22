@@ -140,6 +140,19 @@ aggiornato nello stesso commit che porta la versione del core, cosi' la
 composizione di ogni rilascio resta registrata in git e rivedibile in una pull
 request. Una versione vuota significa "non fa parte di questo rilascio".
 
+Per i rilasci precedenti alla nascita di questo strumento la composizione non e'
+registrata da nessuna parte, perche' il raccoglitore e' nato sulla 3.10.x e su
+`3.9.x` quel file non esiste. Per quelli si usa un file a parte, con `--components`:
+
+```console
+./collect-release-sql.sh --core 3.9.3 --mode componenti \
+    --components release-components-3.9.3.env --dialects postgresql
+```
+
+Oggi esiste `release-components-3.9.3.env`, con i componenti della linea 1.x. E'
+il modo per ricostruire lo SQL di un'installazione ferma a quel rilascio senza
+rimettere insieme le versioni a mano ogni volta.
+
 ### Rilascio o sviluppo
 
 Il valore di ciascun componente puo' essere di tre forme, perche' i casi
