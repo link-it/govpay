@@ -160,15 +160,6 @@ When method get
 Then status 200
 And match response.id == 'caricamento-tracciati'
 
-Scenario: Sonda update-rnd
-
-Given url backofficeBaseurl
-And path 'sonde', 'update-rnd'
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response.id == 'update-rnd'
-
 Scenario: Sonda gestione-promemoria
 
 Given url backofficeBaseurl

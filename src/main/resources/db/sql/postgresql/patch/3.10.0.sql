@@ -70,3 +70,10 @@ DROP SEQUENCE IF EXISTS seq_pag_port_versamenti;
 ALTER TABLE rendicontazioni ALTER COLUMN esegui_recupero_rt SET DEFAULT true;
 ALTER TABLE rendicontazioni ALTER COLUMN notifica_inviata SET DEFAULT false;
 ALTER TABLE versamenti ALTER COLUMN send_abilitato DROP DEFAULT;
+
+-- La sonda update-rnd sorvegliava il batch interno di acquisizione dei flussi di
+-- rendicontazione, eliminato con la procedura SOAP: nessuno la aggiorna piu', e
+-- su un'installazione nuova non viene piu' creata. Senza questa DELETE
+-- un'installazione aggiornata se la porterebbe dietro, ferma all'ultimo
+-- aggiornamento e segnalata in errore dal cruscotto.
+DELETE FROM sonde WHERE nome = 'update-rnd';

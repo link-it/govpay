@@ -27,7 +27,6 @@ public class Costanti {
 	
 	/* IDENTIFICATIVI */
 	public static final String CHECK_DB = Operazioni.CHECK_DB;
-	public static final String RND =  Operazioni.RND;
 	public static final String NTFY =  Operazioni.NTFY;
 	public static final String CHECK_NTFY =  Operazioni.CHECK_NTFY;
 	public static final String BATCH_TRACCIATI =  Operazioni.BATCH_TRACCIATI;
@@ -63,8 +62,6 @@ public class Costanti {
 	public static final String CHECK_DB_DESCRIZIONE_STATO_OK = "Servizio database raggiungibile";
 	public static final String CHECK_DB_DESCRIZIONE_STATO_DATABASE_NON_DISPONIBILE = "Servizio database non disponibile: {0}";
 
-	public static final String RND_NOME = "Acquisizione rendicontazioni";
-	public static final String RND_DISABILITATO = "Servizio acquisizione rendicontazioni disabilitato tramite proprieta' di sistema";
 
 	public static final String NTFY_NOME = "Stato spedizione notifiche";
 	public static final String NTFY_DISABILITATO = "Servizio spedizione notifiche disabilitato tramite proprieta' di sistema";

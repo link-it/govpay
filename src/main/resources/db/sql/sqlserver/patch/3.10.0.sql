@@ -95,3 +95,10 @@ SELECT @nome_default = name FROM sys.default_constraints
 IF @nome_default IS NOT NULL
     EXEC('ALTER TABLE versamenti DROP CONSTRAINT [' + @nome_default + ']');
 GO
+
+-- La sonda update-rnd sorvegliava il batch interno di acquisizione dei flussi di
+-- rendicontazione, eliminato con la procedura SOAP: nessuno la aggiorna piu', e
+-- su un'installazione nuova non viene piu' creata. Senza questa DELETE
+-- un'installazione aggiornata se la porterebbe dietro, ferma all'ultimo
+-- aggiornamento e segnalata in errore dal cruscotto.
+DELETE FROM sonde WHERE nome = 'update-rnd';

@@ -33,7 +33,6 @@
 
 	<!-- Batch esterni: valori di default -->
 	<property name="it.govpay.batch.aca.endpoint.url" value="" />
-	<property name="it.govpay.batch.acquisizioneRendicontazioni.modalita" value="interno" />
 	<property name="it.govpay.batch.fdr.endpoint.url" value="" />
 	<property name="it.govpay.batch.recuperoRT.endpoint.url" value="" />
 	<property name="it.govpay.batch.iban.endpoint.url" value="" />

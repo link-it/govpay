@@ -219,20 +219,6 @@ public class SondeConverter {
 				rsModel.setStato(StatoSonda.ERROR);
 				rsModel.setDescrizioneStato(Costanti.BATCH_RECUPERO_RT_DISABILITATO);
 			}
-		} else if(Costanti.RND.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()) {
-				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
-
-				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
-				if(statoSonda.getStato() == 1) rsModel.setDurataStato(parametri.getDataWarn());
-				if(statoSonda.getStato() == 2) rsModel.setDurataStato(parametri.getDataError());
-				rsModel.setSogliaError(parametri.getSogliaError());
-				rsModel.setSogliaWarn(parametri.getSogliaWarn());
-			} else {
-				// batch disabilitato
-				rsModel.setStato(StatoSonda.ERROR);
-				rsModel.setDescrizioneStato(Costanti.RND_DISABILITATO);
-			}
 		} else if(Costanti.BATCH_TRACCIATI.equals(rsModel.getId())) {
 			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchCaricamentoTracciati()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
@@ -275,8 +261,6 @@ public class SondeConverter {
 			switch (id) {
 			case Costanti.CHECK_DB:
 				return Costanti.CHECK_DB_NOME;
-			case Costanti.RND:
-				return Costanti.RND_NOME;
 			case Costanti.NTFY:
 				return Costanti.NTFY_NOME;
 			case Costanti.CHECK_NTFY:

@@ -27,10 +27,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazioneRisposta;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazione;
-import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
 import it.govpay.core.beans.EventoContext;
@@ -114,18 +110,6 @@ public class NodoClient extends BasicClientCORE {
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 
-	}
-
-	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione) throws ClientException {
-		byte [] body = this.getBody(true,objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
-		Risposta response = this.send(EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE.toString(), body);
-		return (NodoChiediElencoFlussiRendicontazioneRisposta) response;
-	}
-
-	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione) throws ClientException {
-		byte [] body = this.getBody(true, objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
-		Risposta response = this.send(EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE.toString(), body);
-		return (NodoChiediFlussoRendicontazioneRisposta) response;
 	}
 
 	public byte[] getBody(boolean soap, JAXBElement<?> body, Object header) throws ClientException {

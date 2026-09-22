@@ -24,7 +24,6 @@ public class CostantiTask {
 	private CostantiTask() {}
 
 	public static final String SERVICE_NAME_TASK = "Task";
-	public static final String ACQUISIZIONE_RENDICONTAZIONI = "AcquisizioneRendicontazioni";
 	public static final String SPEDIZIONE_NOTIFICHE = "SpedizioneNotifiche";
 	public static final String SPEDIZIONE_NOTIFICHE_CHECK = "SpedizioneNotificheCheck";
 	public static final String SPEDIZIONE_NOTIFICHE_APP_IO = "SpedizioneNotificheAppIo";

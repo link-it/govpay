@@ -62,12 +62,9 @@ public class OperazioniDAO extends BaseDAO{
 			IContext ctx = ContextThreadLocal.get();
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
-				// Se la modalita' e' esterna attiva il batch esterno, altrimenti usa il batch interno
-				if(it.govpay.core.utils.GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioniEsterno()) {
-					esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchFdr(ctx, leggiOperazioneDTO.isForzaEsecuzione());
-				} else {
-					esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
-				}
+				// L'acquisizione dei flussi e' a carico del batch esterno govpay-fdr-batch:
+				// l'operazione ne attiva l'esecuzione.
+				esitoOperazione = it.govpay.core.utils.batch.BatchUtils.attivaBatchFdr(ctx, leggiOperazioneDTO.isForzaEsecuzione());
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(CHIUSURA_RPT_SCADUTE)){
 				esitoOperazione = it.govpay.core.business.Operazioni.chiusuraRptScadute(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RESET_CACHE_ANAGRAFICA)){

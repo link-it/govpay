@@ -174,4 +174,11 @@ ALTER TABLE rendicontazioni MODIFY esegui_recupero_rt DEFAULT 1;
 ALTER TABLE rendicontazioni MODIFY notifica_inviata DEFAULT 0;
 ALTER TABLE versamenti MODIFY send_abilitato DEFAULT NULL;
 
+-- La sonda update-rnd sorvegliava il batch interno di acquisizione dei flussi di
+-- rendicontazione, eliminato con la procedura SOAP: nessuno la aggiorna piu', e
+-- su un'installazione nuova non viene piu' creata. Senza questa DELETE
+-- un'installazione aggiornata se la porterebbe dietro, ferma all'ultimo
+-- aggiornamento e segnalata in errore dal cruscotto.
+DELETE FROM sonde WHERE nome = 'update-rnd';
+
 COMMIT;

@@ -10,7 +10,6 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
-	<b:bean id="batchAcquisizioneRendicontazioni" class="it.govpay.core.utils.tasks.AcquisizioneRendicontazioni"/>
 	<b:bean id="batchSpedizioneNotifiche" class="it.govpay.core.utils.tasks.SpedizioneNotifiche"/>
 	<b:bean id="batchSpedizioneNotificheCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheCheck"/>
 	<b:bean id="batchSpedizioneNotificheAppIo" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIo"/>
@@ -35,8 +34,6 @@
 	<b:bean id="batchChiusuraRptScadute" class="it.govpay.core.utils.tasks.ChiusuraRptScadute"/>
 	
 	<task:scheduled-tasks scheduler="myScheduler">
-		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
-		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
         <!-- Notifiche spedite tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
         <!-- Check Notifiche da spedire viene eseguito tutti i giorni ogni 5 secondi -->

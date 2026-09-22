@@ -88,9 +88,7 @@ public class EventoContext implements Serializable {
 		NODOCHIEDICOPIART("nodoChiediCopiaRT"), 
 		NODOCHIEDILISTAPENDENTIRPT("nodoChiediListaPendentiRPT"), 
 		NODOINVIARICHIESTASTORNO("nodoInviaRichiestaStorno"), 
-		NODOINVIARISPOSTAREVOCA("nodoInviaRispostaRevoca"), 
-		NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE("nodoChiediElencoFlussiRendicontazione"), 
-		NODOCHIEDIFLUSSORENDICONTAZIONE("nodoChiediFlussoRendicontazione");
+		NODOINVIARISPOSTAREVOCA("nodoInviaRispostaRevoca");
 
 		private String value;
 

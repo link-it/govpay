@@ -57,8 +57,6 @@ dove *id* può assumere i seguenti valori:
 +---------------------------------+-------------------------------------------------+
 | caricamento-tracciati           | Stato caricamento tracciati pendenze            |
 +---------------------------------+-------------------------------------------------+
-| update-rnd                      | Acquisizione rendicontazioni                    |
-+---------------------------------+-------------------------------------------------+
 | gestione-promemoria             | Stato elaborazione promemoria                   |
 +---------------------------------+-------------------------------------------------+
 | update-ntfy-appio               | Stato spedizione notifiche AppIO                |

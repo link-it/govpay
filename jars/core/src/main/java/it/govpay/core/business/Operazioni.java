@@ -51,7 +51,6 @@ import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.core.business.Rendicontazioni.DownloadRendicontazioniResponse;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
@@ -81,7 +80,6 @@ public class Operazioni{
 	public static final String ERROR_MSG_INTERRUPTED_0 = "Interrupted: {0}";
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String CHECK_DB = "check-db";
-	public static final String RND = "update-rnd";
 	public static final String BATCH_ACA = "batch_aca";
 	public static final String BATCH_FDR = "batch_fdr";
 	public static final String BATCH_IBAN = "batch_iban";
@@ -232,28 +230,6 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
 		return eseguiElaborazioneChiusuraRptScadute;
-	}
-
-	public static String acquisizioneRendicontazioni(IContext ctx){
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		log.info("Eseguo Batch Acquisizione rendicontazioni");
-		try {
-			if(BatchManager.startEsecuzione(configWrapper, RND)) {
-				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni().downloadRendicontazioni(ctx);
-				aggiornaSondaOK(configWrapper, RND);
-				log.info("Batch Acquisizione rendicontazioni completato: {}",  downloadRendicontazioni.getDescrizioneEsito());
-				return downloadRendicontazioni.getDescrizioneEsito();
-			} else {
-				log.info("Batch Acquisizione rendicontazioni: operazione in corso su altro nodo. Richiesta interrotta.");
-				return OPERAZIONE_IN_CORSO_SU_ALTRO_NODO_RICHIESTA_INTERROTTA;
-			}
-		} catch (Exception e) {
-			log.error("Acquisizione rendicontazioni fallita", e);
-			aggiornaSondaKO(configWrapper, RND, e);
-			return "Acquisizione fallita#" + e;
-		} finally {
-			BatchManager.stopEsecuzione(configWrapper, RND);
-		}
 	}
 
 	public static String chiusuraRptScadute(IContext ctx){

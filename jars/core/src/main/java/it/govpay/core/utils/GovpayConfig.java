@@ -189,7 +189,6 @@ public class GovpayConfig {
 
 	private Integer numeroGiorniValiditaPendenza;
 
-	private boolean batchAcquisizioneRendicontazioni;
 	private boolean batchChiusuraRPTScadute;
 	private boolean batchElaborazioneRiconciliazioni;
 	private boolean batchGestionePromemoria;
@@ -197,15 +196,11 @@ public class GovpayConfig {
 	private boolean batchSpedizioneNotificheAppIO;
 	private boolean batchSpedizionePromemoria;
 
-	private boolean batchAcquisizioneRendicontazioniEsterno;
-
 	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
 
 	private boolean controlloPasswordBackwardCompatibilityMD5;
 
 	private Properties risorseCustomBaseURLProperties;
-
-	private boolean verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
 
 	private String batchAcaEndpointUrl;
 	private int batchAcaConnectionTimeout;
@@ -334,7 +329,6 @@ public class GovpayConfig {
 
 		this.keywordsDaSostituireIdentificativiDebitoreAvviso = new ArrayList<>();
 
-		this.batchAcquisizioneRendicontazioni = false;
 		this.batchChiusuraRPTScadute = false;
 		this.batchElaborazioneRiconciliazioni = false;
 		this.batchGestionePromemoria = false;
@@ -342,13 +336,9 @@ public class GovpayConfig {
 		this.batchSpedizioneNotificheAppIO = false;
 		this.batchSpedizionePromemoria = false;
 
-		this.batchAcquisizioneRendicontazioniEsterno = false;
-
 		this.controlloPasswordBackwardCompatibilityMD5 = false;
 
 		this.risorseCustomBaseURLProperties = new Properties();
-
-		this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = false;
 
 		this.batchAcaEndpointUrl = null;
 		this.batchAcaConnectionTimeout = 5000; // 5 secondi
@@ -742,10 +732,6 @@ public class GovpayConfig {
 				}
 			}
 
-			String batchAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.enabled", this.props, false, log);
-			if(batchAcquisizioneRendicontazioniString != null && Boolean.valueOf(batchAcquisizioneRendicontazioniString))
-				this.batchAcquisizioneRendicontazioni = true;
-
 			String batchChiusuraRPTScaduteString = getProperty("it.govpay.batch.chiusuraRptScadute.enabled", this.props, false, log);
 			if(batchChiusuraRPTScaduteString != null && Boolean.valueOf(batchChiusuraRPTScaduteString))
 				this.batchChiusuraRPTScadute = true;
@@ -770,10 +756,6 @@ public class GovpayConfig {
 			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
 				this.batchSpedizionePromemoria = true;
 
-			String batchAcquisizioneRendicontazioniModalitaString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.modalita", this.props, false, log);
-			if(batchAcquisizioneRendicontazioniModalitaString != null && batchAcquisizioneRendicontazioniModalitaString.equalsIgnoreCase("esterno"))
-				this.batchAcquisizioneRendicontazioniEsterno = true;
-
 			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
 			if(StringUtils.isNotEmpty(keywordsS)) {
 				String[] split = keywordsS.split(",");
@@ -788,10 +770,6 @@ public class GovpayConfig {
 
 			Map<String, String> risorseCustomBaseURLProps = getProperties("it.govpay.baseURLRisorsePersonalizzata.",this.props, false, log);
 			this.risorseCustomBaseURLProperties.putAll(risorseCustomBaseURLProps);
-
-			String verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.verificaPendenzaMandatoria.enabled", this.props, false, log);
-			if(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString != null && Boolean.valueOf(verificaPendenzaMandatoriaInAcquisizioneRendicontazioniString))
-				this.verificaPendenzaMandatoriaInAcquisizioneRendicontazioni = true;
 
 			// Configurazione endpoint batch ACA esterno
 			String batchAcaEndpointUrlString = getProperty("it.govpay.batch.aca.endpoint.url", this.props, false, log);
@@ -1472,10 +1450,6 @@ public class GovpayConfig {
 		return autenticazioneApiKeyNomeHeaderApiIdFruizione;
 	}
 
-	public boolean isBatchAcquisizioneRendicontazioni() {
-		return batchAcquisizioneRendicontazioni;
-	}
-
 	public boolean isBatchChiusuraRPTScadute() {
 		return batchChiusuraRPTScadute;
 	}
@@ -1500,10 +1474,6 @@ public class GovpayConfig {
 		return batchSpedizionePromemoria;
 	}
 
-	public boolean isBatchAcquisizioneRendicontazioniEsterno() {
-		return batchAcquisizioneRendicontazioniEsterno;
-	}
-
 	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
 		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
@@ -1514,10 +1484,6 @@ public class GovpayConfig {
 
 	public Properties getRisorseCustomBaseURLProperties() {
 		return risorseCustomBaseURLProperties;
-	}
-
-	public boolean isVerificaPendenzaMandatoriaInAcquisizioneRendicontazioni() {
-		return verificaPendenzaMandatoriaInAcquisizioneRendicontazioni;
 	}
 
 	public String getBatchAcaEndpointUrl() {

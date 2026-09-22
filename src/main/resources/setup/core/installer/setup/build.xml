@@ -113,10 +113,8 @@
        def batchFdr = properties['antinstaller_batch_fdr']
        if (batchFdr) {
           def fdrUrl = properties['antinstaller_batch_fdr_url']
-          project.setUserProperty('it.govpay.batch.acquisizioneRendicontazioni.modalita','esterno')
           project.setUserProperty('it.govpay.batch.fdr.endpoint.url', fdrUrl)
        } else {
-          project.setUserProperty('it.govpay.batch.acquisizioneRendicontazioni.modalita','interno')
           project.setUserProperty('it.govpay.batch.fdr.endpoint.url','')
        }
 
