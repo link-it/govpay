@@ -30,11 +30,23 @@ dati:
      - Metadati delle esecuzioni dei batch, gestiti da Spring Batch.
      - 90 giorni
 
+Sezioni
+-------
+
+Ogni area e' uno script SQL a se', in ``sql/<dialetto>/svecchiamento/`` della
+distribuzione dei sorgenti: ``tracciati.sql``, ``eventi.sql`` e
+``spring-batch.sql``. Ciascuno porta dentro il proprio parametro di retention ed
+e' eseguibile da solo con il client del database.
+
+La divisione serve perche' ogni installazione ha cose diverse da svecchiare: si
+compongono le sezioni volute, invece di commentare a mano parti di un unico
+script.
+
 Composizione ed esecuzione
 --------------------------
 
-La distribuzione dei sorgenti contiene uno script che compone le tre parti in un
-unico script SQL per il dialetto indicato e lo esegue:
+Lo script ``svecchiamento-db.sh``, nella stessa distribuzione, compone le sezioni
+richieste con la retention passata da fuori e le esegue:
 
 .. code-block:: bash
 
@@ -44,22 +56,32 @@ unico script SQL per il dialetto indicato e lo esegue:
 
 La password si passa con ``--password`` oppure, preferibilmente, con la variabile
 d'ambiente ``GOVPAY_DB_PASSWORD``; sono riconosciute anche le altre variabili di
-connessione usate dai container, cioè ``GOVPAY_DB_SERVER`` nella forma
+connessione usate dai container, cioe' ``GOVPAY_DB_SERVER`` nella forma
 ``host[:porta]``, ``GOVPAY_DB_NAME`` e ``GOVPAY_DB_USER``.
 
 Prima di procedere lo script chiede conferma indicando utente, host e database.
-Con ``-y`` la conferma si salta, ed è la forma da usare in un'esecuzione
-pianificata; senza terminale la conferma non è possibile e lo script si
+Con ``-y`` la conferma si salta, ed e' la forma da usare in un'esecuzione
+pianificata; senza terminale la conferma non e' possibile e lo script si
 interrompe, per non cancellare dati in un contesto in cui nessuno legge
 l'esito.
 
 Con ``--solo-sql`` lo script viene composto e **non** eseguito, e in quel caso i
-parametri di connessione non servono. È la forma da preferire la prima volta: il
-file prodotto in ``target/svecchiamento-sql/`` può essere riletto, archiviato e
+parametri di connessione non servono. E' la forma da preferire la prima volta: il
+file prodotto in ``target/svecchiamento-sql/`` puo' essere riletto, archiviato e
 applicato a parte.
 
-Scelta delle parti e della retention
-------------------------------------
+Scelta delle sezioni e della retention
+--------------------------------------
+
+Con ``--sezioni`` si esegue un sottoinsieme, separato da virgola:
+
+.. code-block:: bash
+
+   ./svecchiamento-db.sh postgresql --sezioni eventi,spring-batch --solo-sql
+
+L'ordine di esecuzione resta sempre tracciati, eventi, spring-batch, comunque lo
+si scriva: i tracciati vanno prima del giornale, perche' la loro cancellazione
+porta via anche gli eventi collegati a prescindere dall'eta' di quegli eventi.
 
 Le retention predefinite sono quelle della tabella sopra e si sovrascrivono una
 per una:
@@ -68,21 +90,6 @@ per una:
 
    ./svecchiamento-db.sh postgresql --solo-sql \
        --retention-tracciati 30 --retention-eventi 365 --retention-batch 180
-
-Per i metadati dei batch, in alternativa alla retention si può indicare una data
-di taglio esplicita con ``--cutoff-batch 2026-06-30``.
-
-Si può svecchiare una parte sola con ``--senza-core``, che lascia i soli metadati
-dei batch, oppure con ``--senza-batch``, che lascia le sole tabelle applicative.
-
-.. code-block:: bash
-
-   ./svecchiamento-db.sh postgresql --senza-core --retention-batch 90
-
-Gli script di svecchiamento dei metadati dei batch non fanno parte del core:
-sono cercati fra quelli che accompagnano i componenti del rilascio, dove
-arrivano insieme ai binari dei batch. Con ``--sql-batch <dir>`` si indica una
-directory già disponibile, per esempio ``/opt/sql/cleanup`` di un'immagine.
 
 Cosa viene cancellato, e quando eseguirlo
 -----------------------------------------

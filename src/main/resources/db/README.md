@@ -390,89 +390,89 @@ qui che l'installazione sia davvero a quella versione.
 
 ## Svecchiamento del database
 
-`svecchiamento-db.sh` compone e poi esegue lo svecchiamento completo di
-un'installazione:
+Lo svecchiamento e' diviso in **sezioni**, una per area di dati, e ciascuna e' uno
+script SQL a se' in `sql/<dialetto>/svecchiamento/`, accanto a `patch/`:
+
+| Sezione | File | Cosa elimina | Retention di default |
+|---|---|---|---|
+| `tracciati` | `tracciati.sql` | tracciati completati, con operazioni ed eventi collegati | 7 giorni |
+| `eventi` | `eventi.sql` | il giornale degli eventi, per eta' | 90 giorni |
+| `spring-batch` | `spring-batch.sql` | i metadati delle esecuzioni dei batch | 90 giorni |
+
+La divisione non e' estetica: ogni installazione ha cose diverse da svecchiare, e
+comporre le sezioni volute e' piu' onesto che avere un unico script da commentare
+a mano. Ogni file e' eseguibile da solo con il client del database, e porta il
+proprio parametro di retention scritto dentro.
+
+`svecchiamento-db.sh` compone le sezioni richieste, con la retention passata da
+fuori, e le esegue:
 
 ```console
 ./svecchiamento-db.sh <tipoDB> [opzioni]
 ./svecchiamento-db.sh postgresql --host localhost --db govpay --user govpay
-./svecchiamento-db.sh postgresql --solo-sql --retention-eventi 30
+./svecchiamento-db.sh postgresql --sezioni eventi --retention-eventi 30 --solo-sql
 ```
 
-Sta allo svecchiamento come `collect-release-sql.sh` sta all'installazione: un
-solo script per un solo database, perche' tabelle applicative, metadati di
-Spring Batch e componenti stanno tutti nella stessa base dati.
-
-Le parti sono tre:
-
-1. le **tabelle applicative del core**, da `sql/<dialetto>/svecchiamento.sql`:
-   tracciati con le operazioni e gli eventi collegati, e il giornale degli
-   eventi per eta';
-2. i **metadati di Spring Batch**, dagli script di `govpay-common`;
-3. lo svecchiamento dei **componenti** del rilascio, con `--con-componenti`.
-
-Con `--senza-core` o `--senza-batch` si esegue una parte sola; con `--solo-sql`
-lo script viene composto e non eseguito, e in quel caso i parametri di
-connessione non servono.
-
-### Dove stanno gli script dei metadati Spring Batch
-
-Non sono copiati in questo repository: la sorgente unica e' `govpay-common`, da
-cui il profilo `dist` li porta in `sql/cleanup` dentro `sql.zip` e quindi in
-`/opt/sql/cleanup` nelle immagini dei batch. Sono cercati, in quest'ordine:
-
-1. la directory indicata con `--sql-batch`, o `GOVPAY_COMMON_SQL_DIR`;
-2. lo SQL dei componenti, quando si usa `--con-componenti`: e' la copia che
-   accompagna i binari del rilascio, quindi la piu' fedele;
-3. una copia di lavoro di `govpay-common` accanto a questa del core;
-4. `/opt/sql/cleanup`.
-
-La provenienza finisce nell'intestazione dello script composto e nel riepilogo a
-schermo, e per la copia di lavoro e' detto che non e' una versione rilasciata.
+Con `--sezioni` si sceglie un sottoinsieme, separato da virgola. L'ordine resta
+sempre quello della tabella qui sopra, comunque lo si scriva: i tracciati vanno
+prima del giornale, perche' la loro cancellazione porta via anche gli eventi
+collegati a prescindere dall'eta' di quegli eventi. Con `--solo-sql` lo script
+viene composto e non eseguito, e in quel caso i parametri di connessione non
+servono.
 
 ### Retention
 
-Per i metadati batch la retention e' un parametro di questo script, perche' i
-suoi script SQL prendono una data di taglio dall'esterno: `--retention-batch`
-(default 90 giorni) oppure `--cutoff-batch` con una data esplicita.
-
-Per il core il default e' quello scritto in `sql/<dialetto>/svecchiamento.sql` e
-non e' duplicato qui: senza `--retention-tracciati` e `--retention-eventi` gli
-script del core passano invariati, e lo script si limita a leggere il valore per
-riportarlo. Con le opzioni, la riga del parametro viene sostituita nell'idioma
-del dialetto — `\set`, `DEFINE`, `SET @`, `DECLARE @`, e su hsql i letterali
-dentro le `DELETE`, perche' HSQLDB non ha variabili negli script.
+Il default di ogni sezione sta nel suo script e non e' duplicato altrove: senza
+`--retention-<sezione>` lo script passa invariato, e il compositore si limita a
+leggere il valore per riportarlo. Con l'opzione, la riga del parametro viene
+sostituita nell'idioma del dialetto — `\set`, `DEFINE`, `SET @`, `DECLARE @`, e
+su hsql i letterali dentro le `DELETE`, perche' HSQLDB non ha variabili negli
+script.
 
 La sostituzione e' verificata due volte: che la riga da sostituire ci sia, e che
 il valore chiesto compaia nel risultato. Serve perche' il caso peggiore non e'
-l'errore ma il silenzio: uno script del core che cambiasse nome o idioma del
+l'errore ma il silenzio: uno script di sezione che cambiasse nome o idioma del
 parametro, senza il controllo, produrrebbe uno svecchiamento che si esegue
 regolarmente ignorando l'opzione.
+
+### I metadati Spring Batch
+
+`spring-batch.sql` replica il corpo degli script di svecchiamento dei metadati di
+`govpay-common`, che restano la versione di riferimento: la' la soglia e' una
+data assoluta passata dall'esterno, qui e' una retention in giorni come per le
+altre sezioni. E' una duplicazione consapevole, e il prezzo per averla e' che
+**se cambia la struttura delle tabelle `BATCH_*` vanno allineati**: la nota sta
+in testa a ciascuno dei cinque file.
+
+Il guadagno e' che il compositore non dipende piu' da docker, dalla rete o da una
+copia di `govpay-common` per svecchiare: tutto quello che serve e' nel
+repository, accanto alle patch.
 
 ### Client e transazioni
 
 Il client e' quello nativo del dialetto — `psql`, `sqlplus`, `mysql`, `sqlcmd`,
-SqlTool su hsql — e non uno generico via JDBC: gli script del core usano i
-comandi del client per i parametri e per i messaggi di avanzamento, che nessun
-client generico esegue. Ciascuno e' invocato in modo da uscire con codice non
-nullo al primo errore: `ON_ERROR_STOP` su psql, `-b` su sqlcmd,
+SqlTool su hsql — e non uno generico via JDBC: gli script usano i comandi del
+client per i parametri e per i messaggi di avanzamento, che nessun client
+generico esegue. Ciascuno e' invocato in modo da uscire con codice non nullo al
+primo errore: `ON_ERROR_STOP` su psql, `-b` su sqlcmd,
 `WHENEVER SQLERROR EXIT SQL.SQLCODE` in testa allo script su sqlplus.
 
-Ogni sezione e' una transazione a se': se una fallisce, quelle prima di essa
-sono committate. Lo script lo dice a chiare lettere in caso di errore, e la via
-di ripristino e' correggere la causa e rieseguire, perche' lo svecchiamento
-cancella per data e non per stato, ed e' quindi ripetibile.
+Ogni sezione e' una transazione a se': se una fallisce, quelle prima di essa sono
+committate. Lo script lo dice a chiare lettere in caso di errore, e la via di
+ripristino e' correggere la causa e rieseguire, perche' lo svecchiamento cancella
+per data e non per stato, ed e' quindi ripetibile.
 
-Su hsql la transazione della parte batch non viene aperta: HSQLDB non accetta
-`START TRANSACTION` nudo, vuole `ISOLATION LEVEL` o `READ WRITE`, e SqlTool
-lavora comunque con autocommit disattivato.
+Su sqlserver le sezioni sono separate da `GO`: ciascuna dichiara le proprie
+variabili, e due `DECLARE` della stessa variabile nello stesso batch sarebbero un
+errore. Su hsql la transazione della sezione batch non viene aperta con
+`START TRANSACTION`, che HSQLDB non accetta nella forma nuda.
 
 ### Cosa cancella, e quando non eseguirlo
 
 Sui metadati Spring Batch non c'e' filtro sullo stato delle esecuzioni: e' una
 scelta di quegli script, serve a bonificare le esecuzioni rimaste appese. Ne
-segue che un job **in corso** la cui esecuzione e' anteriore alla data di taglio
-viene cancellato e Spring Batch ne perde traccia: va eseguito a batch fermi.
+segue che un job **in corso** la cui esecuzione e' anteriore alla soglia viene
+cancellato e Spring Batch ne perde traccia: va eseguito a batch fermi.
 
 Prima di eseguire, lo script chiede conferma indicando utente, host e database;
 `-y` la salta, e senza terminale la conferma non e' possibile e lo script si
