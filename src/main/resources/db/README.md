@@ -361,11 +361,19 @@ vengono create da zero nella forma della `spring-batch.version` del bom.
 
 Un intervallo vuoto o rovesciato e' quasi sempre un errore di invocazione, e
 proseguire produrrebbe uno script vuoto che sembra valido: lo script si ferma se
-`versioneDA` non precede `versioneA`, e se per `versioneA` non esiste una patch
-nel dialetto indicato, elencando in quel caso le versioni disponibili. Se invece
-e' `versioneDA` a non avere una patch, l'intervallo viene comunque calcolato per
-confronto di versione ma con un avviso, perche' non e' verificabile da qui che
-l'installazione sia davvero a quella versione.
+`versioneDA` non precede `versioneA`, e se fra le due non cade alcuna patch,
+elencando in quel caso le versioni disponibili.
+
+Che un estremo non abbia una patch invece **non** e' un errore, e vale allo
+stesso modo per la partenza e per la destinazione: una versione puo' non avere
+una patch semplicemente perche' quel rilascio non ha toccato la base dati. La
+3.9.3 e' un caso reale. L'intervallo si calcola comunque per confronto di
+versione, quindi l'ultima patch inclusa e' la piu' alta che non superi la
+destinazione, e lo script lo dice a schermo e nell'intestazione dello script
+prodotto, insieme all'elenco delle versioni disponibili.
+
+Per la sola `versioneDA` l'avviso e' anche un promemoria: non e' verificabile da
+qui che l'installazione sia davvero a quella versione.
 
 ## Svecchiamento del database
 

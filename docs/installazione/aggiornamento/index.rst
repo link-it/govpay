@@ -62,6 +62,14 @@ comprese fra X escluso e A incluso: chi si trova alla 3.8.2 ha già applicato
 ``3.8.2.sql``. L'ordinamento è per versione e non alfabetico, perché la 3.10.0
 segue e non precede la 3.9.
 
+Non tutte le versioni hanno una patch: un rilascio che non ha modificato la base
+dati non ne ha, e la 3.9.3 è un caso reale. Indicarne una come estremo non è
+quindi un errore, né in partenza né in destinazione: l'intervallo viene calcolato
+per confronto di versione e l'ultima patch inclusa è la più alta che non superi
+la destinazione. Lo script lo segnala a schermo e nell'intestazione del file
+prodotto. Si ferma invece se fra le due versioni non cade alcuna patch, o se la
+versione di partenza non precede quella di destinazione.
+
 Dopo quelle del core, lo script accoda le eventuali patch dei componenti
 aggiuntivi del rilascio, lette dallo SQL che accompagna ciascun componente.
 Questa parte richiede accesso alla rete e a Docker; con ``--senza-componenti`` si

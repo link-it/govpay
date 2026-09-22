@@ -171,10 +171,23 @@ echo "=============================================="
 ver_lt "${VERSIONE_DA}" "${VERSIONE_A}" \
   || errore "versioneDA (${VERSIONE_DA}) deve precedere versioneA (${VERSIONE_A})"
 
+[[ ${#DA_APPLICARE[@]} -gt 0 ]] \
+  || errore "nessuna patch da applicare fra ${VERSIONE_DA} e ${VERSIONE_A} per ${TIPO_DB}. Versioni disponibili: ${VERSIONI_ORDINATE[*]}"
+
+# I due estremi sono trattati allo stesso modo, e per la stessa ragione: una
+# versione puo' non avere una patch perche' quel rilascio non ha toccato il
+# database, non perche' sia stata sbagliata. Vale sia per la partenza sia per la
+# destinazione, per esempio la 3.9.3, che esiste come rilascio ma non ha patch.
+# L'intervallo si calcola comunque per confronto di versione, quindi l'ultima
+# patch inclusa e' la piu' alta che non superi la destinazione.
 esiste_a=false
 for v in "${VERSIONI_ORDINATE[@]}"; do [[ "${v}" == "${VERSIONE_A}" ]] && esiste_a=true; done
-[[ "${esiste_a}" == true ]] \
-  || errore "per la versione di destinazione ${VERSIONE_A} non esiste ${PATCH_DIR#${BASEDIR}/}/${VERSIONE_A}.sql. Versioni disponibili: ${VERSIONI_ORDINATE[*]}"
+if [[ "${esiste_a}" != true ]]; then
+  echo
+  echo "  ATTENZIONE: per la versione di destinazione ${VERSIONE_A} non esiste una patch in questo dialetto." >&2
+  echo "  Sono incluse le patch fino alla ${DA_APPLICARE[${#DA_APPLICARE[@]}-1]}, la piu' alta che non la superi." >&2
+  echo "  Versioni disponibili: ${VERSIONI_ORDINATE[*]}" >&2
+fi
 
 esiste_da=false
 for v in "${VERSIONI_ORDINATE[@]}"; do [[ "${v}" == "${VERSIONE_DA}" ]] && esiste_da=true; done
@@ -184,9 +197,6 @@ if [[ "${esiste_da}" != true ]]; then
   echo "  L'intervallo e' stato comunque calcolato per confronto di versione, ma verificare che" >&2
   echo "  l'installazione sia effettivamente a quella versione." >&2
 fi
-
-[[ ${#DA_APPLICARE[@]} -gt 0 ]] \
-  || errore "nessuna patch da applicare fra ${VERSIONE_DA} e ${VERSIONE_A} per ${TIPO_DB}"
 
 echo
 echo "-- Patch del core, nell'ordine di applicazione"
@@ -364,6 +374,12 @@ mkdir -p "${OUTDIR}"
   echo "--"
   echo "-- Patch del core incluse:"
   for v in "${DA_APPLICARE[@]}"; do echo "--   ${v}.sql"; done
+  if [[ "${esiste_a}" != true ]]; then
+    echo "--"
+    echo "-- Per la ${VERSIONE_A} non esiste una patch in questo dialetto: l'ultima inclusa e'"
+    echo "-- la ${DA_APPLICARE[${#DA_APPLICARE[@]}-1]}, la piu' alta che non la superi. Non e' una mancanza dello script,"
+    echo "-- e' che quel rilascio non ha modificato la base dati."
+  fi
   if [[ ${#COMP_PATCH[@]} -gt 0 ]]; then
     echo "--"
     echo "-- Patch dei componenti incluse:"
