@@ -41,6 +41,9 @@ function() {
 			govpay_api_ragioneria_url : 'http://localhost:8080/govpay-api-ragioneria',
 			govpay_api_pagopa_url : 'http://localhost:8080/govpay-api-pagopa',
 			govpay_api_jppapdp_url : 'http://localhost:8080/govpay-api-jppapdp',
+			// console-api espone la v2 delle API di backoffice. Non e' dispiegata
+			// nell'application server: e' un servizio a se', con un context radice.
+			govpay_console_api_url : 'http://localhost:10008',
 			smtpsym_url: 'http://localhost:8025/api',
 			govpay_operazioni_baseurl: 'http://localhost:8080/govpay-api-backoffice/rs/basic/v1/operazioni',
 			govpayDbConfig: {
@@ -65,6 +68,8 @@ function() {
 		config.govpay_api_pagopa_url = 'http://localhost:8080/govpay/frontend/api/pagopa';
 		config.govpay_api_jppapdp_url = 'http://localhost:8080/govpay/backend/api/jppapdp';
 		config.govpay_operazioni_baseurl = 'http://localhost:8080/govpay/backend/api/backoffice/rs/basic/v1/operazioni';
+		// govpay_console_api_url non cambia: console-api non e' dispiegata
+		// nell'application server, gira come servizio a se' anche con wildfly.
 	}
 
 	return config;

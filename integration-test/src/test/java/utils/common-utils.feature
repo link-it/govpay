@@ -23,6 +23,13 @@ Scenario:
     """
 		function(param) {
 			if(param.api == 'backoffice') {
+				// La v2 delle API di backoffice e' servita da console-api, che e' un
+				// servizio a se' e non espone il prefisso /rs/<autenticazione>/<versione>.
+				// L'autenticazione e' basic, senza sessione: le credenziali vanno su
+				// ogni richiesta, e in quel caso il CSRF non e' richiesto.
+				if(param.versione == 'v2') {
+					return govpay_console_api_url;
+				}
 				return govpay_api_backoffice_url + '/rs/' + param.autenticazione + '/' + param.versione;
 			}
 
