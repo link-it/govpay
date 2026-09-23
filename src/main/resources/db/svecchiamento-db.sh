@@ -27,10 +27,13 @@ REPO_ROOT="$(cd "${BASEDIR}/../../../.." && pwd)"
 # Dialetti canonici, secondo src/main/resources/db/README.md
 DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
 
-# Sezioni, nell'ordine in cui vanno eseguite. I tracciati vengono prima del
-# giornale perche' la loro cancellazione porta via anche gli eventi collegati,
-# a prescindere dall'eta' di quegli eventi.
-SEZIONI_NOTE=(tracciati eventi spring-batch)
+# Sezioni, nell'ordine in cui vanno eseguite. Il giornale viene per primo perche'
+# e' la tabella piu' grande: sfoltirlo rende meno costose le DELETE della sezione
+# tracciati, che su eventi passano da una sottoquery.
+# L'esito non dipende dall'ordine: cio' che viene cancellato e' l'unione dei due
+# criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati
+# scaduti, e l'unione non cambia a seconda di quale si applica prima.
+SEZIONI_NOTE=(eventi tracciati spring-batch)
 
 # Nome del parametro di retention dentro ciascuno script. Non coincide sempre
 # con il nome della sezione: spring-batch non e' un identificatore SQL.

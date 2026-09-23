@@ -6,8 +6,11 @@
 -- tabella referenzia eventi, quindi la cancellazione non e' vincolata da chiavi
 -- esterne.
 --
--- Se si esegue anche lo svecchiamento dei tracciati, farlo prima: elimina gli
--- eventi collegati ai tracciati scaduti a prescindere dalla loro eta'.
+-- Questa sezione va per prima: eventi e' la tabella piu' grande, e sfoltirla
+-- rende meno costose le DELETE della sezione tracciati, che su eventi passano da
+-- una sottoquery. Gli eventi collegati a un tracciato scaduto ma piu' recenti
+-- della retention non vengono toccati qui: li elimina quella sezione, insieme al
+-- tracciato che li referenzia.
 --
 -- Uso: sqlplus utente/password@host:porta/servizio @eventi.sql
 --

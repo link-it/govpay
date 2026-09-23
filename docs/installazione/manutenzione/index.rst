@@ -19,13 +19,13 @@ dati:
    * - Tabelle
      - Contenuto
      - Retention predefinita
+   * - ``eventi``
+     - Giornale degli eventi. È la tabella che cresce di più.
+     - 90 giorni
    * - ``tracciati``, ``operazioni``
      - Tracciati di caricamento e annullamento delle pendenze, con le operazioni
        che li compongono e gli eventi a essi collegati.
      - 7 giorni
-   * - ``eventi``
-     - Giornale degli eventi. È la tabella che cresce di più.
-     - 90 giorni
    * - ``BATCH_*``
      - Metadati delle esecuzioni dei batch, gestiti da Spring Batch.
      - 90 giorni
@@ -79,9 +79,11 @@ Con ``--sezioni`` si esegue un sottoinsieme, separato da virgola:
 
    ./svecchiamento-db.sh postgresql --sezioni eventi,spring-batch --solo-sql
 
-L'ordine di esecuzione resta sempre tracciati, eventi, spring-batch, comunque lo
-si scriva: i tracciati vanno prima del giornale, perche' la loro cancellazione
-porta via anche gli eventi collegati a prescindere dall'eta' di quegli eventi.
+L'ordine di esecuzione resta sempre eventi, tracciati, spring-batch, comunque lo
+si scriva: il giornale va per primo perche' è la tabella più grande, e sfoltirlo
+rende meno costose le ``DELETE`` della sezione tracciati, che su ``eventi``
+passano da una sottoquery. L'esito non dipende dall'ordine, perché ciò che viene
+cancellato è l'unione dei due criteri.
 
 Le retention predefinite sono quelle della tabella sopra e si sovrascrivono una
 per una:

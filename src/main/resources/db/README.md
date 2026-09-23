@@ -395,8 +395,8 @@ script SQL a se' in `sql/<dialetto>/svecchiamento/`, accanto a `patch/`:
 
 | Sezione | File | Cosa elimina | Retention di default |
 |---|---|---|---|
-| `tracciati` | `tracciati.sql` | tracciati completati, con operazioni ed eventi collegati | 7 giorni |
 | `eventi` | `eventi.sql` | il giornale degli eventi, per eta' | 90 giorni |
+| `tracciati` | `tracciati.sql` | tracciati completati, con operazioni ed eventi collegati | 7 giorni |
 | `spring-batch` | `spring-batch.sql` | i metadati delle esecuzioni dei batch | 90 giorni |
 
 La divisione non e' estetica: ogni installazione ha cose diverse da svecchiare, e
@@ -414,11 +414,16 @@ fuori, e le esegue:
 ```
 
 Con `--sezioni` si sceglie un sottoinsieme, separato da virgola. L'ordine resta
-sempre quello della tabella qui sopra, comunque lo si scriva: i tracciati vanno
-prima del giornale, perche' la loro cancellazione porta via anche gli eventi
-collegati a prescindere dall'eta' di quegli eventi. Con `--solo-sql` lo script
-viene composto e non eseguito, e in quel caso i parametri di connessione non
-servono.
+sempre quello della tabella qui sopra, comunque lo si scriva: il giornale va per
+primo perche' e' la tabella piu' grande, e sfoltirlo rende meno costose le
+`DELETE` della sezione tracciati, che su `eventi` passano da una sottoquery.
+
+L'esito non dipende dall'ordine: cio' che viene cancellato e' l'unione dei due
+criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati
+scaduti, e l'unione non cambia a seconda di quale si applica prima.
+
+Con `--solo-sql` lo script viene composto e non eseguito, e in quel caso i
+parametri di connessione non servono.
 
 ### Retention
 

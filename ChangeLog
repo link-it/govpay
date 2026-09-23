@@ -1,3 +1,11 @@
+2026-09-23  Giuliano Pintori <pintori@link.it>
+
+        * [DB] Svecchiamento: il giornale degli eventi e' la prima sezione.
+        L'ordine era tracciati, eventi, spring-batch, e la motivazione che avevo scritto era sbagliata: sostenevo che i tracciati dovessero venire prima perche' la loro cancellazione porta via anche gli eventi collegati a prescindere dall'eta'. E' vero, ma non implica nulla sull'ordine: cio' che viene cancellato e' l'unione dei due criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati scaduti, e l'unione non cambia a seconda di quale si applica prima.
+        Il criterio giusto e' il costo: eventi e' la tabella piu' grande, e sfoltirla per prima rende meno costose le DELETE della sezione tracciati, che su eventi passano da una sottoquery. L'ordine e' ora eventi, tracciati, spring-batch, e resta fisso comunque lo si scriva su --sezioni.
+        Corretta di conseguenza la nota in testa ai cinque eventi.sql, che diceva di eseguire prima i tracciati, e le due documentazioni.
+        Verifica su PostgreSQL 16 reale, stesso scenario e stesso seme di prima: l'esito e' identico a quello con l'ordine precedente, cioe' il tracciato recente con la sua operazione, gli eventi 2 e 4 e la sola esecuzione batch recente. In particolare l'evento 1, collegato al tracciato scaduto ma piu' recente della retention, viene eliminato lo stesso: la sezione eventi non lo tocca, lo porta via quella tracciati insieme al tracciato che lo referenzia, ed e' il caso che rende osservabile l'indipendenza dall'ordine. Controllato su tutti e cinque i dialetti che le sezioni si compongano nel nuovo ordine.
+
 2026-09-22  Giuliano Pintori <pintori@link.it>
 
         * [DB] Svecchiamento diviso in sezioni, una per area di dati.
