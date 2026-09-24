@@ -1,3 +1,14 @@
+2026-09-24  Giuliano Pintori <pintori@link.it>
+
+        * [Test] Testsuite v2: entrate, tipi pendenza e profilo.
+        Secondo lotto di risorse replicate sulle API v2 di console-api, con lo stesso impianto della prima: entrate, 94 scenari; tipi pendenza, 110; profilo, 10. Tutte verdi al primo colpo, salvo quanto detto sotto.
+        La forma e' quella stabilita con i ruoli e si ripete per ogni risorsa: dettaglio con ETag e 404, collezione con i parametri di paginazione della v2, filtri, creazione con POST e 409 sul duplicato, sostituzione con PUT e If-Match con 428 e 412, modifica parziale con JSON Patch. Le feature dicono in testa di quale feature v1 sono il corrispettivo, e dove non c'e' corrispettivo lo dicono.
+        Su profilo la replica e' parziale ed e' annotato il perche': la v1 esponeva /profilo su quattro catene di autenticazione, public, spid, basic e apikey, e la feature le percorreva tutte; console-api ha un solo endpoint e la modalita' la determina la richiesta. Restano i casi esercitabili con basic senza sessione. Cambia anche l'esito della richiesta anonima, 403 in v1 e 401 in v2, perche' console-api distingue l'assenza di credenziali dal difetto di autorizzazione.
+        Sui tipi pendenza il filtro che in v1 si chiamava nonAssociati era un booleano da usare insieme a idDominio; in v2 nonAssociati e' il codice fiscale del dominio, undici cifre, e vale da solo. Verificato contro il database che restituisca esattamente i cinque tipi non associati al dominio di prova.
+        Un errore mio, per memoria: avevo provato nonAssociati come booleano, avevo visto un 400, avevo poi provato associati, che il servizio accetta e ignora essendo un parametro non dichiarato, e stavo per segnalare come difetto un filtro che non filtra. Il difetto non c'era: il parametro giusto e' un altro e funziona. Il controllo contro il database ha smontato la segnalazione prima che partisse.
+        Nessuna delle risorse ha una DELETE nelle API v2, quindi le feature che creano si riportano allo stato iniziale dal database, con DbUtils. Le utility crea-entrata.feature e crea-tipo-pendenza.feature servono alle feature che la risorsa la vogliono solo presente.
+        Restano da replicare, nell'ordine previsto: operatori, applicazioni, operazioni, ricevute, eventi, intermediari, flussi di rendicontazione, riconciliazioni, tracciati, configurazione, domini e pendenze.
+
 2026-09-23  Giuliano Pintori <pintori@link.it>
 
         * [Test] Testsuite di integrazione sulle API v2 di console-api: impianto e prima risorsa.
