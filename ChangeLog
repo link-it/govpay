@@ -1,3 +1,13 @@
+2026-09-25  Giuliano Pintori <pintori@link.it>
+
+        * [Test] Testsuite v2: flussi di rendicontazione, riconciliazioni e tracciati.
+        Quinto lotto: flussi di rendicontazione, 25 scenari; riconciliazioni, 25; tracciati, 31. Verdi.
+        Cambiano i percorsi. I flussi passano da flussiRendicontazione a flussi-rendicontazione e il dettaglio e' identificato dalla quaterna dominio, flusso, psp e revisione, con la revisione nel percorso e non piu' come parametro di ricerca. Le riconciliazioni in v1 stavano sotto /incassi e in v2 si chiamano come il concetto, e il dominio non e' piu' obbligatorio nella ricerca. I tracciati passano da /tracciati a /pendenze/tracciati, come sotto-risorsa delle pendenze, e hanno quattro sotto-risorse proprie: richiesta, esito, stampe e operazioni.
+        Non ha corrispettivo la lettura in formato XML dei flussi, che in v1 era flussiRendicontazione-get-xml.feature: console-api non espone il tracciato originale del flusso.
+        Trovata una incoerenza dell'API sulle riconciliazioni, ed e' annotata in testa alla feature del dettaglio. L'identificativo nel percorso e' vincolato al pattern ^[0-9A-Za-z]{1,35}$, che non ammette il trattino, mentre gli identificativi che l'elenco restituisce per le riconciliazioni acquisite da un flusso hanno la forma 2026-08-22GovPAYPsp1-0850160128. Il dettaglio di quelle riconciliazioni e' quindi irraggiungibile: la GET risponde 400 sul parametro di percorso, non 200 ne' 404. Gli scenari verificano cio' che si puo' verificare, cioe' il rifiuto dell'identificativo non conforme e il 404 su uno conforme ma inesistente; il dettaglio di una riconciliazione vera e la registrazione con PUT restano da coprire.
+        Sui tracciati sono coperti i rifiuti del caricamento, che non scrivono nulla: corpo vuoto, media type non ammesso con l'elenco dei tre tipi che il server dichiara nel messaggio, e parametro idDominio mancante, che per il CSV e' di query mentre per il JSON sta nel corpo. Il caricamento valido non e' replicato: le dieci feature della v1 sono trentasei scenari che dipendono dalla configurazione dei template CSV dell'ente e producono pendenze vere, ed e' un lavoro a se' che vale la pena fare quando si decide se la testsuite debba caricare tracciati da entrambe le versioni delle API o da una sola.
+        Avanzamento: dodici risorse su sedici, 785 scenari. Restano configurazione, domini e pendenze, piu' gli eventi quando il GDE sara' raggiungibile.
+
 2026-09-24  Giuliano Pintori <pintori@link.it>
 
         * [Test] Testsuite v2: ricevute e intermediari.
