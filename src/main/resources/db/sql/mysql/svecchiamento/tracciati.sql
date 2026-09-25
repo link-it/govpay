@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Svecchiamento TRACCIATI - MySQL/MariaDB
 --
--- Elimina i tracciati completati da piu' di retention_tracciati giorni, con le
+-- Elimina i tracciati completati da piu' di retention_tracciati mesi, con le
 -- operazioni e gli eventi che li referenziano, nell'ordine imposto dalle chiavi
 -- esterne.
 --
@@ -11,12 +11,12 @@
 -- gli si passa --retention-tracciati.
 -- =============================================================================
 
-SET @retention_tracciati = 7;
+SET @retention_tracciati = 1;
 
-SET @end_tracciati = CURRENT_DATE - INTERVAL @retention_tracciati DAY;
+SET @end_tracciati = CURRENT_DATE - INTERVAL @retention_tracciati MONTH;
 
 SELECT '--- Svecchiamento TRACCIATI ---' AS stato;
-SELECT CONCAT('Retention: ', @retention_tracciati, ' giorni') AS stato;
+SELECT CONCAT('Retention: ', @retention_tracciati, ' mesi') AS stato;
 
 START TRANSACTION;
 

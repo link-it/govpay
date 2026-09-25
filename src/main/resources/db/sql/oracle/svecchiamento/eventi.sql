@@ -18,13 +18,13 @@
 -- gli si passa --retention-eventi.
 -- =============================================================================
 
-DEFINE retention_eventi = 90;
+DEFINE retention_eventi = 3;
 
 PROMPT
 PROMPT --- Svecchiamento EVENTI ---
-PROMPT Retention: &retention_eventi giorni
+PROMPT Retention: &retention_eventi mesi
 
 PROMPT Cancellazione eventi...
-DELETE FROM eventi WHERE data < CURRENT_DATE - &retention_eventi;
+DELETE FROM eventi WHERE data < ADD_MONTHS(CURRENT_DATE, -&retention_eventi);
 
 COMMIT;

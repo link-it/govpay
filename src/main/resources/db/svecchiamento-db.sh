@@ -12,8 +12,12 @@
 # script da commentare a mano.
 #
 # Uso tipico:
-#   ./svecchiamento-db.sh postgresql --host localhost --db govpay --user govpay
-#   ./svecchiamento-db.sh postgresql --sezioni eventi --retention-eventi 30 --solo-sql
+#   ./svecchiamento-db.sh postgresql
+#       tutte le sezioni, con la retention di default di ciascuna
+#   ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati
+#       le sezioni indicate, con la retention di default di ciascuna
+#   ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 2 --retention-tracciati 1
+#       le sezioni indicate, con la retention in mesi indicata per sezione
 #
 # ATTENZIONE: cancella dati in modo definitivo. Sui metadati Spring Batch non
 # c'e' filtro sullo stato delle esecuzioni, quindi va eseguito a batch fermi.
@@ -33,15 +37,18 @@ DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
 # L'esito non dipende dall'ordine: cio' che viene cancellato e' l'unione dei due
 # criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati
 # scaduti, e l'unione non cambia a seconda di quale si applica prima.
-SEZIONI_NOTE=(eventi tracciati spring-batch)
+SEZIONI_NOTE=(eventi tracciati spring-batch pendenze_scadute_non_pagate)
 
-# Nome del parametro di retention dentro ciascuno script. Non coincide sempre
-# con il nome della sezione: spring-batch non e' un identificatore SQL.
+# Nome del parametro di retention dentro ciascuno script. E' un dettaglio interno
+# agli script SQL, e non coincide sempre con il nome della sezione: spring-batch
+# non e' un identificatore SQL. Da fuori la retention si indica sempre con il
+# nome della sezione, --retention-<sezione>.
 function parametro_di() {
   case "$1" in
     tracciati)    echo "tracciati" ;;
     eventi)       echo "eventi" ;;
     spring-batch) echo "batch" ;;
+    pendenze_scadute_non_pagate) echo "pendenze" ;;
   esac
 }
 
@@ -74,11 +81,12 @@ Argomenti:
 Sezioni (default: tutte, nell'ordine $(IFS=', '; echo "${SEZIONI_NOTE[*]}")):
   --sezioni <lista>    Sezioni da eseguire, separate da virgola. L'ordine e'
                        sempre quello sopra, indipendentemente da come si scrivono
-  --retention-tracciati <giorni>
-  --retention-eventi <giorni>
-  --retention-batch <giorni>
-                       Sovrascrivono il valore scritto nello script della
-                       sezione. Senza, vale quello
+  --retention-<sezione> <mesi>
+                       Con il nome della sezione come in --sezioni:
+                       $(for n in "${SEZIONI_NOTE[@]}"; do printf '%s' "--retention-${n} "; done)
+                       Retention in mesi della sezione, che deve essere tra
+                       quelle eseguite. Sovrascrive il valore scritto nello
+                       script della sezione; senza, vale quello
 
 Connessione (in alternativa alle variabili d'ambiente indicate):
   --host <host>        Host del database            [GOVPAY_DB_SERVER, host[:porta]]
@@ -120,9 +128,15 @@ TIPO_DB="$1"; shift
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --sezioni)               SEZIONI_RICHIESTE="${2:-}"; shift 2 ;;
-    --retention-tracciati)   RETENTION[tracciati]="${2:-}"; shift 2 ;;
-    --retention-eventi)      RETENTION[eventi]="${2:-}"; shift 2 ;;
-    --retention-batch)       RETENTION[batch]="${2:-}"; shift 2 ;;
+    --retention-*)
+      # La sezione e' quello che segue --retention-: l'opzione si ricava dal
+      # nome, e resta allineata anche quando si aggiunge una sezione.
+      sez="${1#--retention-}"
+      nota_sez=false
+      for n in "${SEZIONI_NOTE[@]}"; do [[ "${n}" == "${sez}" ]] && nota_sez=true; done
+      [[ "${nota_sez}" == true ]] \
+        || errore "opzione sconosciuta: $1. Le retention sono: $(for n in "${SEZIONI_NOTE[@]}"; do printf '%s' "--retention-${n} "; done)"
+      RETENTION[${sez}]="${2:-}"; shift 2 ;;
     --host)                  DB_HOST="${2:-}"; shift 2 ;;
     --port)                  DB_PORT="${2:-}"; shift 2 ;;
     --db)                    DB_NAME="${2:-}"; shift 2 ;;
@@ -176,7 +190,11 @@ done
 
 for p in "${!RETENTION[@]}"; do
   v="${RETENTION[$p]}"
-  [[ "${v}" =~ ^[0-9]+$ ]] || errore "la retention di ${p} deve essere un numero di giorni: '${v}'"
+  eseguita=false
+  for s in "${SEZIONI[@]}"; do [[ "${s}" == "${p}" ]] && eseguita=true; done
+  [[ "${eseguita}" == true ]] \
+    || errore "--retention-${p} indicata, ma la sezione non e' tra quelle da eseguire: aggiungerla a --sezioni"
+  [[ "${v}" =~ ^[0-9]+$ ]] || errore "la retention di ${p} deve essere un numero di mesi: '${v}'"
   [[ "${v}" -gt 0 ]]       || errore "la retention di ${p} deve essere maggiore di zero"
 done
 
@@ -196,7 +214,7 @@ trap 'rm -rf "${WORKDIR}" 2>/dev/null || true' EXIT
 function retention_dal_file() {   # $1 = file, $2 = nome parametro
   local n=""
   if [[ "${TIPO_DB}" == "hsql" ]]; then
-    n="$(grep -m1 -oE 'CURRENT_(DATE|TIMESTAMP) - [0-9]+ DAY' "$1" 2>/dev/null | grep -oE '[0-9]+' || true)"
+    n="$(grep -m1 -oE 'CURRENT_(DATE|TIMESTAMP) - [0-9]+ MONTH' "$1" 2>/dev/null | grep -oE '[0-9]+' || true)"
   else
     # Ancorata alla riga della dichiarazione: il nome del parametro compare
     # anche nei commenti di testa, dove di cifre non ce ne sono.
@@ -206,9 +224,9 @@ function retention_dal_file() {   # $1 = file, $2 = nome parametro
   echo "${n:-?}"
 }
 
-function riga_retention() {   # $1 = nome parametro, $2 = giorni
+function riga_retention() {   # $1 = nome parametro, $2 = mesi
   case "${TIPO_DB}" in
-    postgresql) printf '%s\n' "\\set retention_$1 '\\'$2 days\\''" ;;
+    postgresql) printf '%s\n' "\\set retention_$1 '\\'$2 months\\''" ;;
     oracle)     printf '%s\n' "DEFINE retention_$1 = $2;" ;;
     mysql)      printf '%s\n' "SET @retention_$1 = $2;" ;;
     sqlserver)  printf '%s\n' "DECLARE @retention_$1 INT = $2;" ;;
@@ -219,19 +237,19 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
   local sez="$1"
   local par; par="$(parametro_di "${sez}")"
   local src="${SEZIONI_DIR}/${sez}.sql"
-  local v="${RETENTION[${par}]:-}"
+  local v="${RETENTION[${sez}]:-}"
   local tmp="${WORKDIR}/_${sez}.sql"
   cp "${src}" "${tmp}"
 
   if [[ -n "${v}" ]]; then
     if [[ "${TIPO_DB}" == "hsql" ]]; then
-      # Su hsql i giorni sono letterali dentro le DELETE: HSQLDB non ha
+      # Su hsql i mesi sono letterali dentro le DELETE: HSQLDB non ha
       # variabili negli script.
-      sed -E -i "s/(CURRENT_(DATE|TIMESTAMP)) - [0-9]+ DAY/\\1 - ${v} DAY/g" "${tmp}"
-      grep -q "${v} DAY" "${tmp}" \
+      sed -E -i "s/(CURRENT_(DATE|TIMESTAMP)) - [0-9]+ MONTH/\\1 - ${v} MONTH/g" "${tmp}"
+      grep -q "${v} MONTH" "${tmp}" \
         || errore "sostituzione della retention di ${sez} non riuscita su ${src#${REPO_ROOT}/}: lo script e' cambiato, aggiornare $(basename "$0")"
       # anche il valore citato nel commento di testa, per non lasciarlo mentire
-      sed -E -i "s/(la retention e' il letterale)/\\1/; s/(nelle DELETE qui sotto, )[0-9]+( giorni)/\\1${v}\\2/" "${tmp}"
+      sed -E -i "s/(la retention e' il letterale)/\\1/; s/(nelle DELETE qui sotto, )[0-9]+( mesi)/\\1${v}\\2/" "${tmp}"
     else
       local espressione="^(\\\\set|DEFINE|SET|DECLARE)[[:space:]]*@?retention_${par}([[:space:]]|=)"
       # Il controllo e' che la riga da sostituire ci sia: se lo script di sezione
@@ -255,10 +273,10 @@ OUT="${OUTDIR}/govpay-svecchiamento-${TIPO_DB}.sql"
 declare -A RETENTION_USATA=()
 for s in "${SEZIONI[@]}"; do
   par="$(parametro_di "${s}")"
-  if [[ -n "${RETENTION[${par}]:-}" ]]; then
-    RETENTION_USATA[${s}]="${RETENTION[${par}]}"
+  if [[ -n "${RETENTION[${s}]:-}" ]]; then
+    RETENTION_USATA[${s}]="retention ${RETENTION[${s}]} mesi"
   else
-    RETENTION_USATA[${s}]="$(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") (dal file)"
+    RETENTION_USATA[${s}]="retention $(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") mesi (dal file)"
   fi
 done
 
@@ -271,7 +289,7 @@ done
   echo "--"
   echo "-- Sezioni incluse, nell'ordine di esecuzione:"
   for s in "${SEZIONI[@]}"; do
-    echo "--   ${s}, retention ${RETENTION_USATA[${s}]} giorni, da sql/${TIPO_DB}/svecchiamento/${s}.sql"
+    echo "--   ${s}, ${RETENTION_USATA[${s}]}, da sql/${TIPO_DB}/svecchiamento/${s}.sql"
   done
   if [[ ${#SEZIONI[@]} -lt ${#SEZIONI_NOTE[@]} ]]; then
     echo "--"
@@ -314,7 +332,7 @@ echo "=============================================="
 echo "Svecchiamento del database GovPay"
 echo "  dialetto: ${TIPO_DB}"
 for s in "${SEZIONI[@]}"; do
-  printf '  sezione:  %-13s retention %s giorni\n' "${s}" "${RETENTION_USATA[${s}]}"
+  printf '  sezione:  %-28s %s\n' "${s}" "${RETENTION_USATA[${s}]}"
 done
 echo "  script:   ${OUT}"
 echo "            $(wc -l < "${OUT}") righe"

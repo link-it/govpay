@@ -19,8 +19,8 @@
 -- =============================================================================
 
 -- HSQLDB non ha variabili negli script: la retention e' il letterale
--- nelle DELETE qui sotto, 90 giorni.
+-- nelle DELETE qui sotto, 3 mesi.
 
-DELETE FROM eventi WHERE data < CURRENT_DATE - 90 DAY;
+DELETE FROM eventi WHERE data < CURRENT_DATE - 3 MONTH;
 
 COMMIT;

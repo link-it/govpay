@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Svecchiamento TRACCIATI - SQL Server
 --
--- Elimina i tracciati completati da piu' di retention_tracciati giorni, con le
+-- Elimina i tracciati completati da piu' di retention_tracciati mesi, con le
 -- operazioni e gli eventi che li referenziano, nell'ordine imposto dalle chiavi
 -- esterne.
 --
@@ -11,12 +11,12 @@
 -- gli si passa --retention-tracciati.
 -- =============================================================================
 
-DECLARE @retention_tracciati INT = 7;
+DECLARE @retention_tracciati INT = 1;
 
-DECLARE @end_tracciati DATE = DATEADD(DAY, -@retention_tracciati, GETDATE());
+DECLARE @end_tracciati DATE = DATEADD(MONTH, -@retention_tracciati, GETDATE());
 
 PRINT '--- Svecchiamento TRACCIATI ---';
-PRINT 'Retention: ' + CAST(@retention_tracciati AS VARCHAR) + ' giorni';
+PRINT 'Retention: ' + CAST(@retention_tracciati AS VARCHAR) + ' mesi';
 
 BEGIN TRANSACTION;
 

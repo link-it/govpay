@@ -395,9 +395,10 @@ script SQL a se' in `sql/<dialetto>/svecchiamento/`, accanto a `patch/`:
 
 | Sezione | File | Cosa elimina | Retention di default |
 |---|---|---|---|
-| `eventi` | `eventi.sql` | il giornale degli eventi, per eta' | 90 giorni |
-| `tracciati` | `tracciati.sql` | tracciati completati, con operazioni ed eventi collegati | 7 giorni |
-| `spring-batch` | `spring-batch.sql` | i metadati delle esecuzioni dei batch | 90 giorni |
+| `eventi` | `eventi.sql` | il giornale degli eventi, per eta' | 3 mesi |
+| `tracciati` | `tracciati.sql` | tracciati completati, con operazioni ed eventi collegati | 1 mese |
+| `spring-batch` | `spring-batch.sql` | i metadati delle esecuzioni dei batch | 3 mesi |
+| `pendenze_scadute_non_pagate` | `pendenze_scadute_non_pagate.sql` | pendenze `NON_ESEGUITO` scadute, senza rendicontazioni ne' pagamenti, con voci, RPT, notifiche, promemoria, stampe, allegati e operazioni collegate | 12 mesi |
 
 La divisione non e' estetica: ogni installazione ha cose diverse da svecchiare, e
 comporre le sezioni volute e' piu' onesto che avere un unico script da commentare
@@ -408,10 +409,24 @@ proprio parametro di retention scritto dentro.
 fuori, e le esegue:
 
 ```console
-./svecchiamento-db.sh <tipoDB> [opzioni]
-./svecchiamento-db.sh postgresql --host localhost --db govpay --user govpay
-./svecchiamento-db.sh postgresql --sezioni eventi --retention-eventi 30 --solo-sql
+# tutte le sezioni, con la retention di default di ciascuna
+./svecchiamento-db.sh postgresql
+
+# le sezioni indicate, con la retention di default di ciascuna
+./svecchiamento-db.sh postgresql --sezioni eventi,tracciati
+
+# le sezioni indicate, con la retention in mesi indicata per sezione
+./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 2 --retention-tracciati 1
 ```
+
+Le opzioni di retention hanno la forma `--retention-<sezione>`, con il nome della
+sezione esattamente come in `--sezioni`: `--retention-eventi`,
+`--retention-tracciati`, `--retention-spring-batch` e
+`--retention-pendenze_scadute_non_pagate`, in mesi. Ciascuna vale solo per una
+sezione tra quelle eseguite: indicarla per una sezione esclusa da `--sezioni` e'
+un errore, non un'opzione ignorata. I parametri di connessione (`--host`, `--db`,
+`--user`, `--password`, o le variabili `GOVPAY_DB_*`) si aggiungono a ciascuna
+forma.
 
 Con `--sezioni` si sceglie un sottoinsieme, separato da virgola. L'ordine resta
 sempre quello della tabella qui sopra, comunque lo si scriva: il giornale va per
@@ -444,7 +459,7 @@ regolarmente ignorando l'opzione.
 
 `spring-batch.sql` replica il corpo degli script di svecchiamento dei metadati di
 `govpay-common`, che restano la versione di riferimento: la' la soglia e' una
-data assoluta passata dall'esterno, qui e' una retention in giorni come per le
+data assoluta passata dall'esterno, qui e' una retention in mesi come per le
 altre sezioni. E' una duplicazione consapevole, e il prezzo per averla e' che
 **se cambia la struttura delle tabelle `BATCH_*` vanno allineati**: la nota sta
 in testa a ciascuno dei cinque file.
@@ -452,6 +467,20 @@ in testa a ciascuno dei cinque file.
 Il guadagno e' che il compositore non dipende piu' da docker, dalla rete o da una
 copia di `govpay-common` per svecchiare: tutto quello che serve e' nel
 repository, accanto alle patch.
+
+### Le pendenze scadute non pagate
+
+`pendenze_scadute_non_pagate.sql` elimina le pendenze in stato `NON_ESEGUITO` con
+`data_scadenza` anteriore alla retention. Ne esclude quelle con anche una sola voce
+rendicontata o un pagamento, sulle voci o sulle RPT: le loro righe sono
+referenziate da flussi e incassi, che lo svecchiamento non tocca. I documenti a cui
+le pendenze appartengono restano: un documento raggruppa piu' pendenze, e non e'
+detto che siano tutte scadute.
+
+Su postgresql, mysql e sqlserver gli id vengono raccolti una volta in una tabella
+temporanea; su oracle e hsql il criterio e' ripetuto in ogni `DELETE`, ed e'
+corretto perche' resta stabile durante la cancellazione. Su postgresql la sezione
+chiude con un `VACUUM ANALYZE` delle tabelle svecchiate.
 
 ### Client e transazioni
 

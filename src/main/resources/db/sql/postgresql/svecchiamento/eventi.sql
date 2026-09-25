@@ -18,7 +18,7 @@
 -- gli si passa --retention-eventi.
 -- =============================================================================
 
-\set retention_eventi '\'90 days\''
+\set retention_eventi '\'3 months\''
 
 \set end_eventi 'CURRENT_DATE - interval :retention_eventi '
 

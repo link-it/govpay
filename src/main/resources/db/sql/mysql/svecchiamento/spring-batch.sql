@@ -2,7 +2,7 @@
 -- Svecchiamento METADATI SPRING BATCH - MySQL/MariaDB
 --
 -- Elimina le righe delle esecuzioni dei batch anteriori a retention_batch
--- giorni, nell'ordine imposto dalle chiavi esterne.
+-- mesi, nell'ordine imposto dalle chiavi esterne.
 --
 -- Riferimento temporale: COALESCE(END_TIME, START_TIME, CREATE_TIME). CREATE_TIME
 -- e' NOT NULL nello schema di Spring Batch, quindi ogni esecuzione ha sempre una
@@ -18,21 +18,21 @@
 --
 -- Il corpo replica gli script di svecchiamento dei metadati di govpay-common,
 -- che restano la versione di riferimento: la' la soglia e' una data assoluta
--- passata dall'esterno, qui e' una retention in giorni come per le altre
+-- passata dall'esterno, qui e' una retention in mesi come per le altre
 -- sezioni. Se cambia la struttura delle tabelle BATCH_*, vanno allineati.
 --
 -- Uso: mysql -h <host> -u <utente> -D <database> < spring-batch.sql
 --
 -- Il valore qui sotto e' il default. svecchiamento-db.sh lo sostituisce quando
--- gli si passa --retention-batch.
+-- gli si passa --retention-spring-batch.
 -- =============================================================================
 
-SET @retention_batch = 90;
+SET @retention_batch = 3;
 
-SET @end_batch = CURRENT_TIMESTAMP - INTERVAL @retention_batch DAY;
+SET @end_batch = CURRENT_TIMESTAMP - INTERVAL @retention_batch MONTH;
 
 SELECT '--- Svecchiamento METADATI SPRING BATCH ---' AS stato;
-SELECT CONCAT('Retention: ', @retention_batch, ' giorni') AS stato;
+SELECT CONCAT('Retention: ', @retention_batch, ' mesi') AS stato;
 
 START TRANSACTION;
 

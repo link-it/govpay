@@ -18,12 +18,12 @@
 -- gli si passa --retention-eventi.
 -- =============================================================================
 
-SET @retention_eventi = 90;
+SET @retention_eventi = 3;
 
-SET @end_eventi = CURRENT_DATE - INTERVAL @retention_eventi DAY;
+SET @end_eventi = CURRENT_DATE - INTERVAL @retention_eventi MONTH;
 
 SELECT '--- Svecchiamento EVENTI ---' AS stato;
-SELECT CONCAT('Retention: ', @retention_eventi, ' giorni') AS stato;
+SELECT CONCAT('Retention: ', @retention_eventi, ' mesi') AS stato;
 
 START TRANSACTION;
 

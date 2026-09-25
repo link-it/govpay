@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Svecchiamento TRACCIATI - PostgreSQL
 --
--- Elimina i tracciati completati da piu' di retention_tracciati giorni, con le
+-- Elimina i tracciati completati da piu' di retention_tracciati mesi, con le
 -- operazioni e gli eventi che li referenziano, nell'ordine imposto dalle chiavi
 -- esterne. I large object degli zip di stampa vengono rimossi prima dei
 -- tracciati che li referenziano, altrimenti resterebbero orfani nel catalogo.
@@ -12,7 +12,7 @@
 -- gli si passa --retention-tracciati.
 -- =============================================================================
 
-\set retention_tracciati '\'7 days\''
+\set retention_tracciati '\'1 months\''
 
 \set end_tracciati 'CURRENT_DATE - interval :retention_tracciati '
 

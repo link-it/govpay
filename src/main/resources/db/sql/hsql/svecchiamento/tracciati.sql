@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Svecchiamento TRACCIATI - HSQLDB
 --
--- Elimina i tracciati completati da piu' di retention_tracciati giorni, con le
+-- Elimina i tracciati completati da piu' di retention_tracciati mesi, con le
 -- operazioni e gli eventi che li referenziano, nell'ordine imposto dalle chiavi
 -- esterne.
 --
@@ -12,12 +12,12 @@
 -- =============================================================================
 
 -- HSQLDB non ha variabili negli script: la retention e' il letterale
--- nelle DELETE qui sotto, 7 giorni.
+-- nelle DELETE qui sotto, 1 mesi.
 
-DELETE FROM eventi WHERE id_tracciato IN (SELECT id FROM tracciati WHERE data_completamento < CURRENT_DATE - 7 DAY);
+DELETE FROM eventi WHERE id_tracciato IN (SELECT id FROM tracciati WHERE data_completamento < CURRENT_DATE - 1 MONTH);
 
-DELETE FROM operazioni WHERE id_tracciato IN (SELECT id FROM tracciati WHERE data_completamento < CURRENT_DATE - 7 DAY);
+DELETE FROM operazioni WHERE id_tracciato IN (SELECT id FROM tracciati WHERE data_completamento < CURRENT_DATE - 1 MONTH);
 
-DELETE FROM tracciati WHERE data_completamento < CURRENT_DATE - 7 DAY;
+DELETE FROM tracciati WHERE data_completamento < CURRENT_DATE - 1 MONTH;
 
 COMMIT;
