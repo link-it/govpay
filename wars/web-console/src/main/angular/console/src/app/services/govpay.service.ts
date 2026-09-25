@@ -65,7 +65,6 @@ export class GovpayService {
   protected __getDataService(service: string, query?: string): Observable<any> {
     let url = UtilService.RootByTOA() + service;
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let _params = null;
     if(query) {
@@ -137,7 +136,6 @@ export class GovpayService {
 
   multiGetService(services: string[], properties: any[], content: any) {
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let methods = services.map((service) => {
       let url = UtilService.RootByTOA() + service;
@@ -166,7 +164,6 @@ export class GovpayService {
     let methods = services.map((service, index) => {
       let url = UtilService.RootByTOA() + service;
       let headers = new HttpHeaders();
-      headers = headers.set('Content-Type', contents[index]);
       headers = headers.set('Accept', contents[index]);
       let method;
       switch(types[index]) {
@@ -192,7 +189,6 @@ export class GovpayService {
 
   isAuthenticated(service): Observable<any> {
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];
     const methods = [];
     if(UtilService.BASIC.ENABLED) {
@@ -245,7 +241,6 @@ export class GovpayService {
   exit(): Observable<any> {
     this.updateSpinner(true);
     let _headers = new HttpHeaders();
-    _headers = _headers.set('Content-Type', 'application/json');
     return this.http.get(UtilService.LogoutByTOA(), { headers: _headers, observe: 'response' });
   }
 
@@ -254,7 +249,6 @@ export class GovpayService {
    */
   forkService(methods: any[]): Observable<any> {
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];
     methods.forEach((_method) => {
       if (UtilService.TIMEOUT === false) {
@@ -274,7 +268,6 @@ export class GovpayService {
     this.updateSpinner(true);
     const url = UtilService.RootByTOA() + path;
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/pdf');
     headers = headers.set('Accept', 'application/pdf');
     let method: any;
     if (UtilService.TIMEOUT === false) {
@@ -292,7 +285,6 @@ export class GovpayService {
     this.updateSpinner(true);
     const url = UtilService.RootByTOA() + path;
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', type);
     headers = headers.set('Accept', type);
     let method: any;
     if (UtilService.TIMEOUT === false) {

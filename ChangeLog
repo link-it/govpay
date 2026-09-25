@@ -1,3 +1,10 @@
+2026-09-25  Giuliano Pintori <pintori@link.it>
+
+        * Issue #885 Rimosso l'header Content-Type dalle richieste GET della console.
+        Le funzioni di download impostavano un Content-Type sulle GET valorizzandolo come l'Accept. Le GET non hanno body, quindi l'header e' privo di significato, ma alcuni dei valori inviati non rientrano fra i content type ammessi dalle policy WAF standard: con OWASP CRS in modalita' Prevention la regola 920420 respingeva con 403 il download degli avvisi, delle ricevute, degli allegati e del prospetto riscossioni (Content-Type: application/pdf), mentre il logo dell'ente violava anche la 920470, perche' application/* non supera la validazione sintattica dell'header. Il formato atteso della risposta resta indicato dal solo Accept, invariato in tutti i punti.
+        Rimosse otto occorrenze in services/govpay.service.ts, nelle funzioni __getDataService, multiGetService, multiExportService, isAuthenticated, exit, forkService, pdf e file, e una in app.component.ts, nel ramo PDF di save() per il prospetto riscossioni, che invoca saveData con METHODS.GET e autoHeaders true. Alle tre funzioni gia' indicate nella segnalazione sono state aggiunte __getDataService e multiGetService, che presentano lo stesso difetto: non sono bloccate perche' application/json e' un tipo ammesso dal CRS, ma la prima e' il metodo di lettura usato da tutta la console.
+        Nessun impatto lato server: nessun endpoint GET delle API dichiara @Consumes, e in particolare Domini.getLogo espone il solo @Produces. Restano invariati i due Content-Type legittimi, quello del ramo autoHeaders false di saveData, che serve le sole PUT/POST/PATCH, e l'application/x-www-form-urlencoded della POST verso il token endpoint OAuth2 in auth-view.component.ts.
+
 2026-09-13  Giuliano Pintori <pintori@link.it>
 
         * Allineati i file di licenza di terze parti alla composizione effettiva della versione: 95 artefatti hanno cambiato versione, uno e' nuovo e le directory passano da 259 a 260.
