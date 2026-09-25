@@ -440,6 +440,37 @@ scaduti, e l'unione non cambia a seconda di quale si applica prima.
 Con `--solo-sql` lo script viene composto e non eseguito, e in quel caso i
 parametri di connessione non servono.
 
+### Simulazione (`--dry-run`)
+
+Con `--dry-run` lo svecchiamento viene eseguito sul database, ma ogni sezione
+termina con `ROLLBACK` invece di `COMMIT`: l'output riporta quante righe ogni
+`DELETE` cancellerebbe, e il database non viene modificato. Si aggiunge a
+qualsiasi delle forme sopra:
+
+```console
+./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 2 --dry-run
+```
+
+La simulazione passa per le stesse `DELETE` dell'esecuzione vera, con gli stessi
+vincoli e le stesse chiavi esterne: un errore che la simulazione incontra si
+ripresenterebbe nell'esecuzione. Non chiede conferma, perche' non modifica nulla;
+ma come l'esecuzione vera tiene bloccate le righe interessate finche' la sezione
+e' aperta, e su un'installazione in esercizio va lanciata negli stessi orari.
+
+Le righe cancellate le riportano psql e sqlcmd da soli, sqlplus con
+`SET FEEDBACK ON`; su mysql e hsql, i cui client non le riportano, il compositore
+aggiunge dopo ogni `DELETE` una `SELECT` di `ROW_COUNT()` e di
+`DIAGNOSTICS(ROW_COUNT)`. Su postgresql il `VACUUM ANALYZE` finale non viene
+eseguito, e su hsql la sezione si apre con `SET AUTOCOMMIT FALSE`, per non
+dipendere dal default di SqlTool.
+
+Il compositore sostituisce l'unico `COMMIT` che chiude ogni sezione, e verifica
+che ce ne sia esattamente uno: una simulazione che committasse sarebbe
+l'errore peggiore possibile, e uno script di sezione scritto diversamente fa
+fallire la composizione. Lo script composto si chiama
+`govpay-svecchiamento-<dialetto>-dry-run.sql`, e con `--solo-sql` lo si puo'
+leggere prima di eseguirlo.
+
 ### Retention
 
 Il default di ogni sezione sta nel suo script e non e' duplicato altrove: senza
@@ -489,7 +520,9 @@ SqlTool su hsql — e non uno generico via JDBC: gli script usano i comandi del
 client per i parametri e per i messaggi di avanzamento, che nessun client
 generico esegue. Ciascuno e' invocato in modo da uscire con codice non nullo al
 primo errore: `ON_ERROR_STOP` su psql, `-b` su sqlcmd,
-`WHENEVER SQLERROR EXIT SQL.SQLCODE` in testa allo script su sqlplus.
+`WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK` in testa allo script su sqlplus. Il
+`ROLLBACK` e' necessario: l'uscita di sqlplus, per default, fa `COMMIT`, e un
+errore a meta' sezione confermerebbe le `DELETE` gia' eseguite.
 
 Ogni sezione e' una transazione a se': se una fallisce, quelle prima di essa sono
 committate. Lo script lo dice a chiare lettere in caso di errore, e la via di

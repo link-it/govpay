@@ -56,6 +56,7 @@ SEZIONI=("${SEZIONI_NOTE[@]}")
 declare -A RETENTION=()
 
 SOLO_SQL=false
+DRY_RUN=false
 SENZA_CONFERMA=false
 OUTDIR=""
 WORKDIR=""
@@ -98,6 +99,11 @@ Connessione (in alternativa alle variabili d'ambiente indicate):
 
 Esecuzione:
   --solo-sql           Compone lo script e si ferma, senza toccare il database
+  --dry-run            Simula l'esecuzione: esegue le sezioni sul database e
+                       chiude ognuna con ROLLBACK invece di COMMIT. Riporta le
+                       righe che ogni DELETE cancellerebbe e non modifica nulla.
+                       Non chiede conferma. Come nell'esecuzione vera, le righe
+                       interessate restano bloccate finche' la sezione e' aperta
   -y, --si             Non chiedere conferma prima di eseguire
   --out <dir>          Directory di uscita (default: target/svecchiamento-sql)
   -h, --help           Mostra questo aiuto
@@ -144,6 +150,7 @@ while [[ $# -gt 0 ]]; do
     --password)              DB_PASSWORD="${2:-}"; shift 2 ;;
     --oracle-conn)           ORACLE_CONN="${2:-}"; shift 2 ;;
     --solo-sql)              SOLO_SQL=true; shift ;;
+    --dry-run)               DRY_RUN=true; shift ;;
     -y|--si)                 SENZA_CONFERMA=true; shift ;;
     --out)                   OUTDIR="${2:-}"; shift 2 ;;
     -h|--help)               usage; exit 0 ;;
@@ -263,12 +270,63 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
         || errore "sostituzione della retention di ${sez} non riuscita su ${src#${REPO_ROOT}/}"
     fi
   fi
+  [[ "${DRY_RUN}" == true ]] && simulazione "${sez}" "${tmp}"
   cat "${tmp}"
+}
+
+# ── Simulazione ──────────────────────────────────────────────────────────────
+# Il dry-run esegue le stesse DELETE, con gli stessi vincoli e le stesse chiavi
+# esterne, e chiude la sezione con ROLLBACK. Ogni script di sezione finisce con
+# un solo COMMIT, ed e' quello che viene sostituito: se non ce n'e' esattamente
+# uno, la composizione si ferma, perche' una simulazione che committa e' il solo
+# errore che qui non ci si puo' permettere.
+function simulazione() {   # $1 = sezione, $2 = file da modificare
+  local sez="$1" tmp="$2"
+  local src="${SEZIONI_DIR}/${sez}.sql"
+  local commit_re='^COMMIT( TRANSACTION)?;[[:space:]]*$'
+  local n; n="$(grep -cE "${commit_re}" "${tmp}" || true)"
+  [[ "${n}" == "1" ]] \
+    || errore "--dry-run: in ${src#${REPO_ROOT}/} ci sono ${n} COMMIT invece di uno solo in chiusura: lo script e' cambiato, aggiornare $(basename "$0")"
+  sed -i -E 's/^COMMIT( TRANSACTION)?;[[:space:]]*$/ROLLBACK\1;/' "${tmp}"
+  ! grep -qiE '^[[:space:]]*COMMIT' "${tmp}" \
+    || errore "--dry-run: in ${src#${REPO_ROOT}/} resta un COMMIT dopo la sostituzione"
+
+  case "${TIPO_DB}" in
+    postgresql)
+      # VACUUM non ha senso dopo un ROLLBACK: non c'e' nulla da recuperare.
+      if grep -qE '^VACUUM' "${tmp}"; then
+        sed -i -E "/^VACUUM|^\\\\echo 'VACUUM|^-- VACUUM/d" "${tmp}"
+        echo "\\echo 'Simulazione: VACUUM ANALYZE non eseguito'" >> "${tmp}"
+      fi ;;
+    mysql)
+      # Il client mysql non riporta le righe cancellate.
+      conta_righe_dopo_delete "${tmp}" "SELECT ROW_COUNT() AS righe_cancellate;" ;;
+    hsql)
+      # SqlTool non riporta le righe cancellate. E con autocommit attivo ogni
+      # DELETE sarebbe confermata subito, e il ROLLBACK finale non annullerebbe
+      # nulla: SqlTool parte con autocommit disattivato, ma un rcfile puo'
+      # cambiarlo, e qui non ci si affida al default.
+      conta_righe_dopo_delete "${tmp}" "SELECT 'righe cancellate: ' || DIAGNOSTICS(ROW_COUNT) FROM (VALUES(0));"
+      { echo "SET AUTOCOMMIT FALSE;"; cat "${tmp}"; } > "${tmp}.new" && mv "${tmp}.new" "${tmp}" ;;
+  esac
+}
+
+# Aggiunge un'istruzione dopo ogni DELETE, anche quelle scritte su piu' righe.
+function conta_righe_dopo_delete() {   # $1 = file, $2 = istruzione
+  awk -v istr="$2" '
+    /^[[:space:]]*DELETE[[:space:]]/ { in_del = 1 }
+    { print }
+    in_del && /;[[:space:]]*$/ { print istr; in_del = 0 }
+  ' "$1" > "$1.new" && mv "$1.new" "$1"
 }
 
 # ── Composizione ─────────────────────────────────────────────────────────────
 mkdir -p "${OUTDIR}"
-OUT="${OUTDIR}/govpay-svecchiamento-${TIPO_DB}.sql"
+if [[ "${DRY_RUN}" == true ]]; then
+  OUT="${OUTDIR}/govpay-svecchiamento-${TIPO_DB}-dry-run.sql"
+else
+  OUT="${OUTDIR}/govpay-svecchiamento-${TIPO_DB}.sql"
+fi
 
 declare -A RETENTION_USATA=()
 for s in "${SEZIONI[@]}"; do
@@ -301,12 +359,22 @@ done
     done
   fi
   echo "--"
-  echo "-- ATTENZIONE: la cancellazione e' definitiva. Ogni sezione e' una transazione"
-  echo "-- a se': se una fallisce, quelle completate prima restano applicate."
+  if [[ "${DRY_RUN}" == true ]]; then
+    echo "-- SIMULAZIONE (--dry-run): ogni sezione termina con ROLLBACK invece di"
+    echo "-- COMMIT, e il database non viene modificato."
+  else
+    echo "-- ATTENZIONE: la cancellazione e' definitiva. Ogni sezione e' una transazione"
+    echo "-- a se': se una fallisce, quelle completate prima restano applicate."
+  fi
   echo ""
   # sqlplus esce 0 anche dopo un errore, se non gli si dice altrimenti, e senza
-  # EXIT finale resta in attesa di input.
-  [[ "${TIPO_DB}" == "oracle" ]] && echo "WHENEVER SQLERROR EXIT SQL.SQLCODE"
+  # EXIT finale resta in attesa di input. ROLLBACK perche' l'EXIT di sqlplus,
+  # per default, fa COMMIT: un errore a meta' sezione confermerebbe le DELETE
+  # gia' eseguite, e in simulazione sarebbe una cancellazione vera.
+  if [[ "${TIPO_DB}" == "oracle" ]]; then
+    echo "WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK"
+    [[ "${DRY_RUN}" == true ]] && echo "SET FEEDBACK ON"
+  fi
   echo ""
 } > "${OUT}"
 
@@ -326,10 +394,14 @@ for s in "${SEZIONI[@]}"; do
   } >> "${OUT}"
 done
 
-[[ "${TIPO_DB}" == "oracle" ]] && { echo "" >> "${OUT}"; echo "EXIT;" >> "${OUT}"; }
+[[ "${TIPO_DB}" == "oracle" ]] && { echo "" >> "${OUT}"; echo "EXIT ROLLBACK;" >> "${OUT}"; }
 
 echo "=============================================="
-echo "Svecchiamento del database GovPay"
+if [[ "${DRY_RUN}" == true ]]; then
+  echo "Svecchiamento del database GovPay - SIMULAZIONE (--dry-run)"
+else
+  echo "Svecchiamento del database GovPay"
+fi
 echo "  dialetto: ${TIPO_DB}"
 for s in "${SEZIONI[@]}"; do
   printf '  sezione:  %-28s %s\n' "${s}" "${RETENTION_USATA[${s}]}"
@@ -367,7 +439,8 @@ if [[ -z "${DB_PORT}" ]]; then
   esac
 fi
 
-if [[ "${SENZA_CONFERMA}" != true ]]; then
+# La simulazione non modifica il database: la conferma non serve.
+if [[ "${SENZA_CONFERMA}" != true && "${DRY_RUN}" != true ]]; then
   echo
   echo "Verra' eseguito su ${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME} (${TIPO_DB})."
   echo "La cancellazione e' definitiva."
@@ -383,7 +456,11 @@ function richiedi_client() {
 }
 
 echo
-echo "-- Esecuzione su ${DB_HOST}:${DB_PORT}/${DB_NAME}"
+if [[ "${DRY_RUN}" == true ]]; then
+  echo "-- Simulazione su ${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME}: ogni sezione termina con ROLLBACK"
+else
+  echo "-- Esecuzione su ${DB_HOST}:${DB_PORT}/${DB_NAME}"
+fi
 
 function esegui() {
 case "${TIPO_DB}" in
@@ -409,10 +486,10 @@ case "${TIPO_DB}" in
     # CONNECT arriva da stdin e non dalla riga di comando, che ps mostrerebbe
     # con la password dentro. Il WHENEVER SQLERROR copre anche il CONNECT.
     sqlplus -S -L /nolog <<EOSQLPLUS
-WHENEVER SQLERROR EXIT SQL.SQLCODE
+WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
 CONNECT ${DB_USER}/${DB_PASSWORD}@${DESCRITTORE}
 @${OUT}
-EXIT;
+EXIT ROLLBACK;
 EOSQLPLUS
     ;;
   sqlserver)
@@ -451,6 +528,18 @@ esac
 ESITO=0
 esegui || ESITO=$?
 
+if [[ "${ESITO}" -ne 0 && "${DRY_RUN}" == true ]]; then
+  echo >&2
+  echo "==============================================" >&2
+  echo "Simulazione FALLITA (codice ${ESITO})" >&2
+  echo "  script: ${OUT}" >&2
+  echo "  La sezione in errore e' stata annullata, e quelle prima di essa" >&2
+  echo "  erano gia' terminate con ROLLBACK: il database non e' modificato." >&2
+  echo "  L'errore si ripresenterebbe nell'esecuzione vera." >&2
+  echo "==============================================" >&2
+  exit "${ESITO}"
+fi
+
 if [[ "${ESITO}" -ne 0 ]]; then
   echo >&2
   echo "==============================================" >&2
@@ -465,6 +554,11 @@ fi
 
 echo
 echo "=============================================="
-echo "Svecchiamento completato"
+if [[ "${DRY_RUN}" == true ]]; then
+  echo "Simulazione completata: il database non e' stato modificato"
+  echo "  Le righe che ogni DELETE cancellerebbe sono riportate qui sopra."
+else
+  echo "Svecchiamento completato"
+fi
 echo "  script eseguito: ${OUT}"
 echo "=============================================="
