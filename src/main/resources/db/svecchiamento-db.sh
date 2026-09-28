@@ -27,6 +27,15 @@ set -euo pipefail
 BASEDIR="$(cd "$(dirname "$0")" && pwd)"       # src/main/resources/db
 CORE_SQL_DIR="${BASEDIR}/sql"
 REPO_ROOT="$(cd "${BASEDIR}/../../../.." && pwd)"
+# Fuori dal repository, come nel pacchetto consegnato a chi esegue lo
+# svecchiamento, quattro livelli sopra c'e' una directory qualsiasi, spesso /:
+# i percorsi si riportano da qui, e l'output va accanto allo script.
+if [[ ! -f "${REPO_ROOT}/pom.xml" || ! -d "${REPO_ROOT}/src/main/resources/db" ]]; then
+  REPO_ROOT="${BASEDIR}"
+  OUTDIR_DEFAULT="${BASEDIR}/svecchiamento-sql"
+else
+  OUTDIR_DEFAULT="${REPO_ROOT}/target/svecchiamento-sql"
+fi
 
 # Dialetti canonici, secondo src/main/resources/db/README.md
 DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
@@ -120,7 +129,8 @@ Esecuzione:
                        Non chiede conferma. Come nell'esecuzione vera, le righe
                        interessate restano bloccate finche' la sezione e' aperta
   -y, --si             Non chiedere conferma prima di eseguire
-  --out <dir>          Directory di uscita (default: target/svecchiamento-sql)
+  --out <dir>          Directory di uscita (default: target/svecchiamento-sql nel
+                       repository, svecchiamento-sql accanto allo script fuori)
   -h, --help           Mostra questo aiuto
 
 Gli script delle sezioni stanno in sql/<dialetto>/svecchiamento/ e sono
@@ -231,7 +241,7 @@ for coppia in "SOLO_OBSOLETI:--solo-obsoleti" "SOLO_NON_INCASSATI:--solo-non-inc
     || errore "${opt} indicata, ma la sezione rendicontazioni non e' tra quelle da eseguire: aggiungerla a --sezioni"
 done
 
-OUTDIR="${OUTDIR:-${REPO_ROOT}/target/svecchiamento-sql}"
+OUTDIR="${OUTDIR:-${OUTDIR_DEFAULT}}"
 WORKDIR="$(mktemp -d)"
 # La pulizia non deve decidere l'esito dello script: e' l'ultimo comando
 # eseguito, e un suo fallimento diventerebbe il codice di uscita.
