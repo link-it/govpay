@@ -398,6 +398,7 @@ script SQL a se' in `sql/<dialetto>/svecchiamento/`, accanto a `patch/`:
 | `eventi` | `eventi.sql` | il giornale degli eventi, per eta' | 3 mesi |
 | `tracciati` | `tracciati.sql` | tracciati completati, con operazioni ed eventi collegati | 1 mese |
 | `spring-batch` | `spring-batch.sql` | i metadati delle esecuzioni dei batch | 3 mesi |
+| `rendicontazioni` | `rendicontazioni.sql` | flussi di rendicontazione per data di acquisizione, con rendicontazioni ed eventi collegati | 24 mesi |
 | `pendenze_scadute_non_pagate` | `pendenze_scadute_non_pagate.sql` | pendenze `NON_ESEGUITO` scadute, senza rendicontazioni ne' pagamenti, con voci, RPT, notifiche, promemoria, stampe, allegati e operazioni collegate | 12 mesi |
 
 La divisione non e' estetica: ogni installazione ha cose diverse da svecchiare, e
@@ -417,12 +418,16 @@ fuori, e le esegue:
 
 # le sezioni indicate, con la retention in mesi indicata per sezione
 ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 2 --retention-tracciati 1
+
+# le sezioni indicate, con i filtri della sezione rendicontazioni
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni,pendenze_scadute_non_pagate --solo-non-incassati
 ```
 
 Le opzioni di retention hanno la forma `--retention-<sezione>`, con il nome della
 sezione esattamente come in `--sezioni`: `--retention-eventi`,
-`--retention-tracciati`, `--retention-spring-batch` e
-`--retention-pendenze_scadute_non_pagate`, in mesi. Ciascuna vale solo per una
+`--retention-tracciati`, `--retention-spring-batch`,
+`--retention-rendicontazioni` e `--retention-pendenze_scadute_non_pagate`, in
+mesi. Ciascuna vale solo per una
 sezione tra quelle eseguite: indicarla per una sezione esclusa da `--sezioni` e'
 un errore, non un'opzione ignorata. I parametri di connessione (`--host`, `--db`,
 `--user`, `--password`, o le variabili `GOVPAY_DB_*`) si aggiungono a ciascuna
@@ -436,6 +441,11 @@ primo perche' e' la tabella piu' grande, e sfoltirlo rende meno costose le
 L'esito non dipende dall'ordine: cio' che viene cancellato e' l'unione dei due
 criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati
 scaduti, e l'unione non cambia a seconda di quale si applica prima.
+
+Le rendicontazioni vengono prima delle pendenze scadute, e qui l'ordine conta:
+quella sezione esclude le pendenze con voci rendicontate, e cancellati i flussi
+vecchi, le pendenze che rendicontavano diventano cancellabili nella stessa
+esecuzione.
 
 Con `--solo-sql` lo script viene composto e non eseguito, e in quel caso i
 parametri di connessione non servono.
@@ -512,6 +522,65 @@ Su postgresql, mysql e sqlserver gli id vengono raccolti una volta in una tabell
 temporanea; su oracle e hsql il criterio e' ripetuto in ogni `DELETE`, ed e'
 corretto perche' resta stabile durante la cancellazione. Su postgresql la sezione
 chiude con un `VACUUM ANALYZE` delle tabelle svecchiate.
+
+### Le rendicontazioni
+
+`rendicontazioni.sql` elimina i flussi di rendicontazione (`fr`) con
+`data_acquisizione` anteriore alla retention, e per ciascuno, nell'ordine imposto
+dalle chiavi esterne, gli eventi collegati al flusso, le sue rendicontazioni e il
+flusso stesso con il suo XML. Gli eventi del flusso vengono cancellati per primi
+anche quando la sezione `eventi` e' attiva: non e' detto che lo sia, e le due
+cancellazioni convivono, perche' qui si tolgono solo gli eventi che
+impedirebbero di cancellare il flusso.
+
+Pagamenti, pendenze e incassi restano: sono loro a essere referenziati dalle
+rendicontazioni e dai flussi, non il contrario. Il rischio di riacquisire un
+flusso cancellato non c'e': pagoPA conserva i flussi per 30 giorni, molto meno
+di qualsiasi retention sensata.
+
+Di default si cancella tutto cio' che la data seleziona. Due opzioni restringono
+la selezione, e indicate entrambe valgono insieme:
+
+| Opzione | Flussi cancellati |
+|---|---|
+| `--solo-obsoleti` | solo quelli con `obsoleto` vero, cioe' le revisioni precedenti di un flusso ripubblicato |
+| `--solo-non-incassati` | solo quelli senza `id_incasso`, cioe' non riconciliati con un incasso |
+
+```console
+# tutti i flussi acquisiti da piu' di 24 mesi, il default
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni
+
+# tutti i flussi acquisiti da piu' di 36 mesi
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni --retention-rendicontazioni 36
+
+# solo le revisioni obsolete, anche recenti: bastano pochi mesi
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni --solo-obsoleti --retention-rendicontazioni 3
+
+# solo i flussi mai riconciliati con un incasso
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni --solo-non-incassati
+
+# solo le revisioni obsolete e non riconciliate: i due filtri valgono insieme
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni --solo-obsoleti --solo-non-incassati
+
+# prima di tutto, quanti flussi cancellerebbe, senza modificare nulla
+./svecchiamento-db.sh postgresql --sezioni rendicontazioni --solo-obsoleti --dry-run
+
+# errore: il filtro vale solo se la sezione rendicontazioni e' tra quelle eseguite
+./svecchiamento-db.sh postgresql --sezioni eventi --solo-obsoleti
+```
+
+Il riepilogo prima dell'esecuzione, e la testata dello script composto, riportano
+i filtri attivi accanto alla retention:
+
+```console
+  sezione:  rendicontazioni              retention 36 mesi, solo obsoleti, solo non incassati
+```
+
+Come la retention, valgono solo se la sezione e' tra quelle eseguite. Nello
+script di sezione sono parametri a 0, disattivi (`solo_obsoleti`,
+`solo_non_incassati`), e il compositore sostituisce la riga con una a 1, con gli
+stessi controlli della retention; su hsql, che non ha variabili, sono il primo
+termine della condizione, `(0 = 0 OR ...)`, che diventa `(1 = 0 OR ...)`.
 
 ### Client e transazioni
 

@@ -37,7 +37,10 @@ DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
 # L'esito non dipende dall'ordine: cio' che viene cancellato e' l'unione dei due
 # criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati
 # scaduti, e l'unione non cambia a seconda di quale si applica prima.
-SEZIONI_NOTE=(eventi tracciati spring-batch pendenze_scadute_non_pagate)
+# Le rendicontazioni vengono prima delle pendenze scadute: quella sezione esclude
+# le pendenze con voci rendicontate, e cancellati i flussi vecchi le pendenze che
+# rendicontavano diventano cancellabili nella stessa esecuzione.
+SEZIONI_NOTE=(eventi tracciati spring-batch rendicontazioni pendenze_scadute_non_pagate)
 
 # Nome del parametro di retention dentro ciascuno script. E' un dettaglio interno
 # agli script SQL, e non coincide sempre con il nome della sezione: spring-batch
@@ -48,12 +51,18 @@ function parametro_di() {
     tracciati)    echo "tracciati" ;;
     eventi)       echo "eventi" ;;
     spring-batch) echo "batch" ;;
+    rendicontazioni) echo "rendicontazioni" ;;
     pendenze_scadute_non_pagate) echo "pendenze" ;;
   esac
 }
 
 SEZIONI=("${SEZIONI_NOTE[@]}")
 declare -A RETENTION=()
+
+# Filtri della sezione rendicontazioni: di default si cancella tutto cio' che la
+# data seleziona.
+SOLO_OBSOLETI=false
+SOLO_NON_INCASSATI=false
 
 SOLO_SQL=false
 DRY_RUN=false
@@ -88,6 +97,12 @@ Sezioni (default: tutte, nell'ordine $(IFS=', '; echo "${SEZIONI_NOTE[*]}")):
                        Retention in mesi della sezione, che deve essere tra
                        quelle eseguite. Sovrascrive il valore scritto nello
                        script della sezione; senza, vale quello
+
+Filtri della sezione rendicontazioni (default: tutti i flussi oltre la retention):
+  --solo-obsoleti      Solo i flussi obsoleti, cioe' le revisioni precedenti di
+                       un flusso ripubblicato
+  --solo-non-incassati Solo i flussi non riconciliati con un incasso
+                       Indicati entrambi, valgono insieme
 
 Connessione (in alternativa alle variabili d'ambiente indicate):
   --host <host>        Host del database            [GOVPAY_DB_SERVER, host[:porta]]
@@ -143,6 +158,8 @@ while [[ $# -gt 0 ]]; do
       [[ "${nota_sez}" == true ]] \
         || errore "opzione sconosciuta: $1. Le retention sono: $(for n in "${SEZIONI_NOTE[@]}"; do printf '%s' "--retention-${n} "; done)"
       RETENTION[${sez}]="${2:-}"; shift 2 ;;
+    --solo-obsoleti)         SOLO_OBSOLETI=true; shift ;;
+    --solo-non-incassati)    SOLO_NON_INCASSATI=true; shift ;;
     --host)                  DB_HOST="${2:-}"; shift 2 ;;
     --port)                  DB_PORT="${2:-}"; shift 2 ;;
     --db)                    DB_NAME="${2:-}"; shift 2 ;;
@@ -203,6 +220,15 @@ for p in "${!RETENTION[@]}"; do
     || errore "--retention-${p} indicata, ma la sezione non e' tra quelle da eseguire: aggiungerla a --sezioni"
   [[ "${v}" =~ ^[0-9]+$ ]] || errore "la retention di ${p} deve essere un numero di mesi: '${v}'"
   [[ "${v}" -gt 0 ]]       || errore "la retention di ${p} deve essere maggiore di zero"
+done
+
+for coppia in "SOLO_OBSOLETI:--solo-obsoleti" "SOLO_NON_INCASSATI:--solo-non-incassati"; do
+  var="${coppia%%:*}"; opt="${coppia#*:}"
+  [[ "${!var}" == true ]] || continue
+  eseguita=false
+  for s in "${SEZIONI[@]}"; do [[ "${s}" == "rendicontazioni" ]] && eseguita=true; done
+  [[ "${eseguita}" == true ]] \
+    || errore "${opt} indicata, ma la sezione rendicontazioni non e' tra quelle da eseguire: aggiungerla a --sezioni"
 done
 
 OUTDIR="${OUTDIR:-${REPO_ROOT}/target/svecchiamento-sql}"
@@ -270,8 +296,53 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
         || errore "sostituzione della retention di ${sez} non riuscita su ${src#${REPO_ROOT}/}"
     fi
   fi
+  [[ "${sez}" == "rendicontazioni" ]] && filtri_rendicontazioni "${tmp}"
   [[ "${DRY_RUN}" == true ]] && simulazione "${sez}" "${tmp}"
   cat "${tmp}"
+}
+
+# ── Filtri delle rendicontazioni ─────────────────────────────────────────────
+# Nello script di sezione i filtri sono parametri a 0, disattivi: con l'opzione
+# la riga del parametro viene sostituita con una a 1, come per la retention e
+# con gli stessi controlli. Su hsql, che non ha variabili, il parametro e' il
+# primo termine della condizione, "0 = 0 OR ...", e attivarlo lo fa "1 = 0".
+function filtro_attivo() {   # $1 = file, $2 = nome parametro, $3 = condizione hsql
+  local tmp="$1" par="$2" cond="$3"
+  local src="${SEZIONI_DIR}/rendicontazioni.sql"
+  if [[ "${TIPO_DB}" == "hsql" ]]; then
+    grep -qF "(0 = 0 OR ${cond})" "${tmp}" \
+      || errore "in ${src#${REPO_ROOT}/} non c'e' la condizione (0 = 0 OR ${cond}): lo script e' cambiato, aggiornare $(basename "$0")"
+    sed -i "s/(0 = 0 OR ${cond})/(1 = 0 OR ${cond})/g" "${tmp}"
+    ! grep -qF "(0 = 0 OR ${cond})" "${tmp}" \
+      || errore "attivazione del filtro ${par} non riuscita su ${src#${REPO_ROOT}/}"
+  else
+    local espressione="^(\\\\set|DEFINE|SET|DECLARE)[[:space:]]*@?${par}([[:space:]]|=)"
+    grep -qE "${espressione}" "${tmp}" \
+      || errore "in ${src#${REPO_ROOT}/} non c'e' la riga del parametro ${par}: lo script e' cambiato, aggiornare $(basename "$0")"
+    local riga
+    case "${TIPO_DB}" in
+      postgresql) riga="\\set ${par} 1" ;;
+      oracle)     riga="DEFINE ${par} = 1;" ;;
+      mysql)      riga="SET @${par} = 1;" ;;
+      sqlserver)  riga="DECLARE @${par} INT = 1;" ;;
+    esac
+    sed -i -E "/${espressione}/d" "${tmp}"
+    { printf '%s\n' "${riga}"; cat "${tmp}"; } > "${tmp}.new" && mv "${tmp}.new" "${tmp}"
+    [[ "$(grep -cE "${espressione}" "${tmp}")" == "1" ]] && grep -qE "${par}[^0-9]+1;?\$" "${tmp}" \
+      || errore "attivazione del filtro ${par} non riuscita su ${src#${REPO_ROOT}/}"
+  fi
+}
+
+function filtri_rendicontazioni() {   # $1 = file da modificare
+  [[ "${SOLO_OBSOLETI}" == true ]]      && filtro_attivo "$1" solo_obsoleti "fr.obsoleto = TRUE"
+  [[ "${SOLO_NON_INCASSATI}" == true ]] && filtro_attivo "$1" solo_non_incassati "fr.id_incasso IS NULL"
+  return 0
+}
+
+function descrizione_filtri() {   # da accodare alla retention nei riepiloghi
+  [[ "${SOLO_OBSOLETI}" == true ]]      && printf '%s' ", solo obsoleti"
+  [[ "${SOLO_NON_INCASSATI}" == true ]] && printf '%s' ", solo non incassati"
+  return 0
 }
 
 # ── Simulazione ──────────────────────────────────────────────────────────────
@@ -336,6 +407,7 @@ for s in "${SEZIONI[@]}"; do
   else
     RETENTION_USATA[${s}]="retention $(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") mesi (dal file)"
   fi
+  [[ "${s}" == "rendicontazioni" ]] && RETENTION_USATA[${s}]+="$(descrizione_filtri)"
 done
 
 {
