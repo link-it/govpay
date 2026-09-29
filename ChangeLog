@@ -1,3 +1,10 @@
+2026-09-29  Giuliano Pintori <pintori@link.it>
+
+        * Risolte le segnalazioni NVDCVE-2026-91863, NVDCVE-2026-91864, NVDCVE-2026-91865, NVDCVE-2026-91866 (High) e NVDCVE-2026-91867 (Medium) su neethi-3.2.3.jar: portata neethi dalla 3.2.3 alla 3.2.4.
+        Le cinque CVE sono tutte di tipo denial of service su documenti WS-Policy costruiti ad arte: annidamento profondo che aggira il limite di profondita' ed esaurisce lo stack (91863), contenuto delle asserzioni copiato in memoria senza essere conteggiato nei limiti di dimensione (91864), riespansione esponenziale dei riferimenti in fase di normalizzazione (91865), intersezione di policy di costo esponenziale (91866) e recupero di policy remote privo di un timeout complessivo, che consente a un server lento di tenere occupato il thread chiamante (91867). NVD indica come affette tutte le versioni precedenti alla 3.2.4.
+        neethi e' una dipendenza transitiva di cxf-core, la cui versione e' fissata da cxf-parent tramite la property cxf.neethi.version: la 4.2.3, ultima release di CXF disponibile, la pinna ancora alla 3.2.3, quindi non e' stato possibile risolvere aggiornando CXF come fatto il 2026-08-25. Aggiunta nel pom radice la property neethi.version, con l'indicazione delle CVE risolte in commento sulla riga, e la relativa entry in dependencyManagement; dependency:tree conferma la risoluzione della 3.2.4 su tutti i moduli del reactor. L'override potra' essere rimosso quando una release di CXF porta nativamente neethi 3.2.4 o successiva.
+        Rinominata di conseguenza la directory third-party-licenses/jar/neethi-3.2.3 in neethi-3.2.4: il file LICENSE contenuto nel jar e' invariato.
+
 2026-09-25  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p4.

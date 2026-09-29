@@ -108,6 +108,7 @@
 		<!-- cxf -->
 		<cxf.version>4.2.3</cxf.version>
 		<cxf.xjc.runtime.version>4.2.0</cxf.xjc.runtime.version>
+		<neethi.version>3.2.4</neethi.version><!-- CVE-2026-91863, CVE-2026-91864, CVE-2026-91865, CVE-2026-91866, CVE-2026-91867: override di cxf.neethi.version (3.2.3) pinnata da cxf-parent 4.2.3 -->
 
 		<!-- jackson -->
 		<jackson.version>2.22.2</jackson.version>
@@ -939,6 +940,12 @@
 					</exclusion>
 				</exclusions>
 	        </dependency>
+
+			<dependency>
+				<groupId>org.apache.neethi</groupId>
+				<artifactId>neethi</artifactId>
+				<version>${neethi.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
