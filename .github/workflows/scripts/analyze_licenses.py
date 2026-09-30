@@ -298,13 +298,22 @@ def parse_licenses_xml(xml_path):
 
     return dependencies
 
+def resolve_path_in_base_dir(path):
+    """Risolve un path rispetto alla working directory, rifiutando quelli che ne escono"""
+    base = Path.cwd().resolve()
+    resolved = (base / path).resolve()
+    if not resolved.is_relative_to(base):
+        raise ValueError(f"Path non consentito, esterno a {base}: {path}")
+    return resolved
+
 def load_exceptions(exceptions_file=None):
     """Carica le eccezioni di licenza da file JSON"""
     exceptions = {}
     excluded_artifacts = set()
 
-    if exceptions_file and Path(exceptions_file).exists():
-        with open(exceptions_file, 'r') as f:
+    exceptions_path = resolve_path_in_base_dir(exceptions_file) if exceptions_file else None
+    if exceptions_path and exceptions_path.is_file():
+        with exceptions_path.open('r') as f:
             data = json.load(f)
             for exc in data.get('exceptions', []):
                 key = f"{exc['groupId']}:{exc.get('artifactId', '*')}"
@@ -343,7 +352,11 @@ def analyze_licenses(exceptions_file=None):
     print(f"Trovate {len(dependencies)} dipendenze totali")
 
     # Carica eccezioni
-    exceptions, excluded_artifacts = load_exceptions(exceptions_file)
+    try:
+        exceptions, excluded_artifacts = load_exceptions(exceptions_file)
+    except ValueError as e:
+        print(e)
+        return 1
 
     # Lista di artifact che sono tipicamente solo per test
     TEST_ARTIFACTS = {

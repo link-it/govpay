@@ -695,7 +695,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         if (json['formato'] === UtilService.PDF) {
           responseDataType = 'blob';
           headers = new HttpHeaders();
-          headers = headers.set('Content-Type', 'application/pdf');
           headers = headers.set('Accept', 'application/pdf');
         }
         break;
