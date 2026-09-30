@@ -73,13 +73,13 @@ And match response.pagination.page == 2
 
 Scenario: Ricerca intermediari ordinata
 
-# Il campo di ordinamento e' codIntermediario e non idIntermediario, che e' il
-# nome con cui il campo compare nella rappresentazione: e' una incoerenza
-# dell'API, non una scelta di questo test.
+# Il campo di ordinamento e' idIntermediario, lo stesso nome con cui il campo
+# compare nella rappresentazione e nel path. Fino alla govpay-console-api#94
+# l'unico nome accettato era codIntermediario, quello della colonna.
 
 Given url consoleBaseurl
 And path 'intermediari'
-And param sort = 'codIntermediario'
+And param sort = 'idIntermediario'
 And headers basicAutenticationHeader
 When method get
 Then status 200
@@ -88,7 +88,7 @@ And match response.results == '#[_ > 1]'
 
 Given url consoleBaseurl
 And path 'intermediari'
-And param sort = '-codIntermediario'
+And param sort = '-idIntermediario'
 And headers basicAutenticationHeader
 When method get
 Then status 200

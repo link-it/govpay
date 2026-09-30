@@ -4,18 +4,13 @@ Feature: Dettaglio di una riconciliazione (console-api v2)
 # riconciliazione-applicazione-get.feature, riconciliazione-operatore-get.feature
 # e riconciliazione-applicazione-getbyTipoRiscossione.feature.
 #
-# ATTENZIONE, un limite dell'API e non del test: l'identificativo nel percorso
-# e' vincolato al pattern ^[0-9A-Za-z]{1,35}$, che non ammette il trattino,
-# mentre gli identificativi che l'elenco restituisce per le riconciliazioni
-# acquisite dal flusso hanno la forma 2026-08-22GovPAYPsp1-0850160128, con i
-# trattini. Il dettaglio di quelle riconciliazioni e' quindi irraggiungibile:
-# GET risponde 400 sul parametro di percorso, non 200 ne' 404.
-#
-# Gli scenari qui sotto verificano cio' che si puo' verificare: il rifiuto
-# dell'identificativo non conforme, e il 404 su un identificativo conforme ma
-# inesistente. Il dettaglio di una riconciliazione vera e la registrazione con
-# PUT restano da coprire quando ci sara' una riconciliazione con un
-# identificativo che l'API accetta.
+# Le riconciliazioni acquisite da flusso hanno per identificativo l'idFlusso
+# del PSP, nella forma 2026-08-22GovPAYPsp1-0850160128: contiene i trattini
+# della data. Fino alla govpay-console-api#92 il percorso di dettaglio era
+# vincolato al pattern ^[0-9A-Za-z]{1,35}$ e quelle riconciliazioni erano
+# irraggiungibili, benche' l'elenco le restituisse. Ora il vincolo
+# alfanumerico vale solo in scrittura, dove l'identificativo lo sceglie il
+# client.
 
 Background:
 
@@ -25,14 +20,29 @@ Background:
 * def consoleBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v2', autenticazione: 'basic'})
 * def idDominio = '12345678901'
 
-Scenario: Lettura con un identificativo non conforme al pattern
+Scenario: Lettura di una riconciliazione acquisita da flusso
+
+# L'identificativo e' quello che l'elenco restituisce, trattini compresi.
 
 Given url consoleBaseurl
-And path 'riconciliazioni', idDominio, '2026-08-22GovPAYPsp1-0850160128'
+And path 'riconciliazioni'
+And param idDominio = idDominio
+And param limit = 1
 And headers basicAutenticationHeader
 When method get
-Then status 400
-And match response.status == 400
+Then status 200
+And match response.results == '#[_ > 0]'
+* def idRiconciliazione = response.results[0].id
+
+Given url consoleBaseurl
+And path 'riconciliazioni', idDominio, idRiconciliazione
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.id == idRiconciliazione
+And match response.dominio.idDominio == idDominio
+And match response.riscossioni == '#present'
+And match response._links.self.href == '/riconciliazioni/' + idDominio + '/' + idRiconciliazione
 
 Scenario: Lettura di una riconciliazione inesistente con identificativo conforme
 
