@@ -481,7 +481,11 @@ jobs:
         db: [ postgresql, oracle, mariadb, mysql, hsql ]
 
     steps:
+    # La voce hsql scarica la history completa, che serve a verificare se il
+    # tag appartiene a master; alle altre basta l'ultimo commit.
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: ${{ matrix.db == 'hsql' && '0' || '1' }}
 
     - name: Download installer
       uses: actions/download-artifact@v7
@@ -503,7 +507,25 @@ jobs:
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
 
     # Il tag :latest e' derivato dall'immagine senza database, quindi lo aggiunge
-    # soltanto la voce hsql della matrice.
+    # soltanto la voce hsql della matrice, e solo per i rilasci di master: un tag
+    # su una linea di manutenzione non deve spostare :latest su una versione
+    # precedente. L'evento di tag non porta il branch, quindi il criterio e' che
+    # il commit del tag sia contenuto in master.
+    - name: Determine latest
+      id: latest
+      run: |
+        set -euo pipefail
+        FLAG=
+        if [ "${{ matrix.db }}" = "hsql" ]; then
+          if git merge-base --is-ancestor "${GITHUB_SHA}" origin/master; then
+            FLAG=--latest
+            echo "Tag ${GITHUB_REF_NAME} contenuto in master: pubblico anche :latest"
+          else
+            echo "Tag ${GITHUB_REF_NAME} non contenuto in master: :latest invariato"
+          fi
+        fi
+        echo "flag=${FLAG}" >> "$GITHUB_OUTPUT"
+
     - name: Build and push release image
       run: |
         ./docker/build-images.sh \
@@ -512,7 +534,7 @@ jobs:
           --set release \
           --only "${{ matrix.db }}" \
           --image-base "${{ vars.DOCKER_IMAGE_BASE || 'linkitaly/govpay' }}" \
-          ${{ matrix.db == 'hsql' && '--latest' || '' }} \
+          ${{ steps.latest.outputs.flag }} \
           --push
 
     - name: Docker Hub logout

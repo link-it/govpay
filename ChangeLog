@@ -1,3 +1,8 @@
+2026-10-01  Giuliano Pintori <pintori@link.it>
+
+        * [Build] Immagini docker: il tag :latest e' pubblicato solo per i rilasci di master. Portato da 3.9.x (commit fe2c3df20).
+        Il job docker_release aggiungeva :latest, tramite la voce hsql della matrice, per qualsiasi tag: un rilascio creato su una linea di manutenzione lo avrebbe spostato su una versione precedente a quella corrente, e lo stesso sarebbe accaduto a un tag 3.10.0 creato su 3.10.x prima del merge in master. La voce hsql verifica ora con git merge-base --is-ancestor che il commit del tag sia contenuto in origin/master, e per questo fa il checkout della history completa; le altre voci restano a profondita' 1. Le cinque immagini versionate continuano a essere pubblicate per qualsiasi tag, perche' l'evento di tag non porta il branch e una patch di una linea di manutenzione deve avere le sue immagini anche quando master e' passato alla linea successiva. Regola documentata in docker/README.md.
+
 2026-09-25  Giuliano Pintori <pintori@link.it>
 
         * Issue #885 Rimosso l'header Content-Type dalle richieste GET della console. Portato da 3.9.x (commit 109a6c923).

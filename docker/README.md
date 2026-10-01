@@ -55,7 +55,7 @@ Il discriminante e' il **riferimento git in costruzione**:
 | Evento | Job | Risultato |
 |---|---|---|
 | push su `master` o su un branch `*.x` | `docker_dev` | immagine postgres in `linkitaly/govpay-dev` |
-| push di un tag | `docker_release` | cinque immagini in `linkitaly/govpay` e `:latest` |
+| push di un tag | `docker_release` | cinque immagini in `linkitaly/govpay`, e `:latest` se il tag e' su `master` |
 | push su un altro branch, pull request | nessuno | niente immagini |
 
 Un push ordinario, anche su `master`, produce quindi un'immagine di **sviluppo**:
@@ -68,6 +68,14 @@ runner GitHub, che ne ha una quindicina di GB liberi contro i circa cinque per
 immagine; in parallelo, inoltre, il tempo di un rilascio resta quello di una
 singola immagine. Il tag `:latest` e' derivato dall'immagine senza database,
 quindi lo aggiunge soltanto la voce `hsql` della matrice.
+
+`:latest` viene pubblicato **solo per i rilasci di `master`**: un tag creato su una
+linea di manutenzione (`3.9.x`, `3.10.x`, ...) non deve spostarlo su una versione
+precedente a quella corrente. L'evento di tag non porta con se' il branch, quindi
+il criterio e' che il commit del tag sia contenuto in `origin/master`
+(`git merge-base --is-ancestor`); per questo la voce `hsql` fa il checkout della
+history completa. Un tag non ancora integrato in `master` produce le cinque
+immagini versionate ma lascia `:latest` dov'e'.
 
 L'installer non viene ricostruito dai job docker: e' l'artefatto `govpay-installer`
 prodotto dal job `build`, che esegue `prepareSetup.sh tomcat` e lo carica solo
