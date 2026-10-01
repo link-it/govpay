@@ -27,8 +27,8 @@ qui, accanto al codice che ci finisce dentro, e la pipeline lo usa direttamente.
 
 | Insieme | Repository | Immagini | Tag prodotti |
 |---|---|---|---|
-| `dev` | `linkitaly/govpay-dev` | postgresql | `linkitaly/govpay-dev:3.10.0-SNAPSHOT_postgres` |
-| `release` | `linkitaly/govpay` | postgresql, oracle, mariadb, mysql, senza db | `linkitaly/govpay:3.10.0_postgres`, `..._oracle`, `..._mariadb`, `..._mysql`, `linkitaly/govpay:3.10.0` e con `--latest` anche `:latest` |
+| `dev` | `linkitaly/govpay-dev` | postgresql | `linkitaly/govpay-dev:3.9.3.p5-SNAPSHOT_postgres` |
+| `release` | `linkitaly/govpay` | postgresql, oracle, mariadb, mysql, senza db | `linkitaly/govpay:3.9.3.p5_postgres`, `..._oracle`, `..._mariadb`, `..._mysql`, `linkitaly/govpay:3.9.3.p5` e con `--latest` anche `:latest` |
 
 Le immagini di sviluppo e quelle di release stanno in **due repository distinti**,
 quindi i tag non possono collidere e la versione compare nel tag cosi' com'e',
@@ -55,7 +55,7 @@ Il discriminante e' il **riferimento git in costruzione**:
 | Evento | Job | Risultato |
 |---|---|---|
 | push su `master` o su un branch `*.x` | `docker_dev` | immagine postgres in `linkitaly/govpay-dev` |
-| push di un tag | `docker_release` | cinque immagini in `linkitaly/govpay` e `:latest` |
+| push di un tag | `docker_release` | cinque immagini in `linkitaly/govpay`, e `:latest` se il tag e' su `master` |
 | push su un altro branch, pull request | nessuno | niente immagini |
 
 Un push ordinario, anche su `master`, produce quindi un'immagine di **sviluppo**:
@@ -68,6 +68,14 @@ runner GitHub, che ne ha una quindicina di GB liberi contro i circa cinque per
 immagine; in parallelo, inoltre, il tempo di un rilascio resta quello di una
 singola immagine. Il tag `:latest` e' derivato dall'immagine senza database,
 quindi lo aggiunge soltanto la voce `hsql` della matrice.
+
+`:latest` viene pubblicato **solo per i rilasci di `master`**: un tag creato su una
+linea di manutenzione (`3.9.x`, `3.10.x`, ...) non deve spostarlo su una versione
+precedente a quella corrente. L'evento di tag non porta con se' il branch, quindi
+il criterio e' che il commit del tag sia contenuto in `origin/master`
+(`git merge-base --is-ancestor`); per questo la voce `hsql` fa il checkout della
+history completa. Un tag non ancora integrato in `master` produce le cinque
+immagini versionate ma lascia `:latest` dov'e'.
 
 L'installer non viene ricostruito dai job docker: e' l'artefatto `govpay-installer`
 prodotto dal job `build`, che esegue `prepareSetup.sh tomcat` e lo carica solo
@@ -94,14 +102,14 @@ Dopo un `mvn install` che abbia prodotto l'installer:
 ```bash
 # insieme di sviluppo, senza pubblicare
 ./docker/build-images.sh \
-  --version 3.10.0-SNAPSHOT \
-  --installer src/main/resources/setup/target/govpay-installer-3.10.0-SNAPSHOT.tgz \
+  --version 3.9.3.p5-SNAPSHOT \
+  --installer src/main/resources/setup/target/govpay-installer-3.9.3.p5-SNAPSHOT.tgz \
   --set dev
 
 # insieme di release su un registry locale, con anteprima dei comandi
 REGISTRY_PREFIX=localhost ./docker/build-images.sh \
-  --version 3.10.0 \
-  --installer src/main/resources/setup/target/govpay-installer-3.10.0.tgz \
+  --version 3.9.3.p5 \
+  --installer src/main/resources/setup/target/govpay-installer-3.9.3.p5.tgz \
   --set release --dry-run
 ```
 
@@ -112,8 +120,8 @@ Per una singola immagine si usa direttamente `build_image.sh`, invocabile da
 qualsiasi directory:
 
 ```bash
-./docker/build_image.sh -t linkitaly/govpay:3.10.0_oracle -v 3.10.0 \
-  -l src/main/resources/setup/target/govpay-installer-3.10.0.tgz -d oracle
+./docker/build_image.sh -t linkitaly/govpay:3.9.3.p5_oracle -v 3.9.3.p5 \
+  -l src/main/resources/setup/target/govpay-installer-3.9.3.p5.tgz -d oracle
 ./docker/build_image.sh -h   # elenco completo delle opzioni
 ```
 
