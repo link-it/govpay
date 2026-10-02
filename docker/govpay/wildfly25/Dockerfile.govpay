@@ -1,0 +1,193 @@
+# stage sorgente da utilizzare per il build dell'immagine finale
+ARG govpay_fullversion
+ARG source_image=linkitaly/govpay-installer
+ARG govpay_home=/etc/govpay
+ARG govpay_log=/var/log/govpay
+
+# Trasformo l'argomento di build source_image in un nome di stage (da usare su COPY --from=...)
+FROM ${source_image}:${govpay_fullversion} AS source_image_installer
+
+
+
+FROM centos:centos7.9.2009 AS source_image_setup
+LABEL org.opencontainers.image.authors="manca@link.it"
+LABEL org.opencontainers.image.description="Immagine temporanea per il setup dell'ambiente govpay"
+ARG govpay_fullversion
+ARG govpay_home
+ARG govpay_log
+
+USER root
+ENV GOVPAY_HOME=${govpay_home} \
+GOVPAY_LOGDIR=${govpay_log} \
+GOVPAY_FULLVERSION=${govpay_fullversion} \
+HSQLDB_FULLVERSION=2.6.1 \
+WILDFLY_VERSION=26.1.3.Final \
+WILDFLY_SHA1=b9f52ba41df890e09bb141d72947d2510caf758c \
+JBOSS_HOME=/opt/wildfly-26.1.3.Final \
+LAUNCH_JBOSS_IN_BACKGROUND=true
+
+RUN set -eux; \
+mkdir -p ${GOVPAY_HOME}  ${GOVPAY_LOGDIR};  \
+ulimit -n 1024; \
+yum -q -y install ca-certificates unzip java-11-openjdk-headless; \
+yum clean all; \
+rm -rf /var/cache/yum; \
+curl -kL -sS -q -o /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip https://sourceforge.net/projects/hsqldb/files/hsqldb/hsqldb_2_6/hsqldb-${HSQLDB_FULLVERSION}.zip/download; \
+unzip -q -d /opt /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip hsqldb-${HSQLDB_FULLVERSION}/hsqldb/lib/*; \
+rm -f  /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip; \
+curl -LfksS -o /tmp/wildfly-${WILDFLY_VERSION}.tar.gz https://github.com/wildfly/wildfly/releases/download/${WILDFLY_VERSION}/wildfly-${WILDFLY_VERSION}.tar.gz; \
+echo ${WILDFLY_SHA1} /tmp/wildfly-${WILDFLY_VERSION}.tar.gz | sha1sum -c -; \
+tar -C /opt -xf /tmp/wildfly-${WILDFLY_VERSION}.tar.gz; \
+useradd wildfly; \
+chown -R wildfly.0 ${JBOSS_HOME} && chmod -R g+rw ${JBOSS_HOME}; \
+rm -f /tmp/wildfly-${WILDFLY_VERSION}.tar.gz 
+
+
+# -XX:+PrintFlagsFinal \
+ENV JAVA_OPTS="-server \
+-XX:+UseContainerSupport \
+-XX:+UseG1GC \
+-XX:+DisableExplicitGC \
+-XX:+UnlockExperimentalVMOptions \
+-Djava.net.preferIPv4Stack=true \
+-Djboss.modules.system.pkgs=org.jboss.byteman \
+-Djava.awt.headless=true \
+-Duser.language=it \
+-Duser.country=IT \
+-Dfile.encoding=UTF-8"
+
+ARG source_image
+ENV GOVPAY_BUILT_FROM=${source_image}:${govpay_fullversion} 
+
+COPY --from=source_image_installer /opt/govpay-installer-${GOVPAY_FULLVERSION}/dist/archivi/* ${JBOSS_HOME}/standalone/deployments/
+COPY --from=source_image_installer /opt/govpay-installer-${GOVPAY_FULLVERSION}/dist/sql/ /opt/${govpay_database_vendor}
+
+ARG wildfly_custom_scripts=commons/standalone_wrapper.sh
+COPY ${wildfly_custom_scripts}* /var/tmp/custom_cli
+RUN [ -d /var/tmp/custom_cli ] && cp -r /var/tmp/custom_cli/ ${JBOSS_HOME}/standalone/configuration || echo "Personalizzazioni wildfly non presenti"
+
+
+COPY commons/standalone_wrapper.sh commons/initgovpay.sh commons/config_datasource.sh ${JBOSS_HOME}/bin/
+ARG govpay_database_vendor=hsql
+ENV GOVPAY_DB_TYPE=${govpay_database_vendor}
+
+# ARG jdbc_custom_jar=commons/standalone_wrapper.sh
+# COPY ${jdbc_custom_jar}* /var/tmp/jdbc_custom_jar
+# RUN [ -d /var/tmp/jdbc_custom_jar ] || echo "Driver jdbc Custom non presente"
+
+RUN echo -e 'embed-server --server-config=standalone.xml --std-out=echo \n\
+echo "Aggiungo Workers https" \n\
+/socket-binding-group=standard-sockets/socket-binding=https_clientauth:add(port=${jboss.https_clientauth.port:8445}) \n\
+/subsystem=io/worker=worker_clientauth:add(task-max-threads=${env.WILDFLY_HTTPS_CLIENTAUTH_WORKER-MAX-THREADS:100}) \n\
+/subsystem=io/worker=worker_https:add(task-max-threads=${env.WILDFLY_HTTPS_WORKER-MAX-THREADS:100}) \n\
+echo "Aggiungo Workers http" \n\
+/subsystem=io/worker=http-in-worker:add(task-max-threads=${env.WILDFLY_HTTP_WORKER-MAX-THREADS:20}) \n\
+/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=worker, value=http-in-worker) \n\
+echo "Aggiungo Worker e Listener ajp" \n\
+/subsystem=io/worker=ajp-worker:add(task-max-threads=${env.WILDFLY_AJP_WORKER-MAX-THREADS:50}) \n\
+/subsystem=undertow/server=default-server/ajp-listener=ajplistener:add(socket-binding=ajp, scheme=http, worker=ajp-worker) \n\
+echo "Configuro gli SSLContext" \n\
+/subsystem=elytron/key-store=pagopakeystore:add(path=${env.WILDFLY_KEYSTORE},credential-reference={clear-text=${env.WILDFLY_KEYSTORE_PASSWORD}},type=${env.WILDFLY_KEYSTORE_TIPO:JKS}) \n\
+/subsystem=elytron/key-manager=pagopakeymanager:add(key-store=pagopakeystore,credential-reference={clear-text=${env.WILDFLY_KEYSTORE_KEY_PASSWORD}}) \n\
+/subsystem=elytron/key-store=pagopatruststore:add(path=${env.WILDFLY_TRUSTSTORE},credential-reference={clear-text=${env.WILDFLY_TRUSTSTORE_PASSWORD}},type=${env.WILDFLY_TRUSTSTORE_TIPO:JKS}) \n\
+/subsystem=elytron/trust-manager=pagopatrustmanager:add(key-store=pagopatruststore) \n\
+/subsystem=elytron/server-ssl-context=clientAuthSSLContext:add(key-manager=pagopakeymanager, trust-manager=pagopatrustmanager,protocols=["TLSv1.2"],need-client-auth=true) \n\
+/subsystem=elytron/server-ssl-context=defaultSSLContext:add(key-manager=pagopakeymanager,protocols=["TLSv1.2"]) \n\
+echo "Rimuovo connettore https" \n\
+/subsystem=undertow/server=default-server/https-listener=https:remove() \n\
+echo "Aggiungo connettori https" \n\
+/subsystem=undertow/server=default-server/https-listener=https_clientauth:add(worker=worker_clientauth,ssl-context=clientAuthSSLContext,socket-binding=https_clientauth,enable-http2=true) \n\
+/subsystem=undertow/server=default-server/https-listener=https:add(ssl-context=defaultSSLContext,socket-binding=https,enable-http2=true,worker=worker_https) \n\
+echo "Abilito utilizzo degli header X-Forwarding" \n\
+/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true) \n\
+/subsystem=undertow/server=default-server/https-listener=https:write-attribute(name=proxy-address-forwarding,value=true) \n\
+/subsystem=undertow/server=default-server/https-listener=https_clientauth:write-attribute(name=proxy-address-forwarding,value=true) \n\
+echo "Abilitazione Non standard wrapper" \n\
+/subsystem=undertow/servlet-container=default:write-attribute(name=allow-non-standard-wrappers, value=true) \n\
+echo "Correggo max post size" \n\
+/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=max-post-size , value=${env.WILDFLY_MAX-POST-SIZE:25485760}) \n\
+/subsystem=undertow/server=default-server/https-listener=https:write-attribute(name=max-post-size , value=${env.WILDFLY_MAX-POST-SIZE:25485760}) \n\
+/subsystem=undertow/server=default-server/https-listener=https_clientauth:write-attribute(name=max-post-size , value=${env.WILDFLY_MAX-POST-SIZE:25485760}) \n\
+/subsystem=undertow/server=default-server/ajp-listener=ajplistener:write-attribute(name=max-post-size, value=${env.WILDFLY_MAX-POST-SIZE:25485760}) \n\
+echo "Abilitazione Acces Log"\n\
+/subsystem=undertow/server=default-server/host=default-host/setting=access-log:add(pattern="%A %t %h %l %u %r %s %b %T %I", directory="${env.GOVPAY_LOGDIR}", prefix=access, suffix=".log") \n\
+echo "Sposto Server Log"\n\
+/path=goway.log.dir:add(path="${env.GOVPAY_LOGDIR}") \n\
+/subsystem=logging/periodic-rotating-file-handler=FILE:write-attribute(name=file , value={path=server.log, relative-to=goway.log.dir })\n\
+stop-embedded-server \n\
+' > /tmp/govpay_standalone_configuration.cli \
+&& chmod 750 ${JBOSS_HOME}/bin/config_datasource.sh \
+&& ${JBOSS_HOME}/bin/config_datasource.sh /tmp/govpay_standalone_configuration.cli \
+&& keytool -genkey -alias test_govpay -keystore ${JBOSS_HOME}/standalone/configuration/testkeystore.jks  -storepass '123456' -keypass '123456'  -keyalg RSA -keysize 2048 -validity 10950  -dname "CN=test.govpay.it,C=IT" \
+&& export WILDFLY_KEYSTORE=${JBOSS_HOME}/standalone/conf/testkeystore.jks WILDFLY_KEYSTORE_PASSWORD=123456 WILDFLY_TRUSTSTORE=${JBOSS_HOME}/standalone/conf/testkeystore.jks WILDFLY_TRUSTSTORE_PASSWORD=123456 WILDFLY_KEYSTORE_KEY_PASSWORD=123456 \
+&& ${JBOSS_HOME}/bin/jboss-cli.sh --file=/tmp/govpay_standalone_configuration.cli \
+&& rm -rf ${JBOSS_HOME}/standalone/{data,log,configuration/standalone_xml_history} \
+/tmp/govpay_standalone_configuration.cli
+
+RUN mkdir -p /opt/hsqldb-${HSQLDB_FULLVERSION}/hsqldb/database/ \
+&& chown -R wildfly:0 ${JBOSS_HOME}/bin/standalone_wrapper.sh ${JBOSS_HOME}/bin/initgovpay.sh ${JBOSS_HOME}/standalone ${GOVPAY_HOME}  ${GOVPAY_LOGDIR} /opt/hsqldb-${HSQLDB_FULLVERSION}/hsqldb/database/ \
+&& chmod -Rf g+rwX  ${JBOSS_HOME}/standalone ${JBOSS_HOME}/modules/govpayJDBCMod/main/ ${GOVPAY_HOME}  ${GOVPAY_LOGDIR} /opt/hsqldb-${HSQLDB_FULLVERSION}/hsqldb/database/ \
+&& chmod ug=rx ${JBOSS_HOME}/bin/standalone_wrapper.sh ${JBOSS_HOME}/bin/initgovpay.sh
+
+
+
+FROM centos:centos7.9.2009
+LABEL org.opencontainers.image.authors="manca@link.it"
+LABEL org.opencontainers.image.description="Immagine utilizzata per il deploy di un nodo GovPay"
+ARG govpay_fullversion
+ARG govpay_home
+ARG govpay_log
+
+
+USER root
+ENV GOVPAY_HOME=${govpay_home} \
+GOVPAY_LOGDIR=${govpay_log} \
+GOVPAY_FULLVERSION=${govpay_fullversion} \
+HSQLDB_FULLVERSION=2.6.1 \
+WILDFLY_VERSION=26.1.3.Final \
+WILDFLY_SHA1=b9f52ba41df890e09bb141d72947d2510caf758c \
+JBOSS_HOME=/opt/wildfly-26.1.3.Final \
+LAUNCH_JBOSS_IN_BACKGROUND=true
+
+RUN set -eux; \
+echo -e "\n\
+wildfly\tsoft\tnofile\t8192\n\
+wildfly\thard\tnofile\t8192\n\
+wildfly\tsoft\tnproc\t4096\n\
+wildfly\thard\tnproc\t4096\n\
+" >> /etc/security/limits.conf; \
+useradd wildfly; \
+rm -f  /etc/localtime && ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime; \
+mkdir -p ${GOVPAY_HOME}  ${GOVPAY_LOGDIR};  \
+chown -R wildfly:0 ${GOVPAY_HOME}  ${GOVPAY_LOGDIR}; \
+ulimit -n 1024; \
+chmod -Rf g+rwX  ${GOVPAY_HOME}  ${GOVPAY_LOGDIR}; \
+yum -y update; \
+yum -q -y install ca-certificates unzip nmap-ncat fontconfig freetype java-11-openjdk-headless; \
+yum clean all; \
+rm -rf /var/cache/yum; 
+
+# -XX:+PrintFlagsFinal \
+ENV JAVA_OPTS="-server \
+-XX:+UseContainerSupport \
+-XX:+UseG1GC \
+-XX:+DisableExplicitGC \
+-XX:+UnlockExperimentalVMOptions \
+-Djava.net.preferIPv4Stack=true \
+-Djboss.modules.system.pkgs=org.jboss.byteman \
+-Djava.awt.headless=true \
+-Duser.language=it \
+-Duser.country=IT \
+-Duser.timezone=Europe/Rome \
+-Dfile.encoding=UTF-8"
+
+ARG source_image
+ENV GOVPAY_BUILT_FROM=${source_image}:${govpay_fullversion}
+ARG govpay_database_vendor=hsql
+ENV GOVPAY_DB_TYPE=${govpay_database_vendor}
+
+COPY --from=source_image_setup --chown=wildfly:0 /opt/ /opt/
+COPY --from=source_image_installer --chown=wildfly:0 /opt/govpay-installer-${GOVPAY_FULLVERSION}/dist/cfg/* ${GOVPAY_HOME}/
+USER wildfly
+EXPOSE 8080 8443 8445 8009
+ENTRYPOINT [ "/opt/wildfly-26.1.3.Final/bin/standalone_wrapper.sh" ]
