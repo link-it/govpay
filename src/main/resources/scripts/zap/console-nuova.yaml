@@ -1,0 +1,71 @@
+# Piano ZAP (Automation Framework) per il cruscotto nuovo (container).
+#
+# Perche' un piano e non "zap-baseline.py -t <url>": il baseline costruisce il
+# contesto dal solo host, e sul cruscotto attuale - servito dallo stesso Tomcat
+# delle war di API - lo spider risaliva alla radice percorrendo /examples,
+# /docs, /manager e /host-manager: il report descriveva il server invece
+# dell'applicazione. Con il piano l'ambito e' dichiarato (includePaths) e il
+# comportamento e' lo stesso per tutti e tre i bersagli.
+#
+# Restano fuori gli URL di logout: seguirli butterebbe giu' la sessione a meta'
+# scansione.
+env:
+  contexts:
+    - name: console-nuova
+      urls:
+        - "http://localhost:10012"
+      includePaths:
+        - "http://localhost:10012.*"
+      excludePaths:
+        - ".*logout.*"
+  parameters:
+    failOnError: false
+    failOnWarning: false
+    progressToStdout: true
+
+jobs:
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 10
+
+  # Spider classico: la struttura statica (asset, pagine servite dal server).
+  - type: spider
+    parameters:
+      context: console-nuova
+      maxDuration: 3
+
+  # Spider client: indispensabile su una SPA Angular, dove la navigazione
+  # avviene in JavaScript e lo spider classico vedrebbe una pagina sola.
+  - type: spiderClient
+    parameters:
+      context: console-nuova
+      maxDuration: 3
+
+  - type: passiveScan-wait
+    parameters:
+      maxDuration: 5
+
+  # Le segnalazioni verificate e accettate si dichiarano qui, una per volta e
+  # con il motivo nel commento: servono a tenere il report leggibile, non a
+  # nascondere i problemi.
+  # - type: alertFilter
+  #   alertFilters:
+  #     - ruleId: 10096          # Timestamp Disclosure: falsi positivi su id numerici
+  #       newRisk: "False Positive"
+
+  - type: report
+    parameters:
+      template: traditional-html
+      reportDir: /zap/wrk
+      reportFile: console-nuova.html
+      reportTitle: "ZAP - il cruscotto nuovo (container)"
+  - type: report
+    parameters:
+      template: traditional-json
+      reportDir: /zap/wrk
+      reportFile: console-nuova.json
+  - type: report
+    parameters:
+      template: traditional-xml
+      reportDir: /zap/wrk
+      reportFile: console-nuova.xml
