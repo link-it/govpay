@@ -670,15 +670,18 @@ components:
         dataValidita:
           type: string
           format: date
+          nullable: true
           description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
           example: '2019-12-31'
         dataScadenza:
           type: string
           format: date
+          nullable: true
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
         annoRiferimento:
           type: number
+          nullable: true
           description: Anno di riferimento della pendenza
           example: 2020
         cartellaPagamento:
@@ -789,6 +792,7 @@ components:
         dataScandenzaAvviso:
           type: string
           format: date
+          nullable: true
           description: se valorizzata, sostituisce la data di scadenza standard.
     QuotaContabilita:
       type: object
@@ -890,7 +894,7 @@ components:
              * 0 = Pagamento eseguito
              * 3 = Pagamento revocato
              * 4 = Pagamento eseguito in modalita' stand-in
-	     * 8 = Pagamento eseguito stand-in in assenza di RPT
+             * 8 = Pagamento eseguito stand-in in assenza di RPT
              * 9 = Pagamento eseguito in assenza di RPT
           example: 0
         data:

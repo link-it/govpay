@@ -1,3 +1,14 @@
+2026-10-07  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p6.
+
+2026-10-02  Giuliano Pintori <pintori@link.it>
+
+        * Issue #889 Dichiarati nullable nello YAML dell'API Ente Creditore v2 i campi facoltativi che GovPay invia a null nella notifica.
+        Un client generato dallo YAML con lo swagger editor non riusciva a deserializzare la notifica di pagamento: ProprietaPendenza veniva generata con DataScandenzaAvviso non nullabile, mentre nella notifica il campo arriva null quando la pendenza non lo valorizza. Il campo non era fra i required ma non era dichiarato nullable, e in OpenAPI 3.0 le due cose sono distinte: la notifica e' serializzata da ConverterUtils.toJSON con l'inclusione predefinita di Jackson, che scrive i campi non valorizzati come null invece di ometterli, e i generatori piu' rigorosi rifiutano il null sui tipi valore, come DateTime in C#.
+        Aggiunto nullable: true a ProprietaPendenza.dataScandenzaAvviso e, nell'albero di Ricevuta, agli altri campi facoltativi di tipo data o numero che possono arrivare null: Pendenza.dataScadenza, Pendenza.dataValidita e Pendenza.annoRiferimento. Il payload inviato agli enti e' invariato e la modifica e' compatibile per i client esistenti.
+        Sostituito con spazi il carattere TAB presente dalla 3.9.0 nella descrizione di esito (codice 8) dello stesso file, che rendeva govpay-api-schemas.yaml non valido per i parser YAML rigorosi; la spec v2 completa e' ora valida come OpenAPI 3.0.
+
 2026-10-01  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p5.
