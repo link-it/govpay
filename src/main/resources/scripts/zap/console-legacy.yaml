@@ -11,7 +11,7 @@
 # scansione.
 env:
   contexts:
-    - name: console-attuale
+    - name: console-legacy
       urls:
         - "http://localhost:8080/govpay-console"
       includePaths:
@@ -31,14 +31,14 @@ jobs:
   # Spider classico: la struttura statica (asset, pagine servite dal server).
   - type: spider
     parameters:
-      context: console-attuale
+      context: console-legacy
       maxDuration: 3
 
   # Spider client: indispensabile su una SPA Angular, dove la navigazione
   # avviene in JavaScript e lo spider classico vedrebbe una pagina sola.
   - type: spiderClient
     parameters:
-      context: console-attuale
+      context: console-legacy
       maxDuration: 3
 
   - type: passiveScan-wait
@@ -57,15 +57,15 @@ jobs:
     parameters:
       template: traditional-html
       reportDir: /zap/wrk
-      reportFile: console-attuale.html
+      reportFile: console-legacy.html
       reportTitle: "ZAP - il cruscotto attuale (war su Tomcat)"
   - type: report
     parameters:
       template: traditional-json
       reportDir: /zap/wrk
-      reportFile: console-attuale.json
+      reportFile: console-legacy.json
   - type: report
     parameters:
       template: traditional-xml
       reportDir: /zap/wrk
-      reportFile: console-attuale.xml
+      reportFile: console-legacy.xml

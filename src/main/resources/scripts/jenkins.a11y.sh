@@ -56,7 +56,7 @@ scansiona() {
   echo "   esito gov-a11y su ${nome}: $?"
 }
 
-scansiona console-attuale "${URL_CONSOLE_ATTUALE}" targets.govpay-console-legacy.json
+scansiona console-legacy "${URL_CONSOLE_LEGACY}" targets.govpay-console-legacy.json
 scansiona console-nuova   "${URL_CONSOLE_NUOVA}"   targets.govpay-console.json
 scansiona portale         "${URL_PORTALE}"         targets.govpay-portal.json
 

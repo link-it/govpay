@@ -22,7 +22,7 @@ pipeline {
     CACHE_CHECK_CRON = "0/10 * * * * ?"
 
     // Bersagli delle analisi che girano ad ambiente vivo (ZAP, accessibilita')
-    URL_CONSOLE_ATTUALE = "http://localhost:8080/govpay-console"
+    URL_CONSOLE_LEGACY = "http://localhost:8080/govpay-console"
     URL_CONSOLE_NUOVA   = "http://localhost:10012"
     URL_PORTALE         = "http://localhost:10011"
 
@@ -143,7 +143,7 @@ pipeline {
             always {
               junit allowEmptyResults: true, testResults: 'target/a11y/*/a11y-junit.xml'
               recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [sarif(id: 'a11y', name: 'Accessibilita', pattern: 'target/a11y/*/a11y.sarif')]
-              publishHTML(target: [reportDir: 'target/a11y', reportFiles: 'console-attuale/report.html, console-nuova/report.html, portale/report.html',
+              publishHTML(target: [reportDir: 'target/a11y', reportFiles: 'console-legacy/report.html, console-nuova/report.html, portale/report.html',
                                    reportName: 'Accessibilita', keepAll: true, alwaysLinkToLastBuild: true,
                                    allowMissing: true])
               archiveArtifacts artifacts: 'target/a11y/**', allowEmptyArchive: true

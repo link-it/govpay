@@ -47,7 +47,7 @@ scansiona() {
   echo "   esito ZAP su ${nome}: ${esito}"
 }
 
-scansiona console-attuale
+scansiona console-legacy
 scansiona console-nuova
 scansiona portale
 
@@ -55,7 +55,7 @@ scansiona portale
 {
   echo "<!doctype html><meta charset='utf-8'><title>ZAP - GovPay ${PROJECT_VERSION}</title>"
   echo "<h1>OWASP ZAP - GovPay ${PROJECT_VERSION}</h1><ul>"
-  for n in console-attuale console-nuova portale; do
+  for n in console-legacy console-nuova portale; do
     [ -f "${OUT}/${n}.html" ] && echo "<li><a href='${n}.html'>${n}</a></li>"
   done
   echo "</ul>"
