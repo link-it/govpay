@@ -18,6 +18,10 @@
 #       le sezioni indicate, con la retention di default di ciascuna
 #   ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 2 --retention-tracciati 1
 #       le sezioni indicate, con la retention in mesi indicata per sezione
+#   ./svecchiamento-db.sh postgresql --sezioni flussi_rendicontazione,pendenze_pagate --export-rt /backup/rt
+#       flussi e pendenze pagate, salvando prima su file l'XML di ogni RT cancellata
+#   ./svecchiamento-db.sh postgresql --sezioni flussi_rendicontazione --export-fr /backup/fr
+#       flussi, salvando prima su file l'XML di ogni flusso cancellato
 #
 # ATTENZIONE: cancella dati in modo definitivo. Sui metadati Spring Batch non
 # c'e' filtro sullo stato delle esecuzioni, quindi va eseguito a batch fermi.
@@ -37,7 +41,26 @@ DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
 # L'esito non dipende dall'ordine: cio' che viene cancellato e' l'unione dei due
 # criteri, gli eventi piu' vecchi della retention e quelli collegati ai tracciati
 # scaduti, e l'unione non cambia a seconda di quale si applica prima.
-SEZIONI_NOTE=(eventi tracciati spring-batch pendenze_scadute_non_pagate)
+# flussi_rendicontazione precede pendenze_pagate: cancella le pendenze
+# rendicontate, e pendenze_pagate si occupa di quelle pagate e mai rendicontate.
+SEZIONI_NOTE=(eventi tracciati spring-batch pendenze_scadute_non_pagate flussi_rendicontazione pendenze_pagate)
+
+# Retention minima, in mesi, delle sezioni che cancellano rendicontazioni e
+# pendenze pagate: sotto questa soglia si cancellano dati che possono servire
+# ancora, ed e' quindi richiesta una conferma esplicita, --force, oppure la
+# simulazione, --dry-run.
+RETENTION_MINIMA_MESI=24
+SEZIONI_RETENTION_MINIMA=(flussi_rendicontazione pendenze_pagate)
+
+# Export su file prima della cancellazione, uno per tipo di documento: RT con
+# --export-rt, flussi di rendicontazione con --export-fr. Per ogni tipo, le
+# sezioni che lo cancellano e possono quindi salvarlo.
+TIPI_EXPORT=(rt fr)
+declare -A SEZIONI_EXPORT=(
+  [rt]="flussi_rendicontazione pendenze_pagate"
+  [fr]="flussi_rendicontazione"
+)
+declare -A DOCUMENTI=([rt]="RT" [fr]="flussi")
 
 # Nome del parametro di retention dentro ciascuno script. E' un dettaglio interno
 # agli script SQL, e non coincide sempre con il nome della sezione: spring-batch
@@ -49,6 +72,8 @@ function parametro_di() {
     eventi)       echo "eventi" ;;
     spring-batch) echo "batch" ;;
     pendenze_scadute_non_pagate) echo "pendenze" ;;
+    flussi_rendicontazione) echo "fr" ;;
+    pendenze_pagate) echo "pendenze_pagate" ;;
   esac
 }
 
@@ -57,9 +82,15 @@ declare -A RETENTION=()
 
 SOLO_SQL=false
 DRY_RUN=false
+FORCE=false
 SENZA_CONFERMA=false
 OUTDIR=""
 WORKDIR=""
+# Directory di export per tipo, e file grezzo per tipo e sezione ("rt:sezione"):
+# con un file solo il client della seconda sezione lo riscriverebbe, cancellando
+# quanto esportato dalla prima.
+declare -A EXPORT_DIR=([rt]="" [fr]="")
+declare -A EXPORT_FILE=()
 
 # Connessione: gli stessi nomi di variabile usati dall'init dei container, cosi'
 # un ambiente gia' configurato per quelli vale anche qui.
@@ -104,9 +135,33 @@ Esecuzione:
                        righe che ogni DELETE cancellerebbe e non modifica nulla.
                        Non chiede conferma. Come nell'esecuzione vera, le righe
                        interessate restano bloccate finche' la sezione e' aperta
+  --export-rt <dir>    Con le sezioni flussi_rendicontazione e pendenze_pagate:
+                       prima di cancellare le pendenze, salva l'XML di ogni RT
+                       in <dir>, un file per RT di nome
+                       <cod_dominio>_<iuv>_<ccp>.xml. I caratteri diversi da
+                       lettere, cifre, '.', '_' e '-' diventano '_' (il ccp
+                       'n/a' diventa 'n_a'). Il file e' scritto dal client del
+                       database, sulla macchina dove gira questo script. In
+                       simulazione le RT non vengono salvate
+  --export-fr <dir>    Con la sezione flussi_rendicontazione: prima di
+                       cancellare i flussi, salva l'XML di ognuno in <dir>, un
+                       file per flusso di nome
+                       <cod_dominio>_<cod_flusso>_<data_ora_flusso>.xml, con la
+                       data nel formato AAAAMMGGhhmmss: le revisioni di un
+                       flusso hanno lo stesso codice. Restano senza file i
+                       flussi senza XML: quelli acquisiti dal batch FdR non lo
+                       hanno. Stesse regole di --export-rt per nomi e client
+  --force              Obbligatoria per eseguire davvero flussi_rendicontazione
+                       e pendenze_pagate con una retention inferiore a ${RETENTION_MINIMA_MESI} mesi.
+                       Senza --force, o --dry-run, lo script si rifiuta di
+                       procedere, anche con --solo-sql: lo script composto
+                       cancellerebbe quei dati
   -y, --si             Non chiedere conferma prima di eseguire
   --out <dir>          Directory di uscita (default: target/svecchiamento-sql)
   -h, --help           Mostra questo aiuto
+
+Documentazione completa, con requisiti ed esempi: README-svecchiamento.md,
+accanto a questo script.
 
 Gli script delle sezioni stanno in sql/<dialetto>/svecchiamento/ e sono
 eseguibili anche uno per uno con il client del database: questo script serve a
@@ -151,8 +206,11 @@ while [[ $# -gt 0 ]]; do
     --oracle-conn)           ORACLE_CONN="${2:-}"; shift 2 ;;
     --solo-sql)              SOLO_SQL=true; shift ;;
     --dry-run)               DRY_RUN=true; shift ;;
+    --force)                 FORCE=true; shift ;;
     -y|--si)                 SENZA_CONFERMA=true; shift ;;
     --out)                   OUTDIR="${2:-}"; shift 2 ;;
+    --export-rt)             EXPORT_DIR[rt]="${2:-}"; shift 2 ;;
+    --export-fr)             EXPORT_DIR[fr]="${2:-}"; shift 2 ;;
     -h|--help)               usage; exit 0 ;;
     *) errore "opzione sconosciuta: $1" ;;
   esac
@@ -203,6 +261,41 @@ for p in "${!RETENTION[@]}"; do
     || errore "--retention-${p} indicata, ma la sezione non e' tra quelle da eseguire: aggiungerla a --sezioni"
   [[ "${v}" =~ ^[0-9]+$ ]] || errore "la retention di ${p} deve essere un numero di mesi: '${v}'"
   [[ "${v}" -gt 0 ]]       || errore "la retention di ${p} deve essere maggiore di zero"
+done
+
+# Un export appartiene alle sezioni che cancellano quei documenti: chiederlo
+# senza eseguirne nessuna sarebbe un'opzione ignorata in silenzio.
+ESPORTAZIONI=()   # coppie "tipo:sezione" attive
+ADESSO="$(date '+%Y%m%d-%H%M%S')"
+for tipo in "${TIPI_EXPORT[@]}"; do
+  dir="${EXPORT_DIR[${tipo}]}"
+  [[ -n "${dir}" ]] || continue
+  opz="--export-${tipo}"
+  sezioni_tipo=()
+  for s in "${SEZIONI[@]}"; do
+    for e in ${SEZIONI_EXPORT[${tipo}]}; do [[ "${s}" == "${e}" ]] && sezioni_tipo+=("${s}"); done
+  done
+  [[ ${#sezioni_tipo[@]} -gt 0 ]] \
+    || errore "${opz} indicata, ma nessuna delle sezioni ${SEZIONI_EXPORT[${tipo}]} e' tra quelle da eseguire: aggiungerla a --sezioni"
+  if [[ "${DRY_RUN}" == true ]]; then
+    nota "--dry-run: nessun salvataggio su file (${DOCUMENTI[${tipo}]}), ${opz} ignorata"
+    EXPORT_DIR[${tipo}]=""
+    continue
+  fi
+  # Il percorso finisce dentro lo script SQL, tra apici, e lo legge il client
+  # del database: gli apici e le virgolette lo romperebbero.
+  [[ "${dir}" != *[\'\"]* ]] || errore "${opz}: il percorso non puo' contenere apici o virgolette: ${dir}"
+  mkdir -p "${dir}" || errore "${opz}: impossibile creare ${dir}"
+  dir="$(cd "${dir}" && pwd)"
+  [[ -w "${dir}" ]] || errore "${opz}: directory non scrivibile: ${dir}"
+  EXPORT_DIR[${tipo}]="${dir}"
+  # Il file grezzo sta accanto agli XML: e' la copia scritta prima del COMMIT,
+  # e resta finche' gli XML non ne sono stati ricavati.
+  for s in "${sezioni_tipo[@]}"; do
+    EXPORT_FILE[${tipo}:${s}]="${dir}/${tipo}-esportati-${ADESSO}-${s}.hex"
+    [[ ! -e "${EXPORT_FILE[${tipo}:${s}]}" ]] || errore "${opz}: il file ${EXPORT_FILE[${tipo}:${s}]} esiste gia'"
+    ESPORTAZIONI+=("${tipo}:${s}")
+  done
 done
 
 OUTDIR="${OUTDIR:-${REPO_ROOT}/target/svecchiamento-sql}"
@@ -270,8 +363,93 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
         || errore "sostituzione della retention di ${sez} non riuscita su ${src#${REPO_ROOT}/}"
     fi
   fi
+  for tipo in "${TIPI_EXPORT[@]}"; do
+    [[ -n "${EXPORT_FILE[${tipo}:${sez}]:-}" ]] && con_export "${tmp}" "${sez}" "${tipo}"
+  done
   [[ "${DRY_RUN}" == true ]] && simulazione "${sez}" "${tmp}"
   cat "${tmp}"
+}
+
+# ── Export su file ───────────────────────────────────────────────────────────
+# I documenti vengono scritti dal client del database, dentro la transazione
+# della sezione e prima delle DELETE: al COMMIT il file grezzo e' gia' su disco.
+# Da quello, a esecuzione finita, si ricava un .xml per documento. Lo script di
+# export e' a parte (<sezione>-export-<tipo>.sql) e si innesta al posto della
+# riga marcata export-<tipo>: la sezione eseguita da sola non esporta nulla.
+function con_export() {   # $1 = file della sezione da modificare, $2 = sezione, $3 = tipo
+  local tmp="$1" sez="$2" tipo="$3"
+  local opz="--export-${tipo}" marcatore="export-${tipo}" segnaposto="@file_export_${tipo}@"
+  local file_grezzo="${EXPORT_FILE[${tipo}:${sez}]}"
+  local src="${SEZIONI_DIR}/${sez}.sql"
+  local export_sql="${SEZIONI_DIR}/${sez}-export-${tipo}.sql"
+  [[ -f "${export_sql}" ]] || errore "${opz}: manca ${export_sql#${REPO_ROOT}/}"
+  local n; n="$(grep -c "^-- ${marcatore}\$" "${tmp}" || true)"
+  [[ "${n}" == "1" ]] \
+    || errore "${opz}: in ${src#${REPO_ROOT}/} ci sono ${n} righe '-- ${marcatore}' invece di una: lo script e' cambiato, aggiornare $(basename "$0")"
+  local blocco="${WORKDIR}/_${marcatore}_${sez}.sql"
+  # Il separatore di sed e' |, che in un percorso non compare quasi mai: in
+  # quel caso la sostituzione non riesce e il controllo sotto se ne accorge.
+  sed "s|${segnaposto}|${file_grezzo}|g" "${export_sql}" > "${blocco}"
+  grep -qF "${file_grezzo}" "${blocco}" \
+    || errore "${opz}: percorso del file non inserito in ${export_sql#${REPO_ROOT}/}"
+  sed -i -e "/^-- ${marcatore}\$/{r ${blocco}" -e "d}" "${tmp}"
+  grep -qF "${file_grezzo}" "${tmp}" \
+    || errore "${opz}: blocco di export non inserito in ${src#${REPO_ROOT}/}"
+}
+
+# Ricava un .xml per documento dal file grezzo. Ogni riga e'
+# "<PREFISSO> <nome> <esadecimale>", con PREFISSO RT o FR; dove il client non
+# regge un documento intero su una riga (oracle, sqlserver) e' spezzato su piu'
+# righe consecutive con lo stesso nome, da riattaccare. Un file gia' presente
+# con lo stesso contenuto non e' un errore, perche' rieseguire dopo un
+# fallimento riesporta gli stessi documenti; con contenuto diverso non viene
+# sovrascritto, e il documento nuovo prende un suffisso.
+function decodifica() {   # $1 = file grezzo, $2 = directory, $3 = prefisso (RT, FR)
+  command -v perl >/dev/null 2>&1 || { echo "perl non trovato: impossibile ricavare gli XML" >&2; return 1; }
+  perl -e '
+    use strict; use warnings;
+    my ($grezzo, $dir, $pref) = @ARGV;
+    open(my $in, "<", $grezzo) or die "impossibile leggere $grezzo: $!\n";
+    my ($nome, $dati) = (undef, "");
+    my ($scritti, $uguali, $rinominati, $illeggibili) = (0, 0, 0, 0);
+    sub chiudi {
+      return unless defined $nome;
+      (my $base = $nome) =~ s/[^A-Za-z0-9._-]/_/g;
+      my $file = "$dir/$base.xml";
+      if (-e $file) {
+        open(my $f, "<:raw", $file) or die "impossibile leggere $file: $!\n";
+        local $/; my $c = <$f>; close $f;
+        if (defined $c && $c eq $dati) { $uguali++; ($nome, $dati) = (undef, ""); return; }
+        my $i = 2;
+        $i++ while -e "$dir/$base-$i.xml";
+        $file = "$dir/$base-$i.xml";
+        print STDERR "  $base.xml esiste con un contenuto diverso: salvato in $base-$i.xml\n";
+        $rinominati++;
+      }
+      open(my $o, ">:raw", $file) or die "impossibile scrivere $file: $!\n";
+      print $o $dati or die "impossibile scrivere $file: $!\n";
+      close $o or die "impossibile scrivere $file: $!\n";
+      $scritti++;
+      ($nome, $dati) = (undef, "");
+    }
+    while (my $riga = <$in>) {
+      next unless $riga =~ /^\Q$pref\E /;
+      if ($riga =~ /^\Q$pref\E (\S+) ([0-9A-Fa-f]+)\s*$/ && length($2) % 2 == 0) {
+        chiudi() if defined $nome && $nome ne $1;
+        $nome = $1;
+        $dati .= pack("H*", $2);
+      } else {
+        $illeggibili++;
+        print STDERR "  riga non interpretabile alla riga $.\n";
+      }
+    }
+    chiudi();
+    close $in;
+    print "  salvati: $scritti\n";
+    print "  gia presenti e identici: $uguali\n" if $uguali;
+    print "  salvati con suffisso: $rinominati\n" if $rinominati;
+    exit($illeggibili ? 2 : 0);
+  ' "$1" "$2" "$3"
 }
 
 # ── Simulazione ──────────────────────────────────────────────────────────────
@@ -319,6 +497,30 @@ function conta_righe_dopo_delete() {   # $1 = file, $2 = istruzione
     in_del && /;[[:space:]]*$/ { print istr; in_del = 0 }
   ' "$1" > "$1.new" && mv "$1.new" "$1"
 }
+
+# ── Retention minima ─────────────────────────────────────────────────────────
+# Rendicontazioni e pendenze pagate piu' recenti di RETENTION_MINIMA_MESI si
+# cancellano solo chiedendolo esplicitamente con --force. La simulazione non
+# cancella nulla e passa sempre. Il controllo e' sulla retention effettiva:
+# quella dell'opzione o, senza, quella scritta nello script della sezione, che
+# potrebbe essere stata abbassata a mano.
+for s in "${SEZIONI[@]}"; do
+  soggetta=false
+  for m in "${SEZIONI_RETENTION_MINIMA[@]}"; do [[ "${s}" == "${m}" ]] && soggetta=true; done
+  [[ "${soggetta}" == true ]] || continue
+  mesi="${RETENTION[${s}]:-$(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "$(parametro_di "${s}")")}"
+  # Una retention illeggibile non si puo' confrontare: meglio fermarsi.
+  [[ "${mesi}" =~ ^[0-9]+$ ]] \
+    || errore "retention di ${s} non leggibile da ${SEZIONI_DIR#${REPO_ROOT}/}/${s}.sql: lo script e' cambiato, aggiornare $(basename "$0")"
+  [[ "${mesi}" -lt "${RETENTION_MINIMA_MESI}" ]] || continue
+  if [[ "${DRY_RUN}" == true ]]; then
+    nota "${s}: retention di ${mesi} mesi, inferiore a ${RETENTION_MINIMA_MESI}; ammessa perche' e' una simulazione"
+  elif [[ "${FORCE}" == true ]]; then
+    nota "${s}: retention di ${mesi} mesi, inferiore a ${RETENTION_MINIMA_MESI}; ammessa con --force"
+  else
+    errore "${s}: retention di ${mesi} mesi, inferiore al minimo di ${RETENTION_MINIMA_MESI}. Cancellerebbe rendicontazioni o pendenze pagate recenti: aggiungere --dry-run per simulare, o --force per cancellare davvero"
+  fi
+done
 
 # ── Composizione ─────────────────────────────────────────────────────────────
 mkdir -p "${OUTDIR}"
@@ -408,6 +610,8 @@ for s in "${SEZIONI[@]}"; do
 done
 echo "  script:   ${OUT}"
 echo "            $(wc -l < "${OUT}") righe"
+[[ -n "${EXPORT_DIR[rt]}" ]] && echo "  RT:       salvate in ${EXPORT_DIR[rt]}"
+[[ -n "${EXPORT_DIR[fr]}" ]] && echo "  flussi:   salvati in ${EXPORT_DIR[fr]}"
 echo "=============================================="
 
 if [[ "${SOLO_SQL}" == true ]]; then
@@ -526,7 +730,56 @@ esac
 # sono committate. E' la ragione per cui l'esito va detto a chiare lettere
 # invece di lasciare l'ultima riga al client.
 ESITO=0
-esegui || ESITO=$?
+if [[ ${#ESPORTAZIONI[@]} -gt 0 ]]; then
+  # mysql e SqlTool copiano a video anche quello che scrivono nei file di
+  # export: righe lunghe quanto i documenti, da non riversare sul terminale.
+  esegui | awk '!/^(RT|FR) /' || ESITO=$?
+else
+  esegui || ESITO=$?
+fi
+
+# I documenti si ricavano anche dopo un errore: se il file grezzo c'e', la
+# sezione e' arrivata almeno all'export, e i file sono una copia, non una
+# cancellazione. Se l'errore e' venuto prima del COMMIT i dati sono ancora nel
+# database, e rieseguire riesporta gli stessi documenti, che decodifica
+# riconosce.
+ESITO_EXPORT=0
+for coppia in ${ESPORTAZIONI[@]+"${ESPORTAZIONI[@]}"}; do
+  tipo="${coppia%%:*}"; s="${coppia#*:}"
+  file_grezzo="${EXPORT_FILE[${coppia}]}"
+  dir="${EXPORT_DIR[${tipo}]}"
+  documenti="${DOCUMENTI[${tipo}]}"
+  prefisso="$(echo "${tipo}" | tr '[:lower:]' '[:upper:]')"
+  esito_export=0
+  echo
+  if [[ -s "${file_grezzo}" ]]; then
+    echo "-- Salvataggio su file (${documenti} di ${s}) in ${dir}"
+    decodifica "${file_grezzo}" "${dir}" "${prefisso}" || esito_export=$?
+    # Riuscita la conversione, il file grezzo e' un doppione degli XML.
+    [[ "${esito_export}" -eq 0 ]] && rm -f "${file_grezzo}"
+  elif [[ -e "${file_grezzo}" ]]; then
+    echo "-- Nessun file da salvare (${documenti} di ${s})"
+    rm -f "${file_grezzo}"
+  elif [[ "${ESITO}" -eq 0 ]]; then
+    # La sezione e' terminata senza errori ma il client non ha scritto il file:
+    # i documenti sono gia' cancellati e non c'e' copia. Non deve passare in
+    # silenzio.
+    echo "ATTENZIONE: il file ${file_grezzo} non e' stato creato" >&2
+    esito_export=1
+  fi
+  # Dopo un errore, il file di una sezione mai raggiunta non c'e', ed e' giusto.
+  if [[ "${esito_export}" -ne 0 ]]; then
+    ESITO_EXPORT="${esito_export}"
+    echo >&2
+    echo "==============================================" >&2
+    echo "Salvataggio su file NON RIUSCITO (${documenti} di ${s})" >&2
+    if [[ -e "${file_grezzo}" ]]; then
+      echo "  I documenti sono nel file grezzo ${file_grezzo}, una riga" >&2
+      echo "  '${prefisso} <nome> <esadecimale>' per ciascuno: non cancellarlo." >&2
+    fi
+    echo "==============================================" >&2
+  fi
+done
 
 if [[ "${ESITO}" -ne 0 && "${DRY_RUN}" == true ]]; then
   echo >&2
@@ -561,4 +814,7 @@ else
   echo "Svecchiamento completato"
 fi
 echo "  script eseguito: ${OUT}"
+[[ -n "${EXPORT_DIR[rt]}" ]] && echo "  RT salvate in:   ${EXPORT_DIR[rt]}"
+[[ -n "${EXPORT_DIR[fr]}" ]] && echo "  flussi salvati in: ${EXPORT_DIR[fr]}"
 echo "=============================================="
+exit "${ESITO_EXPORT}"
