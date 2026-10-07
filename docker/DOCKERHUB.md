@@ -120,6 +120,7 @@ docker-compose up -d
 ## Tag disponibili
 
 - `latest`
+- `3.9.3.p6`, `3.9.3.p6_postgres`, `3.9.3.p6_mariadb`, `3.9.3.p6_oracle`, `3.9.3.p6_mysql`
 - `3.9.3.p5`, `3.9.3.p5_postgres`, `3.9.3.p5_mariadb`, `3.9.3.p5_oracle`, `3.9.3.p5_mysql`
 - `3.9.3.p4`, `3.9.3.p4_postgres`, `3.9.3.p4_mariadb`, `3.9.3.p4_oracle`
 - `3.9.3.p3`, `3.9.3.p3_postgres`, `3.9.3.p3_mariadb`, `3.9.3.p3_oracle`

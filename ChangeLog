@@ -1,3 +1,7 @@
+2026-10-07  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p6.
+
 2026-10-02  Giuliano Pintori <pintori@link.it>
 
         * Issue #889 Dichiarati nullable nello YAML dell'API Ente Creditore v2 i campi facoltativi che GovPay invia a null nella notifica.
