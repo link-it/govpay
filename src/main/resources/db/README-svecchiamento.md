@@ -69,6 +69,16 @@ retention sono in **giorni**.
 "Tutto ciò che riferisce una pendenza" sono voci, RPT (con l'XML di RPT e RT), pagamenti,
 notifiche, notifiche App IO, promemoria, stampe, operazioni e allegati.
 
+### pendenze_scadute_non_pagate
+
+Cancella le pendenze `NON_ESEGUITO` con `data_scadenza` più vecchia della soglia, senza pagamenti
+(sulle voci o sulle RPT) e senza rendicontazioni. Restano quindi:
+
+- le pendenze **senza data di scadenza**, che con questo criterio non scadono mai;
+- le pendenze non pagate ma con un pagamento o una rendicontazione: quelle rendicontate le cancella
+  `flussi_rendicontazione`, insieme al loro flusso;
+- le pendenze in stato `ANOMALO`, che nessuna sezione tocca.
+
 ### pendenze_annullate
 
 GovPay non registra la data dell'annullamento, e l'annullamento da API o da tracciato non aggiorna
