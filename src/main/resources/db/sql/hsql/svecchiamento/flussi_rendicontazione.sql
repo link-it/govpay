@@ -2,7 +2,7 @@
 -- Svecchiamento FLUSSI DI RENDICONTAZIONE - HSQLDB
 --
 -- Elimina i flussi di rendicontazione con data_ora_flusso piu' vecchia di
--- retention_fr mesi, con le loro rendicontazioni e i loro eventi, le pendenze
+-- retention_fr giorni, con le loro rendicontazioni e i loro eventi, le pendenze
 -- che rendicontano e gli incassi che li riconciliano.
 --
 -- Le pendenze vengono cancellate qualunque sia il loro stato: una pendenza
@@ -19,6 +19,9 @@
 -- anche gli altri flussi non superano la soglia: succede solo alle pendenze a
 -- cavallo della soglia.
 --
+-- I documenti delle pendenze cancellate restano: quelli rimasti senza pendenze
+-- li cancella la sezione documenti_orfani.
+--
 -- Con il flusso va via anche l'incasso che lo riconcilia, con i suoi eventi: la
 -- riconciliazione collega un incasso a un solo flusso. I pagamenti rimasti che
 -- riferiscono l'incasso, quelli delle pendenze che restano, vengono scollegati
@@ -29,12 +32,15 @@
 -- transazione: le DELETE cambiano le rendicontazioni su cui si basa la
 -- selezione, e ripeterla dopo darebbe un altro risultato.
 --
--- Le RT delle pendenze cancellate possono essere salvate su file prima della
--- cancellazione: la riga marcata export-rt qui sotto viene sostituita da
--- svecchiamento-db.sh con il contenuto di flussi_rendicontazione-export-rt.sql
--- quando gli si passa --export-rt. Allo stesso modo, con --export-fr, la riga
--- marcata export-fr diventa il contenuto di flussi_rendicontazione-export-fr.sql
--- e salva l'XML dei flussi. Eseguito da solo, lo script non salva nulla.
+-- Prima di essere cancellate, le righe vengono copiate in tabelle di archivio
+-- con lo stesso nome e il suffisso _aaaammgg (rendicontazioni, pagamenti,
+-- notifiche, notifiche_app_io, promemoria, operazioni, stampe, allegati, rpt,
+-- singoli_versamenti, versamenti, fr, incassi), create se non esistono, senza
+-- vincoli ne' indici, e nella stessa transazione delle cancellazioni:
+-- l'archivio contiene esattamente le righe cancellate. svecchiamento-db.sh
+-- sostituisce aaaammgg con la data dell'esecuzione; eseguito da solo, lo
+-- script archivia nelle tabelle _aaaammgg. Gli eventi non vengono archiviati.
+-- Salvare ed eliminare le tabelle di archivio e' compito del DBA.
 --
 -- Uso: SqlTool, oppure da applicazione Java
 --
@@ -43,7 +49,21 @@
 -- =============================================================================
 
 -- HSQLDB non ha variabili negli script: la retention e' il letterale
--- nelle DELETE qui sotto, 24 mesi.
+-- nelle DELETE qui sotto, 730 giorni.
+
+CREATE TABLE IF NOT EXISTS rendicontazioni_aaaammgg AS (SELECT * FROM rendicontazioni) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS pagamenti_aaaammgg AS (SELECT * FROM pagamenti) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS notifiche_aaaammgg AS (SELECT * FROM notifiche) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS notifiche_app_io_aaaammgg AS (SELECT * FROM notifiche_app_io) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS promemoria_aaaammgg AS (SELECT * FROM promemoria) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS operazioni_aaaammgg AS (SELECT * FROM operazioni) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS stampe_aaaammgg AS (SELECT * FROM stampe) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS allegati_aaaammgg AS (SELECT * FROM allegati) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS rpt_aaaammgg AS (SELECT * FROM rpt) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS singoli_versamenti_aaaammgg AS (SELECT * FROM singoli_versamenti) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS versamenti_aaaammgg AS (SELECT * FROM versamenti) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS fr_aaaammgg AS (SELECT * FROM fr) WITH NO DATA;
+CREATE TABLE IF NOT EXISTS incassi_aaaammgg AS (SELECT * FROM incassi) WITH NO DATA;
 
 DECLARE LOCAL TEMPORARY TABLE svecchiamento_fr (id BIGINT NOT NULL PRIMARY KEY) ON COMMIT PRESERVE ROWS;
 DELETE FROM SESSION.svecchiamento_fr;
@@ -52,7 +72,7 @@ DELETE FROM SESSION.svecchiamento_fr_pendenze;
 DECLARE LOCAL TEMPORARY TABLE svecchiamento_fr_incassi (id BIGINT NOT NULL PRIMARY KEY) ON COMMIT PRESERVE ROWS;
 DELETE FROM SESSION.svecchiamento_fr_incassi;
 
-INSERT INTO SESSION.svecchiamento_fr (id) SELECT id FROM fr WHERE data_ora_flusso < CURRENT_DATE - 24 MONTH;
+INSERT INTO SESSION.svecchiamento_fr (id) SELECT id FROM fr WHERE data_ora_flusso < CURRENT_DATE - 730 DAY;
 
 -- Una rendicontazione riferisce la pendenza sulla voce, o sul pagamento, che a
 -- sua volta e' legato alla voce o alla RPT. Le tre strade valgono sia per
@@ -60,61 +80,91 @@ INSERT INTO SESSION.svecchiamento_fr (id) SELECT id FROM fr WHERE data_ora_fluss
 -- anche in flussi recenti.
 INSERT INTO SESSION.svecchiamento_fr_pendenze (id)
 SELECT v.id FROM versamenti v
-WHERE (EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso < CURRENT_DATE - 24 MONTH)
-    OR EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso < CURRENT_DATE - 24 MONTH)
-    OR EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE rpt.id_versamento = v.id AND f.data_ora_flusso < CURRENT_DATE - 24 MONTH))
-  AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso >= CURRENT_DATE - 24 MONTH)
-  AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso >= CURRENT_DATE - 24 MONTH)
-  AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE rpt.id_versamento = v.id AND f.data_ora_flusso >= CURRENT_DATE - 24 MONTH)
-  AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id AND p.data_pagamento >= CURRENT_DATE - 24 MONTH)
-  AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id AND p.data_pagamento >= CURRENT_DATE - 24 MONTH);
+WHERE (EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso < CURRENT_DATE - 730 DAY)
+    OR EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso < CURRENT_DATE - 730 DAY)
+    OR EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE rpt.id_versamento = v.id AND f.data_ora_flusso < CURRENT_DATE - 730 DAY))
+  AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso >= CURRENT_DATE - 730 DAY)
+  AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE sv.id_versamento = v.id AND f.data_ora_flusso >= CURRENT_DATE - 730 DAY)
+  AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id JOIN rendicontazioni r ON r.id_pagamento = p.id JOIN fr f ON f.id = r.id_fr WHERE rpt.id_versamento = v.id AND f.data_ora_flusso >= CURRENT_DATE - 730 DAY)
+  AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id AND p.data_pagamento >= CURRENT_DATE - 730 DAY)
+  AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id AND p.data_pagamento >= CURRENT_DATE - 730 DAY);
 
 INSERT INTO SESSION.svecchiamento_fr_incassi (id) SELECT DISTINCT id_incasso FROM fr WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr) AND id_incasso IS NOT NULL;
 
 SELECT 'flussi da cancellare: ' || COUNT(*) FROM SESSION.svecchiamento_fr;
 SELECT 'pendenze da cancellare: ' || COUNT(*) FROM SESSION.svecchiamento_fr_pendenze;
 
--- export-rt
-
--- export-fr
-
 DELETE FROM eventi WHERE id_fr IN (SELECT id FROM SESSION.svecchiamento_fr);
+
+INSERT INTO rendicontazioni_aaaammgg SELECT * FROM rendicontazioni WHERE id_fr IN (SELECT id FROM SESSION.svecchiamento_fr);
 
 DELETE FROM rendicontazioni WHERE id_fr IN (SELECT id FROM SESSION.svecchiamento_fr);
 
+INSERT INTO pagamenti_aaaammgg SELECT * FROM pagamenti WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
+
 DELETE FROM pagamenti WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
+
+INSERT INTO pagamenti_aaaammgg SELECT * FROM pagamenti WHERE id_singolo_versamento IN (SELECT id FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
 DELETE FROM pagamenti WHERE id_singolo_versamento IN (SELECT id FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
+INSERT INTO notifiche_aaaammgg SELECT * FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
+
 DELETE FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
+
+INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
 DELETE FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
+INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
 DELETE FROM notifiche_app_io WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
+INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
 DELETE FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
+INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
 DELETE FROM promemoria WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
+INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
 DELETE FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze));
 
+INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
 DELETE FROM operazioni WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
+INSERT INTO stampe_aaaammgg SELECT * FROM stampe WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
 
 DELETE FROM stampe WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
 
+INSERT INTO allegati_aaaammgg SELECT * FROM allegati WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
 DELETE FROM allegati WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
+INSERT INTO rpt_aaaammgg SELECT * FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
 
 DELETE FROM rpt WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
 
+INSERT INTO singoli_versamenti_aaaammgg SELECT * FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
 DELETE FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
 
+INSERT INTO versamenti_aaaammgg SELECT * FROM versamenti WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
 DELETE FROM versamenti WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr_pendenze);
+
+INSERT INTO fr_aaaammgg SELECT * FROM fr WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr);
 
 DELETE FROM fr WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr);
 
 UPDATE pagamenti SET id_incasso = NULL WHERE id_incasso IN (SELECT id FROM SESSION.svecchiamento_fr_incassi);
 
 DELETE FROM eventi WHERE id_incasso IN (SELECT id FROM SESSION.svecchiamento_fr_incassi);
+
+INSERT INTO incassi_aaaammgg SELECT * FROM incassi WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr_incassi);
 
 DELETE FROM incassi WHERE id IN (SELECT id FROM SESSION.svecchiamento_fr_incassi);
 

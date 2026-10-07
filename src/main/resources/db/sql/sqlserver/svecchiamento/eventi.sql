@@ -18,12 +18,12 @@
 -- gli si passa --retention-eventi.
 -- =============================================================================
 
-DECLARE @retention_eventi INT = 3;
+DECLARE @retention_eventi INT = 30;
 
-DECLARE @end_eventi DATE = DATEADD(MONTH, -@retention_eventi, GETDATE());
+DECLARE @end_eventi DATE = DATEADD(DAY, -@retention_eventi, GETDATE());
 
 PRINT '--- Svecchiamento EVENTI ---';
-PRINT 'Retention: ' + CAST(@retention_eventi AS VARCHAR) + ' mesi';
+PRINT 'Retention: ' + CAST(@retention_eventi AS VARCHAR) + ' giorni';
 
 BEGIN TRANSACTION;
 

@@ -2,13 +2,13 @@
 -- Svecchiamento PENDENZE PAGATE - SQL Server
 --
 -- Elimina le pendenze pagate il cui ultimo pagamento e' piu' vecchio di
--- retention_pendenze_pagate mesi, con le RPT, i pagamenti e tutto cio' che le
+-- retention_pendenze_pagate giorni, con le RPT, i pagamenti e tutto cio' che le
 -- referenzia, nell'ordine imposto dalle chiavi esterne.
 --
 -- Una pendenza rientra se:
 --   - e' in uno stato di pagamento eseguito: ESEGUITO, PARZIALMENTE_ESEGUITO,
 --     ESEGUITO_ALTRO_CANALE, ESEGUITO_SENZA_RPT, INCASSATO;
---   - e' stata pagata con ricevuta piu' di retention_pendenze_pagate mesi fa:
+--   - e' stata pagata con ricevuta piu' di retention_pendenze_pagate giorni fa:
 --     data_pagamento e' valorizzata, all'elaborazione della RT, solo per le
 --     pendenze pagate con ricevuta;
 --   - nessuno dei suoi pagamenti, sulle voci o sulle RPT, e' piu' recente della
@@ -19,15 +19,21 @@
 --     flussi_rendicontazione, e le pendenze pagate senza ricevuta con esse.
 --
 -- I documenti a cui le pendenze appartengono non vengono cancellati, come per
--- le pendenze scadute. Gli incassi neppure: sono i pagamenti a referenziarli.
+-- le pendenze scadute: quelli rimasti senza pendenze li cancella la sezione
+-- documenti_orfani. Gli incassi neppure: sono i pagamenti a referenziarli.
 --
 -- Gli id da cancellare vengono raccolti una volta sola in una tabella
 -- temporanea locale alla sessione.
 --
--- Le RT possono essere salvate su file prima della cancellazione: la riga
--- marcata export-rt qui sotto viene sostituita da svecchiamento-db.sh con il
--- contenuto di pendenze_pagate-export-rt.sql quando gli si passa --export-rt.
--- Eseguito da solo, lo script non salva le RT.
+-- Prima di essere cancellate, le righe vengono copiate in tabelle di archivio
+-- con lo stesso nome e il suffisso _aaaammgg (pagamenti, notifiche,
+-- notifiche_app_io, promemoria, operazioni, stampe, allegati, rpt,
+-- singoli_versamenti, versamenti), create se non esistono, senza vincoli ne'
+-- indici, e nella stessa transazione delle cancellazioni: l'archivio contiene
+-- esattamente le righe cancellate. svecchiamento-db.sh sostituisce aaaammgg
+-- con la data dell'esecuzione; eseguito da solo, lo script archivia nelle
+-- tabelle _aaaammgg. Gli eventi non vengono archiviati. Salvare ed eliminare
+-- le tabelle di archivio e' compito del DBA.
 --
 -- Uso: sqlcmd -b -S <host> -U <utente> -d <database> -i pendenze_pagate.sql
 --
@@ -35,15 +41,39 @@
 -- gli si passa --retention-pendenze_pagate.
 -- =============================================================================
 
-DECLARE @retention_pendenze_pagate INT = 24;
+DECLARE @retention_pendenze_pagate INT = 730;
 
-DECLARE @end_pendenze_pagate DATE = DATEADD(MONTH, -@retention_pendenze_pagate, GETDATE());
+DECLARE @end_pendenze_pagate DATE = DATEADD(DAY, -@retention_pendenze_pagate, GETDATE());
 
 PRINT '--- Svecchiamento PENDENZE PAGATE ---';
-PRINT 'Retention: ' + CAST(@retention_pendenze_pagate AS VARCHAR) + ' mesi';
+PRINT 'Retention: ' + CAST(@retention_pendenze_pagate AS VARCHAR) + ' giorni';
 
 IF OBJECT_ID('tempdb..#svecchiamento_pagate') IS NOT NULL DROP TABLE #svecchiamento_pagate;
 CREATE TABLE #svecchiamento_pagate (id BIGINT NOT NULL PRIMARY KEY);
+
+PRINT 'Creazione delle tabelle di archivio...';
+-- SELECT INTO copierebbe la proprieta' IDENTITY degli id, e l'archivio non
+-- accetterebbe gli id originali: con UNION ALL la tabella nasce senza.
+IF OBJECT_ID('pagamenti_aaaammgg', 'U') IS NULL
+    SELECT * INTO pagamenti_aaaammgg FROM pagamenti WHERE 1 = 0 UNION ALL SELECT * FROM pagamenti WHERE 1 = 0;
+IF OBJECT_ID('notifiche_aaaammgg', 'U') IS NULL
+    SELECT * INTO notifiche_aaaammgg FROM notifiche WHERE 1 = 0 UNION ALL SELECT * FROM notifiche WHERE 1 = 0;
+IF OBJECT_ID('notifiche_app_io_aaaammgg', 'U') IS NULL
+    SELECT * INTO notifiche_app_io_aaaammgg FROM notifiche_app_io WHERE 1 = 0 UNION ALL SELECT * FROM notifiche_app_io WHERE 1 = 0;
+IF OBJECT_ID('promemoria_aaaammgg', 'U') IS NULL
+    SELECT * INTO promemoria_aaaammgg FROM promemoria WHERE 1 = 0 UNION ALL SELECT * FROM promemoria WHERE 1 = 0;
+IF OBJECT_ID('operazioni_aaaammgg', 'U') IS NULL
+    SELECT * INTO operazioni_aaaammgg FROM operazioni WHERE 1 = 0 UNION ALL SELECT * FROM operazioni WHERE 1 = 0;
+IF OBJECT_ID('stampe_aaaammgg', 'U') IS NULL
+    SELECT * INTO stampe_aaaammgg FROM stampe WHERE 1 = 0 UNION ALL SELECT * FROM stampe WHERE 1 = 0;
+IF OBJECT_ID('allegati_aaaammgg', 'U') IS NULL
+    SELECT * INTO allegati_aaaammgg FROM allegati WHERE 1 = 0 UNION ALL SELECT * FROM allegati WHERE 1 = 0;
+IF OBJECT_ID('rpt_aaaammgg', 'U') IS NULL
+    SELECT * INTO rpt_aaaammgg FROM rpt WHERE 1 = 0 UNION ALL SELECT * FROM rpt WHERE 1 = 0;
+IF OBJECT_ID('singoli_versamenti_aaaammgg', 'U') IS NULL
+    SELECT * INTO singoli_versamenti_aaaammgg FROM singoli_versamenti WHERE 1 = 0 UNION ALL SELECT * FROM singoli_versamenti WHERE 1 = 0;
+IF OBJECT_ID('versamenti_aaaammgg', 'U') IS NULL
+    SELECT * INTO versamenti_aaaammgg FROM versamenti WHERE 1 = 0 UNION ALL SELECT * FROM versamenti WHERE 1 = 0;
 
 BEGIN TRANSACTION;
 
@@ -60,40 +90,52 @@ WHERE v.stato_versamento IN ('ESEGUITO', 'PARZIALMENTE_ESEGUITO', 'ESEGUITO_ALTR
 
 PRINT 'Pendenze da cancellare: ' + CAST(@@ROWCOUNT AS VARCHAR);
 
--- export-rt
-
 PRINT 'Cancellazione pagamenti...';
+INSERT INTO pagamenti_aaaammgg SELECT * FROM pagamenti WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 DELETE FROM pagamenti WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
+INSERT INTO pagamenti_aaaammgg SELECT * FROM pagamenti WHERE id_singolo_versamento IN (SELECT id FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 DELETE FROM pagamenti WHERE id_singolo_versamento IN (SELECT id FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 
 PRINT 'Cancellazione notifiche...';
+INSERT INTO notifiche_aaaammgg SELECT * FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 DELETE FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 
 PRINT 'Cancellazione notifiche App IO...';
+INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 DELETE FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
+INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM notifiche_app_io WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione promemoria...';
+INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 DELETE FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
+INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM promemoria WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione operazioni...';
+INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
 DELETE FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate));
+INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM operazioni WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione stampe...';
+INSERT INTO stampe_aaaammgg SELECT * FROM stampe WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM stampe WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione allegati...';
+INSERT INTO allegati_aaaammgg SELECT * FROM allegati WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM allegati WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione RPT...';
+INSERT INTO rpt_aaaammgg SELECT * FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM rpt WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione voci delle pendenze...';
+INSERT INTO singoli_versamenti_aaaammgg SELECT * FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM #svecchiamento_pagate);
 
 PRINT 'Cancellazione pendenze...';
+INSERT INTO versamenti_aaaammgg SELECT * FROM versamenti WHERE id IN (SELECT id FROM #svecchiamento_pagate);
 DELETE FROM versamenti WHERE id IN (SELECT id FROM #svecchiamento_pagate);
 
 COMMIT TRANSACTION;

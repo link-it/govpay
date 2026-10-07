@@ -1,22 +1,27 @@
 -- =============================================================================
--- Svecchiamento PENDENZE SCADUTE NON PAGATE - Oracle
+-- Svecchiamento PENDENZE ANNULLATE - Oracle
 --
--- Elimina le pendenze in stato NON_ESEGUITO scadute da piu' di
--- retention_pendenze giorni, con tutto cio' che le referenzia, nell'ordine
+-- Elimina le pendenze in stato ANNULLATO non piu' aggiornate da piu' di
+-- retention_annullate giorni, con tutto cio' che le referenzia, nell'ordine
 -- imposto dalle chiavi esterne.
+--
+-- La data di riferimento e' data_ora_ultimo_aggiornamento: GovPay non registra
+-- la data dell'annullamento, e l'annullamento da API o da tracciato non aggiorna
+-- questa colonna. Una pendenza vecchia annullata di recente puo' quindi essere
+-- svecchiata al primo giro; resta comunque nell'archivio.
 --
 -- Sono escluse le pendenze che hanno anche una sola voce rendicontata o un
 -- pagamento, sulle voci o sulle RPT: non sono pendenze abbandonate, e le loro
 -- righe sono referenziate da flussi e incassi che qui non si toccano.
 --
 -- I documenti a cui le pendenze appartengono non vengono cancellati: un
--- documento raggruppa piu' pendenze, e non e' detto che siano tutte scadute.
+-- documento raggruppa piu' pendenze, e non e' detto che siano tutte annullate.
 -- Quelli rimasti senza pendenze li cancella la sezione documenti_orfani.
 --
 -- Il criterio di selezione e' ripetuto in ogni DELETE invece di essere
 -- raccolto in una tabella temporanea, che su Oracle richiederebbe DDL e quindi
 -- un commit implicito. E' corretto perche' il criterio e' stabile durante la
--- cancellazione: dipende solo da stato e scadenza della pendenza e
+-- cancellazione: dipende solo da stato e data di ultimo aggiornamento della pendenza e
 -- dall'assenza di rendicontazioni e pagamenti, che qui non si cancellano.
 --
 -- La soglia viene calcolata una volta sola, all'inizio, e usata come costante:
@@ -33,20 +38,20 @@
 -- _aaaammgg. Gli eventi non vengono archiviati. Salvare ed eliminare le
 -- tabelle di archivio e' compito del DBA.
 --
--- Uso: sqlplus utente/password@host:porta/servizio @pendenze_scadute_non_pagate.sql
+-- Uso: sqlplus utente/password@host:porta/servizio @pendenze_annullate.sql
 --
 -- Il valore qui sotto e' il default. svecchiamento-db.sh lo sostituisce quando
--- gli si passa --retention-pendenze_scadute_non_pagate.
+-- gli si passa --retention-pendenze_annullate.
 -- =============================================================================
 
-DEFINE retention_pendenze = 365;
+DEFINE retention_annullate = 365;
 
 PROMPT
-PROMPT --- Svecchiamento PENDENZE SCADUTE NON PAGATE ---
-PROMPT Retention: &retention_pendenze giorni
+PROMPT --- Svecchiamento PENDENZE ANNULLATE ---
+PROMPT Retention: &retention_annullate giorni
 
-COLUMN soglia_pendenze NEW_VALUE soglia_pendenze NOPRINT
-SELECT TO_CHAR((CURRENT_DATE - &retention_pendenze), 'YYYYMMDDHH24MISS') AS soglia_pendenze FROM dual;
+COLUMN soglia_annullate NEW_VALUE soglia_annullate NOPRINT
+SELECT TO_CHAR((CURRENT_DATE - &retention_annullate), 'YYYYMMDDHH24MISS') AS soglia_annullate FROM dual;
 
 PROMPT Creazione delle tabelle di archivio...
 DECLARE
@@ -73,8 +78,8 @@ END;
 PROMPT Pendenze da cancellare:
 SELECT COUNT(*) AS pendenze_da_cancellare FROM (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -83,16 +88,16 @@ SELECT COUNT(*) AS pendenze_da_cancellare FROM (
 PROMPT Cancellazione notifiche...
 INSERT INTO notifiche_aaaammgg SELECT * FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 DELETE FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -101,32 +106,32 @@ DELETE FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN
 PROMPT Cancellazione notifiche App IO...
 INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 DELETE FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM notifiche_app_io WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -135,32 +140,32 @@ DELETE FROM notifiche_app_io WHERE id_versamento IN (
 PROMPT Cancellazione promemoria...
 INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 DELETE FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM promemoria WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -169,32 +174,32 @@ DELETE FROM promemoria WHERE id_versamento IN (
 PROMPT Cancellazione operazioni...
 INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 DELETE FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 ));
 INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM operazioni WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -203,16 +208,16 @@ DELETE FROM operazioni WHERE id_versamento IN (
 PROMPT Cancellazione stampe...
 INSERT INTO stampe_aaaammgg SELECT * FROM stampe WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM stampe WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -221,16 +226,16 @@ DELETE FROM stampe WHERE id_versamento IN (
 PROMPT Cancellazione allegati...
 INSERT INTO allegati_aaaammgg SELECT * FROM allegati WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM allegati WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -239,16 +244,16 @@ DELETE FROM allegati WHERE id_versamento IN (
 PROMPT Cancellazione RPT...
 INSERT INTO rpt_aaaammgg SELECT * FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM rpt WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -257,16 +262,16 @@ DELETE FROM rpt WHERE id_versamento IN (
 PROMPT Cancellazione voci delle pendenze...
 INSERT INTO singoli_versamenti_aaaammgg SELECT * FROM singoli_versamenti WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM singoli_versamenti WHERE id_versamento IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
@@ -275,16 +280,16 @@ DELETE FROM singoli_versamenti WHERE id_versamento IN (
 PROMPT Cancellazione pendenze...
 INSERT INTO versamenti_aaaammgg SELECT * FROM versamenti WHERE id IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)
 );
 DELETE FROM versamenti WHERE id IN (
     SELECT v.id FROM versamenti v
-    WHERE v.stato_versamento = 'NON_ESEGUITO'
-      AND v.data_scadenza < TO_DATE('&soglia_pendenze', 'YYYYMMDDHH24MISS')
+    WHERE v.stato_versamento = 'ANNULLATO'
+      AND v.data_ora_ultimo_aggiornamento < TO_DATE('&soglia_annullate', 'YYYYMMDDHH24MISS')
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
       AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id)

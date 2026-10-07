@@ -16,15 +16,18 @@
 #       tutte le sezioni, con la retention di default di ciascuna
 #   ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati
 #       le sezioni indicate, con la retention di default di ciascuna
-#   ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 2 --retention-tracciati 1
-#       le sezioni indicate, con la retention in mesi indicata per sezione
-#   ./svecchiamento-db.sh postgresql --sezioni flussi_rendicontazione,pendenze_pagate --export-rt /backup/rt
-#       flussi e pendenze pagate, salvando prima su file l'XML di ogni RT cancellata
-#   ./svecchiamento-db.sh postgresql --sezioni flussi_rendicontazione --export-fr /backup/fr
-#       flussi, salvando prima su file l'XML di ogni flusso cancellato
+#   ./svecchiamento-db.sh postgresql --sezioni eventi,tracciati --retention-eventi 15 --retention-tracciati 60
+#       le sezioni indicate, con la retention in giorni indicata per sezione
 #
-# ATTENZIONE: cancella dati in modo definitivo. Sui metadati Spring Batch non
-# c'e' filtro sullo stato delle esecuzioni, quindi va eseguito a batch fermi.
+# Eventi e metadati dei batch si cancellano e basta. Tutte le altre sezioni
+# copiano prima le righe che cancellano in tabelle di archivio
+# <tabella>_AAAAMMGG, una serie al giorno: se quelle di oggi esistono gia', le
+# sezioni con archivio vengono saltate. Salvarle ed eliminarle e' compito del
+# DBA. Le anagrafiche non vengono mai toccate.
+#
+# ATTENZIONE: cancella dati in modo definitivo, salvo quanto copiato nelle
+# tabelle di archivio. Sui metadati Spring Batch non c'e' filtro sullo stato
+# delle esecuzioni: un job in corso creato prima della soglia viene cancellato.
 #
 set -euo pipefail
 
@@ -43,38 +46,50 @@ DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
 # scaduti, e l'unione non cambia a seconda di quale si applica prima.
 # flussi_rendicontazione precede pendenze_pagate: cancella le pendenze
 # rendicontate, e pendenze_pagate si occupa di quelle pagate e mai rendicontate.
-SEZIONI_NOTE=(eventi tracciati spring-batch pendenze_scadute_non_pagate flussi_rendicontazione pendenze_pagate)
+# documenti_orfani va per ultima: cancella i documenti che le sezioni sulle
+# pendenze hanno lasciato senza pendenze.
+SEZIONI_NOTE=(eventi tracciati spring-batch tracciati_notifica_pagamenti audit
+              pendenze_scadute_non_pagate pendenze_annullate flussi_rendicontazione
+              pendenze_pagate documenti_orfani)
 
-# Retention minima, in mesi, delle sezioni che cancellano rendicontazioni e
+# Retention minima, in giorni, delle sezioni che cancellano rendicontazioni e
 # pendenze pagate: sotto questa soglia si cancellano dati che possono servire
 # ancora, ed e' quindi richiesta una conferma esplicita, --force, oppure la
 # simulazione, --dry-run.
-RETENTION_MINIMA_MESI=24
+RETENTION_MINIMA_GIORNI=730
 SEZIONI_RETENTION_MINIMA=(flussi_rendicontazione pendenze_pagate)
 
-# Export su file prima della cancellazione, uno per tipo di documento: RT con
-# --export-rt, flussi di rendicontazione con --export-fr. Per ogni tipo, le
-# sezioni che lo cancellano e possono quindi salvarlo.
-TIPI_EXPORT=(rt fr)
-declare -A SEZIONI_EXPORT=(
-  [rt]="flussi_rendicontazione pendenze_pagate"
-  [fr]="flussi_rendicontazione"
-)
-declare -A DOCUMENTI=([rt]="RT" [fr]="flussi")
+# Le sezioni che archiviano le righe cancellate lo fanno in tabelle
+# <tabella>_aaaammgg; aaaammgg e' un segnaposto, che qui diventa la data
+# dell'esecuzione. In simulazione diventa sim<data>, e le tabelle vengono
+# eliminate alla fine: altrimenti la simulazione lascerebbe tabelle vuote con
+# il nome di quelle vere. Una sezione archivia se il suo script contiene il
+# segnaposto: l'elenco non e' duplicato qui.
+SEGNAPOSTO_ARCHIVIO="aaaammgg"
 
 # Nome del parametro di retention dentro ciascuno script. E' un dettaglio interno
 # agli script SQL, e non coincide sempre con il nome della sezione: spring-batch
 # non e' un identificatore SQL. Da fuori la retention si indica sempre con il
-# nome della sezione, --retention-<sezione>.
+# nome della sezione, --retention-<sezione>. Vuoto per le sezioni senza
+# retention.
 function parametro_di() {
   case "$1" in
     tracciati)    echo "tracciati" ;;
     eventi)       echo "eventi" ;;
     spring-batch) echo "batch" ;;
+    tracciati_notifica_pagamenti) echo "tnp" ;;
+    audit)        echo "audit" ;;
     pendenze_scadute_non_pagate) echo "pendenze" ;;
+    pendenze_annullate) echo "annullate" ;;
     flussi_rendicontazione) echo "fr" ;;
     pendenze_pagate) echo "pendenze_pagate" ;;
+    documenti_orfani) echo "" ;;
   esac
+}
+
+# Le sezioni con archivio sono quelle il cui script contiene il segnaposto.
+function con_archivio() {   # $1 = sezione
+  grep -q "_${SEGNAPOSTO_ARCHIVIO}\b" "${SEZIONI_DIR}/$1.sql"
 }
 
 SEZIONI=("${SEZIONI_NOTE[@]}")
@@ -86,11 +101,6 @@ FORCE=false
 SENZA_CONFERMA=false
 OUTDIR=""
 WORKDIR=""
-# Directory di export per tipo, e file grezzo per tipo e sezione ("rt:sezione"):
-# con un file solo il client della seconda sezione lo riscriverebbe, cancellando
-# quanto esportato dalla prima.
-declare -A EXPORT_DIR=([rt]="" [fr]="")
-declare -A EXPORT_FILE=()
 
 # Connessione: gli stessi nomi di variabile usati dall'init dei container, cosi'
 # un ambiente gia' configurato per quelli vale anche qui.
@@ -113,10 +123,10 @@ Argomenti:
 Sezioni (default: tutte, nell'ordine $(IFS=', '; echo "${SEZIONI_NOTE[*]}")):
   --sezioni <lista>    Sezioni da eseguire, separate da virgola. L'ordine e'
                        sempre quello sopra, indipendentemente da come si scrivono
-  --retention-<sezione> <mesi>
-                       Con il nome della sezione come in --sezioni:
-                       $(for n in "${SEZIONI_NOTE[@]}"; do printf '%s' "--retention-${n} "; done)
-                       Retention in mesi della sezione, che deve essere tra
+  --retention-<sezione> <giorni>
+                       Con il nome della sezione come in --sezioni, per tutte
+                       tranne documenti_orfani, che non ha retention.
+                       Retention in giorni della sezione, che deve essere tra
                        quelle eseguite. Sovrascrive il valore scritto nello
                        script della sezione; senza, vale quello
 
@@ -135,30 +145,22 @@ Esecuzione:
                        righe che ogni DELETE cancellerebbe e non modifica nulla.
                        Non chiede conferma. Come nell'esecuzione vera, le righe
                        interessate restano bloccate finche' la sezione e' aperta
-  --export-rt <dir>    Con le sezioni flussi_rendicontazione e pendenze_pagate:
-                       prima di cancellare le pendenze, salva l'XML di ogni RT
-                       in <dir>, un file per RT di nome
-                       <cod_dominio>_<iuv>_<ccp>.xml. I caratteri diversi da
-                       lettere, cifre, '.', '_' e '-' diventano '_' (il ccp
-                       'n/a' diventa 'n_a'). Il file e' scritto dal client del
-                       database, sulla macchina dove gira questo script. In
-                       simulazione le RT non vengono salvate
-  --export-fr <dir>    Con la sezione flussi_rendicontazione: prima di
-                       cancellare i flussi, salva l'XML di ognuno in <dir>, un
-                       file per flusso di nome
-                       <cod_dominio>_<cod_flusso>_<data_ora_flusso>.xml, con la
-                       data nel formato AAAAMMGGhhmmss: le revisioni di un
-                       flusso hanno lo stesso codice. Restano senza file i
-                       flussi senza XML: quelli acquisiti dal batch FdR non lo
-                       hanno. Stesse regole di --export-rt per nomi e client
   --force              Obbligatoria per eseguire davvero flussi_rendicontazione
-                       e pendenze_pagate con una retention inferiore a ${RETENTION_MINIMA_MESI} mesi.
+                       e pendenze_pagate con una retention inferiore a ${RETENTION_MINIMA_GIORNI} giorni.
                        Senza --force, o --dry-run, lo script si rifiuta di
                        procedere, anche con --solo-sql: lo script composto
                        cancellerebbe quei dati
   -y, --si             Non chiedere conferma prima di eseguire
   --out <dir>          Directory di uscita (default: target/svecchiamento-sql)
   -h, --help           Mostra questo aiuto
+
+Archivio: tutte le sezioni tranne eventi e spring-batch copiano le righe che
+cancellano in tabelle <tabella>_AAAAMMGG, con la data dell'esecuzione, create e
+riempite nella stessa esecuzione della cancellazione. Il backup e' giornaliero:
+se nel database esiste gia' anche una sola tabella di archivio di oggi, le
+sezioni con archivio vengono saltate. Salvare ed eliminare le tabelle di
+archivio e' compito del DBA. In simulazione le tabelle si chiamano
+<tabella>_simAAAAMMGG e vengono eliminate alla fine.
 
 Documentazione completa, con requisiti ed esempi: README-svecchiamento.md,
 accanto a questo script.
@@ -171,9 +173,10 @@ Il client usato e' quello nativo del dialetto — psql, sqlplus, mysql, sqlcmd,
 SqlTool su hsql — perche' gli script usano i comandi del client per i parametri
 e per i messaggi di avanzamento, e nessun client generico li esegue.
 
-ATTENZIONE: la cancellazione e' definitiva. Sui metadati Spring Batch non c'e'
-filtro sullo stato: un job in corso la cui esecuzione e' anteriore alla soglia
-viene cancellato e Spring Batch ne perde traccia. Eseguire a batch fermi.
+ATTENZIONE: la cancellazione e' definitiva, salvo quanto copiato nelle tabelle
+di archivio. Sui metadati Spring Batch non c'e' filtro sullo stato: un job in
+corso la cui esecuzione e' anteriore alla soglia viene cancellato e Spring Batch
+ne perde traccia.
 EOHELP
 }
 
@@ -197,6 +200,8 @@ while [[ $# -gt 0 ]]; do
       for n in "${SEZIONI_NOTE[@]}"; do [[ "${n}" == "${sez}" ]] && nota_sez=true; done
       [[ "${nota_sez}" == true ]] \
         || errore "opzione sconosciuta: $1. Le retention sono: $(for n in "${SEZIONI_NOTE[@]}"; do printf '%s' "--retention-${n} "; done)"
+      [[ "${sez}" != "documenti_orfani" ]] \
+        || errore "la sezione documenti_orfani non ha retention: un documento orfano non ha una data"
       RETENTION[${sez}]="${2:-}"; shift 2 ;;
     --host)                  DB_HOST="${2:-}"; shift 2 ;;
     --port)                  DB_PORT="${2:-}"; shift 2 ;;
@@ -209,8 +214,6 @@ while [[ $# -gt 0 ]]; do
     --force)                 FORCE=true; shift ;;
     -y|--si)                 SENZA_CONFERMA=true; shift ;;
     --out)                   OUTDIR="${2:-}"; shift 2 ;;
-    --export-rt)             EXPORT_DIR[rt]="${2:-}"; shift 2 ;;
-    --export-fr)             EXPORT_DIR[fr]="${2:-}"; shift 2 ;;
     -h|--help)               usage; exit 0 ;;
     *) errore "opzione sconosciuta: $1" ;;
   esac
@@ -259,44 +262,19 @@ for p in "${!RETENTION[@]}"; do
   for s in "${SEZIONI[@]}"; do [[ "${s}" == "${p}" ]] && eseguita=true; done
   [[ "${eseguita}" == true ]] \
     || errore "--retention-${p} indicata, ma la sezione non e' tra quelle da eseguire: aggiungerla a --sezioni"
-  [[ "${v}" =~ ^[0-9]+$ ]] || errore "la retention di ${p} deve essere un numero di mesi: '${v}'"
+  [[ "${v}" =~ ^[0-9]+$ ]] || errore "la retention di ${p} deve essere un numero di giorni: '${v}'"
   [[ "${v}" -gt 0 ]]       || errore "la retention di ${p} deve essere maggiore di zero"
 done
 
-# Un export appartiene alle sezioni che cancellano quei documenti: chiederlo
-# senza eseguirne nessuna sarebbe un'opzione ignorata in silenzio.
-ESPORTAZIONI=()   # coppie "tipo:sezione" attive
-ADESSO="$(date '+%Y%m%d-%H%M%S')"
-for tipo in "${TIPI_EXPORT[@]}"; do
-  dir="${EXPORT_DIR[${tipo}]}"
-  [[ -n "${dir}" ]] || continue
-  opz="--export-${tipo}"
-  sezioni_tipo=()
-  for s in "${SEZIONI[@]}"; do
-    for e in ${SEZIONI_EXPORT[${tipo}]}; do [[ "${s}" == "${e}" ]] && sezioni_tipo+=("${s}"); done
-  done
-  [[ ${#sezioni_tipo[@]} -gt 0 ]] \
-    || errore "${opz} indicata, ma nessuna delle sezioni ${SEZIONI_EXPORT[${tipo}]} e' tra quelle da eseguire: aggiungerla a --sezioni"
-  if [[ "${DRY_RUN}" == true ]]; then
-    nota "--dry-run: nessun salvataggio su file (${DOCUMENTI[${tipo}]}), ${opz} ignorata"
-    EXPORT_DIR[${tipo}]=""
-    continue
-  fi
-  # Il percorso finisce dentro lo script SQL, tra apici, e lo legge il client
-  # del database: gli apici e le virgolette lo romperebbero.
-  [[ "${dir}" != *[\'\"]* ]] || errore "${opz}: il percorso non puo' contenere apici o virgolette: ${dir}"
-  mkdir -p "${dir}" || errore "${opz}: impossibile creare ${dir}"
-  dir="$(cd "${dir}" && pwd)"
-  [[ -w "${dir}" ]] || errore "${opz}: directory non scrivibile: ${dir}"
-  EXPORT_DIR[${tipo}]="${dir}"
-  # Il file grezzo sta accanto agli XML: e' la copia scritta prima del COMMIT,
-  # e resta finche' gli XML non ne sono stati ricavati.
-  for s in "${sezioni_tipo[@]}"; do
-    EXPORT_FILE[${tipo}:${s}]="${dir}/${tipo}-esportati-${ADESSO}-${s}.hex"
-    [[ ! -e "${EXPORT_FILE[${tipo}:${s}]}" ]] || errore "${opz}: il file ${EXPORT_FILE[${tipo}:${s}]} esiste gia'"
-    ESPORTAZIONI+=("${tipo}:${s}")
-  done
-done
+# Suffisso delle tabelle di archivio: la data dell'esecuzione, uguale per tutte
+# le sezioni. Il backup e' giornaliero: se le tabelle di oggi esistono gia', le
+# sezioni con archivio vengono saltate (vedi Archivio di oggi, sotto).
+OGGI="$(date '+%Y%m%d')"
+if [[ "${DRY_RUN}" == true ]]; then
+  SUFFISSO_ARCHIVIO="sim${OGGI}"
+else
+  SUFFISSO_ARCHIVIO="${OGGI}"
+fi
 
 OUTDIR="${OUTDIR:-${REPO_ROOT}/target/svecchiamento-sql}"
 WORKDIR="$(mktemp -d)"
@@ -314,7 +292,7 @@ trap 'rm -rf "${WORKDIR}" 2>/dev/null || true' EXIT
 function retention_dal_file() {   # $1 = file, $2 = nome parametro
   local n=""
   if [[ "${TIPO_DB}" == "hsql" ]]; then
-    n="$(grep -m1 -oE 'CURRENT_(DATE|TIMESTAMP) - [0-9]+ MONTH' "$1" 2>/dev/null | grep -oE '[0-9]+' || true)"
+    n="$(grep -m1 -oE 'CURRENT_(DATE|TIMESTAMP) - [0-9]+ DAY' "$1" 2>/dev/null | grep -oE '[0-9]+' || true)"
   else
     # Ancorata alla riga della dichiarazione: il nome del parametro compare
     # anche nei commenti di testa, dove di cifre non ce ne sono.
@@ -324,9 +302,9 @@ function retention_dal_file() {   # $1 = file, $2 = nome parametro
   echo "${n:-?}"
 }
 
-function riga_retention() {   # $1 = nome parametro, $2 = mesi
+function riga_retention() {   # $1 = nome parametro, $2 = giorni
   case "${TIPO_DB}" in
-    postgresql) printf '%s\n' "\\set retention_$1 '\\'$2 months\\''" ;;
+    postgresql) printf '%s\n' "\\set retention_$1 '\\'$2 days\\''" ;;
     oracle)     printf '%s\n' "DEFINE retention_$1 = $2;" ;;
     mysql)      printf '%s\n' "SET @retention_$1 = $2;" ;;
     sqlserver)  printf '%s\n' "DECLARE @retention_$1 INT = $2;" ;;
@@ -343,13 +321,13 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
 
   if [[ -n "${v}" ]]; then
     if [[ "${TIPO_DB}" == "hsql" ]]; then
-      # Su hsql i mesi sono letterali dentro le DELETE: HSQLDB non ha
+      # Su hsql i giorni sono letterali dentro le DELETE: HSQLDB non ha
       # variabili negli script.
-      sed -E -i "s/(CURRENT_(DATE|TIMESTAMP)) - [0-9]+ MONTH/\\1 - ${v} MONTH/g" "${tmp}"
-      grep -q "${v} MONTH" "${tmp}" \
+      sed -E -i "s/(CURRENT_(DATE|TIMESTAMP)) - [0-9]+ DAY/\\1 - ${v} DAY/g" "${tmp}"
+      grep -q "${v} DAY" "${tmp}" \
         || errore "sostituzione della retention di ${sez} non riuscita su ${src#${REPO_ROOT}/}: lo script e' cambiato, aggiornare $(basename "$0")"
       # anche il valore citato nel commento di testa, per non lasciarlo mentire
-      sed -E -i "s/(la retention e' il letterale)/\\1/; s/(nelle DELETE qui sotto, )[0-9]+( mesi)/\\1${v}\\2/" "${tmp}"
+      sed -E -i "s/(la retention e' il letterale)/\\1/; s/(nelle DELETE qui sotto, )[0-9]+( giorni)/\\1${v}\\2/" "${tmp}"
     else
       local espressione="^(\\\\set|DEFINE|SET|DECLARE)[[:space:]]*@?retention_${par}([[:space:]]|=)"
       # Il controllo e' che la riga da sostituire ci sia: se lo script di sezione
@@ -363,93 +341,13 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
         || errore "sostituzione della retention di ${sez} non riuscita su ${src#${REPO_ROOT}/}"
     fi
   fi
-  for tipo in "${TIPI_EXPORT[@]}"; do
-    [[ -n "${EXPORT_FILE[${tipo}:${sez}]:-}" ]] && con_export "${tmp}" "${sez}" "${tipo}"
-  done
+  if grep -q "_${SEGNAPOSTO_ARCHIVIO}\b" "${tmp}"; then
+    sed -i "s/_${SEGNAPOSTO_ARCHIVIO}\b/_${SUFFISSO_ARCHIVIO}/g" "${tmp}"
+    ! grep -q "_${SEGNAPOSTO_ARCHIVIO}" "${tmp}" \
+      || errore "sostituzione del suffisso delle tabelle di archivio non riuscita in ${src#${REPO_ROOT}/}"
+  fi
   [[ "${DRY_RUN}" == true ]] && simulazione "${sez}" "${tmp}"
   cat "${tmp}"
-}
-
-# ── Export su file ───────────────────────────────────────────────────────────
-# I documenti vengono scritti dal client del database, dentro la transazione
-# della sezione e prima delle DELETE: al COMMIT il file grezzo e' gia' su disco.
-# Da quello, a esecuzione finita, si ricava un .xml per documento. Lo script di
-# export e' a parte (<sezione>-export-<tipo>.sql) e si innesta al posto della
-# riga marcata export-<tipo>: la sezione eseguita da sola non esporta nulla.
-function con_export() {   # $1 = file della sezione da modificare, $2 = sezione, $3 = tipo
-  local tmp="$1" sez="$2" tipo="$3"
-  local opz="--export-${tipo}" marcatore="export-${tipo}" segnaposto="@file_export_${tipo}@"
-  local file_grezzo="${EXPORT_FILE[${tipo}:${sez}]}"
-  local src="${SEZIONI_DIR}/${sez}.sql"
-  local export_sql="${SEZIONI_DIR}/${sez}-export-${tipo}.sql"
-  [[ -f "${export_sql}" ]] || errore "${opz}: manca ${export_sql#${REPO_ROOT}/}"
-  local n; n="$(grep -c "^-- ${marcatore}\$" "${tmp}" || true)"
-  [[ "${n}" == "1" ]] \
-    || errore "${opz}: in ${src#${REPO_ROOT}/} ci sono ${n} righe '-- ${marcatore}' invece di una: lo script e' cambiato, aggiornare $(basename "$0")"
-  local blocco="${WORKDIR}/_${marcatore}_${sez}.sql"
-  # Il separatore di sed e' |, che in un percorso non compare quasi mai: in
-  # quel caso la sostituzione non riesce e il controllo sotto se ne accorge.
-  sed "s|${segnaposto}|${file_grezzo}|g" "${export_sql}" > "${blocco}"
-  grep -qF "${file_grezzo}" "${blocco}" \
-    || errore "${opz}: percorso del file non inserito in ${export_sql#${REPO_ROOT}/}"
-  sed -i -e "/^-- ${marcatore}\$/{r ${blocco}" -e "d}" "${tmp}"
-  grep -qF "${file_grezzo}" "${tmp}" \
-    || errore "${opz}: blocco di export non inserito in ${src#${REPO_ROOT}/}"
-}
-
-# Ricava un .xml per documento dal file grezzo. Ogni riga e'
-# "<PREFISSO> <nome> <esadecimale>", con PREFISSO RT o FR; dove il client non
-# regge un documento intero su una riga (oracle, sqlserver) e' spezzato su piu'
-# righe consecutive con lo stesso nome, da riattaccare. Un file gia' presente
-# con lo stesso contenuto non e' un errore, perche' rieseguire dopo un
-# fallimento riesporta gli stessi documenti; con contenuto diverso non viene
-# sovrascritto, e il documento nuovo prende un suffisso.
-function decodifica() {   # $1 = file grezzo, $2 = directory, $3 = prefisso (RT, FR)
-  command -v perl >/dev/null 2>&1 || { echo "perl non trovato: impossibile ricavare gli XML" >&2; return 1; }
-  perl -e '
-    use strict; use warnings;
-    my ($grezzo, $dir, $pref) = @ARGV;
-    open(my $in, "<", $grezzo) or die "impossibile leggere $grezzo: $!\n";
-    my ($nome, $dati) = (undef, "");
-    my ($scritti, $uguali, $rinominati, $illeggibili) = (0, 0, 0, 0);
-    sub chiudi {
-      return unless defined $nome;
-      (my $base = $nome) =~ s/[^A-Za-z0-9._-]/_/g;
-      my $file = "$dir/$base.xml";
-      if (-e $file) {
-        open(my $f, "<:raw", $file) or die "impossibile leggere $file: $!\n";
-        local $/; my $c = <$f>; close $f;
-        if (defined $c && $c eq $dati) { $uguali++; ($nome, $dati) = (undef, ""); return; }
-        my $i = 2;
-        $i++ while -e "$dir/$base-$i.xml";
-        $file = "$dir/$base-$i.xml";
-        print STDERR "  $base.xml esiste con un contenuto diverso: salvato in $base-$i.xml\n";
-        $rinominati++;
-      }
-      open(my $o, ">:raw", $file) or die "impossibile scrivere $file: $!\n";
-      print $o $dati or die "impossibile scrivere $file: $!\n";
-      close $o or die "impossibile scrivere $file: $!\n";
-      $scritti++;
-      ($nome, $dati) = (undef, "");
-    }
-    while (my $riga = <$in>) {
-      next unless $riga =~ /^\Q$pref\E /;
-      if ($riga =~ /^\Q$pref\E (\S+) ([0-9A-Fa-f]+)\s*$/ && length($2) % 2 == 0) {
-        chiudi() if defined $nome && $nome ne $1;
-        $nome = $1;
-        $dati .= pack("H*", $2);
-      } else {
-        $illeggibili++;
-        print STDERR "  riga non interpretabile alla riga $.\n";
-      }
-    }
-    chiudi();
-    close $in;
-    print "  salvati: $scritti\n";
-    print "  gia presenti e identici: $uguali\n" if $uguali;
-    print "  salvati con suffisso: $rinominati\n" if $rinominati;
-    exit($illeggibili ? 2 : 0);
-  ' "$1" "$2" "$3"
 }
 
 # ── Simulazione ──────────────────────────────────────────────────────────────
@@ -499,7 +397,7 @@ function conta_righe_dopo_delete() {   # $1 = file, $2 = istruzione
 }
 
 # ── Retention minima ─────────────────────────────────────────────────────────
-# Rendicontazioni e pendenze pagate piu' recenti di RETENTION_MINIMA_MESI si
+# Rendicontazioni e pendenze pagate piu' recenti di RETENTION_MINIMA_GIORNI si
 # cancellano solo chiedendolo esplicitamente con --force. La simulazione non
 # cancella nulla e passa sempre. Il controllo e' sulla retention effettiva:
 # quella dell'opzione o, senza, quella scritta nello script della sezione, che
@@ -508,19 +406,176 @@ for s in "${SEZIONI[@]}"; do
   soggetta=false
   for m in "${SEZIONI_RETENTION_MINIMA[@]}"; do [[ "${s}" == "${m}" ]] && soggetta=true; done
   [[ "${soggetta}" == true ]] || continue
-  mesi="${RETENTION[${s}]:-$(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "$(parametro_di "${s}")")}"
+  giorni="${RETENTION[${s}]:-$(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "$(parametro_di "${s}")")}"
   # Una retention illeggibile non si puo' confrontare: meglio fermarsi.
-  [[ "${mesi}" =~ ^[0-9]+$ ]] \
+  [[ "${giorni}" =~ ^[0-9]+$ ]] \
     || errore "retention di ${s} non leggibile da ${SEZIONI_DIR#${REPO_ROOT}/}/${s}.sql: lo script e' cambiato, aggiornare $(basename "$0")"
-  [[ "${mesi}" -lt "${RETENTION_MINIMA_MESI}" ]] || continue
+  [[ "${giorni}" -lt "${RETENTION_MINIMA_GIORNI}" ]] || continue
   if [[ "${DRY_RUN}" == true ]]; then
-    nota "${s}: retention di ${mesi} mesi, inferiore a ${RETENTION_MINIMA_MESI}; ammessa perche' e' una simulazione"
+    nota "${s}: retention di ${giorni} giorni, inferiore a ${RETENTION_MINIMA_GIORNI}; ammessa perche' e' una simulazione"
   elif [[ "${FORCE}" == true ]]; then
-    nota "${s}: retention di ${mesi} mesi, inferiore a ${RETENTION_MINIMA_MESI}; ammessa con --force"
+    nota "${s}: retention di ${giorni} giorni, inferiore a ${RETENTION_MINIMA_GIORNI}; ammessa con --force"
   else
-    errore "${s}: retention di ${mesi} mesi, inferiore al minimo di ${RETENTION_MINIMA_MESI}. Cancellerebbe rendicontazioni o pendenze pagate recenti: aggiungere --dry-run per simulare, o --force per cancellare davvero"
+    errore "${s}: retention di ${giorni} giorni, inferiore al minimo di ${RETENTION_MINIMA_GIORNI}. Cancellerebbe rendicontazioni o pendenze pagate recenti: aggiungere --dry-run per simulare, o --force per cancellare davvero"
   fi
 done
+
+# ── Connessione ──────────────────────────────────────────────────────────────
+# I parametri di connessione servono per eseguire e per controllare l'archivio di
+# oggi: con --solo-sql non servono, e lo script si compone anche dove non si ha
+# accesso al database.
+if [[ "${SOLO_SQL}" != true ]]; then
+  if [[ -n "${DB_SERVER}" && -z "${DB_HOST}" ]]; then
+    IFS=':' read -r DB_HOST DB_PORT_ENV <<< "${DB_SERVER}"
+    [[ -z "${DB_PORT}" && -n "${DB_PORT_ENV:-}" ]] && DB_PORT="${DB_PORT_ENV}"
+  fi
+
+  for coppia in "DB_HOST:--host" "DB_NAME:--db" "DB_USER:--user"; do
+    var="${coppia%%:*}"; opt="${coppia#*:}"
+    [[ -n "${!var}" ]] || errore "parametro di connessione mancante: ${opt} (oppure la variabile d'ambiente corrispondente)"
+  done
+
+  if [[ -z "${DB_PORT}" ]]; then
+    case "${TIPO_DB}" in
+      postgresql) DB_PORT=5432 ;;
+      mysql)      DB_PORT=3306 ;;
+      oracle)     DB_PORT=1521 ;;
+      sqlserver)  DB_PORT=1433 ;;
+      hsql)       DB_PORT=9001 ;;
+    esac
+  fi
+fi
+
+function richiedi_client() {
+  command -v "$1" >/dev/null 2>&1 || errore "client $1 non trovato: serve per eseguire lo svecchiamento su ${TIPO_DB}. Con --solo-sql lo script viene composto senza eseguirlo"
+}
+
+function esegui() {   # $1 = script da eseguire (default: lo script composto)
+local script="${1:-${OUT}}"
+case "${TIPO_DB}" in
+  postgresql)
+    richiedi_client psql
+    # ON_ERROR_STOP e' necessario: senza, psql esce 0 anche dopo un errore.
+    PGPASSWORD="${DB_PASSWORD}" psql -v ON_ERROR_STOP=1 \
+      -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -f "${script}"
+    ;;
+  mysql)
+    richiedi_client mysql
+    # MYSQL_PWD evita la password nella riga di comando, visibile in ps.
+    MYSQL_PWD="${DB_PASSWORD}" mysql -h "${DB_HOST}" -P "${DB_PORT}" \
+      -u "${DB_USER}" -D "${DB_NAME}" < "${script}"
+    ;;
+  oracle)
+    richiedi_client sqlplus
+    if [[ "${ORACLE_CONN}" == "sid" ]]; then
+      DESCRITTORE="${DB_HOST}:${DB_PORT}:${DB_NAME}"
+    else
+      DESCRITTORE="//${DB_HOST}:${DB_PORT}/${DB_NAME}"
+    fi
+    # CONNECT arriva da stdin e non dalla riga di comando, che ps mostrerebbe
+    # con la password dentro. Il WHENEVER SQLERROR copre anche il CONNECT.
+    sqlplus -S -L /nolog <<EOSQLPLUS
+WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
+CONNECT ${DB_USER}/${DB_PASSWORD}@${DESCRITTORE}
+@${script}
+EXIT ROLLBACK;
+EOSQLPLUS
+    ;;
+  sqlserver)
+    richiedi_client sqlcmd
+    # -b: uscita non nulla al primo errore.
+    SQLCMDPASSWORD="${DB_PASSWORD}" sqlcmd -b \
+      -S "${DB_HOST},${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -i "${script}"
+    ;;
+  hsql)
+    richiedi_client java
+    # Su hsql il client e' SqlTool, come nell'init dei container: non c'e' un
+    # client a riga di comando nativo, e gli script non usano comandi di client.
+    SQLTOOL_JAR="${GOVPAY_SQLTOOL_JAR:-/opt/hsqldb-${HSQLDB_FULLVERSION:-2.7.4}/hsqldb/lib/sqltool.jar}"
+    [[ -f "${SQLTOOL_JAR}" ]] || errore "sqltool.jar non trovato in ${SQLTOOL_JAR}: indicarlo con GOVPAY_SQLTOOL_JAR"
+    RC="${WORKDIR}/_sqltool.rc"
+    ( umask 077; cat > "${RC}" <<EORC
+urlid svecchiamento_db
+url jdbc:hsqldb:hsql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+username ${DB_USER}
+password ${DB_PASSWORD}
+driver ${GOVPAY_DS_DRIVER_CLASS:-org.hsqldb.jdbc.JDBCDriver}
+transiso TRANSACTION_READ_COMMITTED
+charset UTF-8
+EORC
+    )
+    java -Dfile.encoding=UTF-8 \
+      -cp "${GOVPAY_DS_JDBC_LIBS:-/opt/jdbc-drivers}/*:${SQLTOOL_JAR}" \
+      org.hsqldb.cmdline.SqlTool --rcFile="${RC}" svecchiamento_db "${script}"
+    ;;
+esac
+}
+
+
+# ── Archivio di oggi ─────────────────────────────────────────────────────────
+# Il backup e' giornaliero: se nel database c'e' gia' anche una sola tabella di
+# archivio con la data di oggi, lo svecchiamento con archivio di oggi e' gia'
+# stato fatto, e le sezioni con archivio vengono saltate. Le altre, eventi e
+# metadati dei batch, girano comunque: cancellano per data, e rieseguirle non
+# fa danni. Il controllo vale anche per la simulazione, che deve mostrare cio'
+# che farebbe l'esecuzione vera. Con --solo-sql non si puo' fare: lo script
+# composto contiene tutte le sezioni richieste.
+SEZIONI_ARCHIVIO=()
+for s in "${SEZIONI[@]}"; do con_archivio "${s}" && SEZIONI_ARCHIVIO+=("${s}"); done
+
+function tabelle_di_archivio() {   # nomi base, da tutte le sezioni con archivio
+  for n in "${SEZIONI_NOTE[@]}"; do
+    [[ -f "${SEZIONI_DIR}/${n}.sql" ]] || continue
+    grep -oE "\b[A-Za-z_]+_${SEGNAPOSTO_ARCHIVIO}\b" "${SEZIONI_DIR}/${n}.sql" || true
+  done | sed "s/_${SEGNAPOSTO_ARCHIVIO}\$//" | sort -u
+}
+
+function query_archivio_di_oggi() {   # scrive su stdout lo script del controllo
+  local nomi
+  nomi="$(tabelle_di_archivio | sed "s/.*/'&_${OGGI}'/" | paste -sd, -)"
+  case "${TIPO_DB}" in
+    postgresql)
+      echo "\\pset tuples_only on"
+      echo "\\pset format unaligned"
+      echo "SELECT 'ARCHIVIO_PRESENTI ' || count(*) FROM information_schema.tables WHERE table_schema = current_schema() AND lower(table_name) IN (${nomi});" ;;
+    mysql)
+      echo "SELECT CONCAT('ARCHIVIO_PRESENTI ', COUNT(*)) AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND LOWER(table_name) IN (${nomi});" ;;
+    oracle)
+      echo "SET HEADING OFF FEEDBACK OFF PAGESIZE 0"
+      echo "SELECT 'ARCHIVIO_PRESENTI ' || COUNT(*) FROM user_tables WHERE LOWER(table_name) IN (${nomi});" ;;
+    sqlserver)
+      echo "SET NOCOUNT ON;"
+      echo "SELECT 'ARCHIVIO_PRESENTI ' + CAST(COUNT(*) AS VARCHAR(10)) FROM sys.tables WHERE LOWER(name) IN (${nomi});" ;;
+    hsql)
+      echo "SELECT 'ARCHIVIO_PRESENTI ' || COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE LOWER(TABLE_NAME) IN (${nomi});" ;;
+  esac
+}
+
+if [[ ${#SEZIONI_ARCHIVIO[@]} -gt 0 ]]; then
+  if [[ "${SOLO_SQL}" == true ]]; then
+    nota "--solo-sql: non verificato se l'archivio di oggi (*_${OGGI}) esiste gia'"
+  else
+    CONTROLLO="${WORKDIR}/_archivio_di_oggi.sql"
+    query_archivio_di_oggi > "${CONTROLLO}"
+    esito_controllo="$(esegui "${CONTROLLO}" 2>&1)" \
+      || errore "controllo dell'archivio di oggi non riuscito: ${esito_controllo}"
+    presenti="$(grep -oE 'ARCHIVIO_PRESENTI [0-9]+' <<< "${esito_controllo}" | tail -1 | grep -oE '[0-9]+' || true)"
+    # Senza risposta non si sa se l'archivio di oggi c'e': meglio fermarsi che
+    # rifare un backup gia' fatto, o saltarne uno da fare.
+    [[ -n "${presenti}" ]] || errore "controllo dell'archivio di oggi senza risposta: ${esito_controllo}"
+    if [[ "${presenti}" -gt 0 ]]; then
+      nota "l'archivio di oggi esiste gia' (${presenti} tabelle *_${OGGI}): sezioni con archivio saltate: ${SEZIONI_ARCHIVIO[*]}"
+      RESTANTI=()
+      for s in "${SEZIONI[@]}"; do con_archivio "${s}" || RESTANTI+=("${s}"); done
+      if [[ ${#RESTANTI[@]} -eq 0 ]]; then
+        echo
+        echo "Nessuna sezione da eseguire: lo svecchiamento con archivio di oggi e' gia' stato fatto."
+        exit 0
+      fi
+      SEZIONI=("${RESTANTI[@]}")
+    fi
+  fi
+fi
 
 # ── Composizione ─────────────────────────────────────────────────────────────
 mkdir -p "${OUTDIR}"
@@ -534,9 +589,11 @@ declare -A RETENTION_USATA=()
 for s in "${SEZIONI[@]}"; do
   par="$(parametro_di "${s}")"
   if [[ -n "${RETENTION[${s}]:-}" ]]; then
-    RETENTION_USATA[${s}]="retention ${RETENTION[${s}]} mesi"
+    RETENTION_USATA[${s}]="retention ${RETENTION[${s}]} giorni"
+  elif [[ -z "${par}" ]]; then
+    RETENTION_USATA[${s}]="senza retention"
   else
-    RETENTION_USATA[${s}]="retention $(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") mesi (dal file)"
+    RETENTION_USATA[${s}]="retention $(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") giorni (dal file)"
   fi
 done
 
@@ -596,6 +653,35 @@ for s in "${SEZIONI[@]}"; do
   } >> "${OUT}"
 done
 
+# In simulazione le tabelle di archivio, create fuori dalle transazioni annullate,
+# restano vuote: vanno eliminate. I nomi si ricavano dallo script composto.
+ARCHIVIO_TABELLE=()
+while IFS= read -r t; do [[ -n "${t}" ]] && ARCHIVIO_TABELLE+=("${t}"); done \
+  < <(grep -oE "\b[A-Za-z_]+_${SUFFISSO_ARCHIVIO}\b" "${OUT}" | sort -u)
+
+function elimina_archivio() {   # scrive su stdout
+  echo ""
+  echo "-- ============================================================"
+  echo "-- Simulazione: eliminazione delle tabelle di archivio, vuote"
+  echo "-- ============================================================"
+  echo ""
+  for t in "${ARCHIVIO_TABELLE[@]}"; do
+    case "${TIPO_DB}" in
+      postgresql|mysql) echo "DROP TABLE IF EXISTS ${t};" ;;
+      hsql)             echo "DROP TABLE ${t} IF EXISTS;" ;;
+      sqlserver)        echo "IF OBJECT_ID('${t}', 'U') IS NOT NULL DROP TABLE ${t};" ;;
+      oracle)           echo "BEGIN EXECUTE IMMEDIATE 'DROP TABLE ${t}'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;"
+                        echo "/" ;;
+    esac
+  done
+  [[ "${TIPO_DB}" == "sqlserver" ]] && echo "GO"
+  [[ "${TIPO_DB}" == "hsql" ]] && echo "COMMIT;"
+  return 0
+}
+if [[ "${DRY_RUN}" == true && ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+  elimina_archivio >> "${OUT}"
+fi
+
 [[ "${TIPO_DB}" == "oracle" ]] && { echo "" >> "${OUT}"; echo "EXIT ROLLBACK;" >> "${OUT}"; }
 
 echo "=============================================="
@@ -610,37 +696,19 @@ for s in "${SEZIONI[@]}"; do
 done
 echo "  script:   ${OUT}"
 echo "            $(wc -l < "${OUT}") righe"
-[[ -n "${EXPORT_DIR[rt]}" ]] && echo "  RT:       salvate in ${EXPORT_DIR[rt]}"
-[[ -n "${EXPORT_DIR[fr]}" ]] && echo "  flussi:   salvati in ${EXPORT_DIR[fr]}"
+if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+  if [[ "${DRY_RUN}" == true ]]; then
+    echo "  archivio: tabelle *_${SUFFISSO_ARCHIVIO}, eliminate a fine simulazione"
+  else
+    echo "  archivio: tabelle *_${SUFFISSO_ARCHIVIO} (${#ARCHIVIO_TABELLE[@]})"
+  fi
+fi
 echo "=============================================="
 
 if [[ "${SOLO_SQL}" == true ]]; then
   echo
   echo "--solo-sql: database non modificato."
   exit 0
-fi
-
-# ── Esecuzione ───────────────────────────────────────────────────────────────
-# I parametri di connessione servono solo qui: comporre lo script non ne ha
-# bisogno, e --solo-sql funziona anche dove non si ha accesso al database.
-if [[ -n "${DB_SERVER}" && -z "${DB_HOST}" ]]; then
-  IFS=':' read -r DB_HOST DB_PORT_ENV <<< "${DB_SERVER}"
-  [[ -z "${DB_PORT}" && -n "${DB_PORT_ENV:-}" ]] && DB_PORT="${DB_PORT_ENV}"
-fi
-
-for coppia in "DB_HOST:--host" "DB_NAME:--db" "DB_USER:--user"; do
-  var="${coppia%%:*}"; opt="${coppia#*:}"
-  [[ -n "${!var}" ]] || errore "parametro di connessione mancante: ${opt} (oppure la variabile d'ambiente corrispondente)"
-done
-
-if [[ -z "${DB_PORT}" ]]; then
-  case "${TIPO_DB}" in
-    postgresql) DB_PORT=5432 ;;
-    mysql)      DB_PORT=3306 ;;
-    oracle)     DB_PORT=1521 ;;
-    sqlserver)  DB_PORT=1433 ;;
-    hsql)       DB_PORT=9001 ;;
-  esac
 fi
 
 # La simulazione non modifica il database: la conferma non serve.
@@ -655,10 +723,6 @@ if [[ "${SENZA_CONFERMA}" != true && "${DRY_RUN}" != true ]]; then
   case "${risposta}" in s|S|si|SI|Si) ;; *) echo "Annullato: database non modificato."; exit 0 ;; esac
 fi
 
-function richiedi_client() {
-  command -v "$1" >/dev/null 2>&1 || errore "client $1 non trovato: serve per eseguire lo svecchiamento su ${TIPO_DB}. Con --solo-sql lo script viene composto senza eseguirlo"
-}
-
 echo
 if [[ "${DRY_RUN}" == true ]]; then
   echo "-- Simulazione su ${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME}: ogni sezione termina con ROLLBACK"
@@ -666,120 +730,12 @@ else
   echo "-- Esecuzione su ${DB_HOST}:${DB_PORT}/${DB_NAME}"
 fi
 
-function esegui() {
-case "${TIPO_DB}" in
-  postgresql)
-    richiedi_client psql
-    # ON_ERROR_STOP e' necessario: senza, psql esce 0 anche dopo un errore.
-    PGPASSWORD="${DB_PASSWORD}" psql -v ON_ERROR_STOP=1 \
-      -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -f "${OUT}"
-    ;;
-  mysql)
-    richiedi_client mysql
-    # MYSQL_PWD evita la password nella riga di comando, visibile in ps.
-    MYSQL_PWD="${DB_PASSWORD}" mysql -h "${DB_HOST}" -P "${DB_PORT}" \
-      -u "${DB_USER}" -D "${DB_NAME}" < "${OUT}"
-    ;;
-  oracle)
-    richiedi_client sqlplus
-    if [[ "${ORACLE_CONN}" == "sid" ]]; then
-      DESCRITTORE="${DB_HOST}:${DB_PORT}:${DB_NAME}"
-    else
-      DESCRITTORE="//${DB_HOST}:${DB_PORT}/${DB_NAME}"
-    fi
-    # CONNECT arriva da stdin e non dalla riga di comando, che ps mostrerebbe
-    # con la password dentro. Il WHENEVER SQLERROR copre anche il CONNECT.
-    sqlplus -S -L /nolog <<EOSQLPLUS
-WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
-CONNECT ${DB_USER}/${DB_PASSWORD}@${DESCRITTORE}
-@${OUT}
-EXIT ROLLBACK;
-EOSQLPLUS
-    ;;
-  sqlserver)
-    richiedi_client sqlcmd
-    # -b: uscita non nulla al primo errore.
-    SQLCMDPASSWORD="${DB_PASSWORD}" sqlcmd -b \
-      -S "${DB_HOST},${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -i "${OUT}"
-    ;;
-  hsql)
-    richiedi_client java
-    # Su hsql il client e' SqlTool, come nell'init dei container: non c'e' un
-    # client a riga di comando nativo, e gli script non usano comandi di client.
-    SQLTOOL_JAR="${GOVPAY_SQLTOOL_JAR:-/opt/hsqldb-${HSQLDB_FULLVERSION:-2.7.4}/hsqldb/lib/sqltool.jar}"
-    [[ -f "${SQLTOOL_JAR}" ]] || errore "sqltool.jar non trovato in ${SQLTOOL_JAR}: indicarlo con GOVPAY_SQLTOOL_JAR"
-    RC="${WORKDIR}/_sqltool.rc"
-    ( umask 077; cat > "${RC}" <<EORC
-urlid svecchiamento_db
-url jdbc:hsqldb:hsql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-username ${DB_USER}
-password ${DB_PASSWORD}
-driver ${GOVPAY_DS_DRIVER_CLASS:-org.hsqldb.jdbc.JDBCDriver}
-transiso TRANSACTION_READ_COMMITTED
-charset UTF-8
-EORC
-    )
-    java -Dfile.encoding=UTF-8 \
-      -cp "${GOVPAY_DS_JDBC_LIBS:-/opt/jdbc-drivers}/*:${SQLTOOL_JAR}" \
-      org.hsqldb.cmdline.SqlTool --rcFile="${RC}" svecchiamento_db "${OUT}"
-    ;;
-esac
-}
 
 # Ogni sezione e' una transazione a se': se una fallisce, quelle prima di essa
 # sono committate. E' la ragione per cui l'esito va detto a chiare lettere
 # invece di lasciare l'ultima riga al client.
 ESITO=0
-if [[ ${#ESPORTAZIONI[@]} -gt 0 ]]; then
-  # mysql e SqlTool copiano a video anche quello che scrivono nei file di
-  # export: righe lunghe quanto i documenti, da non riversare sul terminale.
-  esegui | awk '!/^(RT|FR) /' || ESITO=$?
-else
-  esegui || ESITO=$?
-fi
-
-# I documenti si ricavano anche dopo un errore: se il file grezzo c'e', la
-# sezione e' arrivata almeno all'export, e i file sono una copia, non una
-# cancellazione. Se l'errore e' venuto prima del COMMIT i dati sono ancora nel
-# database, e rieseguire riesporta gli stessi documenti, che decodifica
-# riconosce.
-ESITO_EXPORT=0
-for coppia in ${ESPORTAZIONI[@]+"${ESPORTAZIONI[@]}"}; do
-  tipo="${coppia%%:*}"; s="${coppia#*:}"
-  file_grezzo="${EXPORT_FILE[${coppia}]}"
-  dir="${EXPORT_DIR[${tipo}]}"
-  documenti="${DOCUMENTI[${tipo}]}"
-  prefisso="$(echo "${tipo}" | tr '[:lower:]' '[:upper:]')"
-  esito_export=0
-  echo
-  if [[ -s "${file_grezzo}" ]]; then
-    echo "-- Salvataggio su file (${documenti} di ${s}) in ${dir}"
-    decodifica "${file_grezzo}" "${dir}" "${prefisso}" || esito_export=$?
-    # Riuscita la conversione, il file grezzo e' un doppione degli XML.
-    [[ "${esito_export}" -eq 0 ]] && rm -f "${file_grezzo}"
-  elif [[ -e "${file_grezzo}" ]]; then
-    echo "-- Nessun file da salvare (${documenti} di ${s})"
-    rm -f "${file_grezzo}"
-  elif [[ "${ESITO}" -eq 0 ]]; then
-    # La sezione e' terminata senza errori ma il client non ha scritto il file:
-    # i documenti sono gia' cancellati e non c'e' copia. Non deve passare in
-    # silenzio.
-    echo "ATTENZIONE: il file ${file_grezzo} non e' stato creato" >&2
-    esito_export=1
-  fi
-  # Dopo un errore, il file di una sezione mai raggiunta non c'e', ed e' giusto.
-  if [[ "${esito_export}" -ne 0 ]]; then
-    ESITO_EXPORT="${esito_export}"
-    echo >&2
-    echo "==============================================" >&2
-    echo "Salvataggio su file NON RIUSCITO (${documenti} di ${s})" >&2
-    if [[ -e "${file_grezzo}" ]]; then
-      echo "  I documenti sono nel file grezzo ${file_grezzo}, una riga" >&2
-      echo "  '${prefisso} <nome> <esadecimale>' per ciascuno: non cancellarlo." >&2
-    fi
-    echo "==============================================" >&2
-  fi
-done
+esegui || ESITO=$?
 
 if [[ "${ESITO}" -ne 0 && "${DRY_RUN}" == true ]]; then
   echo >&2
@@ -789,6 +745,10 @@ if [[ "${ESITO}" -ne 0 && "${DRY_RUN}" == true ]]; then
   echo "  La sezione in errore e' stata annullata, e quelle prima di essa" >&2
   echo "  erano gia' terminate con ROLLBACK: il database non e' modificato." >&2
   echo "  L'errore si ripresenterebbe nell'esecuzione vera." >&2
+  if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+    echo "  Possono essere rimaste, vuote, tabelle di archivio *_${SUFFISSO_ARCHIVIO}:" >&2
+    echo "  le elimina la prossima simulazione andata a buon fine dello stesso giorno." >&2
+  fi
   echo "==============================================" >&2
   exit "${ESITO}"
 fi
@@ -801,6 +761,11 @@ if [[ "${ESITO}" -ne 0 ]]; then
   echo "  Ogni sezione e' una transazione a se': quelle completate prima" >&2
   echo "  dell'errore sono committate. Corretta la causa si puo' rieseguire," >&2
   echo "  perche' lo svecchiamento cancella per data e non per stato." >&2
+  if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+    echo "  Le tabelle di archivio *_${SUFFISSO_ARCHIVIO} esistono gia': rieseguendo oggi le" >&2
+    echo "  sezioni con archivio verrebbero saltate. Per riprovare in giornata il DBA" >&2
+    echo "  deve salvare ed eliminare le tabelle *_${SUFFISSO_ARCHIVIO}." >&2
+  fi
   echo "==============================================" >&2
   exit "${ESITO}"
 fi
@@ -814,7 +779,7 @@ else
   echo "Svecchiamento completato"
 fi
 echo "  script eseguito: ${OUT}"
-[[ -n "${EXPORT_DIR[rt]}" ]] && echo "  RT salvate in:   ${EXPORT_DIR[rt]}"
-[[ -n "${EXPORT_DIR[fr]}" ]] && echo "  flussi salvati in: ${EXPORT_DIR[fr]}"
+if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 && "${DRY_RUN}" != true ]]; then
+  echo "  archivio:        tabelle *_${SUFFISSO_ARCHIVIO}, da salvare ed eliminare a cura del DBA"
+fi
 echo "=============================================="
-exit "${ESITO_EXPORT}"

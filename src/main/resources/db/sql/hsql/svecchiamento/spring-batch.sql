@@ -2,7 +2,7 @@
 -- Svecchiamento METADATI SPRING BATCH - HSQLDB
 --
 -- Elimina le righe delle esecuzioni dei batch anteriori a retention_batch
--- mesi, nell'ordine imposto dalle chiavi esterne.
+-- giorni, nell'ordine imposto dalle chiavi esterne.
 --
 -- Riferimento temporale: COALESCE(END_TIME, START_TIME, CREATE_TIME). CREATE_TIME
 -- e' NOT NULL nello schema di Spring Batch, quindi ogni esecuzione ha sempre una
@@ -14,11 +14,12 @@
 --
 -- ATTENZIONE: se un job e' in corso e la sua CREATE_TIME e' anteriore alla
 -- soglia, le sue righe vengono cancellate e Spring Batch perde traccia
--- dell'esecuzione viva. Eseguire a batch fermi.
+-- dell'esecuzione viva: con la retention di default, un job in corso da piu'
+-- di 30 giorni.
 --
 -- Il corpo replica gli script di svecchiamento dei metadati di govpay-common,
 -- che restano la versione di riferimento: la' la soglia e' una data assoluta
--- passata dall'esterno, qui e' una retention in mesi come per le altre
+-- passata dall'esterno, qui e' una retention in giorni come per le altre
 -- sezioni. Se cambia la struttura delle tabelle BATCH_*, vanno allineati.
 --
 -- Uso: SqlTool, oppure da applicazione Java
@@ -28,39 +29,39 @@
 -- =============================================================================
 
 -- HSQLDB non ha variabili negli script: la retention e' il letterale
--- nelle DELETE qui sotto, 3 mesi.
+-- nelle DELETE qui sotto, 30 giorni.
 
 DELETE FROM BATCH_STEP_EXECUTION_CONTEXT
 WHERE STEP_EXECUTION_ID IN (
     SELECT se.STEP_EXECUTION_ID
     FROM BATCH_STEP_EXECUTION se
     JOIN BATCH_JOB_EXECUTION je ON se.JOB_EXECUTION_ID = je.JOB_EXECUTION_ID
-    WHERE COALESCE(je.END_TIME, je.START_TIME, je.CREATE_TIME) < CURRENT_TIMESTAMP - 3 MONTH
+    WHERE COALESCE(je.END_TIME, je.START_TIME, je.CREATE_TIME) < CURRENT_TIMESTAMP - 30 DAY
 );
 
 DELETE FROM BATCH_STEP_EXECUTION
 WHERE JOB_EXECUTION_ID IN (
     SELECT JOB_EXECUTION_ID
     FROM BATCH_JOB_EXECUTION
-    WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 3 MONTH
+    WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 30 DAY
 );
 
 DELETE FROM BATCH_JOB_EXECUTION_CONTEXT
 WHERE JOB_EXECUTION_ID IN (
     SELECT JOB_EXECUTION_ID
     FROM BATCH_JOB_EXECUTION
-    WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 3 MONTH
+    WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 30 DAY
 );
 
 DELETE FROM BATCH_JOB_EXECUTION_PARAMS
 WHERE JOB_EXECUTION_ID IN (
     SELECT JOB_EXECUTION_ID
     FROM BATCH_JOB_EXECUTION
-    WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 3 MONTH
+    WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 30 DAY
 );
 
 DELETE FROM BATCH_JOB_EXECUTION
-WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 3 MONTH;
+WHERE COALESCE(END_TIME, START_TIME, CREATE_TIME) < CURRENT_TIMESTAMP - 30 DAY;
 
 DELETE FROM BATCH_JOB_INSTANCE
 WHERE JOB_INSTANCE_ID NOT IN (

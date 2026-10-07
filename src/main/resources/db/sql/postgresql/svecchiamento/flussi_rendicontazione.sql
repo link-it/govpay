@@ -2,7 +2,7 @@
 -- Svecchiamento FLUSSI DI RENDICONTAZIONE - PostgreSQL
 --
 -- Elimina i flussi di rendicontazione con data_ora_flusso piu' vecchia di
--- retention_fr mesi, con le loro rendicontazioni e i loro eventi, le pendenze
+-- retention_fr giorni, con le loro rendicontazioni e i loro eventi, le pendenze
 -- che rendicontano e gli incassi che li riconciliano.
 --
 -- Le pendenze vengono cancellate qualunque sia il loro stato: una pendenza
@@ -19,6 +19,9 @@
 -- anche gli altri flussi non superano la soglia: succede solo alle pendenze a
 -- cavallo della soglia.
 --
+-- I documenti delle pendenze cancellate restano: quelli rimasti senza pendenze
+-- li cancella la sezione documenti_orfani.
+--
 -- Con il flusso va via anche l'incasso che lo riconcilia, con i suoi eventi: la
 -- riconciliazione collega un incasso a un solo flusso. I pagamenti rimasti che
 -- riferiscono l'incasso, quelli delle pendenze che restano, vengono scollegati
@@ -28,12 +31,17 @@
 -- DELETE cambiano le rendicontazioni su cui si basa la selezione, e ripeterla
 -- dopo darebbe un altro risultato.
 --
--- Le RT delle pendenze cancellate possono essere salvate su file prima della
--- cancellazione: la riga marcata export-rt qui sotto viene sostituita da
--- svecchiamento-db.sh con il contenuto di flussi_rendicontazione-export-rt.sql
--- quando gli si passa --export-rt. Allo stesso modo, con --export-fr, la riga
--- marcata export-fr diventa il contenuto di flussi_rendicontazione-export-fr.sql
--- e salva l'XML dei flussi. Eseguito da solo, lo script non salva nulla.
+-- Prima di essere cancellate, le righe vengono copiate in tabelle di archivio
+-- con lo stesso nome e il suffisso _aaaammgg (rendicontazioni, pagamenti,
+-- notifiche, notifiche_app_io, promemoria, operazioni, stampe, allegati, rpt,
+-- singoli_versamenti, versamenti, fr, incassi), create se non esistono, senza
+-- vincoli ne' indici, e nella stessa transazione delle cancellazioni:
+-- l'archivio contiene esattamente le righe cancellate. svecchiamento-db.sh
+-- sostituisce aaaammgg con la data dell'esecuzione; eseguito da solo, lo
+-- script archivia nelle tabelle _aaaammgg. Gli eventi non vengono archiviati.
+-- Salvare ed eliminare le tabelle di archivio e' compito del DBA. Il contenuto
+-- dei large object (allegati.raw_contenuto), che lo_unlink cancella, e'
+-- copiato nella colonna aggiuntiva <colonna>_dati.
 --
 -- Uso: psql -v ON_ERROR_STOP=1 -h <host> -U <utente> -d <database> -f flussi_rendicontazione.sql
 --
@@ -41,13 +49,28 @@
 -- gli si passa --retention-flussi_rendicontazione.
 -- =============================================================================
 
-\set retention_fr '\'24 months\''
+\set retention_fr '\'730 days\''
 
 \set end_fr 'CURRENT_DATE - interval :retention_fr '
 
 \echo ''
 \echo '--- Svecchiamento FLUSSI DI RENDICONTAZIONE ---'
 \echo 'Retention: ' :retention_fr
+
+\echo 'Creazione delle tabelle di archivio...'
+CREATE TABLE IF NOT EXISTS rendicontazioni_aaaammgg AS SELECT * FROM rendicontazioni WITH NO DATA;
+CREATE TABLE IF NOT EXISTS pagamenti_aaaammgg AS SELECT * FROM pagamenti WITH NO DATA;
+CREATE TABLE IF NOT EXISTS notifiche_aaaammgg AS SELECT * FROM notifiche WITH NO DATA;
+CREATE TABLE IF NOT EXISTS notifiche_app_io_aaaammgg AS SELECT * FROM notifiche_app_io WITH NO DATA;
+CREATE TABLE IF NOT EXISTS promemoria_aaaammgg AS SELECT * FROM promemoria WITH NO DATA;
+CREATE TABLE IF NOT EXISTS operazioni_aaaammgg AS SELECT * FROM operazioni WITH NO DATA;
+CREATE TABLE IF NOT EXISTS stampe_aaaammgg AS SELECT * FROM stampe WITH NO DATA;
+CREATE TABLE IF NOT EXISTS allegati_aaaammgg AS SELECT allegati.*, lo_get(allegati.raw_contenuto) AS raw_contenuto_dati FROM allegati WITH NO DATA;
+CREATE TABLE IF NOT EXISTS rpt_aaaammgg AS SELECT * FROM rpt WITH NO DATA;
+CREATE TABLE IF NOT EXISTS singoli_versamenti_aaaammgg AS SELECT * FROM singoli_versamenti WITH NO DATA;
+CREATE TABLE IF NOT EXISTS versamenti_aaaammgg AS SELECT * FROM versamenti WITH NO DATA;
+CREATE TABLE IF NOT EXISTS fr_aaaammgg AS SELECT * FROM fr WITH NO DATA;
+CREATE TABLE IF NOT EXISTS incassi_aaaammgg AS SELECT * FROM incassi WITH NO DATA;
 
 BEGIN;
 
@@ -82,38 +105,46 @@ ALTER TABLE svecchiamento_fr_incassi ADD PRIMARY KEY (id);
 SELECT (SELECT count(*) FROM svecchiamento_fr) AS flussi_da_cancellare,
        (SELECT count(*) FROM svecchiamento_fr_pendenze) AS pendenze_da_cancellare;
 
--- export-rt
-
--- export-fr
-
 \echo 'Cancellazione eventi dei flussi...'
 DELETE FROM eventi WHERE id_fr IN (SELECT id FROM svecchiamento_fr);
 
 \echo 'Cancellazione rendicontazioni dei flussi...'
+INSERT INTO rendicontazioni_aaaammgg SELECT * FROM rendicontazioni WHERE id_fr IN (SELECT id FROM svecchiamento_fr);
 DELETE FROM rendicontazioni WHERE id_fr IN (SELECT id FROM svecchiamento_fr);
 
 \echo 'Cancellazione pagamenti...'
+INSERT INTO pagamenti_aaaammgg SELECT * FROM pagamenti WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 DELETE FROM pagamenti WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
+INSERT INTO pagamenti_aaaammgg SELECT * FROM pagamenti WHERE id_singolo_versamento IN (SELECT id FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 DELETE FROM pagamenti WHERE id_singolo_versamento IN (SELECT id FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 
 \echo 'Cancellazione notifiche...'
+INSERT INTO notifiche_aaaammgg SELECT * FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 DELETE FROM notifiche WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 
 \echo 'Cancellazione notifiche App IO...'
+INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 DELETE FROM notifiche_app_io WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
+INSERT INTO notifiche_app_io_aaaammgg SELECT * FROM notifiche_app_io WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM notifiche_app_io WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione promemoria...'
+INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 DELETE FROM promemoria WHERE id_rpt IN (SELECT id FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
+INSERT INTO promemoria_aaaammgg SELECT * FROM promemoria WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM promemoria WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione operazioni...'
+INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
 DELETE FROM operazioni WHERE id_stampa IN (SELECT id FROM stampe WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze));
+INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM operazioni WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione stampe...'
+INSERT INTO stampe_aaaammgg SELECT * FROM stampe WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM stampe WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
+INSERT INTO allegati_aaaammgg SELECT allegati.*, lo_get(allegati.raw_contenuto) FROM allegati WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 \echo 'Rimozione large objects (raw_contenuto) dagli allegati...'
 SELECT lo_unlink(raw_contenuto) FROM allegati WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze) AND raw_contenuto IS NOT NULL;
 
@@ -121,20 +152,25 @@ SELECT lo_unlink(raw_contenuto) FROM allegati WHERE id_versamento IN (SELECT id 
 DELETE FROM allegati WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione RPT...'
+INSERT INTO rpt_aaaammgg SELECT * FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM rpt WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione voci delle pendenze...'
+INSERT INTO singoli_versamenti_aaaammgg SELECT * FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM singoli_versamenti WHERE id_versamento IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione pendenze...'
+INSERT INTO versamenti_aaaammgg SELECT * FROM versamenti WHERE id IN (SELECT id FROM svecchiamento_fr_pendenze);
 DELETE FROM versamenti WHERE id IN (SELECT id FROM svecchiamento_fr_pendenze);
 
 \echo 'Cancellazione flussi...'
+INSERT INTO fr_aaaammgg SELECT * FROM fr WHERE id IN (SELECT id FROM svecchiamento_fr);
 DELETE FROM fr WHERE id IN (SELECT id FROM svecchiamento_fr);
 
 \echo 'Cancellazione incassi dei flussi...'
 UPDATE pagamenti SET id_incasso = NULL WHERE id_incasso IN (SELECT id FROM svecchiamento_fr_incassi);
 DELETE FROM eventi WHERE id_incasso IN (SELECT id FROM svecchiamento_fr_incassi);
+INSERT INTO incassi_aaaammgg SELECT * FROM incassi WHERE id IN (SELECT id FROM svecchiamento_fr_incassi);
 DELETE FROM incassi WHERE id IN (SELECT id FROM svecchiamento_fr_incassi);
 
 COMMIT;

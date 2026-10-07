@@ -2,7 +2,7 @@
 -- Svecchiamento METADATI SPRING BATCH - PostgreSQL
 --
 -- Elimina le righe delle esecuzioni dei batch anteriori a retention_batch
--- mesi, nell'ordine imposto dalle chiavi esterne.
+-- giorni, nell'ordine imposto dalle chiavi esterne.
 --
 -- Riferimento temporale: COALESCE(END_TIME, START_TIME, CREATE_TIME). CREATE_TIME
 -- e' NOT NULL nello schema di Spring Batch, quindi ogni esecuzione ha sempre una
@@ -14,11 +14,12 @@
 --
 -- ATTENZIONE: se un job e' in corso e la sua CREATE_TIME e' anteriore alla
 -- soglia, le sue righe vengono cancellate e Spring Batch perde traccia
--- dell'esecuzione viva. Eseguire a batch fermi.
+-- dell'esecuzione viva: con la retention di default, un job in corso da piu'
+-- di 30 giorni.
 --
 -- Il corpo replica gli script di svecchiamento dei metadati di govpay-common,
 -- che restano la versione di riferimento: la' la soglia e' una data assoluta
--- passata dall'esterno, qui e' una retention in mesi come per le altre
+-- passata dall'esterno, qui e' una retention in giorni come per le altre
 -- sezioni. Se cambia la struttura delle tabelle BATCH_*, vanno allineati.
 --
 -- Uso: psql -v ON_ERROR_STOP=1 -h <host> -U <utente> -d <database> -f spring-batch.sql
@@ -27,7 +28,7 @@
 -- gli si passa --retention-spring-batch.
 -- =============================================================================
 
-\set retention_batch '\'3 months\''
+\set retention_batch '\'30 days\''
 
 \set end_batch 'CURRENT_TIMESTAMP - interval :retention_batch '
 
