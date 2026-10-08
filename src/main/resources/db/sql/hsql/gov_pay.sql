@@ -764,6 +764,7 @@ CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notifi
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 CREATE INDEX idx_versamenti_data_ult_agg_id ON versamenti (data_ora_ultimo_aggiornamento DESC,id DESC);
+CREATE INDEX idx_vrs_fk_doc ON versamenti (id_documento);
 CREATE TABLE versamenti_init_seq (id BIGINT);
 INSERT INTO versamenti_init_seq VALUES (NEXT VALUE FOR seq_versamenti);
 
@@ -1145,6 +1146,7 @@ CREATE TABLE pagamenti
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 CREATE INDEX idx_pag_data_acq ON pagamenti (data_acquisizione);
+CREATE INDEX idx_pag_fk_inc ON pagamenti (id_incasso);
 CREATE TABLE pagamenti_init_seq (id BIGINT);
 INSERT INTO pagamenti_init_seq VALUES (NEXT VALUE FOR seq_pagamenti);
 
@@ -1384,6 +1386,9 @@ CREATE TABLE allegati
 	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_allegati PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_all_fk_vrs ON allegati (id_versamento);
 
 CREATE TABLE allegati_init_seq (id BIGINT);
 INSERT INTO allegati_init_seq VALUES (NEXT VALUE FOR seq_allegati);

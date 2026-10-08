@@ -182,3 +182,152 @@ ALTER TABLE versamenti MODIFY send_abilitato DEFAULT NULL;
 DELETE FROM sonde WHERE nome = 'update-rnd';
 
 COMMIT;
+
+-- Indici sulle colonne delle chiavi esterne che non ne avevano uno. Senza, ogni
+-- riga cancellata da una tabella padre (rpt, versamenti, incassi, documenti,
+-- tracciati, stampe) costa al database una scansione completa della tabella
+-- figlia per verificare la chiave esterna: lo svecchiamento ne cancella migliaia
+-- a ogni esecuzione. Sette di questi indici servono anche a GovPay in esercizio:
+-- allegati di una pendenza, operazioni di un tracciato, pagamenti di un incasso,
+-- flussi di un incasso, pendenze e stampe di un documento.
+-- Oracle non supporta IF NOT EXISTS su CREATE INDEX: blocchi PL/SQL idempotenti
+-- che ignorano ORA-00955 (nome gia' in uso).
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_ntf_fk_rpt ON notifiche (id_rpt)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_nai_fk_rpt ON notifiche_app_io (id_rpt)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_nai_fk_vrs ON notifiche_app_io (id_versamento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_prm_fk_rpt ON promemoria (id_rpt)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_prm_fk_vrs ON promemoria (id_versamento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_prm_fk_doc ON promemoria (id_documento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_ope_fk_trac ON operazioni (id_tracciato)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_ope_fk_vrs ON operazioni (id_versamento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_ope_fk_stm ON operazioni (id_stampa)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_all_fk_vrs ON allegati (id_versamento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_pag_fk_inc ON pagamenti (id_incasso)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_fr_fk_inc ON fr (id_incasso)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_vrs_fk_doc ON versamenti (id_documento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_stm_fk_doc ON stampe (id_documento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/

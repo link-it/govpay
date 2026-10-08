@@ -1842,6 +1842,9 @@
 							<linkit:sql-table-index-field name="dataOraUltimoAggiornamento" order="DESC" ignoreTypeCompatibility="true"/>
 							<linkit:sql-table-index-field name="id" order="DESC"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_fk_doc">
+							<linkit:sql-table-index-column name="id_documento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2612,6 +2615,9 @@
 						<linkit:sql-table-index name="idx_pag_data_acq">
 							<linkit:sql-table-index-field name="dataAcquisizione" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_pag_fk_inc">
+							<linkit:sql-table-index-column name="id_incasso"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2693,6 +2699,9 @@
 							<linkit:sql-table-index-field name="stato" />
 							<linkit:sql-table-index-field name="dataProssimaSpedizione" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_ntf_fk_rpt">
+							<linkit:sql-table-index-column name="id_rpt"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2742,6 +2751,12 @@
 						<linkit:sql-table-index name="idx_nai_da_spedire">
 							<linkit:sql-table-index-field name="stato" />
 							<linkit:sql-table-index-field name="dataProssimaSpedizione" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_nai_fk_rpt">
+							<linkit:sql-table-index-column name="id_rpt"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_nai_fk_vrs">
+							<linkit:sql-table-index-column name="id_versamento"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -2810,6 +2825,15 @@
 					<linkit:sql-table-mapping generate-sql="true" name="promemoria"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_prm"/>
+						<linkit:sql-table-index name="idx_prm_fk_rpt">
+							<linkit:sql-table-index-column name="id_rpt"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_prm_fk_vrs">
+							<linkit:sql-table-index-column name="id_versamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_prm_fk_doc">
+							<linkit:sql-table-index-column name="id_documento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2959,6 +2983,9 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_fr_id_dominio">
 							<linkit:sql-table-index-column name="id_dominio"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_fr_fk_inc">
+							<linkit:sql-table-index-column name="id_incasso"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3641,6 +3668,15 @@
 					<linkit:sql-table-mapping generate-sql="true"
 						name="operazioni" on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_ope"/>
+						<linkit:sql-table-index name="idx_ope_fk_trac">
+							<linkit:sql-table-index-column name="id_tracciato"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_ope_fk_vrs">
+							<linkit:sql-table-index-column name="id_versamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_ope_fk_stm">
+							<linkit:sql-table-index-column name="id_stampa"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -3813,6 +3849,9 @@
 							<linkit:sql-table-unique-column name="id_documento"/>
 							<linkit:sql-table-unique-field name="tipo"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_stm_fk_doc">
+							<linkit:sql-table-index-column name="id_documento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -4573,6 +4612,9 @@
 					<linkit:sql-table-mapping generate-sql="true" name="allegati"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_all"/>
+						<linkit:sql-table-index name="idx_all_fk_vrs">
+							<linkit:sql-table-index-column name="id_versamento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

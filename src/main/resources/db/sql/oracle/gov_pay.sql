@@ -889,6 +889,7 @@ CREATE TABLE versamenti
 );
 
 -- index
+CREATE INDEX idx_vrs_fk_doc ON versamenti (id_documento);
 -- CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
@@ -1109,6 +1110,7 @@ CREATE TABLE notifiche
 
 -- index
 CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
+CREATE INDEX idx_ntf_fk_rpt ON notifiche (id_rpt);
 CREATE TRIGGER trg_notifiche
 BEFORE
 insert on notifiche
@@ -1155,6 +1157,8 @@ CREATE TABLE notifiche_app_io
 
 -- index
 CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+CREATE INDEX idx_nai_fk_rpt ON notifiche_app_io (id_rpt);
+CREATE INDEX idx_nai_fk_vrs ON notifiche_app_io (id_versamento);
 CREATE TRIGGER trg_notifiche_app_io
 BEFORE
 insert on notifiche_app_io
@@ -1197,6 +1201,11 @@ CREATE TABLE promemoria
 	CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_prm_fk_rpt ON promemoria (id_rpt);
+CREATE INDEX idx_prm_fk_vrs ON promemoria (id_versamento);
+CREATE INDEX idx_prm_fk_doc ON promemoria (id_documento);
 
 
 ALTER TABLE promemoria MODIFY allega_pdf DEFAULT 0;
@@ -1300,6 +1309,7 @@ CREATE TABLE fr
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
+CREATE INDEX idx_fr_fk_inc ON fr (id_incasso);
 CREATE TRIGGER trg_fr
 BEFORE
 insert on fr
@@ -1353,6 +1363,7 @@ CREATE TABLE pagamenti
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 CREATE INDEX idx_pag_data_acq ON pagamenti (data_acquisizione);
+CREATE INDEX idx_pag_fk_inc ON pagamenti (id_incasso);
 ALTER TABLE pagamenti MODIFY indice_dati DEFAULT 1;
 CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
 
@@ -1530,6 +1541,9 @@ CREATE TABLE stampe
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_stm_fk_doc ON stampe (id_documento);
+
 CREATE TRIGGER trg_stampe
 BEFORE
 insert on stampe
@@ -1571,6 +1585,11 @@ CREATE TABLE operazioni
 	CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_ope_fk_trac ON operazioni (id_tracciato);
+CREATE INDEX idx_ope_fk_vrs ON operazioni (id_versamento);
+CREATE INDEX idx_ope_fk_stm ON operazioni (id_stampa);
 
 CREATE TRIGGER trg_operazioni
 BEFORE
@@ -1648,6 +1667,9 @@ CREATE TABLE allegati
 	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_allegati PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_all_fk_vrs ON allegati (id_versamento);
 
 CREATE TRIGGER trg_allegati
 BEFORE

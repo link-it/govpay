@@ -102,3 +102,122 @@ GO
 -- un'installazione aggiornata se la porterebbe dietro, ferma all'ultimo
 -- aggiornamento e segnalata in errore dal cruscotto.
 DELETE FROM sonde WHERE nome = 'update-rnd';
+
+-- Indici sulle colonne delle chiavi esterne che non ne avevano uno. Senza, ogni
+-- riga cancellata da una tabella padre (rpt, versamenti, incassi, documenti,
+-- tracciati, stampe) costa al database una scansione completa della tabella
+-- figlia per verificare la chiave esterna: lo svecchiamento ne cancella migliaia
+-- a ogni esecuzione. Sette di questi indici servono anche a GovPay in esercizio:
+-- allegati di una pendenza, operazioni di un tracciato, pagamenti di un incasso,
+-- flussi di un incasso, pendenze e stampe di un documento.
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_ntf_fk_rpt'
+       AND object_id = OBJECT_ID('dbo.notifiche')
+)
+    CREATE INDEX idx_ntf_fk_rpt ON notifiche (id_rpt);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_nai_fk_rpt'
+       AND object_id = OBJECT_ID('dbo.notifiche_app_io')
+)
+    CREATE INDEX idx_nai_fk_rpt ON notifiche_app_io (id_rpt);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_nai_fk_vrs'
+       AND object_id = OBJECT_ID('dbo.notifiche_app_io')
+)
+    CREATE INDEX idx_nai_fk_vrs ON notifiche_app_io (id_versamento);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_prm_fk_rpt'
+       AND object_id = OBJECT_ID('dbo.promemoria')
+)
+    CREATE INDEX idx_prm_fk_rpt ON promemoria (id_rpt);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_prm_fk_vrs'
+       AND object_id = OBJECT_ID('dbo.promemoria')
+)
+    CREATE INDEX idx_prm_fk_vrs ON promemoria (id_versamento);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_prm_fk_doc'
+       AND object_id = OBJECT_ID('dbo.promemoria')
+)
+    CREATE INDEX idx_prm_fk_doc ON promemoria (id_documento);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_ope_fk_trac'
+       AND object_id = OBJECT_ID('dbo.operazioni')
+)
+    CREATE INDEX idx_ope_fk_trac ON operazioni (id_tracciato);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_ope_fk_vrs'
+       AND object_id = OBJECT_ID('dbo.operazioni')
+)
+    CREATE INDEX idx_ope_fk_vrs ON operazioni (id_versamento);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_ope_fk_stm'
+       AND object_id = OBJECT_ID('dbo.operazioni')
+)
+    CREATE INDEX idx_ope_fk_stm ON operazioni (id_stampa);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_all_fk_vrs'
+       AND object_id = OBJECT_ID('dbo.allegati')
+)
+    CREATE INDEX idx_all_fk_vrs ON allegati (id_versamento);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_pag_fk_inc'
+       AND object_id = OBJECT_ID('dbo.pagamenti')
+)
+    CREATE INDEX idx_pag_fk_inc ON pagamenti (id_incasso);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_fr_fk_inc'
+       AND object_id = OBJECT_ID('dbo.fr')
+)
+    CREATE INDEX idx_fr_fk_inc ON fr (id_incasso);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_vrs_fk_doc'
+       AND object_id = OBJECT_ID('dbo.versamenti')
+)
+    CREATE INDEX idx_vrs_fk_doc ON versamenti (id_documento);
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_stm_fk_doc'
+       AND object_id = OBJECT_ID('dbo.stampe')
+)
+    CREATE INDEX idx_stm_fk_doc ON stampe (id_documento);
+GO

@@ -655,6 +655,7 @@ CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notifi
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 CREATE INDEX idx_versamenti_data_ult_agg_id ON versamenti (data_ora_ultimo_aggiornamento DESC,id DESC);
+CREATE INDEX idx_vrs_fk_doc ON versamenti (id_documento);
 
 
 
@@ -820,6 +821,7 @@ CREATE TABLE notifiche
 
 -- index
 CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
+CREATE INDEX idx_ntf_fk_rpt ON notifiche (id_rpt);
 
 
 
@@ -855,6 +857,8 @@ CREATE TABLE notifiche_app_io
 
 -- index
 CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+CREATE INDEX idx_nai_fk_rpt ON notifiche_app_io (id_rpt);
+CREATE INDEX idx_nai_fk_vrs ON notifiche_app_io (id_versamento);
 
 
 
@@ -886,6 +890,11 @@ CREATE TABLE promemoria
 	CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_prm_fk_rpt ON promemoria (id_rpt);
+CREATE INDEX idx_prm_fk_vrs ON promemoria (id_versamento);
+CREATE INDEX idx_prm_fk_doc ON promemoria (id_documento);
 
 
 
@@ -964,6 +973,7 @@ CREATE TABLE fr
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_fr_id_dominio ON fr (id_dominio);
+CREATE INDEX idx_fr_fk_inc ON fr (id_incasso);
 
 
 
@@ -1009,6 +1019,7 @@ CREATE INDEX idx_pag_data_acq ON pagamenti (data_acquisizione);
 CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
 ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
 -- L'esecuzione viene completata con esito: NOTICE:  ALTER TABLE / ADD CONSTRAINT USING INDEX will rename index "idx_pag_id_riscossione" to "unique_pag_id_riscossione"
+CREATE INDEX idx_pag_fk_inc ON pagamenti (id_incasso);
 
 
 
@@ -1134,6 +1145,9 @@ CREATE TABLE stampe
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_stm_fk_doc ON stampe (id_documento);
+
 
 
 
@@ -1164,6 +1178,11 @@ CREATE TABLE operazioni
 	CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_ope_fk_trac ON operazioni (id_tracciato);
+CREATE INDEX idx_ope_fk_vrs ON operazioni (id_versamento);
+CREATE INDEX idx_ope_fk_stm ON operazioni (id_stampa);
 
 
 
@@ -1216,6 +1235,9 @@ CREATE TABLE allegati
 	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_allegati PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_all_fk_vrs ON allegati (id_versamento);
 
 
 CREATE TABLE sonde

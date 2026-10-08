@@ -184,3 +184,14 @@ ALTER TABLE versamenti ALTER COLUMN send_abilitato DROP DEFAULT;
 -- un'installazione aggiornata se la porterebbe dietro, ferma all'ultimo
 -- aggiornamento e segnalata in errore dal cruscotto.
 DELETE FROM sonde WHERE nome = 'update-rnd';
+
+-- Indici sulle colonne delle chiavi esterne che non ne avevano uno. Senza, ogni
+-- riga cancellata da una tabella padre (rpt, versamenti, incassi, documenti,
+-- tracciati, stampe) costa al database una scansione completa della tabella
+-- figlia per verificare la chiave esterna: lo svecchiamento ne cancella migliaia
+-- a ogni esecuzione. Sette di questi indici servono anche a GovPay in esercizio:
+-- allegati di una pendenza, operazioni di un tracciato, pagamenti di un incasso,
+-- flussi di un incasso, pendenze e stampe di un documento.
+-- Su MySQL non servono: InnoDB crea da se' un indice per ogni chiave esterna,
+-- con il nome della chiave, e lo conserva anche dove gov_pay.sql toglie poi la
+-- chiave. Le colonne qui sopra sono gia' tutte indicizzate.
