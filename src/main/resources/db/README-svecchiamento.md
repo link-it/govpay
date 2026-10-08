@@ -40,6 +40,9 @@ cd src/main/resources/db
 ./svecchiamento-db.sh postgresql --sezioni eventi,spring-batch \
     --retention-eventi 15 --retention-spring-batch 15
 
+# Primo svecchiamento di un arretrato grande: a passate di 30 giorni, dai dati più vecchi
+./svecchiamento-db.sh postgresql --host db.example.it --db govpay --user govpay --finestra 30
+
 # Compone lo script senza toccare il database, per rileggerlo o applicarlo a parte
 ./svecchiamento-db.sh oracle --solo-sql
 
@@ -63,7 +66,8 @@ retention sono in **giorni**.
 | `pendenze_scadute_non_pagate` | Le pendenze `NON_ESEGUITO` scadute, senza pagamenti né rendicontazioni, con tutto ciò che le riferisce. | `data_scadenza` | 365 | sì |
 | `pendenze_annullate` | Le pendenze `ANNULLATO`, senza pagamenti né rendicontazioni, con tutto ciò che le riferisce. | `data_ora_ultimo_aggiornamento` | 365 | sì |
 | `flussi_rendicontazione` | I flussi di rendicontazione, con rendicontazioni, eventi e incassi, e le pendenze che rendicontano, qualunque sia il loro stato. | `data_ora_flusso` | 730 | sì |
-| `pendenze_pagate` | Le pendenze pagate con ricevuta e mai rendicontate, con RPT, pagamenti e tutto ciò che le riferisce. | `data_pagamento` | 730 | sì |
+| `pendenze_pagate` | Le pendenze pagate e mai rendicontate, con RPT, pagamenti e tutto ciò che le riferisce. | `data_pagamento`, o la data dei pagamenti | 730 | sì |
+| `incassi_orfani` | Gli incassi non più referenziati da flussi né da pagamenti, con i loro eventi. | `data_ora_incasso` | 730 | sì |
 | `documenti_orfani` | I documenti non più referenziati da pendenze, promemoria o stampe. | nessuno | — | sì |
 
 "Tutto ciò che riferisce una pendenza" sono voci, RPT (con l'XML di RPT e RT), pagamenti,
@@ -108,10 +112,20 @@ Cancella le pendenze che soddisfano tutte queste condizioni:
 
 - stato di pagamento eseguito: `ESEGUITO`, `PARZIALMENTE_ESEGUITO`, `ESEGUITO_ALTRO_CANALE`,
   `ESEGUITO_SENZA_RPT`, `INCASSATO`;
-- `data_pagamento` più vecchia della soglia. È valorizzata all'elaborazione della RT, quindi solo
-  per le pendenze pagate con ricevuta;
-- nessun pagamento più recente della soglia;
+- pagata prima della soglia. Con ricevuta la data è `data_pagamento`, valorizzata all'elaborazione
+  della RT. Senza ricevuta `data_pagamento` è vuota, e basta che la pendenza abbia dei pagamenti: è
+  il caso dei pagamenti creati dalla riconciliazione, rimasti senza rendicontazione dove le
+  rendicontazioni vecchie sono state rimosse;
+- nessun pagamento più recente della soglia: senza ricevuta è questa la condizione sulla data;
 - nessuna rendicontazione: le pendenze rendicontate le cancella `flussi_rendicontazione`.
+
+### incassi_orfani
+
+Un incasso resta orfano quando il suo flusso o i suoi pagamenti vengono cancellati senza di lui:
+`pendenze_pagate` cancella i pagamenti ma non gli incassi, e alcune installazioni hanno rimosso a
+mano rendicontazioni o flussi vecchi. Gli incassi dei flussi svecchiati li cancella già
+`flussi_rendicontazione`, insieme al flusso. Questa sezione cancella quelli più vecchi della soglia
+che non sono più referenziati né da un flusso né da un pagamento, con i loro eventi.
 
 ### documenti_orfani
 
@@ -143,18 +157,23 @@ versamenti_20261007   rpt_20261007   pagamenti_20261007   fr_20261007   gp_audit
 | `pendenze_scadute_non_pagate`, `pendenze_annullate` | `versamenti`, `singoli_versamenti`, `rpt`, `notifiche`, `notifiche_app_io`, `promemoria`, `operazioni`, `stampe`, `allegati` |
 | `flussi_rendicontazione` | `fr`, `rendicontazioni`, `incassi`, `pagamenti` e le tabelle delle pendenze, come sopra |
 | `pendenze_pagate` | `pagamenti` e le tabelle delle pendenze, come sopra |
+| `incassi_orfani` | `incassi` |
 | `documenti_orfani` | `documenti` |
 
 La tabella `eventi` non viene archiviata, neanche per gli eventi cancellati insieme a tracciati e
 flussi.
 
 - **Un backup al giorno.** Prima di eseguire, il comando controlla se nel database esiste già anche
-  una sola tabella di archivio con la data di oggi. Se c'è, lo svecchiamento con archivio di oggi è
-  già stato fatto, e **le sezioni con archivio vengono saltate**; `eventi` e `spring-batch`
-  girano comunque. Il controllo vale anche per `--dry-run`; con `--solo-sql` non si può fare, e il
-  comando lo segnala.
-- **Dopo un'esecuzione fallita**, le tabelle di archivio di oggi possono esistere già: per riprovare
-  in giornata il DBA deve salvarle ed eliminarle. In alternativa si riprova il giorno dopo.
+  una sola tabella di archivio con il suffisso dell'esecuzione, di default la data di oggi. Se c'è,
+  lo svecchiamento con archivio è già stato fatto, e **le sezioni con archivio vengono saltate**;
+  `eventi` e `spring-batch` girano comunque. Il controllo vale anche per `--dry-run`; con
+  `--solo-sql` non si può fare, e il comando lo segnala.
+- **Suffisso personalizzato.** Con `--suffisso-archivio <suffisso>` le tabelle si chiamano
+  `<tabella>_<suffisso>` invece di `<tabella>_AAAAMMGG`, e il controllo cerca quel suffisso: per
+  esempio per eseguire più volte nello stesso giorno, o per seguire una convenzione del DBA.
+- **Dopo un'esecuzione fallita**, le tabelle di archivio con quel suffisso possono esistere già: per
+  riprovare il DBA deve salvarle ed eliminarle, oppure si usa un altro suffisso con
+  `--suffisso-archivio`.
 - Le tabelle vengono **create all'inizio di ogni sezione**, con le colonne della tabella d'origine e
   senza chiavi esterne. Su MySQL sono create con `CREATE TABLE ... LIKE`, che copia anche indici e
   chiave primaria (`CREATE TABLE ... SELECT` non è ammessa con GTID attivo); sugli altri database
@@ -197,11 +216,11 @@ vanno ricreati dalla colonna `_dati`, aggiornando l'OID.
 | Opzione | Descrizione |
 |---|---|
 | `--sezioni <lista>` | Sezioni da eseguire, separate da virgola. Default: tutte. |
-| `--retention-<sezione> <giorni>` | Retention in giorni di una sezione, con il nome come in `--sezioni`: `--retention-eventi`, `--retention-tracciati`, `--retention-spring-batch`, `--retention-tracciati_notifica_pagamenti`, `--retention-audit`, `--retention-pendenze_scadute_non_pagate`, `--retention-pendenze_annullate`, `--retention-flussi_rendicontazione`, `--retention-pendenze_pagate`. `documenti_orfani` non ha retention. La sezione deve essere tra quelle eseguite. Senza l'opzione vale il default scritto nello script della sezione. |
+| `--retention-<sezione> <giorni>` | Retention in giorni di una sezione, con il nome come in `--sezioni`: `--retention-eventi`, `--retention-tracciati`, `--retention-spring-batch`, `--retention-tracciati_notifica_pagamenti`, `--retention-audit`, `--retention-pendenze_scadute_non_pagate`, `--retention-pendenze_annullate`, `--retention-flussi_rendicontazione`, `--retention-pendenze_pagate`, `--retention-incassi_orfani`. `documenti_orfani` non ha retention. La sezione deve essere tra quelle eseguite. Senza l'opzione vale il default scritto nello script della sezione. |
 
 ### Retention minima e `--force`
 
-Per `flussi_rendicontazione` e `pendenze_pagate` la retention minima è di **730 giorni**. Una
+Per `flussi_rendicontazione`, `pendenze_pagate` e `incassi_orfani` la retention minima è di **730 giorni**. Una
 retention inferiore, passata con l'opzione o scritta nello script della sezione, viene rifiutata a
 meno di indicare anche:
 
@@ -245,9 +264,43 @@ Su HSQLDB si usano anche `GOVPAY_SQLTOOL_JAR` (percorso di `sqltool.jar`) e
 | `--dry-run` | Simulazione: esegue le sezioni sul database e chiude ognuna con `ROLLBACK` invece di `COMMIT`. Riporta le righe che ogni `DELETE` cancellerebbe e non modifica i dati. Le tabelle di archivio sono create con il suffisso `simAAAAMMGG` ed eliminate alla fine. Non chiede conferma. Come nell'esecuzione vera, le righe interessate restano bloccate finché la sezione è aperta. |
 | `--solo-sql` | Compone lo script e si ferma, senza connettersi al database. |
 | `--force` | Vedi [Retention minima](#retention-minima-e---force). |
+| `--finestra <giorni>` | Svecchia a passate, dai dati più vecchi: vedi [Svecchiamento a passate](#svecchiamento-a-passate). Non si combina con `--solo-sql`. |
+| `--suffisso-archivio <suffisso>` | Suffisso delle tabelle di archivio al posto della data di oggi (`AAAAMMGG`): solo lettere, cifre e `_`. Vale anche per il controllo dell'archivio già presente. Il nome più lungo, `singoli_versamenti_<suffisso>`, deve stare nel limite del database: 63 caratteri su PostgreSQL, 64 su MySQL, 30 su Oracle (fino alla 12.1; il comando non conosce la versione e resta su questo), 128 su SQL Server e HSQLDB. In simulazione il suffisso diventa `sim<suffisso>`. |
 | `-y`, `--si` | Non chiede conferma. È la forma da usare in un'esecuzione pianificata: senza terminale la conferma non è possibile e il comando si ferma. |
-| `--out <dir>` | Directory in cui scrivere lo script composto. Default: `target/svecchiamento-sql/` del repository. |
+| `--out <dir>` | Directory in cui scrivere lo script composto. Default: `target/svecchiamento-sql/` del repository; fuori dal repository, `svecchiamento-sql/` accanto allo script. |
 | `-h`, `--help` | Mostra l'aiuto. |
+
+## Installazione su un server
+
+Il comando non ha bisogno del repository: basta copiare lo script con le sezioni del proprio
+database, mantenendo la struttura delle directory.
+
+```
+svecchiamento/
+├── svecchiamento-db.sh
+├── README-svecchiamento.md          (facoltativo)
+└── sql/
+    └── postgresql/                  (il dialetto in uso)
+        └── svecchiamento/
+            └── *.sql
+```
+
+Dal repository, per esempio per PostgreSQL:
+
+```bash
+cd src/main/resources/db
+tar czf svecchiamento-govpay.tgz svecchiamento-db.sh README-svecchiamento.md sql/postgresql/svecchiamento
+```
+
+e sul server:
+
+```bash
+mkdir svecchiamento && tar xzf svecchiamento-govpay.tgz -C svecchiamento
+cd svecchiamento && ./svecchiamento-db.sh postgresql --dry-run
+```
+
+Per includere tutti i dialetti, `sql/*/svecchiamento`. Fuori dal repository lo script composto
+viene scritto in `svecchiamento-sql/` accanto allo script, salvo `--out`.
 
 ## Requisiti
 
@@ -257,7 +310,7 @@ Su HSQLDB si usano anche `GOVPAY_SQLTOOL_JAR` (percorso di `sqltool.jar`) e
 |---|---|
 | Bash 4 o successivo | Usa array associativi. Va bene anche Bash 4.2 (RHEL 7). |
 | GNU sed, grep, awk; `mktemp`, `date`, `paste` | `sed -i` è usato nella forma GNU: su macOS (BSD sed) non funziona. |
-| La directory `src/main/resources/db/` del repository | Il comando cerca le sezioni in `sql/<dialetto>/svecchiamento/` accanto a sé. |
+| Lo script con le sue sezioni | Il comando cerca le sezioni in `sql/<dialetto>/svecchiamento/` accanto a sé: vedi [Installazione su un server](#installazione-su-un-server). |
 | Il client nativo del database | Vedi sotto. Con `--solo-sql` non serve. |
 
 | Database | Client | Note |
@@ -267,6 +320,17 @@ Su HSQLDB si usano anche `GOVPAY_SQLTOOL_JAR` (percorso di `sqltool.jar`) e
 | Oracle | `sqlplus` | |
 | SQL Server | `sqlcmd` | Non ancora provato su un'istanza reale. |
 | HSQLDB | `java`, `sqltool.jar`, driver JDBC | Indicati con `GOVPAY_SQLTOOL_JAR` (default `/opt/hsqldb-<versione>/hsqldb/lib/sqltool.jar`) e `GOVPAY_DS_JDBC_LIBS` (default `/opt/jdbc-drivers`). |
+
+### Indici sulle chiavi esterne
+
+Quando lo svecchiamento cancella una riga da una tabella padre (`rpt`, `versamenti`, `incassi`,
+`documenti`, `tracciati`, `stampe`), il database verifica che nessuna tabella figlia la riferisca
+ancora. Senza un indice sulla colonna della chiave esterna, ogni verifica è una scansione completa
+della tabella figlia, ripetuta per ogni riga cancellata. La patch 3.10.0 aggiunge i 14 indici
+mancanti (`idx_*_fk_*` su `notifiche`, `notifiche_app_io`, `promemoria`, `operazioni`, `allegati`,
+`pagamenti`, `fr`, `versamenti`, `stampe`): su un'installazione che non l'ha ancora applicata,
+applicarla prima del primo svecchiamento. Su MySQL non servono, perché InnoDB indicizza da sé le
+chiavi esterne.
 
 ### Spazio nel database
 
@@ -288,6 +352,37 @@ servono:
 - la possibilità di creare tabelle temporanee (su MySQL il privilegio `CREATE TEMPORARY TABLES`);
 - su PostgreSQL, la proprietà dei large object, per leggerli (`lo_get`) e cancellarli
   (`lo_unlink`), e delle tabelle, per `VACUUM`.
+
+## Svecchiamento a passate
+
+Senza opzioni, ogni sezione cancella in una sola transazione tutto ciò che è fuori retention. Su
+un'installazione mai svecchiata può essere una mole enorme: transazioni lunghe, lock, log o undo
+grandi. Con `--finestra <giorni>` il comando procede invece dai dati più vecchi, una fascia alla
+volta:
+
+1. per ogni sezione trova l'età, in giorni, del dato più vecchio (una `MIN` sulla colonna di
+   riferimento della sezione);
+2. esegue una prima passata con retention pari all'età massima meno la finestra, così che ogni
+   sezione cancelli solo la fascia più vecchia; a ogni passata la retention scende di una finestra.
+   Una sezione entra in una passata solo se ha dati più vecchi di quella soglia e se la soglia è
+   ancora sopra la sua retention finale;
+3. chiude con una passata finale, con tutte le sezioni alle loro retention, compresa
+   `documenti_orfani`.
+
+Ogni passata è, per ogni sezione, una transazione a sé, e le passate successive aggiungono righe
+alle stesse tabelle di archivio. Il controllo dell'archivio già presente si fa una volta, prima della
+prima passata. Su PostgreSQL il `VACUUM ANALYZE` si fa solo nell'ultima passata. Se una passata
+fallisce il comando si ferma: le precedenti restano confermate, e rilanciando si riparte dai dati
+rimasti.
+
+Le passate non sono gratuite: ognuna rifà la selezione di ogni sezione, e alcune scorrono tabelle
+grandi senza indice sulla data (per esempio `versamenti`). Una finestra di 1 giorno su cinque anni
+di arretrato vuol dire circa 1800 passate: conviene una finestra di settimane o mesi.
+
+Con `--dry-run` viene simulata solo la prima passata, la più vecchia: simularle tutte non avrebbe
+senso, perché ognuna finisce con `ROLLBACK` e la successiva ritroverebbe gli stessi dati. Il comando
+riporta il piano delle passate e una stima della durata totale, la durata della prima moltiplicata
+per il numero di passate: è una stima grossolana, perché ogni passata ha i dati della sua fascia.
 
 ## Comportamento
 

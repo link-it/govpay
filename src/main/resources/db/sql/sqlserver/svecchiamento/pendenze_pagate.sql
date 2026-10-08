@@ -8,12 +8,14 @@
 -- Una pendenza rientra se:
 --   - e' in uno stato di pagamento eseguito: ESEGUITO, PARZIALMENTE_ESEGUITO,
 --     ESEGUITO_ALTRO_CANALE, ESEGUITO_SENZA_RPT, INCASSATO;
---   - e' stata pagata con ricevuta piu' di retention_pendenze_pagate giorni fa:
---     data_pagamento e' valorizzata, all'elaborazione della RT, solo per le
---     pendenze pagate con ricevuta;
+--   - e' stata pagata piu' di retention_pendenze_pagate giorni fa. Con ricevuta,
+--     la data e' data_pagamento, valorizzata all'elaborazione della RT. Senza
+--     ricevuta data_pagamento e' vuota, e basta che la pendenza abbia dei
+--     pagamenti: e' il caso dei pagamenti creati dalla riconciliazione, rimasti
+--     senza rendicontazione dove le rendicontazioni vecchie sono state rimosse;
 --   - nessuno dei suoi pagamenti, sulle voci o sulle RPT, e' piu' recente della
---     soglia: data_pagamento e' quella dell'ultima RT elaborata, e una RT
---     recuperata in ritardo potrebbe essere piu' vecchia di un altro pagamento;
+--     soglia: senza ricevuta e' questa la condizione sulla data, e con ricevuta
+--     copre una RT recuperata in ritardo, piu' vecchia di un altro pagamento;
 --   - nessuna sua voce e nessun suo pagamento e' rendicontato. Le pendenze
 --     rendicontate sono svecchiate insieme ai loro flussi, dalla sezione
 --     flussi_rendicontazione, e le pendenze pagate senza ricevuta con esse.
@@ -81,7 +83,10 @@ PRINT 'Selezione delle pendenze da cancellare...';
 INSERT INTO #svecchiamento_pagate (id)
 SELECT v.id FROM versamenti v
 WHERE v.stato_versamento IN ('ESEGUITO', 'PARZIALMENTE_ESEGUITO', 'ESEGUITO_ALTRO_CANALE', 'ESEGUITO_SENZA_RPT', 'INCASSATO')
-  AND v.data_pagamento < @end_pendenze_pagate
+  AND (v.data_pagamento < @end_pendenze_pagate
+    OR (v.data_pagamento IS NULL
+        AND (EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)
+          OR EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id))))
   AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN pagamenti p ON p.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id AND p.data_pagamento >= @end_pendenze_pagate)
   AND NOT EXISTS (SELECT 1 FROM rpt JOIN pagamenti p ON p.id_rpt = rpt.id WHERE rpt.id_versamento = v.id AND p.data_pagamento >= @end_pendenze_pagate)
   AND NOT EXISTS (SELECT 1 FROM singoli_versamenti sv JOIN rendicontazioni r ON r.id_singolo_versamento = sv.id WHERE sv.id_versamento = v.id)

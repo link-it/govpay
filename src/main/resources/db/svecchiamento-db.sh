@@ -22,8 +22,9 @@
 # Eventi e metadati dei batch si cancellano e basta. Tutte le altre sezioni
 # copiano prima le righe che cancellano in tabelle di archivio
 # <tabella>_AAAAMMGG, una serie al giorno: se quelle di oggi esistono gia', le
-# sezioni con archivio vengono saltate. Salvarle ed eliminarle e' compito del
-# DBA. Le anagrafiche non vengono mai toccate.
+# sezioni con archivio vengono saltate. Il suffisso si cambia con
+# --suffisso-archivio. Salvarle ed eliminarle e' compito del DBA. Le anagrafiche
+# non vengono mai toccate.
 #
 # ATTENZIONE: cancella dati in modo definitivo, salvo quanto copiato nelle
 # tabelle di archivio. Sui metadati Spring Batch non c'e' filtro sullo stato
@@ -46,18 +47,18 @@ DIALETTI_NOTI=(postgresql oracle mysql sqlserver hsql)
 # scaduti, e l'unione non cambia a seconda di quale si applica prima.
 # flussi_rendicontazione precede pendenze_pagate: cancella le pendenze
 # rendicontate, e pendenze_pagate si occupa di quelle pagate e mai rendicontate.
-# documenti_orfani va per ultima: cancella i documenti che le sezioni sulle
-# pendenze hanno lasciato senza pendenze.
+# incassi_orfani e documenti_orfani vanno per ultime: cancellano gli incassi e
+# i documenti che le sezioni sulle pendenze hanno lasciato senza riferimenti.
 SEZIONI_NOTE=(eventi tracciati spring-batch tracciati_notifica_pagamenti audit
               pendenze_scadute_non_pagate pendenze_annullate flussi_rendicontazione
-              pendenze_pagate documenti_orfani)
+              pendenze_pagate incassi_orfani documenti_orfani)
 
-# Retention minima, in giorni, delle sezioni che cancellano rendicontazioni e
-# pendenze pagate: sotto questa soglia si cancellano dati che possono servire
-# ancora, ed e' quindi richiesta una conferma esplicita, --force, oppure la
-# simulazione, --dry-run.
+# Retention minima, in giorni, delle sezioni che cancellano dati contabili,
+# rendicontazioni, pendenze pagate e incassi: sotto questa soglia si cancellano
+# dati che possono servire ancora, ed e' quindi richiesta una conferma
+# esplicita, --force, oppure la simulazione, --dry-run.
 RETENTION_MINIMA_GIORNI=730
-SEZIONI_RETENTION_MINIMA=(flussi_rendicontazione pendenze_pagate)
+SEZIONI_RETENTION_MINIMA=(flussi_rendicontazione pendenze_pagate incassi_orfani)
 
 # Le sezioni che archiviano le righe cancellate lo fanno in tabelle
 # <tabella>_aaaammgg; aaaammgg e' un segnaposto, che qui diventa la data
@@ -83,6 +84,7 @@ function parametro_di() {
     pendenze_annullate) echo "annullate" ;;
     flussi_rendicontazione) echo "fr" ;;
     pendenze_pagate) echo "pendenze_pagate" ;;
+    incassi_orfani) echo "incassi" ;;
     documenti_orfani) echo "" ;;
   esac
 }
@@ -96,6 +98,8 @@ SEZIONI=("${SEZIONI_NOTE[@]}")
 declare -A RETENTION=()
 
 SOLO_SQL=false
+SUFFISSO_OPZIONE=""
+FINESTRA=""
 DRY_RUN=false
 FORCE=false
 SENZA_CONFERMA=false
@@ -145,20 +149,38 @@ Esecuzione:
                        righe che ogni DELETE cancellerebbe e non modifica nulla.
                        Non chiede conferma. Come nell'esecuzione vera, le righe
                        interessate restano bloccate finche' la sezione e' aperta
-  --force              Obbligatoria per eseguire davvero flussi_rendicontazione
-                       e pendenze_pagate con una retention inferiore a ${RETENTION_MINIMA_GIORNI} giorni.
+  --force              Obbligatoria per eseguire davvero flussi_rendicontazione,
+                       pendenze_pagate e incassi_orfani con una retention
+                       inferiore a ${RETENTION_MINIMA_GIORNI} giorni.
                        Senza --force, o --dry-run, lo script si rifiuta di
                        procedere, anche con --solo-sql: lo script composto
                        cancellerebbe quei dati
+  --finestra <giorni>  Svecchia a passate, dai dati piu' vecchi: la prima passata
+                       cancella solo la fascia di <giorni> giorni piu' vecchia di
+                       ogni sezione, e ogni passata successiva la successiva, fino
+                       alla retention. Ogni passata e' una transazione per
+                       sezione, piu' piccola di quella unica. Con --dry-run
+                       simula solo la prima passata e stima la durata totale.
+                       Non si combina con --solo-sql: per trovare i dati piu'
+                       vecchi serve il database
+  --suffisso-archivio <suffisso>
+                       Suffisso delle tabelle di archivio, al posto della data
+                       di oggi (AAAAMMGG): lettere, cifre e '_'. Vale anche per
+                       il controllo dell'archivio gia' presente: se esiste una
+                       tabella di archivio con questo suffisso, le sezioni con
+                       archivio vengono saltate
   -y, --si             Non chiedere conferma prima di eseguire
-  --out <dir>          Directory di uscita (default: target/svecchiamento-sql)
+  --out <dir>          Directory di uscita (default: target/svecchiamento-sql del
+                       repository; fuori dal repository, svecchiamento-sql/
+                       accanto a questo script)
   -h, --help           Mostra questo aiuto
 
 Archivio: tutte le sezioni tranne eventi e spring-batch copiano le righe che
 cancellano in tabelle <tabella>_AAAAMMGG, con la data dell'esecuzione, create e
 riempite nella stessa esecuzione della cancellazione. Il backup e' giornaliero:
-se nel database esiste gia' anche una sola tabella di archivio di oggi, le
-sezioni con archivio vengono saltate. Salvare ed eliminare le tabelle di
+se nel database esiste gia' anche una sola tabella di archivio con il suffisso
+di questa esecuzione, le sezioni con archivio vengono saltate. Il suffisso si
+cambia con --suffisso-archivio. Salvare ed eliminare le tabelle di
 archivio e' compito del DBA. In simulazione le tabelle si chiamano
 <tabella>_simAAAAMMGG e vengono eliminate alla fine.
 
@@ -214,6 +236,8 @@ while [[ $# -gt 0 ]]; do
     --force)                 FORCE=true; shift ;;
     -y|--si)                 SENZA_CONFERMA=true; shift ;;
     --out)                   OUTDIR="${2:-}"; shift 2 ;;
+    --finestra)              FINESTRA="${2:-}"; shift 2 ;;
+    --suffisso-archivio)     SUFFISSO_OPZIONE="${2:-}"; [[ -n "${SUFFISSO_OPZIONE}" ]] || errore "--suffisso-archivio richiede un valore"; shift 2 ;;
     -h|--help)               usage; exit 0 ;;
     *) errore "opzione sconosciuta: $1" ;;
   esac
@@ -256,6 +280,13 @@ for s in "${SEZIONI[@]}"; do
     || errore "la sezione ${s} non esiste per ${TIPO_DB}: manca ${SEZIONI_DIR#${REPO_ROOT}/}/${s}.sql"
 done
 
+if [[ -n "${FINESTRA}" ]]; then
+  [[ "${FINESTRA}" =~ ^[0-9]+$ && "${FINESTRA}" -gt 0 ]] \
+    || errore "--finestra deve essere un numero di giorni maggiore di zero: '${FINESTRA}'"
+  [[ "${SOLO_SQL}" != true ]] \
+    || errore "--finestra non si combina con --solo-sql: per trovare i dati piu' vecchi serve il database"
+fi
+
 for p in "${!RETENTION[@]}"; do
   v="${RETENTION[$p]}"
   eseguita=false
@@ -267,16 +298,43 @@ for p in "${!RETENTION[@]}"; do
 done
 
 # Suffisso delle tabelle di archivio: la data dell'esecuzione, uguale per tutte
-# le sezioni. Il backup e' giornaliero: se le tabelle di oggi esistono gia', le
-# sezioni con archivio vengono saltate (vedi Archivio di oggi, sotto).
-OGGI="$(date '+%Y%m%d')"
+# le sezioni, o il valore di --suffisso-archivio. Il backup e' uno per suffisso:
+# se le tabelle con quel suffisso esistono gia', le sezioni con archivio vengono
+# saltate (vedi Archivio gia' presente, sotto).
+ARCHIVIO="${SUFFISSO_OPZIONE:-$(date '+%Y%m%d')}"
+[[ "${ARCHIVIO}" =~ ^[A-Za-z0-9_]+$ ]] \
+  || errore "--suffisso-archivio: ammessi solo lettere, cifre e '_', perche' finisce nel nome delle tabelle: '${ARCHIVIO}'"
+# Il nome piu' lungo, tabella d'origine piu' suffisso, deve stare nel limite del
+# dialetto. Su Oracle il limite e' 30 caratteri fino alla 12.1: si resta su
+# quello, perche' qui la versione non si conosce.
+case "${TIPO_DB}" in
+  postgresql) LIMITE_NOMI=63 ;;
+  mysql)      LIMITE_NOMI=64 ;;
+  oracle)     LIMITE_NOMI=30 ;;
+  *)          LIMITE_NOMI=128 ;;
+esac
 if [[ "${DRY_RUN}" == true ]]; then
-  SUFFISSO_ARCHIVIO="sim${OGGI}"
+  SUFFISSO_ARCHIVIO="sim${ARCHIVIO}"
 else
-  SUFFISSO_ARCHIVIO="${OGGI}"
+  SUFFISSO_ARCHIVIO="${ARCHIVIO}"
+fi
+PIU_LUNGA="$(grep -ohE "\b[A-Za-z_]+_${SEGNAPOSTO_ARCHIVIO}\b" "${SEZIONI_DIR}"/*.sql 2>/dev/null \
+             | sed "s/_${SEGNAPOSTO_ARCHIVIO}\$//" | awk '{ print length, $0 }' | sort -rn | head -1 | cut -d' ' -f2)"
+if [[ -n "${PIU_LUNGA}" ]]; then
+  lunghezza=$(( ${#PIU_LUNGA} + 1 + ${#SUFFISSO_ARCHIVIO} ))
+  [[ "${lunghezza}" -le "${LIMITE_NOMI}" ]] \
+    || errore "--suffisso-archivio: ${PIU_LUNGA}_${SUFFISSO_ARCHIVIO} ha ${lunghezza} caratteri, oltre il limite di ${LIMITE_NOMI} per ${TIPO_DB}: usare un suffisso piu' corto"
 fi
 
-OUTDIR="${OUTDIR:-${REPO_ROOT}/target/svecchiamento-sql}"
+# Nel repository lo script composto va in target/, come gli altri prodotti della
+# build. Copiato da solo su un server, con le sue sezioni, il repository non c'e'
+# e REPO_ROOT punterebbe a una directory a caso, magari la radice: il default
+# diventa allora una directory accanto allo script.
+if [[ -f "${REPO_ROOT}/pom.xml" && -d "${REPO_ROOT}/src/main/resources/db" ]]; then
+  OUTDIR="${OUTDIR:-${REPO_ROOT}/target/svecchiamento-sql}"
+else
+  OUTDIR="${OUTDIR:-${BASEDIR}/svecchiamento-sql}"
+fi
 WORKDIR="$(mktemp -d)"
 # La pulizia non deve decidere l'esito dello script: e' l'ultimo comando
 # eseguito, e un suo fallimento diventerebbe il codice di uscita.
@@ -347,6 +405,11 @@ function sezione_con_retention() {   # $1 = sezione; scrive su stdout
       || errore "sostituzione del suffisso delle tabelle di archivio non riuscita in ${src#${REPO_ROOT}/}"
   fi
   [[ "${DRY_RUN}" == true ]] && simulazione "${sez}" "${tmp}"
+  # Nelle passate intermedie di --finestra il VACUUM di PostgreSQL ripasserebbe
+  # le tabelle intere a ogni passata: lo fa solo l'ultima.
+  if [[ "${SENZA_VACUUM:-false}" == true ]]; then
+    sed -i -E "/^VACUUM|^\\\\echo 'VACUUM|^-- VACUUM/d" "${tmp}"
+  fi
   cat "${tmp}"
 }
 
@@ -397,7 +460,7 @@ function conta_righe_dopo_delete() {   # $1 = file, $2 = istruzione
 }
 
 # ── Retention minima ─────────────────────────────────────────────────────────
-# Rendicontazioni e pendenze pagate piu' recenti di RETENTION_MINIMA_GIORNI si
+# Dati contabili piu' recenti di RETENTION_MINIMA_GIORNI si
 # cancellano solo chiedendolo esplicitamente con --force. La simulazione non
 # cancella nulla e passa sempre. Il controllo e' sulla retention effettiva:
 # quella dell'opzione o, senza, quella scritta nello script della sezione, che
@@ -416,7 +479,7 @@ for s in "${SEZIONI[@]}"; do
   elif [[ "${FORCE}" == true ]]; then
     nota "${s}: retention di ${giorni} giorni, inferiore a ${RETENTION_MINIMA_GIORNI}; ammessa con --force"
   else
-    errore "${s}: retention di ${giorni} giorni, inferiore al minimo di ${RETENTION_MINIMA_GIORNI}. Cancellerebbe rendicontazioni o pendenze pagate recenti: aggiungere --dry-run per simulare, o --force per cancellare davvero"
+    errore "${s}: retention di ${giorni} giorni, inferiore al minimo di ${RETENTION_MINIMA_GIORNI}. Cancellerebbe dati contabili recenti: aggiungere --dry-run per simulare, o --force per cancellare davvero"
   fi
 done
 
@@ -512,10 +575,11 @@ esac
 }
 
 
-# ── Archivio di oggi ─────────────────────────────────────────────────────────
-# Il backup e' giornaliero: se nel database c'e' gia' anche una sola tabella di
-# archivio con la data di oggi, lo svecchiamento con archivio di oggi e' gia'
-# stato fatto, e le sezioni con archivio vengono saltate. Le altre, eventi e
+# ── Archivio gia' presente ───────────────────────────────────────────────────
+# Il backup e' uno per suffisso, di default uno al giorno: se nel database c'e'
+# gia' anche una sola tabella di archivio con il suffisso di questa esecuzione,
+# lo svecchiamento con archivio e' gia' stato fatto, e le sezioni con archivio
+# vengono saltate. Le altre, eventi e
 # metadati dei batch, girano comunque: cancellano per data, e rieseguirle non
 # fa danni. Il controllo vale anche per la simulazione, che deve mostrare cio'
 # che farebbe l'esecuzione vera. Con --solo-sql non si puo' fare: lo script
@@ -532,7 +596,7 @@ function tabelle_di_archivio() {   # nomi base, da tutte le sezioni con archivio
 
 function query_archivio_di_oggi() {   # scrive su stdout lo script del controllo
   local nomi
-  nomi="$(tabelle_di_archivio | sed "s/.*/'&_${OGGI}'/" | paste -sd, -)"
+  nomi="$(tabelle_di_archivio | sed "s/.*/'&_${ARCHIVIO}'/" | tr '[:upper:]' '[:lower:]' | paste -sd, -)"
   case "${TIPO_DB}" in
     postgresql)
       echo "\\pset tuples_only on"
@@ -553,23 +617,23 @@ function query_archivio_di_oggi() {   # scrive su stdout lo script del controllo
 
 if [[ ${#SEZIONI_ARCHIVIO[@]} -gt 0 ]]; then
   if [[ "${SOLO_SQL}" == true ]]; then
-    nota "--solo-sql: non verificato se l'archivio di oggi (*_${OGGI}) esiste gia'"
+    nota "--solo-sql: non verificato se l'archivio *_${ARCHIVIO} esiste gia'"
   else
     CONTROLLO="${WORKDIR}/_archivio_di_oggi.sql"
     query_archivio_di_oggi > "${CONTROLLO}"
     esito_controllo="$(esegui "${CONTROLLO}" 2>&1)" \
-      || errore "controllo dell'archivio di oggi non riuscito: ${esito_controllo}"
+      || errore "controllo dell'archivio gia' presente non riuscito: ${esito_controllo}"
     presenti="$(grep -oE 'ARCHIVIO_PRESENTI [0-9]+' <<< "${esito_controllo}" | tail -1 | grep -oE '[0-9]+' || true)"
-    # Senza risposta non si sa se l'archivio di oggi c'e': meglio fermarsi che
+    # Senza risposta non si sa se l'archivio c'e' gia': meglio fermarsi che
     # rifare un backup gia' fatto, o saltarne uno da fare.
-    [[ -n "${presenti}" ]] || errore "controllo dell'archivio di oggi senza risposta: ${esito_controllo}"
+    [[ -n "${presenti}" ]] || errore "controllo dell'archivio gia' presente senza risposta: ${esito_controllo}"
     if [[ "${presenti}" -gt 0 ]]; then
-      nota "l'archivio di oggi esiste gia' (${presenti} tabelle *_${OGGI}): sezioni con archivio saltate: ${SEZIONI_ARCHIVIO[*]}"
+      nota "l'archivio *_${ARCHIVIO} esiste gia' (${presenti} tabelle): sezioni con archivio saltate: ${SEZIONI_ARCHIVIO[*]}"
       RESTANTI=()
       for s in "${SEZIONI[@]}"; do con_archivio "${s}" || RESTANTI+=("${s}"); done
       if [[ ${#RESTANTI[@]} -eq 0 ]]; then
         echo
-        echo "Nessuna sezione da eseguire: lo svecchiamento con archivio di oggi e' gia' stato fatto."
+        echo "Nessuna sezione da eseguire: lo svecchiamento con archivio *_${ARCHIVIO} e' gia' stato fatto."
         exit 0
       fi
       SEZIONI=("${RESTANTI[@]}")
@@ -584,80 +648,6 @@ if [[ "${DRY_RUN}" == true ]]; then
 else
   OUT="${OUTDIR}/govpay-svecchiamento-${TIPO_DB}.sql"
 fi
-
-declare -A RETENTION_USATA=()
-for s in "${SEZIONI[@]}"; do
-  par="$(parametro_di "${s}")"
-  if [[ -n "${RETENTION[${s}]:-}" ]]; then
-    RETENTION_USATA[${s}]="retention ${RETENTION[${s}]} giorni"
-  elif [[ -z "${par}" ]]; then
-    RETENTION_USATA[${s}]="senza retention"
-  else
-    RETENTION_USATA[${s}]="retention $(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") giorni (dal file)"
-  fi
-done
-
-{
-  echo "-- Svecchiamento del database GovPay"
-  echo "-- Dialetto: ${TIPO_DB}"
-  echo "--"
-  echo "-- Generato da src/main/resources/db/$(basename "$0") il $(date '+%Y-%m-%d %H:%M:%S')."
-  echo "-- Non modificare a mano: rigenerare indicando le stesse sezioni."
-  echo "--"
-  echo "-- Sezioni incluse, nell'ordine di esecuzione:"
-  for s in "${SEZIONI[@]}"; do
-    echo "--   ${s}, ${RETENTION_USATA[${s}]}, da sql/${TIPO_DB}/svecchiamento/${s}.sql"
-  done
-  if [[ ${#SEZIONI[@]} -lt ${#SEZIONI_NOTE[@]} ]]; then
-    echo "--"
-    echo "-- Sezioni disponibili e non incluse:"
-    for n in "${SEZIONI_NOTE[@]}"; do
-      inclusa=false
-      for s in "${SEZIONI[@]}"; do [[ "${n}" == "${s}" ]] && inclusa=true; done
-      [[ "${inclusa}" == false ]] && echo "--   ${n}"
-    done
-  fi
-  echo "--"
-  if [[ "${DRY_RUN}" == true ]]; then
-    echo "-- SIMULAZIONE (--dry-run): ogni sezione termina con ROLLBACK invece di"
-    echo "-- COMMIT, e il database non viene modificato."
-  else
-    echo "-- ATTENZIONE: la cancellazione e' definitiva. Ogni sezione e' una transazione"
-    echo "-- a se': se una fallisce, quelle completate prima restano applicate."
-  fi
-  echo ""
-  # sqlplus esce 0 anche dopo un errore, se non gli si dice altrimenti, e senza
-  # EXIT finale resta in attesa di input. ROLLBACK perche' l'EXIT di sqlplus,
-  # per default, fa COMMIT: un errore a meta' sezione confermerebbe le DELETE
-  # gia' eseguite, e in simulazione sarebbe una cancellazione vera.
-  if [[ "${TIPO_DB}" == "oracle" ]]; then
-    echo "WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK"
-    [[ "${DRY_RUN}" == true ]] && echo "SET FEEDBACK ON"
-  fi
-  echo ""
-} > "${OUT}"
-
-for s in "${SEZIONI[@]}"; do
-  {
-    echo ""
-    echo "-- ============================================================"
-    echo "-- Sezione: ${s}"
-    echo "-- ============================================================"
-    echo ""
-    sezione_con_retention "${s}"
-    echo ""
-    # Su sqlserver ogni sezione dichiara le proprie variabili, e due DECLARE
-    # della stessa variabile nello stesso batch sarebbero un errore: GO chiude
-    # il batch e ne apre un altro.
-    [[ "${TIPO_DB}" == "sqlserver" ]] && echo "GO"
-  } >> "${OUT}"
-done
-
-# In simulazione le tabelle di archivio, create fuori dalle transazioni annullate,
-# restano vuote: vanno eliminate. I nomi si ricavano dallo script composto.
-ARCHIVIO_TABELLE=()
-while IFS= read -r t; do [[ -n "${t}" ]] && ARCHIVIO_TABELLE+=("${t}"); done \
-  < <(grep -oE "\b[A-Za-z_]+_${SUFFISSO_ARCHIVIO}\b" "${OUT}" | sort -u)
 
 function elimina_archivio() {   # scrive su stdout
   echo ""
@@ -678,11 +668,215 @@ function elimina_archivio() {   # scrive su stdout
   [[ "${TIPO_DB}" == "hsql" ]] && echo "COMMIT;"
   return 0
 }
-if [[ "${DRY_RUN}" == true && ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
-  elimina_archivio >> "${OUT}"
+
+# Compone in OUT le sezioni di SEZIONI con le retention di RETENTION. Imposta
+# RETENTION_USATA e ARCHIVIO_TABELLE. Va chiamata senza $(...): imposta variabili
+# globali.
+function componi() {
+  declare -gA RETENTION_USATA=()
+  local s par
+  for s in "${SEZIONI[@]}"; do
+    par="$(parametro_di "${s}")"
+    if [[ -n "${RETENTION[${s}]:-}" ]]; then
+      RETENTION_USATA[${s}]="retention ${RETENTION[${s}]} giorni"
+    elif [[ -z "${par}" ]]; then
+      RETENTION_USATA[${s}]="senza retention"
+    else
+      RETENTION_USATA[${s}]="retention $(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}") giorni (dal file)"
+    fi
+  done
+
+  {
+    echo "-- Svecchiamento del database GovPay"
+    echo "-- Dialetto: ${TIPO_DB}"
+    echo "--"
+    echo "-- Generato da src/main/resources/db/$(basename "$0") il $(date '+%Y-%m-%d %H:%M:%S')."
+    echo "-- Non modificare a mano: rigenerare indicando le stesse sezioni."
+    [[ -n "${PASSATA_DESCRIZIONE:-}" ]] && { echo "--"; echo "-- ${PASSATA_DESCRIZIONE}"; }
+    echo "--"
+    echo "-- Sezioni incluse, nell'ordine di esecuzione:"
+    for s in "${SEZIONI[@]}"; do
+      echo "--   ${s}, ${RETENTION_USATA[${s}]}, da sql/${TIPO_DB}/svecchiamento/${s}.sql"
+    done
+    if [[ ${#SEZIONI[@]} -lt ${#SEZIONI_NOTE[@]} ]]; then
+      echo "--"
+      echo "-- Sezioni disponibili e non incluse:"
+      local n inclusa
+      for n in "${SEZIONI_NOTE[@]}"; do
+        inclusa=false
+        for s in "${SEZIONI[@]}"; do [[ "${n}" == "${s}" ]] && inclusa=true; done
+        [[ "${inclusa}" == false ]] && echo "--   ${n}"
+      done
+    fi
+    echo "--"
+    if [[ "${DRY_RUN}" == true ]]; then
+      echo "-- SIMULAZIONE (--dry-run): ogni sezione termina con ROLLBACK invece di"
+      echo "-- COMMIT, e il database non viene modificato."
+    else
+      echo "-- ATTENZIONE: la cancellazione e' definitiva. Ogni sezione e' una transazione"
+      echo "-- a se': se una fallisce, quelle completate prima restano applicate."
+    fi
+    echo ""
+    # sqlplus esce 0 anche dopo un errore, se non gli si dice altrimenti, e senza
+    # EXIT finale resta in attesa di input. ROLLBACK perche' l'EXIT di sqlplus,
+    # per default, fa COMMIT: un errore a meta' sezione confermerebbe le DELETE
+    # gia' eseguite, e in simulazione sarebbe una cancellazione vera.
+    if [[ "${TIPO_DB}" == "oracle" ]]; then
+      echo "WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK"
+      [[ "${DRY_RUN}" == true ]] && echo "SET FEEDBACK ON"
+    fi
+    echo ""
+  } > "${OUT}"
+
+  for s in "${SEZIONI[@]}"; do
+    {
+      echo ""
+      echo "-- ============================================================"
+      echo "-- Sezione: ${s}"
+      echo "-- ============================================================"
+      echo ""
+      sezione_con_retention "${s}"
+      echo ""
+      # Su sqlserver ogni sezione dichiara le proprie variabili, e due DECLARE
+      # della stessa variabile nello stesso batch sarebbero un errore: GO chiude
+      # il batch e ne apre un altro.
+      [[ "${TIPO_DB}" == "sqlserver" ]] && echo "GO"
+    } >> "${OUT}"
+  done
+
+  # In simulazione le tabelle di archivio, create fuori dalle transazioni
+  # annullate, restano vuote: vanno eliminate. I nomi si ricavano dallo script
+  # composto.
+  ARCHIVIO_TABELLE=()
+  local t
+  while IFS= read -r t; do [[ -n "${t}" ]] && ARCHIVIO_TABELLE+=("${t}"); done \
+    < <(grep -oE "\b[A-Za-z_]+_${SUFFISSO_ARCHIVIO}\b" "${OUT}" | sort -u)
+  if [[ "${DRY_RUN}" == true && ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+    elimina_archivio >> "${OUT}"
+  fi
+
+  [[ "${TIPO_DB}" == "oracle" ]] && { echo "" >> "${OUT}"; echo "EXIT ROLLBACK;" >> "${OUT}"; }
+  return 0
+}
+
+# ── Passate (--finestra) ─────────────────────────────────────────────────────
+# Con --finestra lo svecchiamento procede dai dati piu' vecchi. Per ogni sezione
+# con retention si trova l'eta', in giorni, del dato piu' vecchio; poi, partendo
+# dall'eta' massima, la soglia scende di FINESTRA giorni a passata, e ogni sezione
+# usa come retention il massimo fra la soglia e la propria retention finale. Una
+# sezione entra in una passata solo se ha dati piu' vecchi di quella soglia. Una
+# passata finale, con tutte le sezioni e le loro retention, chiude il lavoro.
+#
+# L'eta' si ricava qui da tabella e colonna di ogni sezione: e' una
+# duplicazione, ma serve solo a scegliere le passate. Se fosse imprecisa,
+# cambierebbe il numero di passate, non cio' che viene cancellato: ogni passata
+# usa il criterio completo della sezione.
+function eta_sorgente() {   # $1 = sezione -> "tabella|colonna|condizione"
+  case "$1" in
+    eventi)                       echo "eventi|data|" ;;
+    tracciati)                    echo "tracciati|data_completamento|" ;;
+    spring-batch)                 echo "BATCH_JOB_EXECUTION|COALESCE(END_TIME, START_TIME, CREATE_TIME)|" ;;
+    tracciati_notifica_pagamenti) echo "trac_notif_pag|data_creazione|" ;;
+    audit)                        echo "gp_audit|data|" ;;
+    pendenze_scadute_non_pagate)  echo "versamenti|data_scadenza|stato_versamento = 'NON_ESEGUITO'" ;;
+    pendenze_annullate)           echo "versamenti|data_ora_ultimo_aggiornamento|stato_versamento = 'ANNULLATO'" ;;
+    flussi_rendicontazione)       echo "fr|data_ora_flusso|" ;;
+    pendenze_pagate)              echo "pagamenti|data_pagamento|" ;;
+    incassi_orfani)               echo "incassi|data_ora_incasso|" ;;
+  esac
+}
+
+function query_eta() {   # $@ = sezioni; scrive su stdout lo script della query
+  local s sorgente tabella colonna cond eta where
+  case "${TIPO_DB}" in
+    postgresql) echo "\\pset tuples_only on"; echo "\\pset format unaligned" ;;
+    oracle)     echo "SET HEADING OFF FEEDBACK OFF PAGESIZE 0" ;;
+    sqlserver)  echo "SET NOCOUNT ON;" ;;
+  esac
+  for s in "$@"; do
+    sorgente="$(eta_sorgente "${s}")"
+    [[ -n "${sorgente}" ]] || continue
+    IFS='|' read -r tabella colonna cond <<< "${sorgente}"
+    where=""; [[ -n "${cond}" ]] && where=" WHERE ${cond}"
+    case "${TIPO_DB}" in
+      postgresql) echo "SELECT 'ETA ${s} ' || COALESCE(CURRENT_DATE - MIN(${colonna})::date, 0) FROM ${tabella}${where};" ;;
+      mysql)      echo "SELECT CONCAT('ETA ${s} ', COALESCE(DATEDIFF(CURRENT_DATE, MIN(${colonna})), 0)) AS eta FROM ${tabella}${where};" ;;
+      oracle)     echo "SELECT 'ETA ${s} ' || COALESCE(TRUNC(CURRENT_DATE) - TRUNC(MIN(CAST(${colonna} AS DATE))), 0) FROM ${tabella}${where};" ;;
+      sqlserver)  echo "SELECT 'ETA ${s} ' + CAST(COALESCE(DATEDIFF(DAY, MIN(${colonna}), GETDATE()), 0) AS VARCHAR(10)) FROM ${tabella}${where};" ;;
+      hsql)       echo "SELECT 'ETA ${s} ' || COALESCE(DATEDIFF('day', MIN(${colonna}), CURRENT_DATE), 0) FROM ${tabella}${where};" ;;
+    esac
+  done
+}
+
+# Ogni passata e' una stringa "sezione=retention ..."; retention vuota vuol dire
+# quella finale della sezione.
+PASSATE=()
+if [[ -n "${FINESTRA}" ]]; then
+  SEZIONI_TUTTE=("${SEZIONI[@]}")
+  declare -A RETENTION_FINALE=() ETA=()
+  for s in "${SEZIONI_TUTTE[@]}"; do
+    par="$(parametro_di "${s}")"
+    [[ -n "${par}" ]] || continue
+    RETENTION_FINALE[${s}]="${RETENTION[${s}]:-$(retention_dal_file "${SEZIONI_DIR}/${s}.sql" "${par}")}"
+  done
+  echo "-- Ricerca dei dati piu' vecchi per sezione..."
+  QUERY_ETA="${WORKDIR}/_eta.sql"
+  query_eta "${!RETENTION_FINALE[@]}" > "${QUERY_ETA}"
+  esito_eta="$(esegui "${QUERY_ETA}" 2>&1)" || errore "ricerca dei dati piu' vecchi non riuscita: ${esito_eta}"
+  while read -r _ s n; do ETA[${s}]="${n}"; done < <(grep -oE '^ETA [a-z_-]+ -?[0-9]+' <<< "${esito_eta}")
+  eta_massima=0
+  for s in "${!RETENTION_FINALE[@]}"; do
+    [[ -n "${ETA[${s}]:-}" ]] || errore "eta' dei dati di ${s} non trovata nella risposta: ${esito_eta}"
+    [[ "${ETA[${s}]}" -gt "${eta_massima}" ]] && eta_massima="${ETA[${s}]}"
+    nota "${s}: dato piu' vecchio di ${ETA[${s}]} giorni, retention ${RETENTION_FINALE[${s}]}"
+  done
+  # La soglia scende di FINESTRA giorni a passata, finche' resta sopra la piu'
+  # bassa delle retention finali: sotto, ci pensa la passata finale.
+  minima=""
+  for s in "${!RETENTION_FINALE[@]}"; do
+    [[ -z "${minima}" || "${RETENTION_FINALE[${s}]}" -lt "${minima}" ]] && minima="${RETENTION_FINALE[${s}]}"
+  done
+  soglia=$(( eta_massima - FINESTRA ))
+  while [[ -n "${minima}" && "${soglia}" -gt "${minima}" ]]; do
+    passata=""
+    for s in "${SEZIONI_TUTTE[@]}"; do
+      [[ -n "${RETENTION_FINALE[${s}]:-}" ]] || continue
+      # la sezione entra se la soglia e' sopra la sua retention finale e se ha
+      # dati piu' vecchi della soglia
+      if [[ "${soglia}" -gt "${RETENTION_FINALE[${s}]}" && "${ETA[${s}]}" -gt "${soglia}" ]]; then
+        passata+="${s}=${soglia} "
+      fi
+    done
+    [[ -n "${passata}" ]] && PASSATE+=("${passata% }")
+    soglia=$(( soglia - FINESTRA ))
+  done
+  finale=""
+  for s in "${SEZIONI_TUTTE[@]}"; do finale+="${s}= "; done
+  PASSATE+=("${finale% }")
+  declare -A RETENTION_UTENTE=()
+  for s in "${!RETENTION[@]}"; do RETENTION_UTENTE[${s}]="${RETENTION[${s}]}"; done
 fi
 
-[[ "${TIPO_DB}" == "oracle" ]] && { echo "" >> "${OUT}"; echo "EXIT ROLLBACK;" >> "${OUT}"; }
+# Imposta SEZIONI e RETENTION per la passata indicata.
+function applica_passata() {   # $1 = passata "sezione=retention ..."
+  local tok s v
+  SEZIONI=()
+  RETENTION=()
+  for s in "${!RETENTION_UTENTE[@]}"; do RETENTION[${s}]="${RETENTION_UTENTE[${s}]}"; done
+  for tok in $1; do
+    s="${tok%%=*}"; v="${tok#*=}"
+    SEZIONI+=("${s}")
+    [[ -n "${v}" ]] && RETENTION[${s}]="${v}"
+  done
+  return 0
+}
+
+if [[ ${#PASSATE[@]} -gt 0 ]]; then
+  applica_passata "${PASSATE[0]}"
+  [[ ${#PASSATE[@]} -gt 1 ]] && SENZA_VACUUM=true
+  PASSATA_DESCRIZIONE="Passata 1 di ${#PASSATE[@]} (--finestra ${FINESTRA})"
+fi
+componi
 
 echo "=============================================="
 if [[ "${DRY_RUN}" == true ]]; then
@@ -691,9 +885,22 @@ else
   echo "Svecchiamento del database GovPay"
 fi
 echo "  dialetto: ${TIPO_DB}"
-for s in "${SEZIONI[@]}"; do
-  printf '  sezione:  %-28s %s\n' "${s}" "${RETENTION_USATA[${s}]}"
-done
+if [[ ${#PASSATE[@]} -gt 0 ]]; then
+  echo "  passate:  ${#PASSATE[@]}, finestra di ${FINESTRA} giorni"
+  i=0
+  for p in "${PASSATE[@]}"; do
+    i=$((i + 1))
+    if [[ ${i} -le 3 || ${i} -eq ${#PASSATE[@]} ]]; then
+      printf '    %3d: %s\n' "${i}" "$(sed -E 's/=( |$)/=finale\1/g' <<< "${p}")"
+    elif [[ ${i} -eq 4 ]]; then
+      echo "    ..."
+    fi
+  done
+else
+  for s in "${SEZIONI[@]}"; do
+    printf '  sezione:  %-28s %s\n' "${s}" "${RETENTION_USATA[${s}]}"
+  done
+fi
 echo "  script:   ${OUT}"
 echo "            $(wc -l < "${OUT}") righe"
 if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
@@ -730,44 +937,64 @@ else
   echo "-- Esecuzione su ${DB_HOST}:${DB_PORT}/${DB_NAME}"
 fi
 
+function fallimento() {   # $1 = esito, $2 = passata (vuoto senza --finestra)
+  local esito="$1" passata="$2"
+  echo >&2
+  echo "==============================================" >&2
+  if [[ "${DRY_RUN}" == true ]]; then
+    echo "Simulazione FALLITA (codice ${esito})" >&2
+    echo "  script: ${OUT}" >&2
+    echo "  La sezione in errore e' stata annullata, e quelle prima di essa" >&2
+    echo "  erano gia' terminate con ROLLBACK: il database non e' modificato." >&2
+    echo "  L'errore si ripresenterebbe nell'esecuzione vera." >&2
+    if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+      echo "  Possono essere rimaste, vuote, tabelle di archivio *_${SUFFISSO_ARCHIVIO}:" >&2
+      echo "  le elimina la prossima simulazione andata a buon fine dello stesso giorno." >&2
+    fi
+  else
+    echo "Svecchiamento FALLITO (codice ${esito})" >&2
+    echo "  script: ${OUT}" >&2
+    [[ -n "${passata}" ]] && echo "  Passata ${passata}: le passate precedenti sono committate." >&2
+    echo "  Ogni sezione e' una transazione a se': quelle completate prima" >&2
+    echo "  dell'errore sono committate. Corretta la causa si puo' rieseguire," >&2
+    echo "  perche' lo svecchiamento cancella per data e non per stato." >&2
+    if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
+      echo "  Le tabelle di archivio *_${SUFFISSO_ARCHIVIO} esistono gia': rieseguendo con lo" >&2
+      echo "  stesso suffisso le sezioni con archivio verrebbero saltate. Per riprovare il" >&2
+      echo "  DBA deve salvare ed eliminare le tabelle *_${SUFFISSO_ARCHIVIO}, oppure si usa" >&2
+      echo "  un altro suffisso con --suffisso-archivio." >&2
+    fi
+  fi
+  echo "==============================================" >&2
+  exit "${esito}"
+}
 
 # Ogni sezione e' una transazione a se': se una fallisce, quelle prima di essa
 # sono committate. E' la ragione per cui l'esito va detto a chiare lettere
 # invece di lasciare l'ultima riga al client.
 ESITO=0
-esegui || ESITO=$?
-
-if [[ "${ESITO}" -ne 0 && "${DRY_RUN}" == true ]]; then
-  echo >&2
-  echo "==============================================" >&2
-  echo "Simulazione FALLITA (codice ${ESITO})" >&2
-  echo "  script: ${OUT}" >&2
-  echo "  La sezione in errore e' stata annullata, e quelle prima di essa" >&2
-  echo "  erano gia' terminate con ROLLBACK: il database non e' modificato." >&2
-  echo "  L'errore si ripresenterebbe nell'esecuzione vera." >&2
-  if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
-    echo "  Possono essere rimaste, vuote, tabelle di archivio *_${SUFFISSO_ARCHIVIO}:" >&2
-    echo "  le elimina la prossima simulazione andata a buon fine dello stesso giorno." >&2
-  fi
-  echo "==============================================" >&2
-  exit "${ESITO}"
+if [[ ${#PASSATE[@]} -gt 0 ]]; then
+  echo
+  echo "-- Passata 1 di ${#PASSATE[@]}: $(sed -E 's/=( |$)/=finale\1/g' <<< "${PASSATE[0]}")"
 fi
+inizio=$(date +%s)
+esegui || ESITO=$?
+[[ "${ESITO}" -eq 0 ]] || fallimento "${ESITO}" "$([[ ${#PASSATE[@]} -gt 0 ]] && echo "1 di ${#PASSATE[@]}")"
+durata_prima=$(( $(date +%s) - inizio ))
 
-if [[ "${ESITO}" -ne 0 ]]; then
-  echo >&2
-  echo "==============================================" >&2
-  echo "Svecchiamento FALLITO (codice ${ESITO})" >&2
-  echo "  script: ${OUT}" >&2
-  echo "  Ogni sezione e' una transazione a se': quelle completate prima" >&2
-  echo "  dell'errore sono committate. Corretta la causa si puo' rieseguire," >&2
-  echo "  perche' lo svecchiamento cancella per data e non per stato." >&2
-  if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 ]]; then
-    echo "  Le tabelle di archivio *_${SUFFISSO_ARCHIVIO} esistono gia': rieseguendo oggi le" >&2
-    echo "  sezioni con archivio verrebbero saltate. Per riprovare in giornata il DBA" >&2
-    echo "  deve salvare ed eliminare le tabelle *_${SUFFISSO_ARCHIVIO}." >&2
-  fi
-  echo "==============================================" >&2
-  exit "${ESITO}"
+# Passate successive. In simulazione non si fanno: ogni passata finisce con
+# ROLLBACK, e la successiva ritroverebbe gli stessi dati. Si stima la durata.
+if [[ ${#PASSATE[@]} -gt 1 && "${DRY_RUN}" != true ]]; then
+  for (( i = 1; i < ${#PASSATE[@]}; i++ )); do
+    applica_passata "${PASSATE[${i}]}"
+    SENZA_VACUUM=false
+    [[ $((i + 1)) -lt ${#PASSATE[@]} ]] && SENZA_VACUUM=true
+    PASSATA_DESCRIZIONE="Passata $((i + 1)) di ${#PASSATE[@]} (--finestra ${FINESTRA})"
+    componi
+    echo
+    echo "-- Passata $((i + 1)) di ${#PASSATE[@]}: $(sed -E 's/=( |$)/=finale\1/g' <<< "${PASSATE[${i}]}")"
+    esegui || fallimento "$?" "$((i + 1)) di ${#PASSATE[@]}"
+  done
 fi
 
 echo
@@ -775,8 +1002,15 @@ echo "=============================================="
 if [[ "${DRY_RUN}" == true ]]; then
   echo "Simulazione completata: il database non e' stato modificato"
   echo "  Le righe che ogni DELETE cancellerebbe sono riportate qui sopra."
+  if [[ ${#PASSATE[@]} -gt 1 ]]; then
+    echo "  Simulata solo la passata 1 di ${#PASSATE[@]}, in ${durata_prima} secondi."
+    echo "  Stima per tutte le passate: circa $(( durata_prima * ${#PASSATE[@]} )) secondi."
+    echo "  E' una stima grossolana: la durata di una passata dipende dai dati della"
+    echo "  sua fascia, e la prima, la piu' vecchia, non e' sempre rappresentativa."
+  fi
 else
   echo "Svecchiamento completato"
+  [[ ${#PASSATE[@]} -gt 0 ]] && echo "  passate:         ${#PASSATE[@]}, finestra di ${FINESTRA} giorni"
 fi
 echo "  script eseguito: ${OUT}"
 if [[ ${#ARCHIVIO_TABELLE[@]} -gt 0 && "${DRY_RUN}" != true ]]; then

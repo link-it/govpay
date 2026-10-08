@@ -69,7 +69,11 @@ quest'ordine. Le retention sono espresse in giorni.
      - 730
      - sì
    * - ``pendenze_pagate``
-     - Le pendenze pagate con ricevuta e mai rendicontate.
+     - Le pendenze pagate e mai rendicontate, con o senza ricevuta.
+     - 730
+     - sì
+   * - ``incassi_orfani``
+     - Gli incassi rimasti senza flussi e senza pagamenti.
      - 730
      - sì
    * - ``documenti_orfani``
@@ -117,9 +121,21 @@ poi annullata, e lo script riporta quante righe cancellerebbe. Con
 ``--solo-sql`` lo script viene solo composto, senza connettersi al database, e
 può essere riletto e applicato a parte.
 
+La prima esecuzione su un'installazione mai svecchiata può dover cancellare una
+mole di dati molto grande. Con ``--finestra <giorni>`` lo svecchiamento procede
+dai dati più vecchi, una fascia di quei giorni alla volta, in più passate con
+transazioni più piccole, fino a raggiungere la retention di ogni sezione. Con
+``--dry-run`` viene simulata solo la prima passata, e lo script stima la durata
+totale:
+
+.. code-block:: bash
+
+   ./svecchiamento-db.sh postgresql --finestra 30 --dry-run
+   ./svecchiamento-db.sh postgresql --finestra 30 -y
+
 .. warning::
-   Per ``flussi_rendicontazione`` e ``pendenze_pagate`` una retention inferiore
-   a 730 giorni viene rifiutata, a meno di aggiungere ``--dry-run``, per
+   Per ``flussi_rendicontazione``, ``pendenze_pagate`` e ``incassi_orfani`` una
+   retention inferiore a 730 giorni viene rifiutata, a meno di aggiungere ``--dry-run``, per
    simulare, o ``--force``, per cancellare davvero.
 
 Archivio
@@ -135,11 +151,16 @@ di archivio con la data di oggi, salta le sezioni con archivio ed esegue solo
 quelle sugli eventi e sui metadati dei batch. Un secondo lancio nello stesso
 giorno, quindi, non ripete il backup.
 
+Con ``--suffisso-archivio <suffisso>`` le tabelle di archivio prendono il suffisso
+indicato al posto della data, per esempio ``versamenti_mensile``, e il controllo
+cerca quel suffisso. Sono ammessi lettere, cifre e ``_``.
+
 .. note::
    Salvare ed eliminare le tabelle di archivio è compito del DBA. Finché restano
    nel database, i dati svecchiati continuano a occupare spazio. Dopo
    un'esecuzione fallita, per riprovare nello stesso giorno occorre prima
-   salvare ed eliminare le tabelle di archivio di quel giorno.
+   salvare ed eliminare le tabelle di archivio di quel giorno, oppure indicare
+   un altro suffisso con ``--suffisso-archivio``.
 
 Requisiti e comportamento
 -------------------------
