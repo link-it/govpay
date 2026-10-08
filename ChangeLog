@@ -1,3 +1,10 @@
+2026-10-08  Giuliano Pintori <pintori@link.it>
+
+        * Risolte le segnalazioni NVDCVE-2026-102495, NVDCVE-2026-102496 e NVDCVE-2026-102497 (High) su xmlschema-core-2.3.2.jar: portata xmlschema-core dalla 2.3.2 alla 2.3.3.
+        Le tre CVE sono di tipo denial of service per ricorsione senza limite su schemi XSD costruiti ad arte (CWE-674): annidamento di import e include (102495), annidamento delle strutture dello schema nella costruzione del modello (102496) e cicli non rilevati dal walker nelle derivazioni di tipo, nei substitution group e nei model e attribute group (102497). NVD indica come affette tutte le versioni precedenti alla 2.3.3.
+        xmlschema-core e' una dipendenza transitiva di CXF, la cui versione e' fissata da cxf-parent tramite la property cxf.xmlschema.version: la 4.2.3, ultima release di CXF disponibile, la pinna ancora alla 2.3.2, come gia' accaduto per neethi. Aggiunta nel pom radice la property xmlschema.version, con l'indicazione delle CVE risolte in commento sulla riga, e la relativa entry in dependencyManagement accanto a quella di neethi; dependency:tree conferma la risoluzione della 2.3.3 sui sette moduli che la utilizzano, e la 2.3.3 non introduce nuove dipendenze runtime. L'override potra' essere rimosso quando una release di CXF porta nativamente xmlschema-core 2.3.3 o successiva.
+        Rinominata di conseguenza la directory third-party-licenses/jar/xmlschema-core-2.3.2 in xmlschema-core-2.3.3: il file LICENSE contenuto nel jar e' invariato.
+
 2026-10-07  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p6.
