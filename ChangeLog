@@ -1,3 +1,23 @@
+2026-10-09  Giuliano Pintori <pintori@link.it>
+
+        * Risolte le segnalazioni NVDCVE-2026-91863, NVDCVE-2026-91864, NVDCVE-2026-91865, NVDCVE-2026-91866 (High) e NVDCVE-2026-91867 (Medium) su neethi-3.2.3.jar: portata neethi dalla 3.2.3 alla 3.2.4. Portato da 3.9.x (commit 0dbd0ece3).
+        Le cinque CVE sono tutte di tipo denial of service su documenti WS-Policy costruiti ad arte: annidamento profondo che aggira il limite di profondita' ed esaurisce lo stack (91863), contenuto delle asserzioni copiato in memoria senza essere conteggiato nei limiti di dimensione (91864), riespansione esponenziale dei riferimenti in fase di normalizzazione (91865), intersezione di policy di costo esponenziale (91866) e recupero di policy remote privo di un timeout complessivo, che consente a un server lento di tenere occupato il thread chiamante (91867). NVD indica come affette tutte le versioni precedenti alla 3.2.4.
+        neethi e' una dipendenza transitiva di cxf-core, la cui versione e' fissata da cxf-parent tramite la property cxf.neethi.version: la 4.2.3, ultima release di CXF disponibile, la pinna ancora alla 3.2.3, quindi non e' stato possibile risolvere aggiornando CXF. Aggiunta nel pom radice la property neethi.version, con l'indicazione delle CVE risolte in commento sulla riga, e la relativa entry in dependencyManagement. L'override potra' essere rimosso quando una release di CXF porta nativamente neethi 3.2.4 o successiva.
+
+        * Risolte le segnalazioni NVDCVE-2026-102495, NVDCVE-2026-102496 e NVDCVE-2026-102497 (High) su xmlschema-core-2.3.2.jar: portata xmlschema-core dalla 2.3.2 alla 2.3.3. Portato da 3.9.x (commit 00a5c2bf4).
+        Le tre CVE sono di tipo denial of service per ricorsione senza limite su schemi XSD costruiti ad arte (CWE-674): annidamento di import e include (102495), annidamento delle strutture dello schema nella costruzione del modello (102496) e cicli non rilevati dal walker nelle derivazioni di tipo, nei substitution group e nei model e attribute group (102497). NVD indica come affette tutte le versioni precedenti alla 2.3.3.
+        Come neethi, xmlschema-core e' una dipendenza transitiva di CXF pinnata da cxf-parent tramite cxf.xmlschema.version, che la 4.2.3 tiene ancora alla 2.3.2: aggiunte property xmlschema.version e entry in dependencyManagement accanto a quelle di neethi.
+
+        * Risolta la segnalazione NVDCVE-2026-84939 (Critical, CWE-23) su freemarker-2.3.34.jar: portato freemarker dalla 2.3.34 alla 2.3.35.
+        freemarker e' una dipendenza diretta dichiarata nel pom radice, usata per i template dei promemoria e degli avvisi: e' bastato avanzare la property freemarker.version.
+        La directory third-party-licenses/jar/freemarker-2.3.35 risulta interamente modificata rispetto alla 2.3.34, ma il testo della licenza e' lo stesso: il file nel jar e' passato da fine riga CRLF a LF.
+
+        * Risolta la segnalazione NVDCVE-2026-78254 (High, CWE-23) su ant-1.10.17.jar: portato ant dalla 1.10.17 alla 1.10.18.
+        Avanzata la property ant.version; rinominate le directory delle licenze di ant e di ant-launcher, che viaggiano alla stessa versione.
+
+        * Verifica delle quattro correzioni: dependency:tree conferma che sull'intero reactor si risolvono neethi 3.2.4, xmlschema-core 2.3.3, freemarker 2.3.35 e ant 1.10.18, e che delle versioni precedenti non resta traccia; le war prodotte dal build impacchettano i quattro jar nuovi. Per ciascun artefatto il file di licenza conservato in third-party-licenses e' stato confrontato con quello contenuto nel jar nuovo prima di rinominare la directory.
+        Restano non allineate rispetto a 3.9.x altre dipendenze avanzate li' con un aggiornamento generale di patch e minor (angus-mail, commons-codec, guava, javassist, org.json, snakeyaml fra le altre): nessuna di esse ha CVE aperte, e il loro allineamento merita un intervento a se'.
+
 2026-10-02  Giuliano Pintori <pintori@link.it>
 
         * Issue #889 Dichiarati nullable nello YAML dell'API Ente Creditore v2 i campi facoltativi che GovPay invia a null nella notifica. Portato da 3.9.x (commit 04a3ba13a).
