@@ -15,7 +15,7 @@
 
 				<!-- versioni jar -->
 				<!-- angus-mail-->
-				<angus-mail.version>2.0.4</angus-mail.version>
+				<angus-mail.version>2.0.5</angus-mail.version>
 			</properties>
 			<modules>
 				<module>jars</module>
@@ -63,7 +63,7 @@
 
 				<!-- versioni jar -->
 				<!-- angus-mail-->
-				<angus-mail.version>2.0.4</angus-mail.version>
+				<angus-mail.version>2.0.5</angus-mail.version>
 			</properties>
 			<modules>
 				<module>jars</module>
@@ -93,16 +93,16 @@
 		<openspcoop2.version>3.4.2</openspcoop2.version>
 
 		<!-- log -->
-		<slf4j.version>2.0.17</slf4j.version>
+		<slf4j.version>2.0.19</slf4j.version>
 		<logger.version>2.26.1</logger.version><!-- CVE-2026-49844 -->
 
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.81</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.82</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.6.16</swagger.version>
-		<swagger.v3.version>2.2.51</swagger.v3.version>
-		<swagger.parser.v3.version>2.1.44</swagger.parser.v3.version>
-		<snakeyaml.version>2.6</snakeyaml.version>
-		<guava.version>33.6.0-jre</guava.version>
+		<swagger.v3.version>2.2.55</swagger.v3.version>
+		<swagger.parser.v3.version>2.1.48</swagger.parser.v3.version>
+		<snakeyaml.version>2.7</snakeyaml.version>
+		<guava.version>33.7.1-jre</guava.version>
 
 		<!-- cxf -->
 		<cxf.version>4.2.3</cxf.version><!-- CVE-2026-54225, CVE-2026-57817, CVE-2026-57818, CVE-2026-57819, CVE-2026-61466, CVE-2026-63687, CVE-2026-64958, CVE-2026-65432, CVE-2026-65583, CVE-2026-66909, CVE-2026-68079, CVE-2026-68481. Portava neethi a 3.2.3 (CVE-2026-66142, CVE-2026-66143, CVE-2026-66144), ora superata dall'override neethi.version qui sotto -->
@@ -137,7 +137,7 @@
 		<!-- Commons -->
 		<commons-jcs-core.version>3.2.1</commons-jcs-core.version>
 		<commons.csv.version>1.14.1</commons.csv.version>
-		<commons.codec.version>1.22.0</commons.codec.version>
+		<commons.codec.version>1.22.1</commons.codec.version>
 		<commons.io.version>2.22.0</commons.io.version>
 		<commons.text.version>1.15.0</commons.text.version>
 		<commons.lang3.version>3.20.0</commons.lang3.version>
@@ -172,7 +172,7 @@
 		<rhino.version>1.7.15.1</rhino.version>
 
 		<!-- org.json -->
-		<org.json.json.version>20250517</org.json.json.version>
+		<org.json.json.version>20260814</org.json.json.version>
 
 		<!-- xercesImpl -->
 		<xercesImpl.version>2.12.2</xercesImpl.version>
@@ -194,7 +194,7 @@
 		<jakarta-saaj-impl-version>3.0.6</jakarta-saaj-impl-version>
 
 		<!-- webjars- swagger ui api -->
-		<webjars-swaggerui.version>5.32.6</webjars-swaggerui.version>
+		<webjars-swaggerui.version>5.32.14</webjars-swaggerui.version>
 
 		<!-- Json Path -->
 		<json-path.version>2.10.0</json-path.version>
@@ -250,7 +250,7 @@
         <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
 
         <!-- javassist -->
-        <javassist.version>3.31.0-GA</javassist.version>
+        <javassist.version>3.33.0-GA</javassist.version>
 
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
         <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
