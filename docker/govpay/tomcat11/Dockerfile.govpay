@@ -8,7 +8,11 @@ ARG govpay_log=/var/log/govpay
 FROM ${source_image} AS source_image_full
 
 
-FROM alpine:latest AS source_image_built
+# Base comune ai dodici componenti Java di GovPay: JRE Temurin, versione fissata,
+# stesse eccezioni nella scansione delle immagini. Prima era alpine:latest con la
+# JRE del repository community installata da apk, quindi una base senza versione
+# e una JRE con cadenza di aggiornamento diversa dal resto della piattaforma.
+FROM eclipse-temurin:25-jre-alpine AS source_image_built
 LABEL org.opencontainers.image.authors="manca@link.it"
 LABEL org.opencontainers.image.description="Immagine utilizzata per il deploy dei nodi"
 ARG govpay_fullversion
@@ -18,11 +22,12 @@ ARG vcs_ref=
 
 USER root
 ENV GOVPAY_HOME=${govpay_home} \
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk \
+JAVA_HOME=/opt/java/openjdk \
 GOVPAY_HOME_HTTPS=${govpay_home}_https \
 GOVPAY_LOGDIR=${govpay_log} \
 GOVPAY_FULLVERSION=${govpay_fullversion} \
 HSQLDB_FULLVERSION=2.7.4 \
+HSQLDB_SHA256=9388a1d151c3f91575fa4cabc7f922594aa6ecfd2012957ae853e82a3a5008d5 \
 POSTGRES_JDBC_VERSION=42.7.5 \
 TOMCAT_VERSION=11.0.26 \
 CATALINA_HOME=/usr/local/tomcat \
@@ -40,12 +45,13 @@ RUN set -eux; \
 mkdir -p ${GOVPAY_HOME} ${GOVPAY_HOME_HTTPS} ${GOVPAY_LOGDIR};  \
 apk update; \
 apk upgrade; \
-apk add --no-cache curl openjdk21-jre tar netcat-openbsd unzip xmlstarlet bash fontconfig ttf-dejavu; \
+apk add --no-cache curl tar netcat-openbsd unzip xmlstarlet bash; \
 rm -rf /var/cache/apk/*; \
 echo "${TZ}" > /etc/timezone; \
 addgroup -S tomcat; \
 adduser -S -G tomcat -h ${CATALINA_HOME} -s /bin/false tomcat; \
-curl -kL -sS -q -o /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip https://sourceforge.net/projects/hsqldb/files/hsqldb/hsqldb_2_7/hsqldb-${HSQLDB_FULLVERSION}.zip/download; \
+curl -fL -sS -o /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip https://sourceforge.net/projects/hsqldb/files/hsqldb/hsqldb_2_7/hsqldb-${HSQLDB_FULLVERSION}.zip/download; \
+echo "${HSQLDB_SHA256}  /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip" | sha256sum -c -; \
 unzip -q -d /opt /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip hsqldb-${HSQLDB_FULLVERSION}/hsqldb/lib/*; \
 rm -f  /var/tmp/hsqldb-${HSQLDB_FULLVERSION}.zip; \
 for tomcat_base in https://downloads.apache.org/tomcat https://archive.apache.org/dist/tomcat; do \
