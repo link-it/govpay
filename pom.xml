@@ -105,10 +105,8 @@
 		<guava.version>33.7.1-jre</guava.version>
 
 		<!-- cxf -->
-		<cxf.version>4.2.3</cxf.version><!-- CVE-2026-54225, CVE-2026-57817, CVE-2026-57818, CVE-2026-57819, CVE-2026-61466, CVE-2026-63687, CVE-2026-64958, CVE-2026-65432, CVE-2026-65583, CVE-2026-66909, CVE-2026-68079, CVE-2026-68481. Portava neethi a 3.2.3 (CVE-2026-66142, CVE-2026-66143, CVE-2026-66144), ora superata dall'override neethi.version qui sotto -->
+		<cxf.version>4.2.4</cxf.version><!-- CVE-2026-71575, CVE-2026-100227, CVE-2026-107937, CVE-2026-107938, CVE-2026-108039; in precedenza CVE-2026-54225, CVE-2026-57817, CVE-2026-57818, CVE-2026-57819, CVE-2026-61466, CVE-2026-63687, CVE-2026-64958, CVE-2026-65432, CVE-2026-65583, CVE-2026-66909, CVE-2026-68079, CVE-2026-68481. La 4.2.4 pinna nativamente neethi 3.2.4 e xmlschema-core 2.3.3: gli override che li forzavano sono stati rimossi -->
 		<cxf.xjc.runtime.version>4.2.0</cxf.xjc.runtime.version>
-		<neethi.version>3.2.4</neethi.version><!-- CVE-2026-91863, CVE-2026-91864, CVE-2026-91865, CVE-2026-91866, CVE-2026-91867: override di cxf.neethi.version (3.2.3) pinnata da cxf-parent 4.2.3 -->
-		<xmlschema.version>2.3.3</xmlschema.version><!-- CVE-2026-102495, CVE-2026-102496, CVE-2026-102497: override di cxf.xmlschema.version (2.3.2) pinnata da cxf-parent 4.2.3 -->
 
 		<!-- jackson -->
 		<jackson.version>2.22.2</jackson.version><!-- CVE-2026-54515 -->
@@ -934,18 +932,6 @@
 					</exclusion>
 				</exclusions>
 	        </dependency>
-
-			<dependency>
-				<groupId>org.apache.neethi</groupId>
-				<artifactId>neethi</artifactId>
-				<version>${neethi.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.ws.xmlschema</groupId>
-				<artifactId>xmlschema-core</artifactId>
-				<version>${xmlschema.version}</version>
-			</dependency>
 
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
