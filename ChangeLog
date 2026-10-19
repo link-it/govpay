@@ -1,3 +1,12 @@
+2026-10-19  Giuliano Pintori <pintori@link.it>
+
+        * [Pipeline] Stage ZAP e accessibilita' leggibili e limitati nel tempo.
+        I due stage stavano dentro un 'parallel': la Stage View classica non disegna i log degli stage annidati, quindi comparivano come riquadri vuoti e non c'era modo di capire se stessero girando. Il parallelo faceva risparmiare la durata della piu' breve delle due; la leggibilita' vale quei minuti, quindi ora sono due stage in sequenza, ciascuno col proprio riquadro e il proprio output, aperti da un echo che dichiara i bersagli.
+        Gli script escono ora con esito negativo se non hanno prodotto alcun report: prima uscivano sempre con zero, e un'analisi che avesse smesso di partire avrebbe lasciato lo stage verde e il report vuoto, indistinguibili da un esito pulito. Il conteggio dei report prodotti e' stampato in coda a entrambi.
+        I publisher stanno sotto catchError come i comandi: un plugin mancante - HTML Publisher o Warnings NG per il formato SARIF - deve far perdere il report, non la build, e prima avrebbe fatto fallire lo stage anche con l'analisi andata a buon fine.
+        Aggiunto un tetto di durata per stage, 20 minuti per ZAP e 30 per l'accessibilita', perche' un bersaglio che non risponde non tenga occupata la notturna a tempo indeterminato.
+        Screen reader e Lighthouse sono ora spenti per default e si riaccendono con A11Y_LIVELLI_COMPLETI=true: misurati sul cruscotto storico, 17 viste, costano 300 secondi contro 57 senza, cinque volte tanto, e con tre bersagli la notturna passerebbe da pochi minuti a oltre venti. Restano accesi i livelli che intercettano di piu' - axe, albero di accessibilita', comandi raggiungibili col solo mouse.
+
 2026-10-14  Giuliano Pintori <pintori@link.it>
 
         * Issue #896 Immagine Docker del core: base eclipse-temurin:25-jre-alpine al posto di alpine:latest con openjdk21-jre.

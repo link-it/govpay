@@ -61,4 +61,15 @@ scansiona portale
   echo "</ul>"
 } > "${OUT}/index.html"
 
+# Senza questo controllo lo stage resterebbe verde anche se nessuna scansione
+# fosse andata a termine: l'uscita a zero di un ciclo che non ha prodotto nulla
+# e' indistinguibile da un successo, ed e' il modo in cui un'analisi smette di
+# essere eseguita senza che nessuno se ne accorga.
+prodotti=$(ls "${OUT}"/*.json 2>/dev/null | wc -l)
+echo "== report prodotti: ${prodotti} su 3"
+if [ "${prodotti}" -eq 0 ]; then
+  echo "Nessuna scansione ZAP completata: controllare che i tre bersagli siano raggiungibili e che l'immagine ${ZAP_IMAGE} sia disponibile." >&2
+  exit 1
+fi
+
 exit 0

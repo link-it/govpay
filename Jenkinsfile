@@ -31,6 +31,9 @@ pipeline {
     // gov-a11y installato una volta sulla macchina: clonarlo a ogni build
     // significherebbe riscaricare Chromium ogni volta
     GOV_A11Y_HOME = "/opt/gov-a11y"
+    // Screen reader e Lighthouse costano cinque volte il resto: spenti di
+    // default, si riaccendono qui quando serve la misura completa.
+    A11Y_LIVELLI_COMPLETI = "false"
     NODE_BIN      = "/opt/nodejs/22.14.0/bin/node"
   }
   stages {
@@ -102,52 +105,66 @@ pipeline {
         }
       }
     }
-    stage('analisi-ambiente-vivo') {
-      // Le due analisi sono indipendenti fra loro e girano sullo stesso
-      // ambiente gia' in piedi: in parallelo costano quanto la piu' lenta.
-      // Entrambe marcano la build UNSTABLE invece di farla fallire: al primo
-      // giro le segnalazioni sono molte e una pipeline rossa per cose note
-      // smette di essere letta. Si stringe a FAILURE quando il rumore e' sotto
-      // controllo.
-      parallel {
-        stage('zap') {
-          steps {
-            catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-              sh 'sh ./src/main/resources/scripts/jenkins.zap.sh'
-            }
-          }
-          post {
-            always {
-              archiveArtifacts artifacts: 'target/zap/*', allowEmptyArchive: true
-              publishHTML(target: [reportDir: 'target/zap', reportFiles: 'index.html',
-                                   reportName: 'ZAP', keepAll: true, alwaysLinkToLastBuild: true,
-                                   allowMissing: true])
-            }
+    // Le due analisi girano sull'ambiente ancora in piedi, dopo i test e prima
+    // dello smontaggio. In sequenza e non in parallelo: la Stage View classica
+    // non disegna i log degli stage annidati in un 'parallel', e due riquadri
+    // vuoti rendono impossibile capire cosa sia successo. Il parallelo faceva
+    // risparmiare la durata della piu' breve delle due; la leggibilita' vale
+    // quei minuti.
+    //
+    // Entrambe marcano la build UNSTABLE invece di farla fallire: al primo giro
+    // le segnalazioni sono molte, e una pipeline rossa per cose note smette di
+    // essere letta. Si stringe a FAILURE quando il rumore e' sotto controllo.
+    // Per lo stesso motivo anche i publisher stanno sotto catchError: un plugin
+    // mancante deve far perdere il report, non la build.
+    stage('zap') {
+      options { timeout(time: 20, unit: 'MINUTES') }
+      steps {
+        echo "ZAP sui tre frontend: ${URL_CONSOLE_LEGACY}, ${URL_CONSOLE_NUOVA}, ${URL_PORTALE}"
+        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+          sh 'sh ./src/main/resources/scripts/jenkins.zap.sh'
+        }
+      }
+      post {
+        always {
+          archiveArtifacts artifacts: 'target/zap/*', allowEmptyArchive: true
+          catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+            publishHTML(target: [reportDir: 'target/zap', reportFiles: 'index.html',
+                                 reportName: 'ZAP', keepAll: true, alwaysLinkToLastBuild: true,
+                                 allowMissing: true])
           }
         }
-        stage('accessibilita') {
-          environment {
-            // Credenziale Jenkins di tipo "Username with password": espone
-            // GOVPAY_CONSOLE_USR e GOVPAY_CONSOLE_PSW. La mappatura sui nomi
-            // che gov-a11y si aspetta (A11Y_<TARGET>_USER/_PASS) la fa lo
-            // script: dentro questo blocco le variabili appena definite non
-            // sono ancora espandibili in modo affidabile.
-            GOVPAY_CONSOLE = credentials('govpay-console')
+      }
+    }
+    stage('accessibilita') {
+      options { timeout(time: 30, unit: 'MINUTES') }
+      environment {
+        // Credenziale Jenkins di tipo "Username with password": espone
+        // GOVPAY_CONSOLE_USR e GOVPAY_CONSOLE_PSW. La mappatura sui nomi che
+        // gov-a11y si aspetta (A11Y_<TARGET>_USER/_PASS) la fa lo script:
+        // dentro questo blocco le variabili appena definite non sono ancora
+        // espandibili in modo affidabile.
+        GOVPAY_CONSOLE = credentials('govpay-console')
+      }
+      steps {
+        echo "Accessibilita' sui tre frontend, con gov-a11y da ${GOV_A11Y_HOME}"
+        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+          sh 'sh ./src/main/resources/scripts/jenkins.a11y.sh'
+        }
+      }
+      post {
+        always {
+          archiveArtifacts artifacts: 'target/a11y/**', allowEmptyArchive: true
+          catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+            junit allowEmptyResults: true, testResults: 'target/a11y/*/a11y-junit.xml'
           }
-          steps {
-            catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-              sh 'sh ./src/main/resources/scripts/jenkins.a11y.sh'
-            }
+          catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+            recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [sarif(id: 'a11y', name: 'Accessibilita', pattern: 'target/a11y/*/a11y.sarif')]
           }
-          post {
-            always {
-              junit allowEmptyResults: true, testResults: 'target/a11y/*/a11y-junit.xml'
-              recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [sarif(id: 'a11y', name: 'Accessibilita', pattern: 'target/a11y/*/a11y.sarif')]
-              publishHTML(target: [reportDir: 'target/a11y', reportFiles: 'console-legacy/report.html, console-nuova/report.html, portale/report.html',
-                                   reportName: 'Accessibilita', keepAll: true, alwaysLinkToLastBuild: true,
-                                   allowMissing: true])
-              archiveArtifacts artifacts: 'target/a11y/**', allowEmptyArchive: true
-            }
+          catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+            publishHTML(target: [reportDir: 'target/a11y', reportFiles: 'console-legacy/report.html, console-nuova/report.html, portale/report.html',
+                                 reportName: 'Accessibilita', keepAll: true, alwaysLinkToLastBuild: true,
+                                 allowMissing: true])
           }
         }
       }

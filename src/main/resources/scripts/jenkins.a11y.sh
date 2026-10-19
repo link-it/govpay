@@ -19,6 +19,18 @@ export A11Y_GOVPAYCONSOLE_PASS="${GOVPAY_CONSOLE_PSW:-}"
 export A11Y_GOVPAYCONSOLELEGACY_USER="${GOVPAY_CONSOLE_USR:-}"
 export A11Y_GOVPAYCONSOLELEGACY_PASS="${GOVPAY_CONSOLE_PSW:-}"
 
+# Livelli 3 (virtual screen reader) e Lighthouse: accesi nei target, ma costosi.
+# Misurato sul cruscotto storico, 17 viste: 300 secondi con tutto acceso contro
+# 57 senza, cinque volte tanto, e con tre bersagli la notturna passerebbe da
+# pochi minuti a oltre venti. Di default restano spenti e si tiene cio' che
+# intercetta di piu' - axe, albero di accessibilita', comandi solo-mouse -;
+# A11Y_LIVELLI_COMPLETI=true li riaccende quando serve la misura completa.
+LIVELLI_RIDOTTI="--no-lighthouse --no-screen-reader"
+if [ "${A11Y_LIVELLI_COMPLETI:-false}" = "true" ]; then
+  LIVELLI_RIDOTTI=""
+  echo "== livelli completi richiesti: screen reader e Lighthouse attivi"
+fi
+
 A11Y_HOME="${GOV_A11Y_HOME:-/opt/gov-a11y}"
 NODE="${NODE_BIN:-/opt/nodejs/22.14.0/bin/node}"
 OUT="$(pwd)/target/a11y"
@@ -52,12 +64,21 @@ scansiona() {
     --config "${A11Y_HOME}/targets/govpay/${config}" \
     --out "${OUT}/${nome}" \
     --product-version "${PROJECT_VERSION}" \
-    --fail-on serious
+    --fail-on serious ${LIVELLI_RIDOTTI}
   echo "   esito gov-a11y su ${nome}: $?"
 }
 
 scansiona console-legacy "${URL_CONSOLE_LEGACY}" targets.govpay-console-legacy.json
 scansiona console-nuova   "${URL_CONSOLE_NUOVA}"   targets.govpay-console.json
 scansiona portale         "${URL_PORTALE}"         targets.govpay-portal.json
+
+# Come per ZAP: senza questo controllo un'analisi che non parte piu' lascerebbe
+# lo stage verde e il report vuoto, indistinguibili da un esito pulito.
+prodotti=$(ls "${OUT}"/*/summary.json 2>/dev/null | wc -l)
+echo "== analisi completate: ${prodotti} su 3"
+if [ "${prodotti}" -eq 0 ]; then
+  echo "Nessuna analisi di accessibilita' completata: controllare gov-a11y in ${A11Y_HOME} e la raggiungibilita' dei tre bersagli." >&2
+  exit 1
+fi
 
 exit 0
