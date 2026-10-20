@@ -213,6 +213,11 @@ And match response ==
 	risultati: '#array'
 }
 """
+# idA2A e idPendenza sono valorizzati dal batch RT su tutti gli eventi del
+# recupero da ottobre 2026 (govpay-rt-batch, "GDE: valorizzati idPendenza e
+# idA2A negli eventi del recupero RT"): prima non lo erano mai, e questo blocco
+# li attendeva nulli. Sono cod_applicazione e cod_versamento_ente, quindi qui
+# si verificano con i valori veri invece di ignorarli.
 And match response.risultati[0] ==
 """
 {  
@@ -220,8 +225,8 @@ And match response.risultati[0] ==
 	"idDominio":"#(idDominio)",
 	"iuv":"#ignore",
 	"ccp":"#ignore",
-	"idA2A": "##null",
-	"idPendenza": "##null",
+	"idA2A": "#(idA2A)",
+	"idPendenza": "#(idPendenza + '')",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
@@ -432,6 +437,11 @@ And match response ==
 	risultati: '#array'
 }
 """
+# idA2A e idPendenza sono valorizzati dal batch RT su tutti gli eventi del
+# recupero da ottobre 2026 (govpay-rt-batch, "GDE: valorizzati idPendenza e
+# idA2A negli eventi del recupero RT"): prima non lo erano mai, e questo blocco
+# li attendeva nulli. Sono cod_applicazione e cod_versamento_ente, quindi qui
+# si verificano con i valori veri invece di ignorarli.
 And match response.risultati[0] ==
 """
 {  
@@ -439,8 +449,8 @@ And match response.risultati[0] ==
 	"idDominio":"#(idDominio)",
 	"iuv":"#ignore",
 	"ccp":"#ignore",
-	"idA2A": "##null",
-	"idPendenza": "##null",
+	"idA2A": "#(idA2A)",
+	"idPendenza": "#(idPendenza + '')",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
