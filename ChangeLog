@@ -1,3 +1,12 @@
+2026-10-20  Giuliano Pintori <pintori@link.it>
+
+        * [Pipeline] Diagnostica sugli stage ZAP e accessibilita', che su Jenkins continuano a comparire con il log vuoto.
+        Lo stage info stampa ora un marcatore di provenienza - una riga che nomina la revisione, il commit e lo sha del Jenkinsfile in esecuzione - perche' la prima domanda da chiudere e' se stia girando questo file: nel repository esistono anche Jenkinsfile.new e Jenkinsfile.simple, un job puntato su un altro file o su un ramo diverso produce stage che non esistono, e la Stage View li mostra come riquadri vuoti perche' li ricorda dalle build precedenti. Se il marcatore non compare, il file in esecuzione e' un altro e non c'e' nulla da correggere negli script.
+        I due stage dichiarano inizio e fine con un echo, elencano i bersagli e, per l'accessibilita', verificano prima di partire che gov-a11y sia installato dove la pipeline lo cerca, che node sia eseguibile e che la credenziale sia stata letta - senza stampare alcun valore.
+        Gli script sono invocati con 'sh -x', quindi ogni comando eseguito compare nel log, e il loro output e' raccolto anche in target/diagnostica/{zap,a11y}.log, archiviato fra gli artefatti: se la console resta vuota per ragioni di presentazione, la traccia dell'esecuzione resta comunque recuperabile dalla build.
+        La forma usata per conservare l'esito dello script e' quella portabile con una variabile e un cat finale, non PIPESTATUS: lo step sh di Jenkins esegue /bin/sh, dove quel costrutto non esiste e l'esito sarebbe andato perso.
+        Provata in locale l'invocazione esatta che eseguira' la pipeline: 198 righe di traccia e il file di diagnostica prodotto.
+
 2026-10-19  Giuliano Pintori <pintori@link.it>
 
         * Risolte le segnalazioni NVDCVE-2026-107938 e NVDCVE-2026-71575 (Critical), NVDCVE-2026-100227, NVDCVE-2026-107937 e NVDCVE-2026-108039 (High) su cxf-core-4.2.3.jar e cxf-rt-rs-service-description-4.2.3.jar: portato Apache CXF dalla 4.2.3 alla 4.2.4, che secondo gli avvisi di sicurezza del progetto le corregge tutte e cinque.

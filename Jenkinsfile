@@ -49,6 +49,16 @@ pipeline {
           echo "Job Name: ${env.JOB_NAME}"
           echo "Workspace: ${env.WORKSPACE}"
           echo "================================"
+          // Marcatore di provenienza: serve a capire, leggendo il log, QUALE
+          // script sta girando. Nel repository esistono anche Jenkinsfile.new e
+          // Jenkinsfile.simple, e un job puntato su un altro file - o su un
+          // ramo diverso - produce stage che non esistono, che la Stage View
+          // mostra come riquadri vuoti perche' li ricorda dalle build
+          // precedenti. Se queste righe non compaiono, non e' questo il file in
+          // esecuzione.
+          echo "SCRIPT: Jenkinsfile con stage zap e accessibilita' (revisione 2026-10-20)"
+          sh 'git log -1 --format="COMMIT: %h %ad %s" --date=short -- Jenkinsfile || true'
+          sh 'echo "SHA DEL FILE: $(sha256sum Jenkinsfile | cut -c1-16)"'
         }
       }
     }
@@ -120,14 +130,23 @@ pipeline {
     stage('zap') {
       options { timeout(time: 20, unit: 'MINUTES') }
       steps {
-        echo "ZAP sui tre frontend: ${URL_CONSOLE_LEGACY}, ${URL_CONSOLE_NUOVA}, ${URL_PORTALE}"
+        echo "INIZIO stage zap"
+        echo "bersagli: ${URL_CONSOLE_LEGACY} | ${URL_CONSOLE_NUOVA} | ${URL_PORTALE}"
+        // L'output va anche su file, archiviato sotto: se la console resta
+        // vuota per ragioni di presentazione, la traccia dell'esecuzione resta
+        // comunque fra gli artefatti. 'sh -x' stampa ogni comando eseguito.
         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-          sh 'sh ./src/main/resources/scripts/jenkins.zap.sh'
+          sh '''mkdir -p target/diagnostica
+                sh -x ./src/main/resources/scripts/jenkins.zap.sh > target/diagnostica/zap.log 2>&1
+                esito=$?
+                cat target/diagnostica/zap.log
+                exit ${esito}'''
         }
+        echo "FINE stage zap"
       }
       post {
         always {
-          archiveArtifacts artifacts: 'target/zap/*', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'target/zap/*, target/diagnostica/zap.log', allowEmptyArchive: true
           catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
             publishHTML(target: [reportDir: 'target/zap', reportFiles: 'index.html',
                                  reportName: 'ZAP', keepAll: true, alwaysLinkToLastBuild: true,
@@ -147,14 +166,23 @@ pipeline {
         GOVPAY_CONSOLE = credentials('govpay-console')
       }
       steps {
-        echo "Accessibilita' sui tre frontend, con gov-a11y da ${GOV_A11Y_HOME}"
+        echo "INIZIO stage accessibilita'"
+        echo "gov-a11y da ${GOV_A11Y_HOME}, node da ${NODE_BIN}, livelli completi: ${A11Y_LIVELLI_COMPLETI}"
+        sh '''echo "gov-a11y presente: $([ -f ${GOV_A11Y_HOME}/a11y-scan.mjs ] && echo si || echo NO)"
+              echo "node eseguibile:   $([ -x ${NODE_BIN} ] && ${NODE_BIN} --version || echo ASSENTE)"
+              echo "credenziale letta: $([ -n "${GOVPAY_CONSOLE_USR}" ] && echo si || echo NO)"'''
         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-          sh 'sh ./src/main/resources/scripts/jenkins.a11y.sh'
+          sh '''mkdir -p target/diagnostica
+                sh -x ./src/main/resources/scripts/jenkins.a11y.sh > target/diagnostica/a11y.log 2>&1
+                esito=$?
+                cat target/diagnostica/a11y.log
+                exit ${esito}'''
         }
+        echo "FINE stage accessibilita'"
       }
       post {
         always {
-          archiveArtifacts artifacts: 'target/a11y/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'target/a11y/**, target/diagnostica/a11y.log', allowEmptyArchive: true
           catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
             junit allowEmptyResults: true, testResults: 'target/a11y/*/a11y-junit.xml'
           }
