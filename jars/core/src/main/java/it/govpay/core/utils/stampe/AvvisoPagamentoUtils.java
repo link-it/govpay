@@ -63,9 +63,6 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 
 public class AvvisoPagamentoUtils {
 
-	/** Resa del campo data quando sull'avviso non va riportato alcun termine. */
-	private static final String DATA_SCADENZA_ASSENTE = "-";
-	
 	private AvvisoPagamentoUtils() {}
 
 	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException, UtilsException {
@@ -519,11 +516,9 @@ public class AvvisoPagamentoUtils {
 		// al debitore un termine destinato a cambiare. Si ferma qui, sulla stampa:
 		// pagabilita', scadenza, promemoria e notifiche continuano a usare le date
 		// della pendenza come prima.
-		// Il valore e' lo stesso che l'avviso riporta gia' oggi quando nessuna data
-		// e' determinabile, perche' e' l'unica resa che il modello compilato sa
-		// gestire: i sorgenti .jrxml non stanno nel repository.
+		// Il campo resta nullo, come quando nessuna data e' determinabile.
 		if(proprietaPendenza != null && Boolean.TRUE.equals(proprietaPendenza.isNascondiDataScadenzaAvviso())) {
-			rata.setData(DATA_SCADENZA_ASSENTE);
+			rata.setData(null);
 			return;
 		}
 		
