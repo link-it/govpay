@@ -78,7 +78,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
   private Date dataScandenzaAvviso = null;
   
   @JsonProperty("nascondiDataScadenzaAvviso")
-  private Boolean nascondiDataScadenzaAvviso = false;
+  private Boolean nascondiDataScadenzaAvviso = null;
 
   /**
    **/

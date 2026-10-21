@@ -80,7 +80,7 @@ public class ProprietaPendenza   {
  /**
    * se true, l'avviso di pagamento non riporta alcuna data entro cui pagare, anche quando dataValidita o dataScadenza sono valorizzate.  
   **/
-  private Boolean nascondiDataScadenzaAvviso = false;
+  private Boolean nascondiDataScadenzaAvviso = null;
  /**
    * Get linguaSecondaria
    * @return linguaSecondaria
