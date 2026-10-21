@@ -1,0 +1,121 @@
+# Scansione di un'immagine Docker gia' costruita e caricata nel daemon del
+# runner, prima della pubblicazione. La logica sta in docker/scan_image.sh, che
+# si esegue uguale in locale: qui ci sono solo cache, pubblicazione dei report
+# ed esito del gate.
+#
+# Il job che la usa deve:
+#   - aver fatto il checkout del repository (lo script e le eccezioni stanno li');
+#   - aver costruito l'immagine con load: true e push: false;
+#   - avere il permesso security-events: write, per i report SARIF;
+#   - pubblicare l'immagine solo dopo questa action: se il gate fallisce,
+#     l'action fallisce e i passi successivi non vengono eseguiti.
+#
+# I report vengono caricati anche quando il gate fallisce: servono proprio a
+# capire perche'.
+
+name: Scansione immagine Docker
+description: Trivy (gate) e Grype (report) su un'immagine locale
+
+inputs:
+  image:
+    description: Immagine da scansionare, gia' presente nel daemon docker
+    required: true
+  gate:
+    description: "block (default) o warn: warn e' la deroga temporanea, il gate viene valutato ma non fa fallire"
+    required: false
+    default: block
+  report-name:
+    description: Nome dell'artifact con i report
+    required: false
+    default: image-scan-report
+  category-suffix:
+    description: "Suffisso delle categorie SARIF (image-trivy, image-grype): serve quando piu' job dello stesso commit scansionano immagini diverse, che altrimenti si sovrascriverebbero nella scheda Security"
+    required: false
+    default: ""
+
+outputs:
+  gate:
+    description: superato o fallito
+    value: ${{ steps.scan.outputs.gate }}
+  report-dir:
+    description: Directory dei report
+    value: image-scan-report
+
+runs:
+  using: composite
+  steps:
+    - name: Data per la chiave della cache
+      id: date
+      shell: bash
+      run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+    # I database di Trivy e Grype pesano centinaia di MB e si aggiornano ogni
+    # giorno: chiave per giorno, con ripiego sull'ultimo disponibile.
+    # Ripristino e salvataggio sono separati perche' actions/cache salva solo a
+    # job riuscito: con il gate fallito la cache non verrebbe mai scritta, e
+    # proprio le run bloccate, che si rilanciano, riscaricherebbero tutto.
+    - name: Ripristino della cache dei database delle vulnerabilita'
+      id: cache
+      uses: actions/cache/restore@v5
+      with:
+        path: ~/.cache/govpay-image-scan
+        key: image-scan-db-${{ runner.os }}-${{ steps.date.outputs.date }}
+        restore-keys: |
+          image-scan-db-${{ runner.os }}-
+
+    - name: Scansione con Trivy e Grype
+      id: scan
+      shell: bash
+      env:
+        SCAN_OUT_DIR: image-scan-report
+        SCAN_GATE: ${{ inputs.gate }}
+      run: |
+        set +e
+        ./docker/scan_image.sh "${{ inputs.image }}"
+        rc=$?
+        set -e
+        # 0 e 1 sono esiti del gate, valutato nell'ultimo passo dopo aver
+        # pubblicato i report; 2 e' un errore dello script o degli strumenti.
+        [ -f image-scan-report/gate.txt ] && cat image-scan-report/gate.txt >> "$GITHUB_OUTPUT"
+        echo "rc=${rc}" >> "$GITHUB_OUTPUT"
+        [ "${rc}" -le 1 ]
+
+    - name: Salvataggio della cache dei database delle vulnerabilita'
+      if: ${{ always() && steps.cache.outputs.cache-hit != 'true' && hashFiles('image-scan-report/trivy-report.json') != '' }}
+      uses: actions/cache/save@v5
+      with:
+        path: ~/.cache/govpay-image-scan
+        key: image-scan-db-${{ runner.os }}-${{ steps.date.outputs.date }}
+
+    - name: Report come artifact
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.report-name }}
+        path: image-scan-report/
+        if-no-files-found: warn
+
+    - name: Report Trivy nella scheda Security
+      if: ${{ always() && hashFiles('image-scan-report/trivy-report.sarif') != '' }}
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: image-scan-report/trivy-report.sarif
+        category: image-trivy${{ inputs.category-suffix }}
+
+    - name: Report Grype nella scheda Security
+      if: ${{ always() && hashFiles('image-scan-report/grype-report.sarif') != '' }}
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: image-scan-report/grype-report.sarif
+        category: image-grype${{ inputs.category-suffix }}
+
+    - name: Esito del gate
+      shell: bash
+      run: |
+        if [ "${{ steps.scan.outputs.rc }}" = "1" ]; then
+          echo "::error::Gate della scansione non superato: vulnerabilita' CRITICAL o HIGH con correzione disponibile. L'immagine non viene pubblicata. Elenco nel riepilogo della run e in trivy-gate.md."
+          exit 1
+        fi
+        if [ "${{ steps.scan.outputs.gate }}" = "fallito" ]; then
+          echo "::warning::Gate della scansione non superato, ma in deroga (gate=warn): l'immagine viene pubblicata. La deroga va motivata in una issue."
+        fi

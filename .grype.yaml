@@ -1,0 +1,45 @@
+# Eccezioni per il report di Grype (docker/scan_image.sh), da tenere allineate
+# a quelle di .trivyignore.yaml, dove stanno motivo e scadenza: Grype produce
+# solo un report e non ha un gate, quindi qui basta l'elenco.
+#
+# Le segnalazioni che Grype da' e Trivy no (tipicamente associazioni per CPE
+# NVD su pacchetti del sistema operativo) stanno solo qui, con il motivo in
+# reason e il riferimento alla issue. upstream-name copre anche i sottopacchetti
+# (es. coreutils-env, busybox-binsh).
+
+ignore:
+  # Come in .trivyignore.yaml. Grype identifica le vulnerabilita' Java con il
+  # GHSA: CVE-2025-10492 e' GHSA-7c3f-cg9x-f3gr, CVE-2026-6009 e'
+  # GHSA-9wxq-mwqw-8hhg.
+  - vulnerability: GHSA-7c3f-cg9x-f3gr
+    reason: "CVE-2025-10492: jars/stampe sostituito dal microservizio link-it/govpay-stampe-api. link-it/govpay#897"
+    package:
+      name: jasperreports
+  - vulnerability: GHSA-9wxq-mwqw-8hhg
+    reason: "CVE-2026-6009: jars/stampe sostituito dal microservizio link-it/govpay-stampe-api. link-it/govpay#897"
+    package:
+      name: jasperreports
+  # coreutils arriva dall'immagine base eclipse-temurin, che lo installa; Alpine
+  # non pubblica correzioni per queste CVE, e Grype le associa per CPE NVD.
+  # Riguardano comandi che gli script dell'immagine (docker/commons/tomcat11)
+  # non eseguono e sono sfruttabili solo localmente. Stesse eccezioni di
+  # link-it/govpay-gde-api#36.
+  - vulnerability: CVE-2016-2781
+    reason: "chroot --userspec: non usato; attacco locale. link-it/govpay#897"
+    package:
+      upstream-name: coreutils
+  - vulnerability: CVE-2026-56391
+    reason: "uniq -w: non usato; attacco locale. link-it/govpay#897"
+    package:
+      upstream-name: coreutils
+  - vulnerability: CVE-2026-56392
+    reason: "unexpand -t: non usato; attacco locale. link-it/govpay#897"
+    package:
+      upstream-name: coreutils
+  # busybox fornisce /bin/sh; il suo wget non e' usato dagli script
+  # dell'immagine, e la CVE richiede un URL controllato dall'attaccante. Copre
+  # anche ssl_client, stesso sorgente.
+  - vulnerability: CVE-2025-60876
+    reason: "wget di busybox non usato. link-it/govpay#897"
+    package:
+      upstream-name: busybox

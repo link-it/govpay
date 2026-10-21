@@ -5,8 +5,10 @@ on:
     branches: [ "**" ]
     tags:
       - '*'
+  # Le pull request verso master e le linee x.y.x costruiscono e scansionano
+  # l'immagine di sviluppo senza pubblicarla (job docker_dev).
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master", "*.x" ]
 
 jobs:
 
@@ -94,16 +96,17 @@ jobs:
 
     # L'installer serve ai job che costruiscono le immagini docker. Viene
     # prodotto e caricato solo quando quei job gireranno davvero: e' un archivio
-    # da centinaia di MB e non ha senso pagarlo su ogni branch di lavoro.
+    # da centinaia di MB e non ha senso pagarlo su ogni branch di lavoro. Sulle
+    # pull request serve a docker_dev, che scansiona l'immagine senza pubblicarla.
     - name: Generate Tomcat installer
-      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' || endsWith(github.ref, '.x')
+      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' || endsWith(github.ref, '.x') || github.event_name == 'pull_request'
       run: |
         pushd src/main/resources/setup/
         bash prepareSetup.sh tomcat
         popd
 
     - name: Upload installer
-      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' || endsWith(github.ref, '.x')
+      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' || endsWith(github.ref, '.x') || github.event_name == 'pull_request'
       uses: actions/upload-artifact@v7
       with:
         name: govpay-installer
@@ -423,12 +426,17 @@ jobs:
   # Un push ordinario, anche su master, produce un'immagine di sviluppo: solo un
   # tag produce le immagini stabili. Le due destinazioni sono repository distinti,
   # quindi i tag non possono collidere.
+  # Sulle pull request l'immagine viene costruita e scansionata, non pubblicata.
   docker_dev:
     runs-on: ubuntu-latest
     needs: [ build ]
-    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/') && (github.ref == 'refs/heads/master' || endsWith(github.ref, '.x'))
+    if: >-
+      (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/') &&
+       (github.ref == 'refs/heads/master' || endsWith(github.ref, '.x'))) ||
+      github.event_name == 'pull_request'
     permissions:
       contents: read
+      security-events: write
 
     steps:
     - uses: actions/checkout@v6
@@ -450,19 +458,42 @@ jobs:
         echo "Versione: ${VER}"
 
     - name: Docker Hub login
+      if: github.event_name == 'push'
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
 
-    - name: Build and push dev image
+    # L'immagine viene costruita senza pubblicarla, scansionata, e pubblicata
+    # solo se supera il gate (vedi .github/actions/image-scan). Sulle linee di
+    # sviluppo la scansione fa da preavviso: un problema emerge qui, giorni
+    # prima del tag.
+    - name: Build dev image
+      id: images
       run: |
+        set -euo pipefail
         ./docker/build-images.sh \
           --version "${{ steps.ver.outputs.version }}" \
           --installer "${{ steps.ver.outputs.installer }}" \
           --set dev \
           --image-base "${{ vars.DOCKER_IMAGE_BASE_DEV || 'linkitaly/govpay-dev' }}" \
-          --push
+          --images-file images.txt
+        echo "image=$(head -n 1 images.txt)" >> "$GITHUB_OUTPUT"
+
+    - name: Scan dev image
+      uses: ./.github/actions/image-scan
+      with:
+        image: ${{ steps.images.outputs.image }}
+        gate: ${{ vars.IMAGE_SCAN_GATE || 'block' }}
+        report-name: image-scan-report-dev
+
+    - name: Push dev image
+      if: github.event_name == 'push'
+      run: |
+        set -euo pipefail
+        while read -r img; do
+          docker push "${img}"
+        done < images.txt
 
     - name: Docker Hub logout
-      if: always()
+      if: always() && github.event_name == 'push'
       run: docker logout
 
   # ── Immagini docker stabili (solo tag) ────────────────────────────────
@@ -475,6 +506,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: read
+      security-events: write
     strategy:
       fail-fast: false
       matrix:
@@ -526,8 +558,14 @@ jobs:
         fi
         echo "flag=${FLAG}" >> "$GITHUB_OUTPUT"
 
-    - name: Build and push release image
+    # L'immagine viene costruita senza pubblicarla, scansionata, e pubblicata
+    # solo se supera il gate (vedi .github/actions/image-scan): un'immagine di
+    # release, una volta pubblicata, non viene piu' toccata. Ogni voce della
+    # matrice scansiona l'immagine che costruisce.
+    - name: Build release image
+      id: images
       run: |
+        set -euo pipefail
         ./docker/build-images.sh \
           --version "${{ steps.ver.outputs.version }}" \
           --installer "${{ steps.ver.outputs.installer }}" \
@@ -535,7 +573,59 @@ jobs:
           --only "${{ matrix.db }}" \
           --image-base "${{ vars.DOCKER_IMAGE_BASE || 'linkitaly/govpay' }}" \
           ${{ steps.latest.outputs.flag }} \
-          --push
+          --images-file images.txt
+        echo "image=$(head -n 1 images.txt)" >> "$GITHUB_OUTPUT"
+
+    - name: Scan release image
+      uses: ./.github/actions/image-scan
+      with:
+        image: ${{ steps.images.outputs.image }}
+        gate: ${{ vars.IMAGE_SCAN_GATE || 'block' }}
+        report-name: image-scan-report-${{ matrix.db }}
+        category-suffix: -${{ matrix.db }}
+
+    # Anche con il gate fallito: i report spiegano perche' l'immagine non c'e'.
+    - name: Allega i report della scansione alla release
+      if: ${{ always() && hashFiles('image-scan-report/riepilogo.md') != '' }}
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        set -euo pipefail
+        ZIP="image-scan-report-${GITHUB_REF_NAME}-${{ matrix.db }}.zip"
+        zip -r "${ZIP}" image-scan-report/
+        gh release upload "${GITHUB_REF_NAME}" "${ZIP}" --clobber
+
+    - name: Push release image
+      run: |
+        set -euo pipefail
+        while read -r img; do
+          docker push "${img}"
+        done < images.txt
+
+    # SBOM dell'immagine (sistema operativo, JRE e librerie) su
+    # Dependency-Track, accanto a quello Maven caricato dal job
+    # dependency-track-upload. Solo per l'immagine postgres: le altre
+    # differiscono soltanto per il driver JDBC. Non blocca: l'immagine e' gia'
+    # pubblicata.
+    - name: Upload SBOM dell'immagine su Dependency-Track
+      if: ${{ matrix.db == 'postgresql' && vars.DISABLE_DTRACK_UPLOAD_JOB != 'true' }}
+      continue-on-error: true
+      env:
+        DTRACK_API_KEY: ${{ secrets.GOVPAY_DTRACK_API_KEY }}
+        DTRACK_PROJECT_NAME: govpay-image
+        DTRACK_VERSION: ${{ github.ref_name }}
+        DTRACK_LATEST: 'true'
+      run: |
+        set -euo pipefail
+        if [ -z "${DTRACK_API_KEY}" ]; then
+          echo "::warning::secret GOVPAY_DTRACK_API_KEY non configurato: SBOM dell'immagine non caricato."
+          exit 0
+        fi
+        chmod +x script/sbom/upload-sbom-parent-required.sh
+        ./script/sbom/upload-sbom-parent-required.sh \
+          "${DTRACK_API_KEY}" \
+          image-scan-report/sbom-image.cdx.json \
+          "GovPay-Legacy"
 
     - name: Docker Hub logout
       if: always()

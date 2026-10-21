@@ -1,0 +1,40 @@
+# Eccezioni al gate della scansione delle immagini (docker/scan_image.sh).
+#
+# Un'eccezione si aggiunge solo dopo aver verificato che la vulnerabilita' non
+# e' sfruttabile nell'uso che GovPay fa del componente, o che e' un falso
+# positivo. Mai per sbloccare un rilascio: per quello c'e' la deroga
+# temporanea, SCAN_GATE=warn, da motivare in una issue.
+#
+# Ogni voce ha:
+#   id          identificativo della vulnerabilita' (CVE-... o GHSA-...)
+#   paths o purls, se l'eccezione vale solo per un componente
+#   statement   motivo, autore e riferimento alla issue
+#   expired_at  scadenza: dopo questa data l'eccezione decade e il gate torna
+#               a segnalare. Si rinnova con un nuovo motivo, o si corregge.
+#               Si omette solo se l'eccezione e' legata a un intervento gia'
+#               deciso, che la rimuove, e il commento lo dice.
+#
+# Esempio:
+#   - id: CVE-2026-00000
+#     purls:
+#       - "pkg:maven/org.example/libreria"
+#     statement: "Funzione X non usata da GovPay. P. Rossi, link-it/govpay#00"
+#     expired_at: 2026-12-31
+#
+# Le stesse eccezioni vanno riportate in .grype.yaml, perche' il report di
+# Grype resti confrontabile con quello di Trivy.
+
+vulnerabilities:
+  # JasperReports 6.21.5 ha due vulnerabilita' HIGH corrette solo nella linea 7.
+  # Non si migra: il modulo delle stampe del core (jars/stampe) verra' sostituito
+  # per intero dal microservizio link-it/govpay-stampe-api appena disponibile,
+  # e la sostituzione toglie JasperReports dalle war e queste eccezioni. Per
+  # questo non hanno scadenza.
+  - id: CVE-2025-10492
+    purls:
+      - "pkg:maven/net.sf.jasperreports/jasperreports"
+    statement: "jars/stampe sostituito dal microservizio link-it/govpay-stampe-api. G. Pintori, link-it/govpay#897"
+  - id: CVE-2026-6009
+    purls:
+      - "pkg:maven/net.sf.jasperreports/jasperreports"
+    statement: "jars/stampe sostituito dal microservizio link-it/govpay-stampe-api. G. Pintori, link-it/govpay#897"
