@@ -79,6 +79,12 @@ public class ProprietaPendenza   {
    * se valorizzata, sostituisce la data di scadenza standard.  
   **/
   private Date dataScandenzaAvviso = null;
+  
+  @Schema(description = "se true, l'avviso di pagamento non riporta alcuna data entro cui pagare, anche quando dataValidita o dataScadenza sono valorizzate.")
+ /**
+   * se true, l'avviso di pagamento non riporta alcuna data entro cui pagare, anche quando dataValidita o dataScadenza sono valorizzate.  
+  **/
+  private Boolean nascondiDataScadenzaAvviso = false;
  /**
    * Get linguaSecondaria
    * @return linguaSecondaria
@@ -236,6 +242,24 @@ public class ProprietaPendenza   {
     this.dataScandenzaAvviso = dataScandenzaAvviso;
   }
 
+  /**
+   * se true, l'avviso di pagamento non riporta alcuna data entro cui pagare, anche
+   * quando dataValidita o dataScadenza sono valorizzate. Non altera la pagabilita'
+   * della pendenza ne' il suo ciclo di vita: agisce solo su cio' che viene stampato.
+   **/
+  public ProprietaPendenza nascondiDataScadenzaAvviso(Boolean nascondiDataScadenzaAvviso) {
+    this.nascondiDataScadenzaAvviso = nascondiDataScadenzaAvviso;
+    return this;
+  }
+
+  @JsonProperty("nascondiDataScadenzaAvviso")
+  public Boolean isNascondiDataScadenzaAvviso() {
+    return nascondiDataScadenzaAvviso;
+  }
+  public void setNascondiDataScadenzaAvviso(Boolean nascondiDataScadenzaAvviso) {
+    this.nascondiDataScadenzaAvviso = nascondiDataScadenzaAvviso;
+  }
+
   public ProprietaPendenza dataScandenzaAvviso(Date dataScandenzaAvviso) {
     this.dataScandenzaAvviso = dataScandenzaAvviso;
     return this;
@@ -255,6 +279,7 @@ public class ProprietaPendenza   {
     sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
     sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
     sb.append("    dataScandenzaAvviso: ").append(toIndentedString(dataScandenzaAvviso)).append("\n");
+    sb.append("    nascondiDataScadenzaAvviso: ").append(toIndentedString(nascondiDataScadenzaAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

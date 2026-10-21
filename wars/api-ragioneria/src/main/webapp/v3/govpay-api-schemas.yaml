@@ -714,6 +714,14 @@ components:
           type: string
           format: date
           description: se valorizzata, sostituisce la data di scadenza standard.
+        nascondiDataScadenzaAvviso:
+          type: boolean
+          default: false
+          description: >-
+            se true, l'avviso di pagamento non riporta alcuna data entro cui pagare,
+            anche quando dataValidita o dataScadenza sono valorizzate. Non altera la
+            pagabilita' della pendenza ne' il suo ciclo di vita: agisce solo su cio'
+            che viene stampato.
     QuotaContabilita:
       type: object
       required:

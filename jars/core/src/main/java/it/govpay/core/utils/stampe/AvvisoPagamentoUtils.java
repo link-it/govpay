@@ -62,6 +62,9 @@ import it.govpay.stampe.model.RataAvviso;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 
 public class AvvisoPagamentoUtils {
+
+	/** Resa del campo data quando sull'avviso non va riportato alcun termine. */
+	private static final String DATA_SCADENZA_ASSENTE = "-";
 	
 	private AvvisoPagamentoUtils() {}
 
@@ -509,6 +512,20 @@ public class AvvisoPagamentoUtils {
 
 	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza,	RataAvviso rata) {
 		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		// Issue #898: la pendenza puo' chiedere che sull'avviso non compaia alcuna
+		// data entro cui pagare, pur avendo dataValidita o dataScadenza valorizzate.
+		// Serve a chi determina la scadenza progressivamente e non vuole consegnare
+		// al debitore un termine destinato a cambiare. Si ferma qui, sulla stampa:
+		// pagabilita', scadenza, promemoria e notifiche continuano a usare le date
+		// della pendenza come prima.
+		// Il valore e' lo stesso che l'avviso riporta gia' oggi quando nessuna data
+		// e' determinabile, perche' e' l'unica resa che il modello compilato sa
+		// gestire: i sorgenti .jrxml non stanno nel repository.
+		if(proprietaPendenza != null && Boolean.TRUE.equals(proprietaPendenza.isNascondiDataScadenzaAvviso())) {
+			rata.setData(DATA_SCADENZA_ASSENTE);
+			return;
+		}
 		
 		if(proprietaPendenza != null && proprietaPendenza.getDataScandenzaAvviso() != null) {
 			rata.setData(sdfDataScadenza.format(proprietaPendenza.getDataScandenzaAvviso()));

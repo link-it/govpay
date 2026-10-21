@@ -1,3 +1,12 @@
+2026-10-21  Giuliano Pintori <pintori@link.it>
+
+        * Issue #898 Nuova proprieta' di pendenza nascondiDataScadenzaAvviso: l'avviso di pagamento non riporta alcuna data entro cui pagare, anche quando dataValidita o dataScadenza sono valorizzate.
+        Serve a chi determina la scadenza progressivamente durante il processo e non vuole consegnare al debitore un avviso con un termine destinato a essere aggiornato. Le due date restano sulla pendenza e continuano a governare pagabilita', scadenza, promemoria e notifiche: la proprieta' agisce solo su cio' che viene stampato.
+        Scelta la forma del campo nuovo, booleano e non obbligatorio, invece di un valore convenzionale su dataScandenzaAvviso: il comportamento di chi non la usa resta identico, e assente o false sono equivalenti.
+        Il campo e' stato aggiunto ai quattro contratti che espongono ProprietaPendenza (pendenze v2, backoffice v1, ragioneria v3, client api ente v2), ai cinque bean corrispondenti e alle sei mappature dei convertitori, in entrambe le direzioni dove esistono. La precedenza nella scelta della data sull'avviso diventa: nascondiDataScadenzaAvviso, poi dataScandenzaAvviso, poi dataValidita, poi dataScadenza, poi dataCreazione piu' i giorni di validita' configurati.
+        Quando la proprieta' e' attiva il campo riporta il trattino, cioe' la stessa resa che l'avviso usa gia' oggi quando nessuna data e' determinabile: e' l'unica che il modello compilato sa produrre, perche' i sorgenti .jrxml non sono nel repository. Se si volesse far sparire del tutto il campo dal PDF servirebbe intervenire sui modelli, che vanno ricompilati fuori da qui.
+        Verifica: esercitata direttamente la logica di entrambe le versioni dell'avviso, che concordano in tutti i casi provati - con la proprieta' assente la data resta quella di prima, con la proprieta' attiva non compare ne' dataValidita ne' dataScadenza. Aggiunti due scenari alla feature pendenza-put-proprieta della testsuite, che verificano il viaggio della proprieta' attraverso PUT e rilettura e che le due date restino invariate sulla pendenza; eseguiti contro il deploy locale precedente falliscono sulla proprieta' sconosciuta, come atteso, e andranno verdi al primo giro dopo il rilascio.
+
 2026-10-20  Giuliano Pintori <pintori@link.it>
 
         * [Pipeline] Diagnostica sugli stage ZAP e accessibilita', che su Jenkins continuano a comparire con il log vuoto.
