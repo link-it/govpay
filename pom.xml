@@ -111,7 +111,7 @@
 		<xmlschema.version>2.3.3</xmlschema.version><!-- CVE-2026-102495, CVE-2026-102496, CVE-2026-102497: override di cxf.xmlschema.version (2.3.2) pinnata da cxf-parent 4.2.3 -->
 
 		<!-- jackson -->
-		<jackson.version>2.22.2</jackson.version><!-- CVE-2026-54515 -->
+		<jackson.version>2.22.4</jackson.version><!-- CVE-2026-89407, CVE-2026-89425, CVE-2026-91776, CVE-2026-91777; in precedenza CVE-2026-54515 -->
 		<jackson-annotations.version>2.22</jackson-annotations.version>
 
 		<!-- Jersey -->

@@ -38,6 +38,7 @@ ONLY=
 PUSH=false
 LATEST=false
 DRYRUN=false
+IMAGES_FILE=
 
 function usage() {
 cat <<EOHELP
@@ -64,6 +65,9 @@ Opzioni:
   --push             Pubblica le immagini prodotte. Il login al registry deve
                      essere gia' stato eseguito dal chiamante
   --latest           Aggiunge il tag :latest all'immagine senza db (solo release)
+  --images-file <f>  Scrive in <f> le immagini prodotte, una per riga, nell'ordine
+                     di build (:latest per ultima). Serve alla pipeline per
+                     scansionarle e pubblicarle solo dopo, senza --push
   --dry-run          Stampa i comandi senza eseguirli
   -h, --help         Mostra questo aiuto
 
@@ -83,6 +87,7 @@ while [[ $# -gt 0 ]]; do
     --push)       PUSH=true; shift ;;
     --latest)     LATEST=true; shift ;;
     --dry-run)    DRYRUN=true; shift ;;
+    --images-file) IMAGES_FILE="${2:-}"; shift 2 ;;
     -h|--help)    usage; exit 0 ;;
     *)            echo "Opzione sconosciuta: $1" >&2; usage >&2; exit 1 ;;
   esac
@@ -145,9 +150,12 @@ if [[ "${LATEST}" == true && "${IMAGE_SET}" != release ]]; then
   exit 1
 fi
 
-# Percorso assoluto, risolto finche' la directory corrente e' ancora quella del
+# Percorsi assoluti, risolti finche' la directory corrente e' ancora quella del
 # chiamante, e solo dopo lo spostamento nel contesto di build.
 INSTALLER="$(cd "$(dirname "${INSTALLER}")" && pwd)/$(basename "${INSTALLER}")"
+if [[ -n "${IMAGES_FILE}" ]]; then
+  IMAGES_FILE="$(cd "$(dirname "${IMAGES_FILE}")" && pwd)/$(basename "${IMAGES_FILE}")"
+fi
 
 cd "${BASEDIR}"
 
@@ -199,6 +207,10 @@ if [[ "${PUSH}" == true ]]; then
     echo "--- push ${img}"
     run ${DOCKER} push "${img}"
   done
+fi
+
+if [[ -n "${IMAGES_FILE}" ]]; then
+  printf '%s\n' "${IMMAGINI[@]}" > "${IMAGES_FILE}"
 fi
 
 echo "=============================================="
