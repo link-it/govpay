@@ -377,6 +377,7 @@ public class PendenzeConverter {
 			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
 			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
 			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
+			rsModel.setNascondiDataScadenzaAvviso(proprieta.isNascondiDataScadenzaAvviso());
 		}
 
 		return rsModel;

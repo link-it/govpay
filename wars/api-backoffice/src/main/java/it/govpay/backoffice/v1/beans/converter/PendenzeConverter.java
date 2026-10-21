@@ -841,6 +841,7 @@ public class PendenzeConverter {
 			dto.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
 			dto.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
 			dto.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
+			dto.setNascondiDataScadenzaAvviso(proprieta.isNascondiDataScadenzaAvviso());
 		}
 
 		return dto;
@@ -891,6 +892,7 @@ public class PendenzeConverter {
 			rsModel.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
 			rsModel.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
 			rsModel.setDataScandenzaAvviso(proprieta.getDataScandenzaAvviso());
+			rsModel.setNascondiDataScadenzaAvviso(proprieta.isNascondiDataScadenzaAvviso());
 		}
 
 		return rsModel;

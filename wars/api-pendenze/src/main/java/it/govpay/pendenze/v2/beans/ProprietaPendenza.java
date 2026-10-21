@@ -45,6 +45,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "informativaImportoAvviso",
 "linguaSecondariaInformativaImportoAvviso",
 "dataScandenzaAvviso",
+"nascondiDataScadenzaAvviso",
 })
 public class ProprietaPendenza extends JSONSerializable implements IValidable{
 
@@ -74,6 +75,9 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
 
   @JsonProperty("dataScandenzaAvviso")
   private Date dataScandenzaAvviso = null;
+  
+  @JsonProperty("nascondiDataScadenzaAvviso")
+  private Boolean nascondiDataScadenzaAvviso = null;
 
   /**
    **/
@@ -214,6 +218,24 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
     this.dataScandenzaAvviso = dataScandenzaAvviso;
   }
 
+  /**
+   * se true, l'avviso di pagamento non riporta alcuna data entro cui pagare, anche
+   * quando dataValidita o dataScadenza sono valorizzate. Non altera la pagabilita'
+   * della pendenza ne' il suo ciclo di vita: agisce solo su cio' che viene stampato.
+   **/
+  public ProprietaPendenza nascondiDataScadenzaAvviso(Boolean nascondiDataScadenzaAvviso) {
+    this.nascondiDataScadenzaAvviso = nascondiDataScadenzaAvviso;
+    return this;
+  }
+
+  @JsonProperty("nascondiDataScadenzaAvviso")
+  public Boolean isNascondiDataScadenzaAvviso() {
+    return nascondiDataScadenzaAvviso;
+  }
+  public void setNascondiDataScadenzaAvviso(Boolean nascondiDataScadenzaAvviso) {
+    this.nascondiDataScadenzaAvviso = nascondiDataScadenzaAvviso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -230,12 +252,13 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
         Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale) &&
         Objects.equals(informativaImportoAvviso, proprietaPendenza.informativaImportoAvviso) &&
         Objects.equals(linguaSecondariaInformativaImportoAvviso, proprietaPendenza.linguaSecondariaInformativaImportoAvviso) &&
-        Objects.equals(dataScandenzaAvviso, proprietaPendenza.dataScandenzaAvviso);
+        Objects.equals(dataScandenzaAvviso, proprietaPendenza.dataScandenzaAvviso) &&
+        Objects.equals(nascondiDataScadenzaAvviso, proprietaPendenza.nascondiDataScadenzaAvviso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso, dataScandenzaAvviso);
+    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso, dataScandenzaAvviso, nascondiDataScadenzaAvviso);
   }
 
   public static ProprietaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -260,6 +283,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
     sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
     sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
     sb.append("    dataScandenzaAvviso: ").append(toIndentedString(dataScandenzaAvviso)).append("\n");
+    sb.append("    nascondiDataScadenzaAvviso: ").append(toIndentedString(nascondiDataScadenzaAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -193,5 +193,66 @@ And match response == read('msg/pendenza-get.json')
 * match response.voci[0].stato == 'Non eseguito'
 * match response.proprieta == pendenzaPut.proprieta
 
+Scenario: Caricamento pendenza con nascondiDataScadenzaAvviso
 
+# Issue #898: la pendenza puo' chiedere che l'avviso non riporti alcuna data
+# entro cui pagare, pur avendo dataValidita o dataScadenza valorizzate. Qui si
+# verifica che la proprieta' attraversi la PUT e la rilettura; la resa
+# sull'avviso non e' verificabile da qui, perche' il PDF non e' ispezionabile.
 
+* set pendenzaPut.proprieta = 
+"""
+{
+  nascondiDataScadenzaAvviso : true
+}
+"""
+* set pendenzaPut.dataValidita = '2026-12-31'
+* set pendenzaPut.dataScadenza = '2026-12-31'
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def responsePut = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.proprieta.nascondiDataScadenzaAvviso == true
+# le due date restano quelle inviate: la proprieta' agisce sulla stampa, non sulla pendenza
+* match response.dataValidita == '2026-12-31'
+* match response.dataScadenza == '2026-12-31'
+
+Scenario: Caricamento pendenza senza nascondiDataScadenzaAvviso
+
+# Il comportamento di chi non usa la proprieta' non cambia: assente o false
+# sono equivalenti.
+
+* set pendenzaPut.proprieta = 
+"""
+{
+  nascondiDataScadenzaAvviso : false
+}
+"""
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+* match response.proprieta.nascondiDataScadenzaAvviso == false

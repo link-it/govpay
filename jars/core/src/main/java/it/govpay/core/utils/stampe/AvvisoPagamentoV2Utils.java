@@ -511,6 +511,18 @@ public class AvvisoPagamentoV2Utils {
 	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza, RataAvviso rata) {
 		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
 		
+		// Issue #898: la pendenza puo' chiedere che sull'avviso non compaia alcuna
+		// data entro cui pagare, pur avendo dataValidita o dataScadenza valorizzate.
+		// Serve a chi determina la scadenza progressivamente e non vuole consegnare
+		// al debitore un termine destinato a cambiare. Si ferma qui, sulla stampa:
+		// pagabilita', scadenza, promemoria e notifiche continuano a usare le date
+		// della pendenza come prima.
+		// Il campo resta nullo, come quando nessuna data e' determinabile.
+		if(proprietaPendenza != null && Boolean.TRUE.equals(proprietaPendenza.isNascondiDataScadenzaAvviso())) {
+			rata.setData(null);
+			return;
+		}
+		
 		if(proprietaPendenza != null && proprietaPendenza.getDataScandenzaAvviso() != null) {
 			rata.setData(sdfDataScadenza.format(proprietaPendenza.getDataScandenzaAvviso()));
 		} else {
