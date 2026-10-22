@@ -95,8 +95,9 @@ pipeline {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
         sh 'sudo systemctl start wildfly-28.0.1.Final@ndpsym tomcat_govpay_jdk25'
         sh 'sudo docker start mailhog'
+        sh 'sh ./src/main/resources/scripts/jenkins.checkimages.sh "prima della pull"'
         sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose pull && cd -'
-        sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose config --images | xargs -r sudo docker image inspect --format "{{.RepoTags}} {{.Id}} {{.RepoDigests}}" && cd -'
+        sh 'sh ./src/main/resources/scripts/jenkins.checkimages.sh "dopo la pull"'
         sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose up -d && cd -'
 	    sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
