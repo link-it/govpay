@@ -133,19 +133,26 @@ pipeline {
     stage('zap') {
       options { timeout(time: 20, unit: 'MINUTES') }
       steps {
-        echo "INIZIO stage zap"
-        echo "bersagli: ${URL_CONSOLE_LEGACY} | ${URL_CONSOLE_NUOVA} | ${URL_PORTALE}"
+        script {
+          echo "INIZIO stage zap"
+          echo "bersagli: ${env.URL_CONSOLE_LEGACY} | ${env.URL_CONSOLE_NUOVA} | ${env.URL_PORTALE}"
+        }
         // L'output va anche su file, archiviato sotto: se la console resta
         // vuota per ragioni di presentazione, la traccia dell'esecuzione resta
         // comunque fra gli artefatti. 'sh -x' stampa ogni comando eseguito.
         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-          sh '''mkdir -p target/diagnostica
-                sh -x ./src/main/resources/scripts/jenkins.zap.sh > target/diagnostica/zap.log 2>&1
-                esito=$?
-                cat target/diagnostica/zap.log
-                exit ${esito}'''
+          script {
+            sh 'mkdir -p target/diagnostica'
+            def esito = sh(script: 'sh -x ./src/main/resources/scripts/jenkins.zap.sh > target/diagnostica/zap.log 2>&1', returnStatus: true)
+            sh 'cat target/diagnostica/zap.log'
+            if (esito != 0) {
+              error "jenkins.zap.sh terminato con codice ${esito}"
+            }
+          }
         }
-        echo "FINE stage zap"
+        script {
+          echo "FINE stage zap"
+        }
       }
       post {
         always {
@@ -169,19 +176,26 @@ pipeline {
         GOVPAY_CONSOLE = credentials('govpay-console')
       }
       steps {
-        echo "INIZIO stage accessibilita'"
-        echo "gov-a11y da ${GOV_A11Y_HOME}, node da ${NODE_BIN}, livelli completi: ${A11Y_LIVELLI_COMPLETI}"
-        sh '''echo "gov-a11y presente: $([ -f ${GOV_A11Y_HOME}/a11y-scan.mjs ] && echo si || echo NO)"
-              echo "node eseguibile:   $([ -x ${NODE_BIN} ] && ${NODE_BIN} --version || echo ASSENTE)"
-              echo "credenziale letta: $([ -n "${GOVPAY_CONSOLE_USR}" ] && echo si || echo NO)"'''
-        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-          sh '''mkdir -p target/diagnostica
-                sh -x ./src/main/resources/scripts/jenkins.a11y.sh > target/diagnostica/a11y.log 2>&1
-                esito=$?
-                cat target/diagnostica/a11y.log
-                exit ${esito}'''
+        script {
+          echo "INIZIO stage accessibilita'"
+          echo "gov-a11y da ${env.GOV_A11Y_HOME}, node da ${env.NODE_BIN}, livelli completi: ${env.A11Y_LIVELLI_COMPLETI}"
         }
-        echo "FINE stage accessibilita'"
+        sh 'echo "gov-a11y presente: $([ -f ${GOV_A11Y_HOME}/a11y-scan.mjs ] && echo si || echo NO)"'
+        sh 'echo "node eseguibile:   $([ -x ${NODE_BIN} ] && ${NODE_BIN} --version || echo ASSENTE)"'
+        sh 'echo "credenziale letta: $([ -n "${GOVPAY_CONSOLE_USR}" ] && echo si || echo NO)"'
+        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+          script {
+            sh 'mkdir -p target/diagnostica'
+            def esito = sh(script: 'sh -x ./src/main/resources/scripts/jenkins.a11y.sh > target/diagnostica/a11y.log 2>&1', returnStatus: true)
+            sh 'cat target/diagnostica/a11y.log'
+            if (esito != 0) {
+              error "jenkins.a11y.sh terminato con codice ${esito}"
+            }
+          }
+        }
+        script {
+          echo "FINE stage accessibilita'"
+        }
       }
       post {
         always {
