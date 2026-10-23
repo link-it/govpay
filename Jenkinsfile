@@ -56,7 +56,7 @@ pipeline {
           // mostra come riquadri vuoti perche' li ricorda dalle build
           // precedenti. Se queste righe non compaiono, non e' questo il file in
           // esecuzione.
-          echo "SCRIPT: Jenkinsfile con stage zap e accessibilita' (revisione 2026-10-20)"
+          echo "SCRIPT: Jenkinsfile con stage zap e accessibilita' (revisione 2026-10-23)"
           sh 'git log -1 --format="COMMIT: %h %ad %s" --date=short -- Jenkinsfile || true'
           sh 'echo "SHA DEL FILE: $(sha256sum Jenkinsfile | cut -c1-16)"'
         }
