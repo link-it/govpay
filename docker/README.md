@@ -27,8 +27,8 @@ qui, accanto al codice che ci finisce dentro, e la pipeline lo usa direttamente.
 
 | Insieme | Repository | Immagini | Tag prodotti |
 |---|---|---|---|
-| `dev` | `linkitaly/govpay-dev` | postgresql | `linkitaly/govpay-dev:3.10.0-SNAPSHOT_postgres` |
-| `release` | `linkitaly/govpay` | postgresql, oracle, mariadb, mysql, senza db | `linkitaly/govpay:3.10.0_postgres`, `..._oracle`, `..._mariadb`, `..._mysql`, `linkitaly/govpay:3.10.0` e con `--latest` anche `:latest` |
+| `dev` | `linkitaly/govpay-dev` | postgresql | `linkitaly/govpay-dev:3.11.0-SNAPSHOT_postgres` |
+| `release` | `linkitaly/govpay` | postgresql, oracle, mariadb, mysql, senza db | `linkitaly/govpay:3.11.0_postgres`, `..._oracle`, `..._mariadb`, `..._mysql`, `linkitaly/govpay:3.11.0` e con `--latest` anche `:latest` |
 
 Le immagini di sviluppo e quelle di release stanno in **due repository distinti**,
 quindi i tag non possono collidere e la versione compare nel tag cosi' com'e',
@@ -102,14 +102,14 @@ Dopo un `mvn install` che abbia prodotto l'installer:
 ```bash
 # insieme di sviluppo, senza pubblicare
 ./docker/build-images.sh \
-  --version 3.10.0-SNAPSHOT \
-  --installer src/main/resources/setup/target/govpay-installer-3.10.0-SNAPSHOT.tgz \
+  --version 3.11.0-SNAPSHOT \
+  --installer src/main/resources/setup/target/govpay-installer-3.11.0-SNAPSHOT.tgz \
   --set dev
 
 # insieme di release su un registry locale, con anteprima dei comandi
 REGISTRY_PREFIX=localhost ./docker/build-images.sh \
-  --version 3.10.0 \
-  --installer src/main/resources/setup/target/govpay-installer-3.10.0.tgz \
+  --version 3.11.0 \
+  --installer src/main/resources/setup/target/govpay-installer-3.11.0.tgz \
   --set release --dry-run
 ```
 
@@ -120,8 +120,8 @@ Per una singola immagine si usa direttamente `build_image.sh`, invocabile da
 qualsiasi directory:
 
 ```bash
-./docker/build_image.sh -t linkitaly/govpay:3.10.0_oracle -v 3.10.0 \
-  -l src/main/resources/setup/target/govpay-installer-3.10.0.tgz -d oracle
+./docker/build_image.sh -t linkitaly/govpay:3.11.0_oracle -v 3.11.0 \
+  -l src/main/resources/setup/target/govpay-installer-3.11.0.tgz -d oracle
 ./docker/build_image.sh -h   # elenco completo delle opzioni
 ```
 
