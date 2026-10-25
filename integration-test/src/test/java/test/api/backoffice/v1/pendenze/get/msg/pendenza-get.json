@@ -23,6 +23,10 @@
    "verificato":"#notnull",
    "dataUltimaModificaAca":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
    "dataUltimaComunicazioneAca":"#ignore",
+   "UUID":"##string",
+   "sendAbilitato":"##boolean",
+   "sendImportoTotale":"##number",
+   "sendDataAggiornamento":"##regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
    "voci": "#[]",
    "rpp":"#[]",
    "pagamenti":"#[]"
