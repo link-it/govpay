@@ -49,6 +49,24 @@ sudo su -c "cp target/jacoco.csv ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/csv/
 sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/html"
 sudo su -c "cp -r target/jacoco-html/* ${DIR_VERSIONE_GOVPAY_VERIFICATA}/coverage/html/"
 
+# Gli stage zap e accessibilita possono chiudersi senza report (allowEmptyArchive
+# nel Jenkinsfile): la copia avviene solo se la directory ha contenuto.
+echo "Copia risultati zap..."
+if [ -n "$(ls -A target/zap 2>/dev/null)" ]; then
+    sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/zap"
+    sudo su -c "cp -r target/zap/* ${DIR_VERSIONE_GOVPAY_VERIFICATA}/zap/"
+else
+    echo "Nessun report zap in target/zap"
+fi
+
+echo "Copia risultati accessibilita..."
+if [ -n "$(ls -A target/a11y 2>/dev/null)" ]; then
+    sudo su -c "mkdir -p ${DIR_VERSIONE_GOVPAY_VERIFICATA}/accessibilita"
+    sudo su -c "cp -r target/a11y/* ${DIR_VERSIONE_GOVPAY_VERIFICATA}/accessibilita/"
+else
+    echo "Nessun report di accessibilita in target/a11y"
+fi
+
 echo "Leggo commit message..."
 COMMIT_MSG="$(git log -1 --pretty=%B)"
 echo "commit message: ${COMMIT_MSG}"
