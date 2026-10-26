@@ -303,8 +303,18 @@ def load_exceptions(exceptions_file=None):
     exceptions = {}
     excluded_artifacts = set()
 
-    if exceptions_file and Path(exceptions_file).exists():
-        with open(exceptions_file, 'r') as f:
+    # Il percorso arriva da riga di comando: si accetta solo un file dentro la
+    # directory di lavoro (la root del repository da cui la pipeline lancia lo script).
+    if exceptions_file:
+        base_dir = os.path.realpath(os.getcwd())
+        resolved = os.path.realpath(exceptions_file)
+        if not resolved.startswith(base_dir + os.sep):
+            print(f"File eccezioni fuori dalla directory di lavoro, ignorato: {exceptions_file}")
+            return exceptions, excluded_artifacts
+        exceptions_file = resolved
+
+    if exceptions_file and os.path.isfile(exceptions_file):
+        with open(exceptions_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             for exc in data.get('exceptions', []):
                 key = f"{exc['groupId']}:{exc.get('artifactId', '*')}"
