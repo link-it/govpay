@@ -41,6 +41,8 @@
 								<linkit:sql-table object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"/>
 								<linkit:sql-table object-name="UtenzaTipoVersamento" object-type="UtenzaTipoVersamento"/>
 								<linkit:sql-table object-name="Documento" object-type="Documento"/>
+								<linkit:sql-table object-name="OpzionePagamento" object-type="OpzionePagamento"/>
+								<linkit:sql-table object-name="SoggettoDebitore" object-type="SoggettoDebitore"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
@@ -192,6 +194,21 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="String18">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="18"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<!-- Identificativo UUID. In gov_pay.sql e' reso con il tipo nativo del dialetto, come lo
+	     mappa Hibernate per govpay-common-pendenze: UUID (postgresql), RAW(16) (oracle),
+	     BINARY(16) (mysql, hsql), UNIQUEIDENTIFIER (sqlserver). -->
+	<xsd:simpleType name="UUID">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:simpleType name="String512">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="512"/>
@@ -270,6 +287,12 @@
 			<xsd:element name="codDocumento" type="xsd:string"/>
 			<xsd:element name="idApplicazione" type="id-applicazione"/>
 			<xsd:element name="idDominio" type="id-dominio"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="id-opzione-pagamento">
+		<xsd:sequence>
+			<xsd:element name="idOpzionePagamento" type="UUID"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1842,6 +1865,9 @@
 							<linkit:sql-table-index-field name="dataOraUltimoAggiornamento" order="DESC" ignoreTypeCompatibility="true"/>
 							<linkit:sql-table-index-field name="id" order="DESC"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_id_opz_pagamento">
+							<linkit:sql-table-index-column name="id_opzione_pagamento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2043,6 +2069,21 @@
 			<xsd:element name="sendAbilitato" type="xsd:boolean"/>
 			<xsd:element name="sendImportoTotale" type="xsd:double" minOccurs="0"/>
 			<xsd:element name="sendDataAggiornamento" type="xsd:dateTime" minOccurs="0"/>
+
+			<!-- Modello v3 delle posizioni debitorie (govpay-common-pendenze, Issue #901).
+			     Le righe create dalle API v2 non hanno opzione di pagamento; il DEFAULT di
+			     numeroRata copre gli inserimenti del core, che non conosce la colonna. -->
+			<xsd:element name="idOpzionePagamento" type="id-opzione-pagamento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="OpzionePagamento" object-type="OpzionePagamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="numeroRata" type="xsd:int" default="-1"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2060,6 +2101,15 @@
 							<linkit:sql-table-unique-column name="id_applicazione"/>
 							<linkit:sql-table-unique-column name="id_dominio"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-unique>
+							<linkit:sql-table-unique-field name="codDocumento"/>
+							<linkit:sql-table-unique-column name="id_applicazione"/>
+						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_doc_app_data_creaz">
+							<linkit:sql-table-index-column name="id_applicazione"/>
+							<linkit:sql-table-index-field name="dataCreazione" ignoreTypeCompatibility="true"/>
+							<linkit:sql-table-index-field name="id"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2089,6 +2139,134 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+
+			<!-- Modello v3 delle posizioni debitorie (govpay-common-pendenze, Issue #901).
+			     idUnitaOperativa non ha FK verso uo, come nella libreria. I DEFAULT coprono gli
+			     inserimenti del core, che non conosce queste colonne. -->
+			<xsd:element name="idUnitaOperativa" type="xsd:long" minOccurs="0"/>
+			<xsd:element name="dataPubblicazione" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="notificaSend" type="xsd:boolean" default="false"/>
+			<xsd:element name="navNotifica" type="String18" minOccurs="0"/>
+			<xsd:element name="dataUltimaModificaAca" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataUltimaComunicazioneAca" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping default-current-time="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping default-current-time="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="versione" type="xsd:long" default="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-comment><![CDATA[Versione per il lock ottimistico di govpay-common-pendenze]]></linkit:sql-column-comment>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="OpzionePagamento" type="OpzionePagamento"/>
+	<xsd:complexType name="OpzionePagamento">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-opzione-pagamento"/>
+					<linkit:sql-table-mapping generate-sql="true" name="opzioni_pagamento"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_opz"/>
+						<linkit:sql-table-unique>
+							<linkit:sql-table-unique-field name="idOpzionePagamento"/>
+						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_opz_id_documento">
+							<linkit:sql-table-index-column name="id_documento"/>
+						</linkit:sql-table-index>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- Opzione di pagamento di una posizione debitoria, modello v3 di
+			     govpay-common-pendenze (Issue #901). -->
+			<xsd:element name="idOpzionePagamento" type="UUID"/>
+			<xsd:element name="idDocumento" type="id-documento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="tipologia" type="String35"/>
+			<xsd:element name="giorni" type="xsd:int" minOccurs="0"/>
+			<xsd:element name="stato" type="String35"/>
+			<xsd:element name="dataInizioValidita" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="dataScadenza" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime"/>
+			<xsd:element name="versione" type="xsd:long"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="SoggettoDebitore" type="SoggettoDebitore"/>
+	<xsd:complexType name="SoggettoDebitore">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true" name="soggetti_debitori"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_sgd"/>
+						<linkit:sql-table-unique>
+							<linkit:sql-table-unique-column name="id_documento"/>
+							<linkit:sql-table-unique-field name="ordine"/>
+						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_sgd_identificativo">
+							<linkit:sql-table-index-field name="identificativo"/>
+						</linkit:sql-table-index>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- Soggetto debitore di una posizione debitoria, modello v3 di
+			     govpay-common-pendenze (Issue #901). -->
+			<xsd:element name="idDocumento" type="id-documento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ordine" type="xsd:int"/>
+			<xsd:element name="tipo" type="String1"/>
+			<xsd:element name="identificativo" type="String35"/>
+			<xsd:element name="anagrafica" type="String70" minOccurs="0"/>
+			<xsd:element name="indirizzo" type="String70" minOccurs="0"/>
+			<xsd:element name="civico" type="String16" minOccurs="0"/>
+			<xsd:element name="cap" type="String16" minOccurs="0"/>
+			<xsd:element name="localita" type="String35" minOccurs="0"/>
+			<xsd:element name="provincia" type="String35" minOccurs="0"/>
+			<xsd:element name="nazione" type="String2" minOccurs="0"/>
+			<xsd:element name="email" type="String256" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
