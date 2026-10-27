@@ -540,17 +540,86 @@ CREATE TABLE documenti
 (
 	cod_documento VARCHAR(35) NOT NULL COMMENT 'Identificativo del documento',
 	descrizione VARCHAR(255) NOT NULL COMMENT 'Descrizione del documento',
+	id_unita_operativa BIGINT COMMENT 'Identificativo dell\'unita operativa della posizione debitoria',
+	data_pubblicazione DATE COMMENT 'Data di pubblicazione della posizione debitoria',
+	notifica_send BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se la posizione debitoria va notificata tramite SEND',
+	nav_notifica VARCHAR(18) COMMENT 'Numero avviso della notifica SEND',
+	data_ultima_modifica_aca DATETIME(3) COMMENT 'Data ultima modifica rilevante per l\'ACA',
+	data_ultima_comunicazione_aca DATETIME(3) COMMENT 'Data ultima comunicazione all\'ACA',
+	data_creazione DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione del documento',
+	data_ultimo_aggiornamento DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di ultimo aggiornamento del documento',
+	versione BIGINT NOT NULL DEFAULT 0 COMMENT 'Versione per il lock ottimistico di govpay-common-pendenze',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
 	-- unique constraints
 	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
+	CONSTRAINT unique_documenti_2 UNIQUE (cod_documento,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_documenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Aggregazioni per pagamenti rateizzati';
+
+-- index
+CREATE INDEX idx_doc_app_data_creaz ON documenti (id_applicazione,data_creazione,id);
+
+
+
+
+CREATE TABLE opzioni_pagamento
+(
+	id_opzione_pagamento BINARY(16) NOT NULL COMMENT 'Identificativo UUID dell\'opzione di pagamento',
+	tipologia VARCHAR(35) NOT NULL COMMENT 'Tipologia dell\'opzione di pagamento',
+	giorni INT COMMENT 'Giorni per le tipologie SOLUZIONE_UNICA_ENTRO e SOLUZIONE_UNICA_OLTRE',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato dell\'opzione di pagamento',
+	data_inizio_validita DATE COMMENT 'Data di inizio validita\'',
+	data_scadenza DATE COMMENT 'Data di scadenza',
+	data_creazione DATETIME(3) NOT NULL COMMENT 'Data di creazione',
+	data_ultimo_aggiornamento DATETIME(3) NOT NULL COMMENT 'Data di ultimo aggiornamento',
+	versione BIGINT NOT NULL COMMENT 'Versione per il lock ottimistico di govpay-common-pendenze',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_documento BIGINT NOT NULL COMMENT 'Riferimento alla posizione debitoria',
+	-- unique constraints
+	CONSTRAINT unique_opzioni_pagamento_1 UNIQUE (id_opzione_pagamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opz_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_opzioni_pagamento PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Opzioni di pagamento delle posizioni debitorie';
+
+-- index
+CREATE INDEX idx_opz_id_documento ON opzioni_pagamento (id_documento);
+
+
+
+
+CREATE TABLE soggetti_debitori
+(
+	ordine INT NOT NULL COMMENT 'Posizione del soggetto nella posizione debitoria',
+	tipo VARCHAR(1) NOT NULL COMMENT 'Tipo soggetto, persona fisica (F) o giuridica (G)',
+	identificativo VARCHAR(35) NOT NULL COMMENT 'Codice fiscale o partita iva del soggetto',
+	anagrafica VARCHAR(70) COMMENT 'Nome e cognome o ragione sociale',
+	indirizzo VARCHAR(70) COMMENT 'Indirizzo',
+	civico VARCHAR(16) COMMENT 'Numero civico',
+	cap VARCHAR(16) COMMENT 'CAP',
+	localita VARCHAR(35) COMMENT 'Localita\'',
+	provincia VARCHAR(35) COMMENT 'Provincia',
+	nazione VARCHAR(2) COMMENT 'Nazione',
+	email VARCHAR(256) COMMENT 'Indirizzo email',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_documento BIGINT NOT NULL COMMENT 'Riferimento alla posizione debitoria',
+	-- unique constraints
+	CONSTRAINT unique_soggetti_debitori_1 UNIQUE (id_documento,ordine),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_sgd_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_soggetti_debitori PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Soggetti debitori delle posizioni debitorie';
+
+-- index
+CREATE INDEX idx_sgd_identificativo ON soggetti_debitori (identificativo);
 
 
 
@@ -617,6 +686,7 @@ CREATE TABLE versamenti
 	send_abilitato BOOLEAN NOT NULL COMMENT 'Indica se la pendenza e\' abilitata all\'attualizzazione dell\'importo tramite SEND',
 	send_importo_totale DOUBLE COMMENT 'Importo della pendenza attualizzato con le spese di notifica SEND',
 	send_data_aggiornamento DATETIME COMMENT 'Data di attualizzazione dell\'importo tramite SEND',
+	numero_rata INT NOT NULL DEFAULT -1 COMMENT 'Numero della rata nell\'opzione di pagamento del modello v3',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -625,6 +695,7 @@ CREATE TABLE versamenti
 	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
 	id_documento BIGINT COMMENT 'Riferimento al documento per i pagamenti rateizzati',
+	id_opzione_pagamento BIGINT COMMENT 'Riferimento all\'opzione di pagamento del modello v3',
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -634,6 +705,7 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT fk_vrs_id_opzione_pagamento FOREIGN KEY (id_opzione_pagamento) REFERENCES opzioni_pagamento(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Archivio dei pagamenti in attesa';
 
@@ -650,6 +722,7 @@ CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notifi
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 CREATE INDEX idx_versamenti_data_ult_agg_id ON versamenti (data_ora_ultimo_aggiornamento DESC,id DESC);
+CREATE INDEX idx_vrs_id_opz_pagamento ON versamenti (id_opzione_pagamento);
 
 
 

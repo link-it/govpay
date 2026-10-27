@@ -534,17 +534,87 @@ CREATE TABLE documenti
 (
 	cod_documento VARCHAR(35) NOT NULL,
 	descrizione VARCHAR(255) NOT NULL,
+	id_unita_operativa BIGINT,
+	data_pubblicazione DATE,
+	notifica_send BIT NOT NULL DEFAULT 0,
+	nav_notifica VARCHAR(18),
+	data_ultima_modifica_aca DATETIME2,
+	data_ultima_comunicazione_aca DATETIME2,
+	data_creazione DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	data_ultimo_aggiornamento DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	-- Versione per il lock ottimistico di govpay-common-pendenze
+	versione BIGINT NOT NULL DEFAULT 0,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_dominio BIGINT NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
+	CONSTRAINT unique_documenti_2 UNIQUE (cod_documento,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_documenti PRIMARY KEY (id)
 );
+
+-- index
+CREATE INDEX idx_doc_app_data_creaz ON documenti (id_applicazione,data_creazione,id);
+
+
+
+
+CREATE TABLE opzioni_pagamento
+(
+	id_opzione_pagamento UNIQUEIDENTIFIER NOT NULL,
+	tipologia VARCHAR(35) NOT NULL,
+	giorni INT,
+	stato VARCHAR(35) NOT NULL,
+	data_inizio_validita DATE,
+	data_scadenza DATE,
+	data_creazione DATETIME2 NOT NULL,
+	data_ultimo_aggiornamento DATETIME2 NOT NULL,
+	versione BIGINT NOT NULL,
+	-- fk/pk columns
+	id BIGINT IDENTITY,
+	id_documento BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_opzioni_pagamento_1 UNIQUE (id_opzione_pagamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opz_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_opzioni_pagamento PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_opz_id_documento ON opzioni_pagamento (id_documento);
+
+
+
+
+CREATE TABLE soggetti_debitori
+(
+	ordine INT NOT NULL,
+	tipo VARCHAR(1) NOT NULL,
+	identificativo VARCHAR(35) NOT NULL,
+	anagrafica VARCHAR(70),
+	indirizzo VARCHAR(70),
+	civico VARCHAR(16),
+	cap VARCHAR(16),
+	localita VARCHAR(35),
+	provincia VARCHAR(35),
+	nazione VARCHAR(2),
+	email VARCHAR(256),
+	-- fk/pk columns
+	id BIGINT IDENTITY,
+	id_documento BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_soggetti_debitori_1 UNIQUE (id_documento,ordine),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_sgd_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_soggetti_debitori PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_sgd_identificativo ON soggetti_debitori (identificativo);
 
 
 
@@ -613,6 +683,7 @@ CREATE TABLE versamenti
 	send_abilitato BIT NOT NULL,
 	send_importo_totale DECIMAL(15,2),
 	send_data_aggiornamento DATETIME2,
+	numero_rata INT NOT NULL DEFAULT -1,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -621,6 +692,7 @@ CREATE TABLE versamenti
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
 	id_documento BIGINT,
+	id_opzione_pagamento BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -630,6 +702,7 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT fk_vrs_id_opzione_pagamento FOREIGN KEY (id_opzione_pagamento) REFERENCES opzioni_pagamento(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -646,6 +719,7 @@ CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notifi
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 CREATE INDEX idx_versamenti_data_ult_agg_id ON versamenti (data_ora_ultimo_aggiornamento DESC,id DESC);
+CREATE INDEX idx_vrs_id_opz_pagamento ON versamenti (id_opzione_pagamento);
 
 
 

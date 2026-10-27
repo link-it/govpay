@@ -776,18 +776,37 @@ CREATE TABLE documenti
 (
 	cod_documento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione VARCHAR2(255 CHAR) NOT NULL,
+	id_unita_operativa NUMBER,
+	data_pubblicazione DATE,
+	notifica_send NUMBER NOT NULL,
+	nav_notifica VARCHAR2(18 CHAR),
+	data_ultima_modifica_aca TIMESTAMP,
+	data_ultima_comunicazione_aca TIMESTAMP,
+	data_creazione TIMESTAMP NOT NULL,
+	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
+	-- Versione per il lock ottimistico di govpay-common-pendenze
+	versione NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_applicazione NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
+	CONSTRAINT unique_documenti_2 UNIQUE (cod_documento,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_documenti PRIMARY KEY (id)
 );
 
+
+ALTER TABLE documenti MODIFY notifica_send DEFAULT 0;
+ALTER TABLE documenti MODIFY data_creazione DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE documenti MODIFY data_ultimo_aggiornamento DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE documenti MODIFY versione DEFAULT 0;
+
+-- index
+CREATE INDEX idx_doc_app_data_creaz ON documenti (id_applicazione,data_creazione,id);
 CREATE TRIGGER trg_documenti
 BEFORE
 insert on documenti
@@ -795,6 +814,88 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_documenti.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+
+CREATE SEQUENCE seq_opzioni_pagamento MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE opzioni_pagamento
+(
+	id_opzione_pagamento RAW(16) NOT NULL,
+	tipologia VARCHAR2(35 CHAR) NOT NULL,
+	giorni NUMBER,
+	stato VARCHAR2(35 CHAR) NOT NULL,
+	data_inizio_validita DATE,
+	data_scadenza DATE,
+	data_creazione TIMESTAMP NOT NULL,
+	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
+	versione NUMBER NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_documento NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_opzioni_pagamento_1 UNIQUE (id_opzione_pagamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opz_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_opzioni_pagamento PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_opz_id_documento ON opzioni_pagamento (id_documento);
+CREATE TRIGGER trg_opzioni_pagamento
+BEFORE
+insert on opzioni_pagamento
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_opzioni_pagamento.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+
+CREATE SEQUENCE seq_soggetti_debitori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE soggetti_debitori
+(
+	ordine NUMBER NOT NULL,
+	tipo VARCHAR2(1 CHAR) NOT NULL,
+	identificativo VARCHAR2(35 CHAR) NOT NULL,
+	anagrafica VARCHAR2(70 CHAR),
+	indirizzo VARCHAR2(70 CHAR),
+	civico VARCHAR2(16 CHAR),
+	cap VARCHAR2(16 CHAR),
+	localita VARCHAR2(35 CHAR),
+	provincia VARCHAR2(35 CHAR),
+	nazione VARCHAR2(2 CHAR),
+	email VARCHAR2(256 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_documento NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_soggetti_debitori_1 UNIQUE (id_documento,ordine),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_sgd_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_soggetti_debitori PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_sgd_identificativo ON soggetti_debitori (identificativo);
+CREATE TRIGGER trg_soggetti_debitori
+BEFORE
+insert on soggetti_debitori
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_soggetti_debitori.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -868,6 +969,7 @@ CREATE TABLE versamenti
 	send_abilitato NUMBER NOT NULL,
 	send_importo_totale BINARY_DOUBLE,
 	send_data_aggiornamento TIMESTAMP,
+	numero_rata NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -876,6 +978,7 @@ CREATE TABLE versamenti
 	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
 	id_documento NUMBER,
+	id_opzione_pagamento NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -885,8 +988,12 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT fk_vrs_id_opzione_pagamento FOREIGN KEY (id_opzione_pagamento) REFERENCES opzioni_pagamento(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
+
+
+ALTER TABLE versamenti MODIFY numero_rata DEFAULT -1;
 
 -- index
 -- CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
@@ -901,6 +1008,7 @@ CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notifi
 CREATE INDEX idx_vrs_iuv_dominio ON versamenti (iuv_versamento,id_dominio);
 CREATE INDEX idx_vrs_sped_aca ON versamenti (data_ultima_modifica_aca DESC,data_ultima_comunicazione_aca DESC);
 CREATE INDEX idx_versamenti_data_ult_agg_id ON versamenti (data_ora_ultimo_aggiornamento DESC,id DESC);
+CREATE INDEX idx_vrs_id_opz_pagamento ON versamenti (id_opzione_pagamento);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti

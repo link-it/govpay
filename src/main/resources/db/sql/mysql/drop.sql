@@ -29,6 +29,8 @@ DROP TABLE rpt;
 DROP TABLE trac_notif_pag;
 DROP TABLE singoli_versamenti;
 DROP TABLE versamenti;
+DROP TABLE soggetti_debitori;
+DROP TABLE opzioni_pagamento;
 DROP TABLE documenti;
 DROP TABLE utenze_tipo_vers;
 DROP TABLE tipi_vers_domini;

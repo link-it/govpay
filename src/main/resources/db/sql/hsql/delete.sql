@@ -16,6 +16,8 @@ DELETE FROM rpt;
 DELETE FROM trac_notif_pag;
 DELETE FROM singoli_versamenti;
 DELETE FROM versamenti;
+DELETE FROM soggetti_debitori;
+DELETE FROM opzioni_pagamento;
 DELETE FROM documenti;
 DELETE FROM utenze_tipo_vers;
 DELETE FROM tipi_vers_domini;
