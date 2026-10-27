@@ -24,7 +24,7 @@ E' possibile indicare all'interno di una pendenza tre differenti date opzionali:
     "dataValidita": "2023-11-30",
     "dataScadenza": "2023-12-31",
     "proprieta": {
-                  "dataScadenzaAvviso": "2023-12-31"
+                  "dataScandenzaAvviso": "2023-12-31"
                   }
   }
 
@@ -44,3 +44,37 @@ Il sistema consente di visualizzare una data sull'avviso di pagamento per le pen
   -  **it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita=GG**
 
 la data visualizzata nell'avviso sarà calcolata come la somma tra la data di creazione della pendenza e il numero di giorni definito nella proprietà.
+
+Omettere la data di scadenza nell'Avviso pagoPA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In alcuni casi l'ente non vuole che l'avviso di pagamento riporti una data entro cui pagare, pur avendo valorizzato la data validità o la data scadenza della pendenza. E' il caso, ad esempio, di chi determina la scadenza progressivamente durante il processo e non vuole consegnare al cittadino un avviso con un termine destinato a essere aggiornato.
+
+A partire dalla versione 3.10.0 è possibile ottenere questo comportamento valorizzando la proprietà **nascondiDataScadenzaAvviso** della pendenza:
+
+.. code-block:: json
+  :caption: Pendenza con data scadenza omessa sull'avviso di pagamento
+
+  {
+    "dataValidita": "2023-11-30",
+    "dataScadenza": "2023-12-31",
+    "proprieta": {
+                  "nascondiDataScadenzaAvviso": true
+                  }
+  }
+
+Con la proprietà attiva, nella sezione **Quanto e quando pagare** non viene riportata alcuna data: l'avviso si presenta come quello di una pendenza caricata senza date. La proprietà è facoltativa e, se assente o valorizzata a *false*, l'avviso continua a riportare la data come descritto nelle sezioni precedenti.
+
+La proprietà agisce solo su ciò che viene stampato sull'avviso: le date restano sulla pendenza e continuano a determinarne la pagabilità, la scadenza, i promemoria e le notifiche.
+
+La data riportata sull'avviso viene quindi scelta con il seguente ordine di precedenza:
+
+1. se **nascondiDataScadenzaAvviso** vale *true*, non viene riportata alcuna data;
+2. altrimenti la **data scadenza avviso**, se valorizzata;
+3. altrimenti la **data validità**, se valorizzata;
+4. altrimenti la **data scadenza**, se valorizzata;
+5. altrimenti la data di creazione della pendenza più i giorni indicati nella proprietà di sistema descritta nella sezione precedente, se configurata;
+6. in assenza di tutte le precedenti, non viene riportata alcuna data.
+
+.. note::
+   Per omettere una data non vanno inviati valori convenzionali come *0001-01-01*: GovPay li considera date a tutti gli effetti e li riporta sull'avviso. I campi relativi alle date vanno omessi.
