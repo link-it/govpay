@@ -92,7 +92,7 @@ public class DominiBD extends BasicBD {
 	}
 
 	public static String getIDConnettoreSend(String codDominio) {
-		return codDominio + Dominio.CONNETTORE_SEND_SUFFIX;
+		return codDominio + it.govpay.model.Dominio.CONNETTORE_SEND_SUFFIX;
 	}
 
 	/**
