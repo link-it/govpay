@@ -50,7 +50,7 @@ Omettere la data di scadenza nell'Avviso pagoPA
 
 In alcuni casi l'ente non vuole che l'avviso di pagamento riporti una data entro cui pagare, pur avendo valorizzato la data validità o la data scadenza della pendenza. E' il caso, ad esempio, di chi determina la scadenza progressivamente durante il processo e non vuole consegnare al cittadino un avviso con un termine destinato a essere aggiornato.
 
-A partire dalla versione 3.10.0 è possibile ottenere questo comportamento valorizzando la proprietà **nascondiDataScadenzaAvviso** della pendenza:
+È possibile ottenere questo comportamento valorizzando la proprietà **nascondiDataScadenzaAvviso** della pendenza:
 
 .. code-block:: json
   :caption: Pendenza con data scadenza omessa sull'avviso di pagamento
