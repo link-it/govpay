@@ -1,5 +1,12 @@
 2026-10-28  Giuliano Pintori <pintori@link.it>
 
+        * Risolta la segnalazione CVE-2026-102554 (High) su guava-33.7.1-jre.jar: portato guava dalla 33.7.1-jre alla 33.7.2-jre, che la corregge.
+        La CVE e' entrata nel database di Trivy dopo l'ultima build riuscita del ramo, e da quel momento il gate della scansione dell'immagine nel job docker_dev ha bloccato la pubblicazione di linkitaly/govpay-dev: quattro occorrenze, una per ciascuna delle war che imbarcano guava (api-pagopa, api-backoffice, api-ragioneria, api-pendenze).
+        third-party-licenses/jar riallineato: rinominata la directory di guava, il file di licenza del jar nuovo e' identico a quello della 33.7.1-jre.
+        Verifica: build completo superato, le quattro war impacchettano guava-33.7.2-jre.jar. Trivy 0.75.0, la versione usata dal gate, con le eccezioni di .trivyignore.yaml non trova vulnerabilita' CRITICAL o HIGH con correzione disponibile nelle quattro war; la stessa scansione su una war con guava 33.7.1-jre segnala la CVE.
+
+2026-10-28  Giuliano Pintori <pintori@link.it>
+
         * [SonarCloud] Risolte le 3 segnalazioni di severita' High aperte sul ramo 3.10.x.
         Path traversal in analyze_licenses.load_exceptions() (Security): il controllo esistente su realpath e directory di lavoro era corretto nel merito ma non riconosciuto come sanitizzazione. Ora l'argomento --exceptions accetta solo un nome di file, senza componenti di percorso, cercato nella directory dello script, dove sta license-exceptions.json; ogni percorso viene rifiutato. Il workflow maven.yml passa di conseguenza il solo nome del file: con il percorso completo che passava prima il file sarebbe stato rifiutato e l'analisi delle licenze sarebbe partita senza eccezioni.
         DominiBD.getIDConnettoreSend: la costante CONNETTORE_SEND_SUFFIX e' letta da it.govpay.model.Dominio, la classe che la dichiara, invece che dalla sottoclasse it.govpay.bd.model.Dominio importata nel file. Il valore restituito non cambia.
