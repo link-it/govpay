@@ -1,3 +1,11 @@
+2026-10-28  Giuliano Pintori <pintori@link.it>
+
+        * [SonarCloud] Risolte le 3 segnalazioni di severita' High aperte sul ramo 3.10.x.
+        Path traversal in analyze_licenses.load_exceptions() (Security): il controllo esistente su realpath e directory di lavoro era corretto nel merito ma non riconosciuto come sanitizzazione. Ora l'argomento --exceptions accetta solo un nome di file, senza componenti di percorso, cercato nella directory dello script, dove sta license-exceptions.json; ogni percorso viene rifiutato. Il workflow maven.yml passa di conseguenza il solo nome del file: con il percorso completo che passava prima il file sarebbe stato rifiutato e l'analisi delle licenze sarebbe partita senza eccezioni.
+        DominiBD.getIDConnettoreSend: la costante CONNETTORE_SEND_SUFFIX e' letta da it.govpay.model.Dominio, la classe che la dichiara, invece che dalla sottoclasse it.govpay.bd.model.Dominio importata nel file. Il valore restituito non cambia.
+        DominiConverter.getPutDominioDTO (backoffice v1): estratta in impostaConnettoriNotificaPagamenti l'impostazione dei sei connettori di notifica pagamenti, che porta la complessita' cognitiva del metodo da 16 sotto la soglia di 15. Le righe sono state spostate senza modifiche.
+        Verifica: build dei moduli orm e api-backoffice; script provato con il nome del file (4 eccezioni caricate), con il percorso usato prima, con un percorso relativo che risale e con uno assoluto (tutti rifiutati). Analisi su SonarQube locale con le regole del profilo SonarCloud del progetto: nessuna issue sulle righe toccate, e le due segnalazioni Java non compaiono piu'. La segnalazione sul path traversal viene da un'analisi taint che la versione locale non ha: la conferma arrivera' dall'analisi di SonarCloud.
+
 2026-10-21  Giuliano Pintori <pintori@link.it>
 
         * Issue #898 Nuova proprieta' di pendenza nascondiDataScadenzaAvviso: l'avviso di pagamento non riporta alcuna data entro cui pagare, anche quando dataValidita o dataScadenza sono valorizzate.

@@ -227,23 +227,7 @@ public class DominiConverter {
 
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 
-		if(dominioPost.getServizioMyPivot() != null)
-			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
-
-		if(dominioPost.getServizioSecim() != null)
-			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiSecimConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
-
-		if(dominioPost.getServizioGovPay() != null)
-			dominio.setConnettoreGovPay(ConnettoreNotificaPagamentiGovPayConverter.getConnettoreDTO(dominioPost.getServizioGovPay(), user, Tipo.GOVPAY));
-
-		if(dominioPost.getServizioHyperSicAPKappa() != null)
-			dominio.setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.getConnettoreDTO(dominioPost.getServizioHyperSicAPKappa(), user, Tipo.HYPER_SIC_APKAPPA));
-
-		if(dominioPost.getServizioMaggioliJPPA() != null)
-			dominio.setConnettoreMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.getConnettoreDTO(dominioPost.getServizioMaggioliJPPA(), user, Tipo.MAGGIOLI_JPPA));
-
-		if(dominioPost.getServizioSend() != null)
-			dominio.setConnettoreSend(ConnettoreSendConverter.getConnettore(dominioPost.getServizioSend(), idDominio));
+		impostaConnettoriNotificaPagamenti(dominio, dominioPost, idDominio, user);
 
 		if(dominioPost.getIntermediato() != null ) {
 			dominio.setIntermediato(dominioPost.getIntermediato().booleanValue());
@@ -273,6 +257,26 @@ public class DominiConverter {
 		}
 
 		return dominioDTO;
+	}
+
+	private static void impostaConnettoriNotificaPagamenti(it.govpay.bd.model.Dominio dominio, DominioPost dominioPost, String idDominio, Authentication user) throws NotAuthorizedException, CodificaInesistenteException {
+		if(dominioPost.getServizioMyPivot() != null)
+			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
+
+		if(dominioPost.getServizioSecim() != null)
+			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiSecimConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
+
+		if(dominioPost.getServizioGovPay() != null)
+			dominio.setConnettoreGovPay(ConnettoreNotificaPagamentiGovPayConverter.getConnettoreDTO(dominioPost.getServizioGovPay(), user, Tipo.GOVPAY));
+
+		if(dominioPost.getServizioHyperSicAPKappa() != null)
+			dominio.setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.getConnettoreDTO(dominioPost.getServizioHyperSicAPKappa(), user, Tipo.HYPER_SIC_APKAPPA));
+
+		if(dominioPost.getServizioMaggioliJPPA() != null)
+			dominio.setConnettoreMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.getConnettoreDTO(dominioPost.getServizioMaggioliJPPA(), user, Tipo.MAGGIOLI_JPPA));
+
+		if(dominioPost.getServizioSend() != null)
+			dominio.setConnettoreSend(ConnettoreSendConverter.getConnettore(dominioPost.getServizioSend(), idDominio));
 	}
 
 
