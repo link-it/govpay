@@ -119,7 +119,7 @@ jobs:
         echo "Downloading license information..."
         mvn org.codehaus.mojo:license-maven-plugin:2.4.0:aggregate-download-licenses -DexcludeScopes=test,provided,system -DincludeTransitiveDependencies=true
         echo "Analyzing licenses..."
-        python3 .github/workflows/scripts/analyze_licenses.py --exceptions license-exceptions.json
+        python3 .github/workflows/scripts/analyze_licenses.py --exceptions .github/workflows/scripts/license-exceptions.json
 
     - name: Archive licenses analysis results
       uses: actions/upload-artifact@v7

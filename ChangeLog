@@ -1,3 +1,9 @@
+2026-10-29  Giuliano Pintori <pintori@link.it>
+
+        * [SonarCloud] Esclusi dall'analisi gli script della pipeline (.github): la segnalazione pythonsecurity:S8707 (path traversal) su analyze_licenses.load_exceptions() era rimasta aperta anche dopo la correzione del 2026-10-28, e teneva il quality gate del ramo in errore su new_security_rating.
+        Si adotta la soluzione dei progetti govpay-* (govpay-console-api e gli altri), dove la pipeline limita l'analisi a src/main/java e lo stesso script non viene analizzato: qui, essendo un progetto multimodulo, si aggiunge **/.github/** a sonar.exclusions nel pom. Lo script e la sua invocazione in maven.yml tornano come prima della correzione del 2026-10-28, con il percorso completo del file delle eccezioni come negli altri progetti.
+        Verifica: analisi del modulo radice su SonarQube locale; con l'esclusione l'unico file indicizzato e' pom.xml, senza l'esclusione viene indicizzato anche .github/workflows/scripts/analyze_licenses.py. La chiusura della segnalazione si vedra' alla prossima analisi di SonarCloud.
+
 2026-10-28  Giuliano Pintori <pintori@link.it>
 
         * Risolta la segnalazione CVE-2026-102554 (High) su guava-33.7.1-jre.jar: portato guava dalla 33.7.1-jre alla 33.7.2-jre, che la corregge.

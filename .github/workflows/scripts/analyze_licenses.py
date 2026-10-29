@@ -303,14 +303,15 @@ def load_exceptions(exceptions_file=None):
     exceptions = {}
     excluded_artifacts = set()
 
-    # Il nome arriva da riga di comando: si accetta solo un nome di file, senza
-    # componenti di percorso, cercato nella directory dello script.
+    # Il percorso arriva da riga di comando: si accetta solo un file dentro la
+    # directory di lavoro (la root del repository da cui la pipeline lancia lo script).
     if exceptions_file:
-        safe_name = os.path.basename(exceptions_file)
-        if safe_name != exceptions_file:
-            print(f"Percorso non ammesso per il file eccezioni, ignorato: {exceptions_file}")
+        base_dir = os.path.realpath(os.getcwd())
+        resolved = os.path.realpath(exceptions_file)
+        if not resolved.startswith(base_dir + os.sep):
+            print(f"File eccezioni fuori dalla directory di lavoro, ignorato: {exceptions_file}")
             return exceptions, excluded_artifacts
-        exceptions_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), safe_name)
+        exceptions_file = resolved
 
     if exceptions_file and os.path.isfile(exceptions_file):
         with open(exceptions_file, 'r', encoding='utf-8') as f:
@@ -1030,7 +1031,7 @@ def generate_markdown_report(data, output_dir):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Analizza le licenze delle dipendenze Maven')
-    parser.add_argument('--exceptions', help='Nome del file JSON con le eccezioni di licenza, nella directory dello script', default='license-exceptions.json')
+    parser.add_argument('--exceptions', help='File JSON con le eccezioni di licenza', default='license-exceptions.json')
     args = parser.parse_args()
 
     exit_code = analyze_licenses(exceptions_file=args.exceptions)
