@@ -540,7 +540,7 @@ CREATE SEQUENCE seq_documenti start 1 increment 1 maxvalue 9223372036854775807 m
 CREATE TABLE documenti
 (
 	cod_documento VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
+	descrizione VARCHAR(1024) NOT NULL,
 	id_unita_operativa BIGINT,
 	data_pubblicazione DATE,
 	notifica_send BOOLEAN NOT NULL DEFAULT false,
@@ -557,7 +557,6 @@ CREATE TABLE documenti
 	id_applicazione BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
-	CONSTRAINT unique_documenti_2 UNIQUE (cod_documento,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -614,6 +613,7 @@ CREATE TABLE soggetti_debitori
 	provincia VARCHAR(35),
 	nazione VARCHAR(2),
 	email VARCHAR(256),
+	cellulare VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_soggetti_debitori') NOT NULL,
 	id_documento BIGINT NOT NULL,

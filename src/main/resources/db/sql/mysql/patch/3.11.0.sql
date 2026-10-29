@@ -8,21 +8,18 @@
 -- Le guardie sono quelle della 3.10.0: condizione su information_schema e
 -- statement preparato, con 'DO 0' come ramo a vuoto.
 
--- Un documento e' identificato dal codice nell'ambito dell'applicazione, non piu'
--- anche del dominio. Il vincolo e' il primo statement della patch: se ci sono
--- duplicati l'ALTER fallisce con "Duplicate entry ... for key
--- 'documenti.unique_documenti_2'" e la patch si ferma prima di aver modificato
--- qualcosa. In uno script MySQL non c'e' modo di sollevare un errore con un
--- messaggio proprio: SIGNAL vale solo dentro una routine. I duplicati vanno
--- risolti a mano e la patch rieseguita; per elencarli:
---   SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti
---    GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1;
+-- documenti.descrizione da 255 a 1024 caratteri, come causale_versamento:
+-- govpay-common-pendenze vi riporta la causale intera dei versamenti migrati
+-- senza documento.
+-- La guardia evita di rieseguire il MODIFY, che oltre i 255 byte riscrive la
+-- tabella.
 SET @gp_sql := IF(
-    (SELECT COUNT(*) FROM information_schema.table_constraints
+    (SELECT COUNT(*) FROM information_schema.columns
       WHERE table_schema = DATABASE()
         AND table_name = 'documenti'
-        AND constraint_name = 'unique_documenti_2') = 0,
-    'ALTER TABLE documenti ADD CONSTRAINT unique_documenti_2 UNIQUE (cod_documento, id_applicazione)',
+        AND column_name = 'descrizione'
+        AND character_maximum_length < 1024) > 0,
+    'ALTER TABLE documenti MODIFY COLUMN descrizione VARCHAR(1024) NOT NULL COMMENT ''Descrizione del documento''',
     'DO 0');
 PREPARE gp_stmt FROM @gp_sql;
 EXECUTE gp_stmt;
@@ -187,6 +184,7 @@ CREATE TABLE IF NOT EXISTS soggetti_debitori
 	provincia VARCHAR(35) COMMENT 'Provincia',
 	nazione VARCHAR(2) COMMENT 'Nazione',
 	email VARCHAR(256) COMMENT 'Indirizzo email',
+	cellulare VARCHAR(35) COMMENT 'Numero di cellulare',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_documento BIGINT NOT NULL COMMENT 'Riferimento alla posizione debitoria',

@@ -2101,10 +2101,6 @@
 							<linkit:sql-table-unique-column name="id_applicazione"/>
 							<linkit:sql-table-unique-column name="id_dominio"/>
 						</linkit:sql-table-unique>
-						<linkit:sql-table-unique>
-							<linkit:sql-table-unique-field name="codDocumento"/>
-							<linkit:sql-table-unique-column name="id_applicazione"/>
-						</linkit:sql-table-unique>
 						<linkit:sql-table-index name="idx_doc_app_data_creaz">
 							<linkit:sql-table-index-column name="id_applicazione"/>
 							<linkit:sql-table-index-field name="dataCreazione" ignoreTypeCompatibility="true"/>
@@ -2116,7 +2112,9 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codDocumento" type="String35"/>
-			<xsd:element name="descrizione" type="String255"/>
+			<!-- 1024 come causaleVersamento: govpay-common-pendenze vi riporta la causale
+			     intera dei versamenti migrati senza documento (Issue #901). -->
+			<xsd:element name="descrizione" type="String1024"/>
 
 			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>
@@ -2267,6 +2265,7 @@
 			<xsd:element name="provincia" type="String35" minOccurs="0"/>
 			<xsd:element name="nazione" type="String2" minOccurs="0"/>
 			<xsd:element name="email" type="String256" minOccurs="0"/>
+			<xsd:element name="cellulare" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

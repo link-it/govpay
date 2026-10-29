@@ -539,7 +539,7 @@ CREATE TABLE utenze_tipo_vers
 CREATE TABLE documenti
 (
 	cod_documento VARCHAR(35) NOT NULL COMMENT 'Identificativo del documento',
-	descrizione VARCHAR(255) NOT NULL COMMENT 'Descrizione del documento',
+	descrizione VARCHAR(1024) NOT NULL COMMENT 'Descrizione del documento',
 	id_unita_operativa BIGINT COMMENT 'Identificativo dell\'unita operativa della posizione debitoria',
 	data_pubblicazione DATE COMMENT 'Data di pubblicazione della posizione debitoria',
 	notifica_send BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se la posizione debitoria va notificata tramite SEND',
@@ -555,7 +555,6 @@ CREATE TABLE documenti
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
 	-- unique constraints
 	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
-	CONSTRAINT unique_documenti_2 UNIQUE (cod_documento,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -608,6 +607,7 @@ CREATE TABLE soggetti_debitori
 	provincia VARCHAR(35) COMMENT 'Provincia',
 	nazione VARCHAR(2) COMMENT 'Nazione',
 	email VARCHAR(256) COMMENT 'Indirizzo email',
+	cellulare VARCHAR(35) COMMENT 'Numero di cellulare',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_documento BIGINT NOT NULL COMMENT 'Riferimento alla posizione debitoria',

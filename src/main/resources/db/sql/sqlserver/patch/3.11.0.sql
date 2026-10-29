@@ -5,31 +5,20 @@
 -- soggetti_debitori. Le colonne NOT NULL mantengono il DEFAULT anche dopo la
 -- patch, come in gov_pay.sql: il core v2 continua a inserire righe in documenti
 -- e versamenti senza conoscerle.
--- Va eseguita con sqlcmd -b: il controllo qui sotto serve a fermarla prima di
--- qualsiasi modifica, e senza -b sqlcmd passerebbe al batch successivo.
+-- Va eseguita con sqlcmd -b, per fermarsi al primo errore: senza -b sqlcmd
+-- passerebbe al batch successivo.
 
--- Un documento e' identificato dal codice nell'ambito dell'applicazione, non piu'
--- anche del dominio. Il vincolo e' il primo statement della patch: se ci sono
--- duplicati la patch si ferma prima di aver modificato qualcosa. I duplicati
--- vanno risolti a mano e la patch rieseguita; per elencarli:
---   SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti
---    GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1;
-IF OBJECT_ID('unique_documenti_2', 'UQ') IS NULL
-BEGIN
-    DECLARE @n INT;
-    DECLARE @messaggio NVARCHAR(2048);
-    SELECT @n = COUNT(*) FROM (
-        SELECT 1 AS x FROM documenti GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1
-    ) d;
-    IF @n > 0
-    BEGIN
-        SET @messaggio = CONCAT('Patch 3.11.0 interrotta prima di qualsiasi modifica: ', @n,
-            ' coppie (cod_documento, id_applicazione) duplicate in documenti. Per elencarle: ',
-            'SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1');
-        THROW 50001, @messaggio, 1;
-    END;
-    ALTER TABLE documenti ADD CONSTRAINT unique_documenti_2 UNIQUE (cod_documento, id_applicazione);
-END
+-- documenti.descrizione da 255 a 1024 caratteri, come causale_versamento:
+-- govpay-common-pendenze vi riporta la causale intera dei versamenti migrati
+-- senza documento.
+-- Ripetere l'ALTER su una colonna gia' a 1024 non ha effetto. v_versamenti, che
+-- legge la colonna, va riallineata con sp_refreshview: le viste di SQL Server
+-- tengono i metadati delle colonne fissati alla creazione.
+ALTER TABLE documenti ALTER COLUMN descrizione VARCHAR(1024) NOT NULL;
+GO
+
+IF OBJECT_ID('v_versamenti', 'V') IS NOT NULL
+    EXEC sp_refreshview 'v_versamenti';
 GO
 
 -- Colonne della posizione debitoria. id_unita_operativa non ha FK verso uo,
@@ -109,6 +98,7 @@ CREATE TABLE soggetti_debitori
 	provincia VARCHAR(35),
 	nazione VARCHAR(2),
 	email VARCHAR(256),
+	cellulare VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_documento BIGINT NOT NULL,

@@ -5,36 +5,17 @@
 -- soggetti_debitori. Le colonne NOT NULL mantengono il DEFAULT anche dopo la
 -- patch, come in gov_pay.sql: il core v2 continua a inserire righe in documenti
 -- e versamenti senza conoscerle.
--- Va eseguita con WHENEVER SQLERROR EXIT FAILURE: il controllo qui sotto serve a
--- fermarla prima di qualsiasi modifica.
+-- Va eseguita con WHENEVER SQLERROR EXIT FAILURE, per fermarsi al primo errore.
 -- Oracle non supporta IF NOT EXISTS: ogni statement e' in un blocco PL/SQL che
 -- ignora il solo errore dell'oggetto gia' presente, come nella 3.10.0:
 -- ORA-01430 colonna, ORA-00955 nome gia' in uso, ORA-02275 e ORA-02264 vincolo.
 
--- Un documento e' identificato dal codice nell'ambito dell'applicazione, non piu'
--- anche del dominio. Il vincolo e' il primo statement della patch: se ci sono
--- duplicati la patch si ferma prima di aver modificato qualcosa. I duplicati
--- vanno risolti a mano e la patch rieseguita; per elencarli:
---   SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti
---    GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1;
-DECLARE
-    n NUMBER;
-BEGIN
-    SELECT COUNT(*) INTO n FROM user_constraints
-     WHERE table_name = 'DOCUMENTI' AND constraint_name = 'UNIQUE_DOCUMENTI_2';
-    IF n = 0 THEN
-        SELECT COUNT(*) INTO n FROM (
-            SELECT 1 FROM documenti GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1
-        );
-        IF n > 0 THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Patch 3.11.0 interrotta prima di qualsiasi modifica: ' || n
-                || ' coppie (cod_documento, id_applicazione) duplicate in documenti. Per elencarle: '
-                || 'SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1');
-        END IF;
-        EXECUTE IMMEDIATE 'ALTER TABLE documenti ADD CONSTRAINT unique_documenti_2 UNIQUE (cod_documento, id_applicazione)';
-    END IF;
-END;
-/
+-- documenti.descrizione da 255 a 1024 caratteri, come causale_versamento:
+-- govpay-common-pendenze vi riporta la causale intera dei versamenti migrati
+-- senza documento.
+-- Ripetere il MODIFY su una colonna gia' a 1024 non da' errore. v_versamenti,
+-- che legge la colonna, viene ricompilata in coda alla patch.
+ALTER TABLE documenti MODIFY (descrizione VARCHAR2(1024 CHAR));
 
 -- Colonne della posizione debitoria. id_unita_operativa non ha FK verso uo,
 -- come nella libreria.
@@ -160,6 +141,7 @@ CREATE TABLE soggetti_debitori
 	provincia VARCHAR2(35 CHAR),
 	nazione VARCHAR2(2 CHAR),
 	email VARCHAR2(256 CHAR),
+	cellulare VARCHAR2(35 CHAR),
 	id NUMBER NOT NULL,
 	id_documento NUMBER NOT NULL,
 	CONSTRAINT unique_soggetti_debitori_1 UNIQUE (id_documento,ordine),

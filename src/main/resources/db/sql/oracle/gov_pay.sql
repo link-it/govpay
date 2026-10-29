@@ -775,7 +775,7 @@ CREATE SEQUENCE seq_documenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 CREATE TABLE documenti
 (
 	cod_documento VARCHAR2(35 CHAR) NOT NULL,
-	descrizione VARCHAR2(255 CHAR) NOT NULL,
+	descrizione VARCHAR2(1024 CHAR) NOT NULL,
 	id_unita_operativa NUMBER,
 	data_pubblicazione DATE,
 	notifica_send NUMBER NOT NULL,
@@ -792,7 +792,6 @@ CREATE TABLE documenti
 	id_applicazione NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
-	CONSTRAINT unique_documenti_2 UNIQUE (cod_documento,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -877,6 +876,7 @@ CREATE TABLE soggetti_debitori
 	provincia VARCHAR2(35 CHAR),
 	nazione VARCHAR2(2 CHAR),
 	email VARCHAR2(256 CHAR),
+	cellulare VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_documento NUMBER NOT NULL,

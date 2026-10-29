@@ -5,31 +5,85 @@
 -- soggetti_debitori. Le colonne NOT NULL mantengono il DEFAULT anche dopo la
 -- patch, come in gov_pay.sql: il core v2 continua a inserire righe in documenti
 -- e versamenti senza conoscerle.
--- Va eseguita con psql -v ON_ERROR_STOP=1: il controllo qui sotto serve a
--- fermarla prima di qualsiasi modifica.
+-- Va eseguita con psql -v ON_ERROR_STOP=1, per fermarsi al primo errore.
 
--- Un documento e' identificato dal codice nell'ambito dell'applicazione, non piu'
--- anche del dominio. Il vincolo e' il primo statement della patch: se ci sono
--- duplicati la patch si ferma prima di aver modificato qualcosa. I duplicati
--- vanno risolti a mano e la patch rieseguita; per elencarli:
---   SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti
---    GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1;
-DO $$
-DECLARE
-    n BIGINT;
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint
-                    WHERE conname = 'unique_documenti_2'
-                      AND conrelid = 'documenti'::regclass) THEN
-        SELECT COUNT(*) INTO n FROM (
-            SELECT 1 FROM documenti GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1
-        ) d;
-        IF n > 0 THEN
-            RAISE EXCEPTION 'Patch 3.11.0 interrotta prima di qualsiasi modifica: % coppie (cod_documento, id_applicazione) duplicate in documenti. Per elencarle: SELECT cod_documento, id_applicazione, COUNT(*) FROM documenti GROUP BY cod_documento, id_applicazione HAVING COUNT(*) > 1', n;
-        END IF;
-        ALTER TABLE documenti ADD CONSTRAINT unique_documenti_2 UNIQUE (cod_documento, id_applicazione);
-    END IF;
-END $$;
+-- documenti.descrizione da 255 a 1024 caratteri, come causale_versamento:
+-- govpay-common-pendenze vi riporta la causale intera dei versamenti migrati
+-- senza documento.
+-- PostgreSQL non cambia il tipo di una colonna letta da una vista: v_versamenti
+-- va eliminata e ricreata, con la stessa definizione di gov_pay.sql. Ripetere
+-- l'ALTER su una colonna gia' a 1024 non ha effetto.
+DROP VIEW IF EXISTS v_versamenti;
+ALTER TABLE documenti ALTER COLUMN descrizione TYPE VARCHAR(1024);
+CREATE VIEW v_versamenti AS
+SELECT versamenti.id,
+    versamenti.cod_versamento_ente,
+    versamenti.nome,
+    versamenti.importo_totale,
+    versamenti.stato_versamento,
+    versamenti.descrizione_stato,
+    versamenti.aggiornabile,
+    versamenti.tassonomia,
+    versamenti.tassonomia_avviso,
+    versamenti.data_creazione,
+    versamenti.data_validita,
+    versamenti.data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento,
+    versamenti.causale_versamento,
+    versamenti.debitore_identificativo,
+    versamenti.debitore_tipo,
+    versamenti.debitore_anagrafica,
+    versamenti.debitore_indirizzo,
+    versamenti.debitore_civico,
+    versamenti.debitore_cap,
+    versamenti.debitore_localita,
+    versamenti.debitore_provincia,
+    versamenti.debitore_nazione,
+    versamenti.debitore_email,
+    versamenti.debitore_telefono,
+    versamenti.debitore_cellulare,
+    versamenti.debitore_fax,
+    versamenti.cod_lotto,
+    versamenti.cod_versamento_lotto,
+    versamenti.cod_anno_tributario,
+    versamenti.cod_bundlekey,
+    versamenti.dati_allegati,
+    versamenti.incasso,
+    versamenti.anomalie,
+    versamenti.iuv_versamento,
+    versamenti.numero_avviso,
+    versamenti.ack,
+    versamenti.anomalo,
+    versamenti.direzione,
+    versamenti.divisione,
+    versamenti.id_sessione,
+    versamenti.importo_pagato,
+    versamenti.data_pagamento,
+    versamenti.importo_incassato,
+    versamenti.stato_pagamento,
+    versamenti.iuv_pagamento,
+    versamenti.src_debitore_identificativo,
+    versamenti.src_iuv,
+    versamenti.cod_rata,
+    versamenti.tipo,
+    versamenti.data_notifica_avviso,
+    versamenti.avviso_notificato,
+    versamenti.avv_mail_data_prom_scadenza,
+    versamenti.avv_mail_prom_scad_notificato,
+    versamenti.avv_app_io_data_prom_scadenza,
+    versamenti.avv_app_io_prom_scad_notificat,
+    versamenti.id_applicazione,
+    versamenti.id_dominio,
+    versamenti.id_uo,
+    versamenti.id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio,
+    versamenti.proprieta,
+    versamenti.data_ultima_modifica_aca,
+    versamenti.data_ultima_comunicazione_aca,
+    versamenti.id_documento,
+    documenti.cod_documento,
+    documenti.descrizione AS doc_descrizione
+    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- Colonne della posizione debitoria. id_unita_operativa non ha FK verso uo,
 -- come nella libreria.
@@ -87,6 +141,7 @@ CREATE TABLE IF NOT EXISTS soggetti_debitori
 	provincia VARCHAR(35),
 	nazione VARCHAR(2),
 	email VARCHAR(256),
+	cellulare VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_soggetti_debitori') NOT NULL,
 	id_documento BIGINT NOT NULL,
