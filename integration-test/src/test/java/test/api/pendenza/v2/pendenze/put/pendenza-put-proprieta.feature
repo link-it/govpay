@@ -201,3 +201,38 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.dataValidita == '#notpresent'
 * match response.dataScadenza == '#notpresent'
 * match response.proprieta.dataScandenzaAvviso == '#notpresent'
+
+
+@test-dataValidita-dataScadenzaAvviso-null
+Scenario: Caricamento pendenza con dataValidita e dataScandenzaAvviso null e stampa avviso
+
+* set pendenzaPut.proprieta = 
+"""
+{
+  dataScandenzaAvviso : null
+}
+"""
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+And param stampaAvviso = true
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull', UUID: '#notnull' }
+
+* def responsePut = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.dataValidita == pendenzaPut.dataValidita
+* match response.dataScadenza == pendenzaPut.dataScadenza
+* match response.proprieta.dataScandenzaAvviso == '#notpresent'
