@@ -251,10 +251,11 @@
         <javassist.version>3.33.0-GA</javassist.version>
 
         <!-- Esclusione dall'analisi di sonar dei testi di licenza delle dipendenze: non sono codice e alcuni sono
-        	in ISO-8859-1, cosa che produce il warning "There are problems with file encoding in the source code". -->
-        <sonar.exclusions>**/third-party-licenses/**</sonar.exclusions>
+        	in ISO-8859-1, cosa che produce il warning "There are problems with file encoding in the source code".
+        	Sono esclusi anche gli script della pipeline (.github), come nei progetti govpay-* che analizzano solo src/main/java. -->
+        <sonar.exclusions>**/third-party-licenses/**,**/.github/**</sonar.exclusions>
 
-        <!-- Versione Python degli script del repository (.github/workflows/scripts, docs): ubuntu-latest usa Python 3.12 -->
+        <!-- Versione Python degli script del repository (docs): ubuntu-latest usa Python 3.12 -->
         <sonar.python.version>3.12</sonar.python.version>
 
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
