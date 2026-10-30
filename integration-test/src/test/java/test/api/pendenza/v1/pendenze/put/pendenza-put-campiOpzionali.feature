@@ -38,3 +38,28 @@ Examples:
 | annoRiferimento | null |
 | tassonomia | 'Tassonomia Custom' |
 | tassonomia | null |
+| dataValidita | null |
+| dataScadenza | null |
+
+Scenario Outline: Caricamento pendenza con controllo del campo opzionale <field> valorizzato da GovPay
+
+* set pendenzaPut.<field> = <value>
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.<field> == <retValue>
+
+Examples:
+| field | value | retValue |
+| dataCaricamento | null | '#notnull' |
+| voci[0].indice | null | 1 |
