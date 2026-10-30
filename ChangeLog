@@ -1,3 +1,13 @@
+2026-10-30  Giuliano Pintori <pintori@link.it>
+
+        * Issue #903 Dichiarati nullable nei contratti OpenAPI i campi facoltativi di tipo data, numero o booleano che i client inviano a GovPay.
+        In OpenAPI 3.0 un campo facoltativo, cioe' fuori da required, non e' per questo nullable: senza nullable: true un client generato dallo YAML produce questi campi come tipi valore non nullabili (DateTime in C#) e, se non li imposta, invia il valore predefinito invece di ometterli. Segnalato con un client C#: le pendenze caricate senza date arrivavano con dataValidita e proprieta.dataScandenzaAvviso a 0001-01-01, data che compariva sull'avviso di pagamento. A runtime GovPay accetta gia' null su questi campi: il null e il campo omesso producono lo stesso bean, per cui cambia solo il contratto. E' l'estensione alle API che ricevono dati della correzione fatta con la Issue #889 per la notifica dell'API Ente Creditore v2.
+        Pendenza: dataCaricamento, dataValidita, dataScadenza, dataNotificaAvviso, dataPromemoriaScadenza e annoRiferimento, indice delle voci, proprieta.dataScandenzaAvviso e importo di proprieta.descrizioneImporto nelle API Pendenze v1 e v2, nell'API Backoffice v1 (anche NuovaPendenzaTracciato) e nelle risposte di verifica dell'API Ente Creditore v1 e v2.
+        Riconciliazioni: dataValuta e dataContabile nell'API Backoffice v1 e nell'API Ragioneria v1, v2 e v3.
+        Configurazione dell'API Backoffice v1: solo i campi che accettano null (appIOBatch.timeToLive, dataUltimaRT del connettore MaggioliJPPA, contiAccreditoPost.mybank, dominioPost.intermediato, allegaPdf, soloEseguiti e preavviso delle avvisature del tipo pendenza, pagaTerzi e abilitato del tipo pendenza del dominio). Restano non nullable i flag che il validate() del bean rifiuta a null con un errore 400, come abilitato e pagaTerzi di tipoPendenzaPost.
+        Corretti in govpay-api-ragioneria.yaml v3 i riferimenti a RiferimentoIdentificativoUnivocoVersamento e RiferimentoIdentificativoFlussoRendicontazione, che puntavano al file stesso invece che a govpay-api-schemas.yaml, dove sono definiti: il contratto non era valido per i generatori rigorosi.
+        Verifica: i dieci contratti di GovPay sono validi come OpenAPI 3.0 con openapi-spec-validator; aggiunti ai test di integrazione campiOpzionali di Pendenze v1, v2 e Backoffice v1 i casi con i campi della pendenza inviati a null.
+
 2026-10-08  Giuliano Pintori <pintori@link.it>
 
         * Risolte le segnalazioni NVDCVE-2026-102495, NVDCVE-2026-102496 e NVDCVE-2026-102497 (High) su xmlschema-core-2.3.2.jar: portata xmlschema-core dalla 2.3.2 alla 2.3.3.

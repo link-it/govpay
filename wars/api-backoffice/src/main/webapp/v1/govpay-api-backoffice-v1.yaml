@@ -4546,6 +4546,7 @@ components:
         timeToLive:
           type: integer
           format: int64
+          nullable: true
           description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
           example: 10000
         auth:
@@ -5239,6 +5240,7 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'
         intermediato:
           type: boolean
+          nullable: true
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
           example: true
         tassonomiaPagoPA:
@@ -5760,6 +5762,7 @@ components:
           default: false
         mybank:
           type: boolean
+          nullable: true
           description: indica se e' un iban abilitato sul circuito mybank
           example: false
           default: false
@@ -5999,6 +6002,7 @@ components:
         preavviso:
           type: integer
           format: int32
+          nullable: true
           minimum: 0
           description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
     tipoPendenzaAvvisaturaPromemoriaAvvisoBase:
@@ -6028,6 +6032,7 @@ components:
           properties:
             allegaPdf:
               type: boolean
+              nullable: true
               description: Indica se allegare alla email il pdf contenente il promemoria
     tipoPendenzaAvvisaturaPromemoriaRicevutaBase:
       type: object
@@ -6049,6 +6054,7 @@ components:
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
         soloEseguiti:
           type: boolean
+          nullable: true
           description: Indica se limitare l'invio delle ricevute per i soli pagamenti eseguiti
           example: true
     tipoPendenzaAvvisaturaMailPromemoriaRicevuta:
@@ -6060,6 +6066,7 @@ components:
           properties:
             allegaPdf:
               type: boolean
+              nullable: true
               description: Indica se allegare alla email il pdf contenente il promemoria
     tipoPendenzaAvvisaturaMail:
       description: Configurazione dell'avvisatura via mail
@@ -6148,11 +6155,13 @@ components:
           pattern: "[0-9]{1,3}"
         pagaTerzi:
           type: boolean
+          nullable: true
           description: Indica se la pendenza e' pagabile da soggetti terzi
           example: true
           default: false
         abilitato:
           type: boolean
+          nullable: true
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
@@ -6489,21 +6498,25 @@ components:
         dataCaricamento:
           type: string
           format: date
+          nullable: true
           description: Data di emissione della pendenza
           example: '2010-12-31'
         dataValidita:
           type: string
           format: date
+          nullable: true
           description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
           example: '2019-12-31'
         dataScadenza:
           type: string
           format: date
+          nullable: true
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
         annoRiferimento:
           type: integer
           format: int32
+          nullable: true
           description: Anno di riferimento della pendenza
           example: 2020
         cartellaPagamento:
@@ -6532,11 +6545,13 @@ components:
         dataNotificaAvviso:
           type: string
           format: date
+          nullable: true
           description: Data in cui inviare il promemoria di pagamento.
           example: '2020-12-31'
         dataPromemoriaScadenza:
           type: string
           format: date
+          nullable: true
           description: Data in cui inviare il promemoria di scadenza della pendenza.
           example: '2020-12-31'
         proprieta:
@@ -6798,6 +6813,7 @@ components:
         indice:
           type: integer
           format: int32
+          nullable: true
           description: indice di voce all'interno della pendenza
           example: 1
         idVocePendenza:
@@ -7594,11 +7610,13 @@ components:
           dataValuta:
             type: string
             format: date
+            nullable: true
             description: Data di valuta dell'incasso
             example: '2020-12-31'
           dataContabile:
             type: string
             format: date
+            nullable: true
             description: Data di contabile dell'incasso
             example: '2020-12-31'
           ibanAccredito:
@@ -8301,6 +8319,7 @@ components:
         dataUltimaRT:
           type: string
           format: date-time
+          nullable: true
           description: Date time dell'ultima RT processata con successo
           example: '2020-12-31 12:34:00Z'
     soggetto:
@@ -9561,21 +9580,25 @@ components:
             dataCaricamento:
                 type: string
                 format: date
+                nullable: true
                 description: Data di emissione della pendenza
                 example: '2010-12-31'
             dataValidita:
                 type: string
                 format: date
+                nullable: true
                 description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
                 example: '2019-12-31'
             dataScadenza:
                 type: string
                 format: date
+                nullable: true
                 description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
                 example: '2020-12-31'
             annoRiferimento:
                 type: integer
                 format: int32
+                nullable: true
                 description: Anno di riferimento della pendenza
                 example: 2020
             cartellaPagamento:
@@ -9685,6 +9708,7 @@ components:
         dataScandenzaAvviso:
           type: string
           format: date
+          nullable: true
           description: se valorizzata, sostituisce la data di scadenza standard.
     RisultatiPerPagina:
       type: integer
@@ -9716,5 +9740,6 @@ components:
         importo:
           type: number
           format: double
+          nullable: true
           description: importo
           example: 10.01
