@@ -360,7 +360,9 @@ SELECT 0,
 -- almeno uno e' in uno stato diverso da NON_ESEGUITO e ANNULLATO, DISPONIBILE
 -- altrimenti; per C dal suo versamento. Gli altri documenti restano senza opzione,
 -- come quelli con debitori incoerenti: con un'opzione, una nuova esecuzione dopo
--- la correzione non creerebbe piu' il loro soggetto.
+-- la correzione non creerebbe piu' il loro soggetto. Non si toccano i documenti
+-- che hanno gia' un'opzione: i versamenti che v2 vi aggiunge dopo l'aggiornamento
+-- li collega migrazione/riallineamento-v3.sql, oppure restano negli scarti.
 -- Le opzioni si preparano in gp_mig_opzioni con il loro UUID, che dopo
 -- l'inserimento serve a ritrovarne l'id per collegarle ai versamenti.
 -- Per HSQLDB un CASE tra letterali di lunghezza diversa e' un CHAR della
@@ -376,6 +378,7 @@ SELECT v.id, v.id_documento, v.cod_rata, v.stato_versamento,
    AND v.id_opzione_pagamento IS NULL
    AND NOT EXISTS (SELECT 1 FROM migrazione_v3_scarti s
                     WHERE s.id_documento = v.id_documento AND s.motivo = 'DEBITORI_INCOERENTI')
+   AND NOT EXISTS (SELECT 1 FROM opzioni_pagamento o WHERE o.id_documento = v.id_documento)
 ) WITH DATA;
 
 CREATE TABLE gp_mig_opzioni

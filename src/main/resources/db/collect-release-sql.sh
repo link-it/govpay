@@ -643,6 +643,24 @@ for modo in "${MODI[@]}"; do
   done
 done
 
+# Script di riallineamento al modello v3 (Issue #901), da eseguire al passaggio
+# all'API v3 dopo l'aggiornamento: accompagna lo script di upgrade, ma non e'
+# una patch e non entra nella composizione, quindi si copia a parte.
+if [[ "${MODE}" == upgrade || "${MODE}" == both ]]; then
+  for dialetto in "${DIALETTI[@]}"; do
+    riall="${CORE_SQL_DIR}/${dialetto}/migrazione/riallineamento-v3.sql"
+    [[ -f "${riall}" ]] || continue
+    out="${OUTDIR}/govpay-${GOVPAY_CORE_VERSION}-riallineamento-v3-${dialetto}.sql"
+    if [[ "${DRYRUN}" == true ]]; then
+      echo "  [dry-run] ${out}"
+      continue
+    fi
+    cp "${riall}" "${out}"
+    nota "$(basename "${out}") ($(wc -l < "${out}") righe)"
+    PRODOTTI+=("${out}")
+  done
+fi
+
 echo
 echo "=============================================="
 if [[ "${DRYRUN}" == true ]]; then
