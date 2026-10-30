@@ -1,5 +1,9 @@
 2026-10-30  Giuliano Pintori <pintori@link.it>
 
+        * Avanzamento versione 3.9.3.p7.
+
+2026-10-30  Giuliano Pintori <pintori@link.it>
+
         * Issue #903 Dichiarati nullable nei contratti OpenAPI i campi facoltativi di tipo data, numero o booleano che i client inviano a GovPay.
         In OpenAPI 3.0 un campo facoltativo, cioe' fuori da required, non e' per questo nullable: senza nullable: true un client generato dallo YAML produce questi campi come tipi valore non nullabili (DateTime in C#) e, se non li imposta, invia il valore predefinito invece di ometterli. Segnalato con un client C#: le pendenze caricate senza date arrivavano con dataValidita e proprieta.dataScandenzaAvviso a 0001-01-01, data che compariva sull'avviso di pagamento. A runtime GovPay accetta gia' null su questi campi: il null e il campo omesso producono lo stesso bean, per cui cambia solo il contratto. E' l'estensione alle API che ricevono dati della correzione fatta con la Issue #889 per la notifica dell'API Ente Creditore v2.
         Pendenza: dataCaricamento, dataValidita, dataScadenza, dataNotificaAvviso, dataPromemoriaScadenza e annoRiferimento, indice delle voci, proprieta.dataScandenzaAvviso e importo di proprieta.descrizioneImporto nelle API Pendenze v1 e v2, nell'API Backoffice v1 (anche NuovaPendenzaTracciato) e nelle risposte di verifica dell'API Ente Creditore v1 e v2.
