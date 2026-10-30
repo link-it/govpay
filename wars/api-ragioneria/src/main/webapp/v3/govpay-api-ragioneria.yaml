@@ -514,11 +514,13 @@ components:
             dataValuta:
               type: string
               format: date
+              nullable: true
               description: Data di valuta dell'incasso
               example: '2020-12-31'
             dataContabile:
               type: string
               format: date
+              nullable: true
               description: Data di contabile dell'incasso
               example: '2020-12-31'
             contoAccredito:
@@ -542,5 +544,5 @@ components:
       type: object              
       oneOf:
         - $ref: '#/components/schemas/RiferimentoCausale'
-        - $ref: '#/components/schemas/RiferimentoIdentificativoUnivocoVersamento'
-        - $ref: '#/components/schemas/RiferimentoIdentificativoFlussoRendicontazione'
+        - $ref: 'govpay-api-schemas.yaml#/components/schemas/RiferimentoIdentificativoUnivocoVersamento'
+        - $ref: 'govpay-api-schemas.yaml#/components/schemas/RiferimentoIdentificativoFlussoRendicontazione'
