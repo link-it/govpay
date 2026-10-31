@@ -1384,7 +1384,7 @@ CREATE TABLE fr
 	numero_pagamenti NUMBER,
 	importo_totale_pagamenti BINARY_DOUBLE,
 	cod_bic_riversamento VARCHAR2(35 CHAR),
-	xml BLOB NOT NULL,
+	xml BLOB,
 	ragione_sociale_psp VARCHAR2(255 CHAR),
 	ragione_sociale_dominio VARCHAR2(255 CHAR),
 	obsoleto NUMBER NOT NULL,
