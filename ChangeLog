@@ -1,3 +1,14 @@
+2026-11-01  Giuliano Pintori <pintori@link.it>
+
+        * Issue #901 Schema SQL 3.11.0 per il modello v3 delle posizioni debitorie di govpay-common-pendenze, nei 5 dialetti (PostgreSQL, Oracle, MySQL/MariaDB, SQL Server, HSQL).
+        Schema: nuove tabelle opzioni_pagamento e soggetti_debitori; su documenti le colonne della posizione debitoria (unita' operativa, data di pubblicazione, notifica SEND, date ACA, date di creazione e aggiornamento, versione per il lock ottimistico) e descrizione portata da 255 a 1024 caratteri, come la causale; su versamenti numero_rata e id_opzione_pagamento. Le colonne NOT NULL nuove hanno un DEFAULT, perche' le API v2 continuano a inserire righe senza conoscerle. I tipi delle colonne esistenti non cambiano.
+        La patch 3.11.0 migra i dati v2 con le regole della libreria: documento MIGR-<id> per le pendenze senza documento, opzioni di pagamento ricavate da cod_rata (soluzione unica, piano rateale, opzioni di soglia), stato delle opzioni dagli stati delle pendenze, soggetto debitore dai campi debitore_* della pendenza. I casi non migrabili restano come sono e finiscono in migrazione_v3_scarti, da eliminare a bonifica conclusa; la patch e' rieseguibile e migra solo cio' che non e' ancora migrato.
+        Nuovo script migrazione/riallineamento-v3.sql, da eseguire al passaggio all'API v3, che recupera quanto le API v2 hanno scritto dopo l'aggiornamento; check-riallineamento-v3.sh verifica che la sezione di migrazione comune sia identica nella patch e nello script, e collect-release-sql.sh lo allega allo SQL di rilascio.
+        Requisiti: PostgreSQL 13, Oracle 12.2, SQL Server 2017.
+        Corretto in oracle/gov_pay.sql fr.xml, ancora NOT NULL nonostante la patch 3.8.2 l'avesse resa opzionale: su un'installazione nuova gli insert di govpay-fdr-batch fallivano.
+        Documentazione: sezione "Aggiornamento da versioni precedenti la 3.11" della guida di aggiornamento e README degli script SQL.
+        Verifica: schema, patch, migrazione e riallineamento eseguiti su PostgreSQL 16, MySQL 8.4, MariaDB 11.4, SQL Server 2022, Oracle Free 23 e HSQL 2.7.3 con lo stesso dataset: stesso esito su tutti, nessuna differenza alla seconda esecuzione, e su PostgreSQL esito identico agli script 05 e 06 della libreria.
+
 2026-10-30  Giuliano Pintori <pintori@link.it>
 
         * Issue #903 Dichiarati nullable nei contratti OpenAPI i campi facoltativi di tipo data, numero o booleano che i client inviano a GovPay.

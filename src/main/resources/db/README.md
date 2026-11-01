@@ -388,6 +388,37 @@ prodotto, insieme all'elenco delle versioni disponibili.
 Per la sola `versioneDA` l'avviso e' anche un promemoria: non e' verificabile da
 qui che l'installazione sia davvero a quella versione.
 
+## Migrazione al modello v3 (3.11.0)
+
+La patch `patch/3.11.0.sql` di ogni dialetto, oltre a creare le tabelle e le
+colonne del modello v3 delle posizioni debitorie (Issue #901), migra i dati v2:
+la sezione che inizia con il marcatore `-- Migrazione dei dati al modello v3`
+segue le regole degli script `migrazione/05` e `06` di govpay-common-pendenze,
+piu' i soggetti debitori e le colonne nuove di `documenti`. I casi non migrabili
+finiscono in `migrazione_v3_scarti`, che non e' in `gov_pay.sql` e si elimina a
+bonifica conclusa. La patch e' rieseguibile.
+
+Al passaggio all'API v3 si esegue `<dialetto>/migrazione/riallineamento-v3.sql`,
+che recupera le modifiche fatte dalle API v2 dopo l'aggiornamento e poi ripete
+la stessa sezione di migrazione. La sezione e' scritta due volte, nella patch e
+nel riallineamento: si modifica nella patch e si ricopia, dal marcatore fino
+alla fine del file. `check-riallineamento-v3.sh` verifica che le due copie
+coincidano nei 5 dialetti:
+
+```console
+./check-riallineamento-v3.sh
+```
+
+Il riallineamento non e' una patch: `build-upgrade-sql.sh` non lo include, e
+`collect-release-sql.sh`, nelle modalita' `upgrade` e `both`, lo copia a parte
+come `govpay-<versione>-riallineamento-v3-<dialetto>.sql`. L'installer lo
+contiene sotto `sql/<dialetto>/migrazione/`.
+
+Requisiti: PostgreSQL 13 (`gen_random_uuid`), Oracle 12.2 (`LISTAGG ... ON
+OVERFLOW TRUNCATE`), SQL Server 2017 (`STRING_AGG`). La decodifica della causale
+v2 (`'01 ' || base64(UTF-8)`) e' scritta per ogni dialetto e restituisce NULL,
+invece di interrompere lo script, su un testo che non si decodifica.
+
 ## Svecchiamento del database
 
 Lo svecchiamento e' diviso in **sezioni**, una per area di dati, e ciascuna e' uno

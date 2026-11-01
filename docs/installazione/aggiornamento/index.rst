@@ -179,3 +179,112 @@ I servizi sono esposti utilizzando nuove BaseUrl, di seguito il mapping con le v
 | /govpay/backend/gui/backoffice  | /govpay-console                                 |
 +---------------------------------+-------------------------------------------------+
 
+
+Aggiornamento da versioni precedenti la 3.11
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La versione 3.11.0 introduce nel database il modello delle posizioni debitorie
+dell'API v3: ogni pendenza appartiene a una posizione debitoria (tabella
+``documenti``), che ha una o più opzioni di pagamento (``opzioni_pagamento``),
+cioè una soluzione unica, un piano rateale o una soluzione unica entro, oltre
+una soglia, ridotta o scontata, e uno o più soggetti debitori
+(``soggetti_debitori``).
+
+Le API v2 continuano a funzionare sugli stessi dati e restano disponibili per
+retrocompatibilità.
+
+Requisiti del database
+^^^^^^^^^^^^^^^^^^^^^^
+
+La patch usa funzioni che non sono disponibili nelle versioni precedenti a:
+
+- PostgreSQL 13;
+- Oracle 12.2;
+- SQL Server 2017.
+
+Migrazione dei dati nella patch 3.11.0
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Oltre alle tabelle e alle colonne nuove, la patch ``3.11.0.sql`` porta i dati
+esistenti nel nuovo modello:
+
+- ogni pendenza senza posizione debitoria ne riceve una, con codice
+  ``MIGR-<id della pendenza>`` e la causale come descrizione;
+- per ogni posizione vengono create le opzioni di pagamento, ricavate dal codice
+  rata delle pendenze:
+
+  - tutte senza codice rata: una soluzione unica;
+  - codici rata numerici e distinti: un piano rateale;
+  - codici di soglia distinti (es. ``ENTRO5``, ``OLTRE10``, ``RIDOTTO``,
+    ``SCONTATO``): un'opzione per ciascuna pendenza;
+
+- lo stato di ogni opzione (disponibile, attivata o annullata) deriva da quello
+  delle sue pendenze;
+- il debitore della pendenza diventa il primo soggetto debitore della posizione.
+
+Su installazioni con molte pendenze la patch può richiedere un tempo
+apprezzabile: va considerato nel pianificare la finestra di aggiornamento.
+
+I casi che non si possono migrare non bloccano l'aggiornamento: restano come
+sono e vengono elencati nella tabella ``migrazione_v3_scarti``, con il motivo:
+
++------------------------------+------------------------------------------------------------+
+| Motivo                       | Significato                                                |
++==============================+============================================================+
+| CAUSALE_NON_DECODIFICABILE   | la causale della pendenza non è in un formato leggibile    |
++------------------------------+------------------------------------------------------------+
+| COLLISIONE_COD_DOCUMENTO     | il codice ``MIGR-<id>`` è già usato da un'altra posizione  |
++------------------------------+------------------------------------------------------------+
+| DEBITORI_INCOERENTI          | le pendenze della stessa posizione hanno debitori diversi  |
++------------------------------+------------------------------------------------------------+
+| COD_RATA_ANOMALO             | i codici rata delle pendenze della posizione non rientrano |
+|                              | in nessuno dei casi previsti                               |
++------------------------------+------------------------------------------------------------+
+
+Dopo l'aggiornamento:
+
+1. consultare ``migrazione_v3_scarti``;
+2. correggere i dati indicati;
+3. rieseguire la patch ``3.11.0.sql``.
+
+La patch è rieseguibile: le strutture già presenti non vengono ricreate, e la
+migrazione considera solo le posizioni non ancora migrate. A ogni esecuzione la
+tabella degli scarti viene svuotata e riempita di nuovo.
+
+A bonifica conclusa la tabella degli scarti non serve più e si elimina:
+
+.. code-block:: sql
+
+   DROP TABLE migrazione_v3_scarti;
+
+Riallineamento al passaggio all'API v3
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Fra l'aggiornamento alla 3.11.0 e il passaggio delle applicazioni all'API v3,
+le API v2 continuano a creare e aggiornare pendenze senza aggiornare le opzioni
+di pagamento. Al momento del passaggio va quindi eseguito, una volta, lo script
+di riallineamento. Lo script:
+
+- collega alle posizioni già migrate le pendenze aggiunte nel frattempo, quando
+  l'opzione a cui appartengono è univoca;
+- aggiorna lo stato delle opzioni e le date delle posizioni migrate;
+- migra le pendenze create dopo l'aggiornamento, con le stesse regole della
+  patch.
+
+Si trova in ``sql/<tipoDB>/migrazione/riallineamento-v3.sql``, sia nell'archivio
+prodotto dalla procedura di installazione sia nei sorgenti
+(``src/main/resources/db/sql/<tipoDB>/migrazione/``). Lo SQL allegato ai rilasci
+lo contiene come ``govpay-<versione>-riallineamento-v3-<tipoDB>.sql``. Non fa
+parte dello script prodotto da ``build-upgrade-sql.sh``, che compone solo le
+patch.
+
+Come la patch, è rieseguibile e riempie ``migrazione_v3_scarti`` con i casi che
+non riesce a sistemare: anche qui si correggono e lo si riesegue.
+
+Va eseguito con il client del database in modo che si interrompa al primo
+errore, come indicato nella sua intestazione:
+
+- PostgreSQL: ``psql -v ON_ERROR_STOP=1``;
+- MySQL e MariaDB: il client ``mysql`` senza ``--force``;
+- Oracle: ``WHENEVER SQLERROR EXIT FAILURE``;
+- SQL Server: ``sqlcmd -b``.
