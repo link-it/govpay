@@ -1,3 +1,9 @@
+2026-11-01  Giuliano Pintori <pintori@link.it>
+
+        * Issue #901 Corretto in oracle/gov_pay.sql il campo xml della tabella fr, ancora NOT NULL nonostante la patch 3.8.2 l'avesse reso opzionale: su un'installazione Oracle nuova gli insert di govpay-fdr-batch, che non valorizza la colonna, fallivano. Gli altri dialetti erano gia' allineati.
+        Correzione riportata dal ramo 3.11.x. Non serve una patch: le installazioni aggiornate hanno gia' la colonna opzionale per effetto della 3.8.2.
+        Verifica: installazione da zero dello schema su Oracle Free 23 senza errori, con FR.XML nullable.
+
 2026-10-30  Giuliano Pintori <pintori@link.it>
 
         * Avanzamento versione 3.9.3.p7.
