@@ -1,3 +1,9 @@
+2026-11-02  Giuliano Pintori <pintori@link.it>
+
+        * Issue #904 La cartellaPagamento restituita dall'ente nella verifica di una pendenza (API Ente Creditore v1 e v2) veniva persa: i due VerificaConverter la copiavano in codVersamentoLotto, campo che VersamentoUtils.toVersamentoModel non riporta nel modello, e versamenti.cod_lotto restava vuoto. Ora la copiano in codLotto, come fanno i converter delle API Backoffice v1 e Pendenze v1, e la pendenza verificata espone la cartellaPagamento nelle API.
+        Correzione riportata dal ramo 3.11.x.
+        Verifica: build del modulo core; i due converter, chiamati con una pendenza verificata v1 e una v2 con cartellaPagamento valorizzata, restituiscono il valore in codLotto.
+
 2026-11-01  Giuliano Pintori <pintori@link.it>
 
         * Issue #901 Corretto in oracle/gov_pay.sql il campo xml della tabella fr, ancora NOT NULL nonostante la patch 3.8.2 l'avesse reso opzionale: su un'installazione Oracle nuova gli insert di govpay-fdr-batch, che non valorizza la colonna, fallivano. Gli altri dialetti erano gia' allineati.
