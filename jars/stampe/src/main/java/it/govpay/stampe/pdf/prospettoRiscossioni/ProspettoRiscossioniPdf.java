@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 
 import it.govpay.stampe.model.ProspettoRiscossioneDominioInput;
 import it.govpay.stampe.model.ProspettoRiscossioniInput;
+import it.govpay.stampe.pdf.LogoEnte;
 import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -87,7 +88,24 @@ public class ProspettoRiscossioniPdf {
 	}
 	
 	public byte[] creaProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties, File jasperFile) throws Exception {
-		
+		try {
+			return this.creaProspettoRiscossioniInner(log, input, prospettoRiscossioniProperties, jasperFile);
+		} catch (JRException | RuntimeException e) {
+			boolean logoDiDefault = false;
+			for (ProspettoRiscossioneDominioInput prospettoDominio : input.getElencoProspettiDominio().getProspettoDominio()) {
+				if(LogoEnte.usaLogoDiDefault(log, "prospetto riscossioni", prospettoDominio.getCfEnte(), prospettoDominio.getLogoEnte())) {
+					prospettoDominio.setLogoEnte(null);
+					logoDiDefault = true;
+				}
+			}
+			if(!logoDiDefault)
+				throw e;
+			return this.creaProspettoRiscossioniInner(log, input, prospettoRiscossioniProperties, jasperFile);
+		}
+	}
+
+	private byte[] creaProspettoRiscossioniInner(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties, File jasperFile) throws Exception {
+
 		// utilizzo le properties di default per caricare i loghi pagopa e dominio di default
 		Properties propertiesProspettoRiscossioniDefault = prospettoRiscossioniProperties.getPropertiesPerDominio(ProspettoRiscossioniProperties.DEFAULT_PROPS, log);
 		

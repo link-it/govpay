@@ -38,9 +38,11 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.stampe.model.QuietanzaPagamentoInput;
+import it.govpay.stampe.pdf.LogoEnte;
 import it.govpay.stampe.pdf.quietanzaPagamento.utils.QuietanzaPagamentoProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -91,7 +93,18 @@ public class QuietanzaPagamentoPdf {
 	}
 	
 	public byte[] creaQuietanzaPagamento(Logger log, QuietanzaPagamentoInput input, String codDominio, QuietanzaPagamentoProperties quietanzaPagamentoProperties, File jasperFile) throws Exception {
-	
+		try {
+			return this.creaQuietanzaPagamentoInner(log, input, codDominio, quietanzaPagamentoProperties, jasperFile);
+		} catch (JRException | RuntimeException e) {
+			if(!LogoEnte.usaLogoDiDefault(log, "quietanza di pagamento", codDominio, input.getLogoEnte()))
+				throw e;
+			input.setLogoEnte(null);
+			return this.creaQuietanzaPagamentoInner(log, input, codDominio, quietanzaPagamentoProperties, jasperFile);
+		}
+	}
+
+	private byte[] creaQuietanzaPagamentoInner(Logger log, QuietanzaPagamentoInput input, String codDominio, QuietanzaPagamentoProperties quietanzaPagamentoProperties, File jasperFile) throws Exception {
+
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesRicevutaPerDominio = quietanzaPagamentoProperties.getPropertiesPerDominio(codDominio, log);
 
