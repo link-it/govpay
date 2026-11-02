@@ -1,3 +1,8 @@
+2026-11-02  Giuliano Pintori <pintori@link.it>
+
+        * Issue #904 La cartellaPagamento restituita dall'ente nella verifica di una pendenza (API Ente Creditore v1 e v2) veniva persa: i due VerificaConverter la copiavano in codVersamentoLotto, campo che VersamentoUtils.toVersamentoModel non riporta nel modello, e versamenti.cod_lotto restava vuoto. Ora la copiano in codLotto, come fanno i converter delle API Backoffice v1 e Pendenze v1, e la pendenza verificata espone la cartellaPagamento nelle API.
+        Verifica: build del modulo core; i due converter, chiamati con una pendenza verificata v1 e una v2 con cartellaPagamento valorizzata, restituiscono il valore in codLotto.
+
 2026-11-01  Giuliano Pintori <pintori@link.it>
 
         * Issue #901 Schema SQL 3.11.0 per il modello v3 delle posizioni debitorie di govpay-common-pendenze, nei 5 dialetti (PostgreSQL, Oracle, MySQL/MariaDB, SQL Server, HSQL).

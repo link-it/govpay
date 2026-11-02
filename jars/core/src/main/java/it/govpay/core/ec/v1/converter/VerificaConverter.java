@@ -66,7 +66,7 @@ public class VerificaConverter {
 		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
+		versamento.setCodLotto(pendenzaVerificata.getCartellaPagamento());
 		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
 		
 		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
