@@ -19,6 +19,8 @@
  */
 package it.govpay.backoffice.utils.validazione.semantica;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +34,24 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.PagamentoContext;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.stampe.pdf.LogoEnte;
+import it.govpay.stampe.pdf.LogoEnteNonStampabileException;
 
 public class DominioValidator implements IValidable {
 
 	private Dominio dominio;
+	private byte[] logoAttuale;
 
 	public DominioValidator(Dominio dominio) {
+		this(dominio, null);
+	}
+
+	/**
+	 * @param logoAttuale il logo gia' salvato per il dominio: se la richiesta lo ripropone invariato non viene verificato di nuovo
+	 */
+	public DominioValidator(Dominio dominio, byte[] logoAttuale) {
 		this.dominio = dominio;
+		this.logoAttuale = logoAttuale;
 	}
 
 	@Override
@@ -84,6 +97,16 @@ public class DominioValidator implements IValidable {
 				vf.getValidator("iuvPrefix", prefix).maxLength(18).pattern("(^([0-9]){1,13}$)");
 			} catch (ValidationException ve) {
 				throw new UnprocessableEntityException("Il pattern indicato realizza prefissi troppo lunghi: " + prefix);
+			}
+		}
+
+		// il logo deve poter essere stampato negli avvisi e nelle ricevute (Issue #902)
+		byte[] logo = this.dominio.getLogo();
+		if(logo != null && logo.length > 0 && !Arrays.equals(logo, this.logoAttuale)) {
+			try {
+				LogoEnte.verifica(new String(logo, StandardCharsets.UTF_8));
+			} catch (LogoEnteNonStampabileException e) {
+				throw new UnprocessableEntityException("Il logo non e' utilizzabile nella stampa degli avvisi: " + e.getMessage() + ".");
 			}
 		}
 	}

@@ -232,6 +232,9 @@
         <jasperreports.version>6.21.5</jasperreports.version>
         <!-- barcode4j -->
         <barcode4j.version>2.1</barcode4j.version>
+        <!-- junit, test dei moduli jars -->
+        <junit-jupiter.version>5.12.2</junit-jupiter.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <!-- ant version -->
         <ant.version>1.10.18</ant.version>
 
