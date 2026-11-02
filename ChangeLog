@@ -1,5 +1,13 @@
 2026-11-02  Giuliano Pintori <pintori@link.it>
 
+        * Issue #902 Corretta la stampa di avvisi, ricevute, quietanze e prospetti riscossioni con un logo dell'ente in formato SVG.
+        Un SVG che incorpora un'immagine PNG o JPEG come data URI, caso tipico di un logo raster convertito in SVG, faceva fallire la stampa con l'errore "null:0": Batik decodifica le immagini incorporate solo con batik-codec, che mancava. Aggiunta la dipendenza batik-codec 1.19, senza batik-transcoder e batik-svggen che servono solo alla conversione da SVG.
+        Gli SVG che fanno riferimento a risorse esterne (immagini o fogli di stile collegati, @import) restano non stampabili: Batik dalla 1.17 non carica risorse esterne (CVE-2022-44729, CVE-2022-44730) e non vengono riabilitate.
+        Se la stampa fallisce per il logo del dominio, il documento viene ristampato una sola volta con il logo di default e l'anomalia viene registrata nel log a livello WARN, con il dominio e la causa.
+        API Backoffice v1: PUT /domini/{idDominio} risponde 422 se il logo indicato non e' stampabile, con la causa nel dettaglio dell'errore. Un logo gia' salvato e riproposto invariato non viene verificato di nuovo, per non bloccare le altre modifiche del dominio. Se la richiesta riporta come logo il link restituito dalla GET (/domini/{idDominio}/logo) il logo salvato resta invariato, invece di essere sostituito da quel testo.
+        Correzione riportata dal ramo 3.9.x.
+        Verifica: nuova testsuite JUnit del modulo stampe con 30 loghi (SVG, PNG, JPEG, GIF, BMP, TIFF, WebP e file corrotti), in base64 e come data URI; nuovo test di integrazione dominio-put-logo.feature. Sostituito nei messaggi dei test dell'API Backoffice un logo PNG troncato con uno valido.
+
         * Issue #904 La cartellaPagamento restituita dall'ente nella verifica di una pendenza (API Ente Creditore v1 e v2) veniva persa: i due VerificaConverter la copiavano in codVersamentoLotto, campo che VersamentoUtils.toVersamentoModel non riporta nel modello, e versamenti.cod_lotto restava vuoto. Ora la copiano in codLotto, come fanno i converter delle API Backoffice v1 e Pendenze v1, e la pendenza verificata espone la cartellaPagamento nelle API.
         Correzione riportata dal ramo 3.11.x.
         Verifica: build del modulo core; i due converter, chiamati con una pendenza verificata v1 e una v2 con cartellaPagamento valorizzata, restituiscono il valore in codLotto.

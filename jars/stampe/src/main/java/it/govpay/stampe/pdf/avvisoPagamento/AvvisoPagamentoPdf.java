@@ -43,6 +43,7 @@ import it.govpay.stampe.model.PaginaAvvisoDoppia;
 import it.govpay.stampe.model.PaginaAvvisoMultipla;
 import it.govpay.stampe.model.PaginaAvvisoSingola;
 import it.govpay.stampe.model.PaginaAvvisoTripla;
+import it.govpay.stampe.pdf.LogoEnte;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -60,6 +61,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class AvvisoPagamentoPdf {
 
 	private static final String LOG_MSG_AVVISO_PAGAMENTO_INPUT = "AvvisoPagamentoInput: {}";
+	private static final String DOCUMENTO = "avviso di pagamento";
 	private static final String PROPERTY_VALUE_NET_SF_JASPERREPORTS_ENGINE_UTIL_XML_JAXEN_X_PATH_EXECUTER_FACTORY = "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory";
 	private static final String PROPERTY_NAME_NET_SF_JASPERREPORTS_XPATH_EXECUTER_FACTORY = "net.sf.jasperreports.xpath.executer.factory";
 	private static AvvisoPagamentoPdf instance = null;
@@ -168,6 +170,18 @@ public class AvvisoPagamentoPdf {
 	}
 
 	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
+		try {
+			return this.creaAvvisoSelezionaTemplate(log, input, codDominio, avProperties);
+		} catch (JRException | RuntimeException e) {
+			if(!LogoEnte.usaLogoDiDefault(log, DOCUMENTO, codDominio, input.getLogoEnte(), input.getLogoEnteSecondario()))
+				throw e;
+			input.setLogoEnte(null);
+			input.setLogoEnteSecondario(null);
+			return this.creaAvvisoSelezionaTemplate(log, input, codDominio, avProperties);
+		}
+	}
+
+	private byte[] creaAvvisoSelezionaTemplate(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		if(input.getScadenzaScontato() != null) {
 			return creaAvvisoViolazioneCDSInner(log, input, codDominio, avProperties);
 		} else if(input.getDiPoste() != null) {
@@ -327,6 +341,18 @@ public class AvvisoPagamentoPdf {
 	}
 	
 	public byte[] creaAvvisoV2(Logger log, it.govpay.stampe.model.v2.AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
+		try {
+			return this.creaAvvisoV2Inner(log, input, codDominio, avProperties);
+		} catch (JRException | RuntimeException e) {
+			if(!LogoEnte.usaLogoDiDefault(log, DOCUMENTO, codDominio, input.getLogoEnte(), input.getLogoEnteSecondario()))
+				throw e;
+			input.setLogoEnte(null);
+			input.setLogoEnteSecondario(null);
+			return this.creaAvvisoV2Inner(log, input, codDominio, avProperties);
+		}
+	}
+
+	private byte[] creaAvvisoV2Inner(Logger log, it.govpay.stampe.model.v2.AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
