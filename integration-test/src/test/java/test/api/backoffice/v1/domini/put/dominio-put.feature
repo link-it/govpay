@@ -28,6 +28,26 @@ And request dominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Scenario: Modifica di un dominio (logo)
+
+# il logo viene inviato come immagine base64 e restituito come link alla risorsa del logo
+* set dominio.logo = read('classpath:test/api/backoffice/v1/domini/put/msg/loghi/svg-semplice.txt')
+* def linkLogo = '/domini/' + idDominio + '/logo'
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.logo == linkLogo
+
 Scenario Outline: Modifica di un dominio (<field>)
 
 * set dominio.<field> = <value>
@@ -94,7 +114,6 @@ Examples:
 | auxDigit | '0' |
 | segregationCode | '49' |
 | segregationCode | '01' |
-| logo | '#("/domini/"+ idDominio +"/logo")' |
 | logo | null |
 | autStampaPosteItaliane | 'test' |
 | autStampaPosteItaliane | null |
