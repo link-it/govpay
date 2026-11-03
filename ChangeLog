@@ -1,3 +1,7 @@
+2026-11-03  Giuliano Pintori <pintori@link.it>
+
+        * Allineato alla 42.7.13, la versione del core, il driver PostgreSQL usato dai test di integrazione: la 42.7.11 e' affetta da GHSA-j92g-9f8w-j867 (downgrade silenzioso dell'autenticazione con channel binding). Il driver serve solo ai test e non e' incluso nei pacchetti di GovPay.
+
 2026-11-02  Giuliano Pintori <pintori@link.it>
 
         * Issue #902 Corretta la stampa di avvisi, ricevute, quietanze e prospetti riscossioni con un logo dell'ente in formato SVG.
