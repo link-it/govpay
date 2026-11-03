@@ -1,3 +1,10 @@
+2026-11-03  Giuliano Pintori <pintori@link.it>
+
+        * Risolte le segnalazioni CVE-2026-71575, CVE-2026-73179, CVE-2026-78384, CVE-2026-79650, CVE-2026-86463, CVE-2026-97468, CVE-2026-97791, CVE-2026-100227, CVE-2026-107937, CVE-2026-107938 e CVE-2026-108039 su cxf-core, cxf-rt-security, cxf-rt-rs-service-description e cxf-rt-rs-service-description-openapi-v3 4.2.3: portato CXF dalla 4.2.3 alla 4.2.4. NVD indica come affette le versioni dalla 4.2.0 alla 4.2.3.
+        Le CVE riguardano, tra l'altro, la verifica del nome host nel client HTTP Netty, la cache dei token validati dall'STS, la firma XML delle API JAX-RS, i limiti sulle intestazioni multipart/MTOM, sulla dimensione dei documenti XML e sulla decompressione DEFLATE dei JWE, il parser FIQL e il redirect dopo l'autenticazione OIDC.
+        cxf-parent 4.2.4 fissa nativamente neethi 3.2.4 e xmlschema-core 2.3.3: rimossi dal pom radice gli override neethi.version e xmlschema.version aggiunti con la 3.9.3.p4 e la 3.9.3.p6. dependency:list del reactor completo prima e dopo l'aggiornamento differisce solo per i 23 jar CXF, senza nuove dipendenze runtime.
+        Rinominate di conseguenza le directory third-party-licenses/jar/cxf-*-4.2.3 in cxf-*-4.2.4: il file LICENSE contenuto nei jar e' invariato.
+
 2026-11-02  Giuliano Pintori <pintori@link.it>
 
         * Issue #902 Corretta la stampa di avvisi, ricevute, quietanze e prospetti riscossioni con un logo dell'ente in formato SVG.
