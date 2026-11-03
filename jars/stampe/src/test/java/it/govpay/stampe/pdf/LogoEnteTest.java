@@ -73,7 +73,7 @@ class LogoEnteTest {
 
 	@Test
 	void causaSenzaDataUriNePosizioneBatik() {
-		String causa = LogoEnte.descriviCausa(new RuntimeException("null:0\nThe URI \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAGu\"\non element <image> can't be opened"));
+		String causa = LogoEnte.descriviCausa(new RuntimeException("null:0\nThe URI \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAGu\"\non element <image> can't be opened."));
 
 		assertEquals("The URI \"data:...\" on element <image> can't be opened", causa);
 	}

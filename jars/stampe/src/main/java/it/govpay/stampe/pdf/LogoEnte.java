@@ -123,7 +123,8 @@ public final class LogoEnte {
 				.replaceAll("data:[^\\s\"']{20,}", "data:...")
 				.replaceAll("(?m)^\\S*:-?\\d+\\s*$", "")
 				.replaceAll("\\s+", " ")
-				.trim();
+				.trim()
+				.replaceAll("\\.+$", "");
 		return causa.length() > MAX_LUNGHEZZA_CAUSA ? causa.substring(0, MAX_LUNGHEZZA_CAUSA) + "..." : causa;
 	}
 
