@@ -253,6 +253,37 @@ EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
 
 
+-- govpay-pafornode-api#6: la riga rpt nasce solo all'arrivo della ricevuta,
+-- anche per uno IUV che GovPay non conosce (stazione in broadcast). In quel
+-- caso id_versamento resta NULL e id_applicazione riporta l'applicazione
+-- ricavata dal dominio; per le ricevute con pendenza resta NULL.
+-- Nessuna FK su rpt, come per id_versamento: gov_pay.sql le toglie per le
+-- prestazioni.
+-- La guardia evita di rieseguire il MODIFY, che riscrive la tabella.
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'rpt'
+        AND column_name = 'id_versamento'
+        AND is_nullable = 'NO') = 1,
+    'ALTER TABLE rpt MODIFY COLUMN id_versamento BIGINT COMMENT ''Riferimento alla pendenza oggetto della richeista di pagmaento''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'rpt'
+        AND column_name = 'id_applicazione') = 0,
+    'ALTER TABLE rpt ADD COLUMN id_applicazione BIGINT COMMENT ''Riferimento all\\''applicazione del dominio, solo per una ricevuta senza pendenza''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
+
 -- ===========================================================================
 -- Migrazione dei dati al modello v3
 -- ===========================================================================

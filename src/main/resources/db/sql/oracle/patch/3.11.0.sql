@@ -8,7 +8,8 @@
 -- Va eseguita con WHENEVER SQLERROR EXIT FAILURE, per fermarsi al primo errore.
 -- Oracle non supporta IF NOT EXISTS: ogni statement e' in un blocco PL/SQL che
 -- ignora il solo errore dell'oggetto gia' presente, come nella 3.10.0:
--- ORA-01430 colonna, ORA-00955 nome gia' in uso, ORA-02275 e ORA-02264 vincolo.
+-- ORA-01430 colonna, ORA-00955 nome gia' in uso, ORA-02275 e ORA-02264 vincolo,
+-- ORA-01451 colonna gia' nullable.
 
 -- documenti.descrizione da 255 a 1024 caratteri, come causale_versamento:
 -- govpay-common-pendenze vi riporta la causale intera dei versamenti migrati
@@ -220,10 +221,37 @@ EXCEPTION
 END;
 /
 
--- Gli ALTER TABLE su documenti e versamenti invalidano le viste che le leggono.
--- Oracle le ricompilerebbe al primo accesso; ricompilarle qui lascia lo schema
--- aggiornato tutto VALID, come uno installato da zero, e fa emergere subito un
--- eventuale errore di compilazione. compile_all FALSE: solo gli oggetti invalidi.
+-- govpay-pafornode-api#6: la riga rpt nasce solo all'arrivo della ricevuta,
+-- anche per uno IUV che GovPay non conosce (stazione in broadcast). In quel
+-- caso id_versamento resta NULL e id_applicazione riporta l'applicazione
+-- ricavata dal dominio; per le ricevute con pendenza resta NULL.
+-- Nessuna FK su rpt, come per id_versamento: gov_pay.sql le toglie per le
+-- prestazioni.
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE rpt MODIFY (id_versamento NULL)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1451 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE rpt ADD id_applicazione NUMBER';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+-- Gli ALTER TABLE su documenti, versamenti e rpt invalidano le viste che le
+-- leggono. Oracle le ricompilerebbe al primo accesso; ricompilarle qui lascia
+-- lo schema aggiornato tutto VALID, come uno installato da zero, e fa emergere
+-- subito un eventuale errore di compilazione. compile_all FALSE: solo gli
+-- oggetti invalidi.
 BEGIN
     DBMS_UTILITY.compile_schema(schema => USER, compile_all => FALSE);
 END;

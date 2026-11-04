@@ -830,7 +830,11 @@ CREATE TABLE rpt
 	versione VARCHAR(35) NOT NULL COMMENT 'Versione dell\'api PagoPA utilizzata per la transazione.',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
+	-- id_versamento e' NULL per una ricevuta senza pendenza: stazione in broadcast,
+	-- IUV sconosciuto a GovPay. Solo in quel caso id_applicazione riporta
+	-- l'applicazione ricavata dal dominio (govpay-pafornode-api#6).
+	id_versamento BIGINT COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
+	id_applicazione BIGINT COMMENT 'Riferimento all\'applicazione del dominio, solo per una ricevuta senza pendenza',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)

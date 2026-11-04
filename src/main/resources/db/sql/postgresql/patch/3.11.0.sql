@@ -172,6 +172,16 @@ END $$;
 CREATE INDEX IF NOT EXISTS idx_vrs_id_opz_pagamento ON versamenti (id_opzione_pagamento);
 
 
+-- govpay-pafornode-api#6: la riga rpt nasce solo all'arrivo della ricevuta,
+-- anche per uno IUV che GovPay non conosce (stazione in broadcast). In quel
+-- caso id_versamento resta NULL e id_applicazione riporta l'applicazione
+-- ricavata dal dominio; per le ricevute con pendenza resta NULL.
+-- Nessuna FK su rpt, come per id_versamento: gov_pay.sql le toglie per le
+-- prestazioni.
+ALTER TABLE rpt ALTER COLUMN id_versamento DROP NOT NULL;
+ALTER TABLE rpt ADD COLUMN IF NOT EXISTS id_applicazione BIGINT;
+
+
 -- ===========================================================================
 -- Migrazione dei dati al modello v3
 -- ===========================================================================

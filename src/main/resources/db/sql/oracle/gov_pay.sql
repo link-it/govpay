@@ -1162,7 +1162,11 @@ CREATE TABLE rpt
 	versione VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
+	-- id_versamento e' NULL per una ricevuta senza pendenza: stazione in broadcast,
+	-- IUV sconosciuto a GovPay. Solo in quel caso id_applicazione riporta
+	-- l'applicazione ricavata dal dominio (govpay-pafornode-api#6).
+	id_versamento NUMBER,
+	id_applicazione NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
