@@ -39,8 +39,8 @@ import it.govpay.stampe.pdf.LogoEnteNonStampabileException;
 
 public class DominioValidator implements IValidable {
 
-	private Dominio dominio;
-	private byte[] logoAttuale;
+	private final Dominio dominio;
+	private final byte[] logoAttuale;
 
 	public DominioValidator(Dominio dominio) {
 		this(dominio, null);
