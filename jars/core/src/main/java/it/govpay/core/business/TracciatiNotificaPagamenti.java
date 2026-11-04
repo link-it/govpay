@@ -601,7 +601,7 @@ public class TracciatiNotificaPagamenti {
 			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ZipOutputStream zos)
 			throws java.io.IOException, ServiceException, JAXBException, SAXException, IOException {
 
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').build());
+		CSVUtils csvUtils = CSVUtils.newInstance(CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').build());
 
 		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
 		zos.putNextEntry(tracciatoOutputEntry);
@@ -720,7 +720,7 @@ public class TracciatiNotificaPagamenti {
 
 		log.info("Creazione file di sintesi pagamenti in corso...");
 
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
+		CSVUtils csvUtils = CSVUtils.newInstance(CSVFormat.DEFAULT);
 
 		ZipEntry tracciatoOutputEntry = new ZipEntry(GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(tracciatoOutputEntry);
@@ -930,7 +930,7 @@ public class TracciatiNotificaPagamenti {
 • “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
 		 * */
 
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').setEscape(Character.valueOf('\0')).setQuoteMode(QuoteMode.NONE).build());
+		CSVUtils csvUtils = CSVUtils.newInstance(CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').setEscape(Character.valueOf('\0')).setQuoteMode(QuoteMode.NONE).build());
 
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
 		String progressivoS = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, "", "progressivoFile",progressivo +"", 3, true, true);

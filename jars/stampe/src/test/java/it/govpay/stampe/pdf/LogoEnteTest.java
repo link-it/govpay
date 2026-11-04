@@ -23,8 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -76,6 +78,16 @@ class LogoEnteTest {
 		String causa = LogoEnte.descriviCausa(new RuntimeException("null:0\nThe URI \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAGu\"\non element <image> can't be opened."));
 
 		assertEquals("The URI \"data:...\" on element <image> can't be opened", causa);
+	}
+
+	@Test
+	void causaDaMessaggioMoltoLungo() {
+		String punti = assertTimeoutPreemptively(Duration.ofSeconds(2), () -> LogoEnte.descriviCausa(new RuntimeException("x" + ".".repeat(100_000) + "x")));
+		String testo = LogoEnte.descriviCausa(new RuntimeException("errore ".repeat(10_000)));
+
+		assertEquals("x", punti);
+		assertEquals(303, testo.length());
+		assertTrue(testo.endsWith("..."));
 	}
 
 	private static LoghiDiProva.Logo logo(String nome) {

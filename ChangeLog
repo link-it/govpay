@@ -1,3 +1,10 @@
+2026-11-04  Giuliano Pintori <pintori@link.it>
+
+        * Corrette le 4 segnalazioni SonarCloud di affidabilita' emerse sul ramo master con il merge della 3.9.3.p7.
+        LogoEnte.descriviCausa: la rimozione dei punti finali con l'espressione regolare \.+$ aveva un costo quadratico su lunghe sequenze di punti; ora usa StringUtils.stripEnd. Il messaggio dell'errore, che puo' riportare parti dell'SVG caricato dall'ente, viene inoltre limitato a 1200 caratteri prima delle sostituzioni, cosi' nessuna espressione regolare lavora su un testo di lunghezza arbitraria.
+        Metodi getInstance() che restituivano ogni volta un'istanza nuova: rimosso SimpleDateFormatUtils.getInstance(), mai usato in una classe che ha solo metodi statici; rinominati in newInstance() i due metodi di CSVUtils, usati solo in TracciatiNotificaPagamenti; ProjectInfo, senza stato, restituisce ora un'unica istanza.
+        Verifica: build completa con test riuscita; nuovo test di LogoEnte su un messaggio di 100.000 punti e su un messaggio di 70.000 caratteri.
+
 2026-11-03  Giuliano Pintori <pintori@link.it>
 
         * Risolte le segnalazioni CVE-2026-89407 e CVE-2026-89425 (High) su jackson-core-2.22.2.jar, CVE-2026-91776 e CVE-2026-91777 (High) su jackson-databind-2.22.2.jar e CVE-2026-102554 (High) su guava-33.7.1-jre.jar: portato jackson dalla 2.22.2 alla 2.22.4 e guava dalla 33.7.1-jre alla 33.7.2-jre, come gia' fatto sul ramo 3.10.x.
