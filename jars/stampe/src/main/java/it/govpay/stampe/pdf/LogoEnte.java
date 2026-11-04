@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
@@ -49,6 +50,7 @@ public final class LogoEnte {
 	private static final String TEMPLATE_VERIFICA = "/logo/VerificaLogoEnte.jrxml";
 	private static final String PARAMETRO_LOGO = "logo_ente";
 	private static final int MAX_LUNGHEZZA_CAUSA = 300;
+	private static final int MAX_LUNGHEZZA_MESSAGGIO = 4 * MAX_LUNGHEZZA_CAUSA;
 
 	private static JasperReport reportVerifica = null;
 
@@ -119,12 +121,15 @@ public final class LogoEnte {
 			return e.getClass().getSimpleName();
 		}
 
-		String causa = messaggio
+		// il messaggio puo' riportare parti dell'SVG, che arriva dall'ente: si limita prima delle sostituzioni
+		if (messaggio.length() > MAX_LUNGHEZZA_MESSAGGIO) {
+			messaggio = messaggio.substring(0, MAX_LUNGHEZZA_MESSAGGIO);
+		}
+		String causa = StringUtils.stripEnd(messaggio
 				.replaceAll("data:[^\\s\"']{20,}", "data:...")
 				.replaceAll("(?m)^\\S*:-?\\d+\\s*$", "")
 				.replaceAll("\\s+", " ")
-				.trim()
-				.replaceAll("\\.+$", "");
+				.trim(), ".");
 		return causa.length() > MAX_LUNGHEZZA_CAUSA ? causa.substring(0, MAX_LUNGHEZZA_CAUSA) + "..." : causa;
 	}
 

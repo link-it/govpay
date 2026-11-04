@@ -34,6 +34,8 @@ import org.openspcoop2.generic_project.beans.IProjectInfo;
  */
 public class ProjectInfo implements IProjectInfo {
 
+	private static final ProjectInfo INSTANCE = new ProjectInfo();
+
 	@Override
 	public String getProjectName(){
 		return "GovPay";
@@ -50,6 +52,6 @@ public class ProjectInfo implements IProjectInfo {
 	}
 
 	public static ProjectInfo getInstance(){
-		return new ProjectInfo();
+		return INSTANCE;
 	}	
 }

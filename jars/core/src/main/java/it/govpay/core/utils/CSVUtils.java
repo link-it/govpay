@@ -50,11 +50,11 @@ public class CSVUtils {
 		this.csvFormat = csvFormat;
 	}
 
-	public static CSVUtils getInstance() {
+	public static CSVUtils newInstance() {
 		return new CSVUtils(CSVFormat.DEFAULT);
 	}
 
-	public static CSVUtils getInstance(CSVFormat csvFormat) {
+	public static CSVUtils newInstance(CSVFormat csvFormat) {
 		if(csvFormat != null)
 			return new CSVUtils(csvFormat);
 		else
