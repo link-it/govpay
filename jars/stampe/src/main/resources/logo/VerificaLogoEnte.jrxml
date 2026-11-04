@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Report usato da LogoEnte.verifica: stampa solo il logo dell'ente, con la stessa
+     espressione dei template degli avvisi ma con onErrorType="Error", per rifiutare
+     un logo che nei documenti non comparirebbe o ne bloccherebbe la stampa. -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VerificaLogoEnte" language="groovy" pageWidth="200" pageHeight="100" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<import value="org.apache.commons.codec.binary.Base64"/>
+	<parameter name="logo_ente" class="java.lang.String"/>
+	<title>
+		<band height="100">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Error">
+				<reportElement x="0" y="0" width="200" height="100"/>
+				<imageExpression><![CDATA[new ByteArrayInputStream(Base64.decodeBase64((($P{logo_ente}.contains(','))?$P{logo_ente}.split(',')[1]:$P{logo_ente}).getBytes("UTF-8")))]]></imageExpression>
+			</image>
+		</band>
+	</title>
+</jasperReport>

@@ -82,9 +82,11 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -572,9 +574,21 @@ public class DominiController extends BaseController {
 			putDominioDTO.setIdDomini(AuthorizationManager.getIdDominiAutorizzati(user));
 			putDominioDTO.setCodDomini(AuthorizationManager.getDominiAutorizzati(user));
 
-			new DominioValidator(putDominioDTO.getDominio()).validazioneSemantica();
-
 			DominiDAO dominiDAO = new DominiDAO(false);
+
+			byte[] logoAttuale = null;
+			try {
+				logoAttuale = dominiDAO.getLogo(new GetDominioDTO(user, idDominio));
+			} catch (DominioNonTrovatoException e) {
+				// dominio nuovo o senza logo
+			}
+
+			// la GET restituisce il logo come link: se la richiesta lo ripropone il logo resta quello salvato
+			if(UriBuilderUtils.getLogoDominio(idDominio).equals(dominioRequest.getLogo())) {
+				putDominioDTO.getDominio().setLogo(logoAttuale);
+			}
+
+			new DominioValidator(putDominioDTO.getDominio(), logoAttuale).validazioneSemantica();
 
 			PutDominioDTOResponse putDominioDTOResponse = dominiDAO.createOrUpdate(putDominioDTO);
 

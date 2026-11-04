@@ -37,9 +37,11 @@ import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.model.RicevutaTelematicaInput;
+import it.govpay.stampe.pdf.LogoEnte;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -91,7 +93,18 @@ public class RicevutaTelematicaPdf{
 	}
 	
 	public RicevutaPagamento creaRicevuta(Logger log, RicevutaTelematicaInput input, RicevutaPagamento ricevuta, RicevutaTelematicaProperties rtProperties) throws Exception {
-	
+		try {
+			return this.creaRicevutaInner(log, input, ricevuta, rtProperties);
+		} catch (JRException | RuntimeException e) {
+			if(!LogoEnte.usaLogoDiDefault(log, "ricevuta telematica", ricevuta.getCodDominio(), input.getLogoEnte()))
+				throw e;
+			input.setLogoEnte(null);
+			return this.creaRicevutaInner(log, input, ricevuta, rtProperties);
+		}
+	}
+
+	private RicevutaPagamento creaRicevutaInner(Logger log, RicevutaTelematicaInput input, RicevutaPagamento ricevuta, RicevutaTelematicaProperties rtProperties) throws Exception {
+
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		String codDominio = ricevuta.getCodDominio();
 		Properties propertiesRicevutaPerDominio = rtProperties.getPropertiesPerDominio(codDominio, log);

@@ -1,3 +1,46 @@
+2026-11-03  Giuliano Pintori <pintori@link.it>
+
+        * Risolte le segnalazioni CVE-2026-89407 e CVE-2026-89425 (High) su jackson-core-2.22.2.jar, CVE-2026-91776 e CVE-2026-91777 (High) su jackson-databind-2.22.2.jar e CVE-2026-102554 (High) su guava-33.7.1-jre.jar: portato jackson dalla 2.22.2 alla 2.22.4 e guava dalla 33.7.1-jre alla 33.7.2-jre, come gia' fatto sul ramo 3.10.x.
+        Su NVD le quattro CVE di jackson sono in stato Deferred, senza le versioni affette, e il controllo OWASP della build non le segnala; GHSA e OSV le indicano corrette nella 2.22.3, e Trivy le rileva nelle immagini Docker. Le CVE di jackson sono di tipo denial of service: espressioni regolari sui numeri in formato stringa e messaggi d'errore sui token non validi in jackson-core, cache dei deserializzatori per type id e risoluzione dei riferimenti in avanti di @JsonIdentityInfo in jackson-databind. Quella di guava riguarda l'allocazione di memoria senza limite nella deserializzazione nativa di CompactHashMap, CompactHashSet e MapMakerInternalMap.
+        dependency:list del reactor prima e dopo l'aggiornamento differisce solo per i 13 jar jackson con versione 2.22.x e per guava; jackson-annotations resta alla 2.22.
+        Rinominate di conseguenza le directory third-party-licenses/jar di jackson e guava: i file di licenza sono invariati.
+
+2026-11-03  Giuliano Pintori <pintori@link.it>
+
+        * Risolte le segnalazioni CVE-2026-71575, CVE-2026-73179, CVE-2026-78384, CVE-2026-79650, CVE-2026-86463, CVE-2026-97468, CVE-2026-97791, CVE-2026-100227, CVE-2026-107937, CVE-2026-107938 e CVE-2026-108039 su cxf-core, cxf-rt-security, cxf-rt-rs-service-description e cxf-rt-rs-service-description-openapi-v3 4.2.3: portato CXF dalla 4.2.3 alla 4.2.4. NVD indica come affette le versioni dalla 4.2.0 alla 4.2.3.
+        Le CVE riguardano, tra l'altro, la verifica del nome host nel client HTTP Netty, la cache dei token validati dall'STS, la firma XML delle API JAX-RS, i limiti sulle intestazioni multipart/MTOM, sulla dimensione dei documenti XML e sulla decompressione DEFLATE dei JWE, il parser FIQL e il redirect dopo l'autenticazione OIDC.
+        cxf-parent 4.2.4 fissa nativamente neethi 3.2.4 e xmlschema-core 2.3.3: rimossi dal pom radice gli override neethi.version e xmlschema.version aggiunti con la 3.9.3.p4 e la 3.9.3.p6. dependency:list del reactor completo prima e dopo l'aggiornamento differisce solo per i 23 jar CXF, senza nuove dipendenze runtime.
+        Rinominate di conseguenza le directory third-party-licenses/jar/cxf-*-4.2.3 in cxf-*-4.2.4: il file LICENSE contenuto nei jar e' invariato.
+
+2026-11-02  Giuliano Pintori <pintori@link.it>
+
+        * Issue #902 Corretta la stampa di avvisi, ricevute, quietanze e prospetti riscossioni con un logo dell'ente in formato SVG.
+        Un SVG che incorpora un'immagine PNG o JPEG come data URI, caso tipico di un logo raster convertito in SVG, faceva fallire la stampa con l'errore "null:0": Batik decodifica le immagini incorporate solo con batik-codec, che mancava. Aggiunta la dipendenza batik-codec 1.19, senza batik-transcoder e batik-svggen che servono solo alla conversione da SVG.
+        Gli SVG che fanno riferimento a risorse esterne (immagini o fogli di stile collegati, @import) restano non stampabili: Batik dalla 1.17 non carica risorse esterne (CVE-2022-44729, CVE-2022-44730) e non vengono riabilitate.
+        Se la stampa fallisce per il logo del dominio, il documento viene ristampato una sola volta con il logo di default e l'anomalia viene registrata nel log a livello WARN, con il dominio e la causa.
+        API Backoffice v1: PUT /domini/{idDominio} risponde 422 se il logo indicato non e' stampabile, con la causa nel dettaglio dell'errore. Un logo gia' salvato e riproposto invariato non viene verificato di nuovo, per non bloccare le altre modifiche del dominio. Se la richiesta riporta come logo il link restituito dalla GET (/domini/{idDominio}/logo) il logo salvato resta invariato, invece di essere sostituito da quel testo.
+        Verifica: nuova testsuite JUnit del modulo stampe con 30 loghi (SVG, PNG, JPEG, GIF, BMP, TIFF, WebP e file corrotti), in base64 e come data URI; nuovo test di integrazione dominio-put-logo.feature. Sostituito nei messaggi dei test dell'API Backoffice un logo PNG troncato con uno valido; in dominio-get.feature e dominio-put.feature il caso di modifica del logo, che inviava come logo il testo di un'espressione Karate non valutata, invia ora un logo SVG.
+
+2026-11-01  Giuliano Pintori <pintori@link.it>
+
+        * Issue #901 Corretto in oracle/gov_pay.sql il campo xml della tabella fr, ancora NOT NULL nonostante la patch 3.8.2 l'avesse reso opzionale: su un'installazione Oracle nuova gli insert di govpay-fdr-batch, che non valorizza la colonna, fallivano. Gli altri dialetti erano gia' allineati.
+        Correzione riportata dal ramo 3.11.x. Non serve una patch: le installazioni aggiornate hanno gia' la colonna opzionale per effetto della 3.8.2.
+        Verifica: installazione da zero dello schema su Oracle Free 23 senza errori, con FR.XML nullable.
+
+2026-10-30  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p7.
+
+2026-10-30  Giuliano Pintori <pintori@link.it>
+
+        * Issue #903 Dichiarati nullable nei contratti OpenAPI i campi facoltativi di tipo data, numero o booleano che i client inviano a GovPay.
+        In OpenAPI 3.0 un campo facoltativo, cioe' fuori da required, non e' per questo nullable: senza nullable: true un client generato dallo YAML produce questi campi come tipi valore non nullabili (DateTime in C#) e, se non li imposta, invia il valore predefinito invece di ometterli. Segnalato con un client C#: le pendenze caricate senza date arrivavano con dataValidita e proprieta.dataScandenzaAvviso a 0001-01-01, data che compariva sull'avviso di pagamento. A runtime GovPay accetta gia' null su questi campi: il null e il campo omesso producono lo stesso bean, per cui cambia solo il contratto. E' l'estensione alle API che ricevono dati della correzione fatta con la Issue #889 per la notifica dell'API Ente Creditore v2.
+        Pendenza: dataCaricamento, dataValidita, dataScadenza, dataNotificaAvviso, dataPromemoriaScadenza e annoRiferimento, indice delle voci, proprieta.dataScandenzaAvviso e importo di proprieta.descrizioneImporto nelle API Pendenze v1 e v2, nell'API Backoffice v1 (anche NuovaPendenzaTracciato) e nelle risposte di verifica dell'API Ente Creditore v1 e v2.
+        Riconciliazioni: dataValuta e dataContabile nell'API Backoffice v1 e nell'API Ragioneria v1, v2 e v3.
+        Configurazione dell'API Backoffice v1: solo i campi che accettano null (appIOBatch.timeToLive, dataUltimaRT del connettore MaggioliJPPA, contiAccreditoPost.mybank, dominioPost.intermediato, allegaPdf, soloEseguiti e preavviso delle avvisature del tipo pendenza, pagaTerzi e abilitato del tipo pendenza del dominio). Restano non nullable i flag che il validate() del bean rifiuta a null con un errore 400, come abilitato e pagaTerzi di tipoPendenzaPost.
+        Corretti in govpay-api-ragioneria.yaml v3 i riferimenti a RiferimentoIdentificativoUnivocoVersamento e RiferimentoIdentificativoFlussoRendicontazione, che puntavano al file stesso invece che a govpay-api-schemas.yaml, dove sono definiti: il contratto non era valido per i generatori rigorosi.
+        Verifica: i dieci contratti di GovPay sono validi come OpenAPI 3.0 con openapi-spec-validator; aggiunti ai test di integrazione campiOpzionali di Pendenze v1, v2 e Backoffice v1 i casi con i campi della pendenza inviati a null.
+
 2026-10-08  Giuliano Pintori <pintori@link.it>
 
         * Risolte le segnalazioni NVDCVE-2026-102495, NVDCVE-2026-102496 e NVDCVE-2026-102497 (High) su xmlschema-core-2.3.2.jar: portata xmlschema-core dalla 2.3.2 alla 2.3.3.

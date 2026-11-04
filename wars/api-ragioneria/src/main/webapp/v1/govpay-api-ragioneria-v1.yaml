@@ -1416,11 +1416,13 @@ components:
         dataValuta:
           type: string
           format: date
+          nullable: true
           description: Data di valuta dell'incasso
           example: '2020-12-31'
         dataContabile:
           type: string
           format: date
+          nullable: true
           description: Data di contabile dell'incasso
           example: '2020-12-31'
         ibanAccredito:

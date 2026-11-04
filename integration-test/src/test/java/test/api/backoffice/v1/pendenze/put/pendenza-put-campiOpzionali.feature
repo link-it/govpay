@@ -40,6 +40,10 @@ Examples:
 | direzione | null |
 | divisione | 'Divisione_Test' |
 | divisione | null |
+| dataValidita | null |
+| dataScadenza | null |
+| dataNotificaAvviso | null |
+| dataPromemoriaScadenza | null |
 
 
 Scenario Outline: Caricamento pendenza con controllo del campo opzionale <field> 
@@ -74,5 +78,8 @@ Examples:
 | soggettoPagatore.anagrafica | ' ' | 'ANONIMO' |
 | soggettoPagatore.anagrafica | 'ANONIMO' | 'ANONIMO' |
 | soggettoPagatore.tipo | null | null |
+| dataCaricamento | null | '#notnull' |
+| voci[0].indice | null | 1 |
+| proprieta | {"descrizioneImporto":[{"voce":"canone annuo","importo":null}]} | {"descrizioneImporto":[{"voce":"canone annuo"}]} |
 
 

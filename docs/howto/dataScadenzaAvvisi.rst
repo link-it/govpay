@@ -24,7 +24,7 @@ E' possibile indicare all'interno di una pendenza tre differenti date opzionali:
     "dataValidita": "2023-11-30",
     "dataScadenza": "2023-12-31",
     "proprieta": {
-                  "dataScadenzaAvviso": "2023-12-31"
+                  "dataScandenzaAvviso": "2023-12-31"
                   }
   }
 
