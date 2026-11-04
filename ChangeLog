@@ -1,8 +1,10 @@
 2026-11-04  Giuliano Pintori <pintori@link.it>
 
         * Corrette le 4 segnalazioni SonarCloud di affidabilita' emerse sul ramo master con il merge della 3.9.3.p7.
+        Correzione riportata dal ramo 3.9.x.
         LogoEnte.descriviCausa: la rimozione dei punti finali con l'espressione regolare \.+$ aveva un costo quadratico su lunghe sequenze di punti; ora usa StringUtils.stripEnd. Il messaggio dell'errore, che puo' riportare parti dell'SVG caricato dall'ente, viene inoltre limitato a 1200 caratteri prima delle sostituzioni, cosi' nessuna espressione regolare lavora su un testo di lunghezza arbitraria.
         Metodi getInstance() che restituivano ogni volta un'istanza nuova: rimosso SimpleDateFormatUtils.getInstance(), mai usato in una classe che ha solo metodi statici; rinominati in newInstance() i due metodi di CSVUtils, usati solo in TracciatiNotificaPagamenti; ProjectInfo, senza stato, restituisce ora un'unica istanza.
+        Dichiarati final i campi di DominioValidator, introdotti con la Issue #902 e mai riassegnati dopo il costruttore.
         Verifica: build completa con test riuscita; nuovo test di LogoEnte su un messaggio di 100.000 punti e su un messaggio di 70.000 caratteri.
 
 2026-11-03  Giuliano Pintori <pintori@link.it>
