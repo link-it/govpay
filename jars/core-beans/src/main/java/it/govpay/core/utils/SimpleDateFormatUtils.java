@@ -43,6 +43,14 @@ import it.govpay.core.exceptions.ValidationException;
  */
 public class SimpleDateFormatUtils {
 	
+	/*
+	 * getInstance() restituisce ogni volta un'istanza nuova ma non va rimosso ne' rinominato: i template FreeMarker
+	 * di trasformazione dei tracciati CSV configurati nei tipi pendenza lo chiamano per nome, ad esempio
+	 * class["it.govpay.core.utils.SimpleDateFormatUtils"].getInstance().
+	 */
+	public static SimpleDateFormatUtils getInstance() {
+		return new SimpleDateFormatUtils();
+	}
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS_Z = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM = "yyyy-MM-dd'T'HH:mm";
