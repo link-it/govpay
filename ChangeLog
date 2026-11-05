@@ -1,3 +1,8 @@
+2026-11-05  Giuliano Pintori <pintori@link.it>
+
+        * Ripristinati CSVUtils.getInstance() e SimpleDateFormatUtils.getInstance(), rinominati e rimossi il 2026-11-04 per la segnalazione SonarCloud java:S9437: i template FreeMarker di trasformazione dei tracciati CSV configurati nei tipi pendenza li chiamano per nome (class["it.govpay.core.utils.CSVUtils"].getInstance()), e senza di loro la conversione dei tracciati CSV falliva. Rilevato dai test di integrazione dei tracciati CSV, falliti nelle build Jenkins 3.9.x #79 e #80.
+        I due metodi tornano identici a prima, con un commento che ne spiega il vincolo; la regola java:S9437 e' esclusa dall'analisi Sonar per le due classi tramite sonar.issue.ignore.multicriteria nel pom radice. Restano le correzioni di LogoEnte e ProjectInfo.
+
 2026-11-04  Giuliano Pintori <pintori@link.it>
 
         * Schema SQL 3.11.0 per la registrazione della transazione solo all'arrivo della ricevuta (link-it/govpay-pafornode-api#6): con la stazione in broadcast arrivano anche ricevute per IUV che GovPay non conosce, e govpay-pafornode-api le salva senza pendenza.
