@@ -1,3 +1,7 @@
+2026-11-06  Giuliano Pintori <pintori@link.it>
+
+        * Compose di esempio dell'installazione container: tolto GOVPAY_<BATCH>_BATCH_USA_CRON="TRUE" da ACA, FDR, Notify e RT. Con le immagini 2.0.x "TRUE" esegue il job una sola volta senza web server (profilo cron), quindi l'healthcheck sull'actuator falliva e il container veniva riavviato di continuo; senza la variabile i batch usano lo scheduler interno. Per l'ACA il significato e' cambiato con govpay-aca-batch 944a1096f, prima "TRUE" attivava lo scheduler interno.
+
 2026-11-05  Giuliano Pintori <pintori@link.it>
 
         * Ripristinati CSVUtils.getInstance() e SimpleDateFormatUtils.getInstance(), rinominati e rimossi il 2026-11-04 per la segnalazione SonarCloud java:S9437: i template FreeMarker di trasformazione dei tracciati CSV configurati nei tipi pendenza li chiamano per nome (class["it.govpay.core.utils.CSVUtils"].getInstance()), e senza di loro la conversione dei tracciati CSV falliva. Rilevato dai test di integrazione dei tracciati CSV, falliti nelle build Jenkins 3.9.x #79 e #80.
