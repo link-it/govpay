@@ -43,6 +43,11 @@ import it.govpay.core.exceptions.ValidationException;
  */
 public class SimpleDateFormatUtils {
 	
+	/*
+	 * getInstance() restituisce ogni volta un'istanza nuova ma non va rimosso ne' rinominato: i template FreeMarker
+	 * di trasformazione dei tracciati CSV configurati nei tipi pendenza lo chiamano per nome, ad esempio
+	 * class["it.govpay.core.utils.SimpleDateFormatUtils"].getInstance().
+	 */
 	public static SimpleDateFormatUtils getInstance() {
 		return new SimpleDateFormatUtils();
 	}

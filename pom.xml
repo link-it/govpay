@@ -253,7 +253,7 @@
         <javassist.version>3.33.0-GA</javassist.version>
 
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
-        <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4,coreFP5,coreFP6</sonar.issue.ignore.multicriteria>
 
         <!-- Esclusione dal controllo della regola java:S2647 la classe BasicClientCORE.java, la regola consiglia di non usare credenziali basic per l'autenticazione,
         	che sono invece necessarie perche' previste di protocolli di connessione verso l'esterno. -->
@@ -275,6 +275,14 @@
         	nel metodo chiamante. Nella funzionalita' di controllo delle autorizzazioni sulle UO e' il valore null e il valore 'lista vuota' hanno due significati completamente distinti nel decidere le autorizzazioni di un'utenza. -->
         <sonar.issue.ignore.multicriteria.coreFP4.ruleKey>java:S1168</sonar.issue.ignore.multicriteria.coreFP4.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP4.resourceKey>**/src/main/java/it/govpay/core/autorizzazione/AuthorizationManager.java</sonar.issue.ignore.multicriteria.coreFP4.resourceKey>
+
+        <!-- Esclusione dal controllo della regola java:S9437 le classi CSVUtils.java e SimpleDateFormatUtils.java, la regola consiglia di rinominare un metodo getInstance() che restituisce
+        	ogni volta un'istanza nuova. I due metodi sono chiamati per nome dai template FreeMarker di trasformazione dei tracciati CSV configurati nei tipi pendenza,
+        	ad esempio class["it.govpay.core.utils.CSVUtils"].getInstance(): rinominarli renderebbe inutilizzabili i template esistenti. -->
+        <sonar.issue.ignore.multicriteria.coreFP5.ruleKey>java:S9437</sonar.issue.ignore.multicriteria.coreFP5.ruleKey>
+        <sonar.issue.ignore.multicriteria.coreFP5.resourceKey>**/src/main/java/it/govpay/core/utils/CSVUtils.java</sonar.issue.ignore.multicriteria.coreFP5.resourceKey>
+        <sonar.issue.ignore.multicriteria.coreFP6.ruleKey>java:S9437</sonar.issue.ignore.multicriteria.coreFP6.ruleKey>
+        <sonar.issue.ignore.multicriteria.coreFP6.resourceKey>**/src/main/java/it/govpay/core/utils/SimpleDateFormatUtils.java</sonar.issue.ignore.multicriteria.coreFP6.resourceKey>
 
         <!-- owasp config -->
 		<owasp>verify</owasp> <!-- owasp phase, use 'none' for disable -->

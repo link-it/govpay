@@ -50,6 +50,11 @@ public class CSVUtils {
 		this.csvFormat = csvFormat;
 	}
 
+	/*
+	 * getInstance() restituisce ogni volta un'istanza nuova ma non va rinominato: i template FreeMarker
+	 * di trasformazione dei tracciati CSV configurati nei tipi pendenza lo chiamano per nome, ad esempio
+	 * class["it.govpay.core.utils.CSVUtils"].getInstance().
+	 */
 	public static CSVUtils getInstance() {
 		return new CSVUtils(CSVFormat.DEFAULT);
 	}
