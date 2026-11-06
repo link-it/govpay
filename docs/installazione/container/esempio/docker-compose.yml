@@ -154,12 +154,14 @@ services:
   # -------------------------------------------------------------------------
   # Batch
   # -------------------------------------------------------------------------
+  # Senza GOVPAY_<BATCH>_BATCH_USA_CRON i batch girano con lo scheduler interno,
+  # con actuator e healthcheck. Con "TRUE" eseguono il job una sola volta e
+  # terminano (profilo cron), da usare solo con una schedulazione esterna.
   govpay-aca:
     image: linkitaly/govpay-aca-batch:${BATCH_ACA_VERSION}
     depends_on: *batch-depends
     environment:
       <<: *db-env
-      GOVPAY_ACA_BATCH_USA_CRON: "TRUE"
       GOVPAY_ACA_BATCH_INTERVALLO_CRON: "10"
       GOVPAY_ACA_GDE_URL: "http://govpay-gde:10002"
       LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
@@ -175,7 +177,6 @@ services:
     depends_on: *batch-depends
     environment:
       <<: *db-env
-      GOVPAY_FDR_BATCH_USA_CRON: "TRUE"
       LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
     healthcheck: *batch-healthcheck
     volumes:
@@ -215,7 +216,6 @@ services:
     depends_on: *batch-depends
     environment:
       <<: *db-env
-      GOVPAY_NOTIFY_BATCH_USA_CRON: "TRUE"
       GOVPAY_NOTIFY_GDE_URL: "http://govpay-gde:10002"
       GOVPAY_MAIL_SMTP_HOST: ${GOVPAY_MAIL_SMTP_HOST}
       GOVPAY_MAIL_SMTP_PORT: ${GOVPAY_MAIL_SMTP_PORT}
@@ -233,7 +233,6 @@ services:
     depends_on: *batch-depends
     environment:
       <<: *db-env
-      GOVPAY_RT_BATCH_USA_CRON: "TRUE"
       GOVPAY_URL: "http://core:8080/govpay-api-pagopa/internal/PagamentiTelematiciCCPservice"
       GOVPAY_AUTH_USERNAME: ${GOVPAY_BATCH_USER}
       GOVPAY_AUTH_PASSWORD: ${GOVPAY_BATCH_PASSWORD}
