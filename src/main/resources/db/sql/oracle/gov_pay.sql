@@ -1440,6 +1440,7 @@ CREATE TABLE eventi
 	dati_pago_pa CLOB,
 	cod_versamento_ente VARCHAR2(35 CHAR),
 	cod_applicazione VARCHAR2(35 CHAR),
+	cod_documento VARCHAR2(35 CHAR),
 	iuv VARCHAR2(35 CHAR),
 	ccp VARCHAR2(35 CHAR),
 	cod_dominio VARCHAR2(35 CHAR),

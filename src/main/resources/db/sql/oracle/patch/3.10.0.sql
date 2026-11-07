@@ -131,6 +131,21 @@ EXCEPTION
 END;
 /
 
+-- govpay-gde-api#43: un evento del Giornale degli Eventi puo' riferirsi alla
+-- posizione debitoria complessiva, identificata da cod_documento insieme a
+-- cod_applicazione, oltre che alla singola pendenza (cod_versamento_ente).
+-- Dichiarata qui e non in govpay-gde-api perche' eventi e' una tabella del core.
+-- Blocco PL/SQL che ignora ORA-01430 (colonna gia' presente), come sopra.
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE eventi ADD cod_documento VARCHAR2(35 CHAR)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
+
 
 -- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
 -- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro

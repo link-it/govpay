@@ -140,6 +140,21 @@ PREPARE gp_stmt FROM @gp_sql;
 EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
 
+-- govpay-gde-api#43: un evento del Giornale degli Eventi puo' riferirsi alla
+-- posizione debitoria complessiva, identificata da cod_documento insieme a
+-- cod_applicazione, oltre che alla singola pendenza (cod_versamento_ente).
+-- Dichiarata qui e non in govpay-gde-api perche' eventi e' una tabella del core.
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'eventi'
+        AND column_name = 'cod_documento') = 0,
+    'ALTER TABLE eventi ADD COLUMN cod_documento VARCHAR(35) COMMENT ''Identificativo della posizione debitoria complessiva nel verticale di competenza''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
 -- Normalizzazione del default di jppa_config.data_ultima_rt.
 -- La 3.9 dichiarava la colonna DATETIME(3) DEFAULT 0, che MariaDB memorizza
 -- come '0000-00-00 00:00:00.000' e MySQL 8 rifiuta in radice: negli altri
