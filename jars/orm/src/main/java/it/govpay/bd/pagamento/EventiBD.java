@@ -382,6 +382,10 @@ public class EventiBD extends BasicBD {
 			fields.add(it.govpay.orm.Evento.model().SEVERITA);
 			fields.add(it.govpay.orm.Evento.model().CLUSTER_ID);
 			fields.add(it.govpay.orm.Evento.model().TRANSACTION_ID);
+			// le viste v_eventi_vers non riportano cod_documento
+			if(this.vista != VISTA.VERSAMENTI) {
+				fields.add(it.govpay.orm.Evento.model().COD_DOCUMENTO);
+			}
 
 			List<Map<String, Object>> select = new ArrayList<>();
 

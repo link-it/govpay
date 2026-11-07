@@ -58,6 +58,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.DATI_PAGO_PA = new Field("datiPagoPA",java.lang.String.class,"Evento",Evento.class);
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Evento",Evento.class);
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Evento",Evento.class);
+		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"Evento",Evento.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"Evento",Evento.class);
 		this.CCP = new Field("ccp",java.lang.String.class,"Evento",Evento.class);
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Evento",Evento.class);
@@ -90,6 +91,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.DATI_PAGO_PA = new ComplexField(father,"datiPagoPA",java.lang.String.class,"Evento",Evento.class);
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Evento",Evento.class);
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Evento",Evento.class);
+		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"Evento",Evento.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Evento",Evento.class);
 		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"Evento",Evento.class);
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Evento",Evento.class);
@@ -134,6 +136,8 @@ public class EventoModel extends AbstractModel<Evento> {
 	public IField COD_VERSAMENTO_ENTE = null;
 	 
 	public IField COD_APPLICAZIONE = null;
+	 
+	public IField COD_DOCUMENTO = null;
 	 
 	public IField IUV = null;
 	 

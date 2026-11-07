@@ -2100,6 +2100,7 @@
 
 			<xsd:element name="codVersamentoEnte" type="String35" minOccurs="0"/>
 			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
+			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
 
 			<xsd:element name="iuv" type="String35" minOccurs="0"/>
 			<xsd:element name="ccp" type="String35" minOccurs="0"/>

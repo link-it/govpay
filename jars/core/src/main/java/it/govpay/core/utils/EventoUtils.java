@@ -91,6 +91,7 @@ public class EventoUtils {
 		dto.setTipoEvento(eventoCtx.getTipoEvento());
 		dto.setCodApplicazione(eventoCtx.getIdA2A());
 		dto.setCodVersamentoEnte(eventoCtx.getIdPendenza());
+		dto.setCodDocumento(eventoCtx.getCodDocumento());
 		dto.setCodDominio(eventoCtx.getCodDominio());
 		dto.setIuv(eventoCtx.getIuv());
 		dto.setCcp(eventoCtx.getCcp());

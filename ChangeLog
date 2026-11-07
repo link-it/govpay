@@ -1,5 +1,10 @@
 2026-11-07  Giuliano Pintori <pintori@link.it>
 
+        * Il core salva e legge la colonna eventi.cod_documento (govpay-gde-api#43): aggiunta all'ORM dell'Evento (bean, modello, insert, update, lettura e conversione dei campi), al modello Evento e al contesto dell'evento, da cui EventoUtils la riporta sull'evento salvato. Nessun flusso del core valorizza ancora il codice del documento nel contesto.
+        Le viste v_eventi_vers non riportano la colonna: la ricerca degli eventi di una pendenza, che le usa, la restituisce vuota.
+        Correzione riportata dal ramo 3.10.x.
+        Verifica: su PostgreSQL con lo schema 3.10, tramite l'ORM, insert e update di un evento con cod_documento e lettura con find, findAll e select per campi come in EventiBD.findAllNoMessaggi; la select sulla vista v_eventi_vers senza la colonna funziona come prima.
+
         * Nuova colonna eventi.cod_documento (VARCHAR(35), opzionale) per govpay-gde-api#43: un evento del Giornale degli Eventi puo' riferirsi alla posizione debitoria complessiva, identificata da cod_documento insieme a cod_applicazione, oltre che alla singola pendenza (cod_versamento_ente). La colonna e' gia' letta e scritta da govpay-gde-api; la DDL sta qui perche' eventi e' una tabella del core.
         Aggiunta nella fonte govpay.xsd, nel gov_pay.sql dei cinque dialetti e nella patch 3.10.0, rieseguibile tranne che su HSQL come il resto della patch. Il core non usa la colonna e le viste v_eventi_vers non cambiano. Nessun indice sulla nuova colonna.
         Correzione riportata dal ramo 3.10.x.

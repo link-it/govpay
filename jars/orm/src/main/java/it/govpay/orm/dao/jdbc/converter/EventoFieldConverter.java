@@ -174,6 +174,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Evento.model().COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
 		if(field.equals(Evento.model().IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".iuv";
@@ -405,6 +412,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().COD_APPLICAZIONE)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().COD_DOCUMENTO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().IUV)){

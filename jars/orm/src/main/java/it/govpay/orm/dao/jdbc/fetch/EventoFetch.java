@@ -86,6 +86,8 @@ public class EventoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Evento.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", Evento.model().COD_APPLICAZIONE.getFieldType()));
+				setParameter(object, "setCodDocumento", Evento.model().COD_DOCUMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_documento", Evento.model().COD_DOCUMENTO.getFieldType()));
 				setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv", Evento.model().IUV.getFieldType()));
 				setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
@@ -152,6 +154,8 @@ public class EventoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codVersamentoEnte"));
 				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codApplicazione"));
+				setParameter(object, "setCodDocumento", Evento.model().COD_DOCUMENTO.getFieldType(),
+					this.getObjectFromMap(map,"codDocumento"));
 				setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
 				setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
