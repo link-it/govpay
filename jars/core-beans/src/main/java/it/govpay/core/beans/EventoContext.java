@@ -168,6 +168,7 @@ public class EventoContext implements Serializable {
 	private String ccp;
 	private String idA2A;
 	private String idPendenza;
+	private String codDocumento;
 	private String idPagamento;
 
 
@@ -358,6 +359,14 @@ public class EventoContext implements Serializable {
 
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
+	}
+
+	public String getCodDocumento() {
+		return codDocumento;
+	}
+
+	public void setCodDocumento(String codDocumento) {
+		this.codDocumento = codDocumento;
 	}
 
 	public DatiPagoPA getDatiPagoPA() {

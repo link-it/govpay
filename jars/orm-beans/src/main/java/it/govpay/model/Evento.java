@@ -93,6 +93,7 @@ public class Evento extends BasicModel {
 	
 	private String codVersamentoEnte;
 	private String codApplicazione;
+	private String codDocumento;
 	
 	private String idSessione;
 	
@@ -353,6 +354,14 @@ public class Evento extends BasicModel {
 
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodDocumento() {
+		return codDocumento;
+	}
+
+	public void setCodDocumento(String codDocumento) {
+		this.codDocumento = codDocumento;
 	}
 
 	public String getIdSessione() {

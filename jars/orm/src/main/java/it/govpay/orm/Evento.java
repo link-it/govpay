@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="datiPagoPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="codDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
@@ -90,6 +91,7 @@ import java.io.Serializable;
   	"datiPagoPA",
   	"codVersamentoEnte",
   	"codApplicazione",
+  	"codDocumento",
   	"iuv",
   	"ccp",
   	"codDominio",
@@ -228,6 +230,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBeanWithId implement
 
   public void setCodApplicazione(java.lang.String codApplicazione) {
     this.codApplicazione = codApplicazione;
+  }
+
+  public java.lang.String getCodDocumento() {
+    return this.codDocumento;
+  }
+
+  public void setCodDocumento(java.lang.String codDocumento) {
+    this.codDocumento = codDocumento;
   }
 
   public java.lang.String getIuv() {
@@ -386,6 +396,10 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBeanWithId implement
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazione",required=false,nillable=false)
   protected java.lang.String codApplicazione;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDocumento",required=false,nillable=false)
+  protected java.lang.String codDocumento;
 
   @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuv",required=false,nillable=false)

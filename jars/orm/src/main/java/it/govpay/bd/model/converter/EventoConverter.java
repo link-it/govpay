@@ -63,6 +63,7 @@ public class EventoConverter {
 		vo.setSottotipoEvento(dto.getSottotipoEvento());
 		vo.setTipoEvento(dto.getTipoEvento());
 		vo.setCodApplicazione(dto.getCodApplicazione());
+		vo.setCodDocumento(dto.getCodDocumento());
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		vo.setCodDominio(dto.getCodDominio());
 		vo.setIuv(dto.getIuv());
@@ -114,6 +115,7 @@ public class EventoConverter {
 		dto.setSottotipoEvento(vo.getSottotipoEvento());
 		dto.setTipoEvento(vo.getTipoEvento());
 		dto.setCodApplicazione(vo.getCodApplicazione());
+		dto.setCodDocumento(vo.getCodDocumento());
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 		dto.setCodDominio(vo.getCodDominio());
 		dto.setIuv(vo.getIuv());
