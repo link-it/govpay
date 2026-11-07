@@ -68,6 +68,14 @@ IF COL_LENGTH('operatori', 'preferenze') IS NULL
     ALTER TABLE operatori ADD preferenze VARCHAR(max);
 GO
 
+-- govpay-gde-api#43: un evento del Giornale degli Eventi puo' riferirsi alla
+-- posizione debitoria complessiva, identificata da cod_documento insieme a
+-- cod_applicazione, oltre che alla singola pendenza (cod_versamento_ente).
+-- Dichiarata qui e non in govpay-gde-api perche' eventi e' una tabella del core.
+IF COL_LENGTH('eventi', 'cod_documento') IS NULL
+    ALTER TABLE eventi ADD cod_documento VARCHAR(35);
+GO
+
 -- Allineamento dei default dei tre booleani fra installazione nuova e aggiornata.
 -- Le patch che introducono le colonne non lasciano il default che gov_pay.sql
 -- dichiara: esegui_recupero_rt e notifica_inviata sono aggiunte dalla 3.9 senza

@@ -1106,6 +1106,7 @@ CREATE TABLE eventi
 	dati_pago_pa LONGTEXT COMMENT 'Dati relativi alle transazioni pagopa',
 	cod_versamento_ente VARCHAR(35) COMMENT 'Identificativo della pendenza nel verticale di competenza',
 	cod_applicazione VARCHAR(35) COMMENT 'Codice identificativo del verticale',
+	cod_documento VARCHAR(35) COMMENT 'Identificativo della posizione debitoria complessiva nel verticale di competenza',
 	iuv VARCHAR(35) COMMENT 'Identificativo univoco di versamento',
 	ccp VARCHAR(35) COMMENT 'Codice contesto di pagamento',
 	cod_dominio VARCHAR(35) COMMENT 'Identificativo dell\'Ente creditore',

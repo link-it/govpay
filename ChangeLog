@@ -1,3 +1,10 @@
+2026-11-07  Giuliano Pintori <pintori@link.it>
+
+        * Nuova colonna eventi.cod_documento (VARCHAR(35), opzionale) per govpay-gde-api#43: un evento del Giornale degli Eventi puo' riferirsi alla posizione debitoria complessiva, identificata da cod_documento insieme a cod_applicazione, oltre che alla singola pendenza (cod_versamento_ente). La colonna e' gia' letta e scritta da govpay-gde-api; la DDL sta qui perche' eventi e' una tabella del core.
+        Aggiunta nella fonte govpay.xsd, nel gov_pay.sql dei cinque dialetti e nella patch 3.10.0, rieseguibile tranne che su HSQL come il resto della patch. Il core non usa la colonna e le viste v_eventi_vers non cambiano. Nessun indice sulla nuova colonna.
+        Correzione riportata dal ramo 3.10.x.
+        Verifica: su PostgreSQL, Oracle, MySQL, SQL Server e HSQL, installazione nuova e aggiornamento dallo schema 3.9 con la patch applicata due volte (una sola su HSQL); in entrambi i casi un evento con cod_documento viene inserito e riletto. Su Oracle la patch lascia invalidi gli stessi 10 oggetti anche senza questa modifica; si ricompilano senza errori.
+
 2026-11-06  Giuliano Pintori <pintori@link.it>
 
         * Compose di esempio dell'installazione container: tolto GOVPAY_<BATCH>_BATCH_USA_CRON="TRUE" da ACA, FDR, Notify e RT. Con le immagini 2.0.x "TRUE" esegue il job una sola volta senza web server (profilo cron), quindi l'healthcheck sull'actuator falliva e il container veniva riavviato di continuo; senza la variabile i batch usano lo scheduler interno. Per l'ACA il significato e' cambiato con govpay-aca-batch 944a1096f, prima "TRUE" attivava lo scheduler interno.

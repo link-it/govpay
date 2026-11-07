@@ -49,6 +49,12 @@ CREATE INDEX IF NOT EXISTS idx_rpt_data_msg_ricevuta_id
 -- cambia da dialetto a dialetto: TEXT non esiste su oracle e sqlserver.
 ALTER TABLE operatori ADD COLUMN IF NOT EXISTS preferenze TEXT;
 
+-- govpay-gde-api#43: un evento del Giornale degli Eventi puo' riferirsi alla
+-- posizione debitoria complessiva, identificata da cod_documento insieme a
+-- cod_applicazione, oltre che alla singola pendenza (cod_versamento_ente).
+-- Dichiarata qui e non in govpay-gde-api perche' eventi e' una tabella del core.
+ALTER TABLE eventi ADD COLUMN IF NOT EXISTS cod_documento VARCHAR(35);
+
 -- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
 -- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro
 -- sequence, mentre il gov_pay.sql rigenerato non le dichiara piu'. Un'installazione

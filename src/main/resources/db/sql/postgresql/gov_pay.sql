@@ -1148,6 +1148,7 @@ CREATE TABLE eventi
 	dati_pago_pa TEXT,
 	cod_versamento_ente VARCHAR(35),
 	cod_applicazione VARCHAR(35),
+	cod_documento VARCHAR(35),
 	iuv VARCHAR(35),
 	ccp VARCHAR(35),
 	cod_dominio VARCHAR(35),
