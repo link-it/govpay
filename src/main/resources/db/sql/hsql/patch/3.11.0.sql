@@ -100,6 +100,12 @@ ALTER TABLE documenti ADD COLUMN IF NOT EXISTS data_ultima_comunicazione_aca TIM
 ALTER TABLE documenti ADD COLUMN IF NOT EXISTS data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
 ALTER TABLE documenti ADD COLUMN IF NOT EXISTS data_ultimo_aggiornamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
 ALTER TABLE documenti ADD COLUMN IF NOT EXISTS versione BIGINT DEFAULT 0 NOT NULL;
+-- link-it/govpay-common-pendenze#14: posizione debitoria anomala. anomalo e
+-- descrizione_stato sono gli analoghi di versamenti.anomalo e
+-- versamenti.descrizione_stato a livello di posizione; il DEFAULT copre gli
+-- inserimenti del core, che non conosce le colonne.
+ALTER TABLE documenti ADD COLUMN IF NOT EXISTS anomalo BOOLEAN DEFAULT false NOT NULL;
+ALTER TABLE documenti ADD COLUMN IF NOT EXISTS descrizione_stato VARCHAR(255);
 
 CREATE INDEX IF NOT EXISTS idx_doc_app_data_creaz ON documenti (id_applicazione,data_creazione,id);
 

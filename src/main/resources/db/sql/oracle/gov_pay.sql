@@ -786,6 +786,8 @@ CREATE TABLE documenti
 	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
 	-- Versione per il lock ottimistico di govpay-common-pendenze
 	versione NUMBER NOT NULL,
+	anomalo NUMBER NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -803,6 +805,7 @@ ALTER TABLE documenti MODIFY notifica_send DEFAULT 0;
 ALTER TABLE documenti MODIFY data_creazione DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE documenti MODIFY data_ultimo_aggiornamento DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE documenti MODIFY versione DEFAULT 0;
+ALTER TABLE documenti MODIFY anomalo DEFAULT 0;
 
 -- index
 CREATE INDEX idx_doc_app_data_creaz ON documenti (id_applicazione,data_creazione,id);

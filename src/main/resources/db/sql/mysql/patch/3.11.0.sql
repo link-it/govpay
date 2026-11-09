@@ -126,6 +126,32 @@ PREPARE gp_stmt FROM @gp_sql;
 EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
 
+-- link-it/govpay-common-pendenze#14: posizione debitoria anomala. anomalo e
+-- descrizione_stato sono gli analoghi di versamenti.anomalo e
+-- versamenti.descrizione_stato a livello di posizione; il DEFAULT copre gli
+-- inserimenti del core, che non conosce le colonne.
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'documenti'
+        AND column_name = 'anomalo') = 0,
+    'ALTER TABLE documenti ADD COLUMN anomalo BOOLEAN NOT NULL DEFAULT false COMMENT ''Indica se la posizione debitoria e'''' anomala''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'documenti'
+        AND column_name = 'descrizione_stato') = 0,
+    'ALTER TABLE documenti ADD COLUMN descrizione_stato VARCHAR(255) COMMENT ''Descrizione dello stato della posizione debitoria''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
 SET @gp_sql := IF(
     (SELECT COUNT(*) FROM information_schema.statistics
       WHERE table_schema = DATABASE()

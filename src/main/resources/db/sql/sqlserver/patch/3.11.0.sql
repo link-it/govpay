@@ -41,6 +41,14 @@ IF COL_LENGTH('documenti', 'data_ultimo_aggiornamento') IS NULL
     ALTER TABLE documenti ADD data_ultimo_aggiornamento DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP;
 IF COL_LENGTH('documenti', 'versione') IS NULL
     ALTER TABLE documenti ADD versione BIGINT NOT NULL DEFAULT 0;
+-- link-it/govpay-common-pendenze#14: posizione debitoria anomala. anomalo e
+-- descrizione_stato sono gli analoghi di versamenti.anomalo e
+-- versamenti.descrizione_stato a livello di posizione; il DEFAULT copre gli
+-- inserimenti del core, che non conosce le colonne.
+IF COL_LENGTH('documenti', 'anomalo') IS NULL
+    ALTER TABLE documenti ADD anomalo BIT NOT NULL DEFAULT 0;
+IF COL_LENGTH('documenti', 'descrizione_stato') IS NULL
+    ALTER TABLE documenti ADD descrizione_stato VARCHAR(255);
 GO
 
 IF NOT EXISTS (

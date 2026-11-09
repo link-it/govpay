@@ -544,6 +544,8 @@ CREATE TABLE documenti
 	data_ultimo_aggiornamento DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	-- Versione per il lock ottimistico di govpay-common-pendenze
 	versione BIGINT NOT NULL DEFAULT 0,
+	anomalo BIT NOT NULL DEFAULT 0,
+	descrizione_stato VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_dominio BIGINT NOT NULL,

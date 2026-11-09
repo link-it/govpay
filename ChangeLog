@@ -1,3 +1,9 @@
+2026-11-09  Giuliano Pintori <pintori@link.it>
+
+        * Nuove colonne documenti.anomalo (booleano, NOT NULL, default false) e documenti.descrizione_stato (VARCHAR(255), opzionale) per la posizione debitoria anomala di link-it/govpay-common-pendenze#14: sono gli analoghi di versamenti.anomalo e versamenti.descrizione_stato a livello di posizione. govpay-common-pendenze le mappa nell'entity PosizioneDebitoria dal 2026-11-05, quindi senza di loro la validazione dello schema dei servizi che usano la libreria falliva ("missing column [anomalo] in table [documenti]", rilevato dai test di govpay-notify-batch).
+        Aggiunte nella fonte govpay.xsd, nel gov_pay.sql dei cinque dialetti e nella patch 3.11.0, rieseguibile tranne che su HSQL come il resto della patch. Il default copre gli inserimenti del core, che non usa le colonne. La sezione di migrazione al modello v3 non cambia: le posizioni migrate partono con anomalo a false; check-riallineamento-v3.sh OK.
+        Verifica: su PostgreSQL 16, MySQL 8.4, SQL Server 2022, Oracle Free 23 e HSQL 2.7.3, installazione nuova e aggiornamento dallo schema 3.10 con la patch 3.11.0 applicata due volte (una sola su HSQL): le due colonne hanno tipo, obbligatorieta' e default attesi.
+
 2026-11-07  Giuliano Pintori <pintori@link.it>
 
         * Il core salva e legge la colonna eventi.cod_documento (govpay-gde-api#43): aggiunta all'ORM dell'Evento (bean, modello, insert, update, lettura e conversione dei campi), al modello Evento e al contesto dell'evento, da cui EventoUtils la riporta sull'evento salvato. Nessun flusso del core valorizza ancora il codice del documento nel contesto.

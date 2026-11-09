@@ -31,7 +31,10 @@ DECLARE
         'data_ultima_comunicazione_aca TIMESTAMP',
         'data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL',
         'data_ultimo_aggiornamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL',
-        'versione NUMBER DEFAULT 0 NOT NULL');
+        'versione NUMBER DEFAULT 0 NOT NULL',
+        -- link-it/govpay-common-pendenze#14: posizione debitoria anomala
+        'anomalo NUMBER DEFAULT 0 NOT NULL',
+        'descrizione_stato VARCHAR2(255 CHAR)');
 BEGIN
     FOR i IN 1 .. colonne.COUNT LOOP
         BEGIN

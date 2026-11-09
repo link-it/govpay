@@ -549,6 +549,8 @@ CREATE TABLE documenti
 	data_creazione DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione del documento',
 	data_ultimo_aggiornamento DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di ultimo aggiornamento del documento',
 	versione BIGINT NOT NULL DEFAULT 0 COMMENT 'Versione per il lock ottimistico di govpay-common-pendenze',
+	anomalo BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se la posizione debitoria e'' anomala',
+	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato della posizione debitoria',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',

@@ -2174,6 +2174,10 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<!-- govpay-common-pendenze#14: posizione debitoria anomala, analoghi di anomalo e
+			     descrizioneStato del versamento. -->
+			<xsd:element name="anomalo" type="xsd:boolean" default="false"/>
+			<xsd:element name="descrizioneStato" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
