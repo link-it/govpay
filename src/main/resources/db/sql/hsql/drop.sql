@@ -25,6 +25,7 @@
 -- DROP INDEX idx_evt_fk_fr;
 -- DROP INDEX idx_evt_iuv;
 -- DROP INDEX idx_evt_id_sessione;
+-- DROP INDEX idx_evt_documento;
 -- DROP INDEX idx_evt_fk_vrs;
 -- DROP INDEX idx_evt_data;
 -- DROP INDEX idx_rnd_data;

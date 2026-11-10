@@ -25,6 +25,7 @@
 -- DROP INDEX idx_evt_fk_fr ON eventi ;
 -- DROP INDEX idx_evt_iuv ON eventi ;
 -- DROP INDEX idx_evt_id_sessione ON eventi ;
+-- DROP INDEX idx_evt_documento ON eventi ;
 -- DROP INDEX idx_evt_fk_vrs ON eventi ;
 -- DROP INDEX idx_evt_data ON eventi ;
 -- DROP INDEX idx_rnd_data ON rendicontazioni ;

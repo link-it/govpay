@@ -146,6 +146,19 @@ EXCEPTION
 END;
 /
 
+-- Indice per le ricerche degli eventi di una posizione debitoria (filtro
+-- codDocumento di govpay-gde-api), come idx_evt_fk_vrs per la singola pendenza.
+-- Blocco PL/SQL che ignora ORA-00955 (nome gia' in uso), come sopra.
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE INDEX idx_evt_documento ON eventi (cod_applicazione, cod_documento)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -955 THEN
+            RAISE;
+        END IF;
+END;
+/
+
 
 -- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
 -- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro

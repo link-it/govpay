@@ -76,6 +76,16 @@ IF COL_LENGTH('eventi', 'cod_documento') IS NULL
     ALTER TABLE eventi ADD cod_documento VARCHAR(35);
 GO
 
+-- Indice per le ricerche degli eventi di una posizione debitoria (filtro
+-- codDocumento di govpay-gde-api), come idx_evt_fk_vrs per la singola pendenza.
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+     WHERE name = 'idx_evt_documento'
+       AND object_id = OBJECT_ID('dbo.eventi')
+)
+    CREATE INDEX idx_evt_documento ON eventi (cod_applicazione, cod_documento);
+GO
+
 -- Allineamento dei default dei tre booleani fra installazione nuova e aggiornata.
 -- Le patch che introducono le colonne non lasciano il default che gov_pay.sql
 -- dichiara: esegui_recupero_rt e notifica_inviata sono aggiunte dalla 3.9 senza
