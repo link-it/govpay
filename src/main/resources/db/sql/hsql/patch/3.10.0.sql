@@ -63,6 +63,10 @@ ALTER TABLE operatori ADD COLUMN preferenze LONGVARCHAR;
 -- Dichiarata qui e non in govpay-gde-api perche' eventi e' una tabella del core.
 ALTER TABLE eventi ADD COLUMN cod_documento VARCHAR(35);
 
+-- Indice per le ricerche degli eventi di una posizione debitoria (filtro
+-- codDocumento di govpay-gde-api), come idx_evt_fk_vrs per la singola pendenza.
+CREATE INDEX idx_evt_documento ON eventi (cod_applicazione, cod_documento);
+
 -- Sequence rimaste orfane dalla rimozione dei pagamenti portale: la patch 3.9.2
 -- elimina le tabelle pagamenti_portale e pag_port_versamenti ma non le loro
 -- sequence, mentre il gov_pay.sql rigenerato non le dichiara piu'. Un'installazione

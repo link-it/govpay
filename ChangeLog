@@ -1,3 +1,9 @@
+2026-11-10  Giuliano Pintori <pintori@link.it>
+
+        * Nuovo indice idx_evt_documento su eventi (cod_applicazione, cod_documento), per le ricerche degli eventi di una posizione debitoria con il filtro codDocumento di govpay-gde-api (govpay-gde-api#43): senza indice la ricerca leggeva tutta la tabella eventi. E' l'analogo di idx_evt_fk_vrs, che serve le ricerche per pendenza.
+        Aggiunto nella fonte govpay.xsd, nel gov_pay.sql dei cinque dialetti e nella patch 3.10.0, rieseguibile tranne che su HSQL come il resto della patch.
+        Verifica: su PostgreSQL, Oracle, MySQL, SQL Server e HSQL, installazione nuova e aggiornamento dallo schema 3.9 con la patch applicata due volte (una sola su HSQL); in entrambi i casi l'indice esiste sulle due colonne, e su PostgreSQL la ricerca per cod_applicazione e cod_documento lo usa.
+
 2026-11-07  Giuliano Pintori <pintori@link.it>
 
         * Il core salva e legge la colonna eventi.cod_documento (govpay-gde-api#43): aggiunta all'ORM dell'Evento (bean, modello, insert, update, lettura e conversione dei campi), al modello Evento e al contesto dell'evento, da cui EventoUtils la riporta sull'evento salvato. Nessun flusso del core valorizza ancora il codice del documento nel contesto.

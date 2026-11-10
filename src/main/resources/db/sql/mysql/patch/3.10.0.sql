@@ -155,6 +155,19 @@ PREPARE gp_stmt FROM @gp_sql;
 EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
 
+-- Indice per le ricerche degli eventi di una posizione debitoria (filtro
+-- codDocumento di govpay-gde-api), come idx_evt_fk_vrs per la singola pendenza.
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.statistics
+      WHERE table_schema = DATABASE()
+        AND table_name = 'eventi'
+        AND index_name = 'idx_evt_documento') = 0,
+    'CREATE INDEX idx_evt_documento ON eventi (cod_applicazione, cod_documento)',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
 -- Normalizzazione del default di jppa_config.data_ultima_rt.
 -- La 3.9 dichiarava la colonna DATETIME(3) DEFAULT 0, che MariaDB memorizza
 -- come '0000-00-00 00:00:00.000' e MySQL 8 rifiuta in radice: negli altri

@@ -2108,6 +2108,10 @@
 							<linkit:sql-table-index-field name="codApplicazione"/>
 							<linkit:sql-table-index-field name="codVersamentoEnte"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_documento">
+							<linkit:sql-table-index-field name="codApplicazione"/>
+							<linkit:sql-table-index-field name="codDocumento"/>
+						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_evt_id_sessione">
 							<linkit:sql-table-index-field name="idSessione"/>
 						</linkit:sql-table-index>
