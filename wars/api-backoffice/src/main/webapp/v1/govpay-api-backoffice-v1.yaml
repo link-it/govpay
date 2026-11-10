@@ -5215,6 +5215,14 @@ components:
           type: boolean
           description: Indica se devono essere scaricati i flussi di rendicontazione per l'EC
           example: true
+        pagamentoSito:
+          type: boolean
+          default: false
+          description: >-
+            Indica se l'ente consente il pagamento degli avvisi dal proprio sito.
+            Se true, la stampa dell'avviso riporta "oppure sul sito di <ente>"
+            tra i canali di pagamento, come previsto dalla specifica pagoPA.
+          example: false
     dominioIndex:
       type: object
       allOf:

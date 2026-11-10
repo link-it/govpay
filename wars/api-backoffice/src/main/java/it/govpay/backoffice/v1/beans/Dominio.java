@@ -57,6 +57,7 @@ import it.govpay.core.exceptions.IOException;
 "intermediato",
 "tassonomiaPagoPA",
 "scaricaFr",
+"pagamentoSito",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -157,6 +158,9 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("scaricaFr")
   private Boolean scaricaFr = null;
+  
+  @JsonProperty("pagamentoSito")
+  private Boolean pagamentoSito = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -663,6 +667,22 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Indica se l'ente consente il pagamento degli avvisi dal proprio sito: la stampa dell'avviso riporta "oppure sul sito di <ente>"
+   **/
+  public Dominio pagamentoSito(Boolean pagamentoSito) {
+    this.pagamentoSito = pagamentoSito;
+    return this;
+  }
+
+  @JsonProperty("pagamentoSito")
+  public Boolean getPagamentoSito() {
+    return pagamentoSito;
+  }
+  public void setPagamentoSito(Boolean pagamentoSito) {
+    this.pagamentoSito = pagamentoSito;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public Dominio idDominio(String idDominio) {
@@ -778,6 +798,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(intermediato, dominio.intermediato) &&
         Objects.equals(tassonomiaPagoPA, dominio.tassonomiaPagoPA) &&
         Objects.equals(scaricaFr, dominio.scaricaFr) &&
+        Objects.equals(pagamentoSito, dominio.pagamentoSito) &&
         Objects.equals(idDominio, dominio.idDominio) &&
         Objects.equals(unitaOperative, dominio.unitaOperative) &&
         Objects.equals(contiAccredito, dominio.contiAccredito) &&
@@ -835,6 +856,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
     sb.append("    scaricaFr: ").append(toIndentedString(scaricaFr)).append("\n");
+    sb.append("    pagamentoSito: ").append(toIndentedString(pagamentoSito)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

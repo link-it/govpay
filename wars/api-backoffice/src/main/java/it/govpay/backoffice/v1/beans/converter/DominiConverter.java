@@ -241,6 +241,9 @@ public class DominiConverter {
 			dominio.setScaricaFr(true);
 		}
 
+		// Facoltativo: se assente l'ente non consente il pagamento dal proprio sito.
+		dominio.setPagamentoSito(Boolean.TRUE.equals(dominioPost.getPagamentoSito()));
+
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
 		dominioDTO.setCodStazione(dominioPost.getStazione());
@@ -303,6 +306,7 @@ public class DominiConverter {
 		rsModel.setAbilitato(dominio.isAbilitato());
 		rsModel.setIntermediato(dominio.isIntermediato());
 		rsModel.setScaricaFr(dominio.isScaricaFr());
+		rsModel.setPagamentoSito(dominio.isPagamentoSito());
 
 		if(dominio.isIntermediato()) {
 			rsModel.setGln(dominio.getGln());
@@ -394,6 +398,7 @@ public class DominiConverter {
 		rsModel.setAbilitato(dominio.isAbilitato());
 		rsModel.setIntermediato(dominio.isIntermediato());
 		rsModel.setScaricaFr(dominio.isScaricaFr());
+		rsModel.setPagamentoSito(dominio.isPagamentoSito());
 
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));

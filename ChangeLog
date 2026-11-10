@@ -4,11 +4,20 @@
         Aggiunto nella fonte govpay.xsd, nel gov_pay.sql dei cinque dialetti e nella patch 3.10.0, rieseguibile tranne che su HSQL come il resto della patch.
         Correzione riportata dal ramo 3.10.x.
         Verifica: su PostgreSQL, Oracle, MySQL, SQL Server e HSQL, installazione nuova e aggiornamento dallo schema 3.9 con la patch applicata due volte (una sola su HSQL); in entrambi i casi l'indice esiste sulle due colonne, e su PostgreSQL la ricerca per cod_applicazione e cod_documento lo usa.
+
 2026-11-09  Giuliano Pintori <pintori@link.it>
 
         * Nuove colonne documenti.anomalo (booleano, NOT NULL, default false) e documenti.descrizione_stato (VARCHAR(255), opzionale) per la posizione debitoria anomala di link-it/govpay-common-pendenze#14: sono gli analoghi di versamenti.anomalo e versamenti.descrizione_stato a livello di posizione. govpay-common-pendenze le mappa nell'entity PosizioneDebitoria dal 2026-11-05, quindi senza di loro la validazione dello schema dei servizi che usano la libreria falliva ("missing column [anomalo] in table [documenti]", rilevato dai test di govpay-notify-batch).
         Aggiunte nella fonte govpay.xsd, nel gov_pay.sql dei cinque dialetti e nella patch 3.11.0, rieseguibile tranne che su HSQL come il resto della patch. Il default copre gli inserimenti del core, che non usa le colonne. La sezione di migrazione al modello v3 non cambia: le posizioni migrate partono con anomalo a false; check-riallineamento-v3.sh OK.
         Verifica: su PostgreSQL 16, MySQL 8.4, SQL Server 2022, Oracle Free 23 e HSQL 2.7.3, installazione nuova e aggiornamento dallo schema 3.10 con la patch 3.11.0 applicata due volte (una sola su HSQL): le due colonne hanno tipo, obbligatorieta' e default attesi.
+
+2026-11-08  Giuliano Pintori <pintori@link.it>
+
+        * Nuova colonna domini.pagamento_sito (link-it/govpay-pendenze-api#13): indica se l'ente consente il pagamento degli avvisi dal proprio sito. govpay-pendenze-api la riporta nella stampa degli avvisi (creditor.pay_on_website di govpay-stampe-api), che con il valore true aggiunge tra i canali di pagamento "oppure sul sito di <ente>", come previsto dalla specifica pagoPA 3.5.
+        Colonna booleana NOT NULL con DEFAULT false nella fonte govpay.xsd (anche nella copia dell'ORM), nel gov_pay.sql dei cinque dialetti e nella patch 3.11.0, rieseguibile tranne che su HSQL come il resto della patch: gli enti esistenti hanno false, la variante senza sito, finche' non vengono configurati, e il DEFAULT resta per chi inserisce domini senza conoscere la colonna. Nessun indice.
+        Aggiunta all'ORM del Dominio (bean, modello, insert, update, lettura e conversione dei campi), al modello Dominio e al DominioConverter.
+        API Backoffice v1: nuovo campo facoltativo pagamentoSito del dominio, false se assente in PUT /domini/{idDominio}, restituito in lettura. Cruscotto di gestione: interruttore "Pagamento dal sito dell'ente" nel form del dominio e valore nel dettaglio. Test di integrazione Karate per i valori true e false, per l'assenza del campo e per un valore non booleano.
+        Verifica: su PostgreSQL 16, MySQL 8.4, SQL Server 2022, Oracle Free 23 e HSQL 2.7.3, installazione nuova e aggiornamento dallo schema 3.10 con la patch applicata due volte (una sola su HSQL): la colonna e' NOT NULL con default false, una riga esistente e una inserita senza la colonna valgono false, su Oracle gli oggetti restano VALID. Tramite l'ORM su PostgreSQL: insert, find, update e findAll con filtro sulla colonna. Build di orm, orm-beans e api-backoffice; controllo dei tipi TypeScript del cruscotto. I test Karate non sono stati eseguiti.
 
 2026-11-07  Giuliano Pintori <pintori@link.it>
 

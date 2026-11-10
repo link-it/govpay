@@ -131,6 +131,35 @@ Examples:
 | tassonomiaPagoPA | '10' |
 | tassonomiaPagoPA | '11' |
 | tassonomiaPagoPA | '12' |
+| pagamentoSito | true |
+| pagamentoSito | false |
+
+Scenario: Modifica di un dominio senza pagamentoSito: l'ente non consente il pagamento dal proprio sito
+
+* set dominio.pagamentoSito = true
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* remove dominio.pagamentoSito
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.pagamentoSito == false
 
 Scenario: Modifica di un dominio (segregation code)
 

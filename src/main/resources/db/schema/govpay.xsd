@@ -599,6 +599,7 @@
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 			<xsd:element name="tassonomiaPagoPA" type="String35" minOccurs="0"/>
 			<xsd:element name="scaricaFr" type="xsd:boolean"/>
+			<xsd:element name="pagamentoSito" type="xsd:boolean" default="false"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

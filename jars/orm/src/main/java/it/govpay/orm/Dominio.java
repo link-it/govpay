@@ -56,6 +56,7 @@ import java.io.Serializable;
  * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="tassonomiaPagoPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="scaricaFr" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="pagamentoSito" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -89,7 +90,8 @@ import java.io.Serializable;
   	"codConnettoreSend",
   	"intermediato",
   	"tassonomiaPagoPA",
-  	"scaricaFr"
+  	"scaricaFr",
+  	"pagamentoSito"
   }
 )
 
@@ -278,6 +280,18 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implemen
     this.scaricaFr = scaricaFr;
   }
 
+  public boolean isPagamentoSito() {
+    return this.pagamentoSito;
+  }
+
+  public boolean getPagamentoSito() {
+    return this.pagamentoSito;
+  }
+
+  public void setPagamentoSito(boolean pagamentoSito) {
+    this.pagamentoSito = pagamentoSito;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.DominioModel modelStaticInstance = null;
@@ -379,5 +393,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBeanWithId implemen
   @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="scaricaFr",required=true,nillable=false)
   protected boolean scaricaFr;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="pagamentoSito",required=true,nillable=false,defaultValue="false")
+  protected boolean pagamentoSito = false;
 
 }

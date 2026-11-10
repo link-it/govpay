@@ -172,6 +172,16 @@ IF OBJECT_ID('v_vrs_non_rnd', 'V') IS NOT NULL
 GO
 
 
+-- govpay-pendenze-api#13: l'ente consente il pagamento degli avvisi dal proprio
+-- sito. govpay-pendenze-api lo riporta nella stampa degli avvisi, con la frase
+-- "oppure sul sito di <ente>" della specifica pagoPA. Gli enti esistenti hanno
+-- false, la variante senza sito, finche' non vengono configurati. Il DEFAULT
+-- resta dopo la patch, come in gov_pay.sql: chi inserisce domini senza
+-- conoscere la colonna continua a funzionare.
+IF COL_LENGTH('domini', 'pagamento_sito') IS NULL
+    ALTER TABLE domini ADD pagamento_sito BIT NOT NULL DEFAULT 0;
+GO
+
 -- ===========================================================================
 -- Migrazione dei dati al modello v3
 -- ===========================================================================

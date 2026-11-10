@@ -56,6 +56,8 @@ public class Dominio extends BasicModel {
 	
 	private boolean scaricaFr;
 
+	private boolean pagamentoSito;
+
 	@Override
 	public Long getId() {
 		return this.id;
@@ -231,6 +233,14 @@ public class Dominio extends BasicModel {
 
 	public void setScaricaFr(boolean scaricaFr) {
 		this.scaricaFr = scaricaFr;
+	}
+
+	public boolean isPagamentoSito() {
+		return pagamentoSito;
+	}
+
+	public void setPagamentoSito(boolean pagamentoSito) {
+		this.pagamentoSito = pagamentoSito;
 	}
 	
 }

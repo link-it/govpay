@@ -251,6 +251,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     if (json.scaricaFr !== undefined && json.scaricaFr !== null) {
       _dettaglio.info.push(new Dato({ label: Voce.SCARICA_FR, value: UtilService.ABILITA[json.scaricaFr.toString()] }));
     }
+    if (json.pagamentoSito !== undefined && json.pagamentoSito !== null) {
+      _dettaglio.info.push(new Dato({ label: Voce.PAGAMENTO_SITO, value: UtilService.ABILITA[json.pagamentoSito.toString()] }));
+    }
 
     if (json.intermediato) {
       if (json.stazione) {

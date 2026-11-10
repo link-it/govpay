@@ -135,6 +135,7 @@ CREATE TABLE domini
 	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	tassonomia_pago_pa VARCHAR(35) COMMENT 'Tassonomia PagoPA ente creditore',
 	scarica_fr BOOLEAN NOT NULL COMMENT 'Indica se scaricare i flussi di rendicontazione',
+	pagamento_sito BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se l\'ente consente il pagamento degli avvisi dal proprio sito',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT COMMENT 'Riferimento alla stazione',
