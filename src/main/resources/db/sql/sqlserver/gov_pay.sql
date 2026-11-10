@@ -134,6 +134,7 @@ CREATE TABLE domini
 	intermediato BIT NOT NULL,
 	tassonomia_pago_pa VARCHAR(35),
 	scarica_fr BIT NOT NULL,
+	pagamento_sito BIT NOT NULL DEFAULT 0,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT,

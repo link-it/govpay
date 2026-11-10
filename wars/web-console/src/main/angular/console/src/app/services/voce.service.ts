@@ -243,6 +243,7 @@ export class Voce {
   public static OPERAZIONI_TOTALI: string = 'Totale pendenze';
 
   public static PAGAMENTI_RICONCILIATI: string = 'Pagamenti riconciliati';
+  public static PAGAMENTO_SITO: string = 'Pagamento dal sito dell\'ente';
   public static PAGAMENTO_SPONTANEO: string = 'Pagamento spontaneo';
   public static PAGAMENTO_IN_CORSO: string = 'Pagamento in corso';
   public static PAGO_PA: string = 'Principal pagoPa';

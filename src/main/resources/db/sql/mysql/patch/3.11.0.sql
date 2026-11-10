@@ -310,6 +310,23 @@ EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
 
 
+-- govpay-pendenze-api#13: l'ente consente il pagamento degli avvisi dal proprio
+-- sito. govpay-pendenze-api lo riporta nella stampa degli avvisi, con la frase
+-- "oppure sul sito di <ente>" della specifica pagoPA. Gli enti esistenti hanno
+-- false, la variante senza sito, finche' non vengono configurati. Il DEFAULT
+-- resta dopo la patch, come in gov_pay.sql: chi inserisce domini senza
+-- conoscere la colonna continua a funzionare.
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'domini'
+        AND column_name = 'pagamento_sito') = 0,
+    'ALTER TABLE domini ADD COLUMN pagamento_sito BOOLEAN NOT NULL DEFAULT false COMMENT ''Indica se l\\''ente consente il pagamento degli avvisi dal proprio sito''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
 -- ===========================================================================
 -- Migrazione dei dati al modello v3
 -- ===========================================================================

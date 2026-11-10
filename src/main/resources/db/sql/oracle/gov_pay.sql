@@ -199,6 +199,7 @@ CREATE TABLE domini
 	intermediato NUMBER NOT NULL,
 	tassonomia_pago_pa VARCHAR2(35 CHAR),
 	scarica_fr NUMBER NOT NULL,
+	pagamento_sito NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER,
@@ -213,6 +214,7 @@ CREATE TABLE domini
 
 
 ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
+ALTER TABLE domini MODIFY pagamento_sito DEFAULT 0;
 
 CREATE INDEX idx_domini_scarica_fr ON domini (scarica_fr);
 

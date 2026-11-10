@@ -61,6 +61,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "intermediato",
 "tassonomiaPagoPA",
 "scaricaFr",
+"pagamentoSito",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
 
@@ -159,6 +160,9 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("scaricaFr")
   private Boolean scaricaFr = null;
+  
+  @JsonProperty("pagamentoSito")
+  private Boolean pagamentoSito = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -664,6 +668,22 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     this.scaricaFr = scaricaFr;
   }
 
+  /**
+   * Indica se l'ente consente il pagamento degli avvisi dal proprio sito: la stampa dell'avviso riporta "oppure sul sito di <ente>"
+   **/
+  public DominioPost pagamentoSito(Boolean pagamentoSito) {
+    this.pagamentoSito = pagamentoSito;
+    return this;
+  }
+
+  @JsonProperty("pagamentoSito")
+  public Boolean getPagamentoSito() {
+    return pagamentoSito;
+  }
+  public void setPagamentoSito(Boolean pagamentoSito) {
+    this.pagamentoSito = pagamentoSito;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -703,12 +723,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(servizioSend, dominioPost.servizioSend) &&
         Objects.equals(intermediato, dominioPost.intermediato) &&
         Objects.equals(tassonomiaPagoPA, dominioPost.tassonomiaPagoPA) &&
-        Objects.equals(scaricaFr, dominioPost.scaricaFr);
+        Objects.equals(scaricaFr, dominioPost.scaricaFr) &&
+        Objects.equals(pagamentoSito, dominioPost.pagamentoSito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, servizioSend, intermediato, tassonomiaPagoPA, scaricaFr);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, servizioSend, intermediato, tassonomiaPagoPA, scaricaFr, pagamentoSito);
   }
 
   public static DominioPost parse(String json) throws IOException {
@@ -756,6 +777,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
     sb.append("    scaricaFr: ").append(toIndentedString(scaricaFr)).append("\n");
+    sb.append("    pagamentoSito: ").append(toIndentedString(pagamentoSito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

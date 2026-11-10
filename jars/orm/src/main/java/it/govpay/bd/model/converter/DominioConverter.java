@@ -64,6 +64,7 @@ public class DominioConverter {
 		dto.setIntermediato(vo.isIntermediato());
 		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
 		dto.setScaricaFr(vo.isScaricaFr());
+		dto.setPagamentoSito(vo.isPagamentoSito());
 		return dto;
 	}
 
@@ -126,6 +127,7 @@ public class DominioConverter {
 		vo.setIntermediato(dto.isIntermediato());
 		vo.setTassonomiaPagoPA(dto.getTassonomiaPagoPA());
 		vo.setScaricaFr(dto.isScaricaFr());
+		vo.setPagamentoSito(dto.isPagamentoSito());
 		
 		return vo;
 	}

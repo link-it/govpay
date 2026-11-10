@@ -79,6 +79,9 @@
         <div class="col-12 col-sm-6" [formGroup]="fGroup">
           <mat-slide-toggle formControlName="scaricaFr_ctrl" color="accent">{{_voce.SCARICA_FR}}</mat-slide-toggle>
         </div>
+        <div class="col-12 col-sm-6" [formGroup]="fGroup">
+          <mat-slide-toggle formControlName="pagamentoSito_ctrl" color="accent">{{_voce.PAGAMENTO_SITO}}</mat-slide-toggle>
+        </div>
       </div>
       <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="fGroup.value?.intermediato_ctrl">Parametri adesione a pagoPA</p>
       <div class="row" *ngIf="fGroup.value?.intermediato_ctrl">

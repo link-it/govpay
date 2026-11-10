@@ -209,6 +209,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "scarica_fr";
 			}
 		}
+		if(field.equals(Dominio.model().PAGAMENTO_SITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pagamento_sito";
+			}else{
+				return "pagamento_sito";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -280,6 +287,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().SCARICA_FR)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().PAGAMENTO_SITO)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

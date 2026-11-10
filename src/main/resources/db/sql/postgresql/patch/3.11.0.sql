@@ -188,6 +188,14 @@ ALTER TABLE rpt ALTER COLUMN id_versamento DROP NOT NULL;
 ALTER TABLE rpt ADD COLUMN IF NOT EXISTS id_applicazione BIGINT;
 
 
+-- govpay-pendenze-api#13: l'ente consente il pagamento degli avvisi dal proprio
+-- sito. govpay-pendenze-api lo riporta nella stampa degli avvisi, con la frase
+-- "oppure sul sito di <ente>" della specifica pagoPA. Gli enti esistenti hanno
+-- false, la variante senza sito, finche' non vengono configurati. Il DEFAULT
+-- resta dopo la patch, come in gov_pay.sql: chi inserisce domini senza
+-- conoscere la colonna continua a funzionare.
+ALTER TABLE domini ADD COLUMN IF NOT EXISTS pagamento_sito BOOLEAN NOT NULL DEFAULT false;
+
 -- ===========================================================================
 -- Migrazione dei dati al modello v3
 -- ===========================================================================
