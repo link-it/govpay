@@ -1,5 +1,9 @@
 2026-11-11  Giuliano Pintori <pintori@link.it>
 
+        * Rimosso RendicontazioniBD.getRendicontazioniSenzaPagamento, non piu' usato: l'unico chiamante, il recupero delle RT in jars/core/.../business/Ricevute.java, e' stato eliminato con la rimozione delle API di pagamento (Issue #836, 3.9.2); il recupero delle RT e' ora svolto dal batch govpay-rt-batch.
+
+2026-11-11  Giuliano Pintori <pintori@link.it>
+
         * Avanzamento versione 3.9.3.p8.
 
 2026-11-11  Giuliano Pintori <pintori@link.it>
