@@ -113,6 +113,8 @@ public class TracciatiNotificaPagamenti {
 	public static final String GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_flussi_rendicontazione.csv";
 	public static final String FILE_RT_DIR_PREFIX = "RT/";
 	public static final String GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_rendicontazione.csv";
+	// Versione del tracciato quando il connettore non la indica: il connettore GovPay REST non la richiede (Issue #910)
+	public static final String VERSIONE_TRACCIATO_DEFAULT = "1.0";
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
 	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante", "contabilita" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
@@ -345,7 +347,7 @@ public class TracciatiNotificaPagamenti {
 						tracciato.setStato(STATO_ELABORAZIONE.DRAFT);
 						long progressivo = this.impostaNomeFileZip(dominio, tracciatiNotificaPagamentiBD, codDominio, tracciato);
 						tracciato.setTipo(this.tipoTracciato);
-						tracciato.setVersione(connettore.getVersioneCsv());
+						tracciato.setVersione(getVersioneTracciato(connettore));
 						beanDati = new it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti();
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.DRAFT.toString());
 						beanDati.setDataUltimoAggiornamento(new Date());
@@ -1112,6 +1114,10 @@ public class TracciatiNotificaPagamenti {
 		return data != null ? formatter.format(data) : "";
 	}
 
+	private static String getVersioneTracciato(ConnettoreNotificaPagamenti connettore) {
+		return StringUtils.isNotBlank(connettore.getVersioneCsv()) ? connettore.getVersioneCsv() : VERSIONE_TRACCIATO_DEFAULT;
+	}
+
 	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, ISerializer serializer) throws org.openspcoop2.utils.serialization.IOException {
@@ -1131,7 +1137,7 @@ public class TracciatiNotificaPagamenti {
 		// info tracciato
 		json.put("destinatari", StringUtils.join(connettore.getEmailIndirizzi(), ","));
 		json.put("numeroPagamenti", beanDati.getNumRtTotali()+"");
-		json.put("versioneTracciato", connettore.getVersioneCsv());
+		json.put("versioneTracciato", getVersioneTracciato(connettore));
 
 		// tipi pendenza
 		if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
