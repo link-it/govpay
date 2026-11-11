@@ -20,8 +20,6 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -33,7 +31,6 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
-import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -302,50 +299,6 @@ public class RendicontazioniBD extends BasicBD {
 			it.govpay.orm.Rendicontazione rendicontazione = this.getRendicontazioneService().find(exp);
 			return RendicontazioneConverter.toDTO(rendicontazione);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
-	}
-	
-	public List<Rendicontazione> getRendicontazioniSenzaPagamento(String codDominio, Integer numeroMassimoGiorniSogliaRicerca) throws ServiceException {
-		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-			
-			// -- Rendicontazioni di cui recuperare la RT
-			// select * from rendicontazioni where id_singolo_versamento is not null and id_pagamento is null and data > now() - interval '8 weeks' order by data desc
-			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
-			RendicontazioneModel model = it.govpay.orm.Rendicontazione.model();
-			
-			IPaginatedExpression exp = this.getRendicontazioneService().newPaginatedExpression();
-			exp.equals(model.ID_FR.COD_DOMINIO, codDominio);
-			
-			CustomField cfIdSV = new  CustomField(CF_ID_SINGOLO_VERSAMENTO, Long.class, CF_ID_SINGOLO_VERSAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
-			exp.isNotNull(cfIdSV);
-			
-			CustomField cfIdPag = new  CustomField(CF_ID_PAGAMENTO, Long.class, CF_ID_PAGAMENTO,fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
-			exp.isNull(cfIdPag);
-			
-			// filtro temporale sui giorni
-			Date now = new Date();
-			Calendar c = Calendar.getInstance();
-			c.setTime(now);
-			c.add(Calendar.DATE, - numeroMassimoGiorniSogliaRicerca);
-			
-			exp.and();
-			exp.greaterThan(model.DATA, c.getTime());
-
-			// Ordinamento per data decrescente (recuperiamo prima le RT piu' recenti)
-			exp.sortOrder(SortOrder.DESC);
-			exp.addOrder(model.DATA);
-
-			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst = this.getRendicontazioneService().findAll(exp);
-			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
-		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
