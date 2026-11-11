@@ -1,5 +1,9 @@
 2026-11-11  Giuliano Pintori <pintori@link.it>
 
+        * Avanzamento versione 3.9.3.p8.
+
+2026-11-11  Giuliano Pintori <pintori@link.it>
+
         * Issue #909 Corrette le etichette tedesche e slovene dell'avviso di pagamento bilingue.
         Rata unica in tedesco: "Einmalige Zahlung innerhalb von" era troppo lungo e la data di scadenza non veniva stampata; ora e' "Einzige Rate fällig am", come gia' sulla 3.10.x (Issue #477).
         Soglie in giorni: de.entro "Innerhalb von {0} Tagen", de.oltre "Nach {0} Tagen" (prima "Über {0} tage", cioe' "piu' di"), sl.entro "v {0} dneh", sl.oltre "po {0} dneh"; soluzione_unica_entro/oltre_giorni tradotte in tedesco (erano in italiano) e in sloveno ("Posamezna raztopina" e' la soluzione chimica).
