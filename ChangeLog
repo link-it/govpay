@@ -1,3 +1,11 @@
+2026-11-11  Giuliano Pintori <pintori@link.it>
+
+        * Issue #909 Corrette le etichette tedesche e slovene dell'avviso di pagamento bilingue.
+        Soglie in giorni: de.entro "Innerhalb von {0} Tagen", de.oltre "Nach {0} Tagen" (prima "Über {0} tage", cioe' "piu' di"), sl.entro "v {0} dneh", sl.oltre "po {0} dneh"; soluzione_unica_entro/oltre_giorni tradotte in tedesco (erano in italiano) e in sloveno ("Posamezna raztopina" e' la soluzione chimica).
+        AvvisoPagamentoV2Utils: nel ramo ENTRO delle soglie in giorni la seconda lingua usava rata_unica_entro_giorni invece di entro, e il tedesco stampava "Einzelne installation innerhalb von" senza il numero dei giorni. Ora il ramo ENTRO e' costruito come il ramo OLTRE: scadenza con entro, scadenza unica con soluzione_unica_entro_giorni. Rimosse le etichette rata_unica_entro_giorni e prima_rata_entro_giorni, non piu' usate, e le loro costanti in LabelAvvisiProperties, come in govpay-stampe-api.
+        Le installazioni con un avvisi.properties personalizzato nella directory delle risorse continuano a usare i propri valori, che hanno la precedenza.
+        Correzione riportata dal ramo 3.9.x; l'etichetta della rata unica in tedesco era gia' corretta su questo ramo (#477).
+
 2026-11-10  Giuliano Pintori <pintori@link.it>
 
         * Avviso bilingue in tedesco (#477): l'etichetta della rata unica "Einmalige Zahlung innerhalb von" era troppo lunga e la data di scadenza non veniva stampata ("Rata UNICA entro il · Einmalige Zahlung innerhalb von", senza data). Sostituita con "Einzige Rate fällig am", la stessa di govpay-stampe-api, presa dalle stringhe ufficiali tedesche della specifica pagoPA 3.5.
