@@ -1,3 +1,11 @@
+2026-11-11  Giuliano Pintori <pintori@link.it>
+
+        * Issue #909 Corrette le etichette tedesche e slovene dell'avviso di pagamento bilingue.
+        Rata unica in tedesco: "Einmalige Zahlung innerhalb von" era troppo lungo e la data di scadenza non veniva stampata; ora e' "Einzige Rate fällig am", come gia' sulla 3.10.x (Issue #477).
+        Soglie in giorni: de.entro "Innerhalb von {0} Tagen", de.oltre "Nach {0} Tagen" (prima "Über {0} tage", cioe' "piu' di"), sl.entro "v {0} dneh", sl.oltre "po {0} dneh"; soluzione_unica_entro/oltre_giorni tradotte in tedesco (erano in italiano) e in sloveno ("Posamezna raztopina" e' la soluzione chimica).
+        AvvisoPagamentoV2Utils: nel ramo ENTRO delle soglie in giorni la seconda lingua usava rata_unica_entro_giorni invece di entro, e il tedesco stampava "Einzelne installation innerhalb von" senza il numero dei giorni. Ora il ramo ENTRO e' costruito come il ramo OLTRE: scadenza con entro, scadenza unica con soluzione_unica_entro_giorni. Rimosse le etichette rata_unica_entro_giorni e prima_rata_entro_giorni, non piu' usate, e le loro costanti in LabelAvvisiProperties, come in govpay-stampe-api.
+        Le installazioni con un avvisi.properties personalizzato nella directory delle risorse continuano a usare i propri valori, che hanno la precedenza.
+
 2026-11-05  Giuliano Pintori <pintori@link.it>
 
         * Ripristinati CSVUtils.getInstance() e SimpleDateFormatUtils.getInstance(), rinominati e rimossi il 2026-11-04 per la segnalazione SonarCloud java:S9437: i template FreeMarker di trasformazione dei tracciati CSV configurati nei tipi pendenza li chiamano per nome (class["it.govpay.core.utils.CSVUtils"].getInstance()), e senza di loro la conversione dei tracciati CSV falliva. Rilevato dai test di integrazione dei tracciati CSV, falliti nelle build Jenkins 3.9.x #79 e #80.
