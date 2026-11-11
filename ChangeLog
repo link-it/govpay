@@ -1,5 +1,12 @@
 2026-11-11  Giuliano Pintori <pintori@link.it>
 
+        * Issue #910 Il connettore di notifica pagamenti GovPay in modalita' REST non creava mai il tracciato: il connettore veniva salvato senza versione (versioneZip era gestito solo per EMAIL e FILESYSTEM e per REST non e' obbligatorio), e l'inserimento del tracciato falliva perche' trac_notif_pag.versione e' NOT NULL.
+        API Backoffice: versioneZip salvato e restituito anche per il connettore REST. TracciatiNotificaPagamenti: se il connettore non indica la versione, il tracciato e i suoi metadati usano la versione 1.0, cosi' funzionano anche i connettori REST gia' configurati.
+        Test di integrazione operazioni-get-tracciatiGovpay-rest: verifica sul database che il tracciato GOVPAY venga creato con versione 1.0, con connettore REST senza versioneZip e con versioneZip 1.0; prima si limitava ad attendere senza verifiche.
+        Correzione riportata dal ramo 3.9.x.
+
+2026-11-11  Giuliano Pintori <pintori@link.it>
+
         * Rimosso RendicontazioniBD.getRendicontazioniSenzaPagamento, non piu' usato: l'unico chiamante, il recupero delle RT in jars/core/.../business/Ricevute.java, e' stato eliminato con la rimozione delle API di pagamento (Issue #836, 3.9.2); il recupero delle RT e' ora svolto dal batch govpay-rt-batch.
         Correzione riportata dal ramo 3.9.x.
 

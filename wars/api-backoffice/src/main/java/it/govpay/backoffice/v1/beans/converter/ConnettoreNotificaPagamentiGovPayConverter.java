@@ -140,6 +140,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 				connettore.setFileSystemPath(connector.getFileSystemPath());
 				break;
 			case REST:
+				connettore.setVersioneCsv(connector.getVersioneZip());
 				connettore.setTipoConnettore(TipoConnettore.REST);
 
 				ConnettoriConverter.setAutenticazione(connettore, connector.getAuth());
@@ -181,6 +182,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 			case WEB_SERVICE:
 				break;
 			case REST:
+				rsModel.setVersioneZip(connettore.getVersioneCsv());
 				rsModel.setTipoConnettore(TipoConnettoreEnum.REST);
 				if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 					rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
