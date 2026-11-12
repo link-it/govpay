@@ -1,5 +1,12 @@
 2026-11-12  Giuliano Pintori <pintori@link.it>
 
+        * Issue #911 Una ricevuta non veniva acquisita se il pagamento era rendicontato in un flusso acquisito in piu' revisioni prima della ricevuta: ogni revisione salva la propria rendicontazione ANOMALA senza pagamento, e all'arrivo della ricevuta RtUtils.checkEsistenzaRendicontazioneAnomalaPerIlPagamento ne cercava una sola. Con due righe la ricerca falliva, la transazione veniva annullata e paSendRTV2 (e il recupero delle RT) rispondeva PAA_SYSTEM_ERROR a ogni tentativo.
+        Ora il pagamento viene collegato a tutte le rendicontazioni anomale con i suoi estremi, che passano in stato OK, come avviene quando la ricevuta arriva prima del flusso. RendicontazioniBD.getRendicontazione diventa getRendicontazioni e restituisce la lista.
+        Nuovo test di integrazione rpp-recuperoRT-revisioniFlusso: flusso acquisito prima della ricevuta, seconda revisione dello stesso flusso, recupero della RT; verifica che la ricevuta sia acquisita e che entrambe le rendicontazioni siano OK e collegate al pagamento.
+        Correzione riportata dal ramo 3.9.x.
+
+2026-11-12  Giuliano Pintori <pintori@link.it>
+
         * Issue #910 Console: nel connettore di notifica pagamenti GovPay la versione del tracciato e' ora obbligatoria in tutte le modalita', anche REST; rimossa l'opzione "Nessuna", prima offerta solo per REST. Unico valore disponibile: 1.0.
         Correzione riportata dal ramo 3.9.x.
 

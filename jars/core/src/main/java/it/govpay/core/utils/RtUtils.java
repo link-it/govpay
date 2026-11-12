@@ -756,11 +756,12 @@ public class RtUtils extends NdpValidationUtils {
 		RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(pagamentiBD);
 		rendicontazioniBD.setAtomica(false);
 		
-		try {
-			// cerco una eventuale rendicontazione per gli estremi del pagamento, in stato anomala ma non collegata a nessun pagamento
+		// cerco le rendicontazioni per gli estremi del pagamento, in stato anomala ma non collegate a nessun pagamento.
+		// Possono essere piu' di una se il flusso e' stato acquisito in piu' revisioni prima della ricevuta (Issue #911):
+		// vengono collegate tutte al pagamento, come avviene quando la ricevuta arriva prima del flusso.
+		List<Rendicontazione> rendicontazioniAnomale = rendicontazioniBD.getRendicontazioni(pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur(), pagamento.getIndiceDati(), StatoRendicontazione.ANOMALA, true);
 
-			Rendicontazione rendicontazioneAnomala = rendicontazioniBD.getRendicontazione(pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur(), pagamento.getIndiceDati(), StatoRendicontazione.ANOMALA, true);
-			
+		for (Rendicontazione rendicontazioneAnomala : rendicontazioniAnomale) {
 			// aggiorno la rendicontazione e la metto in stato OK
 			rendicontazioneAnomala.setStato(StatoRendicontazione.OK);
 			rendicontazioneAnomala.setAnomalie(new ArrayList<>());
@@ -771,11 +772,6 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			
 			rendicontazioniBD.updateRendicontazione(rendicontazioneAnomala);
-			
-		} catch (NotFoundException e) {
-			// se non esiste una rendicontazione in stato anomala con i riferimenti del pagamento  non faccio niente.
-		} finally {
-//			donothing
 		}
 	}
 	
