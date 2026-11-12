@@ -1,3 +1,7 @@
+2026-11-12  Giuliano Pintori <pintori@link.it>
+
+        * Issue #910 Console: nel connettore di notifica pagamenti GovPay la versione del tracciato e' ora obbligatoria in tutte le modalita', anche REST; rimossa l'opzione "Nessuna", prima offerta solo per REST. Unico valore disponibile: 1.0.
+
 2026-11-11  Giuliano Pintori <pintori@link.it>
 
         * Issue #910 Il connettore di notifica pagamenti GovPay in modalita' REST non creava mai il tracciato: il connettore veniva salvato senza versione (versioneZip era gestito solo per EMAIL e FILESYSTEM e per REST non e' obbligatorio), e l'inserimento del tracciato falliva perche' trac_notif_pag.versione e' NOT NULL.
