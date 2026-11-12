@@ -265,13 +265,13 @@ public class RendicontazioniBD extends BasicBD {
 	}
 	
 	
-	public Rendicontazione getRendicontazione(String codDominio, String iuv, String iur, Integer indiceDati, StatoRendicontazione stato, boolean pagamentoNull) throws ServiceException, NotFoundException {
+	public List<Rendicontazione> getRendicontazioni(String codDominio, String iuv, String iur, Integer indiceDati, StatoRendicontazione stato, boolean pagamentoNull) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IExpression exp = this.getRendicontazioneService().newExpression();
+			IPaginatedExpression exp = this.getRendicontazioneService().newPaginatedExpression();
 			
 			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
 			RendicontazioneModel model = it.govpay.orm.Rendicontazione.model();
@@ -296,9 +296,9 @@ public class RendicontazioniBD extends BasicBD {
 				exp.isNotNull(cf);
 			}
 			
-			it.govpay.orm.Rendicontazione rendicontazione = this.getRendicontazioneService().find(exp);
-			return RendicontazioneConverter.toDTO(rendicontazione);
-		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
+			List<it.govpay.orm.Rendicontazione> rendicontazioni = this.getRendicontazioneService().findAll(exp);
+			return RendicontazioneConverter.toDTO(rendicontazioni);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException | CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
