@@ -20,7 +20,7 @@ Background:
 Scenario Outline: Spedizione tracciati govpay via rest con versioneZip <versioneZip>: il tracciato viene creato con la versione 1.0
 
 * set dominio.servizioGovPay.versioneZip = <versioneZip>
-* if (<versioneZip> == null) karate.remove('dominio', '$.servizioGovPay.versioneZip')
+* eval if (<versioneZip> == null) karate.remove('dominio', '$.servizioGovPay.versioneZip')
 
 Given url backofficeBaseurl
 And path 'domini', idDominio
