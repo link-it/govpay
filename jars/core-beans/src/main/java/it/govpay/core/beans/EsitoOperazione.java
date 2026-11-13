@@ -817,6 +817,24 @@ public enum EsitoOperazione {
     VER_041,
     
     /**
+     * La voce a importo 0 di una pendenza abilitata a SEND non e' la prima voce.  
+     * 
+     */
+    VER_042,
+    
+    /**
+     * La prima voce a importo 0 di una pendenza abilitata a SEND non e' di competenza dell'ente creditore.  
+     * 
+     */
+    VER_043,
+    
+    /**
+     * Prima voce a importo 0 di una pendenza abilitata a SEND su un dominio senza connettore SEND abilitato.  
+     * 
+     */
+    VER_044,
+    
+    /**
      * Errore durante la richiesta di schedulazione del batch.  
      * 
      */

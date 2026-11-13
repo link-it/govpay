@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -175,6 +176,9 @@ public class GovpayConfig {
 	// intervallo minimo, in millisecondi, tra due interrogazioni consecutive al servizio SEND per lo stesso versamento
 	private Integer retentionSend;
 
+	// spese di notifica SEND da imputare alla prima voce a importo 0 quando l'interrogazione di SEND non va a buon fine (Issue #913)
+	private BigDecimal importoBaseSpeseNotificaSend;
+
 	private String templateQuietanzaPagamento;
 
 	private String checkoutBaseURL;
@@ -312,6 +316,7 @@ public class GovpayConfig {
 		this.connectionTimeoutAppIO = 10000;
 		this.connectionRequestTimeoutAppIO = 180000;
 		this.retentionSend = 900000;
+		this.importoBaseSpeseNotificaSend = null;
 
 		this.aggiornamentoValiditaMandatorio = false;
 
@@ -680,6 +685,18 @@ public class GovpayConfig {
 			this.connectionRequestTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionRequestTimeout", this.props, false, 10000);
 
 			this.retentionSend = getIntegerProperty(log, "it.govpay.client.send.retention", this.props, false, 900000);
+
+			String importoBaseSpeseNotificaSendString = getProperty("it.govpay.send.speseNotifica.importoBase", this.props, false, log);
+			if(importoBaseSpeseNotificaSendString != null) {
+				try {
+					BigDecimal importoBase = new BigDecimal(importoBaseSpeseNotificaSendString.trim());
+					if(importoBase.signum() <= 0 || importoBase.scale() > 2)
+						throw new NumberFormatException();
+					this.importoBaseSpeseNotificaSend = importoBase;
+				} catch(NumberFormatException e) {
+					throw new InvalidPropertyException(MessageFormat.format("Valore [{0}] non consentito per la property \"{1}\": indicare un importo in euro maggiore di 0, con al piu'' due decimali (es. 2.00).", importoBaseSpeseNotificaSendString, "it.govpay.send.speseNotifica.importoBase"));
+				}
+			}
 
 			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
 			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
@@ -1404,6 +1421,10 @@ public class GovpayConfig {
 
 	public Integer getRetentionSend() {
 		return retentionSend;
+	}
+
+	public BigDecimal getImportoBaseSpeseNotificaSend() {
+		return importoBaseSpeseNotificaSend;
 	}
 
 	public String getCheckoutBaseURL() {

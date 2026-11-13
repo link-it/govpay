@@ -141,6 +141,7 @@ public class Versamento  {
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, log);
 				VersamentoUtils.validaSendNav(versamento, applicazione);
+				VersamentoUtils.validaVoceSpeseNotificaSend(versamento, applicazione, dominio, configWrapper);
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				// controllo se sono stati aggiornati dei campi significativi per l'ACA
@@ -205,6 +206,7 @@ public class Versamento  {
 				}
 
 				VersamentoUtils.validaSendNav(versamento, applicazione);
+				VersamentoUtils.validaVoceSpeseNotificaSend(versamento, applicazione, dominio, configWrapper);
 
 				if(bd == null) {
 					// creo connessione
