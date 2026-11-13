@@ -36,6 +36,9 @@ ALTER TABLE gp_audit ADD COLUMN ip_richiedente VARCHAR(45);
 ALTER TABLE versamenti ADD COLUMN send_abilitato BOOLEAN DEFAULT FALSE NOT NULL;
 ALTER TABLE versamenti ADD COLUMN send_importo_totale DOUBLE;
 ALTER TABLE versamenti ADD COLUMN send_data_aggiornamento TIMESTAMP;
+-- NAV notificato su SEND, da usare per l'attualizzazione al posto del numero avviso
+-- della pendenza quando l'avviso notificato e' stato sostituito (Issue #912).
+ALTER TABLE versamenti ADD COLUMN send_nav VARCHAR(18);
 
 ALTER TABLE domini ADD COLUMN cod_connettore_send VARCHAR(255);
 

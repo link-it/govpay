@@ -77,6 +77,18 @@ EXCEPTION
 END;
 /
 
+-- NAV notificato su SEND, da usare per l'attualizzazione al posto del numero avviso
+-- della pendenza quando l'avviso notificato e' stato sostituito (Issue #912).
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TABLE versamenti ADD send_nav VARCHAR2(18 CHAR)';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -1430 THEN
+            RAISE;
+        END IF;
+END;
+/
+
 BEGIN
     EXECUTE IMMEDIATE 'ALTER TABLE domini ADD cod_connettore_send VARCHAR2(255 CHAR)';
 EXCEPTION

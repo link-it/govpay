@@ -587,6 +587,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "send_data_aggiornamento";
 			}
 		}
+		if(field.equals(Versamento.model().SEND_NAV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_nav";
+			}else{
+				return "send_nav";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -820,6 +827,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().SEND_DATA_AGGIORNAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().SEND_NAV)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

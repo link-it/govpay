@@ -356,9 +356,13 @@ public class VersamentoUtils {
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
-			} else {
-				// versamento valido
-			} 
+			} else if(versamento.isSendAbilitato() && isConnettoreSendAbilitato(versamento.getDominio(configWrapper))) {
+				// versamento valido, ma soggetto ad attualizzazione: le spese di notifica non dipendono dalla
+				// data di validita', quindi SEND va interrogato anche quando la pendenza non e' da riacquisire.
+				// Solo con il connettore SEND configurato: senza, una pendenza valida resta pagabile com'e'
+				// anche con aggiornamentoValiditaMandatorio, che riguarda la pendenza non piu' valida.
+				aggiornaImportoSend(versamento, log);
+			}
 		}
 		return versamento;
 	}
@@ -482,9 +486,16 @@ public class VersamentoUtils {
 		return versamento;
 	}
 
+	private static boolean isConnettoreSendAbilitato(Dominio dominio) {
+		Connettore connettoreSend = dominio.getConnettoreSend();
+		return connettoreSend != null && connettoreSend.isAbilitato();
+	}
+
 	/**
 	 * Interroga il servizio SEND per attualizzare l'importo della pendenza con le spese di notifica,
+	 * usando il NAV notificato su SEND se indicato (Issue #912) o altrimenti il numero avviso,
 	 * se non gia' fatto di recente (retention configurabile con la proprieta' it.govpay.client.send.retention).
+	 * Sulla pendenza ancora valida viene invocata da aggiornaVersamento se il dominio ha il connettore SEND.
 	 * Sul ramo della pendenza non piu' valida viene invocata dopo la verifica, da acquisisciVersamento, e
 	 * in alternativa ad essa da aggiornaVersamento quando l'applicazione non ha un connettore di verifica
 	 * configurato: l'attualizzazione dipende dal connettore SEND del dominio, non da quello di verifica
@@ -505,10 +516,12 @@ public class VersamentoUtils {
 			}
 		}
 
-		// il numero avviso e' il noticeCode con cui si interroga SEND: senza, la richiesta non e' componibile.
-		// Dopo la verifica lo garantisce caricaVersamento, ma sull'aggancio in aggiornaVersamento la pendenza
-		// arriva dalla base dati e puo' non averlo ancora assegnato.
-		if(versamento.getNumeroAvviso() == null) {
+		// il noticeCode con cui si interroga SEND e' il NAV notificato, se l'avviso notificato e' stato sostituito
+		// da questa pendenza (Issue #912), altrimenti il numero avviso della pendenza: senza, la richiesta non e'
+		// componibile. Dopo la verifica il numero avviso lo garantisce caricaVersamento, ma sull'aggancio in
+		// aggiornaVersamento la pendenza arriva dalla base dati e puo' non averlo ancora assegnato.
+		String noticeCode = versamento.getSendNav() != null ? versamento.getSendNav() : versamento.getNumeroAvviso();
+		if(noticeCode == null) {
 			log.warn("Numero avviso non assegnato per il versamento [{}], attualizzazione dell'importo con le spese di notifica SEND non eseguita.", versamento.getCodVersamentoEnte());
 			return;
 		}
@@ -527,7 +540,7 @@ public class VersamentoUtils {
 			}
 
 			SendClient sendClient = new SendClient(dominio, connettoreSend, eventoCtx);
-			Long importoEurocent = sendClient.recuperaImportoNotifica(dominio.getCodDominio(), versamento.getNumeroAvviso());
+			Long importoEurocent = sendClient.recuperaImportoNotifica(dominio.getCodDominio(), noticeCode);
 			eventoCtx.setEsito(Esito.OK);
 			BigDecimal importoEuro = importoEurocent != null ? BigDecimal.valueOf(importoEurocent).movePointLeft(2) : null;
 
@@ -731,6 +744,7 @@ public class VersamentoUtils {
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
 		model.setSendAbilitato(versamento.isSendAbilitato() != null && versamento.isSendAbilitato());
+		model.setSendNav(versamento.getSendNav());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
 
 		CausaleSemplice causale = model.new CausaleSemplice();
@@ -932,6 +946,24 @@ public class VersamentoUtils {
 			throws GovPayException {
 		it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
 					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode(), dominio.getAuxDigit(), applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
+	}
+
+	/**
+	 * Controlli sul NAV notificato su SEND (Issue #912), da eseguire quando sono noti lo stato SEND
+	 * e il numero avviso definitivi della pendenza: in aggiornamento sendAbilitato e' quello salvato.
+	 * Il NAV notificato non puo' coincidere con il numero avviso della pendenza. Se appartiene a
+	 * un'altra pendenza ancora da pagare, annullarla e' onere dell'ente: finche' restano pagabili
+	 * entrambi gli avvisi, le spese di notifica possono essere incassate due volte.
+	 */
+	public static void validaSendNav(Versamento versamento, Applicazione applicazione) throws GovPayException {
+		String sendNav = versamento.getSendNav();
+		if(sendNav == null) return;
+
+		if(!versamento.isSendAbilitato())
+			throw new GovPayException(EsitoOperazione.VER_040, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), sendNav);
+
+		if(sendNav.equals(versamento.getNumeroAvviso()))
+			throw new GovPayException(EsitoOperazione.VER_041, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), sendNav);
 	}
 
 	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {

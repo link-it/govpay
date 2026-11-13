@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -139,6 +140,7 @@ public class Versamento  {
 
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, log);
+				VersamentoUtils.validaSendNav(versamento, applicazione);
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				// controllo se sono stati aggiornati dei campi significativi per l'ACA
@@ -201,6 +203,8 @@ public class Versamento  {
 					it.govpay.core.business.model.Iuv iuvModel = IuvUtils.toIuv(versamento, applicazione, dominio);
 					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
+
+				VersamentoUtils.validaSendNav(versamento, applicazione);
 
 				if(bd == null) {
 					// creo connessione
@@ -374,6 +378,16 @@ public class Versamento  {
 		// vanno preservati perche' su di essi si basa il controllo della retention in VersamentoUtils.aggiornaImportoSend
 		versamento.setSendImportoTotale(versamentoLetto.getSendImportoTotale());
 		versamento.setSendDataAggiornamento(versamentoLetto.getSendDataAggiornamento());
+		// il NAV notificato e' modificabile, ma solo le API Pendenze v2 lo trasportano: se la richiesta non lo indica
+		// (altre API, tracciati, pendenza riacquisita dal gestionale) resta quello salvato
+		if(versamento.getSendNav() == null)
+			versamento.setSendNav(versamentoLetto.getSendNav());
+		// con un NAV notificato diverso le spese gia' acquisite si riferiscono a un altro avviso: si azzerano,
+		// cosi' la prossima verifica interroga di nuovo SEND senza attendere la retention
+		if(!Objects.equals(versamento.getSendNav(), versamentoLetto.getSendNav())) {
+			versamento.setSendImportoTotale(null);
+			versamento.setSendDataAggiornamento(null);
+		}
 	}
 
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException {

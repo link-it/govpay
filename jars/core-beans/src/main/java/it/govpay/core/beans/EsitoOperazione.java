@@ -805,6 +805,18 @@ public enum EsitoOperazione {
     VER_039,
     
     /**
+     * Il NAV notificato su SEND e' indicato per una pendenza non abilitata all'attualizzazione SEND.  
+     * 
+     */
+    VER_040,
+    
+    /**
+     * Il NAV notificato su SEND coincide con il numero avviso della pendenza stessa.  
+     * 
+     */
+    VER_041,
+    
+    /**
      * Errore durante la richiesta di schedulazione del batch.  
      * 
      */

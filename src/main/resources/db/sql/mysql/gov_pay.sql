@@ -689,6 +689,7 @@ CREATE TABLE versamenti
 	send_abilitato BOOLEAN NOT NULL COMMENT 'Indica se la pendenza e\' abilitata all\'attualizzazione dell\'importo tramite SEND',
 	send_importo_totale DOUBLE COMMENT 'Importo della pendenza attualizzato con le spese di notifica SEND',
 	send_data_aggiornamento DATETIME COMMENT 'Data di attualizzazione dell\'importo tramite SEND',
+	send_nav VARCHAR(18) COMMENT 'NAV notificato su SEND da usare nella attualizzazione al posto del numero avviso della pendenza',
 	numero_rata INT NOT NULL DEFAULT -1 COMMENT 'Numero della rata nell\'opzione di pagamento del modello v3',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',

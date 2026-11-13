@@ -73,6 +73,7 @@ import it.govpay.core.exceptions.IOException;
 "sendAbilitato",
 "sendImportoTotale",
 "sendDataAggiornamento",
+"sendNav",
 "voci",
 "rpp",
 "pagamenti",
@@ -207,6 +208,9 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("sendDataAggiornamento")
   private Date sendDataAggiornamento = null;
+
+  @JsonProperty("sendNav")
+  private String sendNav = null;
 
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -891,6 +895,22 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * NAV dell'avviso notificato su SEND, da usare per l'attualizzazione delle spese di notifica al posto del numero avviso della pendenza
+   **/
+  public Pendenza sendNav(String sendNav) {
+    this.sendNav = sendNav;
+    return this;
+  }
+
+  @JsonProperty("sendNav")
+  public String getSendNav() {
+    return sendNav;
+  }
+  public void setSendNav(String sendNav) {
+    this.sendNav = sendNav;
+  }
+
+  /**
    **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -986,6 +1006,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(sendAbilitato, pendenza.sendAbilitato) &&
         Objects.equals(sendImportoTotale, pendenza.sendImportoTotale) &&
         Objects.equals(sendDataAggiornamento, pendenza.sendDataAggiornamento) &&
+        Objects.equals(sendNav, pendenza.sendNav) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp) &&
         Objects.equals(pagamenti, pendenza.pagamenti);
@@ -993,7 +1014,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, dataUltimaModificaAca, dataUltimaComunicazioneAca, sendAbilitato, sendImportoTotale, sendDataAggiornamento, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, dataUltimaModificaAca, dataUltimaComunicazioneAca, sendAbilitato, sendImportoTotale, sendDataAggiornamento, sendNav, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) throws IOException {
@@ -1052,6 +1073,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    sendAbilitato: ").append(toIndentedString(sendAbilitato)).append("\n");
     sb.append("    sendImportoTotale: ").append(toIndentedString(sendImportoTotale)).append("\n");
     sb.append("    sendDataAggiornamento: ").append(toIndentedString(sendDataAggiornamento)).append("\n");
+    sb.append("    sendNav: ").append(toIndentedString(sendNav)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");

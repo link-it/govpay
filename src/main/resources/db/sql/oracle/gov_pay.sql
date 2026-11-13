@@ -974,6 +974,7 @@ CREATE TABLE versamenti
 	send_abilitato NUMBER NOT NULL,
 	send_importo_totale BINARY_DOUBLE,
 	send_data_aggiornamento TIMESTAMP,
+	send_nav VARCHAR2(18 CHAR),
 	numero_rata NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,

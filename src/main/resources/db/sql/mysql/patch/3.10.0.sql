@@ -84,6 +84,19 @@ PREPARE gp_stmt FROM @gp_sql;
 EXECUTE gp_stmt;
 DEALLOCATE PREPARE gp_stmt;
 
+-- NAV notificato su SEND, da usare per l'attualizzazione al posto del numero avviso
+-- della pendenza quando l'avviso notificato e' stato sostituito (Issue #912).
+SET @gp_sql := IF(
+    (SELECT COUNT(*) FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND table_name = 'versamenti'
+        AND column_name = 'send_nav') = 0,
+    'ALTER TABLE versamenti ADD COLUMN send_nav VARCHAR(18) COMMENT ''NAV notificato su SEND da usare nella attualizzazione al posto del numero avviso della pendenza''',
+    'DO 0');
+PREPARE gp_stmt FROM @gp_sql;
+EXECUTE gp_stmt;
+DEALLOCATE PREPARE gp_stmt;
+
 SET @gp_sql := IF(
     (SELECT COUNT(*) FROM information_schema.columns
       WHERE table_schema = DATABASE()

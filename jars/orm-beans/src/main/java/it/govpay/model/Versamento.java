@@ -193,6 +193,7 @@ public class Versamento extends BasicModel {
 	private boolean sendAbilitato;
 	private BigDecimal sendImportoTotale;
 	private Date sendDataAggiornamento;
+	private String sendNav;
 
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -828,5 +829,11 @@ public class Versamento extends BasicModel {
 	}
 	public void setSendDataAggiornamento(Date sendDataAggiornamento) {
 		this.sendDataAggiornamento = sendDataAggiornamento;
+	}
+	public String getSendNav() {
+		return sendNav;
+	}
+	public void setSendNav(String sendNav) {
+		this.sendNav = sendNav;
 	}
 }

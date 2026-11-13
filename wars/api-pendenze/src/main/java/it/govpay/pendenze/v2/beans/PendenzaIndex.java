@@ -58,6 +58,7 @@ import it.govpay.core.beans.JSONSerializable;
 "UUID",
 "proprieta",
 "sendAbilitato",
+"sendNav",
 "rpp",
 "pagamenti",
 })
@@ -152,6 +153,9 @@ public class PendenzaIndex extends JSONSerializable {
 
   @JsonProperty("sendAbilitato")
   private Boolean sendAbilitato = false;
+
+  @JsonProperty("sendNav")
+  private String sendNav = null;
 
   @JsonProperty("rpp")
   private String rpp = null;
@@ -631,6 +635,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * NAV dell'avviso notificato su SEND, da usare per l'attualizzazione delle spese di notifica al posto del numero avviso della pendenza
+   **/
+  public PendenzaIndex sendNav(String sendNav) {
+    this.sendNav = sendNav;
+    return this;
+  }
+
+  @JsonProperty("sendNav")
+  public String getSendNav() {
+    return sendNav;
+  }
+  public void setSendNav(String sendNav) {
+    this.sendNav = sendNav;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -701,13 +721,14 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(UUID, pendenzaIndex.UUID) &&
         Objects.equals(proprieta, pendenzaIndex.proprieta) &&
         Objects.equals(sendAbilitato, pendenzaIndex.sendAbilitato) &&
+        Objects.equals(sendNav, pendenzaIndex.sendNav) &&
         Objects.equals(rpp, pendenzaIndex.rpp) &&
         Objects.equals(pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, proprieta, sendAbilitato, rpp, pagamenti);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, proprieta, sendAbilitato, sendNav, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -754,6 +775,7 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    sendAbilitato: ").append(toIndentedString(sendAbilitato)).append("\n");
+    sb.append("    sendNav: ").append(toIndentedString(sendNav)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");
