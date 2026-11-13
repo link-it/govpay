@@ -2,6 +2,7 @@ Feature: Creazione Tracciato GovPay
 
 Background:
 
+* call read('classpath:utils/common-utils.feature')
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def dominio = read('classpath:test/api/backoffice/v1/domini/put/msg/dominio-connettore-govpay.json')
@@ -50,7 +51,20 @@ And match response.servizioGovPay.versioneZip == <versioneZipLetta>
 
 * call read('classpath:utils/govpay-op-elaborazione-tracciati-notifica-pagamenti.feature')
 
-* def tracciati = db.readRows("SELECT versione, stato FROM trac_notif_pag WHERE tipo = 'GOVPAY' AND id_dominio = " + idDominioDb)
+# L'elaborazione e' asincrona: si attende la creazione del tracciato.
+* def queryTracciati = "SELECT versione, stato FROM trac_notif_pag WHERE tipo = 'GOVPAY' AND id_dominio = " + idDominioDb
+* def attendiTracciati =
+"""
+function() {
+  for (var i = 0; i < 30; i++) {
+    var righe = db.readRows(queryTracciati);
+    if (righe.size() > 0) return righe;
+    java.lang.Thread.sleep(2000);
+  }
+  return db.readRows(queryTracciati);
+}
+"""
+* def tracciati = attendiTracciati()
 * match tracciati == '#[1]'
 * match tracciati[0].versione == '1.0'
 
@@ -60,5 +74,5 @@ And match response.servizioGovPay.versioneZip == <versioneZipLetta>
 
 Examples:
 | versioneZip | versioneZipLetta |
-| null        | '##null'         |
+| null        | '#notpresent'    |
 | '1.0'       | '1.0'            |
