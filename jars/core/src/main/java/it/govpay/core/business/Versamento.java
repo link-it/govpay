@@ -205,6 +205,7 @@ public class Versamento  {
 					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
 
+				VersamentoUtils.validaConnettoreSend(versamento, applicazione, dominio);
 				VersamentoUtils.validaSendNav(versamento, applicazione);
 				VersamentoUtils.validaVoceSpeseNotificaSend(versamento, applicazione, dominio, configWrapper);
 

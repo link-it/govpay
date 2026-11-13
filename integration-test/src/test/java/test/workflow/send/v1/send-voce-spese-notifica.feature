@@ -6,8 +6,8 @@ Feature: Prima voce a importo 0 per le spese di notifica SEND
 # it.govpay.send.speseNotifica.importoBase; senza importo base la pendenza non e' pagabile.
 # Il valore configurato nell'istanza sotto test si passa a Karate con -Dsend.importoBase=2.00.
 # Gli scenari negativi coprono i controlli al caricamento: voce a 0 non in prima posizione
-# (VER_042), di un altro ente (VER_043), dominio senza connettore SEND e senza importo base
-# (VER_044). Senza
+# (VER_042), di un altro ente (VER_043), e la nuova pendenza sendAbilitato su un dominio senza
+# connettore SEND (VER_044). Senza
 # sendAbilitato una voce a importo 0 resta rifiutata dalla validazione sintattica, come prima.
 # L'applicazione e' senza connettore di verifica, come in send-verifica-senza-connettore-verifica.
 
@@ -190,7 +190,7 @@ And match response contains { categoria: 'RICHIESTA', codice: 'VER_043' }
 And match response.dettaglio contains idDominio_5
 
 
-Scenario: Prima voce a importo 0 su un dominio senza connettore SEND: importo base, oppure rifiutata
+Scenario: Nuova pendenza sendAbilitato su un dominio senza connettore SEND: rifiutata
 
 * remove dominio.servizioSend
 
@@ -203,30 +203,43 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCacheConSleep.feature')
 
-* def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = call pendenzaConVoceSpese idPendenza
-* def importoPendenza = pendenzaPut.importo
+# Con e senza voce a importo 0, e indipendentemente dall'importo base: le spese non sarebbero mai attualizzabili
 
-# Senza importo base la pendenza e' rifiutata (VER_044); con l'importo base e' accettata e lo riceve in verifica
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/workflow/send/v1/msg/pendenza-put_multibeneficiario_send.json')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
-Then match responseStatus == (sendImportoBase == null ? 422 : 201)
+Then status 422
+And match response contains { categoria: 'RICHIESTA', codice: 'VER_044' }
+And match response.dettaglio contains idDominio
 
-* def codiceAtteso = sendImportoBase == null ? 'VER_044' : null
-* def codice = sendImportoBase == null ? response.codice : null
-* match codice == codiceAtteso
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = call pendenzaConVoceSpese idPendenza
 
-* def numeroAvviso = sendImportoBase == null ? null : response.numeroAvviso
-* def iuv = sendImportoBase == null ? null : getIuvFromNumeroAvviso(numeroAvviso)
-* def verifica = function(){ return sendImportoBase == null ? null : karate.call('classpath:utils/psp-paVerifyPaymentNotice.feature').response }
-* def rispostaVerifica = verifica()
-* def importoVerifica = sendImportoBase == null ? null : rispostaVerifica.esitoVerifica.paymentList.paymentOptionDescription.amount
-* def importoAtteso = sendImportoBase == null ? null : addEuro(importoPendenza, sendImportoBase)
-* match importoVerifica == '#? _ == importoAtteso'
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 422
+And match response contains { categoria: 'RICHIESTA', codice: 'VER_044' }
+
+# Senza sendAbilitato la pendenza e' accettata come prima
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/workflow/send/v1/msg/pendenza-put_multibeneficiario_send.json')
+* remove pendenzaPut.sendAbilitato
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
 
 
 Scenario: Voce a importo 0 senza sendAbilitato: rifiutata come prima

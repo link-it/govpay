@@ -997,9 +997,8 @@ public class VersamentoUtils {
 	/**
 	 * Controlli sulla voce a importo 0 di una pendenza abilitata a SEND (Issue #913): e' la voce che riceve
 	 * le spese di notifica attualizzate, quindi e' ammessa solo in prima posizione, di competenza dell'ente
-	 * creditore della pendenza, e solo se il dominio ha il connettore SEND abilitato o e' configurato l'importo
-	 * base delle spese di notifica: senza nessuno dei due, la voce arriverebbe a pagoPA a 0. Senza SEND le voci
-	 * a importo 0 restano rifiutate dalla validazione sintattica, come prima.
+	 * creditore della pendenza. Senza SEND le voci a importo 0 restano rifiutate dalla validazione sintattica,
+	 * come prima.
 	 */
 	public static void validaVoceSpeseNotificaSend(Versamento versamento, Applicazione applicazione, Dominio dominio, BDConfigWrapper configWrapper) throws GovPayException, ServiceException {
 		if(!versamento.isSendAbilitato()) return;
@@ -1019,8 +1018,15 @@ public class VersamentoUtils {
 		Dominio dominioVoce = primaVoce.getDominio(configWrapper);
 		if(dominioVoce != null && !dominioVoce.getCodDominio().equals(dominio.getCodDominio()))
 			throw new GovPayException(EsitoOperazione.VER_043, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), primaVoce.getCodSingoloVersamentoEnte(), dominioVoce.getCodDominio(), dominio.getCodDominio());
+	}
 
-		if(!isConnettoreSendAbilitato(dominio) && GovpayConfig.getInstance().getImportoBaseSpeseNotificaSend() == null)
+	/**
+	 * Una nuova pendenza abilitata a SEND richiede il connettore SEND abilitato sul dominio: senza, le spese di
+	 * notifica non potrebbero mai essere attualizzate. Il controllo vale solo alla creazione: in aggiornamento
+	 * sendAbilitato resta quello salvato, e il connettore disabilitato in seguito e' gestito all'attualizzazione.
+	 */
+	public static void validaConnettoreSend(Versamento versamento, Applicazione applicazione, Dominio dominio) throws GovPayException {
+		if(versamento.isSendAbilitato() && !isConnettoreSendAbilitato(dominio))
 			throw new GovPayException(EsitoOperazione.VER_044, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), dominio.getCodDominio());
 	}
 
