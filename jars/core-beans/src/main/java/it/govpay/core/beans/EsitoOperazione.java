@@ -829,7 +829,7 @@ public enum EsitoOperazione {
     VER_043,
     
     /**
-     * Prima voce a importo 0 di una pendenza abilitata a SEND su un dominio senza connettore SEND abilitato.  
+     * Prima voce a importo 0 di una pendenza abilitata a SEND su un dominio senza connettore SEND abilitato, senza importo base configurato.  
      * 
      */
     VER_044,
