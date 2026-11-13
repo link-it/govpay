@@ -22,6 +22,7 @@ package it.govpay.pendenze.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.exceptions.ValidationException;
@@ -463,13 +464,25 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     return o.toString().replace("\n", "\n    ");
   }
 
+	// impostato dalla pendenza abilitata a SEND, che ammette una voce a importo 0 per le spese di notifica (Issue #913)
+	@JsonIgnore
+	private boolean importoZeroAmmesso = false;
+
+	@JsonIgnore
+	public void setImportoZeroAmmesso(boolean importoZeroAmmesso) {
+		this.importoZeroAmmesso = importoZeroAmmesso;
+	}
+
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
 
 		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
-		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
+		if(this.importoZeroAmmesso)
+			ValidatoreUtils.validaImportoAmmessoZero(vf, "importo", this.importo);
+		else
+			ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		vf.getValidator("contabilita", this.contabilita).validateFields();

@@ -101,6 +101,14 @@ public class ValidatoreUtils {
 	public static void validaImportoOpzionale(ValidatorFactory vf, String nomeCampo, BigDecimal importo) throws ValidationException {
 		validaImporto(vf, nomeCampo, importo, false);
 	}
+
+	/**
+	 * Come validaImporto, ma ammette anche l'importo 0: e' il caso della voce destinata alle spese di notifica
+	 * SEND (Issue #913), di cui il core verifica la posizione.
+	 */
+	public static void validaImportoAmmessoZero(ValidatorFactory vf, String nomeCampo, BigDecimal importo) throws ValidationException {
+		vf.getValidator(nomeCampo, importo).notNull().min(BigDecimal.ZERO).max(new BigDecimal(CostantiValidazione.MASSIMALE_IMPORTO_PENDENZA_SANP_3)).totalDigits(18).checkDecimalDigits();
+	}
 	
 	private static void validaImporto(ValidatorFactory vf, String nomeCampo, BigDecimal importo, boolean notnull) throws ValidationException {
 		

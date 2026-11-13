@@ -72,5 +72,9 @@ function() {
 		// nell'application server, gira come servizio a se' anche con wildfly.
 	}
 
+	// Importo base delle spese di notifica SEND configurato nell'istanza sotto test
+	// (it.govpay.send.speseNotifica.importoBase, Issue #913): -Dsend.importoBase=2.00; null se non configurato.
+	config.sendImportoBase = karate.properties['send.importoBase'] ? Number(karate.properties['send.importoBase']) : null;
+
 	return config;
 }

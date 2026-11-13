@@ -650,6 +650,13 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 		ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);
 
+		// con SEND abilitato una voce puo' avere importo 0: riceve le spese di notifica, e il core ne controlla la posizione
+		if(Boolean.TRUE.equals(this.sendAbilitato) && this.voci != null) {
+			for (NuovaVocePendenza voce : this.voci) {
+				if(voce != null)
+					voce.setImportoZeroAmmesso(true);
+			}
+		}
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 
 		validatoreId.validaIdDirezione("direzione",this.direzione, false);

@@ -356,11 +356,13 @@ public class VersamentoUtils {
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
-			} else if(versamento.isSendAbilitato() && isConnettoreSendAbilitato(versamento.getDominio(configWrapper))) {
+			} else if(versamento.isSendAbilitato() && (isConnettoreSendAbilitato(versamento.getDominio(configWrapper)) || isPrimaVoceSpeseNotificaSend(versamento, configWrapper))) {
 				// versamento valido, ma soggetto ad attualizzazione: le spese di notifica non dipendono dalla
 				// data di validita', quindi SEND va interrogato anche quando la pendenza non e' da riacquisire.
 				// Solo con il connettore SEND configurato: senza, una pendenza valida resta pagabile com'e'
 				// anche con aggiornamentoValiditaMandatorio, che riguarda la pendenza non piu' valida.
+				// Fa eccezione la prima voce a importo 0 (Issue #913), che senza spese andrebbe a pagoPA a 0:
+				// il connettore disabilitato dopo il caricamento e' trattato come un'interrogazione fallita.
 				aggiornaImportoSend(versamento, log);
 			}
 		}
@@ -502,7 +504,8 @@ public class VersamentoUtils {
 	 * dell'applicazione. La doppia invocazione sui flussi che passano da entrambi e' assorbita dalla retention.
 	 * In caso di connettore non configurato o di errore nell'interrogazione del servizio, il comportamento
 	 * e' regolato dalla proprieta' di installazione 'aggiornamentoValiditaMandatorio': se mandatorio l'errore
-	 * viene rilanciato, altrimenti viene loggato un warning e si prosegue con l'importo originale della pendenza.
+	 * viene rilanciato, altrimenti viene loggato un warning e si prosegue con l'importo originale della pendenza,
+	 * salvo la prima voce a importo 0 (Issue #913): vedi gestisciAttualizzazioneSendFallita.
 	 */
 	private static void aggiornaImportoSend(Versamento versamento, Logger log) throws ServiceException, GovPayException, IOException {
 		IContext ctx = ContextThreadLocal.get();
@@ -555,7 +558,7 @@ public class VersamentoUtils {
 			if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
 				throw new GovPayException(e);
 			}
-			log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si prosegue con l'importo originale della pendenza. Errore: {}", versamento.getCodVersamentoEnte(), e.getMessage(), e);
+			gestisciAttualizzazioneSendFallita(versamento, configWrapper, e, log);
 		} catch (ClientInitializeException | ServiceException e) {
 			eventoCtx.setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 			eventoCtx.setEsito(Esito.KO);
@@ -564,7 +567,7 @@ public class VersamentoUtils {
 			if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
 				throw new GovPayException(e);
 			}
-			log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si prosegue con l'importo originale della pendenza. Errore: {}", versamento.getCodVersamentoEnte(), e.getMessage(), e);
+			gestisciAttualizzazioneSendFallita(versamento, configWrapper, e, log);
 		} finally {
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
@@ -572,6 +575,26 @@ public class VersamentoUtils {
 				eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 			}
 		}
+	}
+
+	/**
+	 * Interrogazione SEND fallita con aggiornamentoValiditaMandatorio false. Di norma si prosegue con l'importo
+	 * originale della pendenza. Con la prima voce a importo 0 (Issue #913) la voce non puo' andare a pagoPA a 0:
+	 * se non c'e' una quota gia' acquisita si usa l'importo base it.govpay.send.speseNotifica.importoBase, senza
+	 * salvarlo, cosi' il tentativo successivo interroga di nuovo SEND; senza importo base la pendenza non e' pagabile.
+	 */
+	private static void gestisciAttualizzazioneSendFallita(Versamento versamento, BDConfigWrapper configWrapper, Exception e, Logger log) throws ServiceException, GovPayException {
+		if(versamento.getSendImportoTotale() == null && isPrimaVoceSpeseNotificaSend(versamento, configWrapper)) {
+			BigDecimal importoBase = GovpayConfig.getInstance().getImportoBaseSpeseNotificaSend();
+			if(importoBase == null) {
+				LogUtils.logError(log, MessageFormat.format("Errore durante l''aggiornamento dell''importo SEND per il versamento [{0}], che ha la prima voce a importo 0 per le spese di notifica: importo base non configurato, la pendenza non e'' pagabile. Errore: {1}", versamento.getCodVersamentoEnte(), e.getMessage()), e);
+				throw new GovPayException(e);
+			}
+			log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si usa l'importo base delle spese di notifica [{}] sulla prima voce. Errore: {}", versamento.getCodVersamentoEnte(), importoBase, e.getMessage(), e);
+			versamento.setSendImportoTotale(importoBase);
+			return;
+		}
+		log.warn("Errore durante l'aggiornamento dell'importo SEND per il versamento [{}], si prosegue con l'importo originale della pendenza. Errore: {}", versamento.getCodVersamentoEnte(), e.getMessage(), e);
 	}
 
 	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, Logger log)
@@ -964,6 +987,45 @@ public class VersamentoUtils {
 
 		if(sendNav.equals(versamento.getNumeroAvviso()))
 			throw new GovPayException(EsitoOperazione.VER_041, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), sendNav);
+	}
+
+	/**
+	 * Controlli sulla voce a importo 0 di una pendenza abilitata a SEND (Issue #913): e' la voce che riceve
+	 * le spese di notifica attualizzate, quindi e' ammessa solo in prima posizione, di competenza dell'ente
+	 * creditore della pendenza, e solo se il dominio ha il connettore SEND abilitato: senza, la voce
+	 * arriverebbe a pagoPA a 0. Senza SEND le voci a importo 0 restano ammesse come prima.
+	 */
+	public static void validaVoceSpeseNotificaSend(Versamento versamento, Applicazione applicazione, Dominio dominio, BDConfigWrapper configWrapper) throws GovPayException, ServiceException {
+		if(!versamento.isSendAbilitato()) return;
+
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+		if(singoliVersamenti == null || singoliVersamenti.isEmpty()) return;
+
+		for (int i = 1; i < singoliVersamenti.size(); i++) {
+			SingoloVersamento singoloVersamento = singoliVersamenti.get(i);
+			if(singoloVersamento.getImportoSingoloVersamento().compareTo(BigDecimal.ZERO) == 0)
+				throw new GovPayException(EsitoOperazione.VER_042, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), singoloVersamento.getCodSingoloVersamentoEnte());
+		}
+
+		SingoloVersamento primaVoce = singoliVersamenti.get(0);
+		if(primaVoce.getImportoSingoloVersamento().compareTo(BigDecimal.ZERO) != 0) return;
+
+		Dominio dominioVoce = primaVoce.getDominio(configWrapper);
+		if(dominioVoce != null && !dominioVoce.getCodDominio().equals(dominio.getCodDominio()))
+			throw new GovPayException(EsitoOperazione.VER_043, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), primaVoce.getCodSingoloVersamentoEnte(), dominioVoce.getCodDominio(), dominio.getCodDominio());
+
+		if(!isConnettoreSendAbilitato(dominio))
+			throw new GovPayException(EsitoOperazione.VER_044, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), dominio.getCodDominio());
+	}
+
+	/**
+	 * Indica se la pendenza e' abilitata a SEND e ha la prima voce a importo 0, destinata alle spese di notifica (Issue #913).
+	 */
+	private static boolean isPrimaVoceSpeseNotificaSend(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+		if(!versamento.isSendAbilitato()) return false;
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+		return singoliVersamenti != null && !singoliVersamenti.isEmpty()
+				&& singoliVersamenti.get(0).getImportoSingoloVersamento().compareTo(BigDecimal.ZERO) == 0;
 	}
 
 	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {

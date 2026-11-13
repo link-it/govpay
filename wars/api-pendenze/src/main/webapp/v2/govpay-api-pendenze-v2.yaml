@@ -1331,7 +1331,9 @@ components:
             importo:
               type: number
               format: double
-              description: Importo della voce
+              description: |-
+                Importo della voce.
+                Con sendAbilitato a true la prima voce, dell'ente creditore, puo' avere importo 0: riceve le spese di notifica SEND attualizzate.
               example: 10.01
               minimum: 0.00
               maximum: 9999999999999999.99
