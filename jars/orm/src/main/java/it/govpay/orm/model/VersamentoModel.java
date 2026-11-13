@@ -111,6 +111,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.SEND_ABILITATO = new Field("sendAbilitato",boolean.class,"Versamento",Versamento.class);
 		this.SEND_IMPORTO_TOTALE = new Field("sendImportoTotale",java.lang.Double.class,"Versamento",Versamento.class);
 		this.SEND_DATA_AGGIORNAMENTO = new Field("sendDataAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
+		this.SEND_NAV = new Field("sendNav",java.lang.String.class,"Versamento",Versamento.class);
 
 	}
 	
@@ -186,6 +187,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.SEND_ABILITATO = new ComplexField(father,"sendAbilitato",boolean.class,"Versamento",Versamento.class);
 		this.SEND_IMPORTO_TOTALE = new ComplexField(father,"sendImportoTotale",java.lang.Double.class,"Versamento",Versamento.class);
 		this.SEND_DATA_AGGIORNAMENTO = new ComplexField(father,"sendDataAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
+		this.SEND_NAV = new ComplexField(father,"sendNav",java.lang.String.class,"Versamento",Versamento.class);
 
 	}
 	
@@ -326,6 +328,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField SEND_IMPORTO_TOTALE = null;
 
 	public IField SEND_DATA_AGGIORNAMENTO = null;
+
+	public IField SEND_NAV = null;
 
 
 	@Override

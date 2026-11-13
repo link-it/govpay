@@ -200,6 +200,7 @@ public class PendenzeConverter {
 		rsModel.setSendAbilitato(versamento.isSendAbilitato());
 		rsModel.setSendImportoTotale(versamento.getSendImportoTotale());
 		rsModel.setSendDataAggiornamento(versamento.getSendDataAggiornamento());
+		rsModel.setSendNav(versamento.getSendNav());
 
 		return rsModel;
 	}
@@ -304,6 +305,7 @@ public class PendenzeConverter {
 		rsModel.setSendAbilitato(versamento.isSendAbilitato());
 		rsModel.setSendImportoTotale(versamento.getSendImportoTotale());
 		rsModel.setSendDataAggiornamento(versamento.getSendDataAggiornamento());
+		rsModel.setSendNav(versamento.getSendNav());
 
 		return rsModel;
 	}

@@ -104,6 +104,7 @@ import java.io.Serializable;
  * 			&lt;element name="sendAbilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="sendImportoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="sendDataAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendNav" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 		&lt;/sequence&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -185,7 +186,8 @@ import java.io.Serializable;
   	"dataUltimaComunicazioneAca",
   	"sendAbilitato",
   	"sendImportoTotale",
-  	"sendDataAggiornamento"
+  	"sendDataAggiornamento",
+  	"sendNav"
   }
 )
 
@@ -756,6 +758,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
     this.sendDataAggiornamento = sendDataAggiornamento;
   }
 
+  public java.lang.String getSendNav() {
+    return this.sendNav;
+  }
+
+  public void setSendNav(java.lang.String sendNav) {
+    this.sendNav = sendNav;
+  }
+
   private static final long serialVersionUID = 1L;
 
   private static it.govpay.orm.model.VersamentoModel modelStaticInstance = null;
@@ -1047,5 +1057,9 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
   @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="sendDataAggiornamento",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date sendDataAggiornamento;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sendNav",required=false,nillable=false)
+  protected java.lang.String sendNav;
 
 }

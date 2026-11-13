@@ -622,6 +622,7 @@ CREATE TABLE versamenti
 	send_abilitato BOOLEAN NOT NULL,
 	send_importo_totale DOUBLE PRECISION,
 	send_data_aggiornamento TIMESTAMP,
+	send_nav VARCHAR(18),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_tipo_versamento_dominio BIGINT NOT NULL,

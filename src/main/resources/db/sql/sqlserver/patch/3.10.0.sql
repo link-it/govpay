@@ -31,6 +31,10 @@ IF COL_LENGTH('versamenti', 'send_importo_totale') IS NULL
     ALTER TABLE versamenti ADD send_importo_totale DECIMAL(15,2);
 IF COL_LENGTH('versamenti', 'send_data_aggiornamento') IS NULL
     ALTER TABLE versamenti ADD send_data_aggiornamento DATETIME2;
+-- NAV notificato su SEND, da usare per l'attualizzazione al posto del numero avviso
+-- della pendenza quando l'avviso notificato e' stato sostituito (Issue #912).
+IF COL_LENGTH('versamenti', 'send_nav') IS NULL
+    ALTER TABLE versamenti ADD send_nav VARCHAR(18);
 
 IF COL_LENGTH('domini', 'cod_connettore_send') IS NULL
     ALTER TABLE domini ADD cod_connettore_send VARCHAR(255);

@@ -2,9 +2,10 @@ Feature: Attualizzazione della commissione SEND su applicazione priva di connett
 
 # Copre il ramo di VersamentoUtils.aggiornaVersamento introdotto per l'attualizzazione SEND:
 # quando la pendenza non e' piu' valida e l'applicazione non ha un connettore di integrazione,
-# al posto della riacquisizione dal gestionale viene interrogato SEND. Gli scenari negativi
-# delimitano la condizione: pendenza ancora valida, pendenza non sendAbilitato, pendenza
-# scaduta. Il caso con connettore di verifica configurato e' coperto da
+# al posto della riacquisizione dal gestionale viene interrogato SEND. Con la pendenza ancora
+# valida SEND e' interrogato lo stesso, perche' le spese di notifica non dipendono dalla data
+# di validita'. Gli scenari negativi delimitano la condizione: pendenza non sendAbilitato,
+# pendenza scaduta. Il caso con connettore di verifica configurato e' coperto da
 # send-pagamento-multibeneficiario-dataValidita-decorsa.
 
 Background:
@@ -148,11 +149,11 @@ Then status 200
 And match response contains { importo: '#? _ == pendenzaPutBase.importo', sendAbilitato: true, sendImportoTotale: '#? _ == sendFeeEuro', sendDataAggiornamento: '#notnull' }
 
 
-Scenario: Pendenza ancora valida e sendAbilitato: SEND non interrogato
+Scenario: Pendenza ancora valida e sendAbilitato: SEND interrogato e importo attualizzato
 
-# La condizione che governa l'attualizzazione e' la stessa della verifica, cioe' la data di
-# validita' decorsa. Con la pendenza ancora valida aggiornaVersamento esce dal ramo 'versamento
-# valido' e nessuno dei due punti di attualizzazione viene raggiunto.
+# Le spese di notifica non dipendono dalla data di validita': con la pendenza ancora valida
+# aggiornaVersamento non la riacquisisce, ma interroga comunque SEND perche' il dominio ha il
+# connettore SEND configurato.
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/workflow/send/v1/msg/pendenza-put_multibeneficiario_send.json')
@@ -173,10 +174,14 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 * call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * def rispostaVerifica = response
 
-* call read('classpath:utils/send-conta-eventi.feature')
-* match numEventiSend == 0
+* call read('classpath:utils/send-recupera-fee.feature')
+* match numEventiSend == 1
 
-# L'importo e' quello originale della pendenza, senza spese di notifica
+# L'importo restituito al PSP comprende le spese di notifica, imputate alla voce dell'ente
+
+* set pendenzaPut.importo = addEuro(pendenzaPutBase.importo, sendFeeEuro)
+* set pendenzaPut.voci[0].importo = addEuro(pendenzaPutBase.voci[0].importo, sendFeeEuro)
+* def importo = pendenzaPut.importo
 
 * match rispostaVerifica == read(pathEsitoVerifyPayment)
 
@@ -185,9 +190,7 @@ And path '/pendenze', idA2A, idPendenza
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response contains { importo: '#? _ == pendenzaPutBase.importo', sendAbilitato: true }
-And match response.sendImportoTotale == '#notpresent'
-And match response.sendDataAggiornamento == '#notpresent'
+And match response contains { importo: '#? _ == pendenzaPutBase.importo', sendAbilitato: true, sendImportoTotale: '#? _ == sendFeeEuro', sendDataAggiornamento: '#notnull' }
 
 
 Scenario: Pendenza non valida ma non sendAbilitato: SEND non interrogato e comportamento invariato

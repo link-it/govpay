@@ -234,6 +234,7 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_IMPORTO_TOTALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_DATA_AGGIORNAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_NAV,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
@@ -305,6 +306,7 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendAbilitato(),Versamento.model().SEND_ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendImportoTotale(),Versamento.model().SEND_IMPORTO_TOTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendDataAggiornamento(),Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSendNav(),Versamento.model().SEND_NAV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
@@ -587,6 +589,8 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		lstObjects_versamento.add(new JDBCObject(versamento.getSendImportoTotale(), Versamento.model().SEND_IMPORTO_TOTALE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_DATA_AGGIORNAMENTO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getSendDataAggiornamento(), Versamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SEND_NAV,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getSendNav(), Versamento.model().SEND_NAV.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
 		}

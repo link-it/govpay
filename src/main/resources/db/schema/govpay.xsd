@@ -2043,6 +2043,7 @@
 			<xsd:element name="sendAbilitato" type="xsd:boolean"/>
 			<xsd:element name="sendImportoTotale" type="xsd:double" minOccurs="0"/>
 			<xsd:element name="sendDataAggiornamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="sendNav" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

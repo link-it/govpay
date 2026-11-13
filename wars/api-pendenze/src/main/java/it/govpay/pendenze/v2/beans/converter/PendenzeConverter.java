@@ -189,6 +189,7 @@ public class PendenzeConverter {
 		rsModel.setUUID(versamento.getIdSessione());
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 		rsModel.setSendAbilitato(versamento.isSendAbilitato());
+		rsModel.setSendNav(versamento.getSendNav());
 
 		rsModel.setAllegati(toAllegatiRsModel(allegati));
 
@@ -334,6 +335,7 @@ public class PendenzeConverter {
 		rsModel.setUUID(versamento.getIdSessione());
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 		rsModel.setSendAbilitato(versamento.isSendAbilitato());
+		rsModel.setSendNav(versamento.getSendNav());
 
 		return rsModel;
 	}
@@ -456,6 +458,7 @@ public class PendenzeConverter {
 		versamento.setProprieta(PendenzeConverter.toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		versamento.setSendAbilitato(pendenza.getSendAbilitato());
+		versamento.setSendNav(pendenza.getSendNav());
 
 		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
 

@@ -6663,6 +6663,11 @@ components:
               format: date-time
               description: Data dell'ultima acquisizione delle spese di notifica da SEND
               example: '2018-12-31 12:00:00Z'
+            sendNav:
+              type: string
+              pattern: '(^[0-9]{18}$)'
+              description: NAV dell'avviso notificato su SEND usato per l'attualizzazione delle spese di notifica al posto del numero avviso della pendenza
+              example: '301000000000000123'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6771,6 +6776,11 @@ components:
               format: date-time
               description: Data dell'ultima acquisizione delle spese di notifica da SEND
               example: '2018-12-31 12:00:00Z'
+            sendNav:
+              type: string
+              pattern: '(^[0-9]{18}$)'
+              description: NAV dell'avviso notificato su SEND usato per l'attualizzazione delle spese di notifica al posto del numero avviso della pendenza
+              example: '301000000000000123'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:

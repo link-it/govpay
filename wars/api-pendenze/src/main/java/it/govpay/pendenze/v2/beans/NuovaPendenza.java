@@ -56,6 +56,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dataPromemoriaScadenza",
 "proprieta",
 "sendAbilitato",
+"sendNav",
 "voci",
 "allegati",
 })
@@ -126,6 +127,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("sendAbilitato")
   private Boolean sendAbilitato = false;
+
+  @JsonProperty("sendNav")
+  private String sendNav = null;
 
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -480,6 +484,22 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
+   * NAV dell'avviso notificato su SEND, da usare per l'attualizzazione delle spese di notifica al posto del numero avviso della pendenza
+   **/
+  public NuovaPendenza sendNav(String sendNav) {
+    this.sendNav = sendNav;
+    return this;
+  }
+
+  @JsonProperty("sendNav")
+  public String getSendNav() {
+    return sendNav;
+  }
+  public void setSendNav(String sendNav) {
+    this.sendNav = sendNav;
+  }
+
+  /**
    **/
   public NuovaPendenza voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
@@ -539,13 +559,14 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(dataPromemoriaScadenza, nuovaPendenza.dataPromemoriaScadenza) &&
         Objects.equals(proprieta, nuovaPendenza.proprieta) &&
         Objects.equals(sendAbilitato, nuovaPendenza.sendAbilitato) &&
+        Objects.equals(sendNav, nuovaPendenza.sendNav) &&
         Objects.equals(voci, nuovaPendenza.voci) &&
         Objects.equals(allegati, nuovaPendenza.allegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, sendAbilitato, voci, allegati);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, sendAbilitato, sendNav, voci, allegati);
   }
 
   public static NuovaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -583,6 +604,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    sendAbilitato: ").append(toIndentedString(sendAbilitato)).append("\n");
+    sb.append("    sendNav: ").append(toIndentedString(sendNav)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
@@ -617,6 +639,11 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
 		ValidatoreUtils.validaImporto(vf, "importo", importo);
 		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
+		ValidatoreUtils.validaNumeroAvviso(vf, "sendNav", sendNav);
+		// il NAV notificato serve solo all'attualizzazione SEND, quindi ha senso solo se questa e' abilitata
+		if(this.sendNav != null && !Boolean.TRUE.equals(this.sendAbilitato)) {
+			throw new ValidationException("Il campo sendNav puo' essere indicato solo se sendAbilitato e' true.");
+		}
 		ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
 		ValidatoreUtils.validaData(vf, "dataScadenza", this.dataScadenza);
 		ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);

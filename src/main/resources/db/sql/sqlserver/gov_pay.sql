@@ -613,6 +613,7 @@ CREATE TABLE versamenti
 	send_abilitato BIT NOT NULL,
 	send_importo_totale DECIMAL(15,2),
 	send_data_aggiornamento DATETIME2,
+	send_nav VARCHAR(18),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,

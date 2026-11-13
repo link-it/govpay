@@ -177,6 +177,7 @@ public class VersamentoConverter {
 		if(vo.getSendImportoTotale() != null)
 			dto.setSendImportoTotale(BigDecimal.valueOf(vo.getSendImportoTotale()));
 		dto.setSendDataAggiornamento(vo.getSendDataAggiornamento());
+		dto.setSendNav(vo.getSendNav());
 
 		return dto;
 	}
@@ -316,6 +317,7 @@ public class VersamentoConverter {
 		if(dto.getSendImportoTotale() != null)
 			vo.setSendImportoTotale(dto.getSendImportoTotale().doubleValue());
 		vo.setSendDataAggiornamento(dto.getSendDataAggiornamento());
+		vo.setSendNav(dto.getSendNav());
 
 		return vo;
 	}
