@@ -24,8 +24,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -773,6 +775,7 @@ public class VersamentoUtils {
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
 		model.setSendAbilitato(versamento.isSendAbilitato() != null && versamento.isSendAbilitato());
 		model.setSendNav(versamento.getSendNav());
+		model.setDataPubblicazione(versamento.getDataPubblicazione());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
 
 		CausaleSemplice causale = model.new CausaleSemplice();
@@ -1028,6 +1031,75 @@ public class VersamentoUtils {
 	public static void validaConnettoreSend(Versamento versamento, Applicazione applicazione, Dominio dominio) throws GovPayException {
 		if(versamento.isSendAbilitato() && !isConnettoreSendAbilitato(dominio))
 			throw new GovPayException(EsitoOperazione.VER_044, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), dominio.getCodDominio());
+	}
+
+	/**
+	 * Indica se la pendenza e' pubblicata (Issue #914): senza data di pubblicazione, oppure con la data raggiunta.
+	 * La data e' un giorno, valido dalle 00:00.
+	 */
+	public static boolean isPubblicato(Versamento versamento) {
+		return isPubblicato(versamento.getDataPubblicazione());
+	}
+
+	private static boolean isPubblicato(Date dataPubblicazione) {
+		return dataPubblicazione == null || !dataPubblicazione.after(new Date());
+	}
+
+	/**
+	 * Controlli sulla data di pubblicazione (Issue #914): antecedente alla data di scadenza, non oltre
+	 * it.govpay.pendenza.dataPubblicazione.giorniMassimi giorni dalla data corrente e, in aggiornamento, non futura
+	 * se la pendenza e' gia' pubblicata, perche' l'avviso non si puo' ritirare da pagoPA e dall'ACA.
+	 *
+	 * @param dataPubblicazioneSalvata la data salvata, in aggiornamento; null all'inserimento
+	 */
+	public static void validaDataPubblicazione(Versamento versamento, boolean aggiornamento, Date dataPubblicazioneSalvata, Applicazione applicazione) throws GovPayException {
+		Date dataPubblicazione = versamento.getDataPubblicazione();
+		if(dataPubblicazione == null) return;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		if(versamento.getDataScadenza() != null && !dataPubblicazione.before(versamento.getDataScadenza()))
+			throw new GovPayException(EsitoOperazione.VER_045, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), sdf.format(dataPubblicazione), sdf.format(versamento.getDataScadenza()));
+
+		if(isPubblicato(dataPubblicazione)) return;
+
+		if(aggiornamento && isPubblicato(dataPubblicazioneSalvata))
+			throw new GovPayException(EsitoOperazione.VER_047, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), sdf.format(dataPubblicazione));
+
+		int giorniMassimi = GovpayConfig.getInstance().getGiorniMassimiDataPubblicazione();
+		Calendar limite = Calendar.getInstance();
+		limite.set(Calendar.HOUR_OF_DAY, 0);
+		limite.set(Calendar.MINUTE, 0);
+		limite.set(Calendar.SECOND, 0);
+		limite.set(Calendar.MILLISECOND, 0);
+		limite.add(Calendar.DATE, giorniMassimi);
+		if(dataPubblicazione.after(limite.getTime()))
+			throw new GovPayException(EsitoOperazione.VER_046, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), sdf.format(dataPubblicazione), String.valueOf(giorniMassimi));
+	}
+
+	/**
+	 * Data di ultima modifica per l'ACA (Issue #914): la pendenza non ancora pubblicata viene inviata dal batch alla
+	 * data di pubblicazione, che il batch confronta con la data corrente.
+	 */
+	public static Date getDataUltimaModificaAca(Versamento versamento) {
+		Date now = new Date();
+		Date dataPubblicazione = versamento.getDataPubblicazione();
+		return dataPubblicazione != null && dataPubblicazione.after(now) ? dataPubblicazione : now;
+	}
+
+	/**
+	 * I promemoria via mail e App IO non ancora inviati non partono prima della data di pubblicazione (Issue #914).
+	 */
+	public static void applicaDataPubblicazioneAiPromemoria(Versamento versamento) {
+		Date dataPubblicazione = versamento.getDataPubblicazione();
+		if(dataPubblicazione == null) return;
+
+		if(!Boolean.TRUE.equals(versamento.getAvvisoNotificato()) && versamento.getDataNotificaAvviso() != null && versamento.getDataNotificaAvviso().before(dataPubblicazione))
+			versamento.setDataNotificaAvviso(dataPubblicazione);
+		if(!Boolean.TRUE.equals(versamento.getAvvMailPromemoriaScadenzaNotificato()) && versamento.getAvvMailDataPromemoriaScadenza() != null && versamento.getAvvMailDataPromemoriaScadenza().before(dataPubblicazione))
+			versamento.setAvvMailDataPromemoriaScadenza(dataPubblicazione);
+		if(!Boolean.TRUE.equals(versamento.getAvvAppIOPromemoriaScadenzaNotificato()) && versamento.getAvvAppIODataPromemoriaScadenza() != null && versamento.getAvvAppIODataPromemoriaScadenza().before(dataPubblicazione))
+			versamento.setAvvAppIODataPromemoriaScadenza(dataPubblicazione);
 	}
 
 	/**
@@ -1510,7 +1582,10 @@ public class VersamentoUtils {
 						dataScadenzaModificata = true;
 			}
 			
-			return importoModificato || pendenzaAnnullataORipristinata || dataValiditaModificata || dataScadenzaModificata;
+			// la data di pubblicazione decide quando il batch invia la pendenza (Issue #914)
+			boolean dataPubblicazioneModificata = !java.util.Objects.equals(versamento.getDataPubblicazione(), versamentoLetto.getDataPubblicazione());
+			
+			return importoModificato || pendenzaAnnullataORipristinata || dataValiditaModificata || dataScadenzaModificata || dataPubblicazioneModificata;
 		
 	}
 }

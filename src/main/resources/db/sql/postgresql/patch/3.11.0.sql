@@ -82,7 +82,8 @@ SELECT versamenti.id,
     versamenti.data_ultima_comunicazione_aca,
     versamenti.id_documento,
     documenti.cod_documento,
-    documenti.descrizione AS doc_descrizione
+    documenti.descrizione AS doc_descrizione,
+    versamenti.data_pubblicazione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- Colonne della posizione debitoria. id_unita_operativa non ha FK verso uo,

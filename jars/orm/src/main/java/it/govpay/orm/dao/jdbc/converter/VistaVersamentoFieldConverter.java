@@ -181,6 +181,13 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_scadenza";
 			}
 		}
+		if(field.equals(VistaVersamento.model().DATA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_pubblicazione";
+			}else{
+				return "data_pubblicazione";
+			}
+		}
 		if(field.equals(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_ora_ultimo_aggiornamento";
@@ -639,6 +646,9 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().DATA_SCADENZA)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().DATA_PUBBLICAZIONE)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){

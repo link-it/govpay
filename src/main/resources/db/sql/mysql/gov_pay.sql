@@ -690,6 +690,7 @@ CREATE TABLE versamenti
 	send_importo_totale DOUBLE COMMENT 'Importo della pendenza attualizzato con le spese di notifica SEND',
 	send_data_aggiornamento DATETIME COMMENT 'Data di attualizzazione dell\'importo tramite SEND',
 	send_nav VARCHAR(18) COMMENT 'NAV notificato su SEND da usare nella attualizzazione al posto del numero avviso della pendenza',
+	data_pubblicazione DATETIME COMMENT 'Data di pubblicazione della pendenza: prima della data non risulta pagabile e non viene inviata ad ACA',
 	numero_rata INT NOT NULL DEFAULT -1 COMMENT 'Numero della rata nell\'opzione di pagamento del modello v3',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
@@ -1870,7 +1871,8 @@ SELECT versamenti.id,
     versamenti.data_ultima_modifica_aca,
     versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
-    documenti.descrizione AS doc_descrizione
+    documenti.descrizione AS doc_descrizione,
+    versamenti.data_pubblicazione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

@@ -280,6 +280,7 @@ export class Voce {
   public static RT_LINEA_TESTO_RIGA2: string = 'Testo riga 2';
 
   public static SCADENZA: string = 'Scadenza';
+  public static PUBBLICAZIONE: string = 'Pubblicazione';
   public static SCARICA_FR: string = 'Acquisizione Rendicontazioni';
   public static SCT: string = 'SCT';
   public static SECRET_CODE: string = 'Codice di segregazione';

@@ -73,6 +73,7 @@ public class VersamentoConverter {
 		dto.setDataCreazione(vo.getDataCreazione());
 		dto.setDataValidita(vo.getDataValidita());
 		dto.setDataScadenza(vo.getDataScadenza());
+		dto.setDataPubblicazione(vo.getDataPubblicazione());
 		dto.setDataUltimoAggiornamento(vo.getDataOraUltimoAggiornamento());
 		dto.setCausaleVersamento(vo.getCausaleVersamento());
 		Anagrafica debitore = new Anagrafica();

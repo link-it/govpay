@@ -179,6 +179,9 @@ public class GovpayConfig {
 	// spese di notifica SEND da imputare alla prima voce a importo 0 quando l'interrogazione di SEND non va a buon fine (Issue #913)
 	private BigDecimal importoBaseSpeseNotificaSend;
 
+	// numero massimo di giorni tra la data corrente e la data di pubblicazione di una pendenza (Issue #914)
+	private Integer giorniMassimiDataPubblicazione;
+
 	private String templateQuietanzaPagamento;
 
 	private String checkoutBaseURL;
@@ -317,6 +320,7 @@ public class GovpayConfig {
 		this.connectionRequestTimeoutAppIO = 180000;
 		this.retentionSend = 900000;
 		this.importoBaseSpeseNotificaSend = null;
+		this.giorniMassimiDataPubblicazione = 7;
 
 		this.aggiornamentoValiditaMandatorio = false;
 
@@ -685,6 +689,12 @@ public class GovpayConfig {
 			this.connectionRequestTimeoutAppIO = getIntegerProperty(log, "it.govpay.client.appio.connectionRequestTimeout", this.props, false, 10000);
 
 			this.retentionSend = getIntegerProperty(log, "it.govpay.client.send.retention", this.props, false, 900000);
+
+			this.giorniMassimiDataPubblicazione = getIntegerProperty(log, "it.govpay.pendenza.dataPubblicazione.giorniMassimi", this.props, false, 7);
+			if(this.giorniMassimiDataPubblicazione < 0) {
+				LogUtils.logWarn(log, MSG_ERRORE_DI_INIZIALIZZAZIONE_0_ASSUNTO_VALORE_DI_DEFAULT_1, "it.govpay.pendenza.dataPubblicazione.giorniMassimi", 7);
+				this.giorniMassimiDataPubblicazione = 7;
+			}
 
 			String importoBaseSpeseNotificaSendString = getProperty("it.govpay.send.speseNotifica.importoBase", this.props, false, log);
 			if(importoBaseSpeseNotificaSendString != null) {
@@ -1425,6 +1435,10 @@ public class GovpayConfig {
 
 	public BigDecimal getImportoBaseSpeseNotificaSend() {
 		return importoBaseSpeseNotificaSend;
+	}
+
+	public Integer getGiorniMassimiDataPubblicazione() {
+		return giorniMassimiDataPubblicazione;
 	}
 
 	public String getCheckoutBaseURL() {

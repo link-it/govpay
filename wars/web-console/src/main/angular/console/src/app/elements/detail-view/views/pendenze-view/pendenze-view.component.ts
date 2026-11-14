@@ -137,6 +137,9 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dataScadenza) {
       this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
     }
+    if(_json.dataPubblicazione) {
+      this.info.extraInfo.push({ label: Voce.PUBBLICAZIONE+': ', value: moment(_json.dataPubblicazione).format('DD/MM/YYYY') });
+    }
     if(_json.dataUltimaModificaAca) {
       this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimaModificaAca).format('DD/MM/YYYY [ore] HH:mm:ss') });
     }

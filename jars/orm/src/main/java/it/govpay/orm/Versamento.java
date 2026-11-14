@@ -50,6 +50,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="dataValidita" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="dataPubblicazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataOraUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="debitoreTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
@@ -133,6 +134,7 @@ import java.io.Serializable;
   	"dataCreazione",
   	"dataValidita",
   	"dataScadenza",
+  	"dataPubblicazione",
   	"dataOraUltimoAggiornamento",
   	"causaleVersamento",
   	"debitoreTipo",
@@ -312,6 +314,13 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
 
   public void setDataScadenza(java.util.Date dataScadenza) {
     this.dataScadenza = dataScadenza;
+  }
+  public java.util.Date getDataPubblicazione() {
+    return this.dataPubblicazione;
+  }
+
+  public void setDataPubblicazione(java.util.Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
   }
 
   public java.util.Date getDataOraUltimoAggiornamento() {
@@ -835,6 +844,8 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBeanWithId imple
   @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataScadenza",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataScadenza;
+  @XmlElement(name="dataPubblicazione",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataPubblicazione;
 
   @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")

@@ -835,6 +835,24 @@ public enum EsitoOperazione {
     VER_044,
     
     /**
+     * La data di pubblicazione della pendenza non e' antecedente alla data di scadenza.  
+     * 
+     */
+    VER_045,
+    
+    /**
+     * La data di pubblicazione della pendenza supera il numero massimo di giorni consentito.  
+     * 
+     */
+    VER_046,
+    
+    /**
+     * Data di pubblicazione futura indicata per una pendenza gia' pubblicata.  
+     * 
+     */
+    VER_047,
+    
+    /**
      * Errore durante la richiesta di schedulazione del batch.  
      * 
      */

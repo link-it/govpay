@@ -230,7 +230,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         break;
       case UtilService.URL_PENDENZE+UtilService.URL_DETTAGLIO:
         if (rsc.data.info && UtilService.USER_ACL.hasPendenze) {
-          if (rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA)) {
+          if ((rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA)) ||
+              (rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_PUBBLICATA))) {
             a.push({ label: 'Annulla pendenza', type: UtilService.PENDENZA });
             a.push({ label: 'Scarica avviso', type: UtilService.SCARICA_AVVISO });
           }

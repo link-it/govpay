@@ -975,6 +975,7 @@ CREATE TABLE versamenti
 	send_importo_totale BINARY_DOUBLE,
 	send_data_aggiornamento TIMESTAMP,
 	send_nav VARCHAR2(18 CHAR),
+	data_pubblicazione TIMESTAMP,
 	numero_rata NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -2237,7 +2238,8 @@ SELECT versamenti.id,
     versamenti.data_ultima_modifica_aca,
     versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
-    documenti.descrizione AS doc_descrizione
+    documenti.descrizione AS doc_descrizione,
+    versamenti.data_pubblicazione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

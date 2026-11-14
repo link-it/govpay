@@ -194,6 +194,7 @@ public class Versamento extends BasicModel {
 	private BigDecimal sendImportoTotale;
 	private Date sendDataAggiornamento;
 	private String sendNav;
+	private Date dataPubblicazione;
 
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -835,5 +836,11 @@ public class Versamento extends BasicModel {
 	}
 	public void setSendNav(String sendNav) {
 		this.sendNav = sendNav;
+	}
+	public Date getDataPubblicazione() {
+		return dataPubblicazione;
+	}
+	public void setDataPubblicazione(Date dataPubblicazione) {
+		this.dataPubblicazione = dataPubblicazione;
 	}
 }

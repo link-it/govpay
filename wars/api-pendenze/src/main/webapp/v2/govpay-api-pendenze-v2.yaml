@@ -1255,6 +1255,14 @@ components:
           nullable: true
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
+        dataPubblicazione:
+          type: string
+          format: date
+          nullable: true
+          description: |-
+            Data da cui l'avviso risulta pubblicato, a partire dalle 00:00. Prima di questa data l'avviso non e' pagabile su pagoPA, non viene inviato all'Archivio Centralizzato Avvisi e non e' visibile ad accessi di terzi, e i promemoria non vengono inviati.
+            Deve essere antecedente alla data di scadenza e non oltre il numero massimo di giorni configurato (default 7). Se non indicata in aggiornamento, resta quella salvata.
+          example: '2020-12-01'
         annoRiferimento:
           type: integer
           format: int32
@@ -1544,6 +1552,14 @@ components:
           format: date
           description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
           example: '2020-12-31'
+        dataPubblicazione:
+          type: string
+          format: date
+          nullable: true
+          description: |-
+            Data da cui l'avviso risulta pubblicato, a partire dalle 00:00. Prima di questa data l'avviso non e' pagabile su pagoPA, non viene inviato all'Archivio Centralizzato Avvisi e non e' visibile ad accessi di terzi, e i promemoria non vengono inviati.
+            Deve essere antecedente alla data di scadenza e non oltre il numero massimo di giorni configurato (default 7). Se non indicata in aggiornamento, resta quella salvata.
+          example: '2020-12-01'
         annoRiferimento:
           type: integer
           format: int32
@@ -2074,6 +2090,7 @@ components:
         - ESEGUITA_PARZIALE
         - ANNULLATA
         - SCADUTA
+        - NON_PUBBLICATA
         - ANOMALA
         - INCASSATA
     StatoVocePendenza:
