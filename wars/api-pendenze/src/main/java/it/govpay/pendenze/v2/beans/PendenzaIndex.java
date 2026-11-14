@@ -46,6 +46,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
+"dataPubblicazione",
 "annoRiferimento",
 "cartellaPagamento",
 "datiAllegati",
@@ -117,6 +118,9 @@ public class PendenzaIndex extends JSONSerializable {
 
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
+
+  @JsonProperty("dataPubblicazione")
+  private Date dataPubblicazione = null;
 
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
@@ -447,6 +451,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * Data da cui l'avviso risulta pubblicato: prima non e' pagabile ne' visibile ad accessi anonimi o di terzi
+   **/
+  public PendenzaIndex dataPubblicazione(Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
+    return this;
+  }
+
+  @JsonProperty("dataPubblicazione")
+  public Date getDataPubblicazione() {
+    return dataPubblicazione;
+  }
+  public void setDataPubblicazione(Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
+  }
+
+  /**
    * Anno di riferimento della pendenza
    **/
   public PendenzaIndex annoRiferimento(BigDecimal annoRiferimento) {
@@ -709,6 +729,7 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(dataCaricamento, pendenzaIndex.dataCaricamento) &&
         Objects.equals(dataValidita, pendenzaIndex.dataValidita) &&
         Objects.equals(dataScadenza, pendenzaIndex.dataScadenza) &&
+        Objects.equals(dataPubblicazione, pendenzaIndex.dataPubblicazione) &&
         Objects.equals(annoRiferimento, pendenzaIndex.annoRiferimento) &&
         Objects.equals(cartellaPagamento, pendenzaIndex.cartellaPagamento) &&
         Objects.equals(datiAllegati, pendenzaIndex.datiAllegati) &&
@@ -728,7 +749,7 @@ public class PendenzaIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, proprieta, sendAbilitato, sendNav, rpp, pagamenti);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, dataPubblicazione, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, proprieta, sendAbilitato, sendNav, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -763,6 +784,7 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
+    sb.append("    dataPubblicazione: ").append(toIndentedString(dataPubblicazione)).append("\n");
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
     sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");

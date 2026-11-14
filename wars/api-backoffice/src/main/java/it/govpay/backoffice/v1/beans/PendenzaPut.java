@@ -43,6 +43,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
+"dataPubblicazione",
 "annoRiferimento",
 "cartellaPagamento",
 "datiAllegati",
@@ -85,6 +86,9 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
+
+  @JsonProperty("dataPubblicazione")
+  private Date dataPubblicazione = null;
 
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
@@ -262,6 +266,22 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   }
   public void setDataScadenza(Date dataScadenza) {
     this.dataScadenza = dataScadenza;
+  }
+
+  /**
+   * Data da cui l'avviso risulta pubblicato: prima non e' pagabile ne' visibile ad accessi di terzi
+   **/
+  public PendenzaPut dataPubblicazione(Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
+    return this;
+  }
+
+  @JsonProperty("dataPubblicazione")
+  public Date getDataPubblicazione() {
+    return dataPubblicazione;
+  }
+  public void setDataPubblicazione(Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
   }
 
   /**
@@ -538,6 +558,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(dataCaricamento, pendenzaPut.dataCaricamento) &&
         Objects.equals(dataValidita, pendenzaPut.dataValidita) &&
         Objects.equals(dataScadenza, pendenzaPut.dataScadenza) &&
+        Objects.equals(dataPubblicazione, pendenzaPut.dataPubblicazione) &&
         Objects.equals(annoRiferimento, pendenzaPut.annoRiferimento) &&
         Objects.equals(cartellaPagamento, pendenzaPut.cartellaPagamento) &&
         Objects.equals(datiAllegati, pendenzaPut.datiAllegati) &&
@@ -558,7 +579,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idDominio, idUnitaOperativa, idTipoPendenza, voci, allegati);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, dataPubblicazione, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idDominio, idUnitaOperativa, idTipoPendenza, voci, allegati);
   }
 
   public static PendenzaPut parse(String json) throws IOException {
@@ -583,6 +604,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
+    sb.append("    dataPubblicazione: ").append(toIndentedString(dataPubblicazione)).append("\n");
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
     sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
@@ -634,6 +656,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 		ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
 		ValidatoreUtils.validaData(vf, "dataScadenza", this.dataScadenza);
+		ValidatoreUtils.validaData(vf, "dataPubblicazione", this.dataPubblicazione);
 		ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 		ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 		ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);

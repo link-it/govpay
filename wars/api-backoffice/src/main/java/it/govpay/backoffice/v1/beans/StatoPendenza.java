@@ -22,12 +22,12 @@ package it.govpay.backoffice.v1.beans;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Stato della pendenza:  * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta  * INCASSATA: Riconciliata  * ANOMALA: Anomala
+ * Stato della pendenza:  * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta  * NON_PUBBLICATA: Non ancora pubblicata  * INCASSATA: Riconciliata  * ANOMALA: Anomala
  **/
 
 
 /**
- * Stato della pendenza:  * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta  * INCASSATA: Riconciliata  * ANOMALA: Anomala
+ * Stato della pendenza:  * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta  * NON_PUBBLICATA: Non ancora pubblicata  * INCASSATA: Riconciliata  * ANOMALA: Anomala
  */
 public enum StatoPendenza {
 
@@ -47,6 +47,9 @@ public enum StatoPendenza {
 
 
   SCADUTA("SCADUTA"),
+
+
+  NON_PUBBLICATA("NON_PUBBLICATA"),
 
 
   INCASSATA("INCASSATA"),

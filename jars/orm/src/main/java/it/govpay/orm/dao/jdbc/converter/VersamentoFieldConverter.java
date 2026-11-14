@@ -181,6 +181,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_scadenza";
 			}
 		}
+		if(field.equals(Versamento.model().DATA_PUBBLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_pubblicazione";
+			}else{
+				return "data_pubblicazione";
+			}
+		}
 		if(field.equals(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_ora_ultimo_aggiornamento";
@@ -653,6 +660,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATA_SCADENZA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_PUBBLICAZIONE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){

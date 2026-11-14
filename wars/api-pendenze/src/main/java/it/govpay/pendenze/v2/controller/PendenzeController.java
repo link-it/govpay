@@ -189,6 +189,7 @@ public class PendenzeController extends BaseController {
 					case ESEGUITA_PARZIALE: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA_PARZIALE); break;
 					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
 					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
+					case NON_PUBBLICATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_PUBBLICATA); break;
 					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
 					case INCASSATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.INCASSATA); break;
 					}

@@ -48,6 +48,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "divisione",
 "dataValidita",
 "dataScadenza",
+"dataPubblicazione",
 "annoRiferimento",
 "cartellaPagamento",
 "datiAllegati",
@@ -103,6 +104,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
+
+  @JsonProperty("dataPubblicazione")
+  private Date dataPubblicazione = null;
 
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
@@ -358,6 +362,22 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
+   * Data da cui l'avviso risulta pubblicato: prima non e' pagabile ne' visibile ad accessi anonimi o di terzi
+   **/
+  public NuovaPendenza dataPubblicazione(Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
+    return this;
+  }
+
+  @JsonProperty("dataPubblicazione")
+  public Date getDataPubblicazione() {
+    return dataPubblicazione;
+  }
+  public void setDataPubblicazione(Date dataPubblicazione) {
+    this.dataPubblicazione = dataPubblicazione;
+  }
+
+  /**
    * Anno di riferimento della pendenza
    **/
   public NuovaPendenza annoRiferimento(BigDecimal annoRiferimento) {
@@ -551,6 +571,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(divisione, nuovaPendenza.divisione) &&
         Objects.equals(dataValidita, nuovaPendenza.dataValidita) &&
         Objects.equals(dataScadenza, nuovaPendenza.dataScadenza) &&
+        Objects.equals(dataPubblicazione, nuovaPendenza.dataPubblicazione) &&
         Objects.equals(annoRiferimento, nuovaPendenza.annoRiferimento) &&
         Objects.equals(cartellaPagamento, nuovaPendenza.cartellaPagamento) &&
         Objects.equals(datiAllegati, nuovaPendenza.datiAllegati) &&
@@ -566,7 +587,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, sendAbilitato, sendNav, voci, allegati);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, dataPubblicazione, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, sendAbilitato, sendNav, voci, allegati);
   }
 
   public static NuovaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
@@ -596,6 +617,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
+    sb.append("    dataPubblicazione: ").append(toIndentedString(dataPubblicazione)).append("\n");
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
     sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
@@ -646,6 +668,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		}
 		ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
 		ValidatoreUtils.validaData(vf, "dataScadenza", this.dataScadenza);
+		ValidatoreUtils.validaData(vf, "dataPubblicazione", this.dataPubblicazione);
 		ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 		ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 		ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);

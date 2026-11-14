@@ -31,6 +31,8 @@ public enum StatoPendenza {
   
   SCADUTA("SCADUTA"),
   
+  NON_PUBBLICATA("NON_PUBBLICATA"),
+  
   INCASSATA("INCASSATA"),
   
   ANOMALA("ANOMALA");

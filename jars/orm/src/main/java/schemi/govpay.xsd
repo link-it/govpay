@@ -1984,6 +1984,7 @@
 			<xsd:element name="sendImportoTotale" type="xsd:double" minOccurs="0"/>
 			<xsd:element name="sendDataAggiornamento" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="sendNav" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="dataPubblicazione" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -4516,6 +4517,7 @@
 
 			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
 			<xsd:element name="docDescrizione" type="String255" minOccurs="0"/>
+			<xsd:element name="dataPubblicazione" type="xsd:dateTime" minOccurs="0"/>
 
 			<xsd:element name="proprieta" type="xsd:string" minOccurs="0">
 				<xsd:annotation>

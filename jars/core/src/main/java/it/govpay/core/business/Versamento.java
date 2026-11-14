@@ -140,6 +140,7 @@ public class Versamento  {
 
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, log);
+				VersamentoUtils.validaDataPubblicazione(versamento, true, versamentoLetto.getDataPubblicazione(), applicazione);
 				VersamentoUtils.validaSendNav(versamento, applicazione);
 				VersamentoUtils.validaVoceSpeseNotificaSend(versamento, applicazione, dominio, configWrapper);
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_VERSAMENTO_VALIDAZIONE_SEMANTICA_AGGIORNAMENTO_OK, applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
@@ -147,8 +148,9 @@ public class Versamento  {
 				// controllo se sono stati aggiornati dei campi significativi per l'ACA
 				boolean aggiornaDataUltimaModificaACA = VersamentoUtils.comunicaAggiornamentoPendenzaAllArchivioCentralizzato(versamento, versamentoLetto);
 				if(aggiornaDataUltimaModificaACA) {
-					versamento.setDataUltimaModificaAca(new Date());
+					versamento.setDataUltimaModificaAca(VersamentoUtils.getDataUltimaModificaAca(versamento));
 				}
+				VersamentoUtils.applicaDataPubblicazioneAiPromemoria(versamento);
 
 				if(bd == null) {
 					// creo connessione
@@ -205,6 +207,7 @@ public class Versamento  {
 					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
 
+				VersamentoUtils.validaDataPubblicazione(versamento, false, null, applicazione);
 				VersamentoUtils.validaConnettoreSend(versamento, applicazione, dominio);
 				VersamentoUtils.validaSendNav(versamento, applicazione);
 				VersamentoUtils.validaVoceSpeseNotificaSend(versamento, applicazione, dominio, configWrapper);
@@ -302,10 +305,12 @@ public class Versamento  {
 					versamento.setImportoPagato(BigDecimal.ZERO);
 				}
 				
-				// gestione ACA imposto una data inviato ACA null cosi il batch capisce che si tratta di una nuova pendenza da creare e non di un'aggiornamento
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(new Date());
-				versamento.setDataUltimaModificaAca(calendar.getTime());
+				// gestione ACA imposto una data inviato ACA null cosi il batch capisce che si tratta di una nuova pendenza da creare e non di un'aggiornamento;
+				// con una data di pubblicazione futura il batch la invia a quella data (Issue #914)
+				versamento.setDataUltimaModificaAca(VersamentoUtils.getDataUltimaModificaAca(versamento));
+
+				// i promemoria non partono prima della data di pubblicazione (Issue #914)
+				VersamentoUtils.applicaDataPubblicazioneAiPromemoria(versamento);
 
 				if(salvataggioSuDB) {
 					versamentiBD.insertVersamento(versamento);
@@ -385,6 +390,10 @@ public class Versamento  {
 		// (altre API, tracciati, pendenza riacquisita dal gestionale) resta quello salvato
 		if(versamento.getSendNav() == null)
 			versamento.setSendNav(versamentoLetto.getSendNav());
+		// data di pubblicazione (Issue #914): come il NAV notificato, solo le API Pendenze v2 e il Backoffice la
+		// trasportano, quindi se la richiesta non la indica resta quella salvata
+		if(versamento.getDataPubblicazione() == null)
+			versamento.setDataPubblicazione(versamentoLetto.getDataPubblicazione());
 		// con un NAV notificato diverso le spese gia' acquisite si riferiscono a un altro avviso: si azzerano,
 		// cosi' la prossima verifica interroga di nuovo SEND senza attendere la retention
 		if(!Objects.equals(versamento.getSendNav(), versamentoLetto.getSendNav())) {

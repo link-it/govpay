@@ -167,6 +167,7 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 			fields.add(VistaVersamento.model().DATA_CREAZIONE);
 			fields.add(VistaVersamento.model().DATA_VALIDITA);
 			fields.add(VistaVersamento.model().DATA_SCADENZA);
+			fields.add(VistaVersamento.model().DATA_PUBBLICAZIONE);
 			fields.add(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
 			fields.add(VistaVersamento.model().CAUSALE_VERSAMENTO);
 			fields.add(VistaVersamento.model().DEBITORE_IDENTIFICATIVO);

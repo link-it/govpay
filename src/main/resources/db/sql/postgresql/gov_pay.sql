@@ -623,6 +623,7 @@ CREATE TABLE versamenti
 	send_importo_totale DOUBLE PRECISION,
 	send_data_aggiornamento TIMESTAMP,
 	send_nav VARCHAR(18),
+	data_pubblicazione TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -1723,7 +1724,8 @@ SELECT versamenti.id,
     versamenti.data_ultima_comunicazione_aca,
     versamenti.id_documento,
     documenti.cod_documento,
-    documenti.descrizione AS doc_descrizione
+    documenti.descrizione AS doc_descrizione,
+    versamenti.data_pubblicazione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

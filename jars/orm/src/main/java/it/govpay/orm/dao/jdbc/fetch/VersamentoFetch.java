@@ -74,6 +74,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_validita", Versamento.model().DATA_VALIDITA.getFieldType()));
 				setParameter(object, "setDataScadenza", Versamento.model().DATA_SCADENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", Versamento.model().DATA_SCADENZA.getFieldType()));
+				setParameter(object, "setDataPubblicazione", Versamento.model().DATA_PUBBLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_pubblicazione", Versamento.model().DATA_PUBBLICAZIONE.getFieldType()));
 				setParameter(object, "setDataOraUltimoAggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_ultimo_aggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()));
 				setParameter(object, "setCausaleVersamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType(),
@@ -220,6 +222,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataValidita"));
 				setParameter(object, "setDataScadenza", Versamento.model().DATA_SCADENZA.getFieldType(),
 					this.getObjectFromMap(map,"dataScadenza"));
+				setParameter(object, "setDataPubblicazione", Versamento.model().DATA_PUBBLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataPubblicazione"));
 				setParameter(object, "setDataOraUltimoAggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraUltimoAggiornamento"));
 				setParameter(object, "setCausaleVersamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType(),

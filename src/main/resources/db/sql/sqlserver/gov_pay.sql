@@ -614,6 +614,7 @@ CREATE TABLE versamenti
 	send_importo_totale DECIMAL(15,2),
 	send_data_aggiornamento DATETIME2,
 	send_nav VARCHAR(18),
+	data_pubblicazione DATETIME2,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -1740,7 +1741,8 @@ SELECT versamenti.id,
     versamenti.data_ultima_modifica_aca,
     versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
-    documenti.descrizione AS doc_descrizione
+    documenti.descrizione AS doc_descrizione,
+    versamenti.data_pubblicazione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

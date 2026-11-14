@@ -57,6 +57,7 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_VALIDITA = new Field("dataValidita",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_PUBBLICAZIONE = new Field("dataPubblicazione",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new Field("dataOraUltimoAggiornamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DEBITORE_TIPO = new Field("debitoreTipo",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -131,6 +132,7 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_VALIDITA = new ComplexField(father,"dataValidita",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.DATA_PUBBLICAZIONE = new ComplexField(father,"dataPubblicazione",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataOraUltimoAggiornamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DEBITORE_TIPO = new ComplexField(father,"debitoreTipo",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -216,6 +218,7 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public IField DATA_VALIDITA = null;
 	 
 	public IField DATA_SCADENZA = null;
+	public IField DATA_PUBBLICAZIONE = null;
 	 
 	public IField DATA_ORA_ULTIMO_AGGIORNAMENTO = null;
 	 

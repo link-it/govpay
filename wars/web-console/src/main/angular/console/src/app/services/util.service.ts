@@ -138,6 +138,7 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
+    NON_PUBBLICATA: 'Non pubblicata',
     INCASSATA: 'Riconciliata',
     ANOMALA: 'Anomala'
   };

@@ -74,6 +74,8 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_validita", VistaVersamento.model().DATA_VALIDITA.getFieldType()));
 				setParameter(object, "setDataScadenza", VistaVersamento.model().DATA_SCADENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", VistaVersamento.model().DATA_SCADENZA.getFieldType()));
+				setParameter(object, "setDataPubblicazione", VistaVersamento.model().DATA_PUBBLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_pubblicazione", VistaVersamento.model().DATA_PUBBLICAZIONE.getFieldType()));
 				setParameter(object, "setDataOraUltimoAggiornamento", VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_ultimo_aggiornamento", VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()));
 				setParameter(object, "setCausaleVersamento", VistaVersamento.model().CAUSALE_VERSAMENTO.getFieldType(),
@@ -216,6 +218,8 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataValidita"));
 				setParameter(object, "setDataScadenza", VistaVersamento.model().DATA_SCADENZA.getFieldType(),
 					this.getObjectFromMap(map,"dataScadenza"));
+				setParameter(object, "setDataPubblicazione", VistaVersamento.model().DATA_PUBBLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataPubblicazione"));
 				setParameter(object, "setDataOraUltimoAggiornamento", VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraUltimoAggiornamento"));
 				setParameter(object, "setCausaleVersamento", VistaVersamento.model().CAUSALE_VERSAMENTO.getFieldType(),

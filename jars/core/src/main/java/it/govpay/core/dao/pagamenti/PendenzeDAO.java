@@ -151,11 +151,17 @@ public class PendenzeDAO extends BaseDAO{
 					case NON_ESEGUITA: {
 						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
+						filter.setAbilitaFiltroPubblicato(true);
 					}
 					break;
 					case SCADUTA: {
 						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
+					}
+					break;
+					case NON_PUBBLICATA: {
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						filter.setAbilitaFiltroNonPubblicato(true);
 					}
 					break;
 					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
@@ -243,11 +249,17 @@ public class PendenzeDAO extends BaseDAO{
 				case NON_ESEGUITA: {
 					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroNonScaduto(true);
+					filter.setAbilitaFiltroPubblicato(true);
 				}
 				break;
 				case SCADUTA: {
 					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroScaduto(true);
+				}
+				break;
+				case NON_PUBBLICATA: {
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					filter.setAbilitaFiltroNonPubblicato(true);
 				}
 				break;
 				case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;

@@ -27,6 +27,7 @@ export class PendenzaViewComponent implements IFormComponent, OnInit, AfterViewI
     let _choice = UtilService.STATI_PENDENZE[this.parent.stato];
     switch(_choice) {
       case UtilService.STATI_PENDENZE.NON_ESEGUITA:
+      case UtilService.STATI_PENDENZE.NON_PUBBLICATA:
         _stato = this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANNULLATA);
       break;
       case UtilService.STATI_PENDENZE.ANNULLATA:

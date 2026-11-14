@@ -31,6 +31,10 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Allegato;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.core.utils.VersamentoUtils;
+import java.text.MessageFormat;
 import it.govpay.core.dao.pagamenti.AllegatiDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTO;
@@ -146,6 +150,12 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			// controllo che il dominio sia autorizzato
 			if(!AuthorizationManager.isDominioAuthorized(user, leggiPendenzaDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user,leggiPendenzaDTOResponse.getDominio().getCodDominio(), null);
+			}
+
+			// prima della data di pubblicazione l'avviso esiste solo per l'applicazione proprietaria (Issue #914)
+			if(!VersamentoUtils.isPubblicato(leggiPendenzaDTOResponse.getVersamento())
+					&& !leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione().equals(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione())) {
+				throw new PendenzaNonTrovataException(MessageFormat.format("Pendenza [Dominio:{0} NumeroAvviso:{1}] non trovata.", idDominio, numeroAvviso));
 			}
 
 			PendenzaPagata pendenza = PendenzeConverter.toPendenzaPagataRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());

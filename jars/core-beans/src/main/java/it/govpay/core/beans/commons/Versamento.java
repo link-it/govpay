@@ -143,6 +143,14 @@ public class Versamento {
 		this.sendNav = sendNav;
 	}
 
+	public Date getDataPubblicazione() {
+		return this.dataPubblicazione;
+	}
+
+	public void setDataPubblicazione(Date dataPubblicazione) {
+		this.dataPubblicazione = dataPubblicazione;
+	}
+
 	public Integer getAnnoTributario() {
 		return this.annoTributario;
 	}
@@ -385,6 +393,7 @@ public class Versamento {
     private Boolean aggiornabile;
     private Boolean sendAbilitato;
     private String sendNav;
+    private Date dataPubblicazione;
     private Integer annoTributario;
     private String bundlekey;
     private String causale;

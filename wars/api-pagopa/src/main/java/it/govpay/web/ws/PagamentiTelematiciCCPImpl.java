@@ -543,6 +543,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 				MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_CCP_IUV_PRESENTE, versamento.getCodVersamentoEnte());
+				// prima della data di pubblicazione l'avviso non esiste per pagoPA, e non si chiede al gestionale (Issue #914)
+				if(!VersamentoUtils.isPubblicato(versamento)) {
+					log.debug("Versamento [{}] non ancora pubblicato: data di pubblicazione {}", versamento.getCodVersamentoEnte(), versamento.getDataPubblicazione());
+					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				}
 			}catch (NotFoundException e) {
 				applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper, dominio,iuv,false); 
 				
@@ -819,6 +824,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv, true);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
+				// prima della data di pubblicazione l'avviso non esiste per pagoPA, e non si chiede al gestionale (Issue #914)
+				if(!VersamentoUtils.isPubblicato(versamento)) {
+					log.debug("Versamento [{}] non ancora pubblicato: data di pubblicazione {}", versamento.getCodVersamentoEnte(), versamento.getDataPubblicazione());
+					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				}
 			}catch (NotFoundException e) {
 				applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper,dominio,iuv,false); 
 				
@@ -1394,6 +1404,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv, true);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
+				// prima della data di pubblicazione l'avviso non esiste per pagoPA, e non si chiede al gestionale (Issue #914)
+				if(!VersamentoUtils.isPubblicato(versamento)) {
+					log.debug("Versamento [{}] non ancora pubblicato: data di pubblicazione {}", versamento.getCodVersamentoEnte(), versamento.getDataPubblicazione());
+					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				}
 			}catch (NotFoundException e) {
 				applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper,dominio,iuv,false); 
 				

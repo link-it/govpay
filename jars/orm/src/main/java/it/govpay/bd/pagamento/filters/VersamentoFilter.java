@@ -71,6 +71,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private String iuv;
 	private boolean abilitaFiltroNonScaduto = false;
 	private boolean abilitaFiltroScaduto = false;
+	private boolean abilitaFiltroNonPubblicato = false;
+	private boolean abilitaFiltroPubblicato = false;
 	private boolean abilitaFiltroCittadino = false;
 	private Boolean mostraSpontaneiNonPagati = null;
 	private Long idDocumento = null;
@@ -207,6 +209,27 @@ public class VersamentoFilter extends AbstractFilter {
 				
 				newExpression.and(orExpression);
 				
+				addAnd = true;
+			}
+
+			// data di pubblicazione (Issue #914): non pubblicata = data futura; pubblicata = data assente o raggiunta
+			if(this.abilitaFiltroNonPubblicato) {
+				if(addAnd)
+					newExpression.and();
+				newExpression.isNotNull(Versamento.model().DATA_PUBBLICAZIONE).and().greaterThan(Versamento.model().DATA_PUBBLICAZIONE, new Date());
+				addAnd = true;
+			}
+
+			if(this.abilitaFiltroPubblicato) {
+				if(addAnd)
+					newExpression.and();
+				IExpression orExpression = this.newExpression();
+				IExpression or1Expression = this.newExpression();
+				IExpression or2Expression = this.newExpression();
+				or1Expression.isNull(Versamento.model().DATA_PUBBLICAZIONE);
+				or2Expression.lessEquals(Versamento.model().DATA_PUBBLICAZIONE, new Date());
+				orExpression.or(or1Expression,or2Expression);
+				newExpression.and(orExpression);
 				addAnd = true;
 			}
 
@@ -542,6 +565,18 @@ public class VersamentoFilter extends AbstractFilter {
 //				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
 			}
 
+			// data di pubblicazione (Issue #914)
+			if(this.abilitaFiltroNonPubblicato) {
+				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_PUBBLICAZIONE, true));
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_PUBBLICAZIONE, true) + " > ? ");
+			}
+
+			if(this.abilitaFiltroPubblicato) {
+				String or1Expression = converter.toColumn(model.DATA_PUBBLICAZIONE, true) + " is null ";
+				String or2Expression = converter.toColumn(model.DATA_PUBBLICAZIONE, true) + " <= ? ";
+				sqlQueryObject.addWhereCondition(false, or1Expression, or2Expression);
+			}
+
 			if(this.dataInizio != null && this.dataFine != null) {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
@@ -766,6 +801,15 @@ public class VersamentoFilter extends AbstractFilter {
 			calendar.set(Calendar.MILLISECOND, 0);
 			
 			lst.add(calendar.getTime());
+		}
+
+		// data di pubblicazione (Issue #914)
+		if(this.abilitaFiltroNonPubblicato) {
+			lst.add(new Date());
+		}
+
+		if(this.abilitaFiltroPubblicato) {
+			lst.add(new Date());
 		}
 
 		if(this.dataInizio != null && this.dataFine != null) {
@@ -1034,6 +1078,22 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setAbilitaFiltroScaduto(boolean abilitaFiltroScaduto) {
 		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
+	}
+
+	public boolean isAbilitaFiltroNonPubblicato() {
+		return abilitaFiltroNonPubblicato;
+	}
+
+	public void setAbilitaFiltroNonPubblicato(boolean abilitaFiltroNonPubblicato) {
+		this.abilitaFiltroNonPubblicato = abilitaFiltroNonPubblicato;
+	}
+
+	public boolean isAbilitaFiltroPubblicato() {
+		return abilitaFiltroPubblicato;
+	}
+
+	public void setAbilitaFiltroPubblicato(boolean abilitaFiltroPubblicato) {
+		this.abilitaFiltroPubblicato = abilitaFiltroPubblicato;
 	}
 	
 	public boolean isAbilitaFiltroCittadino() {
