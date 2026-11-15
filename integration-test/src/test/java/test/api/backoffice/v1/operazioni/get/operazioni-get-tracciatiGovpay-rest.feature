@@ -41,6 +41,27 @@ And match response.servizioGovPay.versioneZip == <versioneZipLetta>
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+# Il batch di elaborazione esegue una richiesta alla volta e una richiesta arrivata durante un'esecuzione viene persa
+# al suo termine. Il test precedente avvia un'elaborazione di tutte le RT del dominio per tutti i connettori: prima
+# di preparare i dati si richiede un'elaborazione e si attende che la sonda del batch registri un'esecuzione
+# terminata dopo la richiesta, cosi' l'eventuale esecuzione in corso e' conclusa.
+* def querySondaElaborazione = "SELECT data_ok FROM sonde WHERE nome = 'elaborazione-trac-notif-pag'"
+* def attendiFineElaborazione =
+"""
+function(richiesta) {
+  for (var i = 0; i < 180; i++) {
+    var dataOk = db.readValue(querySondaElaborazione);
+    if (dataOk != null && dataOk.getTime() > richiesta) return true;
+    java.lang.Thread.sleep(5000);
+  }
+  return false;
+}
+"""
+* def richiestaElaborazione = System.currentTimeMillis()
+* call read('classpath:utils/govpay-op-elaborazione-tracciati-notifica-pagamenti.feature')
+* def elaborazioneTerminata = attendiFineElaborazione(richiestaElaborazione)
+* match elaborazioneTerminata == true
+
 # Senza un tracciato precedente l'elaborazione include tutte le RT del dominio ricevute dal 1970, che nella
 # testsuite sono migliaia, e il tracciato diventa visibile solo al termine dell'elaborazione. Si registra quindi
 # un tracciato GOVPAY gia' caricato che termina un'ora prima dell'ora corrente: con un intervallo di creazione di
@@ -71,17 +92,30 @@ function() {
 
 * call read('classpath:utils/govpay-op-elaborazione-tracciati-notifica-pagamenti.feature')
 
-# L'elaborazione e' asincrona: si attende la creazione del tracciato.
-* def queryTracciati = "SELECT versione, stato FROM trac_notif_pag WHERE tipo = 'GOVPAY' AND id_dominio = " + idDominioDb + " AND nome_file <> '" + nomeTracciatoPrecedente + "'"
+# L'elaborazione e' asincrona: si attende la creazione del tracciato che parte dalla fine di quello precedente.
+* def queryTracciati = "SELECT versione, stato, data_rt_da FROM trac_notif_pag WHERE tipo = 'GOVPAY' AND id_dominio = " + idDominioDb + " AND nome_file <> '" + nomeTracciatoPrecedente + "'"
+* def inizioFinestra = inizioOraCorrente - 60 * 60 * 1000
+* def leggiTracciati =
+"""
+function() {
+  var righe = db.readRows(queryTracciati);
+  var tracciati = [];
+  for (var i = 0; i < righe.size(); i++) {
+    var riga = righe.get(i);
+    if (riga.data_rt_da.getTime() == inizioFinestra) tracciati.push({ versione: riga.versione, stato: riga.stato });
+  }
+  return tracciati;
+}
+"""
 * def attendiTracciati =
 """
 function() {
   for (var i = 0; i < 60; i++) {
-    var righe = db.readRows(queryTracciati);
-    if (righe.size() > 0) return righe;
+    var tracciati = leggiTracciati();
+    if (tracciati.length > 0) return tracciati;
     java.lang.Thread.sleep(3000);
   }
-  return db.readRows(queryTracciati);
+  return leggiTracciati();
 }
 """
 * def tracciati = attendiTracciati()
