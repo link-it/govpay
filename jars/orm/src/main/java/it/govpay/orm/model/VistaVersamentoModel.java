@@ -58,6 +58,10 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DATA_VALIDITA = new Field("dataValidita",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_PUBBLICAZIONE = new Field("dataPubblicazione",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_ABILITATO = new Field("sendAbilitato",boolean.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_IMPORTO_TOTALE = new Field("sendImportoTotale",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_DATA_AGGIORNAMENTO = new Field("sendDataAggiornamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_NAV = new Field("sendNav",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new Field("dataOraUltimoAggiornamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DEBITORE_TIPO = new Field("debitoreTipo",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -133,6 +137,10 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.DATA_VALIDITA = new ComplexField(father,"dataValidita",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_PUBBLICAZIONE = new ComplexField(father,"dataPubblicazione",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_ABILITATO = new ComplexField(father,"sendAbilitato",boolean.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_IMPORTO_TOTALE = new ComplexField(father,"sendImportoTotale",java.lang.Double.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_DATA_AGGIORNAMENTO = new ComplexField(father,"sendDataAggiornamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
+		this.SEND_NAV = new ComplexField(father,"sendNav",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataOraUltimoAggiornamento",java.util.Date.class,"VistaVersamento",VistaVersamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DEBITORE_TIPO = new ComplexField(father,"debitoreTipo",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
@@ -219,6 +227,10 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	 
 	public IField DATA_SCADENZA = null;
 	public IField DATA_PUBBLICAZIONE = null;
+	public IField SEND_ABILITATO = null;
+	public IField SEND_IMPORTO_TOTALE = null;
+	public IField SEND_DATA_AGGIORNAMENTO = null;
+	public IField SEND_NAV = null;
 	 
 	public IField DATA_ORA_ULTIMO_AGGIORNAMENTO = null;
 	 
