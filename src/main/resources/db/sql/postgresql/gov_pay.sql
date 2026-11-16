@@ -1810,7 +1810,11 @@ SELECT versamenti.id,
     versamenti.id_documento,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione,
-    versamenti.data_pubblicazione
+    versamenti.data_pubblicazione,
+    versamenti.send_abilitato,
+    versamenti.send_importo_totale,
+    versamenti.send_data_aggiornamento,
+    versamenti.send_nav
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

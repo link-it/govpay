@@ -51,6 +51,10 @@ import java.io.Serializable;
  * 			&lt;element name="dataValidita" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataPubblicazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendAbilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendImportoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendDataAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/&gt;
+ * 			&lt;element name="sendNav" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="dataOraUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/&gt;
  * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
  * 			&lt;element name="debitoreTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/&gt;
@@ -133,6 +137,10 @@ import java.io.Serializable;
   	"dataValidita",
   	"dataScadenza",
   	"dataPubblicazione",
+  	"sendAbilitato",
+  	"sendImportoTotale",
+  	"sendDataAggiornamento",
+  	"sendNav",
   	"dataOraUltimoAggiornamento",
   	"causaleVersamento",
   	"debitoreTipo",
@@ -317,6 +325,42 @@ public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBeanWithId 
 
   public void setDataPubblicazione(java.util.Date dataPubblicazione) {
     this.dataPubblicazione = dataPubblicazione;
+  }
+
+  public boolean isSendAbilitato() {
+    return this.sendAbilitato;
+  }
+
+  public boolean getSendAbilitato() {
+    return this.sendAbilitato;
+  }
+
+  public void setSendAbilitato(boolean sendAbilitato) {
+    this.sendAbilitato = sendAbilitato;
+  }
+
+  public java.lang.Double getSendImportoTotale() {
+    return this.sendImportoTotale;
+  }
+
+  public void setSendImportoTotale(java.lang.Double sendImportoTotale) {
+    this.sendImportoTotale = sendImportoTotale;
+  }
+
+  public java.util.Date getSendDataAggiornamento() {
+    return this.sendDataAggiornamento;
+  }
+
+  public void setSendDataAggiornamento(java.util.Date sendDataAggiornamento) {
+    this.sendDataAggiornamento = sendDataAggiornamento;
+  }
+
+  public java.lang.String getSendNav() {
+    return this.sendNav;
+  }
+
+  public void setSendNav(java.lang.String sendNav) {
+    this.sendNav = sendNav;
   }
 
   public java.util.Date getDataOraUltimoAggiornamento() {
@@ -822,6 +866,23 @@ public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBeanWithId 
   protected java.util.Date dataScadenza;
   @XmlElement(name="dataPubblicazione",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataPubblicazione;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="sendAbilitato",required=true,nillable=false)
+  protected boolean sendAbilitato;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="sendImportoTotale",required=false,nillable=false)
+  protected java.lang.Double sendImportoTotale;
+
+  @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="sendDataAggiornamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date sendDataAggiornamento;
+
+  @jakarta.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sendNav",required=false,nillable=false)
+  protected java.lang.String sendNav;
 
   @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @jakarta.xml.bind.annotation.XmlSchemaType(name="dateTime")

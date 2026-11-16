@@ -98,6 +98,17 @@ When method get
 Then status 200
 And match response contains { sendAbilitato: true, sendNav: '#(sendNav)' }
 
+# Anche l'elenco delle pendenze, letto dalla vista v_versamenti, riporta i dati SEND
+
+Given url backofficeBaseurl
+And path '/pendenze'
+And param idA2A = idA2A
+And param idPendenza = idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.risultati[0] contains { sendAbilitato: true, sendNav: '#(sendNav)', sendImportoTotale: '#? _ == sendFeeEuro' }
+
 
 Scenario: NAV notificato di una pendenza GovPay annullata: accettato e usato per SEND
 

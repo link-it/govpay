@@ -224,7 +224,8 @@ DELETE FROM sonde WHERE nome = 'update-rnd';
 COMMIT;
 
 -- Data di pubblicazione della pendenza: fino a quella data l'avviso non esiste per pagoPA
--- e non viene inviato all'ACA (Issue #914). Esposta anche nella vista v_versamenti.
+-- e non viene inviato all'ACA (Issue #914). Esposta anche nella vista v_versamenti, che espone
+-- anche le colonne send_* per gli elenchi delle pendenze.
 BEGIN
     EXECUTE IMMEDIATE 'ALTER TABLE versamenti ADD data_pubblicazione TIMESTAMP';
 EXCEPTION
@@ -303,5 +304,9 @@ SELECT versamenti.id,
     versamenti.data_ultima_comunicazione_aca,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione,
-    versamenti.data_pubblicazione
+    versamenti.data_pubblicazione,
+    versamenti.send_abilitato,
+    versamenti.send_importo_totale,
+    versamenti.send_data_aggiornamento,
+    versamenti.send_nav
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;

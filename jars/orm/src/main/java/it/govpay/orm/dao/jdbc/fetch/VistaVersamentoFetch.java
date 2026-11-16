@@ -76,6 +76,14 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", VistaVersamento.model().DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setDataPubblicazione", VistaVersamento.model().DATA_PUBBLICAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_pubblicazione", VistaVersamento.model().DATA_PUBBLICAZIONE.getFieldType()));
+				setParameter(object, "setSendAbilitato", VistaVersamento.model().SEND_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_abilitato", VistaVersamento.model().SEND_ABILITATO.getFieldType()));
+				setParameter(object, "setSendImportoTotale", VistaVersamento.model().SEND_IMPORTO_TOTALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_importo_totale", VistaVersamento.model().SEND_IMPORTO_TOTALE.getFieldType()));
+				setParameter(object, "setSendDataAggiornamento", VistaVersamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_data_aggiornamento", VistaVersamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType()));
+				setParameter(object, "setSendNav", VistaVersamento.model().SEND_NAV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "send_nav", VistaVersamento.model().SEND_NAV.getFieldType()));
 				setParameter(object, "setDataOraUltimoAggiornamento", VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_ultimo_aggiornamento", VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()));
 				setParameter(object, "setCausaleVersamento", VistaVersamento.model().CAUSALE_VERSAMENTO.getFieldType(),
@@ -220,6 +228,14 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataScadenza"));
 				setParameter(object, "setDataPubblicazione", VistaVersamento.model().DATA_PUBBLICAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataPubblicazione"));
+				setParameter(object, "setSendAbilitato", VistaVersamento.model().SEND_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"sendAbilitato"));
+				setParameter(object, "setSendImportoTotale", VistaVersamento.model().SEND_IMPORTO_TOTALE.getFieldType(),
+					this.getObjectFromMap(map,"sendImportoTotale"));
+				setParameter(object, "setSendDataAggiornamento", VistaVersamento.model().SEND_DATA_AGGIORNAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"sendDataAggiornamento"));
+				setParameter(object, "setSendNav", VistaVersamento.model().SEND_NAV.getFieldType(),
+					this.getObjectFromMap(map,"sendNav"));
 				setParameter(object, "setDataOraUltimoAggiornamento", VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraUltimoAggiornamento"));
 				setParameter(object, "setCausaleVersamento", VistaVersamento.model().CAUSALE_VERSAMENTO.getFieldType(),

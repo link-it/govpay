@@ -188,6 +188,34 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_pubblicazione";
 			}
 		}
+		if(field.equals(VistaVersamento.model().SEND_ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_abilitato";
+			}else{
+				return "send_abilitato";
+			}
+		}
+		if(field.equals(VistaVersamento.model().SEND_IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_importo_totale";
+			}else{
+				return "send_importo_totale";
+			}
+		}
+		if(field.equals(VistaVersamento.model().SEND_DATA_AGGIORNAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_data_aggiornamento";
+			}else{
+				return "send_data_aggiornamento";
+			}
+		}
+		if(field.equals(VistaVersamento.model().SEND_NAV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".send_nav";
+			}else{
+				return "send_nav";
+			}
+		}
 		if(field.equals(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_ora_ultimo_aggiornamento";
@@ -649,6 +677,18 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().DATA_PUBBLICAZIONE)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().SEND_ABILITATO)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().SEND_IMPORTO_TOTALE)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().SEND_DATA_AGGIORNAMENTO)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().SEND_NAV)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){
