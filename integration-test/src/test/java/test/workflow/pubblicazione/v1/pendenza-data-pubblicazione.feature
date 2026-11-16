@@ -2,7 +2,8 @@ Feature: Data di pubblicazione della pendenza
 
 # Issue #914. Fino alla data di pubblicazione l'avviso non esiste per pagoPA (PAA_PAGAMENTO_SCONOSCIUTO),
 # la pendenza risulta NON_PUBBLICATA e il batch ACA la invia alla data (data_ultima_modifica_aca);
-# i promemoria non partono prima. Controlli: data antecedente alla scadenza (VER_045), non oltre
+# i promemoria non partono prima e la API Ragioneria v3 risponde 404 alle applicazioni non proprietarie.
+# Controlli: data antecedente alla scadenza (VER_045), non oltre
 # it.govpay.pendenza.dataPubblicazione.giorniMassimi giorni, default 7 (VER_046), nessuna data futura
 # su una pendenza gia' pubblicata (VER_047). L'applicazione e' senza connettore di verifica: con la data
 # di validita' decorsa GovPay usa la pendenza che ha in base dati.
@@ -253,3 +254,54 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response contains { dataPubblicazione: '#(domani)', stato: 'NON_PUBBLICATA' }
+
+
+Scenario: Ragioneria v3: prima della data di pubblicazione la pendenza esiste solo per l'applicazione proprietaria
+
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = call nuovaPendenza domani
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+
+Given url ragioneriaBaseurl
+And path '/pendenze', 'byAvviso', pendenzaPut.idDominio, numeroAvviso
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response.numeroAvviso == numeroAvviso
+
+Given url ragioneriaBaseurl
+And path '/pendenze', 'byAvviso', pendenzaPut.idDominio, numeroAvviso
+And headers idA2A2BasicAutenticationHeader
+When method get
+Then status 404
+
+# Pubblicata: visibile anche alle altre applicazioni
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = call nuovaPendenza oggi
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+
+Given url ragioneriaBaseurl
+And path '/pendenze', 'byAvviso', pendenzaPut.idDominio, numeroAvviso
+And headers idA2A2BasicAutenticationHeader
+When method get
+Then status 200
+And match response.numeroAvviso == numeroAvviso
