@@ -18,22 +18,23 @@ Aggiornamento di una patch version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Nel caso di aggiornamento di una patch version, ad esempio per aggiornare la versione 3.1.1 alla 3.1.3,
-è sufficiente sostituire l'archivio EAR dispiegato nell'Application Server. 
+è sufficiente sostituire gli archivi dispiegati nell'Application Server: i war su Tomcat,
+l'ear su WildFly.
 
-Si consiglia di effettuare l'aggiornamento dell'EAR con l'Application Server spento.
+Si consiglia di effettuare l'aggiornamento con l'Application Server spento.
 
 Aggiornamento di una minor version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Nel caso di aggiornamento di una minor version oltre a sostituire l'EAR può essere necessario:
+Nel caso di aggiornamento di una minor version oltre a sostituire gli archivi può essere necessario:
 
 - Applicare una o più patch al database
 - Aggiungere i file di Spring security alla directory di lavoro la configurazione usata lo prevede
 
-Ad esempio, nel caso di aggiornamento dalla versione 3.4.1 alla versione 3.6.0 è necessario
+Ad esempio, nel caso di aggiornamento dalla versione 3.9.3.p7 alla versione 3.10.0 è necessario
 
-- Applicare le patch 3.5.sql e 3.6.sql
-- Copiare il file di configurazione api-jppapdp-applicationContext-security.xml nella directory di lavoro
+- Applicare la patch 3.10.0.sql
+- Seguire le indicazioni della sezione :ref:`update_ambiente_310`
  
 Si consiglia di effettuare le operazioni di aggiornamento con l'Application Server spento
 e di eseguire un backup del DB prima di applicare le patch.
@@ -75,10 +76,10 @@ aggiuntivi del rilascio, lette dallo SQL che accompagna ciascun componente.
 Questa parte richiede accesso alla rete e a Docker; con ``--senza-componenti`` si
 salta, ottenendo le sole patch del core.
 
-Restano sempre fuori le patch sotto ``patch/clienti/``, specifiche di singole
-installazioni, e le patch cumulative preconfezionate come
-``patch/3.8.2_to_3.9.2/``, che sono un'alternativa a questo script e non un suo
-ingrediente. I file presenti fra le patch il cui nome non è una versione vengono
+Restano sempre fuori le eventuali sottodirectory di ``patch/``, per esempio
+patch specifiche di singole installazioni o patch cumulative preconfezionate,
+che sono un'alternativa a questo script e non un suo ingrediente. I file
+presenti fra le patch il cui nome non è una versione vengono
 elencati fra quelli **non inclusi**, a schermo e nell'intestazione dello script
 prodotto, invece di essere scartati in silenzio.
 
@@ -143,21 +144,13 @@ Il nuovo client HTTP utilizzato da GovPay ignora la configurazione del keystore 
 Risulta quindi necessario verificare che i parametri per l'autenticazione SSL, ove prevista, siano
 specificati tramite Cruscotto di Backoffice nella configurazione delle Applicazioni e degli Intermediari.
 
-Aggiornamento da versioni precedenti la 3.7
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-La distribuzione standard di GovPay prevede il seguente stack applicativo:
-
-- Java 11
-- Wildfly 26
-
 Aggiornamento da versioni precedenti la 3.8
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 La distribuzione standard di GovPay dalla versione 3.8.0 prevede il seguente stack applicativo:
 
 - Java 21
-- Tomcat 10/11
+- Tomcat 10/11 (dalla 3.10 è richiesto Tomcat 11, vedi :ref:`update_ambiente_310`)
 
 I servizi sono esposti utilizzando nuove BaseUrl, di seguito il mapping con le vecchie versioni:
 
@@ -166,19 +159,39 @@ I servizi sono esposti utilizzando nuove BaseUrl, di seguito il mapping con le v
 +---------------------------------+-------------------------------------------------+
 | /govpay/frontend/api/pagopa     | /govpay-api-pagopa                              |
 +---------------------------------+-------------------------------------------------+
-| /govpay/frontend/api/user       | /govpay-api-user                                |
+| /govpay/frontend/api/user       | /govpay-api-user (rimossa nella 3.10)           |
 +---------------------------------+-------------------------------------------------+
 | /govpay/backend/api/pendenze    | /govpay-api-pendenze                            |
 +---------------------------------+-------------------------------------------------+
 | /govpay/backend/api/ragioneria  | /govpay-api-ragioneria                          |
 +---------------------------------+-------------------------------------------------+
-| /govpay/backend/api/jppapdp     | /govpay-api-jppapdp                             |
+| /govpay/backend/api/jppapdp     | /govpay-api-jppapdp (rimossa nella 3.9.0)       |
 +---------------------------------+-------------------------------------------------+
 | /govpay/backend/api/backoffice  | /govpay-api-backoffice                          |
 +---------------------------------+-------------------------------------------------+
 | /govpay/backend/gui/backoffice  | /govpay-console                                 |
 +---------------------------------+-------------------------------------------------+
 
+.. _update_ambiente_310:
+
+Aggiornamento da versioni precedenti la 3.10
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+L'aggiornamento alla 3.10 richiede, oltre alla sostituzione degli archivi:
+
+- **Tomcat 11**: la 3.10 usa Jakarta EE 11 (Servlet 6.1) e non si dispiega su Tomcat 10.
+- **Patch del database** ``3.10.0.sql``, disponibile per tutti i dialetti; con
+  ``build-upgrade-sql.sh`` si compone insieme alle patch dei componenti del rilascio.
+- **Rimozione delle API User**: il war ``govpay-api-user`` non è più distribuito e va
+  rimosso dall'application server, insieme agli eventuali riferimenti alla sua base URL
+  (``/govpay-api-user`` su Tomcat, ``/govpay/frontend/api/user`` su WildFly).
+- **Recupero delle ricevute esterno**: il recupero delle RT mancanti è svolto solo da
+  govpay-rt-batch, la cui URL è richiesta dall'installer
+  (``it.govpay.batch.recuperoRT.endpoint.url``); va installato e configurato come
+  descritto in :ref:`inst_componenti_aggiuntivi`.
+- **Componenti esterni**: gli altri batch, govpay-gde-api e la nuova console
+  (govpay-console con govpay-console-api) si installano separatamente, nelle versioni
+  previste dal rilascio.
 
 Aggiornamento da versioni precedenti la 3.11
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

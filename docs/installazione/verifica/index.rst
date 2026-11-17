@@ -54,12 +54,17 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
    In caso di corretto funzionamento verrà visualizzata la pagina di
    autenticazione per l'accesso alla console.
 
-5. Accedere alla govpayConsole usando l'utenza di jboss configurata in
-   fase di dispiegamento.
+5. Accedere alla govpayConsole usando l'utenza amministratore indicata
+   nell'installer (predefinita ``gpadmin``).
 
    L’utenza creata in precedenza ha accesso a tutte le funzionalità
    compresa la gestione degli utenti. Utilizzando questo accesso
    potranno quindi essere registrati dei nuovi utenti.
 
 6. Completata l’installazione di GovPay, per proseguire con l'utilizzo
-   del sistema si rimanda al “Manuale Utente”.
+   del sistema si rimanda alla sezione :ref:`govpay_console`.
+
+.. note::
+    La nuova console di backoffice (govpay-console con govpay-console-api) non fa
+    parte dei war del core: è un servizio a parte, da verificare secondo il README
+    dei due componenti (vedi :ref:`inst_componenti_aggiuntivi`).

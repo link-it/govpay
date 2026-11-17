@@ -10,22 +10,11 @@ procedura basata sul modello wizard.
 Download
 --------
 
-Scaricare l'ultima versione (binary release) di GovPay dal sito GitHub
-https://github.com/link-it/GovPay.
+Scaricare l'archivio ``govpay-installer-<versione>.tgz`` dell'ultima versione
+dalla pagina delle release di GovPay: https://github.com/link-it/govpay/releases.
 
-Produzione dell'installer dai sorgenti
---------------------------------------
-
-La compilazione dei sorgenti richiede:
-
-- Maven 3.8 o successivo
-- Java 21
-
-L'installer può essere prodotto con la seguente procedura:
-
-1. Clonare il repository git di GovPay: `git clone https://github.com/link-it/govpay.git`
-2. Compilare con il comando `mvn -Denv=installer_template clean install`
-3. Spostarsi nella cartella **src/main/resources/setup/** ed eseguire lo script **prepareSetup.sh**
+In alternativa l'installer si produce dai sorgenti come descritto in
+:ref:`inst_compilazione`.
 
 Esecuzione dell'Installer
 -------------------------
@@ -78,13 +67,14 @@ contesto di installazione nell'ambiente di esercizio.
 
 Devono essere inserite le seguenti informazioni:
 
--  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
--  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
- -  **file di configurazione personalizzati**
- -  **file di configurazione Log4j personalizzati**
- -  **file di configurazione di Spring Security personalizzati**
+-  **DB Platform:** selezionare la piattaforma RDBMS utilizzata, tra PostgreSQL (predefinita), MySQL, Oracle, SQL Server e HyperSQL
+-  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali (predefinita ``/etc/govpay``), ad esempio:
 
--  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per inserire i diversi file di tracciamento prodotti.
+   -  **file di configurazione personalizzati**
+   -  **file di configurazione Log4j personalizzati**
+   -  **file di configurazione di Spring Security personalizzati**
+
+-  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per inserire i diversi file di tracciamento prodotti (predefinita ``/var/log/govpay``).
 
 
 Riferimenti Accesso GovPay
@@ -95,8 +85,8 @@ Questo passaggio prevede che vengano inserite le credenziali del cruscotto di ge
 Credenziali dell'utente amministratore:
 
 -  **Nome e Cognome:** nome e cognome da associare alle credenziali di amministrazione
--  **Username:** indicare l'identificativo dell'utenza di amministrazione per l'accesso alla console di gestione e monitoraggio.
--  **Password:** indicare la password seguendo i vincoli "deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri".
+-  **Username:** indicare l'identificativo dell'utenza di amministrazione per l'accesso alla console di gestione e monitoraggio (predefinito ``gpadmin``).
+-  **Password:** indicare la password seguendo i vincoli "deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri". I caratteri speciali ammessi sono ``! @ # $ % ^ &``.
 
 .. figure:: ../_images/INS03_InformazioniApplicative.png
    :alt: Pagina relativa ai Riferimenti Accesso GovPay
@@ -145,8 +135,8 @@ Nella schermata "Servizi Backoffice" si devono inserire i riferimenti alle BaseU
    Configurazione Servizi Cruscotto
 
 
--  **Base path risorse statiche console**: BaseURL dove il cruscotto ricerca le risorse statiche
--  **Base path API Backoffice**: BaseURL delle API-Backoffice
+-  **Base path risorse statiche console**: BaseURL dove il cruscotto ricerca le risorse statiche (predefinito ``/govpay-console/`` su Tomcat, ``/govpay/backend/gui/backoffice/`` su WildFly)
+-  **Base path API Backoffice**: BaseURL delle API-Backoffice (predefinito ``/govpay-api-backoffice`` su Tomcat, ``/govpay/backend/api/backoffice`` su WildFly)
 
 File di configurazione Console Backoffice
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +151,7 @@ Nella schermata "File di configurazione Console Backoffice" si deve inserire il 
    File di configurazione Console Backoffice
 
 
--  **Path del file di configurazione della console**: Il path del file di configurazione della console
+-  **Path del file di configurazione della console**: Il path del file di configurazione della console (predefinito ``assets/Config.js``)
 
 
 Configurazioni Avanzate
@@ -184,7 +174,7 @@ La schermata "Configurazioni Avanzate" consente di configurare opzioni avanzate 
 Componenti Aggiuntivi
 ~~~~~~~~~~~~~~~~~~~~~
 
-La schermata "Componenti Aggiuntivi" consente di selezionare i batch esterni da abilitare.
+La schermata "Componenti Aggiuntivi" consente di selezionare i batch esterni da abilitare. I componenti sono descritti in :ref:`inst_componenti_aggiuntivi`.
 
 .. figure:: ../_images/INS09_ConfigurazioneComponentiAggiuntivi.png
    :alt: Pagina relativa alla selezione dei componenti aggiuntivi
@@ -193,15 +183,47 @@ La schermata "Componenti Aggiuntivi" consente di selezionare i batch esterni da 
 
    Componenti Aggiuntivi
 
-I batch esterni disponibili sono:
+I batch esterni selezionabili sono:
 
 -  **Batch ACA:** invio delle posizioni debitorie all'Archivio Centralizzato degli Avvisi (ACA) di pagoPA
 -  **Batch FdR:** acquisizione dei Flussi di Rendicontazione (FdR) da pagoPA
--  **Batch Recupero RT:** recupero delle Ricevute Telematiche (RT) mancanti dal Nodo pagoPA
--  **Batch Verifica IBAN:** verifica della configurazione degli IBAN degli Enti Creditori
--  **Batch Notifica Rendicontazioni:** notifica dei pagamenti completati salvo buon fine
+-  **Batch Verifica IBAN:** verifica degli IBAN e dell'anagrafica degli Enti Creditori su pagoPA
+-  **Batch Notifica Rendicontazioni:** notifica alle applicazioni dell'ente delle rendicontazioni senza pagamento associato e, se abilitato, spedizione delle ricevute
 
 Per ciascun batch selezionato verrà presentata una schermata di configurazione dove inserire la **Base URL** dell'endpoint esposto dal batch.
+La schermata del **Batch Recupero RT** è sempre presentata e la sua Base URL è obbligatoria: dalla versione 3.10 il recupero delle ricevute mancanti è svolto solo da questo componente esterno.
+
+Le Base URL proposte sono:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Batch
+     - Base URL predefinita
+     - Proprietà valorizzata in ``govpay.properties``
+   * - ACA
+     - ``http://localhost:10001/api/batch``
+     - ``it.govpay.batch.aca.endpoint.url``
+   * - FdR
+     - ``http://localhost:10005/api/batch``
+     - ``it.govpay.batch.fdr.endpoint.url``
+   * - Recupero RT
+     - ``http://localhost:10006/api/batch``
+     - ``it.govpay.batch.recuperoRT.endpoint.url``
+   * - Verifica IBAN
+     - ``http://localhost:10008/api/batch``
+     - ``it.govpay.batch.iban.endpoint.url``
+   * - Notifica Rendicontazioni
+     - ``http://localhost:10009/api/batch``
+     - ``it.govpay.batch.notifica.endpoint.url``
+
+GovPay usa queste URL per avviare i batch e leggerne lo stato dalla sezione Manutenzione della console.
+Per ogni batch si possono impostare a mano in ``govpay.properties`` anche i timeout, in millisecondi:
+``it.govpay.batch.<batch>.endpoint.connectionTimeout`` (predefinito 5000), ``readTimeout`` (30000)
+e ``connectionRequestTimeout`` (5000).
+
+L'installer non chiede la URL del batch **govpay-maggioli-jppa**: se il componente è in uso,
+va impostata a mano in ``govpay.properties`` con la proprietà ``it.govpay.batch.maggioli.endpoint.url``.
 
 .. figure:: ../_images/INS10_ConfigurazioneACA.png
    :alt: Pagina relativa alla configurazione del batch ACA
@@ -259,28 +281,35 @@ I files presenti nella directory **dist** dovranno essere utilizzati
 nella fase successiva di dispiegamento di GovPay.
 
 
+.. _inst_componenti_aggiuntivi:
+
 Componenti Aggiuntivi
 ---------------------
 
 GovPay può essere esteso con componenti aggiuntivi che forniscono funzionalità opzionali.
 Questi componenti sono distribuiti separatamente e possono essere installati in base alle esigenze.
+Ogni componente descrive configurazione, esecuzione e immagine Docker nel README del proprio repository;
+di seguito sono indicati lo scopo e cosa va configurato in GovPay perché funzioni.
+
+I batch si avviano da uno scheduler interno, oppure a richiesta tramite la loro API REST
+(usata da GovPay per l'esecuzione manuale dalla console), e si coordinano tra più istanze
+con i metadati Spring Batch sul database. Le loro chiamate sono registrate nel Giornale
+degli Eventi tramite govpay-gde-api.
 
 govpay-aca-batch
 ~~~~~~~~~~~~~~~~
 
-Batch per l'invio delle posizioni debitorie all'Archivio Centralizzato degli Avvisi (ACA) di pagoPA.
+Batch per l'invio delle posizioni debitorie all'Archivio Centralizzato degli Avvisi (ACA) di pagoPA,
+tramite il servizio GPD (Gestione Posizioni Debitorie).
 
 - **Repository:** https://github.com/link-it/govpay-aca-batch
 - **Release:** https://github.com/link-it/govpay-aca-batch/releases
 
-Questo componente consente di:
+Ogni 10 minuti (predefinito) individua le pendenze da pagare o annullate non ancora comunicate
+dopo l'ultima modifica e le invia al GPD: crea e pubblica le posizioni nuove, aggiorna quelle già
+inviate e annulla quelle annullate in GovPay.
 
-- Sincronizzare le pendenze di GovPay con l'ACA
-- Gestire l'invio massivo delle posizioni debitorie
-- Monitorare lo stato delle comunicazioni con l'ACA
-
-Il batch può essere schedulato per eseguire periodicamente l'invio delle posizioni debitorie
-non ancora comunicate o aggiornate.
+**Configurazione in GovPay:** il connettore ACA dell'intermediario (URL del GPD e credenziali).
 
 govpay-fdr-batch
 ~~~~~~~~~~~~~~~~
@@ -290,74 +319,121 @@ Batch per l'acquisizione dei Flussi di Rendicontazione (FdR) da pagoPA.
 - **Repository:** https://github.com/link-it/govpay-fdr-batch
 - **Release:** https://github.com/link-it/govpay-fdr-batch/releases
 
-Questo componente consente di:
+Scarica i flussi pubblicati dopo l'ultimo già acquisito, li salva nel database di GovPay
+e li collega alle pendenze rendicontate.
 
-- Scaricare automaticamente i flussi di rendicontazione dalla piattaforma pagoPA
-- Elaborare e importare i flussi nel database di GovPay
-- Gestire la riconciliazione automatica dei pagamenti
-
-Il batch può essere schedulato per eseguire periodicamente il download e l'elaborazione
-dei nuovi flussi di rendicontazione disponibili.
+**Configurazione in GovPay:** l'acquisizione delle rendicontazioni abilitata sul dominio e il
+connettore FR dell'intermediario.
 
 govpay-rt-batch
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
-Batch per il recupero delle Ricevute Telematiche (RT) mancanti dal Nodo pagoPA.
+Batch per il recupero delle Ricevute Telematiche (RT) mancanti. Dalla versione 3.10 è l'unico
+meccanismo di recupero delle ricevute ed è quindi necessario.
 
 - **Repository:** https://github.com/link-it/govpay-rt-batch
 - **Release:** https://github.com/link-it/govpay-rt-batch/releases
 
-Questo componente consente di:
+Questo componente:
 
-- Individuare le rendicontazioni prive della corrispondente ricevuta di pagamento, più vecchie di una soglia temporale configurabile (default: 15 giorni)
-- Recuperare automaticamente le RT mancanti invocando l'endpoint ``GET /organizations/{codDominio}/receipts/{iur}`` del Nodo pagoPA
-- Persistere le ricevute recuperate nel database di GovPay e aggiornare lo stato delle rendicontazioni
-- Registrare tutte le operazioni nel Giornale degli Eventi (GDE)
+- individua le rendicontazioni acquisite negli ultimi N giorni (``govpay.batch.finestra-temporale``,
+  predefinito 90) che hanno una pendenza ma nessun pagamento in GovPay;
+- scarica la ricevuta dall'API pagoPA ``GET /organizations/{organizationfiscalcode}/receipts/{iur}/paymentoptions/{iuv}``;
+- invia la ricevuta al core come ``paSendRTV2``, sul servizio
+  ``/govpay-api-pagopa/internal/PagamentiTelematiciCCPservice``, come se arrivasse dal Nodo dei Pagamenti;
+- elabora le richieste di recupero puntuale inserite da un operatore dalla console.
+
+**Configurazione in GovPay:** il connettore Recupero RT dell'intermediario (URL e chiave dell'API pagoPA)
+e un'utenza con cui il batch si autentica in Basic sul servizio ``/internal`` delle API pagoPA.
 
 govpay-iban-batch
 ~~~~~~~~~~~~~~~~~
 
-Batch per la verifica della configurazione degli IBAN degli Enti Creditori.
+Batch per la verifica degli IBAN e dell'anagrafica degli Enti Creditori su pagoPA.
 
 - **Repository:** https://github.com/link-it/govpay-iban-batch
 - **Release:** https://github.com/link-it/govpay-iban-batch/releases
 
-Questo componente consente di:
+Confronta gli IBAN e gli Enti Creditori registrati su pagoPA con quelli di GovPay, salva l'esito
+in una cache usata dalla console per il censimento assistito e produce un report CSV, che può
+essere spedito per email.
 
-- Verificare periodicamente la corretta configurazione degli IBAN associati agli Enti Creditori
-- Segnalare eventuali anomalie o disallineamenti nella configurazione
+**Configurazione in GovPay:** il connettore di backoffice EC dell'intermediario.
 
-Il batch può essere schedulato per eseguire periodicamente la verifica degli IBAN configurati.
+govpay-notify-batch
+~~~~~~~~~~~~~~~~~~~
 
-govpay-notifica-batch
-~~~~~~~~~~~~~~~~~~~~~
+Batch per la notifica alle applicazioni dell'ente delle rendicontazioni senza pagamento e,
+se abilitato, per la spedizione delle ricevute.
 
-Batch per la notifica dei pagamenti completati salvo buon fine.
+- **Repository:** https://github.com/link-it/govpay-notify-batch
+- **Release:** https://github.com/link-it/govpay-notify-batch/releases
 
-- **Repository:** https://github.com/link-it/govpay-notifica-batch
-- **Release:** https://github.com/link-it/govpay-notifica-batch/releases
+Questo componente:
 
-Questo componente consente di:
+- notifica all'applicazione proprietaria della pendenza, con ``POST /rendicontazioni`` dell'API Ente,
+  le rendicontazioni acquisite che non hanno un pagamento in GovPay (ogni 2 ore, predefinito);
+- se abilitato, spedisce le ricevute in coda con ``PUT /ricevute/{idDominio}/{iuv}/{idRicevuta}``.
 
-- Inviare notifiche relative ai pagamenti completati con esito salvo buon fine
-- Gestire il ciclo di vita delle notifiche verso i sistemi degli Enti Creditori
+**Configurazione in GovPay:** il connettore di integrazione dell'applicazione, con versione API ``REST_2``
+(l'unica supportata).
 
-Il batch può essere schedulato per eseguire periodicamente l'invio delle notifiche
-per i pagamenti completati.
+govpay-maggioli-jppa
+~~~~~~~~~~~~~~~~~~~~
+
+Batch per la notifica delle ricevute di pagamento al gateway Maggioli JPPA.
+
+- **Repository:** https://github.com/link-it/govpay-maggioli-jppa
+- **Release:** https://github.com/link-it/govpay-maggioli-jppa/releases
+
+Per ogni dominio abilitato invia al gateway le ricevute positive arrivate dopo l'ultima già notificata
+e, se previsto, spedisce per email un tracciato con l'esito.
+
+**Configurazione in GovPay:** il connettore Maggioli JPPA del dominio (vedi :ref:`govpay_configurazione_connettori_jppa`)
+e, per l'esecuzione manuale, la proprietà ``it.govpay.batch.maggioli.endpoint.url``.
 
 govpay-gde-api
 ~~~~~~~~~~~~~~
 
-API per il Giornale degli Eventi (GDE) esterno.
+API per il Giornale degli Eventi (GDE) dei componenti esterni.
 
 - **Repository:** https://github.com/link-it/govpay-gde-api
 - **Release:** https://github.com/link-it/govpay-gde-api/releases
 
-Questo componente espone API REST per:
+Riceve gli eventi prodotti dai componenti esterni e li salva nella tabella ``eventi`` del database
+di GovPay, dove sono consultabili dalla console insieme a quelli del core.
 
-- Ricevere e archiviare gli eventi generati da GovPay
-- Consultare lo storico degli eventi
-- Integrare il giornale eventi con sistemi esterni di monitoraggio
+**Configurazione in GovPay:** il connettore del servizio Giornale degli Eventi, nelle Impostazioni
+della console, con la URL del servizio. Il servizio non applica autenticazione e va esposto solo
+sulla rete interna dei componenti.
 
-Il servizio GDE può essere configurato come endpoint esterno per la registrazione
-degli eventi, consentendo una gestione centralizzata del logging applicativo.
+govpay-stampe-api
+~~~~~~~~~~~~~~~~~
+
+Servizio di stampa in PDF di avvisi di pagamento e ricevute, usato dai componenti esterni.
+
+- **Repository:** https://github.com/link-it/govpay-stampe-api
+- **Release:** https://github.com/link-it/govpay-stampe-api/releases
+
+Non ha base dati e non applica autenticazione: va esposto solo sulla rete interna dei componenti.
+
+govpay-console e govpay-console-api
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Nuova console di backoffice (applicazione web) e il servizio REST che la alimenta, alternativi
+alla console inclusa nel core.
+
+- **Repository:** https://github.com/link-it/govpay-console e https://github.com/link-it/govpay-console-api
+- **Release:** https://github.com/link-it/govpay-console/releases e https://github.com/link-it/govpay-console-api/releases
+
+govpay-console-api lavora sul database di GovPay e delega ai componenti esterni stampe, Giornale
+degli Eventi ed esecuzione dei batch.
+
+govpay-portal-api
+~~~~~~~~~~~~~~~~~
+
+API per il portale dei pagamenti del cittadino: enti e tipi pendenza pagabili, pendenze del
+debitore, pagamento spontaneo, avvisi e ricevute in PDF.
+
+- **Repository:** https://github.com/link-it/govpay-portal-api
+- **Release:** https://github.com/link-it/govpay-portal-api/releases
