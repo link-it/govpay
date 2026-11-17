@@ -23,10 +23,11 @@ Tramite il pulsante presente nella pagina di elenco è possibile aprire il form 
    :header: "Campo", "Significato", "Note"
    :widths: 40,40,20
 
-   "Principal", "Identificativo dell'operatore dato da PagoPa", "Obbligatorio"
+   "Principal", "Identificativo con cui l'operatore si autentica al cruscotto (username, subject del certificato, claim OAuth2 o codice fiscale SPID, a seconda del metodo di autenticazione)", "Obbligatorio"
+   "Password", "Password per l'accesso con username e password. Il campo è presente se è attiva la gestione delle password nella configurazione della console", ""
    "Nome", "Nome e cognome dell'operatore", "Obbligatorio"
    "Abilitato", "Indica se l'operatore ha o meno l'accesso al Cruscotto di gestione", ""
-   "Domini", "Indica i domini su cui può svolgere compiti l'Operatore", "E' presente l'opzione *Tutti* che permette a una sola utenza di operare trasversalmente a più domini"
+   "Enti creditori", "Indica gli Enti Creditori, ed eventualmente le unità operative, su cui può svolgere compiti l'Operatore", "E' presente l'opzione *Tutti* che permette a una sola utenza di operare trasversalmente a più domini"
    "Tipi pendenza", "Selezione delle pendenze su cui l'operatore può operare", "Presente l'opzione *Tutti*"
    "Ruoli", "Ruoli cui l'utente è abilitato: ogni ruolo ha un perimetro autorizzativo che l'operatore eredita", ""
 
@@ -44,4 +45,4 @@ Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge 
    Vista di sintesi di un Operatore
 
 
-Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde in basso a destra), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
+Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde in basso a destra), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di un nuovo operatore, con una sola informazione non modificabile, ovvero *principal*.

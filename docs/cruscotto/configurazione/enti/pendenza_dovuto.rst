@@ -3,9 +3,11 @@
 Configurazione del tipo pendenza per il caricamento manuale da operatore.
 -------------------------------------------------------------------------
 
-E' possibile predisporre delle form personalizzate nella Console di GovPay per consentire l'inserimento
+È possibile predisporre delle form personalizzate nella Console di GovPay per consentire l'inserimento
 delle pendenze richiedendo all'operatore un set minimale di informazioni e codificando la logica di
 creazione della pendenza.
+
+La form è disponibile in console solo se il campo *Abilitato* della sezione vale *Si*, oppure vale *Default* e la funzione è abilitata nella configurazione di base del tipo pendenza.
 
 .. figure:: ../../_images/31TipoPendenza_Formcaricamento.png
    :align: center
@@ -29,22 +31,23 @@ saranno poi l'input alla successiva fase di validazione:
 I tipi di layout al momento disponibili sono i seguenti:
 
 	-  *Angular json schema form*: `Progetto GitHub <https://github.com/dschnelldavis/angular2-json-schema-form>`_ - `Playground <https://angular2-json-schema-form.firebaseapp.com/>`_
+	-  *SurveyJS*: `Sito del progetto <https://surveyjs.io/>`_
 
 
 Validazione
 ~~~~~~~~~~~
 
-E' possibile configurare in questa sezione il JSON Schema con cui validare i dati inviati dalla form definita nella sezione precedente.
+È possibile configurare in questa sezione il JSON Schema con cui validare i dati inviati dalla form definita nella sezione precedente.
 
 Trasformazione dati
 ~~~~~~~~~~~~~~~~~~~
 
 In questa sezione può essere configurato il processo che, dai dati inseriti nella form, produce una pendenza. Il dato di Input è il JSON prodotto
-dalla form di inserimento dati, mentre l'output deve essere un JSON che rispetta lo schema di una `PendenzaPost <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost&nocors>`_.
+dalla form di inserimento dati, mentre l'output deve essere un JSON che rispetta lo schema di una `PendenzaPost <https://github.com/link-it/govpay/blob/3.10.x/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml>`__ (schema ``pendenzaPost`` delle API Backoffice)
 oppure un JSON compatibile con il successivo servizio di inoltro, se configurato.
 
 Inoltro
 ~~~~~~~
 
-E' possibile inviare i dati ricevuti ed eventualmente trasformati ad una applicazione per il processo di istruttoria. Il JSON ritornato da tale
-servizio deve rispettare lo schema di una `PendenzaPost <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost&nocors>`_.
+È possibile inviare i dati ricevuti ed eventualmente trasformati ad una applicazione per il processo di istruttoria. Il JSON ritornato da tale
+servizio deve rispettare lo schema di una `PendenzaPost <https://github.com/link-it/govpay/blob/3.10.x/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml>`__ (schema ``pendenzaPost`` delle API Backoffice).

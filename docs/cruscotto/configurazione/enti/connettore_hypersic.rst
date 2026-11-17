@@ -16,23 +16,30 @@ l'applicativo di riconciliazione HyperSIC di APKappa.
    :header: "Campo", "Descrizione"
    :widths: 40,60
 
-   "Versione", "Versione del tracciato utilizzata per l'esportazione"
-   "Modalità di consegna", "Canale di trasmissione del CSV verso l'ente"
+   "Abilitato", "Abilita o disabilita il connettore"
+   "Versione CSV", "Versione del tracciato utilizzata per l'esportazione (2.0)"
+   "Modalità consegna", "Canale di trasmissione del CSV verso l'ente: Email o File System"
    "Tipi pendenza", "Elenco dei tipi pendenza oggetto di esportazione"
+   "Intervallo creazione", "Intervallo, in ore, coperto da ciascun tracciato"
    "Email", "Se selezionata la consegna email, specifica la lista degli indirizzi destinatari separati da virgola"
    "Oggetto", "Se selezionata la consegna email, specifica l'oggetto della mail"
    "Invia tracciato come allegato", "Se selezionata la consegna email, indica se il tracciato deve essere inserito in allegato o riferito con un link."
    "Base URL link download", "Se deselezionato l'invio come allegato, indica la base URL del link di download. Deve puntare alla risorsa /tracciatiNotificaPagamenti delle API di backoffice"
    "Path", "Se selezionata la consegna File System, specifica il path sul server dove verranno depositati i file. Accertarsi che la directory esista e che siano forniti i diritti necessari alla scrittura dei file"
 
-Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina.
+Il tracciato viene creato ogni giorno alle 3 di mattina, se dall'ultimo tracciato è trascorso l'intervallo di creazione configurato, e viene spedito da un task eseguito ogni 30 minuti.
+Entrambi i task sono **disattivati per default**: per attivarli va impostata a ``true`` la proprietà ``it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled`` nel file ``govpay.properties``.
+
+Il tracciato esportato è un archivio ``GOVPAY_{idDominio}_{dataOraCreazione}_1.zip`` che contiene il CSV ``RENDICONTAZIONE_AV20_{idDominio}_{dataOraCreazione}_{progressivo}.csv``.
 
 Il servizio di esportazione di HyperSIC non contempla i pagamenti non rendicontati (riconciliazione singola), pertanto
 le riscossioni non rendicontate per più di 5 gg vengono incluse in un csv separato avente la medesima sintassi,
-ma con i campi relativi al flusso di rendicontazione vuoti e con progressivo flusso = 999.
+ma con i campi relativi al flusso di rendicontazione vuoti e con progressivo flusso = 999 (``RENDICONTAZIONE_AV20_{idDominio}_{dataOraCreazione}_999.csv``).
 
-Versione 2.3
+Versione 2.0
 ~~~~~~~~~~~~
+
+La versione 2.0 del tracciato, l'unica selezionabile in console, segue la versione 2.3 della specifica APKappa.
 
 Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizioni Rendicontazioni pagoPA v2.3<APK pagoPA Tracciato Import Rendicontazione V2.3.docx>` valorizzando i campi con le seguenti convenzioni:
 
@@ -74,7 +81,7 @@ Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizi
 
 Alcune note sul processo di produzione del CSV:
 
-* Il CSV APKappa non contempla il carattere di escape, pertanto eventuali punti e virgola vegono rimossi dai valori.
+* Il CSV APKappa non contempla il carattere di escape, pertanto eventuali punti e virgola vengono rimossi dai valori.
 * I vincoli di lunghezza dei campi del CSV sono più stringenti di quelli previsti da pagoPA, pertanto i valori inseriti vengono troncati ove necessario.
 
-Nell'eventualità che vengano applicate le policy individuate nelle note, nel log di GovPay viene emesso un log di warning che ne da evidenza.
+Nell'eventualità che vengano applicate le policy individuate nelle note, nel log di GovPay viene emesso un log di warning che ne dà evidenza.

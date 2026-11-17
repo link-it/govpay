@@ -6,14 +6,17 @@ Cruscotto
 
 Una volta completata con successo la procedura di installazione sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
-http://<hostname>:<port>/backend/gui/backoffice
+- installazione su Tomcat: ``http://<hostname>:<port>/govpay-console/``
+- installazione su WildFly: ``http://<hostname>:<port>/govpay/backend/gui/backoffice``
 
 Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i riferimenti al proprio ambiente di installazione (nome host o indirizzo IP e relativa porta).
 
+.. note:: Questa sezione descrive la console inclusa nel core di GovPay. In alternativa è disponibile la nuova console di backoffice, distribuita come componente separato insieme al servizio REST che la alimenta: per installazione e configurazione si vedano i README dei repository `govpay-console <https://github.com/link-it/govpay-console>`_ e `govpay-console-api <https://github.com/link-it/govpay-console-api>`_ (vedi anche :ref:`inst_componenti_aggiuntivi`).
+
 Sono disponibili le seguenti funzionalità informative, liberamente consultabili prima dell'autenticazione:
 
-*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale in formato liberamente
-*  **Progetto GovPay**, che illustra le caratteristiche salienti del prodotto e le sue novità
+*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale in formato PDF
+*  **Progetto GovPay**, che apre il repository GitHub del progetto, dove sono illustrate le caratteristiche salienti del prodotto e le sue novità
 
 Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni
 utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente abilitati all'uso della piattaforma.
@@ -28,7 +31,11 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
 I metodi di autenticazione al sistema sono:
 
 *  Username / password
-*  `SPID <https://www.spid.gov.it//>`_
+*  OAuth2 / OpenID Connect, con il flusso *authorization code* e PKCE verso un identity provider esterno
+*  autenticazione delegata a un IAM, che inoltra l'identità dell'utente in un header HTTP
+*  `SPID <https://www.spid.gov.it/>`_
+
+I metodi disponibili si abilitano nel file di configurazione della console ``assets/Config.js`` (blocchi ``BASIC``, ``OAUTH2``, ``IAM`` e ``SPID``) e devono corrispondere alle modalità di autenticazione attive sulle API Backoffice (vedi :ref:`inst_dispiegamento_auth`).
 
 Si noti che il sistema abilita l'accesso tramite SPID se l'Ente ha effettuato tutti i necessari passi per accreditarsi all'uso di SPID stesso (certificazioni, test e via dicendo).
 
@@ -39,18 +46,13 @@ Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si acce
 .. figure:: _images/03VistaIniziale.png
    :align: center
 
-   Schermata iniziale
-
-La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
-
-.. figure:: _images/03VistaIniziale.png
-   :align: center
-
-   Cruscotto iniziale [#]_
+   Schermata iniziale [#]_
 
 .. [#] Si noti come le funzionalità evidenziate corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
-L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
+La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
+
+L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni sul profilo e permette di effettuare il logout dalla piattaforma.
 
 .. figure:: _images/05FunzionalitaArchitetturaConEvidenziazione.png
    :align: center
@@ -73,13 +75,17 @@ Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'u
 
 A seguire sono elencate le sezioni del menu di navigazione, che possono variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
 
-* *Cruscotto*: sezione iniziale che evidenzia in modo immediato la situazione generale di pagamenti e pendenze.
-* *Pagamenti*: sezione di consultazione delle operazioni di pagamento effettuate dai debitori.
 * *Pendenze*: sezione di consultazione delle pendenze di pagamento in carico ai debitori.
+* *Pagamenti*: sezione di consultazione delle operazioni di pagamento effettuate dai debitori.
+* *Ricevute*: sezione di consultazione delle ricevute di pagamento.
+* *Riscossioni*: sezione di consultazione delle riscossioni.
+* *Rendicontazioni*: sezione di consultazione dei flussi di rendicontazione acquisiti da pagoPA.
+* *Riconciliazioni*: sezione dedicata alle riconciliazioni degli incassi.
+* *Caricamenti massivi*: caricamento delle pendenze tramite tracciati.
 * *Giornale degli eventi*: sezione di consultazione del Giornale Eventi previsto dalla specifica pagoPA.
-* *Configurazioni:* raccoglie gli strumenti per la consultazione, censimento e modifica delle entità alla base della configurazione del prodotto (Psp, Domini, Tributi, Applicazioni, ecc.).
-* *Funzioni Avanzate*: sezione dedicata alla consultazione di entità avanzate (rendicontazioni, riscossioni, ecc.).
-* *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
+* *Configurazioni:* raccoglie gli strumenti per la consultazione, censimento e modifica delle entità alla base della configurazione del prodotto (Intermediari, Enti creditori, Tipi pendenza, Applicazioni, Operatori, Ruoli).
+* *Manutenzione*: accesso a funzionalità di manutenzione straordinaria: *Acquisisci rendicontazioni*, *Recupera ricevute*, *Resetta la cache* e *Invia posizioni debitorie ACA* (le voci *Recupera ricevute* e *Invia posizioni debitorie ACA* compaiono solo se abilitate nella configurazione della console).
+* *Impostazioni*: configurazione dei parametri generali del sistema (vedi :ref:`utente_impostazioni`).
 
 Ad esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
 

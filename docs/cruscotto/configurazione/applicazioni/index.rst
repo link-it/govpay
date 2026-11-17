@@ -30,8 +30,7 @@ Analizziamo le sottosezioni in cui è strutturata l'applicazione, ovvero:
 * Informazioni di riepilogo
 * Codifica avvisi
 * API integrazione
-* Autorizzazioni API
-* Autorizzazioni Backoffice
+* Autorizzazioni
 
 
 Informazioni di riepilogo
@@ -65,6 +64,7 @@ Il campo *Principal* deve essere valorizzato in base al tipo di autenticazione c
    "SSL Header", "Subject del certificato X509 contenuto nell'header"
    "Header", "Principal contenuto nell'header"
    "Api Key", "APP-ID presentato dal client tramite header X-APP-ID"
+   "OAuth2", "Valore del claim del token JWT configurato come principal (predefinito ``sub``)"
 
 Il campo *Password* deve essere valorizzato in base al tipo di autenticazione che si intende utilizzare:
 
@@ -77,10 +77,11 @@ Il campo *Password* deve essere valorizzato in base al tipo di autenticazione ch
    "SSL Header", "Non necessario"
    "Header", "Non necessario"
    "Api Key", "API-Key presentato dal client tramite header X-API-KEY"
+   "OAuth2", "Non necessario"
 
 Codifica avvisi
 ^^^^^^^^^^^^^^^
-In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
+In questa sottosezione sono contenuti i parametri con cui GovPay genera e valida gli IUV dell'applicazione.
 
 .. figure:: ../../_images/39ApplicazioneCodificaAvvisi.png
    :align: center
@@ -131,13 +132,13 @@ In questa sezione è possibile specificare le autorizzazioni dell'Applicazione s
 
 	Sezione Autorizzazioni di un'applicazione
 	
-.. csv-table:: Dettagli della sezione *API Integrazione* di una Applicazione
+.. csv-table:: Dettagli della sezione *Autorizzazioni* di una Applicazione
    :header: "Campo", "Significato"
    :widths: 40,60
 
    "Tipi pendenza", "Lista delle tipologie di pendenza su cui l'applicazione può operare"
    "Ruoli", "Ruoli autorizzativi sulle API di Backoffice"
-   "API Pagamenti", "Abilita/disabilita l'utilizzo delle Api di pagamento"
+   "API Pagamenti", "Flag mantenuto per compatibilità con le versioni precedenti: dalla versione 3.10 l'API Pagamento non fa più parte di GovPay e il flag non ha effetto"
    "API Pendenze", "Abilita/disabilita l'utilizzo delle Api di pendenze"
    "API Ragioneria", "Abilita/disabilita l'utilizzo delle Api di ragioneria"
    "Enti creditori", "Lista degli Enti ed unità operative su cui l'applicazione può operare"

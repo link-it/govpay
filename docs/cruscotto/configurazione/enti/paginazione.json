@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
+  "description": "Impaginazione del servizio di pagamento spontaneo nel Portale di Pagamento GovPay. Le sezioni localizzate sono indicate con il codice della lingua (ad esempio 'ita', 'eng') e hanno tutte lo schema 'traduzione'.",
   "properties": {
     "requireUserConfirm": {
       "type": "boolean",
@@ -10,24 +11,33 @@
       "type": "string",
       "description": "Url dell'immagine visualizzata nella form."
     },
+    "thumbnail": {
+      "type": "string",
+      "description": "Url dell'immagine usata in assenza di 'img'."
+    },
+    "taxonomy1": {
+      "type": "string",
+      "description": "Tipologia in cui il servizio è raggruppato nel catalogo del portale."
+    },
+    "taxonomy2": {
+      "type": "string",
+      "description": "Secondo livello di raggruppamento del servizio nel catalogo del portale (ufficio)."
+    },
     "ita": { "$ref": "#/definitions/traduzione" },
-    "eng": { "$ref": "#/definitions/traduzione" },
-    "fra": { "$ref": "#/definitions/traduzione" },
-    "deu": { "$ref": "#/definitions/traduzione" },
-    "slo": { "$ref": "#/definitions/traduzione" }
+    "eng": { "$ref": "#/definitions/traduzione" }
   },
-  "required": [
-    "requireUserConfirm",
-    "img",
-    "ita"
-  ],
+  "additionalProperties": { "$ref": "#/definitions/traduzione" },
   "definitions": {
-  	"traduzione" : {
+    "traduzione" : {
       "type": "object",
       "properties": {
         "group": {
           "type": "string",
           "description": "Nome del gruppo di appartenenza. Esempio 'Concessioni'."
+        },
+        "group_rank": {
+          "type": "integer",
+          "description": "Posizione del gruppo nell'ordinamento crescente dei gruppi."
         },
         "group_icon": {
           "type": "string",
@@ -39,19 +49,32 @@
         },
         "name": {
           "type": "string",
-          "description": "Nome della pendenza. Non deve essere maggiore di xxx caratteri."
+          "description": "Nome del servizio."
         },
-        "search_tems": {
+        "code": {
           "type": "string",
-          "description": "Lista dei termini che saranno usati per la ricerca."
+          "description": "Codice del servizio, visualizzato insieme al nome. In assenza viene usato l'identificativo del tipo pendenza."
+        },
+        "short_description": {
+          "type": "string",
+          "description": "Descrizione breve del servizio."
         },
         "long_description": {
           "type": "string",
-          "description": "Descrizione dettagliata della pendenza."
+          "description": "Descrizione dettagliata del servizio."
+        },
+        "metadata": {
+          "type": "string",
+          "description": "Testo aggiuntivo visualizzato nella scheda del servizio."
+        },
+        "search_terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Lista dei termini che saranno usati per la ricerca."
         },
         "properties": {
           "type": "array",
-          "description": "Lista di elementi che saranno visualizzati dopo la descrizione dettagliata. Utili per inserire riferimenti di contatto come email, numeri di telefono o link a documentazione sulla pendenza.",
+          "description": "Lista di elementi che saranno visualizzati dopo la descrizione dettagliata. Utili per inserire riferimenti di contatto come email, numeri di telefono o link a documentazione sul servizio.",
           "items": {
             "type": "object",
             "properties": {
@@ -65,7 +88,11 @@
               },
               "url": {
                 "type": "string",
-                "description": "Url o link ipertestaule come 'mailto'."
+                "description": "Url o link ipertestuale come 'mailto'."
+              },
+              "icon": {
+                "type": "string",
+                "description": "Icona dell'elemento."
               }
             },
             "required": [
@@ -74,16 +101,7 @@
             ]
           }
         }
-      },
-      "required": [
-        "group",
-        "group_icon",
-        "subgroup",
-        "name",
-        "search_tems",
-        "long_description",
-        "properties"
-      ]
+      }
     }
   }
 }

@@ -12,14 +12,14 @@ La lista degli oggetti che è possibile configurare comprende i seguenti element
 
 -  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in fase di adesione dagli Enti Creditore per l'accesso al sistema pagoPA.
 -  *Enti Creditori*: corrispondono agli enti creditori aderenti al sistema pagoPA.
--  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali scaturiscono le tipologie di pagamenti che possono essere gestiti dal sistema (ad esempiotassa rifiuti, licenza di caccia, bollo auto e via dicendo).
+-  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali scaturiscono le tipologie di pagamenti che possono essere gestiti dal sistema (ad esempio tassa rifiuti, licenza di caccia, bollo auto e via dicendo).
 -  *Applicazioni*: rappresentano i portali di pagamento e i gestionali delle posizioni debitorie degli enti Creditori integrati con GovPay tramite gli appositi servizi.
 -  *Operatori*: sono le utenze del cruscotto di gestione GovPay.
 -  *Ruoli*: rappresentano l'insieme delle autorizzazioni consentite sulle entità dati, da assegnarsi agli utenti del
    cruscotto.
 
 .. note:: Nell'analisi delle funzionalità di configurazione, le immagini esemplificative mostrate mancheranno della
-   sezione di sinistra (*Lista funzionalità*) al fine di agevolare la focalizzazione sulla parte important della funzionalità, ovvero il suo dettaglio posto a destra.
+   sezione di sinistra (*Lista funzionalità*) al fine di agevolare la focalizzazione sulla parte importante della funzionalità, ovvero il suo dettaglio posto a destra.
 
 
 .. toctree::

@@ -4,7 +4,7 @@ Connettore per l'esportazione dei pagamenti verso SECIM
 ------------------------------------------------------------
 
 Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay in formato compatibile con
-l'applicativo di riconciliazione sei servizi cimiteriali SECIM. 
+l'applicativo di riconciliazione dei servizi cimiteriali SECIM. 
 
 .. figure:: ../../_images/48ConnettoreSECIM.png
    :align: center
@@ -16,16 +16,26 @@ l'applicativo di riconciliazione sei servizi cimiteriali SECIM.
    :header: "Campo", "Descrizione"
    :widths: 40,60
 
-   "Versione", "Versione del tracciato utilizzata per l'esportazione"
-   "Codice cliente", "Identificativo sull'Indice della Pubblica Amministrazione usato nella compilazione del CSV"
-   "Modalità di consegna", "Canale di trasmissione del CSV verso l'ente"
+   "Abilitato", "Abilita o disabilita il connettore"
+   "Codice cliente", "Codice cliente da riportare nel tracciato (campo CODICE CLIENTE). Obbligatorio"
+   "Codice istituto", "Codice istituto da riportare nel tracciato (campo CODICE ISTITUTO)"
+   "Versione CSV", "Versione del tracciato utilizzata per l'esportazione (7.0)"
+   "Modalità consegna", "Canale di trasmissione del tracciato verso l'ente: Email o File System"
    "Tipi pendenza", "Elenco dei tipi pendenza oggetto di esportazione"
-  
-Il tracciato esportato viene nominato con il seguente pattern: "GOVPAY_" + idDominio + "_" + idunivoco + ".csv"
+   "Intervallo creazione", "Intervallo, in ore, coperto da ciascun tracciato"
+   "Email", "Se selezionata la consegna email, specifica la lista degli indirizzi destinatari separati da virgola"
+   "Oggetto", "Se selezionata la consegna email, specifica l'oggetto della mail"
+   "Invia tracciato come allegato", "Se selezionata la consegna email, indica se il tracciato deve essere inserito in allegato o riferito con un link"
+   "Base URL link download", "Se deselezionato l'invio come allegato, indica la base URL del link di download"
+   "Path", "Se selezionata la consegna File System, specifica il path sul server dove verranno depositati i file"
 
-Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina.  
+Il tracciato esportato è un archivio ``GOVPAY_{idDominio}_{progressivo}.zip`` che contiene il file ``GOVPAY_{idDominio}_{progressivo}.txt``.
+Le ricevute delle pendenze per cui è indicato un tipo di riferimento creditore (vedi il campo RIFERIMENTO CREDITORE), e che quindi non hanno il prefisso 'SECIM', sono riportate con lo stesso formato nel file separato ``GOVPAY_{idDominio}_{progressivo}_NOSECIM.txt``.
 
-Versione 1.0
+Il tracciato viene creato ogni giorno alle 3 di mattina, se dall'ultimo tracciato è trascorso l'intervallo di creazione configurato, e viene spedito da un task eseguito ogni 30 minuti.
+Entrambi i task sono **disattivati per default**: per attivarli va impostata a ``true`` la proprietà ``it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled`` nel file ``govpay.properties``.
+
+Versione 7.0
 ~~~~~~~~~~~~
 
 Il tracciato risulta una personalizzazione del :download:`Tracciato di Riconciliazione di Poste Italiane <SPECIFICHE_RENDICONTAZIONE_SECIM.pdf>` valorizzando i campi con le seguenti convenzioni:

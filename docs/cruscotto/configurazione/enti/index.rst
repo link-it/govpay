@@ -36,8 +36,10 @@ Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di
 
    "Id Dominio", "Identificativo dell'Ente Creditore in pagoPA, corrisponde al Codice Fiscale dell'ente"
    "Altre informazioni anagrafiche", "Dovrebbero corrispondere a quanto indicato nell'IndicePA"
+   "Tipo ente", "Tipologia dell'ente secondo la tassonomia pagoPA"
    "Abilitato", "Indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)"
    "Intermediato", "Indica se l'Ente Creditore è intermediato dalla piattaforma oppure beneficiario di quota parte del dovuto ma non intermediato"
+   "Acquisizione Rendicontazioni", "Abilita lo scarico da pagoPA dei flussi di rendicontazione dell'ente, eseguito dal componente govpay-fdr-batch (vedi :ref:`inst_componenti_aggiuntivi`)"
 
 .. csv-table:: Parametri adesione pagoPA
    :header: "Campo", "Descrizione"
@@ -53,7 +55,7 @@ Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di
    :header: "Campo", "Descrizione"
    :widths: 30,60
    
-   "Autorizzazione stampa BT", "Autorizzazione alla stampa in proprio assegnata da Poste Italiane"
+   "Autorizzazione stampa PT", "Autorizzazione alla stampa in proprio assegnata da Poste Italiane"
    "Sintassi IUV", "Prefisso degli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder indicati successivamente"
    "Sfoglia...", "Araldo dell'Ente Creditore da apporre nelle stampe di avvisi o ricevute. Preferibilmente vettoriale monocromatico"   
       
@@ -64,6 +66,7 @@ I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chia
 * %(p): codifica del tipo pendenza
 * %(y): anno di emissione dello IUV, due cifre
 * %(Y): anno di emissione dello IUV, quattro cifre
+* %(t): stesso valore di %(p), la codifica del tipo pendenza
 
 Dettaglio Ente Creditore
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,11 +83,11 @@ che si compone a partire dalle seguenti aree nel caso di Enti Creditori intermed
    "*Iban*", "Conti di accredito utilizzati dall'Ente Creditore in pagoPA."
    "*Tipi Entrata*", "Anagrafica delle entrate, riferibili dalle voci pendenza delle posizioni."
    "*Tipi Pendenza*", "Anagrafica delle tipologie di pendenza."
-   "*Connettori*", "Configurazione dei connettori di esportazione dati."
+   "*Connettori*", "Configurazione dei connettori di esportazione dati e del connettore al servizio SEND."
 
 Gli enti creditori non intermediati presenteranno solo una parte delle sezioni sopra elencate.
 
-Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile procedere con l'aggiornamento dei dati di base, visualizzati nell'area "Riepilogo Informazioni". Si tenga presente che il **valore del campo “Codice Dominio” non è modificabile**.
+Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile procedere con l'aggiornamento dei dati di base, visualizzati nell'area "Riepilogo Informazioni". Si tenga presente che il **valore del campo “Id dominio” non è modificabile**.
 
 .. figure:: ../../_images/19DettaglioDominio1.png
    :align: center
@@ -146,7 +149,7 @@ Tornando all'elenco degli Iban, è possibile scegliere le operazioni di modifica
 Tipi entrata
 ^^^^^^^^^^^^
 
-Nella definizione di una pendenza è possibile specificare fino a 5 voi di importo, ciascuna con i dati di contablità e 
+Nella definizione di una pendenza è possibile specificare fino a 5 voci di importo, ciascuna con i dati di contabilità e 
 conto di accredito. Queste informazioni possono essere fornite esplicitamente nella pendenza dall'applicativo chiamante
 oppure riferire un codice Entrata che individua un Tipo Entrata in questa anagrafica dove si possono configurare questi dati.
 
@@ -193,8 +196,8 @@ Tipi pendenze
 ^^^^^^^^^^^^^
 
 Questa sezione permette la scelta e la personalizzazione delle tipologie di pendenza ammissibili per l'Ente Creditore tra
-quelle registrate nell'anagrafica dei `Tipi Pendenze`_. Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, 
-di personalizzarla per l'Ente Creditore rispetto alla configurazione di base eventualmente definita nel registro `Tipi Pendenze`_.
+quelle registrate nell'anagrafica dei Tipi Pendenza (:ref:`govpay_configurazione_tipipendenze`). Il sistema dà la possibilità, una volta aggiunto un nuovo tipo pendenza, 
+di personalizzarlo per l'Ente Creditore rispetto alla configurazione di base eventualmente definita nell'anagrafica dei Tipi Pendenza.
 
 Associando un Tipo Pendenza ad un Ente Creditore è possibile indicare le seguenti informazioni generali:
 
@@ -218,15 +221,17 @@ Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
    :widths: 40,60
    
    "Inserimento pendenza da Operatore",":ref:`govpay_configurazione_enti_formoperatore`"
-   "Pagamento spontanto",":ref:`govpay_configurazione_enti_spontaneo`"
+   "Pagamento spontaneo",":ref:`govpay_configurazione_enti_spontaneo`"
    "Comunicazioni via Mail",":ref:`govpay_configurazione_enti_email`"
    "Comunicazioni via AppIO",":ref:`govpay_configurazione_enti_appio`"
    "Altre funzioni",":ref:`govpay_configurazione_enti_altrefunzioni`"
+
+Le comunicazioni via email e via App IO sono spedite da task del core, abilitati nel file ``govpay.properties`` dalle proprietà ``it.govpay.batch.spedizionePromemoria.enabled`` e ``it.govpay.batch.gestionePromemoria.enabled`` (email) e ``it.govpay.batch.spedizioneNotificheAppIO.enabled`` (App IO), tutte attive per default. I dettagli sono nelle pagine dei due servizi.
   
 Connettori
 ^^^^^^^^^^
 
-I connettori sono dei servizi utili all'esportazione dei dati dei pagamenti all'Ente Creditore presenti in GovPay verso l'esterno
+I connettori di esportazione sono dei servizi utili all'esportazione dei dati dei pagamenti all'Ente Creditore presenti in GovPay verso l'esterno
 in formati e modalità compatibili con applicativi terzi. Di seguito i connettori supportati:
 
 .. csv-table:: Connettori
@@ -238,6 +243,10 @@ in formati e modalità compatibili con applicativi terzi. Di seguito i connettor
    "Maggioli (JPPA)",":ref:`govpay_configurazione_connettori_jppa`"
    "MyPivot",":ref:`govpay_configurazione_connettori_mypivot`"
    "SECIM",":ref:`govpay_configurazione_connettori_secim`"
+
+.. note:: I tracciati dei connettori GovPay, HyperSIC, MyPivot e SECIM sono prodotti e spediti da task del core che sono **disattivati per default**: per usarli va impostata a ``true`` la proprietà ``it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled`` nel file ``govpay.properties``. Il connettore Maggioli JPPA richiede invece il componente esterno govpay-maggioli-jppa (vedi :ref:`govpay_configurazione_connettori_jppa`).
+
+Nella stessa area si configura anche il connettore **SEND**, che non esporta dati ma collega l'ente al servizio SEND (Servizio Notifiche Digitali) di pagoPA: GovPay lo usa per attualizzare l'importo delle pendenze abilitate a SEND con le spese di notifica. I campi sono la URL del servizio, la chiave ``Ocp-Apim-Subscription-Key``, l'autenticazione SSL e l'abilitazione della registrazione delle chiamate nel Giornale degli Eventi.
 
 .. toctree::
    :maxdepth: 2

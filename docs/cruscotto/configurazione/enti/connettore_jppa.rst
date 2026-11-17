@@ -1,29 +1,18 @@
 .. _govpay_configurazione_connettori_jppa:
 
-Connettore per l'esportazione dei pagamenti verso Maggioli (JPPA)
------------------------------------------------------------------
+Connettore per la notifica dei pagamenti verso Maggioli (JPPA)
+--------------------------------------------------------------
 
-Il connettore consente di interfacciarsi verso la piattaforma PagoPA Maggioli ed esportare i pagamenti gestiti da GovPay in un formato compatibile con il protocollo JPPA.
+Il connettore consente di notificare al gateway pagamenti Maggioli JPPA le ricevute di pagamento gestite da GovPay.
 
-Il protocollo prevede due fasi:
+La notifica non è eseguita dal core di GovPay ma dal componente esterno **govpay-maggioli-jppa**, da installare a parte (vedi :ref:`inst_componenti_aggiuntivi`). Per ogni Ente Creditore con il connettore abilitato, il componente:
 
-- GovPay invia una notifica al servizio JPPA per ogni ricevuta positiva acquisita da pagoPA.
-- Successivamente il servizio JPPA acquisisce le ricevute di pagamento dal servizio *RecuperaRT* esposto da GovPay.
+- cerca le ricevute positive (esito 0 o 2) arrivate dopo l'ultima già notificata;
+- si autentica sul gateway Maggioli con l'utente e la password del connettore;
+- invia una notifica REST per ogni ricevuta, con l'XML della ricevuta in Base64 e i dati di accertamento ricavati dalla contabilità delle voci della pendenza (per ogni quota: anno di esercizio, capitolo e importo, con la descrizione della voce);
+- se previsto dal connettore, produce un tracciato CSV con l'esito di ogni notifica e lo spedisce per email.
 
-Tramite il servizio *RecuperaRT*, vengono acquisiti i tracciati originali delle Ricevute secondo la specifica del servizio JPPA. Tali tracciati sono arricchiti con le informazioni contabili o di accertamento relativi all'importo riscosso per ogni singola voce pendenza, riportando le informazioni delle quote indicate nell'elemento *contabilita* come segue:
-
-.. csv-table:: *Mapping dati contabili*
-   :header: "Campo", "Valore"
-   :widths: 40,60
-
-   "Capitolo bilancio", "vocePendenza.contabilita.quote[].capitolo"
-   "Anno", "vocePendenza.contabilita.quote[].annoEsercizio"
-   "Importo", "vocePendenza.contabilita.quote[].importo"
-   "Descrizione", "vocePendenza.contabilita.quote[].descrizione"   
-
-Il servizio *RecuperaRT* è disponibile alla URL: https://host-gp/govpay/backend/api/jppapdp/JppaPdpExternalFacetService. In maniera simile alle altre API messe a disposizione da GovPay, il servizio è fruibile previa autenticazione secondo la modalità individuata dalla configurazione Spring Security, per default con SSL Client Auth.
-
-La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quotidianamente alle 3 di mattina ed al termine delle spedizioni viene inviato tramite email un report dell'attività in formato CSV.
+Dalla console di GovPay si configura solo il connettore dell'Ente Creditore.
 
 .. figure:: ../../_images/48ConnettoreMaggioliJPPA.png
    :align: center
@@ -31,42 +20,25 @@ La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quoti
 
    Configurazione del Connettore Maggioli (JPPA)
 
-.. csv-table:: *Parametri di configurazione generale*
+.. csv-table:: *Servizio REST Maggioli JPPA*
    :header: "Campo", "Descrizione"
    :widths: 40,60
 
-   "Versione CSV", "Versione del tracciato di esito"
-   "Modalità di consegna", "Canale di trasmissione del CSV verso l'ente"
-   "Email", "Specifica la lista degli indirizzi destinatari separati da virgola"
+   "Base URL dei servizi", "URL base dell'API del gateway Maggioli JPPA"
+   "Username", "Utente con cui il componente si autentica sul gateway"
+   "Password", "Password con cui il componente si autentica sul gateway"
+   "Data ultima RT", "Data dell'ultima ricevuta notificata, aggiornata dal componente a ogni esecuzione: le ricevute successive a questa data vengono notificate all'esecuzione seguente. Per inviare di nuovo delle ricevute va riportata indietro"
+   "Abilitato", "Abilita o disabilita la notifica dei pagamenti per l'Ente Creditore"
+
+.. csv-table:: *Invio tracciato esito*
+   :header: "Campo", "Descrizione"
+   :widths: 40,60
+
+   "Invia tracciato esito", "Se attivo, al termine di ogni esecuzione viene prodotto il tracciato CSV con l'esito delle notifiche e spedito per email"
+   "Path file system", "Directory in cui viene salvato il tracciato"
+   "Email", "Indirizzi destinatari del tracciato, separati da virgola"
    "Oggetto", "Oggetto della email"
 
-.. csv-table:: *Parametri di configurazione servizio acquisizione ricevute*
-   :header: "Campo", "Descrizione"
-   :widths: 40,60
+La spedizione del tracciato di esito richiede anche che l'invio delle email sia configurato nelle impostazioni di GovPay (vedi :ref:`utente_impostazioni`).
 
-   "Principal", "Principal autenticato della chiamata da Maggioli"
-
-.. csv-table:: *Parametri di configurazione servizio notifica pagamenti*
-   :header: "Campo", "Descrizione"
-   :widths: 40,60
-
-   "Tipi pendenza", "Elenco dei tipi pendenza oggetto di esportazione"
-   "URL", "URL dei servizi esposti da Maggioli"
-   "Versione API", "Versione dei servizi da utilizzare"
-   "Tipo Autenticazione", "Tipo di autenticazione da utilizzare (Nessuna/HTTPBasic/SSL)"
-
-
-Tracciato esiti spedizioni versione 1.0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Per ciascuna notifica di pagamento inviata viene aggiunto un record con l'esito dell'operazione:
-
-.. csv-table:: *Valori di esportazione*
-   :header: "Campo", "Descrizione"
-   :widths: 40,60
-
-   "idDominio","Identificativo Ente Creditore"
-   "iuv","Identificativo Univoco Pagamento"
-   "cpp","Codice Contesto Pagamento/ReceiptID"
-   "esito","OK|ERROR"
-   "descrizioneEsito", "Descrizione errore spedizione"
+La schedulazione del componente, l'avvio manuale, il formato del tracciato di esito e le altre proprietà sono descritti nel README del repository `govpay-maggioli-jppa <https://github.com/link-it/govpay-maggioli-jppa>`_.
