@@ -36,21 +36,20 @@ rilascio:
      - Giornale degli eventi. I batch non partono finché non risponde, per non
        perdere gli eventi dei primi cicli.
    * - ``govpay-stampe``
-     - Produzione degli avvisi di pagamento in PDF.
+     - Produzione in PDF di avvisi e ricevute per i componenti esterni.
    * - ``govpay-aca``
-     - Sincronizzazione dell'Archivio dei pagamenti in attesa.
+     - Invio delle posizioni debitorie all'Archivio Centralizzato Avvisi (GPD) di pagoPA.
    * - ``govpay-fdr``
      - Acquisizione dei flussi di rendicontazione.
    * - ``govpay-iban``
-     - Sincronizzazione degli IBAN.
+     - Verifica degli IBAN e dell'anagrafica degli enti su pagoPA.
    * - ``govpay-maggioli-jppa``
-     - Integrazione con il protocollo JPPA.
+     - Notifica delle ricevute al gateway Maggioli JPPA.
    * - ``govpay-notify``
-     - Spedizione di promemoria e ricevute verso i debitori e gli enti.
+     - Notifica alle applicazioni dell'ente delle rendicontazioni senza
+       pagamento e, se abilitata, spedizione delle ricevute.
    * - ``govpay-rt``
      - Recupero delle ricevute telematiche da pagoPA.
-   * - ``govpay-tracciati``
-     - Elaborazione dei tracciati di caricamento e annullamento pendenze.
 
 Preparazione
 ------------
@@ -84,12 +83,26 @@ PostgreSQL e MySQL il driver è già incluso nelle immagini e la directory può
 restare vuota; per Oracle va depositato il driver, che non è redistribuibile e
 deve essere scaricato dal sito del produttore.
 
-**3. L'utenza applicativa dei batch**
+**3. L'utenza del batch di recupero delle ricevute**
 
-I batch che invocano le API del core si autenticano con un'utenza applicativa,
-indicata in ``.env`` da ``GOVPAY_BATCH_USER`` e ``GOVPAY_BATCH_PASSWORD``.
-L'utenza va creata in anagrafica prima di avviare l'ambiente, e la password va
+govpay-rt-batch consegna al core le ricevute recuperate sul percorso
+``/internal`` delle API pagoPA, con autenticazione Basic. Le credenziali sono
+indicate in ``.env`` da ``GOVPAY_BATCH_USER`` e ``GOVPAY_BATCH_PASSWORD``:
+l'utenza va creata in anagrafica prima di avviare l'ambiente, e la password va
 cambiata rispetto al valore di esempio.
+
+**4. Configurazione in GovPay**
+
+Dopo il primo avvio, dalla console:
+
+- configurare nelle Impostazioni il connettore del servizio Giornale degli
+  Eventi con la URL ``http://govpay-gde:10002``: i batch inviano i propri
+  eventi a quel servizio;
+- configurare i connettori dell'intermediario usati dai batch (ACA, FR,
+  Recupero RT, backoffice EC), descritti in :ref:`inst_componenti_aggiuntivi`;
+- configurare la posta elettronica nelle Impostazioni, se servono le
+  comunicazioni via email: il server SMTP non si imposta con variabili
+  d'ambiente.
 
 Avvio
 -----

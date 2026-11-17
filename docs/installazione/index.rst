@@ -5,11 +5,16 @@ Installazione
 =============
 
 Questo manuale fornisce le informazioni generali e la procedura
-necessaria per l'installazione e il dispiegamento di GovPay. Tale
-procedura prevede una fase preliminare di verifica dei requisiti di
-installazione sull'ambiente di destinazione, seguita da una fase di
-configurazione dei moduli applicativi tramite un installer grafico, per
-poi concludere con la fase di deploy nell'ambiente di destinazione.
+necessaria per l'installazione e il dispiegamento di GovPay. Sono
+disponibili due strade:
+
+- **application server**: verifica dei requisiti sull'ambiente di
+  destinazione, configurazione dei moduli applicativi tramite un
+  installer grafico e deploy degli archivi prodotti
+  (:ref:`inst_ambiente`, :ref:`inst_configurazione`,
+  :ref:`inst_dispiegamento`);
+- **container**: avvio del core e dei componenti con le immagini Docker
+  pubblicate, senza installer (:ref:`inst_container`).
 
 Terminata la procedura di installazione vengono descritti i passi da
 effettuare per verificarne la riuscita.

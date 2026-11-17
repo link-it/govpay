@@ -2,7 +2,7 @@
 # GovPay 3.10.0 - ambiente completo in container
 #
 # Tutti i componenti del rilascio: database, core, console di backoffice,
-# microservizi e i sette batch. Le versioni delle immagini sono nel file .env
+# microservizi e i sei batch. Le versioni delle immagini sono nel file .env
 # accanto a questo.
 #
 # Prerequisiti, descritti nella pagina di documentazione che allega questo file:
@@ -74,9 +74,6 @@ services:
       - "${CORE_HTTP_PORT}:8080"
     environment:
       <<: *db-env
-      GOVPAY_LOG_LEVEL: ${GOVPAY_LOG_LEVEL}
-      GOVPAY_MAIL_SMTP_HOST: ${GOVPAY_MAIL_SMTP_HOST}
-      GOVPAY_MAIL_SMTP_PORT: ${GOVPAY_MAIL_SMTP_PORT}
       JAVA_OPTS: "-Xms512m -Xmx2g"
     volumes:
       - *log-volume
@@ -110,8 +107,12 @@ services:
     image: linkitaly/govpay-console:${CONSOLE_VERSION}
     depends_on:
       - console-api
+    environment:
+      # nginx inoltra /govpay-console-api/ a console-api, che risponde sulla radice
+      GOVPAY_API_BACKEND: "http://console-api:8080"
+      GOVPAY_API_BACKEND_PATH: "/"
     ports:
-      - "${CONSOLE_HTTP_PORT}:8080"
+      - "${CONSOLE_HTTP_PORT}:80"
     restart: unless-stopped
     networks: [govpay]
 
@@ -163,7 +164,6 @@ services:
     environment:
       <<: *db-env
       GOVPAY_ACA_BATCH_INTERVALLO_CRON: "10"
-      GOVPAY_ACA_GDE_URL: "http://govpay-gde:10002"
       LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
     healthcheck: *batch-healthcheck
     volumes:
@@ -216,9 +216,6 @@ services:
     depends_on: *batch-depends
     environment:
       <<: *db-env
-      GOVPAY_NOTIFY_GDE_URL: "http://govpay-gde:10002"
-      GOVPAY_MAIL_SMTP_HOST: ${GOVPAY_MAIL_SMTP_HOST}
-      GOVPAY_MAIL_SMTP_PORT: ${GOVPAY_MAIL_SMTP_PORT}
       LOADER_PATH: /opt/jdbc-drivers
       LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
     healthcheck: *batch-healthcheck
@@ -236,19 +233,6 @@ services:
       GOVPAY_URL: "http://core:8080/govpay-api-pagopa/internal/PagamentiTelematiciCCPservice"
       GOVPAY_AUTH_USERNAME: ${GOVPAY_BATCH_USER}
       GOVPAY_AUTH_PASSWORD: ${GOVPAY_BATCH_PASSWORD}
-      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
-    healthcheck: *batch-healthcheck
-    volumes:
-      - *log-volume
-      - *jdbc-volume
-    restart: unless-stopped
-    networks: [govpay]
-
-  govpay-tracciati:
-    image: linkitaly/govpay-tracciati-batch:${BATCH_TRACCIATI_VERSION}
-    depends_on: *batch-depends
-    environment:
-      <<: *db-env
       LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
     healthcheck: *batch-healthcheck
     volumes:

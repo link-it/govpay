@@ -59,18 +59,20 @@ Modalità di Autenticazione
 
 Il processo di configurazione e dispiegamento fin qui descritto prevede che vengano attivate le modalità di autenticazione di default sulle API. Le modalità di autenticazione attivate per default sono le seguenti:
 
-- **SSL** per le API che interfacciano i servizi pagoPA
+- **SSL** per le API che interfacciano i servizi pagoPA; sul percorso ``/internal``
+  delle stesse API, usato da govpay-rt-batch per consegnare le ricevute recuperate, **HTTP-BASIC**
 - **HTTP-BASIC** ed **SSL** per tutte le altre API di GovPay
+- per le API Backoffice anche l'autenticazione **form**, usata dalla console
 
 Per abilitare/disabilitare ulteriori modalità di autenticazione, rispetto a quelle attive per default, è necessario procedere con le seguenti operazioni:
 
 1.  **Abilitare la configurazione esterna di spring-security**
 
-	- durante l'esecuzione dell'installer (:ref:`inst_configurazione`), selezionare l'opzione "Visualizza impostazioni avanzate" nel passaggio "Informazioni Preliminari", quindi l'opzione "Usa file di configurazione esterni" per la configurazione di Spring Security nel passaggio "Configurazione Avanzata".
+	- durante l'esecuzione dell'installer (:ref:`inst_configurazione`), selezionare l'opzione "Usa file di configurazione esterni" nel passaggio "Configurazioni Avanzate".
 
 2.  **Estrarre le configurazioni di Spring Security**
 
-	- copiare dagli archivi war contenuti nell'ear, i file /WEB-INF/classes/spring-sec/api-$$$-applicationContext-security.xml nella della work directory (default /etc/govpay/)
+	- con l'opzione attiva l'installer estrae i file ``*-applicationContext-security.xml`` delle API nella directory ``dist/cfg``: copiarli nella work directory (predefinita ``/etc/govpay/``)
 
 3.  **Commentare o scommentare le modalità di autenticazione desiderate**
 

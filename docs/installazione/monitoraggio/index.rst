@@ -47,7 +47,7 @@ dove *id* può assumere i seguenti valori:
 +---------------------------------+-------------------------------------------------+
 | check-rpt-scadute               | Numero RPT SANP 2.4 scadute da chiudere         |
 +---------------------------------+-------------------------------------------------+
-| check-recupero-rt               | Numero RT mancanti                              |
+| check-recupero-rt               | Non più alimentata dalla 3.10 (vedi sotto)      |
 +---------------------------------+-------------------------------------------------+
 | spedizione-trac-notif-pag       | Stato spedizione tracciati notifica pagamenti   |
 +---------------------------------+-------------------------------------------------+
@@ -65,8 +65,13 @@ dove *id* può assumere i seguenti valori:
 +---------------------------------+-------------------------------------------------+
 | rpt-scadute                     | Stato chiusura RPT SANP 2.4 scadute             |
 +---------------------------------+-------------------------------------------------+
-| recupero-rt                     | Recupero RT mancanti                            |
+| recupero-rt                     | Non più alimentata dalla 3.10 (vedi sotto)      |
 +---------------------------------+-------------------------------------------------+
+
+Le sonde ``check-recupero-rt`` e ``recupero-rt`` restano nell'elenco per
+compatibilità, ma dalla versione 3.10 il recupero delle ricevute è svolto dal
+componente esterno govpay-rt-batch e nessun processo del core le aggiorna: lo
+stato del recupero si controlla sul batch (vedi più avanti).
 
 in ritorno si ha un messaggio con questo formato:
 
@@ -125,9 +130,13 @@ con la seguente semantica:
 +-----------------------------------+-----------------------------------+
 | sogliaWarnValue                   | Valore di soglia per lo stato di  |
 |                                   | warning. La semantica del valore  |
-|                                   | dipende dal tipo di check:        |
+|                                   | dipende dal tipo di check: per il |
+|                                   | tipo Coda è il numero di elementi |
+|                                   | in coda, per il tipo Batch sono i |
+|                                   | millisecondi trascorsi            |
+|                                   | dall'ultima esecuzione            |
 +-----------------------------------+-----------------------------------+
-| sogliaError                       | Come *sogliaWarnValue* ma per lo  |
+| sogliaErrorValue                  | Come *sogliaWarnValue* ma per lo  |
 |                                   | stato di error                    |
 +-----------------------------------+-----------------------------------+
 | dataUltimoCheck                   | Data dell'ultima verifica del     |
@@ -140,4 +149,21 @@ con la seguente semantica:
 |                                   | Coda: numero degli elementi       |
 |                                   | attualmente in coda               |
 |                                   |                                   |
+|                                   | Sistema: verifica del sistema     |
+|                                   | (es. check-db)                    |
+|                                   |                                   |
+|                                   | Sconosciuto: tipo non riconosciuto|
 +-----------------------------------+-----------------------------------+
+
+Monitoraggio dei componenti esterni
+-----------------------------------
+
+I componenti esterni (batch, govpay-gde-api, govpay-stampe-api, govpay-console-api)
+espongono lo stato tramite Spring Boot Actuator, all'indirizzo
+``/actuator/health``, sulla porta di servizio o, per govpay-console-api, sulla
+porta di management dedicata (predefinita 9090): la porta di ciascun componente
+è indicata nel suo README. È l'endpoint usato anche dagli healthcheck
+dell'esempio Docker Compose (:ref:`inst_container`).
+Per i batch, inoltre, l'esito delle esecuzioni è consultabile dalla sezione
+Manutenzione della console e tramite l'API REST di ciascun batch, descritta
+nel README del componente.
